@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Rush</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="search">Search</string>
+    <string name="saved">Saved</string>
+    <string name="settings">Settings</string>
+    <string name="empty">Nothing yet…</string>
+    <string name="suggestion">Maybe search for something?</string>
+    <string name="downloaded">Saved lyrics</string>
+    <string name="delete_all">Delete all</string>
+    <string name="genius">Genius</string>
+    <string name="share">Share</string>
+</resources>

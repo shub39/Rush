@@ -1,0 +1,54 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      KEYSTORE_BASE_64: ${{ secrets.KEYSTORE_BASE_64 }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up signing key
+        run: |
+          echo $KEYSTORE_BASE_64 | base64 -d > release.keystore
+          echo "RELEASE_STORE_FILE=$(realpath release.keystore)" >> $GITHUB_ENV
+
+      - name: Build release APK
+        run: ./gradlew assembleRelease
+
+      - name: List Build APKs
+        run: ls -R ./app/build/outputs/apk/release/
+
+      - name: Upload APK to GitHub Releases
+        id: upload-release
+        uses: softprops/action-gh-release@v2.0.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            ./app/build/outputs/apk/release/app-release.apk
+          release_tag: ${{ github.event.release.tag_name }}
+          release_name: Release ${{ github.event.release.tag_name }}
+          prerelease: false
