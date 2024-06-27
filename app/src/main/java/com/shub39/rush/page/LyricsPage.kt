@@ -17,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +44,16 @@ fun LyricsPage(
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val context = LocalContext.current
+    var isSharePageVisible by remember { mutableStateOf(false) }
+
+    if (isSharePageVisible) {
+        SharePage(
+            onShare = { isSharePageVisible = false },
+            onDismiss = { isSharePageVisible = false },
+            song = song!!,
+            imageLoader = imageLoader
+        )
+    }
 
     if (fetching) {
         Card(
@@ -105,7 +118,7 @@ fun LyricsPage(
                                 contentDescription = null
                             )
                         }
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { isSharePageVisible = true }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_share_24),
                                 contentDescription = null

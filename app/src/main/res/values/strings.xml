@@ -9,5 +9,6 @@
     <string name="downloaded">Saved lyrics</string>
     <string name="delete_all">Delete all songs</string>
     <string name="genius">Genius</string>
+    <string name="from_genius">From Genius</string>
     <string name="share">Share</string>
 </resources>
