@@ -5,12 +5,17 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
+import com.shub39.rush.genius.Scraper.scrapeLyrics
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 object SongProvider {
     private const val TAG = "GeniusProvider"
@@ -85,7 +90,8 @@ object SongProvider {
                     ?: return Result.failure(Exception("Failed to parse song info"))
 
                 val title = jsonSong.get("title")?.asString ?: "Unknown Title"
-                val artist = jsonSong.getAsJsonObject("primary_artist")?.get("name")?.asString ?: "Unknown Artist"
+                val artist = jsonSong.getAsJsonObject("primary_artist")?.get("name")?.asString
+                    ?: "Unknown Artist"
                 val sourceUrl = jsonSong.get("url")?.asString ?: ""
                 val album = getAlbum(jsonSong)
                 val artUrl = jsonSong.get("header_image_thumbnail_url")?.asString ?: ""
@@ -94,7 +100,7 @@ object SongProvider {
                 val lyrics = if (lyricsJsonElement != null) {
                     parseLyricsJsonTag(lyricsJsonElement)
                 } else {
-                    "Lyrics not available"
+                    scrapeLyrics(sourceUrl)
                 }
 
                 Result.success(
@@ -144,6 +150,14 @@ object SongProvider {
         }
 
         return ""
+    }
+
+    interface ApiService {
+        @GET("search")
+        fun search(@Query("q") query: String): Call<JsonElement>
+
+        @GET("songs/{songId}")
+        fun getSong(@Path("songId") songId: Long): Call<JsonElement>
     }
 
 }

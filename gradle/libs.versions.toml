@@ -4,7 +4,10 @@ agp = "8.5.0"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
+fuel = "2.3.1"
+fuelCoroutines = "2.3.1"
 gson = "2.10.1"
+jsoup = "1.16.2"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -25,6 +28,7 @@ roomCommon = "2.6.1"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
@@ -39,7 +43,10 @@ androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "
 coil = { module = "io.coil-kt:coil", version.ref = "coilCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
+fuel-coroutines = { module = "com.github.kittinunf.fuel:fuel-coroutines", version.ref = "fuelCoroutines" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

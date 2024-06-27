@@ -127,7 +127,7 @@ fun LyricsPage(
                         Text(
                             text = song!!.lyrics,
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                 }

@@ -15,21 +15,11 @@ android {
         minSdk = 29
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
-        }
-    }
-    signingConfigs {
-        create("release") {
-            if (System.getenv("RELEASE_STORE_FILE") != null) {
-                storeFile = file(System.getenv("RELEASE_STORE_FILE"))
-                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
-                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
-                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
-            }
         }
     }
     buildTypes {
@@ -39,9 +29,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (System.getenv("RELEASE_STORE_FILE") != null) {
-                signingConfig = signingConfigs["release"]
-            }
         }
     }
     compileOptions {
@@ -92,6 +79,9 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.coil.compose)
     implementation(libs.coil)
+    implementation(libs.fuel)
+    implementation(libs.fuel.coroutines)
+    implementation(libs.jsoup)
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.room.compiler)
