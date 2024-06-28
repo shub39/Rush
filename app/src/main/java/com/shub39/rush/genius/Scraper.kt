@@ -17,14 +17,13 @@ object Scraper {
             is Result.Success -> {
                 val html = result.get()
                 val document = Jsoup.parse(html)
-
-                val lyricsElement = document.select("div.lyrics, div[class*='Lyrics__Container']").first()
-
-                if (lyricsElement != null) {
-                    formatLyrics(lyricsElement.wholeText())
-                } else {
-                    "Lyrics not found."
+                var lyrics = ""
+                val lyricsElement = document.select("div.lyrics, div[class*='Lyrics__Container']")
+                lyricsElement.forEach {
+                    lyrics += formatLyrics(it.wholeText())
+                    lyrics += "\n"
                 }
+                lyrics
             }
         }
     }
