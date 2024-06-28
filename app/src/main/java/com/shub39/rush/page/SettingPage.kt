@@ -10,6 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,6 +27,7 @@ fun SettingPage(
     rushViewModel: RushViewModel,
 ) {
     val context = LocalContext.current
+    var deleteButtonStatus by remember { mutableStateOf(rushViewModel.songs.value.isNotEmpty()) }
 
     Column(
         modifier = Modifier
@@ -35,8 +40,10 @@ fun SettingPage(
                 rushViewModel.songs.value.forEach {
                     rushViewModel.deleteSong(it)
                 }
+                deleteButtonStatus = false
             },
-            shape = MaterialTheme.shapes.large
+            shape = MaterialTheme.shapes.large,
+            enabled = deleteButtonStatus
         ) {
             Text(text = stringResource(id = R.string.delete_all))
         }

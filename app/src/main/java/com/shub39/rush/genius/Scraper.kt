@@ -33,8 +33,8 @@ object Scraper {
         return rawLyrics.lines()
             .filter { it.isNotBlank() }
             .joinToString("\n")
-            .replace("[", "\n\n[")
-            .removePrefix("\n\n")
+            .replace("[", "\n[")
+            .removePrefix("\n")
     }
 
 }

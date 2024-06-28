@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,11 +47,13 @@ fun SharePage(
     onDismiss: () -> Unit,
     onShare: () -> Unit,
     song: Song,
+    selectedLines: Map<Int, String>,
     imageLoader: ImageLoader
 ) {
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
     val context = LocalContext.current
+    val sortedLines = sortMapByKeys(selectedLines)
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -65,7 +66,6 @@ fun SharePage(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp)
                         .drawWithContent {
                             graphicsLayer.record {
                                 this@drawWithContent.drawContent()
@@ -113,13 +113,13 @@ fun SharePage(
                     LazyColumn(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        item {
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Column {
+                        sortedLines.forEach {
+                            item {
                                 Text(
-                                    text = lyricsFormatter(song.lyrics),
+                                    text = it.value,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(8.dp)
                                 )
                             }
                         }
@@ -142,8 +142,13 @@ fun SharePage(
     )
 }
 
-fun lyricsFormatter(lyrics: String): String {
-    return lyrics.lines().filter { it.isNotBlank() && !it.startsWith('[') }.joinToString("\n\n")
+fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
+    val sortedEntries = map.entries.toList().sortedBy { it.key }
+    val sortedMap = LinkedHashMap<Int, String>()
+    for (entry in sortedEntries) {
+        sortedMap[entry.key] = entry.value
+    }
+    return sortedMap
 }
 
 fun shareImage(context: Context, bitmap: Bitmap) {
@@ -159,7 +164,8 @@ fun shareImage(context: Context, bitmap: Bitmap) {
         return
     }
 
-    val contentUri: Uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+    val contentUri: Uri =
+        FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
     val shareIntent = Intent().apply {
         action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_STREAM, contentUri)

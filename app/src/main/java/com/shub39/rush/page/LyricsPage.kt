@@ -1,6 +1,6 @@
 package com.shub39.rush.page
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,7 +29,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -45,12 +46,14 @@ fun LyricsPage(
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
+    var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
 
     if (isSharePageVisible) {
         SharePage(
             onShare = { isSharePageVisible = false },
             onDismiss = { isSharePageVisible = false },
             song = song!!,
+            selectedLines = selectedLines,
             imageLoader = imageLoader
         )
     }
@@ -70,7 +73,16 @@ fun LyricsPage(
                 )
             }
         }
-    } else if (song != null) {
+    } else if (song == null) {
+        Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+        ) {
+            Empty()
+        }
+    } else {
+        val nonNullSong = song!!
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,7 +92,7 @@ fun LyricsPage(
                 modifier = Modifier.padding(16.dp),
             ) {
                 ArtFromUrl(
-                    imageUrl = song!!.artUrl,
+                    imageUrl = nonNullSong.artUrl,
                     modifier = Modifier
                         .size(150.dp)
                         .clip(MaterialTheme.shapes.small),
@@ -90,14 +102,14 @@ fun LyricsPage(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                 ) {
                     Text(
-                        text = song!!.title,
+                        text = nonNullSong.title,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = song!!.artists,
+                        text = nonNullSong.artists,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -112,47 +124,91 @@ fun LyricsPage(
                         )
                     }
                     Row {
-                        IconButton(onClick = { openLinkInBrowser(context, song!!.sourceUrl) }) {
+                        IconButton(onClick = {
+                            openLinkInBrowser(
+                                context,
+                                nonNullSong.sourceUrl
+                            )
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.genius),
                                 contentDescription = null
                             )
                         }
-                        IconButton(onClick = { isSharePageVisible = true }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_share_24),
-                                contentDescription = null
-                            )
+                        AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
+                            Row {
+                                IconButton(onClick = { isSharePageVisible = true }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_share_24),
+                                        contentDescription = null
+                                    )
+                                }
+                                IconButton(onClick = { selectedLines = emptyMap() }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_delete_forever_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
             LazyColumn(
-                modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
+                modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
             ) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = song!!.lyrics,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
+                items(breakLyrics(nonNullSong.lyrics).entries.toList(), key = { it.key }) {
+                    if (it.value.isNotBlank()) {
+                        val isSelected = selectedLines.contains(it.key)
+                        val color = if (!isSelected) {
+                            CardDefaults.cardColors()
+                        } else {
+                            CardDefaults.elevatedCardColors()
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .padding(3.dp)
+                                .fillParentMaxWidth(),
+                            onClick = {
+                                selectedLines = updateSelectedLines(selectedLines, it.key, it.value)
+                                isSelected != isSelected
+                            },
+                            colors = color
+                        ) {
+                            Text(
+                                text = it.value,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(6.dp)
+                            )
+                        }
                     }
                 }
             }
         }
+
+    }
+}
+
+private fun breakLyrics(lyrics: String): Map<Int, String> {
+    val lines = lyrics.lines()
+    val map = mutableMapOf<Int, String>()
+    for (i in lines.indices) {
+        map[i] = lines[i]
+    }
+    return map
+}
+
+private fun updateSelectedLines(
+    selectedLines: Map<Int, String>,
+    key: Int,
+    value: String,
+    maxSelections: Int = 6
+): Map<Int, String> {
+    return if (!selectedLines.contains(key) && selectedLines.size < maxSelections) {
+        selectedLines.plus(key to value)
     } else {
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-        ) {
-            Empty()
-        }
+        selectedLines.minus(key)
     }
 }
