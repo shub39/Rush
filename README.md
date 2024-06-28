@@ -17,7 +17,7 @@
 
 ## Why ❔
 Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from genius and share them like spotify, all in material3 look.
-This app uses Genius Api to search for available apps and scrape lyrics from the song's page
+This app uses Genius Api to search for available songs and scrape lyrics from the song's page
 
 ## Screenshots 🌟
 
