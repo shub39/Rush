@@ -5,8 +5,16 @@
 
 ![](https://img.shields.io/github/last-commit/shub39/Rush?&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/repo-size/shub39/Rush?color=CAC992&label=SIZE&logo=googledrive&style=for-the-badge&logoColor=D9E0EE&labelColor=292324)
+[![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&style=for-the-badge)](https://github.com/shub39/Rush/releases)
 
 </div>
+
+<div align="center"> 
+
+### Download from [Releases](https://github.com/shub39/Rush/releases)
+
+</div>
+
 
 ## Features 🌠
 - [x] Search Lyrics
