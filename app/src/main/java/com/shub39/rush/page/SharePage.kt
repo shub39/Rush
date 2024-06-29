@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import coil.ImageLoader
 import com.shub39.rush.R
@@ -51,15 +51,20 @@ fun SharePage(
     imageLoader: ImageLoader
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val graphicsLayer = rememberGraphicsLayer()
+    val cardGraphicsLayer = rememberGraphicsLayer()
     val context = LocalContext.current
     val sortedLines = sortMapByKeys(selectedLines)
 
     Dialog(
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        ),
         onDismissRequest = { onDismiss() },
         content = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -67,10 +72,10 @@ fun SharePage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .drawWithContent {
-                            graphicsLayer.record {
+                            cardGraphicsLayer.record {
                                 this@drawWithContent.drawContent()
                             }
-                            drawLayer(graphicsLayer)
+                            drawLayer(cardGraphicsLayer)
                         }
                 ) {
                     Row(
@@ -129,8 +134,8 @@ fun SharePage(
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            val bitmap = graphicsLayer.toImageBitmap()
-                            shareImage(context, bitmap.asAndroidBitmap())
+                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                            shareImage(context, bitmap)
                             onShare()
                         }
                     }
@@ -141,6 +146,7 @@ fun SharePage(
         }
     )
 }
+
 
 fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     val sortedEntries = map.entries.toList().sortedBy { it.key }

@@ -10,5 +10,7 @@
     <string name="delete_all">Delete all songs</string>
     <string name="genius">Genius</string>
     <string name="from_genius">From Genius</string>
+    <string name="max_lines">Maximum Lines to share</string>
+    <string name="theme">App Theme</string>
     <string name="share">Share</string>
 </resources>

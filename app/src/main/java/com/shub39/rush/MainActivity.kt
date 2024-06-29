@@ -16,12 +16,13 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        val rushViewModel = RushViewModel(application)
+        val imageLoader = provideImageLoader(context = this)
+
         enableEdgeToEdge()
         setContent {
             RushTheme {
                 val navController = rememberNavController()
-                val rushViewModel = RushViewModel(application)
-                val imageLoader = provideImageLoader(context = this)
                 RushApp(
                     navController = navController,
                     rushViewModel = rushViewModel,

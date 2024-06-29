@@ -20,7 +20,7 @@
 - [x] Search Lyrics
 - [x] Download Lyrics
 - [x] Share Lyrics
-- [ ] Customisations
+- [x] Customisations
 - [ ] Auto-Search current playing song   
 
 ## Why ❔

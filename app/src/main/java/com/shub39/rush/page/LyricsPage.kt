@@ -35,6 +35,7 @@ import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
+import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 
 @Composable
@@ -47,6 +48,7 @@ fun LyricsPage(
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
+    val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
 
     if (isSharePageVisible) {
         SharePage(
@@ -171,7 +173,7 @@ fun LyricsPage(
                                 .padding(3.dp)
                                 .fillParentMaxWidth(),
                             onClick = {
-                                selectedLines = updateSelectedLines(selectedLines, it.key, it.value)
+                                selectedLines = updateSelectedLines(selectedLines, it.key, it.value, maxLinesFlow)
                                 isSelected != isSelected
                             },
                             colors = color
