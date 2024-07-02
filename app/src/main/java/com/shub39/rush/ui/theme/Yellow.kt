@@ -4,10 +4,11 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val GruvboxLightScheme = lightColorScheme(
+val YellowLightScheme = lightColorScheme(
     primary = Color(0xFF6D5E0F),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFF8E287),onPrimaryContainer = Color(0xFF221B00),
+    primaryContainer = Color(0xFFF8E287)
+    ,onPrimaryContainer = Color(0xFF221B00),
     secondary = Color(0xFF665E40),
     onSecondary = Color(0xFFFFFFFF),
     secondaryContainer = Color(0xFFEEE2BC),
@@ -41,7 +42,7 @@ val GruvboxLightScheme = lightColorScheme(
     surfaceContainerHighest = Color(0xFFE8E2D4)
 )
 
-val GruvboxDarkScheme = darkColorScheme(
+val YellowDarkScheme = darkColorScheme(
     primary = Color(0xFFDBC66E),
     onPrimary = Color(0xFF3A3000),
     primaryContainer = Color(0xFF534600),
@@ -68,7 +69,8 @@ val GruvboxDarkScheme = darkColorScheme(
     outlineVariant = Color(0xFF4B4739),
     scrim = Color(0xFF000000),
     inverseSurface = Color(0xFFE8E2D4),
-    inverseOnSurface = Color(0xFF333027),inversePrimary = Color(0xFF6D5E0F),
+    inverseOnSurface = Color(0xFF333027)
+    ,inversePrimary = Color(0xFF6D5E0F),
     surfaceDim = Color(0xFF15130B),
     surfaceBright = Color(0xFF3C3930),
     surfaceContainerLowest = Color(0xFF100E07),
