@@ -30,8 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.Empty
@@ -41,8 +39,8 @@ import com.shub39.rush.viewmodel.RushViewModel
 @Composable
 fun SearchPage(
     rushViewModel: RushViewModel,
-    navController: NavController,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    onClick: () -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
@@ -110,13 +108,7 @@ fun SearchPage(
                             result = it,
                             onClick = {
                                 rushViewModel.changeCurrentSong(it.id)
-                                navController.navigate(Screens.LyricsPage.route){
-                                    launchSingleTop = true
-                                    restoreState = true
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                }
+                                onClick()
                             },
                             imageLoader = imageLoader
                         )

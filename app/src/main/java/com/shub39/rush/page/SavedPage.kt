@@ -7,8 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import coil.ImageLoader
 import com.shub39.rush.component.Empty
 import com.shub39.rush.component.SongCard
@@ -16,9 +14,9 @@ import com.shub39.rush.viewmodel.RushViewModel
 
 @Composable
 fun SavedPage(
-    navController: NavController,
     rushViewModel: RushViewModel,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    onClick: () -> Unit
 ) {
     val songs = rushViewModel.songs.collectAsState()
 
@@ -38,13 +36,7 @@ fun SavedPage(
                     },
                     onClick = {
                         rushViewModel.changeCurrentSong(it.id)
-                        navController.navigate(Screens.LyricsPage.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                        }
+                        onClick()
                     },
                     imageLoader = imageLoader
                 )

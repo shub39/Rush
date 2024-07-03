@@ -7,7 +7,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun RushApp(
@@ -38,13 +46,23 @@ fun RushApp(
     rushViewModel: RushViewModel,
     imageLoader: ImageLoader
 ) {
+    val screens = listOf("LyricsPage", "SearchPage", "SavedPage")
+    val pagerState = rememberPagerState(initialPage = 2) { screens.size }
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) },
-        topBar = { TopBar(navController = navController) }
+        topBar = { TopBar(navController = navController) },
+        bottomBar = {
+            BottomBar(pagerState = pagerState) { page ->
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(page)
+                }
+            }
+        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screens.SavedPage.route,
+            startDestination = Screens.LyricsPage.route,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(200)) },
             exitTransition = { fadeOut(animationSpec = tween(200)) },
@@ -52,23 +70,15 @@ fun RushApp(
             popExitTransition = { fadeOut(animationSpec = tween(200)) }
         ) {
             composable(Screens.LyricsPage.route) {
-                LyricsPage(
+                RushPager(
                     rushViewModel = rushViewModel,
-                    imageLoader = imageLoader
-                )
-            }
-            composable(Screens.SearchPage.route) {
-                SearchPage(
-                    rushViewModel = rushViewModel,
-                    navController = navController,
-                    imageLoader = imageLoader
-                )
-            }
-            composable(Screens.SavedPage.route) {
-                SavedPage(
-                    rushViewModel = rushViewModel,
-                    navController = navController,
-                    imageLoader = imageLoader
+                    imageLoader = imageLoader,
+                    pagerState = pagerState,
+                    onSwipe = { page ->
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(page)
+                        }
+                    }
                 )
             }
             composable(Screens.SettingsPage.route) {
@@ -76,6 +86,37 @@ fun RushApp(
                     rushViewModel = rushViewModel,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun RushPager(
+    rushViewModel: RushViewModel,
+    imageLoader: ImageLoader,
+    pagerState: PagerState,
+    onSwipe: (Int) -> Unit
+) {
+    HorizontalPager(
+        state = pagerState,
+    ) { page ->
+        when (page) {
+            0 -> LyricsPage(
+                rushViewModel,
+                imageLoader
+            )
+
+            1 -> SearchPage(
+                rushViewModel,
+                imageLoader,
+                onClick = { onSwipe(0) }
+            )
+
+            2 -> SavedPage(
+                rushViewModel,
+                imageLoader,
+                onClick = { onSwipe(0) }
+            )
         }
     }
 }
@@ -112,7 +153,7 @@ fun TopBar(navController: NavController) {
             IconButton(
                 onClick = {
                     if (currentDestination?.route != Screens.SettingsPage.route) {
-                        navController.navigate(Screens.SettingsPage.route){
+                        navController.navigate(Screens.SettingsPage.route) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -140,29 +181,24 @@ fun TopBar(navController: NavController) {
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(
+    pagerState: PagerState,
+    onChange: (Int) -> Unit
+) {
     val screens = listOf(
         Screens.LyricsPage,
         Screens.SearchPage,
         Screens.SavedPage
     )
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentRoute = pagerState.currentPage
 
     NavigationBar {
-        screens.forEach { screen ->
+        screens.forEachIndexed { index, screen ->
             NavigationBarItem(
-                selected = currentRoute == screen.route,
+                selected = currentRoute == index,
                 onClick = {
-                    if (currentRoute != Screens.SettingsPage.route) {
-                        navController.navigate(screen.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                        }
+                    if (currentRoute != index) {
+                        onChange(index)
                     }
                 },
                 icon = {
@@ -176,11 +212,6 @@ fun BottomBar(navController: NavController) {
             )
         }
     }
-}
-
-fun openLinkInBrowser(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    context.startActivity(intent)
 }
 
 sealed class Screens(
