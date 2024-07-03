@@ -4,25 +4,47 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,51 +52,135 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import com.shub39.rush.R
+import com.shub39.rush.component.SearchResultCard
 import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RushApp(
     navController: NavHostController,
     rushViewModel: RushViewModel,
     imageLoader: ImageLoader
 ) {
-    val screens = listOf("LyricsPage", "SearchPage", "SavedPage")
-    val pagerState = rememberPagerState(initialPage = 2) { screens.size }
+    val pagerState = rememberPagerState(initialPage = 1) { 2 }
+    val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    var searchSheetState by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+    val searchResults by rushViewModel.searchResults.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
 
-    Scaffold(
-        topBar = { TopBar(navController = navController) },
-        bottomBar = {
-            BottomBar(pagerState = pagerState) { page ->
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(page)
+    if (searchSheetState) {
+        ModalBottomSheet(
+            onDismissRequest = { searchSheetState = false },
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                OutlinedTextField(
+                    value = query,
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_search_24),
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        if (isFetchingLyrics) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeCap = StrokeCap.Round
+                            )
+                        }
+                    },
+                    onValueChange = {
+                        query = it
+                        if (query.isNotBlank()) {
+                            rushViewModel.searchSong(it)
+                        }
+                    },
+                    shape = MaterialTheme.shapes.large,
+                    label = { Text(stringResource(id = R.string.search)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Go
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onGo = {
+                            keyboardController?.hide()
+                        }
+                    )
+                )
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (searchResults.isEmpty() && query.isNotBlank()) {
+                        item {
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        items(searchResults, key = { it.id }) {
+                            SearchResultCard(
+                                result = it,
+                                onClick = {
+                                    searchSheetState = false
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
+                                        lazyListState.animateScrollToItem(0)
+                                        rushViewModel.changeCurrentSong(it.id)
+                                    }
+                                },
+                                imageLoader = imageLoader
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
+                        }
+                    }
                 }
             }
         }
+    }
+
+    Scaffold(
+        topBar = { TopBar(navController = navController) },
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screens.LyricsPage.route,
+            startDestination = "lyrics",
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(200)) },
             exitTransition = { fadeOut(animationSpec = tween(200)) },
             popEnterTransition = { fadeIn(animationSpec = tween(200)) },
             popExitTransition = { fadeOut(animationSpec = tween(200)) }
         ) {
-            composable(Screens.LyricsPage.route) {
+            composable("lyrics") {
                 RushPager(
                     rushViewModel = rushViewModel,
+                    lazyListState = lazyListState,
                     imageLoader = imageLoader,
                     pagerState = pagerState,
-                    onSwipe = { page ->
+                    bottomSheet = { searchSheetState = true },
+                    onPageChange = { page ->
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(page)
+                            lazyListState.animateScrollToItem(0)
                         }
                     }
                 )
             }
-            composable(Screens.SettingsPage.route) {
+            composable("settings") {
                 SettingPage(
                     rushViewModel = rushViewModel,
                 )
@@ -86,9 +192,11 @@ fun RushApp(
 @Composable
 fun RushPager(
     rushViewModel: RushViewModel,
+    lazyListState: LazyListState,
     imageLoader: ImageLoader,
     pagerState: PagerState,
-    onSwipe: (Int) -> Unit
+    bottomSheet: () -> Unit = {},
+    onPageChange: (Int) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -96,19 +204,15 @@ fun RushPager(
         when (page) {
             0 -> LyricsPage(
                 rushViewModel,
+                lazyListState,
                 imageLoader
             )
 
-            1 -> SearchPage(
+            1 -> SavedPage(
                 rushViewModel,
                 imageLoader,
-                onClick = { onSwipe(0) }
-            )
-
-            2 -> SavedPage(
-                rushViewModel,
-                imageLoader,
-                onClick = { onSwipe(0) }
+                bottomSheet = { bottomSheet() },
+                onClick = { onPageChange(0) }
             )
         }
     }
@@ -122,7 +226,7 @@ fun TopBar(navController: NavController) {
 
     TopAppBar(
         title = {
-            if (currentDestination?.route == Screens.SettingsPage.route) {
+            if (currentDestination?.route == "settings") {
                 Text(
                     text = stringResource(id = R.string.settings),
                     style = MaterialTheme.typography.headlineMedium,
@@ -138,15 +242,15 @@ fun TopBar(navController: NavController) {
         },
         actions = {
             BackHandler(
-                enabled = currentDestination?.route == Screens.SettingsPage.route
+                enabled = currentDestination?.route == "settings"
             ) {
                 navController.navigateUp()
             }
 
             IconButton(
                 onClick = {
-                    if (currentDestination?.route != Screens.SettingsPage.route) {
-                        navController.navigate(Screens.SettingsPage.route) {
+                    if (currentDestination?.route != "settings") {
+                        navController.navigate("settings") {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -155,7 +259,7 @@ fun TopBar(navController: NavController) {
                     }
                 }
             ) {
-                if (currentDestination?.route != Screens.SettingsPage.route) {
+                if (currentDestination?.route != "settings") {
                     Icon(
                         painter = painterResource(id = R.drawable.round_settings_24),
                         contentDescription = null,
@@ -171,49 +275,4 @@ fun TopBar(navController: NavController) {
             }
         },
     )
-}
-
-@Composable
-fun BottomBar(
-    pagerState: PagerState,
-    onChange: (Int) -> Unit
-) {
-    val screens = listOf(
-        Screens.LyricsPage,
-        Screens.SearchPage,
-        Screens.SavedPage
-    )
-    val currentRoute = pagerState.currentPage
-
-    NavigationBar {
-        screens.forEachIndexed { index, screen ->
-            NavigationBarItem(
-                selected = currentRoute == index,
-                onClick = {
-                    if (currentRoute != index) {
-                        onChange(index)
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = screen.imageId),
-                        contentDescription = null
-                    )
-                },
-                label = { Text(stringResource(id = screen.labelId)) },
-                alwaysShowLabel = false
-            )
-        }
-    }
-}
-
-sealed class Screens(
-    val route: String,
-    val imageId: Int,
-    val labelId: Int
-) {
-    data object LyricsPage : Screens("lyrics", R.drawable.round_lyrics_24, R.string.lyrics)
-    data object SearchPage : Screens("search", R.drawable.round_search_24, R.string.search)
-    data object SavedPage : Screens("saved", R.drawable.round_download_24, R.string.saved)
-    data object SettingsPage : Screens("settings", R.drawable.round_settings_24, R.string.settings)
 }

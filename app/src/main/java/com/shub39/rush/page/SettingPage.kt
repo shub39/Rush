@@ -57,7 +57,7 @@ fun SettingPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(32.dp)
     ) {
         Text(text = stringResource(id = R.string.theme))
 
