@@ -12,6 +12,8 @@
     <string name="genius">Genius</string>
     <string name="from_genius">From Genius</string>
     <string name="unknown_album">Unknown album</string>
+    <string name="edit">Edit Card</string>
+    <string name="width">Width</string>
     <string name="max_lines">Maximum Lines to share</string>
     <string name="theme">App Theme</string>
     <string name="share">Share</string>

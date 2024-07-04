@@ -13,12 +13,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +51,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
@@ -53,25 +62,58 @@ fun SharePage(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
+    var cardWidthType by remember { mutableStateOf("Small") }
+    var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val sortedLines = sortMapByKeys(selectedLines)
+    val cardWidth = when (cardWidthType) {
+        "Small" -> 300.dp
+        "Medium" -> 350.dp
+        else -> 400.dp
+    }
+
+    if (isEditSheetVisible) {
+        Dialog(onDismissRequest = { isEditSheetVisible = false }) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.width),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                SingleChoiceSegmentedButtonRow {
+                    listOf("Small", "Medium", "Large").forEachIndexed { index, width ->
+                        SegmentedButton(
+                            label = { Text(text = width) },
+                            selected = cardWidthType == width,
+                            onClick = {
+                                cardWidthType = width
+                            },
+                            shape = when (index) {
+                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                                2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                                else -> RoundedCornerShape(0.dp)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     Dialog(
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false
-        ),
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = { onDismiss() },
         content = {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Card(
                     modifier = Modifier
-                        .width(400.dp)
+                        .width(cardWidth)
                         .drawWithContent {
                             cardGraphicsLayer.record {
                                 this@drawWithContent.drawContent()
@@ -131,6 +173,13 @@ fun SharePage(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.padding(4.dp))
+                Button(
+                    onClick = { isEditSheetVisible = true },
+                ) {
+                    Text(text = stringResource(id = R.string.edit))
+                }
+
                 Spacer(modifier = Modifier.padding(4.dp))
                 Button(
                     onClick = {
