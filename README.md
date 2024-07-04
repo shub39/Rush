@@ -29,13 +29,15 @@ This app uses Genius Api to search for available songs and scrape lyrics from th
 
 ## Screenshots 🌟
 
-| ![Image 1](https://github.com/shub39/Rush/assets/143277026/502234cd-9c45-4a86-8119-88b4924d86f9) | ![Song_select](https://github.com/shub39/Rush/assets/143277026/2d93db59-cf10-4a40-bbae-7a89bf0890e6) |
+| ![Song Search](https://github.com/shub39/Rush/assets/143277026/66fdfebf-b2d0-4d36-8b07-3e5b2d584db2) | ![photo_2024-07-04_12-18-25](https://github.com/shub39/Rush/assets/143277026/24838d5e-1ee6-4a34-8131-0deb5ab5a035) |
 |:------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------:|
-| ![Share_card](https://github.com/shub39/Rush/assets/143277026/3e96319a-0c10-4e54-9c98-a273c64b36cf) | ![Image 3](https://github.com/shub39/Rush/assets/143277026/6b0ecffb-8f47-4f89-9734-632cb5b1fca5) |
+| ![photo_2024-07-04_12-18-46](https://github.com/shub39/Rush/assets/143277026/5ce5778b-09c9-4341-821a-bddd2bc7900f) | ![Song Share](https://github.com/shub39/Rush/assets/143277026/cb719cf8-daea-4897-8bd4-6a2d03fb96d7) |
 
 ## References and Inspiration 💡
 - [Fastlyrics](https://github.com/TecCheck/FastLyrics)
+  
 - [SongSync](https://github.com/Lambada10/SongSync)
+  
 - Spotify Lyrics UI
 
 ## Tech Stack ⚒️
