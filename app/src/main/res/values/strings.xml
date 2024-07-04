@@ -11,7 +11,12 @@
     <string name="delete_all">Delete all songs</string>
     <string name="genius">Genius</string>
     <string name="from_genius">From Genius</string>
+    <string name="unknown_album">Unknown album</string>
     <string name="max_lines">Maximum Lines to share</string>
     <string name="theme">App Theme</string>
     <string name="share">Share</string>
+    <string name="sort_title_asc">Title (A-Z)</string>
+    <string name="sort_title_desc">Title (Z-A)</string>
+    <string name="sort_artists_asc">Grouped by Artists</string>
+    <string name="sort_album_asc">Grouped by Album</string>
 </resources>

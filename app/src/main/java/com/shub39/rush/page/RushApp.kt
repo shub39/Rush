@@ -54,7 +54,6 @@ import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.SearchResultCard
 import com.shub39.rush.viewmodel.RushViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +66,7 @@ fun RushApp(
     val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val song by rushViewModel.currentSong.collectAsState()
     var searchSheetState by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
@@ -105,7 +105,7 @@ fun RushApp(
                             rushViewModel.searchSong(it)
                         }
                     },
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(stringResource(id = R.string.search)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -135,10 +135,17 @@ fun RushApp(
                                 result = it,
                                 onClick = {
                                     searchSheetState = false
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(0)
-                                        lazyListState.animateScrollToItem(0)
+                                    if (song == null) {
                                         rushViewModel.changeCurrentSong(it.id)
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(0)
+                                        }
+                                    } else {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(0)
+                                            lazyListState.animateScrollToItem(0)
+                                            rushViewModel.changeCurrentSong(it.id)
+                                        }
                                     }
                                 },
                                 imageLoader = imageLoader
@@ -154,7 +161,7 @@ fun RushApp(
     }
 
     Scaffold(
-        topBar = { TopBar(navController = navController) },
+        topBar = { TopBar(navController = navController, pagerState = pagerState) },
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -220,7 +227,10 @@ fun RushPager(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(
+    navController: NavController,
+    pagerState: PagerState
+) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
 
@@ -229,6 +239,12 @@ fun TopBar(navController: NavController) {
             if (currentDestination?.route == "settings") {
                 Text(
                     text = stringResource(id = R.string.settings),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } else if (pagerState.currentPage == 1) {
+                Text(
+                    text = stringResource(id = R.string.saved),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )

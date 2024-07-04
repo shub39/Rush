@@ -1,5 +1,6 @@
 package com.shub39.rush.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,14 +33,16 @@ fun SongCard(
     onDelete: () -> Unit,
     imageLoader: ImageLoader
 ) {
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-        onClick = { onClick() }
+            .padding(start = 16.dp, end = 16.dp)
+            .clickable { onClick() }
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {

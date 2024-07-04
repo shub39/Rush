@@ -180,7 +180,10 @@ fun LyricsPage(
                             CardDefaults.elevatedCardColors()
                         }
 
-                        Row (modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
                             Card(
                                 modifier = Modifier
                                     .padding(3.dp),

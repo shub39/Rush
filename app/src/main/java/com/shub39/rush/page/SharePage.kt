@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -64,13 +65,13 @@ fun SharePage(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(32.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Card(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .width(400.dp)
                         .drawWithContent {
                             cardGraphicsLayer.record {
                                 this@drawWithContent.drawContent()

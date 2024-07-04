@@ -16,13 +16,22 @@ object SettingsDataStore {
     private val Context.dataStore by preferencesDataStore( name = DATA_STORE_FILE_NAME )
     private val MAX_LINES = intPreferencesKey("max_lines")
     private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
+    private val SORT_ORDER = stringPreferencesKey("sort_order")
+
+    fun getSortOrderFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[SORT_ORDER] ?: "title_asc"
+        }
 
     fun getToggleThemeFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[TOGGLE_THEME] ?: "Gruvbox"
+            preferences[TOGGLE_THEME] ?: "Yellow"
         }
 
     fun getMaxLinesFlow(context: Context): Flow<Int> = context.dataStore.data
@@ -32,6 +41,12 @@ object SettingsDataStore {
         .map { preferences ->
             preferences[MAX_LINES] ?: 6
         }
+
+    suspend fun updateSortOrder(context: Context, newSortOrder: String) {
+        context.dataStore.edit { settings ->
+            settings[SORT_ORDER] = newSortOrder
+        }
+    }
 
     suspend fun updateMaxLines(context: Context, newMaxLines: Int) {
         context.dataStore.edit { settings ->
