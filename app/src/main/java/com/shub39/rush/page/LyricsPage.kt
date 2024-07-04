@@ -1,13 +1,17 @@
 package com.shub39.rush.page
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,10 +42,12 @@ import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun LyricsPage(
     rushViewModel: RushViewModel,
+    lazyListState: LazyListState,
     imageLoader: ImageLoader
 ) {
     val song by rushViewModel.currentSong.collectAsState()
@@ -49,6 +56,7 @@ fun LyricsPage(
     var isSharePageVisible by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val coroutineScope = rememberCoroutineScope()
 
     if (isSharePageVisible) {
         SharePage(
@@ -85,6 +93,7 @@ fun LyricsPage(
         }
     } else {
         val nonNullSong = song!!
+
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -117,7 +126,7 @@ fun LyricsPage(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    song!!.album?.let {
+                    nonNullSong.album?.let {
                         Text(
                             text = it,
                             style = MaterialTheme.typography.bodyMedium,
@@ -156,10 +165,13 @@ fun LyricsPage(
                     }
                 }
             }
+            val lyrics = breakLyrics(nonNullSong.lyrics).entries.toList()
+
             LazyColumn(
                 modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
+                state = lazyListState
             ) {
-                items(breakLyrics(nonNullSong.lyrics).entries.toList(), key = { it.key }) {
+                items(lyrics, key = { it.key }) {
                     if (it.value.isNotBlank()) {
                         val isSelected = selectedLines.contains(it.key)
                         val color = if (!isSelected) {
@@ -168,21 +180,53 @@ fun LyricsPage(
                             CardDefaults.elevatedCardColors()
                         }
 
-                        Card(
+                        Row(
                             modifier = Modifier
-                                .padding(3.dp)
-                                .fillParentMaxWidth(),
-                            onClick = {
-                                selectedLines = updateSelectedLines(selectedLines, it.key, it.value, maxLinesFlow)
-                                isSelected != isSelected
-                            },
-                            colors = color
+                                .fillMaxWidth()
                         ) {
-                            Text(
-                                text = it.value,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(6.dp)
+                            Card(
+                                modifier = Modifier
+                                    .padding(3.dp),
+                                onClick = {
+                                    selectedLines = updateSelectedLines(
+                                        selectedLines,
+                                        it.key,
+                                        it.value,
+                                        maxLinesFlow
+                                    )
+                                    isSelected != isSelected
+                                },
+                                shape = MaterialTheme.shapes.small,
+                                colors = color
+                            ) {
+                                Text(
+                                    text = it.value,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(6.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    lazyListState.animateScrollToItem(0)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_arrow_upward_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
                             )
                         }
                     }
