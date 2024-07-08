@@ -11,7 +11,8 @@
 
 <div align="center"> 
 
-### Download from [Releases](https://github.com/shub39/Rush/releases)
+<a href="https://apt.izzysoft.de/packages/com.shub39.rush/"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+### or Download from [Releases](https://github.com/shub39/Rush/releases)
 
 </div>
 
