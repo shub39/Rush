@@ -141,7 +141,7 @@ fun SettingPage(
                             SettingsDataStore.updateMaxLines(context, maxLines)
                         }
                     },
-                    enabled = maxLines < 6 && coroutineScope.isActive
+                    enabled = maxLines < 8 && coroutineScope.isActive
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),

@@ -13,7 +13,6 @@ import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.page.RushApp
 import com.shub39.rush.ui.theme.RushTheme
 import com.shub39.rush.viewmodel.RushViewModel
-import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -31,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -70,13 +73,19 @@ fun RushApp(
     var searchSheetState by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
 
     if (searchSheetState) {
         ModalBottomSheet(
             onDismissRequest = { searchSheetState = false },
         ) {
+            val keyboardController = LocalSoftwareKeyboardController.current
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+                keyboardController?.show()
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -109,7 +118,8 @@ fun RushApp(
                     label = { Text(stringResource(id = R.string.search)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Go
                     ),
