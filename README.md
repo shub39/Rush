@@ -5,12 +5,15 @@
 
 ![](https://img.shields.io/github/last-commit/shub39/Rush?&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/repo-size/shub39/Rush?color=CAC992&label=SIZE&logo=googledrive&style=for-the-badge&logoColor=D9E0EE&labelColor=292324)
-[![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&style=for-the-badge)](https://github.com/shub39/Rush/releases)
+[![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)](https://github.com/shub39/Rush/releases)
+![](https://img.shields.io/f-droid/v/com.shub39.rush?logo=F-Droid&style=for-the-badge&color=CAC992&logoColor=D9E0EE&labelColor=292324)
+![](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.shub39.rush&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 
 </div>
 
 <div align="center"> 
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush)
 <a href="https://apt.izzysoft.de/packages/com.shub39.rush/"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
 ### or Download from [Releases](https://github.com/shub39/Rush/releases)
 
