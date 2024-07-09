@@ -32,19 +32,19 @@ import com.shub39.rush.database.Song
 fun GroupedCard(
     map: Map.Entry<String?, List<Song>>,
     imageLoader: ImageLoader,
-    onClick: (Song) -> Unit
+    isExpanded: Boolean = false,
+    onClick: (Song) -> Unit,
+    onCardClick: () -> Unit
 ) {
-    var isContentVisible by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 4.dp, top = 4.dp)
+            .clickable { onCardClick() }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { isContentVisible = !isContentVisible }
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -72,7 +72,7 @@ fun GroupedCard(
             }
         }
 
-        AnimatedVisibility(visible = isContentVisible) {
+        AnimatedVisibility(visible = isExpanded) {
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
