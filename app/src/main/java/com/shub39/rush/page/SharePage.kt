@@ -16,12 +16,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,9 +33,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +46,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
 import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.database.Song
@@ -63,13 +71,54 @@ fun SharePage(
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     var cardWidthType by remember { mutableStateOf("Small") }
+    var cardColorType by remember { mutableStateOf("Vibrant") }
     var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val sortedLines = sortMapByKeys(selectedLines)
+    var cardBackgroundVibrant by remember { mutableStateOf(Color.Gray) }
+    var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
+    var cardContentVibrant by remember { mutableStateOf(Color.White) }
+    var cardContentMuted by remember { mutableStateOf(Color.White) }
+
+    LaunchedEffect(song) {
+        val request = ImageRequest.Builder(context)
+            .data(song.artUrl)
+            .allowHardware(false)
+            .build()
+
+        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
+        result.let { drawable ->
+            if (drawable != null) {
+                Palette.from(drawable.toBitmap()).generate { palette ->
+                    palette?.let {
+                        cardBackgroundVibrant = Color(it.vibrantSwatch?.rgb ?: Color.DarkGray.toArgb())
+                        cardContentVibrant = Color(it.vibrantSwatch?.bodyTextColor ?: Color.White.toArgb())
+                        cardBackgroundMuted = Color(it.mutedSwatch?.rgb ?: Color.DarkGray.toArgb())
+                        cardContentMuted = Color(it.mutedSwatch?.titleTextColor ?: Color.White.toArgb())
+                    }
+                }
+            }
+        }
+    }
+
+
     val cardWidth = when (cardWidthType) {
         "Small" -> 300.dp
         "Medium" -> 350.dp
         else -> 400.dp
+    }
+    val cardColor = when (cardColorType) {
+        "Muted" -> CardDefaults.cardColors(
+            containerColor = cardBackgroundMuted,
+            contentColor = cardContentMuted
+        )
+
+        "Vibrant" -> CardDefaults.cardColors(
+            containerColor = cardBackgroundVibrant,
+            contentColor = cardContentVibrant
+        )
+
+        else -> CardDefaults.cardColors()
     }
 
     if (isEditSheetVisible) {
@@ -97,6 +146,26 @@ fun SharePage(
                         )
                     }
                 }
+                Text(
+                    text = stringResource(id = R.string.colors),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                SingleChoiceSegmentedButtonRow {
+                    listOf("Default", "Muted", "Vibrant").forEachIndexed { index, color ->
+                        SegmentedButton(
+                            label = { Text(text = color) },
+                            selected = cardColorType == color,
+                            onClick = {
+                                cardColorType = color
+                            },
+                            shape = when (index) {
+                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                                1 -> RoundedCornerShape(0.dp)
+                                else -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -119,7 +188,8 @@ fun SharePage(
                                 this@drawWithContent.drawContent()
                             }
                             drawLayer(cardGraphicsLayer)
-                        }
+                        },
+                    colors = cardColor
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
@@ -198,7 +268,7 @@ fun SharePage(
 }
 
 
-fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
+private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     val sortedEntries = map.entries.toList().sortedBy { it.key }
     val sortedMap = LinkedHashMap<Int, String>()
     for (entry in sortedEntries) {
@@ -207,7 +277,7 @@ fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     return sortedMap
 }
 
-fun shareImage(context: Context, bitmap: Bitmap) {
+private fun shareImage(context: Context, bitmap: Bitmap) {
     val cachePath = File(context.cacheDir, "images")
     cachePath.mkdirs()
     val file = File(cachePath, "shared_image.png")
