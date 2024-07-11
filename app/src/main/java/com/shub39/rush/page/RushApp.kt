@@ -1,11 +1,13 @@
 package com.shub39.rush.page
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -92,27 +94,49 @@ fun RushApp(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
+
                 OutlinedTextField(
                     value = query,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.round_search_24),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.padding(2.dp)
                         )
                     },
                     trailingIcon = {
-                        if (isFetchingLyrics) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                strokeCap = StrokeCap.Round
-                            )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(2.dp)
+                        ) {
+                            AnimatedVisibility(
+                                visible = isFetchingLyrics,
+                                enter = fadeIn(animationSpec = tween(200)),
+                                exit = fadeOut(animationSpec = tween(200))
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    strokeCap = StrokeCap.Round
+                                )
+                            }
+                            AnimatedVisibility(
+                                visible = query.isNotBlank(),
+                                enter = fadeIn(animationSpec = tween(200)),
+                                exit = fadeOut(animationSpec = tween(200))
+                            ) {
+                                IconButton(
+                                    onClick = { query = "" }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_delete_forever_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     },
                     onValueChange = {
                         query = it
-                        if (query.isNotBlank()) {
-                            rushViewModel.searchSong(it)
-                        }
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(stringResource(id = R.string.search)) },
@@ -121,11 +145,12 @@ fun RushApp(
                         .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Go
+                        imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
-                        onGo = {
+                        onDone = {
                             keyboardController?.hide()
+                            rushViewModel.searchSong(query)
                         }
                     )
                 )
@@ -134,36 +159,29 @@ fun RushApp(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (searchResults.isEmpty() && query.isNotBlank()) {
-                        item {
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            CircularProgressIndicator()
-                        }
-                    } else {
-                        items(searchResults, key = { it.id }) {
-                            SearchResultCard(
-                                result = it,
-                                onClick = {
-                                    searchSheetState = false
-                                    if (song == null) {
-                                        rushViewModel.changeCurrentSong(it.id)
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(0)
-                                        }
-                                    } else {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(0)
-                                            lazyListState.animateScrollToItem(0)
-                                            rushViewModel.changeCurrentSong(it.id)
-                                        }
+                    items(searchResults, key = { it.id }) {
+                        SearchResultCard(
+                            result = it,
+                            onClick = {
+                                searchSheetState = false
+                                if (song == null) {
+                                    rushViewModel.changeCurrentSong(it.id)
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
                                     }
-                                },
-                                imageLoader = imageLoader
-                            )
-                        }
-                        item {
-                            Spacer(modifier = Modifier.padding(60.dp))
-                        }
+                                } else {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
+                                        lazyListState.animateScrollToItem(0)
+                                        rushViewModel.changeCurrentSong(it.id)
+                                    }
+                                }
+                            },
+                            imageLoader = imageLoader
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }

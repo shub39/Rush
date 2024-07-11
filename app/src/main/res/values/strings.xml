@@ -15,6 +15,9 @@
     <string name="edit">Edit Card</string>
     <string name="width">Width</string>
     <string name="colors">Colors</string>
+    <string name="current_song">Current Song</string>
+    <string name="card_style">Card Style</string>
+    <string name="rounded_corners">Rounded Corners</string>
     <string name="max_lines">Maximum Lines to share</string>
     <string name="theme">App Theme</string>
     <string name="share">Share</string>

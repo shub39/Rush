@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +72,7 @@ fun SharePage(
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     var cardWidthType by remember { mutableStateOf("Small") }
+    var cardCornersType by remember { mutableStateOf("Rounded") }
     var cardColorType by remember { mutableStateOf("Vibrant") }
     var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -91,17 +93,24 @@ fun SharePage(
             if (drawable != null) {
                 Palette.from(drawable.toBitmap()).generate { palette ->
                     palette?.let {
-                        cardBackgroundVibrant = Color(it.vibrantSwatch?.rgb ?: Color.DarkGray.toArgb())
-                        cardContentVibrant = Color(it.vibrantSwatch?.bodyTextColor ?: Color.White.toArgb())
-                        cardBackgroundMuted = Color(it.mutedSwatch?.rgb ?: Color.DarkGray.toArgb())
-                        cardContentMuted = Color(it.mutedSwatch?.titleTextColor ?: Color.White.toArgb())
+                        cardBackgroundVibrant =
+                            Color(it.vibrantSwatch?.rgb ?: Color.DarkGray.toArgb())
+                        cardContentVibrant =
+                            Color(it.vibrantSwatch?.bodyTextColor ?: Color.White.toArgb())
+                        cardBackgroundMuted =
+                            Color(it.mutedSwatch?.rgb ?: Color.DarkGray.toArgb())
+                        cardContentMuted =
+                            Color(it.mutedSwatch?.titleTextColor ?: Color.White.toArgb())
                     }
                 }
             }
         }
     }
 
-
+    val cardCorners = when (cardCornersType) {
+        "Rounded" -> RoundedCornerShape(16.dp)
+        else -> RoundedCornerShape(0.dp)
+    }
     val cardWidth = when (cardWidthType) {
         "Small" -> 300.dp
         "Medium" -> 350.dp
@@ -146,6 +155,8 @@ fun SharePage(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.padding(16.dp))
                 Text(
                     text = stringResource(id = R.string.colors),
                     style = MaterialTheme.typography.titleMedium,
@@ -165,6 +176,26 @@ fun SharePage(
                             }
                         )
                     }
+                }
+
+                Spacer(modifier = Modifier.padding(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(text = stringResource(id = R.string.rounded_corners))
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Switch(
+                        checked = cardCornersType == "Rounded",
+                        onCheckedChange = {
+                            cardCornersType = if (cardCornersType == "Rounded") {
+                                "Rectangle"
+                            } else {
+                                "Rounded"
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -189,7 +220,8 @@ fun SharePage(
                             }
                             drawLayer(cardGraphicsLayer)
                         },
-                    colors = cardColor
+                    colors = cardColor,
+                    shape = cardCorners
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),

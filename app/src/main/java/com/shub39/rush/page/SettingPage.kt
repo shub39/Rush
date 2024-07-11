@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,13 +13,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
@@ -50,140 +54,194 @@ fun SettingPage(
     val coroutineScope = rememberCoroutineScope()
     var deleteButtonStatus by remember { mutableStateOf(rushViewModel.songs.value.isNotEmpty()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val appTheme by SettingsDataStore.getToggleThemeFlow(context).collectAsState(initial = "Gruvbox")
+    val appTheme by SettingsDataStore.getToggleThemeFlow(context)
+        .collectAsState(initial = "Gruvbox")
     var theme = appTheme
     var maxLines = maxLinesFlow
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(16.dp)
     ) {
-        Text(text = stringResource(id = R.string.theme))
-
-        Spacer(modifier = Modifier.padding(4.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-           SingleChoiceSegmentedButtonRow{
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                   listOf("Material", "Yellow", "Lime").forEachIndexed { index, color ->
-                       SegmentedButton(
-                           label = { Text(text = color) },
-                           selected = theme == color,
-                           onClick = {
-                               theme = color
-                               coroutineScope.launch {
-                                   SettingsDataStore.updateToggleTheme(context, theme)
-                               }
-                           },
-                           shape = when (index) {
-                               0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                               2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                               else -> RoundedCornerShape(0.dp)
-                           }
-                       )
-                   }
-               } else {
-                   listOf("Yellow", "Lime").forEachIndexed { index, color ->
-                       SegmentedButton(
-                           label = { Text(text = color) },
-                           selected = theme == color,
-                           onClick = {
-                               theme = color
-                               coroutineScope.launch {
-                                   SettingsDataStore.updateToggleTheme(context, theme)
-                               }
-                           },
-                           shape = when (index) {
-                               0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                               else -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                           }
-                       )
-                   }
-               }
-           }
-        }
-
-        Spacer(modifier = Modifier.padding(4.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = stringResource(id = R.string.max_lines))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomEnd = 8.dp,
+                    bottomStart = 8.dp
+                )
             ) {
-                IconButton(
-                    onClick = {
-                        maxLines--
-                        coroutineScope.launch {
-                            SettingsDataStore.updateMaxLines(context, maxLines)
-                        }
-                    },
-                    enabled = maxLines > 2 && coroutineScope.isActive
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
-                        contentDescription = null
-                    )
-                }
-                Text(text = maxLinesFlow.toString())
-                IconButton(
-                    onClick = {
-                        maxLines++
-                        coroutineScope.launch {
-                            SettingsDataStore.updateMaxLines(context, maxLines)
+                    Text(text = stringResource(id = R.string.theme))
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    SingleChoiceSegmentedButtonRow(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            listOf("Material", "Yellow", "Lime").forEachIndexed { index, color ->
+                                SegmentedButton(
+                                    label = { Text(text = color) },
+                                    selected = theme == color,
+                                    onClick = {
+                                        theme = color
+                                        coroutineScope.launch {
+                                            SettingsDataStore.updateToggleTheme(context, theme)
+                                        }
+                                    },
+                                    shape = when (index) {
+                                        0 -> RoundedCornerShape(
+                                            topStart = 16.dp,
+                                            bottomStart = 16.dp
+                                        )
+
+                                        2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                                        else -> RoundedCornerShape(0.dp)
+                                    }
+                                )
+                            }
+                        } else {
+                            listOf("Yellow", "Lime").forEachIndexed { index, color ->
+                                SegmentedButton(
+                                    label = { Text(text = color) },
+                                    selected = theme == color,
+                                    onClick = {
+                                        theme = color
+                                        coroutineScope.launch {
+                                            SettingsDataStore.updateToggleTheme(context, theme)
+                                        }
+                                    },
+                                    shape = when (index) {
+                                        0 -> RoundedCornerShape(
+                                            topStart = 16.dp,
+                                            bottomStart = 16.dp
+                                        )
+
+                                        else -> RoundedCornerShape(
+                                            topEnd = 16.dp,
+                                            bottomEnd = 16.dp
+                                        )
+                                    }
+                                )
+                            }
                         }
-                    },
-                    enabled = maxLines < 8 && coroutineScope.isActive
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                        contentDescription = null
-                    )
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
 
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                rushViewModel.songs.value.forEach {
-                    rushViewModel.deleteSong(it)
-                }
-                deleteButtonStatus = false
-            },
-            shape = MaterialTheme.shapes.large,
-            enabled = deleteButtonStatus
-        ) {
-            Text(text = stringResource(id = R.string.delete_all))
-        }
-
-        Spacer(modifier = Modifier.padding(4.dp))
-
-        OutlinedCard(
-            modifier = Modifier
-                .fillMaxWidth(),
-            onClick = {
-                openLinkInBrowser(context, "https://github.com/shub39/Rush")
-            },
-            shape = MaterialTheme.shapes.large
-        ) {
-            Text(
-                text = "Made by shub39",
-                textAlign = TextAlign.Center,
+        item {
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-            )
+                    .padding(bottom = 8.dp),
+                shape = RoundedCornerShape(
+                    topStart = 8.dp,
+                    topEnd = 8.dp,
+                    bottomEnd = 16.dp,
+                    bottomStart = 16.dp
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = stringResource(id = R.string.max_lines))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                maxLines--
+                                coroutineScope.launch {
+                                    SettingsDataStore.updateMaxLines(context, maxLines)
+                                }
+                            },
+                            enabled = maxLines > 2 && coroutineScope.isActive
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
+                                contentDescription = null
+                            )
+                        }
+                        Text(text = maxLinesFlow.toString())
+                        IconButton(
+                            onClick = {
+                                maxLines++
+                                coroutineScope.launch {
+                                    SettingsDataStore.updateMaxLines(context, maxLines)
+                                }
+                            },
+                            enabled = maxLines < 8 && coroutineScope.isActive
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+
+        item {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    rushViewModel.songs.value.forEach {
+                        rushViewModel.deleteSong(it)
+                    }
+                    deleteButtonStatus = false
+                },
+                shape = MaterialTheme.shapes.large,
+                enabled = deleteButtonStatus
+            ) {
+                Text(text = stringResource(id = R.string.delete_all))
+            }
+        }
+
+
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp)
+            ) {
+                Text(
+                    text = "Made by shub39",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+                Row(
+                    modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.github_mark),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                openLinkInBrowser(context, "https://github.com/shub39/Rush")
+                            }
+                    )
+                }
+            }
         }
     }
 

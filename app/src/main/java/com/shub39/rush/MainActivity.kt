@@ -24,11 +24,12 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            val theme by SettingsDataStore.getToggleThemeFlow(this).collectAsState(initial = "Gruvbox")
+            val theme by SettingsDataStore.getToggleThemeFlow(this)
+                .collectAsState(initial = "Gruvbox")
 
             RushTheme(
                 theme = theme
-            ){
+            ) {
                 val navController = rememberNavController()
                 RushApp(
                     navController = navController,
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            splashScreen.setKeepOnScreenCondition{
+            splashScreen.setKeepOnScreenCondition {
                 theme == "Gruvbox"
             }
 

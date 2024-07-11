@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -144,13 +146,22 @@ fun SavedPage(
             onClick = { bottomSheet() },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 32.dp, bottom = 16.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.round_search_24),
-                contentDescription = null
-            )
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_search_24),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+                Text(text = stringResource(id = R.string.search))
+            }
         }
+
     }
 }
 
