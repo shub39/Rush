@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RushViewModel(application: Application) : ViewModel() {
+class RushViewModel(
+    application: Application,
+) : ViewModel() {
 
     private val database = SongDatabase.getDatabase(application)
     private val songDao = database.songDao()
@@ -51,6 +53,7 @@ class RushViewModel(application: Application) : ViewModel() {
     }
 
     fun searchSong(query: String) {
+        if (query.isEmpty()) return
         viewModelScope.launch {
             _isSearchingLyrics.value = true
             try {

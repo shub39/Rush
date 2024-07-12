@@ -96,12 +96,8 @@ object SongProvider {
                 val album = getAlbum(jsonSong)
                 val artUrl = jsonSong.get("header_image_thumbnail_url")?.asString ?: ""
 
-                val lyricsJsonElement = jsonSong.getAsJsonObject("lyrics")?.getAsJsonObject("dom")
-                val lyrics = if (lyricsJsonElement != null) {
-                    parseLyricsJsonTag(lyricsJsonElement)
-                } else {
-                    scrapeLyrics(sourceUrl)
-                }
+                val lyrics = scrapeLyrics(sourceUrl)
+
 
                 Result.success(
                     Song(
@@ -130,26 +126,6 @@ object SongProvider {
         val albumJson = jsonObject["album"] ?: return null
         if (albumJson.isJsonNull) return null
         return albumJson.asJsonObject.get("name").asString
-    }
-
-    private fun parseLyricsJsonTag(lyricsJsonTag: JsonElement): String {
-        if (lyricsJsonTag.isJsonPrimitive) return lyricsJsonTag.asString
-
-        val jsonObject = lyricsJsonTag.asJsonObject
-        if (jsonObject.has("tag") && jsonObject.get("tag").asString == "br") {
-            return "\n"
-        }
-
-        if (jsonObject.has("children")) {
-            var text = ""
-            val jsonChildren = jsonObject.getAsJsonArray("children")
-            for (jsonChild in jsonChildren) {
-                text += parseLyricsJsonTag(jsonChild)
-            }
-            return text
-        }
-
-        return ""
     }
 
     interface ApiService {

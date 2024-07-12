@@ -5,6 +5,10 @@
     <string name="saved">Saved</string>
     <string name="settings">Settings</string>
     <string name="empty">Nothing yet…</string>
+    <string name="save">Save changes</string>
+    <string name="search_next">Search Next</string>
+    <string name="back_to_top">Back to Top</string>
+    <string name="toast">Notification Access is required to auto-search lyrics</string>
     <string name="lyrics_error">Could not fetch lyrics</string>
     <string name="suggestion">Maybe search for something?</string>
     <string name="downloaded">Saved lyrics</string>

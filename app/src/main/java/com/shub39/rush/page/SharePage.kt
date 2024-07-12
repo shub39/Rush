@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -131,72 +132,108 @@ fun SharePage(
     }
 
     if (isEditSheetVisible) {
-        Dialog(onDismissRequest = { isEditSheetVisible = false }) {
+        Dialog(
+            onDismissRequest = { isEditSheetVisible = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false
+            )
+        ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = stringResource(id = R.string.width),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                SingleChoiceSegmentedButtonRow {
-                    listOf("Small", "Medium", "Large").forEachIndexed { index, width ->
-                        SegmentedButton(
-                            label = { Text(text = width) },
-                            selected = cardWidthType == width,
-                            onClick = {
-                                cardWidthType = width
-                            },
-                            shape = when (index) {
-                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                                2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                                else -> RoundedCornerShape(0.dp)
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(16.dp))
-                Text(
-                    text = stringResource(id = R.string.colors),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                SingleChoiceSegmentedButtonRow {
-                    listOf("Default", "Muted", "Vibrant").forEachIndexed { index, color ->
-                        SegmentedButton(
-                            label = { Text(text = color) },
-                            selected = cardColorType == color,
-                            onClick = {
-                                cardColorType = color
-                            },
-                            shape = when (index) {
-                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                                1 -> RoundedCornerShape(0.dp)
-                                else -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                            }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                Card(
+                    modifier = Modifier.width(380.dp),
+                    shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text(text = stringResource(id = R.string.rounded_corners))
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Switch(
-                        checked = cardCornersType == "Rounded",
-                        onCheckedChange = {
-                            cardCornersType = if (cardCornersType == "Rounded") {
-                                "Rectangle"
-                            } else {
-                                "Rounded"
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.width),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        SingleChoiceSegmentedButtonRow {
+                            listOf("Small", "Medium", "Large").forEachIndexed { index, width ->
+                                SegmentedButton(
+                                    label = { Text(text = width) },
+                                    selected = cardWidthType == width,
+                                    onClick = {
+                                        cardWidthType = width
+                                    },
+                                    shape = when (index) {
+                                        0 -> RoundedCornerShape(
+                                            topStart = 16.dp,
+                                            bottomStart = 16.dp
+                                        )
+
+                                        2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                                        else -> RoundedCornerShape(0.dp)
+                                    }
+                                )
                             }
                         }
-                    )
+
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.colors),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        SingleChoiceSegmentedButtonRow {
+                            listOf("Default", "Muted", "Vibrant").forEachIndexed { index, color ->
+                                SegmentedButton(
+                                    label = { Text(text = color) },
+                                    selected = cardColorType == color,
+                                    onClick = {
+                                        cardColorType = color
+                                    },
+                                    shape = when (index) {
+                                        0 -> RoundedCornerShape(
+                                            topStart = 16.dp,
+                                            bottomStart = 16.dp
+                                        )
+
+                                        1 -> RoundedCornerShape(0.dp)
+                                        else -> RoundedCornerShape(
+                                            topEnd = 16.dp,
+                                            bottomEnd = 16.dp
+                                        )
+                                    }
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Text(text = stringResource(id = R.string.rounded_corners))
+                            Spacer(modifier = Modifier.padding(8.dp))
+                            Switch(
+                                checked = cardCornersType == "Rounded",
+                                onCheckedChange = {
+                                    cardCornersType = if (cardCornersType == "Rounded") {
+                                        "Rectangle"
+                                    } else {
+                                        "Rounded"
+                                    }
+                                }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Button(onClick = { isEditSheetVisible = false }) {
+                            Text(text = stringResource(id = R.string.save))
+                        }
+
+                        Spacer(modifier = Modifier.padding(8.dp))
+                    }
                 }
+                Spacer(modifier = Modifier.padding(30.dp))
             }
         }
     }
@@ -294,6 +331,7 @@ fun SharePage(
                 ) {
                     Text(text = stringResource(id = R.string.share))
                 }
+
             }
         }
     )

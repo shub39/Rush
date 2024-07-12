@@ -14,8 +14,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.9.0"
+        versionCode = 5
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

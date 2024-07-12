@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,7 +50,8 @@ import kotlinx.coroutines.launch
 fun LyricsPage(
     rushViewModel: RushViewModel,
     lazyListState: LazyListState,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    bottomSheet: () -> Unit,
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -214,20 +217,30 @@ fun LyricsPage(
                     Spacer(modifier = Modifier.padding(20.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        IconButton(
+                        OutlinedButton(
                             onClick = {
                                 coroutineScope.launch {
-                                    lazyListState.animateScrollToItem(0)
+                                    lazyListState.scrollToItem(0)
                                 }
                             }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_arrow_upward_24),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp)
                             )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Text(text = stringResource(id = R.string.back_to_top))
+                        }
+
+                        OutlinedButton(onClick = { bottomSheet() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_search_24),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Text(text = stringResource(id = R.string.search_next))
                         }
                     }
                 }

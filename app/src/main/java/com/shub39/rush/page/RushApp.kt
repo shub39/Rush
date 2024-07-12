@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,6 +59,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.SearchResultCard
+import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
@@ -68,6 +70,7 @@ fun RushApp(
     rushViewModel: RushViewModel,
     imageLoader: ImageLoader
 ) {
+    val context = LocalContext.current
     val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -76,6 +79,7 @@ fun RushApp(
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
+    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context).collectAsState(initial = "")
 
     if (searchSheetState) {
         ModalBottomSheet(
@@ -84,8 +88,13 @@ fun RushApp(
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-                keyboardController?.show()
+                query = currentPlayingSong
+                if (query.isEmpty()) {
+                    focusRequester.requestFocus()
+                    keyboardController?.show()
+                } else {
+                    rushViewModel.searchSong(query)
+                }
             }
 
             Column(
@@ -125,7 +134,13 @@ fun RushApp(
                                 exit = fadeOut(animationSpec = tween(200))
                             ) {
                                 IconButton(
-                                    onClick = { query = "" }
+                                    onClick = {
+                                        query = ""
+                                        coroutineScope.launch {
+                                            focusRequester.requestFocus()
+                                            keyboardController?.show()
+                                        }
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_delete_forever_24),
@@ -137,6 +152,7 @@ fun RushApp(
                     },
                     onValueChange = {
                         query = it
+                        rushViewModel.searchSong(it)
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(stringResource(id = R.string.search)) },
@@ -145,10 +161,10 @@ fun RushApp(
                         .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Search
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = {
+                        onSearch = {
                             keyboardController?.hide()
                             rushViewModel.searchSong(query)
                         }
@@ -164,6 +180,7 @@ fun RushApp(
                             result = it,
                             onClick = {
                                 searchSheetState = false
+                                query = ""
                                 if (song == null) {
                                     rushViewModel.changeCurrentSong(it.id)
                                     coroutineScope.launch {
@@ -172,7 +189,7 @@ fun RushApp(
                                 } else {
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
-                                        lazyListState.animateScrollToItem(0)
+                                        lazyListState.scrollToItem(0)
                                         rushViewModel.changeCurrentSong(it.id)
                                     }
                                 }
@@ -240,7 +257,8 @@ fun RushPager(
             0 -> LyricsPage(
                 rushViewModel,
                 lazyListState,
-                imageLoader
+                imageLoader,
+                bottomSheet = { bottomSheet() },
             )
 
             1 -> SavedPage(
