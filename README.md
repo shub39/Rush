@@ -40,7 +40,7 @@ This app uses Genius Api to search for available songs and scrape lyrics from th
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) |
 
-## Suppourt and Discuss 💭
+## Support and Discuss 💭
 
 <a href="https://t.me/+h4ko5-g1g8djYjg1"> ![Telegram](https://img.shields.io/badge/Telegram-%230288D1.svg?style=for-the-badge&logo=Telegram&logoColor=white) </a>
 
