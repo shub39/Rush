@@ -4,7 +4,7 @@
 
 # 🌠 Rush 🌠
 
-### Search, save and share lyrics like spotify! 💫
+### Search, save and share lyrics like Spotify! 💫
 
 ![](https://img.shields.io/github/last-commit/shub39/Rush?&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/stars/shub39/Rush?style=for-the-badge&logo=andela&color=FFB686&logoColor=D9E0EE&labelColor=292324)
@@ -31,8 +31,8 @@
 - [x] Auto-Search current playing song   
 
 ## Why ❔
-Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from genius and share them like spotify, all in material3 look.
-This app uses Genius Api to search for available songs and scrape lyrics from the song's page
+Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material3 look.
+This app uses the Genius Api to search for available songs and scrape lyrics from the song's page
 
 ## Screenshots 🌟
 
@@ -40,7 +40,7 @@ This app uses Genius Api to search for available songs and scrape lyrics from th
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) |
 
-## Suppourt and Discuss 💭
+## Support and Discuss 💭
 
 <a href="https://t.me/+h4ko5-g1g8djYjg1"> ![Telegram](https://img.shields.io/badge/Telegram-%230288D1.svg?style=for-the-badge&logo=Telegram&logoColor=white) </a>
 
@@ -54,7 +54,7 @@ This app uses Genius Api to search for available songs and scrape lyrics from th
 
 ## Tech Stack ⚒️
 
-- Retrofit and Okhttp
+- Retrofit and OkHttp
 
 - ROOM
 
