@@ -42,7 +42,7 @@ This app uses the Genius API to search for available songs and scrape lyrics fro
 
 ## Support and Discuss 💭
 
-<a href="https://t.me/+h4ko5-g1g8djYjg1"> ![Telegram](https://img.shields.io/badge/Telegram-%230288D1.svg?style=for-the-badge&logo=Telegram&logoColor=white) </a>
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/nxA2hgtEKf)](https://discord.gg/https://discord.gg/nxA2hgtEKf)
 
 
 ## References and Inspiration 💡
