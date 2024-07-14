@@ -228,7 +228,9 @@ fun SettingPage(
                         .padding(8.dp)
                 )
                 Row(
-                    modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Image(
@@ -238,6 +240,21 @@ fun SettingPage(
                             .size(32.dp)
                             .clickable {
                                 openLinkInBrowser(context, "https://github.com/shub39/Rush")
+                            }
+                    )
+
+                    Spacer(modifier = Modifier.padding(8.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.discord_svgrepo_com),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                openLinkInBrowser(
+                                    context,
+                                    "https://discord.gg/https://discord.gg/nxA2hgtEKf"
+                                )
                             }
                     )
                 }

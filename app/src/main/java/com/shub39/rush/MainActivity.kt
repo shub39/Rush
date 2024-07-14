@@ -13,7 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.component.provideImageLoader
 import com.shub39.rush.database.SettingsDataStore
-import com.shub39.rush.listener.MediaNotificationListener
+import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.page.RushApp
 import com.shub39.rush.ui.theme.RushTheme
 import com.shub39.rush.viewmodel.RushViewModel
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-            if (!MediaNotificationListener.canAccessNotifications(this)) {
+            if (!NotificationListener.canAccessNotifications(this)) {
                 Toast.makeText(this, stringResource(id = R.string.toast), Toast.LENGTH_LONG).show()
                 val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
                 startActivity(intent)
@@ -56,4 +56,5 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
 }

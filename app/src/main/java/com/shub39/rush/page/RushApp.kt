@@ -79,11 +79,12 @@ fun RushApp(
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
-    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context).collectAsState(initial = "")
+    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
+        .collectAsState(initial = "")
 
     if (searchSheetState) {
         ModalBottomSheet(
-            onDismissRequest = { searchSheetState = false },
+            onDismissRequest = { searchSheetState = false }
         ) {
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
