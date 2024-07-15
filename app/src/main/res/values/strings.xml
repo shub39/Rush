@@ -19,6 +19,9 @@
     <string name="edit">Edit Card</string>
     <string name="width">Width</string>
     <string name="colors">Colors</string>
+    <string name="grant_permission">Grant Notification Access</string>
+    <string name="notification_permission">Notification Access is required to autofill current song details in search. Clear and restart the app after granting permission.</string>
+    <string name="autofill_toggle">Autofill Lyrics</string>
     <string name="current_song">Current Song</string>
     <string name="card_style">Card Style</string>
     <string name="rounded_corners">Rounded Corners</string>

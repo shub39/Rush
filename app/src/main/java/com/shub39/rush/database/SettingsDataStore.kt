@@ -1,8 +1,8 @@
 package com.shub39.rush.database
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -12,11 +12,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 object SettingsDataStore {
+
+    private const val TAG = "SettingsDataStore"
     private const val DATA_STORE_FILE_NAME = "settings.pb"
     private val Context.dataStore by preferencesDataStore( name = DATA_STORE_FILE_NAME )
+
     private val MAX_LINES = intPreferencesKey("max_lines")
     private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
     private val SORT_ORDER = stringPreferencesKey("sort_order")
+    private val SONG_AUTOFILL = booleanPreferencesKey("song_autofill")
     private val CURRENT_PLAYING_SONG = stringPreferencesKey("current_playing_song")
 
     fun getSortOrderFlow(context: Context): Flow<String> = context.dataStore.data
@@ -25,6 +29,14 @@ object SettingsDataStore {
         }
         .map { preferences ->
             preferences[SORT_ORDER] ?: "title_asc"
+        }
+
+    fun getSongAutofillFlow(context: Context): Flow<Boolean> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[SONG_AUTOFILL] ?: true
         }
 
     fun getCurrentPlayingSongFlow(context: Context): Flow<String> = context.dataStore.data
@@ -54,6 +66,12 @@ object SettingsDataStore {
     suspend fun updateSortOrder(context: Context, newSortOrder: String) {
         context.dataStore.edit { settings ->
             settings[SORT_ORDER] = newSortOrder
+        }
+    }
+
+    suspend fun updateSongAutofill(context: Context, newSongAutofill: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[SONG_AUTOFILL] = newSongAutofill
         }
     }
 

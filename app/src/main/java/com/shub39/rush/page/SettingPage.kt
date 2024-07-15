@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,8 +43,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat.startActivity
+import com.shub39.rush.MainActivity
 import com.shub39.rush.R
 import com.shub39.rush.database.SettingsDataStore
+import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -53,9 +61,12 @@ fun SettingPage(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var deleteButtonStatus by remember { mutableStateOf(rushViewModel.songs.value.isNotEmpty()) }
+    var notificationRequestDialog by remember { mutableStateOf(false) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val appTheme by SettingsDataStore.getToggleThemeFlow(context)
         .collectAsState(initial = "Gruvbox")
+    val songAutofill by SettingsDataStore.getSongAutofillFlow(context)
+        .collectAsState(initial = false)
     var theme = appTheme
     var maxLines = maxLinesFlow
 
@@ -138,6 +149,39 @@ fun SettingPage(
             }
         }
 
+        if (NotificationListener.canAccessNotifications(context)) {
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    shape = RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 8.dp,
+                        bottomEnd = 8.dp,
+                        bottomStart = 8.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = stringResource(id = R.string.autofill_toggle))
+                        Switch(
+                            checked = songAutofill,
+                            onCheckedChange = {
+                                coroutineScope.launch {
+                                    SettingsDataStore.updateSongAutofill(context, it)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
 
         item {
             Card(
@@ -154,7 +198,7 @@ fun SettingPage(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp),
+                        .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -162,40 +206,51 @@ fun SettingPage(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
+                            contentDescription = null,
+                            modifier = Modifier.clickable(
+                                enabled = maxLines > 2 && coroutineScope.isActive
+                            ) {
                                 maxLines--
                                 coroutineScope.launch {
                                     SettingsDataStore.updateMaxLines(context, maxLines)
                                 }
-                            },
-                            enabled = maxLines > 2 && coroutineScope.isActive
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
-                                contentDescription = null
-                            )
-                        }
+                            }
+                        )
+                        Spacer(modifier = Modifier.padding(4.dp))
                         Text(text = maxLinesFlow.toString())
-                        IconButton(
-                            onClick = {
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
+                            contentDescription = null,
+                            modifier = Modifier.clickable(
+                                enabled = maxLines < 10 && coroutineScope.isActive
+                            ) {
                                 maxLines++
                                 coroutineScope.launch {
                                     SettingsDataStore.updateMaxLines(context, maxLines)
                                 }
-                            },
-                            enabled = maxLines < 8 && coroutineScope.isActive
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }
         }
 
+        if (!NotificationListener.canAccessNotifications(context)) {
+            item {
+                Button(
+                    onClick = {
+                        notificationRequestDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Text(text = stringResource(id = R.string.grant_permission))
+                }
+            }
+        }
 
         item {
             Button(
@@ -212,7 +267,6 @@ fun SettingPage(
                 Text(text = stringResource(id = R.string.delete_all))
             }
         }
-
 
         item {
             Column(
@@ -257,6 +311,48 @@ fun SettingPage(
                                 )
                             }
                     )
+                }
+            }
+        }
+    }
+
+    if (notificationRequestDialog) {
+        Dialog(
+            onDismissRequest = { notificationRequestDialog = false }
+        ) {
+            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+
+            Card(shape = RoundedCornerShape(16.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_warning_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp)
+                    )
+
+
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.notification_permission),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Button(
+                        onClick = {
+                            startActivity(context, intent, null)
+                            notificationRequestDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.large
+                    ) {
+                        Text(text = stringResource(id = R.string.grant_permission))
+                    }
                 }
             }
         }

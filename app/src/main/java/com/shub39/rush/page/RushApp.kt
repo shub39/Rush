@@ -81,15 +81,22 @@ fun RushApp(
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
     val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
         .collectAsState(initial = "")
+    val autofillEnabled by SettingsDataStore.getSongAutofillFlow(context)
+        .collectAsState(initial = false)
 
     if (searchSheetState) {
         ModalBottomSheet(
-            onDismissRequest = { searchSheetState = false }
+            onDismissRequest = {
+                searchSheetState = false
+                query = ""
+            }
         ) {
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
-                query = currentPlayingSong
+                if (autofillEnabled) {
+                    query = currentPlayingSong
+                }
                 if (query.isEmpty()) {
                     focusRequester.requestFocus()
                     keyboardController?.show()

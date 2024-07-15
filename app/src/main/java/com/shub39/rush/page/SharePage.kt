@@ -288,13 +288,11 @@ fun SharePage(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = stringResource(id = R.string.from_genius),
+                                text = song.album ?: "",
                                 style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-
                         }
                     }
                     LazyColumn(

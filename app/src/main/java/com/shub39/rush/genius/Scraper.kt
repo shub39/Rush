@@ -1,5 +1,6 @@
 package com.shub39.rush.genius
 
+import android.util.Log
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import org.jsoup.Jsoup
@@ -23,6 +24,7 @@ object Scraper {
                     lyrics += formatLyrics(it.wholeText())
                     lyrics += "\n"
                 }
+                Log.d("Scraper", document.toString())
                 lyrics
             }
         }

@@ -33,7 +33,8 @@
         </provider>
         <service android:name=".listener.NotificationListener"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
-            android:exported="true">
+            android:exported="true"
+            android:foregroundServiceType="mediaProcessing">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
