@@ -16,8 +16,8 @@
 
 <div align="center"> 
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush)
-<a href="https://apt.izzysoft.de/packages/com.shub39.rush/"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/)
+<a href="https://apt.izzysoft.de/packages/com.shub39.rush/latest"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
 ### or Download latest from [Releases](https://github.com/shub39/Rush/releases)
 
 </div>
