@@ -51,34 +51,6 @@ class RushViewModel(
         }
     }
 
-    fun autoSearch(query: String) {
-        if (query.isEmpty()) return
-
-        if (query.lines().first().trim() in songs.value.map { it.title } && query.lines().last().trim() in songs.value.map { it.artists }) {
-            changeCurrentSong(songs.value.first { it.title == query.lines().first().trim() }.id)
-            Log.d("ViewModel", "Query is already in the list of songs")
-            return
-        }
-
-        viewModelScope.launch {
-            _isFetchingLyrics.value = true
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    SongProvider.search(query)
-                }
-                if (result.isSuccess) {
-                    val searchResults = result.getOrNull()
-                    if (searchResults != null) {
-                        changeCurrentSong(searchResults.first().id)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("ViewModel AutoSearch", "Error searching for song", e)
-                _isFetchingLyrics.value = false
-            }
-        }
-    }
-
     fun searchSong(query: String) {
         if (query.isEmpty()) return
 

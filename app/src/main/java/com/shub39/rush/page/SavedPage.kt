@@ -1,10 +1,7 @@
 package com.shub39.rush.page
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -45,6 +42,7 @@ import kotlinx.coroutines.launch
 fun SavedPage(
     rushViewModel: RushViewModel,
     bottomSheet: () -> Unit,
+    bottomSheetAutofill: () -> Unit,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -53,8 +51,6 @@ fun SavedPage(
     val lazyListState = rememberLazyListState()
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
-    val songAutofill by SettingsDataStore.getSongAutofillFlow(context)
-        .collectAsState(initial = true)
     val sortedSongs = when (sortOrder) {
         "title_asc" -> songs.value.sortedBy { it.title }
         else -> songs.value.sortedByDescending { it.title }
@@ -163,22 +159,15 @@ fun SavedPage(
             )
         }
 
-        AnimatedVisibility(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
-            visible = !songAutofill && NotificationListener.canAccessNotifications(context),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
+        if (NotificationListener.canAccessNotifications(context)) {
             FloatingActionButton(
                 onClick = {
-                    coroutineScope.launch {
-                        SettingsDataStore.updateSongAutofill(context, true)
-                    }
-                    onClick()
+                    bottomSheetAutofill()
                 },
-                shape = MaterialTheme.shapes.extraLarge
+                shape = MaterialTheme.shapes.extraLarge,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.round_play_arrow_24),
@@ -186,7 +175,6 @@ fun SavedPage(
                 )
             }
         }
-
     }
 }
 

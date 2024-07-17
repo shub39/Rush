@@ -4,4 +4,4 @@ Features 🌠
 
 - Search, View and store lyrics
 - Share lyrics as a customisable card to your friends!
-- Auto-search the lyrics of your current song (Requires Notification Access permission)
+- Auto-fill current playing song in search(Requires Notification Access permission)

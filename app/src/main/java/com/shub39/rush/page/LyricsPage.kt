@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +45,7 @@ import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
 import com.shub39.rush.database.SettingsDataStore
+import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
@@ -51,7 +54,7 @@ fun LyricsPage(
     rushViewModel: RushViewModel,
     lazyListState: LazyListState,
     bottomSheet: () -> Unit,
-    lazyListRefresh: () -> Unit
+    bottomSheetAutofill: () -> Unit
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -59,20 +62,7 @@ fun LyricsPage(
     var isSharePageVisible by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val songAutofill by SettingsDataStore.getSongAutofillFlow(context)
-        .collectAsState(initial = false)
-    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
-        .collectAsState(initial = "")
-    var previousSong by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(currentPlayingSong) {
-        if (songAutofill && currentPlayingSong.isNotBlank() && currentPlayingSong != previousSong) {
-            rushViewModel.autoSearch(currentPlayingSong)
-            previousSong = currentPlayingSong
-            lazyListRefresh()
-        }
-    }
 
     if (isSharePageVisible) {
         SharePage(
@@ -228,35 +218,55 @@ fun LyricsPage(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(10.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        OutlinedButton(
+                        FloatingActionButton(
                             onClick = {
                                 coroutineScope.launch {
                                     lazyListState.scrollToItem(0)
                                 }
-                            }
+                            },
+                            elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            containerColor = MaterialTheme.colorScheme.primary
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_arrow_upward_24),
                                 contentDescription = null,
                             )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(text = stringResource(id = R.string.back_to_top))
                         }
 
-                        OutlinedButton(onClick = { bottomSheet() }) {
+                        if (NotificationListener.canAccessNotifications(context)) {
+                            FloatingActionButton(
+                                onClick = { bottomSheetAutofill() },
+                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                shape = MaterialTheme.shapes.extraLarge,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_play_arrow_24),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+
+                        FloatingActionButton(
+                            onClick = { bottomSheet() },
+                            elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_search_24),
                                 contentDescription = null
                             )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(text = stringResource(id = R.string.search_another))
                         }
+
                     }
+                    Spacer(modifier = Modifier.padding(10.dp))
                 }
             }
         }

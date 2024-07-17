@@ -96,7 +96,7 @@ object MediaListener {
     private fun updateTitle(context: Context, metadata: MediaMetadata?) {
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
         val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
-        val searchTerm = "${getMainTitle(title)} \n$artist"
+        val searchTerm = "${getMainTitle(title)} $artist"
         CoroutineScope(Dispatchers.IO).launch {
             SettingsDataStore.updateCurrentPlayingSong(context, searchTerm)
             Log.d(TAG, "searchTerm: $searchTerm")

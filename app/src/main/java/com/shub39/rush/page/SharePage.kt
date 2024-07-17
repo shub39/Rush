@@ -269,7 +269,6 @@ fun SharePage(
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(MaterialTheme.shapes.small),
-                            imageLoader = imageLoader
                         )
                         Column(
                             modifier = Modifier.padding(start = 16.dp, end = 16.dp)

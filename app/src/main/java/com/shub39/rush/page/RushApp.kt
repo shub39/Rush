@@ -78,6 +78,8 @@ fun RushApp(
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
+    val currentSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
+        .collectAsState(initial = "")
 
     if (searchSheetState) {
         ModalBottomSheet(
@@ -89,8 +91,12 @@ fun RushApp(
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-                keyboardController?.show()
+                if (query.isNotBlank()) {
+                    rushViewModel.searchSong(query)
+                } else {
+                    focusRequester.requestFocus()
+                    keyboardController?.show()
+                }
             }
 
             Column(
@@ -218,7 +224,13 @@ fun RushApp(
                 RushPager(
                     lazyListState = lazyListState,
                     pagerState = pagerState,
-                    bottomSheet = { searchSheetState = true },
+                    bottomSheet = {
+                        searchSheetState = true
+                    },
+                    bottomSheetAutofill = {
+                        query = currentSong
+                        searchSheetState = true
+                    },
                     onPageChange = { page ->
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(page)
@@ -246,6 +258,7 @@ fun RushPager(
     lazyListState: LazyListState,
     pagerState: PagerState,
     bottomSheet: () -> Unit = {},
+    bottomSheetAutofill: () -> Unit = {},
     onPageChange: (Int) -> Unit,
     lazyListRefresh: () -> Unit,
     rushViewModel: RushViewModel
@@ -257,14 +270,14 @@ fun RushPager(
             0 -> LyricsPage(
                 lazyListState = lazyListState,
                 rushViewModel = rushViewModel,
-                bottomSheet = { bottomSheet() },
-                lazyListRefresh = lazyListRefresh
-
+                bottomSheet = bottomSheet,
+                bottomSheetAutofill = bottomSheetAutofill
             )
 
             1 -> SavedPage(
                 rushViewModel = rushViewModel,
-                bottomSheet = { bottomSheet() },
+                bottomSheet = bottomSheet,
+                bottomSheetAutofill = bottomSheetAutofill,
                 onClick = {
                     onPageChange(0)
                     lazyListRefresh()

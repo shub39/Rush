@@ -57,7 +57,6 @@ object LyricsFetcher {
                     lyrics += formatGeniusLyrics(it.wholeText())
                     lyrics += "\n"
                 }
-                Log.d("Scraper", document.toString())
                 lyrics
             }
         }
@@ -74,7 +73,6 @@ object LyricsFetcher {
             if (!jsonSong.isNullOrEmpty()) {
                 val song = jsonSong[0]
                 val lyrics = song.plainLyrics
-                Log.d(TAG, "Lyrics: $lyrics")
                 return lyrics
             }
         }
