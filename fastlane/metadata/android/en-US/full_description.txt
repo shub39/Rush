@@ -1,8 +1,7 @@
 Rush is a simple android app to search, view, save and share lyrics for your favourite songs like spotify. 🌟
 
-Songs are searched using Genius API. The lyrics are then scraped using the urls obtained.
-
 Features 🌠
 
 - Search, View and store lyrics
-- Share lyrics as an image to other apps
+- Share lyrics as a customisable card to your friends!
+- Auto-search the lyrics of your current song (Requires Notification Access permission)

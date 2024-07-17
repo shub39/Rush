@@ -32,7 +32,6 @@
 
 ## Why ❔
 Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
-This app uses the Genius API to search for available songs and scrape lyrics from the song's page
 
 ## Screenshots 🌟
 
@@ -40,7 +39,7 @@ This app uses the Genius API to search for available songs and scrape lyrics fro
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) |
 
-## Support and Discuss 💭
+## Test and Discuss 💭
 
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/nxA2hgtEKf)](https://discord.gg/https://discord.gg/nxA2hgtEKf)
 
@@ -49,15 +48,19 @@ This app uses the Genius API to search for available songs and scrape lyrics fro
 - [Fastlyrics](https://github.com/TecCheck/FastLyrics)
   
 - [SongSync](https://github.com/Lambada10/SongSync)
+
+- [LrcLib](https://lrclib.net/)
   
 - Spotify Lyrics UI
 
 ## Tech Stack ⚒️
 
-- Retrofit and OkHttp
+- Retrofit and OkHttp for api calls
 
-- ROOM
+- Database using ROOM
 
 - MVVM architecture
 
-- Fuel and Jsoup
+- Dependency injection using Koin
+
+- Fuel and Jsoup for scraping
