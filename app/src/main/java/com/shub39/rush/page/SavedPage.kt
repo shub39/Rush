@@ -1,10 +1,12 @@
 package com.shub39.rush.page
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,10 +14,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,19 +32,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.Empty
 import com.shub39.rush.component.GroupedCard
 import com.shub39.rush.component.SongCard
 import com.shub39.rush.database.SettingsDataStore
+import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun SavedPage(
     rushViewModel: RushViewModel,
-    imageLoader: ImageLoader,
     bottomSheet: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -52,6 +53,8 @@ fun SavedPage(
     val lazyListState = rememberLazyListState()
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
+    val songAutofill by SettingsDataStore.getSongAutofillFlow(context)
+        .collectAsState(initial = true)
     val sortedSongs = when (sortOrder) {
         "title_asc" -> songs.value.sortedBy { it.title }
         else -> songs.value.sortedByDescending { it.title }
@@ -102,9 +105,11 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
+                                    coroutineScope.launch {
+                                        SettingsDataStore.updateSongAutofill(context, false)
+                                    }
                                     onClick()
-                                },
-                                imageLoader = imageLoader
+                                }
                             )
                         }
                         item {
@@ -123,14 +128,17 @@ fun SavedPage(
                         items(groupedSongs.entries.toList(), key = { it.key }) { map ->
                             GroupedCard(
                                 map = map,
-                                imageLoader = imageLoader,
                                 isExpanded = expandedCardId == map.key,
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
                                     onClick()
+                                    coroutineScope.launch {
+                                        SettingsDataStore.updateSongAutofill(context, false)
+                                    }
                                 },
                                 onCardClick = {
-                                    expandedCardId = if (expandedCardId == map.key) null else map.key
+                                    expandedCardId =
+                                        if (expandedCardId == map.key) null else map.key
                                 }
                             )
                         }
@@ -147,18 +155,35 @@ fun SavedPage(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = MaterialTheme.shapes.extraLarge
         ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Icon(
+                painter = painterResource(id = R.drawable.round_search_24),
+                contentDescription = null
+            )
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
+            visible = !songAutofill && NotificationListener.canAccessNotifications(context),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        SettingsDataStore.updateSongAutofill(context, true)
+                    }
+                    onClick()
+                },
+                shape = MaterialTheme.shapes.extraLarge
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.round_search_24),
+                    painter = painterResource(id = R.drawable.round_play_arrow_24),
                     contentDescription = null
                 )
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = stringResource(id = R.string.search))
             }
         }
 

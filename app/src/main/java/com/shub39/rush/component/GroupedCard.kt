@@ -23,14 +23,15 @@ import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.database.Song
+import org.koin.compose.koinInject
 
 @Composable
 fun GroupedCard(
     map: Map.Entry<String?, List<Song>>,
-    imageLoader: ImageLoader,
     isExpanded: Boolean = false,
     onClick: (Song) -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
+    imageLoader: ImageLoader = koinInject()
 ) {
     Card(
         modifier = Modifier

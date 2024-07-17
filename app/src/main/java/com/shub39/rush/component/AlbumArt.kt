@@ -11,6 +11,7 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.shub39.rush.R
+import org.koin.compose.koinInject
 import android.content.Context as Context
 
 
@@ -20,7 +21,7 @@ fun ArtFromUrl(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     placeholder: Int = R.drawable.round_music_note_24,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader = koinInject()
 ) {
     Image(
         painter = rememberAsyncImagePainter(

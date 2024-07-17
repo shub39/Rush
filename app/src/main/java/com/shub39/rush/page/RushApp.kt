@@ -56,19 +56,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.SearchResultCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RushApp(
     navController: NavHostController,
-    rushViewModel: RushViewModel,
-    imageLoader: ImageLoader
+    rushViewModel: RushViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState(initialPage = 1) { 2 }
@@ -79,10 +78,6 @@ fun RushApp(
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
-    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
-        .collectAsState(initial = "")
-    val autofillEnabled by SettingsDataStore.getSongAutofillFlow(context)
-        .collectAsState(initial = false)
 
     if (searchSheetState) {
         ModalBottomSheet(
@@ -94,15 +89,8 @@ fun RushApp(
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
-                if (autofillEnabled) {
-                    query = currentPlayingSong
-                }
-                if (query.isEmpty()) {
-                    focusRequester.requestFocus()
-                    keyboardController?.show()
-                } else {
-                    rushViewModel.searchSong(query)
-                }
+                focusRequester.requestFocus()
+                keyboardController?.show()
             }
 
             Column(
@@ -190,19 +178,20 @@ fun RushApp(
                                 searchSheetState = false
                                 query = ""
                                 if (song == null) {
-                                    rushViewModel.changeCurrentSong(it.id)
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
+                                        rushViewModel.changeCurrentSong(it.id)
+                                        SettingsDataStore.updateSongAutofill(context, false)
                                     }
                                 } else {
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
                                         lazyListState.scrollToItem(0)
                                         rushViewModel.changeCurrentSong(it.id)
+                                        SettingsDataStore.updateSongAutofill(context, false)
                                     }
                                 }
                             },
-                            imageLoader = imageLoader
                         )
                     }
                     item {
@@ -227,22 +216,25 @@ fun RushApp(
         ) {
             composable("lyrics") {
                 RushPager(
-                    rushViewModel = rushViewModel,
                     lazyListState = lazyListState,
-                    imageLoader = imageLoader,
                     pagerState = pagerState,
                     bottomSheet = { searchSheetState = true },
                     onPageChange = { page ->
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(page)
-                            lazyListState.animateScrollToItem(0)
                         }
-                    }
+                    },
+                    lazyListRefresh = {
+                        coroutineScope.launch {
+                            lazyListState.scrollToItem(0)
+                        }
+                    },
+                    rushViewModel = rushViewModel
                 )
             }
             composable("settings") {
                 SettingPage(
-                    rushViewModel = rushViewModel,
+                    rushViewModel = rushViewModel
                 )
             }
         }
@@ -251,29 +243,32 @@ fun RushApp(
 
 @Composable
 fun RushPager(
-    rushViewModel: RushViewModel,
     lazyListState: LazyListState,
-    imageLoader: ImageLoader,
     pagerState: PagerState,
     bottomSheet: () -> Unit = {},
-    onPageChange: (Int) -> Unit
+    onPageChange: (Int) -> Unit,
+    lazyListRefresh: () -> Unit,
+    rushViewModel: RushViewModel
 ) {
     HorizontalPager(
         state = pagerState,
     ) { page ->
         when (page) {
             0 -> LyricsPage(
-                rushViewModel,
-                lazyListState,
-                imageLoader,
+                lazyListState = lazyListState,
+                rushViewModel = rushViewModel,
                 bottomSheet = { bottomSheet() },
+                lazyListRefresh = lazyListRefresh
+
             )
 
             1 -> SavedPage(
-                rushViewModel,
-                imageLoader,
+                rushViewModel = rushViewModel,
                 bottomSheet = { bottomSheet() },
-                onClick = { onPageChange(0) }
+                onClick = {
+                    onPageChange(0)
+                    lazyListRefresh()
+                }
             )
         }
     }

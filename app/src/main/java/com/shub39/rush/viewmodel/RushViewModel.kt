@@ -1,7 +1,6 @@
 package com.shub39.rush.viewmodel
 
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,8 +51,37 @@ class RushViewModel(
         }
     }
 
+    fun autoSearch(query: String) {
+        if (query.isEmpty()) return
+
+        if (query.lines().first().trim() in songs.value.map { it.title } && query.lines().last().trim() in songs.value.map { it.artists }) {
+            changeCurrentSong(songs.value.first { it.title == query.lines().first().trim() }.id)
+            Log.d("ViewModel", "Query is already in the list of songs")
+            return
+        }
+
+        viewModelScope.launch {
+            _isFetchingLyrics.value = true
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    SongProvider.search(query)
+                }
+                if (result.isSuccess) {
+                    val searchResults = result.getOrNull()
+                    if (searchResults != null) {
+                        changeCurrentSong(searchResults.first().id)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ViewModel AutoSearch", "Error searching for song", e)
+                _isFetchingLyrics.value = false
+            }
+        }
+    }
+
     fun searchSong(query: String) {
         if (query.isEmpty()) return
+
         viewModelScope.launch {
             _isSearchingLyrics.value = true
             try {
@@ -63,7 +91,7 @@ class RushViewModel(
                 if (result.isSuccess) {
                     _searchResults.value = result.getOrNull() ?: emptyList()
                 } else {
-                    Log.e(TAG, result.exceptionOrNull()?.message, result.exceptionOrNull())
+                    Log.e("ViewModel", result.exceptionOrNull()?.message, result.exceptionOrNull())
                     _searchResults.value = emptyList()
                 }
             } finally {
@@ -88,7 +116,11 @@ class RushViewModel(
                         songDao.insertSong(_currentSong.value!!)
                         _songs.value = songDao.getAllSongs()
                     } else {
-                        Log.e(TAG, result.exceptionOrNull()?.message, result.exceptionOrNull())
+                        Log.e(
+                            "ViewModel",
+                            result.exceptionOrNull()?.message,
+                            result.exceptionOrNull()
+                        )
                     }
                 }
             } finally {

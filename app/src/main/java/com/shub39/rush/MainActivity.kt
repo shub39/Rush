@@ -4,17 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.component.provideImageLoader
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.page.RushApp
 import com.shub39.rush.ui.theme.RushTheme
-import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -22,14 +23,15 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        val rushViewModel = RushViewModel(application)
-        val imageLoader = provideImageLoader(this)
-
         enableEdgeToEdge()
         setContent {
 
             if (NotificationListener.canAccessNotifications(this)) {
                 MediaListener.init(this)
+            } else {
+                LaunchedEffect(key1 = Unit) {
+                    SettingsDataStore.updateSongAutofill(this@MainActivity, false)
+                }
             }
 
             val theme by SettingsDataStore.getToggleThemeFlow(this)
@@ -40,9 +42,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 RushApp(
-                    navController = navController,
-                    rushViewModel = rushViewModel,
-                    imageLoader = imageLoader
+                    navController = navController
                 )
             }
 
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        MediaListener.destroy()
+        MediaListener.destroy(this)
     }
 
 }

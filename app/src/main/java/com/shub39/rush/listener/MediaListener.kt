@@ -43,7 +43,7 @@ object MediaListener {
         Log.d("MediaListener", "init $msm")
     }
 
-    fun destroy() {
+    fun destroy(context: Context) {
 
         if (!initialised) return
         internalCallbacks.forEach { (_, callback) ->
@@ -51,6 +51,7 @@ object MediaListener {
         }
         internalCallbacks.clear()
         initialised = false
+        updateTitle(context)
 
     }
 
@@ -94,10 +95,24 @@ object MediaListener {
 
     private fun updateTitle(context: Context, metadata: MediaMetadata?) {
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
+        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
+        val searchTerm = "${getMainTitle(title)} \n$artist"
         CoroutineScope(Dispatchers.IO).launch {
-            SettingsDataStore.updateCurrentPlayingSong(context, title)
-            Log.d(TAG, "Title: $title")
+            SettingsDataStore.updateCurrentPlayingSong(context, searchTerm)
+            Log.d(TAG, "searchTerm: $searchTerm")
         }
+    }
+
+    private fun updateTitle(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            SettingsDataStore.updateCurrentPlayingSong(context, "")
+            SettingsDataStore.updateSongAutofill(context, false)
+        }
+    }
+
+    private fun getMainTitle(songTitle: String): String {
+        val regex = Regex("\\s*\\(.*?\\)\\s*$")
+        return songTitle.replace(regex, "").trim()
     }
 
 }

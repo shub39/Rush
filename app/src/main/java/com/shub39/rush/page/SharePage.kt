@@ -57,6 +57,7 @@ import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.database.Song
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -68,7 +69,7 @@ fun SharePage(
     onShare: () -> Unit,
     song: Song,
     selectedLines: Map<Int, String>,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()

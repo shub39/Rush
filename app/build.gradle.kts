@@ -74,6 +74,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.palette)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose.v343)
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

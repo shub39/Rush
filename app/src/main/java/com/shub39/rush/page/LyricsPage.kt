@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +39,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
@@ -50,8 +50,8 @@ import kotlinx.coroutines.launch
 fun LyricsPage(
     rushViewModel: RushViewModel,
     lazyListState: LazyListState,
-    imageLoader: ImageLoader,
     bottomSheet: () -> Unit,
+    lazyListRefresh: () -> Unit
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -59,15 +59,27 @@ fun LyricsPage(
     var isSharePageVisible by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val songAutofill by SettingsDataStore.getSongAutofillFlow(context)
+        .collectAsState(initial = false)
+    val currentPlayingSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
+        .collectAsState(initial = "")
+    var previousSong by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(currentPlayingSong) {
+        if (songAutofill && currentPlayingSong.isNotBlank() && currentPlayingSong != previousSong) {
+            rushViewModel.autoSearch(currentPlayingSong)
+            previousSong = currentPlayingSong
+            lazyListRefresh()
+        }
+    }
 
     if (isSharePageVisible) {
         SharePage(
             onShare = { isSharePageVisible = false },
             onDismiss = { isSharePageVisible = false },
             song = song!!,
-            selectedLines = selectedLines,
-            imageLoader = imageLoader
+            selectedLines = selectedLines
         )
     }
 
@@ -110,7 +122,6 @@ fun LyricsPage(
                     modifier = Modifier
                         .size(150.dp)
                         .clip(MaterialTheme.shapes.small),
-                    imageLoader = imageLoader
                 )
                 Column(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -138,12 +149,14 @@ fun LyricsPage(
                         )
                     }
                     Row {
-                        IconButton(onClick = {
-                            openLinkInBrowser(
-                                context,
-                                nonNullSong.sourceUrl
-                            )
-                        }) {
+                        IconButton(
+                            onClick = {
+                                openLinkInBrowser(
+                                    context,
+                                    nonNullSong.sourceUrl
+                                )
+                            }
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.genius),
                                 contentDescription = null
@@ -168,6 +181,7 @@ fun LyricsPage(
                     }
                 }
             }
+
             val lyrics = breakLyrics(nonNullSong.lyrics).entries.toList()
 
             LazyColumn(
@@ -240,7 +254,7 @@ fun LyricsPage(
                                 contentDescription = null
                             )
                             Spacer(modifier = Modifier.size(4.dp))
-                            Text(text = stringResource(id = R.string.search_next))
+                            Text(text = stringResource(id = R.string.search_another))
                         }
                     }
                 }

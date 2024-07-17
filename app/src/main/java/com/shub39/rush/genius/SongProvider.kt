@@ -5,7 +5,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
-import com.shub39.rush.genius.Scraper.scrapeLyrics
+import com.shub39.rush.genius.LyricsFetcher.getLrcLibLyrics
+import com.shub39.rush.genius.LyricsFetcher.scrapeLyrics
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
@@ -18,12 +19,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 object SongProvider {
-    private const val TAG = "GeniusProvider"
+
+    private const val TAG = "SongProvider"
     private const val BASE_URL = "https://api.genius.com/"
     private const val AUTH_HEADER = "Authorization"
     private const val BEARER_TOKEN = "Bearer ${Tokens.GENIUS_API}"
 
-    private val apiService: ApiService
+    private val apiService: GeniusApiService
 
     init {
         val client = OkHttpClient.Builder().addInterceptor { chain ->
@@ -39,7 +41,7 @@ object SongProvider {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        apiService = retrofit.create(ApiService::class.java)
+        apiService = retrofit.create(GeniusApiService::class.java)
     }
 
     fun search(query: String): Result<List<SearchResult>> {
@@ -96,7 +98,8 @@ object SongProvider {
                 val album = getAlbum(jsonSong)
                 val artUrl = jsonSong.get("header_image_thumbnail_url")?.asString ?: ""
 
-                val lyrics = scrapeLyrics(sourceUrl)
+                val lyrics =
+                    getLrcLibLyrics(title, artist) ?: scrapeLyrics(sourceUrl) ?: ""
 
 
                 Result.success(
@@ -128,7 +131,7 @@ object SongProvider {
         return albumJson.asJsonObject.get("name").asString
     }
 
-    interface ApiService {
+    interface GeniusApiService {
         @GET("search")
         fun search(@Query("q") query: String): Call<JsonElement>
 
