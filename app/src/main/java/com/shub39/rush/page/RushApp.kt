@@ -203,6 +203,14 @@ fun RushApp(
         }
     }
 
+    BackHandler(
+        enabled = pagerState.currentPage == 0
+    ) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(1)
+        }
+    }
+
     Scaffold(
         topBar = { TopBar(navController = navController, pagerState = pagerState) },
     ) { innerPadding ->
