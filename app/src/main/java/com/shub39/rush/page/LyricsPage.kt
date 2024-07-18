@@ -20,6 +20,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,6 +62,8 @@ fun LyricsPage(
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
+//    var syncedLyrics by remember { mutableStateOf(false) }
+//    var syncLyrics by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val coroutineScope = rememberCoroutineScope()
@@ -114,6 +117,12 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
+//            if (nonNullSong.syncedLyrics != null && NotificationListener.canAccessNotifications(
+//                    context
+//                )
+//            ) {
+//                syncedLyrics = true
+//            }
         }
 
         Card(
@@ -160,6 +169,23 @@ fun LyricsPage(
                         )
                     }
                     Row {
+//                        val iconColor = if (syncLyrics) {
+//                            IconButtonDefaults.iconButtonColors()
+//                        } else {
+//                            IconButtonDefaults.filledIconButtonColors()
+//                        }
+//
+//                        if (syncedLyrics) {
+//                            IconButton(
+//                                onClick = { syncLyrics = !syncLyrics },
+//                                colors = iconColor
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(id = R.drawable.round_sync_24),
+//                                    contentDescription = null
+//                                )
+//                            }
+//                        }
                         IconButton(
                             onClick = {
                                 openLinkInBrowser(
