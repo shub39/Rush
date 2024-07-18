@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
-import com.shub39.rush.genius.SongProvider
+import com.shub39.rush.listener.MediaListener
+import com.shub39.rush.lyrics.SongProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,18 +25,24 @@ class RushViewModel(
     private val _searchResults = MutableStateFlow(listOf<SearchResult>())
     private val _currentSongId = MutableStateFlow<Long?>(null)
     private val _currentSong = MutableStateFlow<Song?>(null)
+    private val _currentPlayingSongInfo = MutableStateFlow<Pair<String, String>?>(null)
     private val _isSearchingLyrics = MutableStateFlow(false)
     private val _isFetchingLyrics = MutableStateFlow(false)
 
     val songs: StateFlow<List<Song>> get() = _songs
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
+    val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
 
     init {
         viewModelScope.launch {
             _songs.value = songDao.getAllSongs()
+            MediaListener.songInfoFlow.collect { songInfo ->
+                _currentPlayingSongInfo.value = songInfo
+                Log.d("RushViewModel", "songInfoFlow: $songInfo")
+            }
         }
     }
 

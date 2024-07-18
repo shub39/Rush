@@ -21,7 +21,6 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -60,6 +60,7 @@ fun LyricsPage(
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
+    var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val coroutineScope = rememberCoroutineScope()
@@ -77,7 +78,11 @@ fun LyricsPage(
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -92,17 +97,33 @@ fun LyricsPage(
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         ) {
             Empty()
         }
     } else {
         val nonNullSong = song!!
 
+        LaunchedEffect(nonNullSong) {
+            if (nonNullSong.lyrics.isNotEmpty()) {
+                source = "LrcLib"
+            } else if (nonNullSong.geniusLyrics != null) {
+                source = "Genius"
+            }
+        }
+
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         ) {
             Row(
                 modifier = Modifier.padding(16.dp),
@@ -172,7 +193,14 @@ fun LyricsPage(
                 }
             }
 
-            val lyrics = breakLyrics(nonNullSong.lyrics).entries.toList()
+            val lyrics =
+                if (nonNullSong.lyrics.isNotEmpty()) {
+                    breakLyrics(nonNullSong.lyrics).entries.toList()
+                } else if (nonNullSong.geniusLyrics != null) {
+                    breakLyrics(nonNullSong.geniusLyrics).entries.toList()
+                } else {
+                    emptyList()
+                }
 
             LazyColumn(
                 modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
@@ -182,9 +210,15 @@ fun LyricsPage(
                     if (it.value.isNotBlank()) {
                         val isSelected = selectedLines.contains(it.key)
                         val color = if (!isSelected) {
-                            CardDefaults.cardColors()
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         } else {
-                            CardDefaults.elevatedCardColors()
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
 
                         Row(
@@ -217,57 +251,78 @@ fun LyricsPage(
                     }
                 }
 
-                item {
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    lazyListState.scrollToItem(0)
-                                }
-                            },
-                            elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_upward_24),
-                                contentDescription = null,
-                            )
-                        }
+                if (source.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Text(
+                            text = "From $source",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
 
-                        if (NotificationListener.canAccessNotifications(context)) {
+                if (lyrics.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
                             FloatingActionButton(
-                                onClick = { bottomSheetAutofill() },
+                                onClick = {
+                                    coroutineScope.launch {
+                                        lazyListState.scrollToItem(0)
+                                    }
+                                },
                                 elevation = FloatingActionButtonDefaults.elevation(0.dp),
                                 shape = MaterialTheme.shapes.extraLarge,
                                 containerColor = MaterialTheme.colorScheme.primary
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.round_play_arrow_24),
+                                    painter = painterResource(id = R.drawable.round_arrow_upward_24),
+                                    contentDescription = null,
+                                )
+                            }
+
+                            if (NotificationListener.canAccessNotifications(context)) {
+                                FloatingActionButton(
+                                    onClick = { bottomSheetAutofill() },
+                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                    shape = MaterialTheme.shapes.extraLarge,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_play_arrow_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                            FloatingActionButton(
+                                onClick = { bottomSheet() },
+                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                shape = MaterialTheme.shapes.extraLarge,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_search_24),
                                     contentDescription = null
                                 )
                             }
-                        }
 
-                        FloatingActionButton(
-                            onClick = { bottomSheet() },
-                            elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_search_24),
-                                contentDescription = null
-                            )
                         }
-
+                        Spacer(modifier = Modifier.padding(10.dp))
                     }
-                    Spacer(modifier = Modifier.padding(10.dp))
                 }
+
+                if (lyrics.isEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        Text(text = stringResource(id = R.string.no_lyrics))
+                    }
+                }
+
             }
         }
 

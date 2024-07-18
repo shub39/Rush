@@ -13,4 +13,6 @@ data class Song(
     val album: String?,
     val sourceUrl: String,
     val artUrl: String?,
+    val syncedLyrics: String?,
+    val geniusLyrics: String?
 )

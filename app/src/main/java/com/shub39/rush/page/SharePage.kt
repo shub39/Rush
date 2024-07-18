@@ -19,6 +19,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,10 +82,12 @@ fun SharePage(
     var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val sortedLines = sortMapByKeys(selectedLines)
-    var cardBackgroundVibrant by remember { mutableStateOf(Color.Gray) }
+
+    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
+    var cardContentDominant by remember { mutableStateOf(Color.White) }
+
     var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentVibrant by remember { mutableStateOf(Color.White) }
-    var cardContentMuted by remember { mutableStateOf(Color.White) }
+    var cardContentMuted by remember { mutableStateOf(Color.LightGray) }
 
     LaunchedEffect(song) {
         val request = ImageRequest.Builder(context)
@@ -95,14 +100,30 @@ fun SharePage(
             if (drawable != null) {
                 Palette.from(drawable.toBitmap()).generate { palette ->
                     palette?.let {
-                        cardBackgroundVibrant =
-                            Color(it.vibrantSwatch?.rgb ?: Color.DarkGray.toArgb())
-                        cardContentVibrant =
-                            Color(it.vibrantSwatch?.bodyTextColor ?: Color.White.toArgb())
+                        cardBackgroundDominant =
+                            Color(
+                                it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
+                                ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
+                                ?: Color.DarkGray.toArgb()
+                            )
+                        cardContentDominant =
+                            Color(
+                                it.vibrantSwatch?.bodyTextColor
+                                    ?: it.lightVibrantSwatch?.bodyTextColor
+                                    ?: it.darkVibrantSwatch?.bodyTextColor
+                                    ?: it.dominantSwatch?.bodyTextColor
+                                    ?: Color.White.toArgb()
+                            )
                         cardBackgroundMuted =
-                            Color(it.mutedSwatch?.rgb ?: Color.DarkGray.toArgb())
+                            Color(
+                                it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
+                                ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
+                            )
                         cardContentMuted =
-                            Color(it.mutedSwatch?.titleTextColor ?: Color.White.toArgb())
+                            Color(
+                                it.mutedSwatch?.bodyTextColor ?: it.darkMutedSwatch?.bodyTextColor
+                                ?: it.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
+                            )
                     }
                 }
             }
@@ -125,11 +146,14 @@ fun SharePage(
         )
 
         "Vibrant" -> CardDefaults.cardColors(
-            containerColor = cardBackgroundVibrant,
-            contentColor = cardContentVibrant
+            containerColor = cardBackgroundDominant,
+            contentColor = cardContentDominant
         )
 
-        else -> CardDefaults.cardColors()
+        else -> CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 
     if (isEditSheetVisible) {
@@ -311,23 +335,33 @@ fun SharePage(
                     }
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
-                Button(
-                    onClick = { isEditSheetVisible = true },
-                ) {
-                    Text(text = stringResource(id = R.string.edit))
-                }
-
-                Spacer(modifier = Modifier.padding(4.dp))
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                            shareImage(context, bitmap)
-                            onShare()
-                        }
+                Row {
+                    FloatingActionButton(
+                        onClick = { isEditSheetVisible = true },
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_edit_square_24),
+                            contentDescription = null
+                        )
                     }
-                ) {
-                    Text(text = stringResource(id = R.string.share))
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    FloatingActionButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                                shareImage(context, bitmap)
+                                onShare()
+                            }
+                        },
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_share_24),
+                            contentDescription = null
+                        )
+                    }
                 }
 
             }

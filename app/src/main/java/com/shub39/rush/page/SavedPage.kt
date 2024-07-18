@@ -101,9 +101,6 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
-                                    coroutineScope.launch {
-                                        SettingsDataStore.updateSongAutofill(context, false)
-                                    }
                                     onClick()
                                 }
                             )
@@ -128,9 +125,6 @@ fun SavedPage(
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
                                     onClick()
-                                    coroutineScope.launch {
-                                        SettingsDataStore.updateSongAutofill(context, false)
-                                    }
                                 },
                                 onCardClick = {
                                     expandedCardId =

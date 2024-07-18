@@ -10,9 +10,9 @@ import android.media.session.PlaybackState
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
-import com.shub39.rush.database.SettingsDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 object MediaListener {
@@ -23,10 +23,13 @@ object MediaListener {
     private lateinit var nls: ComponentName
     private var activeMediaController: MediaController? = null
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
+    val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
 
     private var initialised = false
 
     fun init(context: Context) {
+
+        if (!NotificationListener.canAccessNotifications(context)) return
 
         if (initialised) return
 
@@ -38,12 +41,12 @@ object MediaListener {
         val activeSessions = msm.getActiveSessions(nls)
         val activeSession = activeSessions.find { isActive(it.playbackState) }
         activeMediaController = activeSession ?: activeSessions.firstOrNull()
-        onActiveSessionsChanged(context, activeSessions)
+        onActiveSessionsChanged(activeSessions)
 
         Log.d("MediaListener", "init $msm")
     }
 
-    fun destroy(context: Context) {
+    fun destroy() {
 
         if (!initialised) return
         internalCallbacks.forEach { (_, callback) ->
@@ -51,11 +54,10 @@ object MediaListener {
         }
         internalCallbacks.clear()
         initialised = false
-        updateTitle(context)
 
     }
 
-    private fun onActiveSessionsChanged(context: Context, controllers: List<MediaController?>?) {
+    private fun onActiveSessionsChanged(controllers: List<MediaController?>?) {
         val callbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
         controllers?.filterNotNull()?.forEach {
             Log.d(TAG, "Session: $it (${it.sessionToken})")
@@ -64,11 +66,13 @@ object MediaListener {
                 callbacks[it.sessionToken] = internalCallbacks[it.sessionToken]!!
             } else {
                 val callback = object : MediaController.Callback() {
-                    override fun onPlaybackStateChanged(state: PlaybackState?) =
-                        updateTitle(context, it.metadata)
+                    override fun onPlaybackStateChanged(state: PlaybackState?) {
+                        this@MediaListener.onPlaybackStateChanged(it, state)
+                        this@MediaListener.updateTitle(it, it.metadata)
+                    }
 
                     override fun onMetadataChanged(metadata: MediaMetadata?) =
-                        updateTitle(context, metadata)
+                        this@MediaListener.updateTitle(it, metadata)
                 }
 
                 it.registerCallback(callback)
@@ -93,20 +97,21 @@ object MediaListener {
         }
     }
 
-    private fun updateTitle(context: Context, metadata: MediaMetadata?) {
-        val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
-        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
-        val searchTerm = "${getMainTitle(title)} $artist"
-        CoroutineScope(Dispatchers.IO).launch {
-            SettingsDataStore.updateCurrentPlayingSong(context, searchTerm)
-            Log.d(TAG, "searchTerm: $searchTerm")
-        }
+    private fun onPlaybackStateChanged(controller: MediaController, state: PlaybackState?) {
+        if (isActive(state)) setActiveMediaSession(controller)
     }
 
-    private fun updateTitle(context: Context) {
+    private fun setActiveMediaSession(newActive: MediaController) {
+        activeMediaController = newActive
+        Log.d(TAG, "setActiveMediaSession $newActive")
+    }
+
+    private fun updateTitle(controller: MediaController ,metadata: MediaMetadata?) {
+        if (controller.sessionToken != activeMediaController?.sessionToken) return
+        val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
+        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
         CoroutineScope(Dispatchers.IO).launch {
-            SettingsDataStore.updateCurrentPlayingSong(context, "")
-            SettingsDataStore.updateSongAutofill(context, false)
+            songInfoFlow.emit(Pair(getMainTitle(title), artist))
         }
     }
 

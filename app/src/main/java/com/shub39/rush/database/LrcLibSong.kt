@@ -9,5 +9,5 @@ data class LrcLibSong (
     val duration: Double,
     val instrumental: Boolean,
     val plainLyrics: String,
-    val syncedLyrics: String
+    val syncedLyrics: String?
 )

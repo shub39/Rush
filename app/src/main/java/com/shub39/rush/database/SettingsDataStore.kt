@@ -2,7 +2,6 @@ package com.shub39.rush.database
 
 import android.content.Context
 import android.util.Log
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -20,8 +19,6 @@ object SettingsDataStore {
     private val MAX_LINES = intPreferencesKey("max_lines")
     private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
     private val SORT_ORDER = stringPreferencesKey("sort_order")
-    private val SONG_AUTOFILL = booleanPreferencesKey("song_autofill")
-    private val CURRENT_PLAYING_SONG = stringPreferencesKey("current_playing_song")
 
     fun getSortOrderFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -29,22 +26,6 @@ object SettingsDataStore {
         }
         .map { preferences ->
             preferences[SORT_ORDER] ?: "title_asc"
-        }
-
-    fun getSongAutofillFlow(context: Context): Flow<Boolean> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[SONG_AUTOFILL] ?: true
-        }
-
-    fun getCurrentPlayingSongFlow(context: Context): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[CURRENT_PLAYING_SONG] ?: ""
         }
 
     fun getToggleThemeFlow(context: Context): Flow<String> = context.dataStore.data
@@ -66,18 +47,6 @@ object SettingsDataStore {
     suspend fun updateSortOrder(context: Context, newSortOrder: String) {
         context.dataStore.edit { settings ->
             settings[SORT_ORDER] = newSortOrder
-        }
-    }
-
-    suspend fun updateSongAutofill(context: Context, newSongAutofill: Boolean) {
-        context.dataStore.edit { settings ->
-            settings[SONG_AUTOFILL] = newSongAutofill
-        }
-    }
-
-    suspend fun updateCurrentPlayingSong(context: Context, newCurrentPlayingSong: String) {
-        context.dataStore.edit { settings ->
-            settings[CURRENT_PLAYING_SONG] = newCurrentPlayingSong
         }
     }
 

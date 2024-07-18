@@ -45,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,7 +57,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.shub39.rush.R
 import com.shub39.rush.component.SearchResultCard
-import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -69,7 +67,6 @@ fun RushApp(
     navController: NavHostController,
     rushViewModel: RushViewModel = koinViewModel(),
 ) {
-    val context = LocalContext.current
     val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -78,8 +75,7 @@ fun RushApp(
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
-    val currentSong by SettingsDataStore.getCurrentPlayingSongFlow(context)
-        .collectAsState(initial = "")
+    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
 
     if (searchSheetState) {
         ModalBottomSheet(
@@ -175,7 +171,8 @@ fun RushApp(
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    state = LazyListState(0)
                 ) {
                     items(searchResults, key = { it.id }) {
                         SearchResultCard(
@@ -187,14 +184,12 @@ fun RushApp(
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
                                         rushViewModel.changeCurrentSong(it.id)
-                                        SettingsDataStore.updateSongAutofill(context, false)
                                     }
                                 } else {
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
                                         lazyListState.scrollToItem(0)
                                         rushViewModel.changeCurrentSong(it.id)
-                                        SettingsDataStore.updateSongAutofill(context, false)
                                     }
                                 }
                             },
@@ -228,7 +223,11 @@ fun RushApp(
                         searchSheetState = true
                     },
                     bottomSheetAutofill = {
-                        query = currentSong
+                        query = if (currentPlayingSong != null) {
+                            currentPlayingSong?.first + " " + currentPlayingSong?.second
+                        } else {
+                            ""
+                        }
                         searchSheetState = true
                     },
                     onPageChange = { page ->

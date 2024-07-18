@@ -9,7 +9,7 @@
 -keep class com.google.gson.** { *; }
 -dontwarn com.google.gson.**
 -keep class kotlinx.serialization.** { *; }
--keep class com.shub39.rush.genius.** { *; }
+-keep class com.shub39.rush.lyrics.** { *; }
 -keep class com.shub39.rush.database.** { *; }
 
 -keepclassmembers class * implements kotlinx.serialization.Serializable {
