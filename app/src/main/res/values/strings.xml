@@ -10,6 +10,7 @@
     <string name="suggestion">Maybe search for something?</string>
     <string name="downloaded">Saved lyrics</string>
     <string name="delete_all">Delete all lyrics</string>
+    <string name="notification">Notification Listener Service</string>
     <string name="unknown_album">Unknown album</string>
     <string name="width">Width</string>
     <string name="colors">Colors</string>

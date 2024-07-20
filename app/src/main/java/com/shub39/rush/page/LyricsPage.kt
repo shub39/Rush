@@ -47,6 +47,7 @@ import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
+import com.shub39.rush.ui.theme.Typography
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
@@ -117,11 +118,15 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
-//            if (nonNullSong.syncedLyrics != null && NotificationListener.canAccessNotifications(
-//                    context
-//                )
-//            ) {
+
+//            if (nonNullSong.syncedLyrics != null) {
 //                syncedLyrics = true
+//            }
+//
+//            if (syncedLyrics && (rushViewModel.currentPlayingSongInfo.value?.first
+//                    ?: "") == nonNullSong.title
+//            ) {
+//                syncLyrics = true
 //            }
         }
 
@@ -170,9 +175,9 @@ fun LyricsPage(
                     }
                     Row {
 //                        val iconColor = if (syncLyrics) {
-//                            IconButtonDefaults.iconButtonColors()
-//                        } else {
 //                            IconButtonDefaults.filledIconButtonColors()
+//                        } else {
+//                            IconButtonDefaults.iconButtonColors()
 //                        }
 //
 //                        if (syncedLyrics) {
@@ -283,7 +288,8 @@ fun LyricsPage(
                         Text(
                             text = "From $source",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            style = Typography.bodySmall
                         )
                     }
                 }
