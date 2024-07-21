@@ -28,7 +28,7 @@
 - [x] Download Lyrics
 - [x] Share Lyrics
 - [x] Customisations
-- [x] Auto-fill current playing song in search
+- [x] Auto-fill current playing song in search (Not working in some devices)
 - [ ] Synced Lyrics
 
 ## Why ❔
