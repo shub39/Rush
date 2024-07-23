@@ -1,5 +1,8 @@
 package com.shub39.rush.page
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -174,6 +177,28 @@ fun LyricsPage(
                         )
                     }
                     Row {
+                        IconButton(
+                            onClick = {
+                                if (selectedLines.isEmpty()) {
+                                    copyToClipBoard(
+                                        context,
+                                        nonNullSong.lyrics,
+                                        "Complete Lyrics"
+                                    )
+                                } else {
+                                    copyToClipBoard(
+                                        context,
+                                        selectedLines.values.joinToString("\n"),
+                                        "Selected Lyrics"
+                                    )
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_content_copy_24),
+                                contentDescription = null
+                            )
+                        }
 //                        val iconColor = if (syncLyrics) {
 //                            IconButtonDefaults.filledIconButtonColors()
 //                        } else {
@@ -191,19 +216,19 @@ fun LyricsPage(
 //                                )
 //                            }
 //                        }
-                        IconButton(
-                            onClick = {
-                                openLinkInBrowser(
-                                    context,
-                                    nonNullSong.sourceUrl
-                                )
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.genius),
-                                contentDescription = null
-                            )
-                        }
+//                        IconButton(
+//                            onClick = {
+//                                openLinkInBrowser(
+//                                    context,
+//                                    nonNullSong.sourceUrl
+//                                )
+//                            }
+//                        ) {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.genius),
+//                                contentDescription = null
+//                            )
+//                        }
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                             Row {
                                 IconButton(onClick = { isSharePageVisible = true }) {
@@ -317,6 +342,18 @@ fun LyricsPage(
                                 )
                             }
 
+                            FloatingActionButton(
+                                onClick = { openLinkInBrowser(context, nonNullSong.sourceUrl) },
+                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                shape = MaterialTheme.shapes.extraLarge,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.genius),
+                                    contentDescription = null
+                                )
+                            }
+
                             if (NotificationListener.canAccessNotifications(context)) {
                                 FloatingActionButton(
                                     onClick = { bottomSheetAutofill() },
@@ -381,4 +418,10 @@ private fun updateSelectedLines(
     } else {
         selectedLines.minus(key)
     }
+}
+
+private fun copyToClipBoard(context: Context, text: String, label: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(label, text)
+    clipboard.setPrimaryClip(clip)
 }

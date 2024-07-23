@@ -170,7 +170,7 @@ fun SharePage(
             ) {
                 Card(
                     modifier = Modifier.width(380.dp),
-                    shape = RoundedCornerShape(32.dp)
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
