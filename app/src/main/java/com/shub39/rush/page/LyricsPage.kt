@@ -23,7 +23,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -50,7 +48,6 @@ import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.Empty
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
-import com.shub39.rush.ui.theme.Typography
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
@@ -66,8 +63,6 @@ fun LyricsPage(
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
-//    var syncedLyrics by remember { mutableStateOf(false) }
-//    var syncLyrics by remember { mutableStateOf(false) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val coroutineScope = rememberCoroutineScope()
@@ -121,16 +116,10 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
+        }
 
-//            if (nonNullSong.syncedLyrics != null) {
-//                syncedLyrics = true
-//            }
-//
-//            if (syncedLyrics && (rushViewModel.currentPlayingSongInfo.value?.first
-//                    ?: "") == nonNullSong.title
-//            ) {
-//                syncLyrics = true
-//            }
+        LaunchedEffect(key1 = source) {
+            selectedLines = emptyMap()
         }
 
         Card(
@@ -188,7 +177,7 @@ fun LyricsPage(
                                 } else {
                                     copyToClipBoard(
                                         context,
-                                        selectedLines.values.joinToString("\n"),
+                                        selectedLines.toSortedMap().values.joinToString("\n"),
                                         "Selected Lyrics"
                                     )
                                 }
@@ -199,36 +188,23 @@ fun LyricsPage(
                                 contentDescription = null
                             )
                         }
-//                        val iconColor = if (syncLyrics) {
-//                            IconButtonDefaults.filledIconButtonColors()
-//                        } else {
-//                            IconButtonDefaults.iconButtonColors()
-//                        }
-//
-//                        if (syncedLyrics) {
-//                            IconButton(
-//                                onClick = { syncLyrics = !syncLyrics },
-//                                colors = iconColor
-//                            ) {
-//                                Icon(
-//                                    painter = painterResource(id = R.drawable.round_sync_24),
-//                                    contentDescription = null
-//                                )
-//                            }
-//                        }
-//                        IconButton(
-//                            onClick = {
-//                                openLinkInBrowser(
-//                                    context,
-//                                    nonNullSong.sourceUrl
-//                                )
-//                            }
-//                        ) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.genius),
-//                                contentDescription = null
-//                            )
-//                        }
+                        AnimatedVisibility(visible = selectedLines.isEmpty()) {
+                            IconButton(onClick = {
+                                source = if (source == "LrcLib") "Genius" else "LrcLib"
+                            }) {
+                                if (source == "Genius") {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_lyrics_24),
+                                        contentDescription = null
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.genius),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                             Row {
                                 IconButton(onClick = { isSharePageVisible = true }) {
@@ -250,9 +226,9 @@ fun LyricsPage(
             }
 
             val lyrics =
-                if (nonNullSong.lyrics.isNotEmpty()) {
+                if (source == "LrcLib" && nonNullSong.lyrics.isNotEmpty()) {
                     breakLyrics(nonNullSong.lyrics).entries.toList()
-                } else if (nonNullSong.geniusLyrics != null) {
+                } else if (source == "Genius" && nonNullSong.geniusLyrics != null) {
                     breakLyrics(nonNullSong.geniusLyrics).entries.toList()
                 } else {
                     emptyList()
@@ -304,18 +280,6 @@ fun LyricsPage(
                                 )
                             }
                         }
-                    }
-                }
-
-                if (source.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.padding(5.dp))
-                        Text(
-                            text = "From $source",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            style = Typography.bodySmall
-                        )
                     }
                 }
 
@@ -387,8 +351,19 @@ fun LyricsPage(
 
                 if (lyrics.isEmpty()) {
                     item {
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        Text(text = stringResource(id = R.string.no_lyrics))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_warning_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(100.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            Text(text = stringResource(id = R.string.no_lyrics))
+                        }
                     }
                 }
 

@@ -100,7 +100,7 @@ object SongProvider {
                 val lrcLib = lyricsFetcher.getLrcLibLyrics(title, artist) ?: Pair("", null)
                 val lyrics = lrcLib.first
                 val syncedLyrics = lrcLib.second
-                val geniusLyrics = if (lyrics.isEmpty()) lyricsFetcher.scrapeLyrics(sourceUrl) else null
+                val geniusLyrics = lyricsFetcher.scrapeLyrics(sourceUrl)
 
 
                 Result.success(
