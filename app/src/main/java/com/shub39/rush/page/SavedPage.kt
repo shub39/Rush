@@ -48,7 +48,7 @@ fun SavedPage(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val songs = rushViewModel.songs.collectAsState()
-    val lazyListState = rememberLazyListState()
+    val lazyListState = rememberLazyListState(0)
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
     val sortedSongs = when (sortOrder) {
