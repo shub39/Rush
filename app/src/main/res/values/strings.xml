@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Rush</string>
     <string name="search">Search lyrics</string>
     <string name="saved">Saved</string>
     <string name="settings">Settings</string>

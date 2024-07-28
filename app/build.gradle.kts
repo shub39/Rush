@@ -6,6 +6,8 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val appName = "Rush"
+
 android {
     namespace = "com.shub39.rush"
     compileSdk = 35
@@ -24,11 +26,16 @@ android {
     }
     buildTypes {
         release {
+            resValue("string", "app_name", appName)
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            resValue("string", "app_name", "$appName Debug")
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
