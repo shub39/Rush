@@ -33,6 +33,7 @@
 
 ## Why ❔
 Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
+Nevermind Lyrics are back on spotify 💀. 
 
 ## Screenshots 🌟
 
