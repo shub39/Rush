@@ -12,6 +12,7 @@ import com.shub39.rush.lyrics.SongProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,6 +29,7 @@ class RushViewModel(
     private val _currentPlayingSongInfo = MutableStateFlow<Pair<String, String>?>(null)
     private val _isSearchingLyrics = MutableStateFlow(false)
     private val _isFetchingLyrics = MutableStateFlow(false)
+    private val _currentSongPosition = MutableStateFlow(0L)
 
     val songs: StateFlow<List<Song>> get() = _songs
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
@@ -35,13 +37,19 @@ class RushViewModel(
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
+    val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
 
     init {
         viewModelScope.launch {
             _songs.value = songDao.getAllSongs()
             MediaListener.songInfoFlow.collect { songInfo ->
                 _currentPlayingSongInfo.value = songInfo
-                Log.d("RushViewModel", "songInfoFlow: $songInfo")
+            }
+        }
+        viewModelScope.launch {
+            MediaListener.songPositionFlow.collect { position ->
+                _currentSongPosition.value = position
+                Log.d("RushViewModel", "Position: $position")
             }
         }
     }

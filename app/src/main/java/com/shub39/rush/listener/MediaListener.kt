@@ -13,6 +13,7 @@ import androidx.core.content.getSystemService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 object MediaListener {
@@ -24,6 +25,7 @@ object MediaListener {
     private var activeMediaController: MediaController? = null
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
     val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
+    val songPositionFlow = MutableSharedFlow<Long>()
 
     private var initialised = false
 
@@ -103,7 +105,6 @@ object MediaListener {
 
     private fun setActiveMediaSession(newActive: MediaController) {
         activeMediaController = newActive
-        Log.d(TAG, "setActiveMediaSession $newActive")
     }
 
     private fun updateTitle(controller: MediaController ,metadata: MediaMetadata?) {
@@ -112,6 +113,7 @@ object MediaListener {
         val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
         CoroutineScope(Dispatchers.IO).launch {
             songInfoFlow.emit(Pair(getMainTitle(title), artist))
+            controller.playbackState?.position?.let { songPositionFlow.emit(it) }
         }
     }
 

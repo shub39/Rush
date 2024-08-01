@@ -23,6 +23,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,6 +63,8 @@ fun LyricsPage(
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val context = LocalContext.current
     var isSharePageVisible by remember { mutableStateOf(false) }
+    var syncedAvailable by remember { mutableStateOf(false) }
+    var sync by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
@@ -77,6 +80,9 @@ fun LyricsPage(
     }
 
     if (fetching) {
+
+        // TODO Better Loading Animation
+
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,7 +101,9 @@ fun LyricsPage(
                 )
             }
         }
+
     } else if (song == null) {
+
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +115,9 @@ fun LyricsPage(
         ) {
             Empty()
         }
+
     } else {
+
         val nonNullSong = song!!
 
         LaunchedEffect(nonNullSong) {
@@ -116,9 +126,13 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
+            if (nonNullSong.syncedLyrics != null) {
+                syncedAvailable = true
+                sync = true
+            }
         }
 
-        LaunchedEffect(key1 = source) {
+        LaunchedEffect(source) {
             selectedLines = emptyMap()
         }
 
@@ -203,6 +217,19 @@ fun LyricsPage(
                                         contentDescription = null
                                     )
                                 }
+                            }
+                        }
+                        AnimatedVisibility(
+                            visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib"
+                        ) {
+                            IconButton(
+                                onClick = { sync = !sync },
+                                colors = if (sync) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_sync_24),
+                                    contentDescription = null
+                                )
                             }
                         }
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
