@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,9 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -37,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +44,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
-import com.shub39.rush.component.Empty
+import com.shub39.rush.component.EmptyCard
+import com.shub39.rush.component.LoadingCard
+import com.shub39.rush.database.Lyric
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.viewmodel.RushViewModel
@@ -68,6 +68,8 @@ fun LyricsPage(
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
+    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     if (isSharePageVisible) {
@@ -81,44 +83,23 @@ fun LyricsPage(
 
     if (fetching) {
 
-        // TODO Better Loading Animation
-
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    strokeCap = StrokeCap.Round
-                )
-            }
-        }
+        LoadingCard()
 
     } else if (song == null) {
 
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        ) {
-            Empty()
-        }
+        EmptyCard()
 
     } else {
 
         val nonNullSong = song!!
+        val lyrics =
+            if (source == "LrcLib" && nonNullSong.lyrics.isNotEmpty()) {
+                breakLyrics(nonNullSong.lyrics).entries.toList()
+            } else if (source == "Genius" && nonNullSong.geniusLyrics != null) {
+                breakLyrics(nonNullSong.geniusLyrics).entries.toList()
+            } else {
+                emptyList()
+            }
 
         LaunchedEffect(nonNullSong) {
             if (nonNullSong.lyrics.isNotEmpty()) {
@@ -126,10 +107,19 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
-            if (nonNullSong.syncedLyrics != null) {
+            if (
+                nonNullSong.syncedLyrics != null
+                && (currentPlayingSong?.first ?: "") == nonNullSong.title
+            ) {
                 syncedAvailable = true
                 sync = true
             }
+        }
+
+        LaunchedEffect(currentPlayingSong) {
+            syncedAvailable = (nonNullSong.syncedLyrics != null
+                    && (currentPlayingSong?.first ?: "") == nonNullSong.title)
+            sync = syncedAvailable
         }
 
         LaunchedEffect(source) {
@@ -205,6 +195,7 @@ fun LyricsPage(
                         AnimatedVisibility(visible = selectedLines.isEmpty()) {
                             IconButton(onClick = {
                                 source = if (source == "LrcLib") "Genius" else "LrcLib"
+                                sync = false
                             }) {
                                 if (source == "Genius") {
                                     Icon(
@@ -252,148 +243,189 @@ fun LyricsPage(
                 }
             }
 
-            val lyrics =
-                if (source == "LrcLib" && nonNullSong.lyrics.isNotEmpty()) {
-                    breakLyrics(nonNullSong.lyrics).entries.toList()
-                } else if (source == "Genius" && nonNullSong.geniusLyrics != null) {
-                    breakLyrics(nonNullSong.geniusLyrics).entries.toList()
-                } else {
-                    emptyList()
+            if (!sync && (source == "LrcLib" || source == "Genius")) {
+                LazyColumn(
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
+                    state = lazyListState
+                ) {
+                    items(lyrics, key = { it.key }) {
+                        if (it.value.isNotBlank()) {
+                            val isSelected = selectedLines.contains(it.key)
+                            val color = if (!isSelected) {
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            } else {
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Card(
+                                    modifier = Modifier
+                                        .padding(3.dp),
+                                    onClick = {
+                                        selectedLines = updateSelectedLines(
+                                            selectedLines,
+                                            it.key,
+                                            it.value,
+                                            maxLinesFlow
+                                        )
+                                        isSelected != isSelected
+                                    },
+                                    shape = MaterialTheme.shapes.small,
+                                    colors = color
+                                ) {
+                                    Text(
+                                        text = it.value,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(6.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    if (lyrics.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                FloatingActionButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            lazyListState.scrollToItem(0)
+                                        }
+                                    },
+                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                    shape = MaterialTheme.shapes.extraLarge,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_arrow_upward_24),
+                                        contentDescription = null,
+                                    )
+                                }
+
+                                FloatingActionButton(
+                                    onClick = { openLinkInBrowser(context, nonNullSong.sourceUrl) },
+                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                    shape = MaterialTheme.shapes.extraLarge,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.genius),
+                                        contentDescription = null
+                                    )
+                                }
+
+                                if (NotificationListener.canAccessNotifications(context)) {
+                                    FloatingActionButton(
+                                        onClick = { bottomSheetAutofill() },
+                                        elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                        shape = MaterialTheme.shapes.extraLarge,
+                                        containerColor = MaterialTheme.colorScheme.primary
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.round_play_arrow_24),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+
+                                FloatingActionButton(
+                                    onClick = { bottomSheet() },
+                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                                    shape = MaterialTheme.shapes.extraLarge,
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_search_24),
+                                        contentDescription = null
+                                    )
+                                }
+
+                            }
+                            Spacer(modifier = Modifier.padding(10.dp))
+                        }
+                    }
+
+                    if (lyrics.isEmpty()) {
+                        item {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.padding(10.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_warning_24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(100.dp)
+                                )
+                                Spacer(modifier = Modifier.padding(10.dp))
+                                Text(text = stringResource(id = R.string.no_lyrics))
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                val syncedLazyList = rememberLazyListState()
+                val parsedSyncedLyrics = parseLyrics(nonNullSong.syncedLyrics!!)
+
+                LaunchedEffect(currentSongPosition) {
+                    coroutineScope.launch {
+                        val currentIndex =
+                            getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
+                        syncedLazyList.animateScrollToItem(currentIndex)
+                    }
                 }
 
-            LazyColumn(
-                modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
-                state = lazyListState
-            ) {
-                items(lyrics, key = { it.key }) {
-                    if (it.value.isNotBlank()) {
-                        val isSelected = selectedLines.contains(it.key)
-                        val color = if (!isSelected) {
-                            CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        } else {
-                            CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-
+                LazyColumn(
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
+                    state = syncedLazyList
+                ) {
+                    items(parsedSyncedLyrics, key = { it.time }) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
                             Card(
                                 modifier = Modifier
-                                    .padding(3.dp),
-                                onClick = {
-                                    selectedLines = updateSelectedLines(
-                                        selectedLines,
-                                        it.key,
-                                        it.value,
-                                        maxLinesFlow
+                                    .padding(6.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            ) {
+                                if (it.text.isNotEmpty()) {
+                                    Text(
+                                        text = it.text,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(6.dp)
                                     )
-                                    isSelected != isSelected
-                                },
-                                shape = MaterialTheme.shapes.small,
-                                colors = color
-                            ) {
-                                Text(
-                                    text = it.value,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(6.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (lyrics.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            FloatingActionButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        lazyListState.scrollToItem(0)
-                                    }
-                                },
-                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                shape = MaterialTheme.shapes.extraLarge,
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.round_arrow_upward_24),
-                                    contentDescription = null,
-                                )
-                            }
-
-                            FloatingActionButton(
-                                onClick = { openLinkInBrowser(context, nonNullSong.sourceUrl) },
-                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                shape = MaterialTheme.shapes.extraLarge,
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.genius),
-                                    contentDescription = null
-                                )
-                            }
-
-                            if (NotificationListener.canAccessNotifications(context)) {
-                                FloatingActionButton(
-                                    onClick = { bottomSheetAutofill() },
-                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    containerColor = MaterialTheme.colorScheme.primary
-                                ) {
+                                } else {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.round_play_arrow_24),
-                                        contentDescription = null
+                                        painter = painterResource(id = R.drawable.round_music_note_24),
+                                        contentDescription = null,
+                                        modifier = Modifier.padding(6.dp)
                                     )
                                 }
                             }
-
-                            FloatingActionButton(
-                                onClick = { bottomSheet() },
-                                elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                shape = MaterialTheme.shapes.extraLarge,
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.round_search_24),
-                                    contentDescription = null
-                                )
-                            }
-
-                        }
-                        Spacer(modifier = Modifier.padding(10.dp))
-                    }
-                }
-
-                if (lyrics.isEmpty()) {
-                    item {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(modifier = Modifier.padding(10.dp))
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_warning_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(100.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(10.dp))
-                            Text(text = stringResource(id = R.string.no_lyrics))
                         }
                     }
-                }
 
+                }
             }
         }
 
@@ -426,4 +458,27 @@ private fun copyToClipBoard(context: Context, text: String, label: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText(label, text)
     clipboard.setPrimaryClip(clip)
+}
+
+fun parseLyrics(lyricsString: String): List<Lyric> {
+    return lyricsString.lines().mapNotNull { line ->
+        val parts = line.split("] ")
+        if (parts.size == 2) {
+            val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
+                minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
+            }
+            val text = parts[1]
+            Lyric(time, text)
+        } else {
+            null
+        }
+    }
+}
+
+private fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
+    return if (lyrics.indexOfLast { it.time <= playbackPosition } < 0) {
+        0
+    } else {
+        lyrics.indexOfLast { it.time <= playbackPosition }
+    }
 }
