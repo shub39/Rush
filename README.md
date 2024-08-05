@@ -28,8 +28,8 @@
 - [x] Download Lyrics
 - [x] Share Lyrics
 - [x] Customisations
-- [x] Auto-fill current playing song in search (Not working in some devices)
-- [ ] Synced Lyrics
+- [x] Auto-fill current playing song in search 
+- [x] Synced Lyrics
 
 ## Why ❔
 Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
@@ -47,6 +47,7 @@ Nevermind Lyrics are back on spotify 💀.
 
 
 ## References and Inspiration 💡
+
 - [Fastlyrics](https://github.com/TecCheck/FastLyrics)
   
 - [SongSync](https://github.com/Lambada10/SongSync)
@@ -66,3 +67,5 @@ Nevermind Lyrics are back on spotify 💀.
 - Dependency injection using Koin
 
 - Fuel and Jsoup for scraping
+
+- Coil
