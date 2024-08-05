@@ -44,6 +44,7 @@ class RushViewModel(
             _songs.value = songDao.getAllSongs()
             MediaListener.songInfoFlow.collect { songInfo ->
                 _currentPlayingSongInfo.value = songInfo
+                Log.d("RushViewModel", "SongInfo: $songInfo")
             }
         }
         viewModelScope.launch {

@@ -71,8 +71,8 @@ object LyricsFetcher {
             val jsonSong = response.body()
             if (!jsonSong.isNullOrEmpty()) {
                 val song = jsonSong[0]
-                val lyrics = song.plainLyrics
-                val syncedLyrics = song.syncedLyrics
+                val lyrics = song.plainLyrics ?: jsonSong[1].plainLyrics ?: ""
+                val syncedLyrics = song.syncedLyrics ?: if (jsonSong.size > 1) jsonSong[1].syncedLyrics else null
                 return Pair(lyrics, syncedLyrics)
             }
         }

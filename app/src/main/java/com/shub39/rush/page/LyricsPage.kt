@@ -109,7 +109,10 @@ fun LyricsPage(
             }
             if (
                 nonNullSong.syncedLyrics != null
-                && (currentPlayingSong?.first ?: "") == nonNullSong.title
+                &&
+                (currentPlayingSong?.first ?: "").trim()
+                    .lowercase() == nonNullSong.title.trim()
+                    .lowercase()
             ) {
                 syncedAvailable = true
                 sync = true
@@ -117,8 +120,11 @@ fun LyricsPage(
         }
 
         LaunchedEffect(currentPlayingSong) {
-            syncedAvailable = (nonNullSong.syncedLyrics != null
-                    && (currentPlayingSong?.first ?: "") == nonNullSong.title)
+            syncedAvailable = (
+                    nonNullSong.syncedLyrics != null
+                            && (currentPlayingSong?.first ?: "").trim()
+                        .lowercase() == nonNullSong.title.trim().lowercase()
+                    )
             sync = syncedAvailable
         }
 
@@ -378,9 +384,9 @@ fun LyricsPage(
                     }
 
                 }
-            } else {
+            } else if (nonNullSong.syncedLyrics != null) {
                 val syncedLazyList = rememberLazyListState()
-                val parsedSyncedLyrics = parseLyrics(nonNullSong.syncedLyrics!!)
+                val parsedSyncedLyrics = parseLyrics(nonNullSong.syncedLyrics)
 
                 LaunchedEffect(currentSongPosition) {
                     coroutineScope.launch {
@@ -394,22 +400,30 @@ fun LyricsPage(
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
                     state = syncedLazyList
                 ) {
-                    items(parsedSyncedLyrics, key = { it.time }) {
+                    items(parsedSyncedLyrics, key = { it.time }) { lyric ->
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Card(
-                                modifier = Modifier
-                                    .padding(6.dp),
-                                colors = CardDefaults.cardColors(
+                            val color = if (lyric.time <= currentSongPosition + 2000) {
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
-                            ) {
-                                if (it.text.isNotEmpty()) {
+                            }
+
+                            Card(
+                                modifier = Modifier.padding(6.dp),
+                                colors = color,
+                                shape = MaterialTheme.shapes.small,
+                                ) {
+                                if (lyric.text.isNotEmpty()) {
                                     Text(
-                                        text = it.text,
+                                        text = lyric.text,
                                         style = MaterialTheme.typography.bodyLarge,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(6.dp)
@@ -417,14 +431,12 @@ fun LyricsPage(
                                 } else {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_music_note_24),
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(6.dp)
+                                        contentDescription = null
                                     )
                                 }
                             }
                         }
                     }
-
                 }
             }
         }
