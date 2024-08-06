@@ -107,25 +107,33 @@ fun LyricsPage(
             } else if (nonNullSong.geniusLyrics != null) {
                 source = "Genius"
             }
-            if (
-                nonNullSong.syncedLyrics != null
-                &&
-                (currentPlayingSong?.first ?: "").trim()
-                    .lowercase() == nonNullSong.title.trim()
-                    .lowercase()
-            ) {
+
+            if (nonNullSong.syncedLyrics != null) {
                 syncedAvailable = true
-                sync = true
+                if (
+                    (currentPlayingSong?.first ?: "").trim()
+                        .lowercase() == nonNullSong.title.trim()
+                        .lowercase()
+                ) {
+                    sync = true
+                }
             }
         }
 
         LaunchedEffect(currentPlayingSong) {
-            syncedAvailable = (
-                    nonNullSong.syncedLyrics != null
-                            && (currentPlayingSong?.first ?: "").trim()
-                        .lowercase() == nonNullSong.title.trim().lowercase()
-                    )
-            sync = syncedAvailable
+            syncedAvailable = (nonNullSong.syncedLyrics != null)
+
+            if (currentSongPosition == 0L) {
+                sync = false
+            }
+
+            if (
+                (currentPlayingSong?.first ?: "").trim()
+                    .lowercase() == nonNullSong.title.trim()
+                    .lowercase()
+            ) {
+                sync = true
+            }
         }
 
         LaunchedEffect(source) {
@@ -420,7 +428,7 @@ fun LyricsPage(
                                 modifier = Modifier.padding(6.dp),
                                 colors = color,
                                 shape = MaterialTheme.shapes.small,
-                                ) {
+                            ) {
                                 if (lyric.text.isNotEmpty()) {
                                     Text(
                                         text = lyric.text,
