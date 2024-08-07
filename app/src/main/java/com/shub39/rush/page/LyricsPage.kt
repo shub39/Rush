@@ -123,17 +123,9 @@ fun LyricsPage(
         LaunchedEffect(currentPlayingSong) {
             syncedAvailable = (nonNullSong.syncedLyrics != null)
 
-            if (currentSongPosition == 0L) {
-                sync = false
-            }
-
-            if (
-                (currentPlayingSong?.first ?: "").trim()
-                    .lowercase() == nonNullSong.title.trim()
-                    .lowercase()
-            ) {
-                sync = true
-            }
+            sync = (currentPlayingSong?.first ?: "").trim()
+                .lowercase() == nonNullSong.title.trim()
+                .lowercase() && syncedAvailable
         }
 
         LaunchedEffect(source) {
@@ -406,7 +398,8 @@ fun LyricsPage(
 
                 LazyColumn(
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
-                    state = syncedLazyList
+                    state = syncedLazyList,
+                    userScrollEnabled = false
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
                         Row(
