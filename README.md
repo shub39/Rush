@@ -69,3 +69,10 @@ Nevermind Lyrics are back on spotify 💀.
 - Fuel and Jsoup for scraping
 
 - Coil
+
+## Support 💕
+If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
+
+[<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/BMC.svg"
+	  alt='Donate with BMC'
+	  height="80">](https://www.buymeacoffee.com/shub39)	
