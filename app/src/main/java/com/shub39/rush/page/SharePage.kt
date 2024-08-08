@@ -29,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
+import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.database.Song
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -77,11 +79,11 @@ fun SharePage(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
-    var cardWidthType by remember { mutableStateOf("Small") }
-    var cardCornersType by remember { mutableStateOf("Rounded") }
-    var cardColorType by remember { mutableStateOf("Vibrant") }
     var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val cardWidthType by SettingsDataStore.getCardWidthFlow(context).collectAsState(initial = "Medium")
+    val cardColorType by SettingsDataStore.getCardColorFlow(context).collectAsState(initial = "Default")
+    val cardCornersType by SettingsDataStore.getCardRoundnessFlow(context).collectAsState(initial = "Rounded")
     val sortedLines = sortMapByKeys(selectedLines)
 
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
@@ -187,7 +189,9 @@ fun SharePage(
                                     label = { Text(text = width) },
                                     selected = cardWidthType == width,
                                     onClick = {
-                                        cardWidthType = width
+                                        coroutineScope.launch {
+                                            SettingsDataStore.updateCardWidth(context, width)
+                                        }
                                     },
                                     shape = when (index) {
                                         0 -> RoundedCornerShape(
@@ -213,7 +217,9 @@ fun SharePage(
                                     label = { Text(text = color) },
                                     selected = cardColorType == color,
                                     onClick = {
-                                        cardColorType = color
+                                        coroutineScope.launch {
+                                            SettingsDataStore.updateCardColor(context, color)
+                                        }
                                     },
                                     shape = when (index) {
                                         0 -> RoundedCornerShape(
@@ -242,10 +248,12 @@ fun SharePage(
                             Switch(
                                 checked = cardCornersType == "Rounded",
                                 onCheckedChange = {
-                                    cardCornersType = if (cardCornersType == "Rounded") {
-                                        "Rectangle"
-                                    } else {
-                                        "Rounded"
+                                    coroutineScope.launch {
+                                        if (cardCornersType == "Rounded") {
+                                            SettingsDataStore.updateCardRoundness(context, "Flat")
+                                        } else {
+                                            SettingsDataStore.updateCardRoundness(context, "Rounded")
+                                        }
                                     }
                                 }
                             )
@@ -380,7 +388,7 @@ private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     return sortedMap
 }
 
-private fun shareImage(context: Context, bitmap: Bitmap) {
+fun shareImage(context: Context, bitmap: Bitmap) {
     val cachePath = File(context.cacheDir, "images")
     cachePath.mkdirs()
     val file = File(cachePath, "shared_image.png")

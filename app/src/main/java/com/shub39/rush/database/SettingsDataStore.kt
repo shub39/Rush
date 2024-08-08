@@ -19,6 +19,33 @@ object SettingsDataStore {
     private val MAX_LINES = intPreferencesKey("max_lines")
     private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
     private val SORT_ORDER = stringPreferencesKey("sort_order")
+    private val CARD_COLOR = stringPreferencesKey("card_color")
+    private val CARD_WIDTH = stringPreferencesKey("card_width")
+    private val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
+
+    fun getCardColorFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_COLOR] ?: "Vibrant"
+        }
+
+    fun getCardWidthFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_WIDTH] ?: "Small"
+        }
+
+    fun getCardRoundnessFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_ROUNDNESS] ?: "Rounded"
+        }
 
     fun getSortOrderFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -47,6 +74,24 @@ object SettingsDataStore {
     suspend fun updateSortOrder(context: Context, newSortOrder: String) {
         context.dataStore.edit { settings ->
             settings[SORT_ORDER] = newSortOrder
+        }
+    }
+
+    suspend fun updateCardColor(context: Context, newCardColor: String) {
+        context.dataStore.edit { settings ->
+            settings[CARD_COLOR] = newCardColor
+        }
+    }
+
+    suspend fun updateCardWidth(context: Context, newCardWidth: String) {
+        context.dataStore.edit { settings ->
+            settings[CARD_WIDTH] = newCardWidth
+        }
+    }
+
+    suspend fun updateCardRoundness(context: Context, newCardRoundness: String) {
+        context.dataStore.edit { settings ->
+            settings[CARD_ROUNDNESS] = newCardRoundness
         }
     }
 

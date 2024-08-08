@@ -4,6 +4,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -70,6 +77,7 @@ fun LyricsPage(
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
     val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
+    val artGraphicsLayer = rememberGraphicsLayer()
     val coroutineScope = rememberCoroutineScope()
 
     if (isSharePageVisible) {
@@ -148,7 +156,26 @@ fun LyricsPage(
                     imageUrl = nonNullSong.artUrl,
                     modifier = Modifier
                         .size(150.dp)
-                        .clip(MaterialTheme.shapes.small),
+                        .clip(MaterialTheme.shapes.small)
+                        .drawWithContent {
+                            artGraphicsLayer.record {
+                                this@drawWithContent.drawContent()
+                            }
+                            drawLayer(artGraphicsLayer)
+                        }
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = {
+                                    coroutineScope.launch {
+                                        val bitmap =
+                                            artGraphicsLayer
+                                                .toImageBitmap()
+                                                .asAndroidBitmap()
+                                        shareImage(context, bitmap)
+                                    }
+                                }
+                            )
+                        },
                 )
                 Column(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -405,21 +432,34 @@ fun LyricsPage(
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            val color = if (lyric.time <= currentSongPosition + 2000) {
-                                CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
+                            val targetContainerColor =
+                                if (lyric.time <= currentSongPosition + 2000) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                }
+
+                            val targetContentColor = if (lyric.time <= currentSongPosition + 2000) {
+                                MaterialTheme.colorScheme.onPrimary
                             } else {
-                                CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                                MaterialTheme.colorScheme.onPrimaryContainer
                             }
+
+                            val containerColor by animateColorAsState(
+                                targetValue = targetContainerColor,
+                                label = "container"
+                            )
+                            val contentColor by animateColorAsState(
+                                targetValue = targetContentColor,
+                                label = "content"
+                            )
 
                             Card(
                                 modifier = Modifier.padding(6.dp),
-                                colors = color,
+                                colors = CardDefaults.cardColors(
+                                    containerColor = containerColor,
+                                    contentColor = contentColor
+                                ),
                                 shape = MaterialTheme.shapes.small,
                             ) {
                                 if (lyric.text.isNotEmpty()) {
