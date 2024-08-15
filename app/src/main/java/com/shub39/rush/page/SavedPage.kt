@@ -51,14 +51,20 @@ fun SavedPage(
     val lazyListState = rememberLazyListState(0)
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
-    val sortedSongs = when (sortOrder) {
-        "title_asc" -> songs.value.sortedBy { it.title }
-        else -> songs.value.sortedByDescending { it.title }
+    val sortedSongs = remember(songs.value, sortOrder) {
+        when (sortOrder) {
+            "title_asc" -> songs.value.sortedBy { it.title }
+            else -> songs.value.sortedByDescending { it.title }
+        }
     }
-    val groupedSongs = when (sortOrder) {
-        "artists_asc" -> songs.value.groupBy { it.artists }
-        else -> songs.value.groupBy { it.album ?: stringResource(id = R.string.unknown_album) }
+    val unknownAlbum = stringResource(id = R.string.unknown_album)
+    val groupedSongs = remember(sortedSongs, sortOrder) {
+        when (sortOrder) {
+            "artists_asc" -> sortedSongs.groupBy { it.artists }.entries.toList()
+            else -> sortedSongs.groupBy { it.album ?: unknownAlbum }.entries.toList()
+        }
     }
+    val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -72,7 +78,7 @@ fun SavedPage(
                 LazyRow(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                 ) {
-                    items(SortOrder.entries.toTypedArray(), key = { it.textId }) {
+                    items(sortOrderChips, key = { it.textId }) {
                         FilterChip(
                             selected = it.sortOrder == sortOrder,
                             onClick = {
@@ -118,7 +124,7 @@ fun SavedPage(
                             .animateContentSize(),
                         state = lazyListState,
                     ) {
-                        items(groupedSongs.entries.toList(), key = { it.key }) { map ->
+                        items(groupedSongs, key = { it.key }) { map ->
                             GroupedCard(
                                 map = map,
                                 isExpanded = expandedCardId == map.key,

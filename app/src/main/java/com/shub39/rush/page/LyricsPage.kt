@@ -100,14 +100,19 @@ fun LyricsPage(
     } else {
 
         val nonNullSong = song!!
-        val lyrics =
-            if (source == "LrcLib" && nonNullSong.lyrics.isNotEmpty()) {
-                breakLyrics(nonNullSong.lyrics).entries.toList()
-            } else if (source == "Genius" && nonNullSong.geniusLyrics != null) {
-                breakLyrics(nonNullSong.geniusLyrics).entries.toList()
-            } else {
-                emptyList()
+        val lyrics = remember(nonNullSong, source) {
+            when {
+                source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
+                    breakLyrics(nonNullSong.lyrics).entries.toList()
+                }
+                source == "Genius" && nonNullSong.geniusLyrics != null -> {
+                    breakLyrics(nonNullSong.geniusLyrics).entries.toList()
+                }
+                else -> {
+                    emptyList()
+                }
             }
+        }
 
         LaunchedEffect(nonNullSong) {
             if (nonNullSong.lyrics.isNotEmpty()) {
@@ -413,7 +418,7 @@ fun LyricsPage(
                 }
             } else if (nonNullSong.syncedLyrics != null) {
                 val syncedLazyList = rememberLazyListState()
-                val parsedSyncedLyrics = parseLyrics(nonNullSong.syncedLyrics)
+                val parsedSyncedLyrics = remember { parseLyrics(nonNullSong.syncedLyrics) }
 
                 LaunchedEffect(currentSongPosition) {
                     coroutineScope.launch {
