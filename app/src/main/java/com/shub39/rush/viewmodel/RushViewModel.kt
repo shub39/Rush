@@ -10,9 +10,10 @@ import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.lyrics.SongProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -32,6 +33,18 @@ class RushViewModel(
     private val _currentSongPosition = MutableStateFlow(0L)
 
     val songs: StateFlow<List<Song>> get() = _songs
+    val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
+    val songsSortedDesc: Flow<List<Song>> get() = _songs.map { it -> it.sortedByDescending { it.title } }
+    val songsGroupedArtists: Flow<List<Map.Entry<String, List<Song>>>>
+        get() =
+            _songs.map { songsList ->
+                songsList.groupBy { it.artists }.entries.toList()
+            }
+    val songsGroupedAlbums: Flow<List<Map.Entry<String, List<Song>>>>
+        get() =
+            _songs.map { songsList ->
+                songsList.groupBy { it.album ?: "???" }.entries.toList()
+            }
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo

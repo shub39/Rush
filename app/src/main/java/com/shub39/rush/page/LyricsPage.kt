@@ -430,8 +430,7 @@ fun LyricsPage(
 
                 LazyColumn(
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
-                    state = syncedLazyList,
-                    userScrollEnabled = false
+                    state = syncedLazyList
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
                         Row(

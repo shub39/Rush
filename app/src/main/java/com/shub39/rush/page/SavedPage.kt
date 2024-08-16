@@ -51,25 +51,20 @@ fun SavedPage(
     val lazyListState = rememberLazyListState(0)
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
-    val sortedSongs = remember(songs.value, sortOrder) {
-        when (sortOrder) {
-            "title_asc" -> songs.value.sortedBy { it.title }
-            else -> songs.value.sortedByDescending { it.title }
-        }
+    val sortedSongs = when (sortOrder) {
+        "title_asc" -> rushViewModel.songsSortedAsc.collectAsState(initial = emptyList()).value
+        else -> rushViewModel.songsSortedDesc.collectAsState(initial = emptyList()).value
     }
-    val unknownAlbum = stringResource(id = R.string.unknown_album)
-    val groupedSongs = remember(sortedSongs, sortOrder) {
-        when (sortOrder) {
-            "artists_asc" -> sortedSongs.groupBy { it.artists }.entries.toList()
-            else -> sortedSongs.groupBy { it.album ?: unknownAlbum }.entries.toList()
-        }
+    val groupedSongs = when (sortOrder) {
+        "artists_asc" -> rushViewModel.songsGroupedArtists.collectAsState(initial = emptyList()).value
+        else -> rushViewModel.songsGroupedAlbums.collectAsState(initial = emptyList()).value
     }
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (sortedSongs.isEmpty()) {
+        if (sortedSongs.isEmpty() && songs.value.isEmpty()) {
             Empty()
         } else {
             Column(
@@ -77,6 +72,7 @@ fun SavedPage(
             ) {
                 LazyRow(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                        .animateContentSize()
                 ) {
                     items(sortOrderChips, key = { it.textId }) {
                         FilterChip(
