@@ -295,6 +295,7 @@ fun SharePage(
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         ArtFromUrl(
                             imageUrl = song.artUrl,
@@ -336,7 +337,7 @@ fun SharePage(
                                     text = it.value,
                                     style = MaterialTheme.typography.bodyLarge,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, bottom = 8.dp, end = 8.dp)
                                 )
                             }
                         }

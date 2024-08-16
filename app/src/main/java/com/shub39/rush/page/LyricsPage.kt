@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -154,60 +157,65 @@ fun LyricsPage(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-            ) {
-                ArtFromUrl(
-                    imageUrl = nonNullSong.artUrl,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .drawWithContent {
-                            artGraphicsLayer.record {
-                                this@drawWithContent.drawContent()
-                            }
-                            drawLayer(artGraphicsLayer)
-                        }
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = {
-                                    coroutineScope.launch {
-                                        val bitmap =
-                                            artGraphicsLayer
-                                                .toImageBitmap()
-                                                .asAndroidBitmap()
-                                        shareImage(context, bitmap)
-                                    }
-                                }
-                            )
-                        },
-                )
-                Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            Column {
+                Row(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = nonNullSong.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                    ArtFromUrl(
+                        imageUrl = nonNullSong.artUrl,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .drawWithContent {
+                                artGraphicsLayer.record {
+                                    this@drawWithContent.drawContent()
+                                }
+                                drawLayer(artGraphicsLayer)
+                            }
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = {
+                                        coroutineScope.launch {
+                                            val bitmap =
+                                                artGraphicsLayer
+                                                    .toImageBitmap()
+                                                    .asAndroidBitmap()
+                                            shareImage(context, bitmap)
+                                        }
+                                    }
+                                )
+                            },
                     )
-                    Text(
-                        text = nonNullSong.artists,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    nonNullSong.album?.let {
+                    Column(
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    ) {
                         Text(
-                            text = it,
+                            text = nonNullSong.title,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = nonNullSong.artists,
                             style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+                        nonNullSong.album?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
-                    Row {
+                }
+                Box(modifier = Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.CenterEnd){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = {
                                 if (selectedLines.isEmpty()) {
@@ -271,7 +279,7 @@ fun LyricsPage(
                                 }
                                 IconButton(onClick = { selectedLines = emptyMap() }) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.round_delete_forever_24),
+                                        imageVector = Icons.Rounded.Clear,
                                         contentDescription = null
                                     )
                                 }
