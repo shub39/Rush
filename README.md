@@ -68,7 +68,7 @@ Nevermind Lyrics are back on spotify 💀.
 
 - Fuel and Jsoup for scraping
 
-- Coil
+- Coil for Images
 
 ## Support 💕
 If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
