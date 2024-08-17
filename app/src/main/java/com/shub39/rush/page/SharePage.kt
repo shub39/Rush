@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -186,14 +187,14 @@ fun SharePage(
                             ) {
                                 Text(
                                     text = song.title,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.ExtraBold,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = song.artists,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
@@ -208,7 +209,7 @@ fun SharePage(
                                 item {
                                     Text(
                                         text = it.value,
-                                        style = MaterialTheme.typography.bodyLarge,
+                                        style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(bottom = 10.dp)
                                     )
@@ -218,12 +219,22 @@ fun SharePage(
 
                         Spacer(modifier = Modifier.padding(8.dp))
 
-                        AnimatedVisibility (logo == "Spotify") {
-                            Icon(
-                                painter = painterResource(id = R.drawable.spotify_logo_with_text),
-                                contentDescription = null,
-                                modifier = Modifier.width(100.dp)
-                            )
+                        AnimatedVisibility (logo == "Rush") {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.rush_transparent),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(36.dp)
+                                )
+
+                                Text(
+                                    text = stringResource(id = R.string.app_name),
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         }
                     }
                 }
@@ -290,17 +301,18 @@ fun SharePage(
                         onClick = {
                             coroutineScope.launch {
                                 when (logo) {
-                                    "Spotify" -> SettingsDataStore.updateLogo(context, "None")
-                                    else -> SettingsDataStore.updateLogo(context, "Spotify")
+                                    "Rush" -> SettingsDataStore.updateLogo(context, "None")
+                                    else -> SettingsDataStore.updateLogo(context, "Rush")
                                 }
                             }
                         },
-                        containerColor = if (logo == "Spotify") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = if (logo == "Rush") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.spotify_logo_svgrepo_com),
-                            contentDescription = null
+                            painter = painterResource(id = R.drawable.rush_transparent),
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp)
                         )
                     }
 

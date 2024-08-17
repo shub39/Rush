@@ -1,1 +1,1 @@
-App to search, view, save and share lyrics like spotify!
+App to search, view, save and share lyrics
