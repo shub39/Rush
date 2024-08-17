@@ -248,7 +248,7 @@ fun RushApp(
                             lazyListState.scrollToItem(0)
                         }
                     },
-                    rushViewModel = rushViewModel
+                    rushViewModel = rushViewModel,
                 )
             }
             composable("settings") {
@@ -278,7 +278,7 @@ fun RushPager(
                 lazyListState = lazyListState,
                 rushViewModel = rushViewModel,
                 bottomSheet = bottomSheet,
-                bottomSheetAutofill = bottomSheetAutofill
+                bottomSheetAutofill = bottomSheetAutofill,
             )
 
             1 -> SavedPage(

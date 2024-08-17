@@ -31,10 +31,18 @@ class RushViewModel(
     private val _isSearchingLyrics = MutableStateFlow(false)
     private val _isFetchingLyrics = MutableStateFlow(false)
     private val _currentSongPosition = MutableStateFlow(0L)
+    private val _shareLines = MutableStateFlow(mapOf<Int, String>())
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
     val songsSortedDesc: Flow<List<Song>> get() = _songs.map { it -> it.sortedByDescending { it.title } }
+    val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
+    val currentSong: MutableStateFlow<Song?> get() = _currentSong
+    val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
+    val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
+    val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
+    val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
+    val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
     val songsGroupedArtists: Flow<List<Map.Entry<String, List<Song>>>>
         get() =
             _songs.map { songsList ->
@@ -45,12 +53,6 @@ class RushViewModel(
             _songs.map { songsList ->
                 songsList.groupBy { it.album ?: "???" }.entries.toList()
             }
-    val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
-    val currentSong: MutableStateFlow<Song?> get() = _currentSong
-    val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
-    val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
-    val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
-    val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
 
     init {
         viewModelScope.launch {
@@ -71,6 +73,10 @@ class RushViewModel(
     fun changeCurrentSong(songId: Long) {
         _currentSongId.value = songId
         fetchLyrics(songId)
+    }
+
+    fun updateShareLines(lines: Map<Int, String>) {
+        _shareLines.value = lines
     }
 
     fun deleteSong(song: Song) {

@@ -20,8 +20,8 @@ object SettingsDataStore {
     private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
     private val SORT_ORDER = stringPreferencesKey("sort_order")
     private val CARD_COLOR = stringPreferencesKey("card_color")
-    private val CARD_WIDTH = stringPreferencesKey("card_width")
     private val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
+    private val LOGO = stringPreferencesKey("logo")
 
     fun getCardColorFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -31,12 +31,12 @@ object SettingsDataStore {
             preferences[CARD_COLOR] ?: "Vibrant"
         }
 
-    fun getCardWidthFlow(context: Context): Flow<String> = context.dataStore.data
+    fun getLogoFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_WIDTH] ?: "Small"
+            preferences[LOGO] ?: "None"
         }
 
     fun getCardRoundnessFlow(context: Context): Flow<String> = context.dataStore.data
@@ -77,15 +77,15 @@ object SettingsDataStore {
         }
     }
 
-    suspend fun updateCardColor(context: Context, newCardColor: String) {
+    suspend fun updateLogo(context: Context, newLogo: String) {
         context.dataStore.edit { settings ->
-            settings[CARD_COLOR] = newCardColor
+            settings[LOGO] = newLogo
         }
     }
 
-    suspend fun updateCardWidth(context: Context, newCardWidth: String) {
+    suspend fun updateCardColor(context: Context, newCardColor: String) {
         context.dataStore.edit { settings ->
-            settings[CARD_WIDTH] = newCardWidth
+            settings[CARD_COLOR] = newCardColor
         }
     }
 

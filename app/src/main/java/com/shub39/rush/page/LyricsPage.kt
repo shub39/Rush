@@ -67,12 +67,11 @@ fun LyricsPage(
     rushViewModel: RushViewModel,
     lazyListState: LazyListState,
     bottomSheet: () -> Unit,
-    bottomSheetAutofill: () -> Unit
+    bottomSheetAutofill: () -> Unit,
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val context = LocalContext.current
-    var isSharePageVisible by remember { mutableStateOf(false) }
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
@@ -82,14 +81,10 @@ fun LyricsPage(
     val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
     val artGraphicsLayer = rememberGraphicsLayer()
     val coroutineScope = rememberCoroutineScope()
+    var isShareSheetOpen by remember { mutableStateOf(false) }
 
-    if (isSharePageVisible) {
-        SharePage(
-            onShare = { isSharePageVisible = false },
-            onDismiss = { isSharePageVisible = false },
-            song = song!!,
-            selectedLines = selectedLines
-        )
+    if (isShareSheetOpen) {
+        SharePage(onDismiss = { isShareSheetOpen = false }, rushViewModel = rushViewModel)
     }
 
     if (fetching) {
@@ -108,9 +103,11 @@ fun LyricsPage(
                 source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
                     breakLyrics(nonNullSong.lyrics).entries.toList()
                 }
+
                 source == "Genius" && nonNullSong.geniusLyrics != null -> {
                     breakLyrics(nonNullSong.geniusLyrics).entries.toList()
                 }
+
                 else -> {
                     emptyList()
                 }
@@ -214,7 +211,11 @@ fun LyricsPage(
                         }
                     }
                 }
-                Box(modifier = Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.CenterEnd){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp), contentAlignment = Alignment.CenterEnd
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = {
@@ -271,7 +272,10 @@ fun LyricsPage(
                         }
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                             Row {
-                                IconButton(onClick = { isSharePageVisible = true }) {
+                                IconButton(onClick = {
+                                    rushViewModel.updateShareLines(selectedLines)
+                                    isShareSheetOpen = true
+                                }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_share_24),
                                         contentDescription = null

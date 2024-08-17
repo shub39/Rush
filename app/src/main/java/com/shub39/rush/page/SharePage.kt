@@ -4,27 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +39,6 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -60,29 +53,30 @@ import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.database.SettingsDataStore
-import com.shub39.rush.database.Song
+import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
-    onShare: () -> Unit,
-    song: Song,
-    selectedLines: Map<Int, String>,
+    rushViewModel: RushViewModel,
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
-    var isEditSheetVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val cardWidthType by SettingsDataStore.getCardWidthFlow(context).collectAsState(initial = "Medium")
-    val cardColorType by SettingsDataStore.getCardColorFlow(context).collectAsState(initial = "Default")
-    val cardCornersType by SettingsDataStore.getCardRoundnessFlow(context).collectAsState(initial = "Rounded")
+    val song = rushViewModel.currentSong.collectAsState().value!!
+    val selectedLines = rushViewModel.shareLines.collectAsState().value
+    val cardColorType by SettingsDataStore.getCardColorFlow(context)
+        .collectAsState(initial = "Default")
+    val cardCornersType by SettingsDataStore.getCardRoundnessFlow(context)
+        .collectAsState(initial = "Rounded")
+    val logo by SettingsDataStore.getLogoFlow(context)
+        .collectAsState(initial = "None")
     val sortedLines = sortMapByKeys(selectedLines)
 
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
@@ -136,11 +130,6 @@ fun SharePage(
         "Rounded" -> RoundedCornerShape(16.dp)
         else -> RoundedCornerShape(0.dp)
     }
-    val cardWidth = when (cardWidthType) {
-        "Small" -> 300.dp
-        "Medium" -> 350.dp
-        else -> 400.dp
-    }
     val cardColor = when (cardColorType) {
         "Muted" -> CardDefaults.cardColors(
             containerColor = cardBackgroundMuted,
@@ -158,132 +147,18 @@ fun SharePage(
         )
     }
 
-    if (isEditSheetVisible) {
-        Dialog(
-            onDismissRequest = { isEditSheetVisible = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Card(
-                    modifier = Modifier.width(380.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Text(
-                            text = stringResource(id = R.string.width),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        SingleChoiceSegmentedButtonRow {
-                            listOf("Small", "Medium", "Large").forEachIndexed { index, width ->
-                                SegmentedButton(
-                                    label = { Text(text = width) },
-                                    selected = cardWidthType == width,
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            SettingsDataStore.updateCardWidth(context, width)
-                                        }
-                                    },
-                                    shape = when (index) {
-                                        0 -> RoundedCornerShape(
-                                            topStart = 16.dp,
-                                            bottomStart = 16.dp
-                                        )
-
-                                        2 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                                        else -> RoundedCornerShape(0.dp)
-                                    }
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Text(
-                            text = stringResource(id = R.string.colors),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                        SingleChoiceSegmentedButtonRow {
-                            listOf("Default", "Muted", "Vibrant").forEachIndexed { index, color ->
-                                SegmentedButton(
-                                    label = { Text(text = color) },
-                                    selected = cardColorType == color,
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            SettingsDataStore.updateCardColor(context, color)
-                                        }
-                                    },
-                                    shape = when (index) {
-                                        0 -> RoundedCornerShape(
-                                            topStart = 16.dp,
-                                            bottomStart = 16.dp
-                                        )
-
-                                        1 -> RoundedCornerShape(0.dp)
-                                        else -> RoundedCornerShape(
-                                            topEnd = 16.dp,
-                                            bottomEnd = 16.dp
-                                        )
-                                    }
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text(text = stringResource(id = R.string.rounded_corners))
-                            Spacer(modifier = Modifier.padding(8.dp))
-                            Switch(
-                                checked = cardCornersType == "Rounded",
-                                onCheckedChange = {
-                                    coroutineScope.launch {
-                                        if (cardCornersType == "Rounded") {
-                                            SettingsDataStore.updateCardRoundness(context, "Flat")
-                                        } else {
-                                            SettingsDataStore.updateCardRoundness(context, "Rounded")
-                                        }
-                                    }
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Button(onClick = { isEditSheetVisible = false }) {
-                            Text(text = stringResource(id = R.string.save))
-                        }
-
-                        Spacer(modifier = Modifier.padding(8.dp))
-                    }
-                }
-                Spacer(modifier = Modifier.padding(30.dp))
-            }
-        }
-    }
-
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = { onDismiss() },
         content = {
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 Card(
                     modifier = Modifier
-                        .width(cardWidth)
+                        .width(350.dp)
                         .drawWithContent {
                             cardGraphicsLayer.record {
                                 this@drawWithContent.drawContent()
@@ -293,78 +168,140 @@ fun SharePage(
                     colors = cardColor,
                     shape = cardCorners
                 ) {
-                    Row(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.padding(32.dp)
                     ) {
-                        ArtFromUrl(
-                            imageUrl = song.artUrl,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(MaterialTheme.shapes.small),
-                        )
-                        Column(
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = song.title,
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
+                            ArtFromUrl(
+                                imageUrl = song.artUrl,
+                                modifier = Modifier
+                                    .size(90.dp)
+                                    .clip(MaterialTheme.shapes.small),
                             )
-                            Text(
-                                text = song.artists,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                text = song.album ?: "",
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    }
-                    LazyColumn(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        sortedLines.forEach {
-                            item {
+                            Column(
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                            ) {
                                 Text(
-                                    text = it.value,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, bottom = 8.dp, end = 8.dp)
+                                    text = song.title,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
+                                Text(
+                                    text = song.artists,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.padding(8.dp))
+
+                        LazyColumn {
+                            sortedLines.forEach {
+                                item {
+                                    Text(
+                                        text = it.value,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
-                Spacer(modifier = Modifier.padding(4.dp))
-                Row {
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 64.dp)
+                ) {
                     FloatingActionButton(
-                        onClick = { isEditSheetVisible = true },
+                        onClick = {
+                            coroutineScope.launch {
+                                when (cardColorType) {
+                                    "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
+                                    "Muted" -> SettingsDataStore.updateCardColor(context, "Default")
+                                    else -> SettingsDataStore.updateCardColor(context, "Vibrant")
+                                }
+                            }
+                        },
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.baseline_edit_square_24),
+                            painter = when (cardColorType) {
+                                "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
+                                "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
+                                else -> painterResource(id = R.drawable.round_disabled_by_default_24)
+                            },
                             contentDescription = null
                         )
                     }
 
                     Spacer(modifier = Modifier.padding(4.dp))
+
+                    FloatingActionButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                when (cardCornersType) {
+                                    "Rounded" -> SettingsDataStore.updateCardRoundness(
+                                        context,
+                                        "Flat"
+                                    )
+
+                                    else -> SettingsDataStore.updateCardRoundness(
+                                        context,
+                                        "Rounded"
+                                    )
+                                }
+                            }
+                        },
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Icon(
+                            painter = when (cardCornersType) {
+                                "Rounded" -> painterResource(id = R.drawable.baseline_circle_24)
+                                else -> painterResource(id = R.drawable.baseline_square_24)
+                            },
+                            contentDescription = null
+                        )
+                    }
+
+//                    Spacer(modifier = Modifier.padding(4.dp))
+//
+//                    FloatingActionButton(
+//                        onClick = {
+//                            coroutineScope.launch {
+//                                when (logo) {
+//                                    "Spotify" -> SettingsDataStore.updateLogo(context, "None")
+//                                    else -> SettingsDataStore.updateLogo(context, "Spotify")
+//                                }
+//                            }
+//                        },
+//                        containerColor = if (logo == "Spotify") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+//                        shape = MaterialTheme.shapes.extraLarge
+//                    ) {
+//
+//                    }
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
                     FloatingActionButton(
                         onClick = {
                             coroutineScope.launch {
                                 val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
                                 shareImage(context, bitmap)
-                                onShare()
+                                onDismiss()
                             }
                         },
-                        shape = MaterialTheme.shapes.extraLarge
+                        shape = MaterialTheme.shapes.extraLarge,
+                        containerColor = MaterialTheme.colorScheme.primary
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.round_share_24),
@@ -372,8 +309,8 @@ fun SharePage(
                         )
                     }
                 }
-
             }
+
         }
     )
 }
