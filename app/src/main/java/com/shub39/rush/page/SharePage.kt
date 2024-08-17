@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -209,10 +210,20 @@ fun SharePage(
                                         text = it.value,
                                         style = MaterialTheme.typography.bodyLarge,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(bottom = 8.dp)
+                                        modifier = Modifier.padding(bottom = 10.dp)
                                     )
                                 }
                             }
+                        }
+
+                        Spacer(modifier = Modifier.padding(8.dp))
+
+                        AnimatedVisibility (logo == "Spotify") {
+                            Icon(
+                                painter = painterResource(id = R.drawable.spotify_logo_with_text),
+                                contentDescription = null,
+                                modifier = Modifier.width(100.dp)
+                            )
                         }
                     }
                 }
@@ -273,22 +284,25 @@ fun SharePage(
                         )
                     }
 
-//                    Spacer(modifier = Modifier.padding(4.dp))
-//
-//                    FloatingActionButton(
-//                        onClick = {
-//                            coroutineScope.launch {
-//                                when (logo) {
-//                                    "Spotify" -> SettingsDataStore.updateLogo(context, "None")
-//                                    else -> SettingsDataStore.updateLogo(context, "Spotify")
-//                                }
-//                            }
-//                        },
-//                        containerColor = if (logo == "Spotify") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-//                        shape = MaterialTheme.shapes.extraLarge
-//                    ) {
-//
-//                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    FloatingActionButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                when (logo) {
+                                    "Spotify" -> SettingsDataStore.updateLogo(context, "None")
+                                    else -> SettingsDataStore.updateLogo(context, "Spotify")
+                                }
+                            }
+                        },
+                        containerColor = if (logo == "Spotify") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.spotify_logo_svgrepo_com),
+                            contentDescription = null
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(4.dp))
 
