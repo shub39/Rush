@@ -23,4 +23,7 @@ interface SongDao {
 
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun getSongById(id: Long): Song
+
+    @Query("SELECT * FROM songs WHERE title LIKE :query || '%'")
+    suspend fun searchSong(query: String): List<Song>
 }

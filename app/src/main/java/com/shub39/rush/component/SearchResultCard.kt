@@ -7,14 +7,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
+import com.shub39.rush.R
 import com.shub39.rush.database.SearchResult
 import org.koin.compose.koinInject
 
@@ -22,6 +26,7 @@ import org.koin.compose.koinInject
 fun SearchResultCard(
     result: SearchResult,
     onClick: () -> Unit,
+    downloaded: Boolean = false,
     imageLoader: ImageLoader = koinInject(),
 ) {
     Box(
@@ -32,7 +37,9 @@ fun SearchResultCard(
                 onClick()
             }
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             ArtFromUrl(
                 imageUrl = result.artUrl,
                 contentDescription = result.title,
@@ -42,6 +49,7 @@ fun SearchResultCard(
                     .clip(MaterialTheme.shapes.small),
                 imageLoader = imageLoader
             )
+
             Column(
                 modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
             ) {
@@ -54,10 +62,15 @@ fun SearchResultCard(
                     text = result.artist,
                     style = MaterialTheme.typography.bodyMedium
                 )
-                result.album?.let {
-                    Text(text = result.album, style = MaterialTheme.typography.bodyMedium)
-                }
             }
+        }
+
+        if (downloaded) {
+            Icon(
+                painter = painterResource(id = R.drawable.round_download_done_24),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end =16.dp),
+            )
         }
     }
 }

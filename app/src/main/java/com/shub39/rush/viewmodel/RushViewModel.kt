@@ -23,8 +23,10 @@ class RushViewModel(
 
     private val database = SongDatabase.getDatabase(application)
     private val songDao = database.songDao()
+
     private val _songs = MutableStateFlow(listOf<Song>())
     private val _searchResults = MutableStateFlow(listOf<SearchResult>())
+    private val _localSearchResults = MutableStateFlow(listOf<SearchResult>())
     private val _currentSongId = MutableStateFlow<Long?>(null)
     private val _currentSong = MutableStateFlow<Song?>(null)
     private val _currentPlayingSongInfo = MutableStateFlow<Pair<String, String>?>(null)
@@ -37,6 +39,7 @@ class RushViewModel(
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
     val songsSortedDesc: Flow<List<Song>> get() = _songs.map { it -> it.sortedByDescending { it.title } }
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
+    val localSearchResults: StateFlow<List<SearchResult>> get() = _localSearchResults
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
@@ -91,6 +94,7 @@ class RushViewModel(
 
         viewModelScope.launch {
             _isSearchingLyrics.value = true
+            songsToSearchResult(songDao.searchSong(query.split(" ").first()))
             try {
                 val result = withContext(Dispatchers.IO) {
                     SongProvider.search(query)
@@ -99,7 +103,6 @@ class RushViewModel(
                     _searchResults.value = result.getOrNull() ?: emptyList()
                 } else {
                     Log.e("ViewModel", result.exceptionOrNull()?.message, result.exceptionOrNull())
-                    _searchResults.value = emptyList()
                 }
             } finally {
                 _isSearchingLyrics.value = false
@@ -136,4 +139,20 @@ class RushViewModel(
         }
     }
 
+    private fun songsToSearchResult(songs: List<Song>) {
+        viewModelScope.launch {
+            val searchResults = mutableListOf<SearchResult>()
+            for (song in songs) {
+                searchResults.add(SearchResult(
+                    title = song.title,
+                    artist = song.artists,
+                    album = song.album,
+                    artUrl = song.artUrl!!,
+                    url = song.sourceUrl,
+                    id = song.id
+                ))
+            }
+            _localSearchResults.value = searchResults
+        }
+    }
 }

@@ -74,6 +74,7 @@ fun RushApp(
     var searchSheetState by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val searchResults by rushViewModel.searchResults.collectAsState()
+    val localSearchResults by rushViewModel.localSearchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
     val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
 
@@ -104,6 +105,7 @@ fun RushApp(
 
                 OutlinedTextField(
                     value = query,
+                    singleLine = true,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.round_search_24),
@@ -126,6 +128,7 @@ fun RushApp(
                                     strokeCap = StrokeCap.Round
                                 )
                             }
+
                             AnimatedVisibility(
                                 visible = query.isNotBlank(),
                                 enter = fadeIn(animationSpec = tween(200)),
@@ -174,6 +177,29 @@ fun RushApp(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     state = LazyListState(0)
                 ) {
+                    items(localSearchResults, key = { it.title.hashCode() + it.artist.hashCode() }) {
+                        SearchResultCard(
+                            result = it,
+                            onClick = {
+                                searchSheetState = false
+                                query = ""
+                                if (song == null) {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
+                                        rushViewModel.changeCurrentSong(it.id)
+                                    }
+                                } else {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
+                                        lazyListState.scrollToItem(0)
+                                        rushViewModel.changeCurrentSong(it.id)
+                                    }
+                                }
+                            },
+                            downloaded = true
+                        )
+                    }
+
                     items(searchResults, key = { it.id }) {
                         SearchResultCard(
                             result = it,
@@ -195,6 +221,7 @@ fun RushApp(
                             },
                         )
                     }
+
                     item {
                         Spacer(modifier = Modifier.padding(60.dp))
                     }
