@@ -34,6 +34,7 @@ class RushViewModel(
     private val _isFetchingLyrics = MutableStateFlow(false)
     private val _currentSongPosition = MutableStateFlow(0L)
     private val _shareLines = MutableStateFlow(mapOf<Int, String>())
+    private val _lastSearched = MutableStateFlow("")
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
@@ -62,6 +63,7 @@ class RushViewModel(
             _songs.value = songDao.getAllSongs()
             MediaListener.songInfoFlow.collect { songInfo ->
                 _currentPlayingSongInfo.value = songInfo
+                searchSong("${songInfo.first} ${songInfo.second}".trim(), true)
                 Log.d("RushViewModel", "SongInfo: $songInfo")
             }
         }
@@ -89,8 +91,11 @@ class RushViewModel(
         }
     }
 
-    fun searchSong(query: String) {
-        if (query.isEmpty()) return
+    fun searchSong(
+        query: String,
+        fetch: Boolean = false
+    ) {
+        if (query.isEmpty() || query == _lastSearched.value || _isSearchingLyrics.value) return
 
         viewModelScope.launch {
             _isSearchingLyrics.value = true
@@ -101,11 +106,15 @@ class RushViewModel(
                 }
                 if (result.isSuccess) {
                     _searchResults.value = result.getOrNull() ?: emptyList()
+                    if (fetch) _lastSearched.value = query
                 } else {
                     Log.e("ViewModel", result.exceptionOrNull()?.message, result.exceptionOrNull())
                 }
             } finally {
                 _isSearchingLyrics.value = false
+            }
+            if (fetch) {
+                fetchLyrics(_searchResults.value.first().id)
             }
         }
     }
@@ -143,14 +152,16 @@ class RushViewModel(
         viewModelScope.launch {
             val searchResults = mutableListOf<SearchResult>()
             for (song in songs) {
-                searchResults.add(SearchResult(
-                    title = song.title,
-                    artist = song.artists,
-                    album = song.album,
-                    artUrl = song.artUrl!!,
-                    url = song.sourceUrl,
-                    id = song.id
-                ))
+                searchResults.add(
+                    SearchResult(
+                        title = song.title,
+                        artist = song.artists,
+                        album = song.album,
+                        artUrl = song.artUrl!!,
+                        url = song.sourceUrl,
+                        id = song.id
+                    )
+                )
             }
             _localSearchResults.value = searchResults
         }

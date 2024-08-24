@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 fun SavedPage(
     rushViewModel: RushViewModel,
     bottomSheet: () -> Unit,
-    bottomSheetAutofill: () -> Unit,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -153,23 +152,6 @@ fun SavedPage(
                 painter = painterResource(id = R.drawable.round_search_24),
                 contentDescription = null
             )
-        }
-
-        if (NotificationListener.canAccessNotifications(context)) {
-            FloatingActionButton(
-                onClick = {
-                    bottomSheetAutofill()
-                },
-                shape = MaterialTheme.shapes.extraLarge,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_play_arrow_24),
-                    contentDescription = null
-                )
-            }
         }
     }
 }

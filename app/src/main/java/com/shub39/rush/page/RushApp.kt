@@ -76,7 +76,6 @@ fun RushApp(
     val searchResults by rushViewModel.searchResults.collectAsState()
     val localSearchResults by rushViewModel.localSearchResults.collectAsState()
     val isFetchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
-    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
 
     if (searchSheetState) {
         ModalBottomSheet(
@@ -88,12 +87,8 @@ fun RushApp(
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(Unit) {
-                if (query.isNotBlank()) {
-                    rushViewModel.searchSong(query)
-                } else {
-                    focusRequester.requestFocus()
-                    keyboardController?.show()
-                }
+                focusRequester.requestFocus()
+                keyboardController?.show()
             }
 
             Column(
@@ -177,7 +172,9 @@ fun RushApp(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     state = LazyListState(0)
                 ) {
-                    items(localSearchResults, key = { it.title.hashCode() + it.artist.hashCode() }) {
+                    items(
+                        localSearchResults,
+                        key = { it.title.hashCode() + it.artist.hashCode() }) {
                         SearchResultCard(
                             result = it,
                             onClick = {
@@ -257,14 +254,6 @@ fun RushApp(
                     bottomSheet = {
                         searchSheetState = true
                     },
-                    bottomSheetAutofill = {
-                        query = if (currentPlayingSong != null) {
-                            currentPlayingSong?.first + " " + currentPlayingSong?.second
-                        } else {
-                            ""
-                        }
-                        searchSheetState = true
-                    },
                     onPageChange = { page ->
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(page)
@@ -292,7 +281,6 @@ fun RushPager(
     lazyListState: LazyListState,
     pagerState: PagerState,
     bottomSheet: () -> Unit = {},
-    bottomSheetAutofill: () -> Unit = {},
     onPageChange: (Int) -> Unit,
     lazyListRefresh: () -> Unit,
     rushViewModel: RushViewModel
@@ -305,13 +293,11 @@ fun RushPager(
                 lazyListState = lazyListState,
                 rushViewModel = rushViewModel,
                 bottomSheet = bottomSheet,
-                bottomSheetAutofill = bottomSheetAutofill,
             )
 
             1 -> SavedPage(
                 rushViewModel = rushViewModel,
                 bottomSheet = bottomSheet,
-                bottomSheetAutofill = bottomSheetAutofill,
                 onClick = {
                     onPageChange(0)
                     lazyListRefresh()

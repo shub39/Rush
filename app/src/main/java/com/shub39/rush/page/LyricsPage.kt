@@ -67,7 +67,6 @@ fun LyricsPage(
     rushViewModel: RushViewModel,
     lazyListState: LazyListState,
     bottomSheet: () -> Unit,
-    bottomSheetAutofill: () -> Unit,
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -82,6 +81,7 @@ fun LyricsPage(
     val artGraphicsLayer = rememberGraphicsLayer()
     val coroutineScope = rememberCoroutineScope()
     var isShareSheetOpen by remember { mutableStateOf(false) }
+    val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     if (isShareSheetOpen) {
         SharePage(onDismiss = { isShareSheetOpen = false }, rushViewModel = rushViewModel)
@@ -258,7 +258,7 @@ fun LyricsPage(
                             }
                         }
                         AnimatedVisibility(
-                            visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib"
+                            visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
                         ) {
                             IconButton(
                                 onClick = { sync = !sync },
@@ -376,20 +376,6 @@ fun LyricsPage(
                                         painter = painterResource(id = R.drawable.genius),
                                         contentDescription = null
                                     )
-                                }
-
-                                if (NotificationListener.canAccessNotifications(context)) {
-                                    FloatingActionButton(
-                                        onClick = { bottomSheetAutofill() },
-                                        elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                        shape = MaterialTheme.shapes.extraLarge,
-                                        containerColor = MaterialTheme.colorScheme.primary
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.round_play_arrow_24),
-                                            contentDescription = null
-                                        )
-                                    }
                                 }
 
                                 FloatingActionButton(
