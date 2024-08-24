@@ -4,23 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,7 +25,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -40,9 +33,6 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -53,7 +43,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.R
-import com.shub39.rush.component.ArtFromUrl
+import com.shub39.rush.component.MaterialCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
@@ -158,86 +148,20 @@ fun SharePage(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Card(
+                MaterialCard(
                     modifier = Modifier
-                        .width(350.dp)
                         .drawWithContent {
                             cardGraphicsLayer.record {
                                 this@drawWithContent.drawContent()
                             }
                             drawLayer(cardGraphicsLayer)
                         },
-                    colors = cardColor,
-                    shape = cardCorners
-                ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            ArtFromUrl(
-                                imageUrl = song.artUrl,
-                                modifier = Modifier
-                                    .size(90.dp)
-                                    .clip(MaterialTheme.shapes.small),
-                            )
-                            Column(
-                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-                            ) {
-                                Text(
-                                    text = song.title,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = song.artists,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.padding(8.dp))
-
-                        LazyColumn {
-                            sortedLines.forEach {
-                                item {
-                                    Text(
-                                        text = it.value,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(bottom = 10.dp)
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.padding(8.dp))
-
-                        AnimatedVisibility (logo == "Rush") {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.rush_transparent),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(36.dp)
-                                )
-
-                                Text(
-                                    text = stringResource(id = R.string.app_name),
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
-                        }
-                    }
-                }
+                    cardColor = cardColor,
+                    cardCorners = cardCorners,
+                    logo = logo,
+                    song = song,
+                    sortedLines = sortedLines
+                )
 
                 Row(
                     modifier = Modifier
