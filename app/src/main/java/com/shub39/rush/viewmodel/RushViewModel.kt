@@ -114,7 +114,9 @@ class RushViewModel(
                 _isSearchingLyrics.value = false
             }
             if (fetch) {
-                fetchLyrics(_searchResults.value.first().id)
+                if (_searchResults.value.isNotEmpty()) {
+                    fetchLyrics(_searchResults.value.first().id)
+                }
             }
         }
     }
