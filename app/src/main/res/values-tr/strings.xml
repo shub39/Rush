@@ -1,0 +1,25 @@
+<resources>
+    <string name="search">Şarkı sözlerini ara</string>
+    <string name="saved">Kaydedildi</string>
+    <string name="settings">Ayarlar</string>
+    <string name="empty">Henüz bir şey yok…</string>
+    <string name="save">Değişiklikleri kaydet</string>
+    <string name="delete_confirmation">Tüm kaydedilen şarkı sözlerini silmek istediğinizden emin misiniz?</string>
+    <string name="no_lyrics">Şarkı sözleri alınamadı</string>
+    <string name="suggestion">Belki bir şey aramak istersiniz?</string>
+    <string name="downloaded">Kaydedilen şarkı sözleri</string>
+    <string name="delete_all">Tüm şarkı sözlerini sil</string>
+    <string name="notification">Bildirim Dinleyici Hizmeti</string>
+    <string name="unknown_album">Bilinmeyen albüm</string>
+    <string name="width">Genişlik</string>
+    <string name="colors">Renkler</string>
+    <string name="grant_permission">Bildirim Erişimi Ver</string>
+    <string name="notification_permission">Şarkı sözlerini otomatik olarak almak için Bildirim Erişimi gereklidir. İzni verdikten sonra uygulamayı temizleyin ve yeniden başlatın.</string>
+    <string name="rounded_corners">Yuvarlak Köşeler</string>
+    <string name="max_lines">Paylaşılacak Maksimum Satır Sayısı</string>
+    <string name="theme">Uygulama Teması</string>
+    <string name="sort_title_asc">Başlık (A-Z)</string>
+    <string name="sort_title_desc">Başlık (Z-A)</string>
+    <string name="sort_artists_asc">Sanatçılara Göre Gruplandırılmış</string>
+    <string name="sort_album_asc">Albüm/'e Göre Gruplandırılmış</string>
+</resources>
