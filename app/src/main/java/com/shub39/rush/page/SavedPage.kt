@@ -105,7 +105,6 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
-                                    rushViewModel.toggleAutoChange()
                                     onClick()
                                 }
                             )
@@ -129,7 +128,6 @@ fun SavedPage(
                                 isExpanded = expandedCardId == map.key,
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
-                                    rushViewModel.toggleAutoChange()
                                     onClick()
                                 },
                                 onCardClick = {

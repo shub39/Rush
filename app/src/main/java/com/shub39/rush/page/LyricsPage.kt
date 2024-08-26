@@ -271,16 +271,18 @@ fun LyricsPage(
                                         contentDescription = null
                                     )
                                 }
-                                IconButton(
-                                    onClick = { rushViewModel.toggleAutoChange() },
-                                    colors = if (autoChange) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.rush_transparent),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
+                            }
+                        }
+                        AnimatedVisibility(visible = notificationAccess) {
+                            IconButton(
+                                onClick = { rushViewModel.toggleAutoChange() },
+                                colors = if (autoChange) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.rush_transparent),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(28.dp)
+                                )
                             }
                         }
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
