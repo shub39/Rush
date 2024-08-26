@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -59,6 +60,7 @@ fun SavedPage(
         else -> rushViewModel.songsGroupedAlbums.collectAsState(initial = emptyList()).value
     }
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
+    val autoChange = rushViewModel.autoChange.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -70,7 +72,8 @@ fun SavedPage(
                 modifier = Modifier.fillMaxSize()
             ) {
                 LazyRow(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
                         .animateContentSize()
                 ) {
                     items(sortOrderChips, key = { it.textId }) {
@@ -102,6 +105,7 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
+                                    rushViewModel.toggleAutoChange()
                                     onClick()
                                 }
                             )
@@ -125,6 +129,7 @@ fun SavedPage(
                                 isExpanded = expandedCardId == map.key,
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
+                                    rushViewModel.toggleAutoChange()
                                     onClick()
                                 },
                                 onCardClick = {
@@ -142,7 +147,9 @@ fun SavedPage(
         }
 
         FloatingActionButton(
-            onClick = { bottomSheet() },
+            onClick = {
+                bottomSheet()
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
@@ -153,6 +160,24 @@ fun SavedPage(
                 contentDescription = null
             )
         }
+
+        if (NotificationListener.canAccessNotifications(context)) {
+            FloatingActionButton(
+                onClick = { rushViewModel.toggleAutoChange() },
+                shape = MaterialTheme.shapes.extraLarge,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
+                containerColor = if (autoChange.value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.rush_transparent),
+                    contentDescription = null,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+
     }
 }
 

@@ -35,6 +35,7 @@ class RushViewModel(
     private val _currentSongPosition = MutableStateFlow(0L)
     private val _shareLines = MutableStateFlow(mapOf<Int, String>())
     private val _lastSearched = MutableStateFlow("")
+    private val _autoChange = MutableStateFlow(false)
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
@@ -44,6 +45,7 @@ class RushViewModel(
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
+    val autoChange: StateFlow<Boolean> get() = _autoChange
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
     val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
     val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
@@ -63,7 +65,9 @@ class RushViewModel(
             _songs.value = songDao.getAllSongs()
             MediaListener.songInfoFlow.collect { songInfo ->
                 _currentPlayingSongInfo.value = songInfo
-                searchSong("${songInfo.first} ${songInfo.second}".trim(), true)
+                if (autoChange.value) {
+                    searchSong("${songInfo.first} ${songInfo.second}".trim())
+                }
                 Log.d("RushViewModel", "SongInfo: $songInfo")
             }
         }
@@ -84,6 +88,10 @@ class RushViewModel(
         _shareLines.value = lines
     }
 
+    fun toggleAutoChange() {
+        _autoChange.value = !_autoChange.value
+    }
+
     fun deleteSong(song: Song) {
         viewModelScope.launch {
             songDao.deleteSong(song)
@@ -93,7 +101,7 @@ class RushViewModel(
 
     fun searchSong(
         query: String,
-        fetch: Boolean = false
+        fetch: Boolean = _autoChange.value
     ) {
         if (query.isEmpty() || query == _lastSearched.value || _isSearchingLyrics.value) return
 
@@ -117,6 +125,8 @@ class RushViewModel(
                 if (_searchResults.value.isNotEmpty()) {
                     fetchLyrics(_searchResults.value.first().id)
                 }
+            } else {
+                _autoChange.value = false
             }
         }
     }

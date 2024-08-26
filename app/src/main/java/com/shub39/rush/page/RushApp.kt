@@ -148,7 +148,7 @@ fun RushApp(
                     },
                     onValueChange = {
                         query = it
-                        rushViewModel.searchSong(it)
+                        rushViewModel.searchSong(it, false)
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(stringResource(id = R.string.search)) },
