@@ -1,0 +1,8 @@
+Rush, en sevdiğiniz şarkıların sözlerini aramak, görüntülemek, kaydetmek ve paylaşmak için basit bir Android uygulamasıdır.
+
+Özellikler:
+
+- Şarkı sözlerini arama, görüntüleme ve kaydetme
+- Şarkı sözlerini özelleştirilebilir bir kart olarak arkadaşlarınızla paylaşma!
+- Arama sırasında oynatılan mevcut şarkıyı otomatik doldurma (Bildirim Erişimi izni gerektirir)
+- Senkronize şarkı sözleri
