@@ -82,6 +82,7 @@ fun LyricsPage(
     val coroutineScope = rememberCoroutineScope()
     var isShareSheetOpen by remember { mutableStateOf(false) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
+    val autoChange by rushViewModel.autoChange.collectAsState()
 
     if (isShareSheetOpen) {
         SharePage(onDismiss = { isShareSheetOpen = false }, rushViewModel = rushViewModel)
@@ -178,7 +179,7 @@ fun LyricsPage(
                                                 artGraphicsLayer
                                                     .toImageBitmap()
                                                     .asAndroidBitmap()
-                                            shareImage(context, bitmap)
+                                            shareImage(context, bitmap, "${nonNullSong.title}.png")
                                         }
                                     }
                                 )
@@ -260,13 +261,27 @@ fun LyricsPage(
                         AnimatedVisibility(
                             visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
                         ) {
+                            Row {
+                                IconButton(
+                                    onClick = { sync = !sync },
+                                    colors = if (sync) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_sync_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
+                        AnimatedVisibility(visible = notificationAccess) {
                             IconButton(
-                                onClick = { sync = !sync },
-                                colors = if (sync) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
+                                onClick = { rushViewModel.toggleAutoChange() },
+                                colors = if (autoChange) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.round_sync_24),
-                                    contentDescription = null
+                                    painter = painterResource(id = R.drawable.rush_transparent),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(28.dp)
                                 )
                             }
                         }
