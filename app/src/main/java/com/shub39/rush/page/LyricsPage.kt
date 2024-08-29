@@ -179,7 +179,7 @@ fun LyricsPage(
                                                 artGraphicsLayer
                                                     .toImageBitmap()
                                                     .asAndroidBitmap()
-                                            shareImage(context, bitmap)
+                                            shareImage(context, bitmap, "${nonNullSong.title}.png")
                                         }
                                     }
                                 )
