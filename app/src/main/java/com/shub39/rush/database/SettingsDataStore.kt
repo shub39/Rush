@@ -21,7 +21,15 @@ object SettingsDataStore {
     private val SORT_ORDER = stringPreferencesKey("sort_order")
     private val CARD_COLOR = stringPreferencesKey("card_color")
     private val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
-    private val LOGO = stringPreferencesKey("logo")
+    private val CARD_THEME = stringPreferencesKey("card_theme")
+
+    fun getCardThemeFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_THEME] ?: "Default"
+        }
 
     fun getCardColorFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -29,14 +37,6 @@ object SettingsDataStore {
         }
         .map { preferences ->
             preferences[CARD_COLOR] ?: "Vibrant"
-        }
-
-    fun getLogoFlow(context: Context): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[LOGO] ?: "None"
         }
 
     fun getCardRoundnessFlow(context: Context): Flow<String> = context.dataStore.data
@@ -77,9 +77,9 @@ object SettingsDataStore {
         }
     }
 
-    suspend fun updateLogo(context: Context, newLogo: String) {
+    suspend fun updateCardTheme(context: Context, newCardTheme: String) {
         context.dataStore.edit { settings ->
-            settings[LOGO] = newLogo
+            settings[CARD_THEME] = newCardTheme
         }
     }
 

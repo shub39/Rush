@@ -3,20 +3,36 @@ package com.shub39.rush.page
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Environment
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -25,11 +41,13 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import com.shub39.rush.R
+import com.shub39.rush.component.GeniusCard
 import com.shub39.rush.component.MaterialCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
@@ -38,6 +56,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
@@ -48,9 +67,10 @@ fun SharePage(
     val context = LocalContext.current
     val song = rushViewModel.currentSong.collectAsState().value!!
     val selectedLines = rushViewModel.shareLines.collectAsState().value
-    val logo by SettingsDataStore.getLogoFlow(context)
-        .collectAsState(initial = "None")
+    val cardThemeFlow = remember { SettingsDataStore.getCardThemeFlow(context) }
+    val cardTheme by cardThemeFlow.collectAsState(initial = "Default")
     val sortedLines = sortMapByKeys(selectedLines)
+    var namePicker by remember { mutableStateOf(false) }
 
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -61,38 +81,71 @@ fun SharePage(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                MaterialCard(
+                when (cardTheme) {
+                    "Default" -> MaterialCard(
+                        modifier = Modifier
+                            .drawWithContent {
+                                cardGraphicsLayer.record {
+                                    this@drawWithContent.drawContent()
+                                }
+                                drawLayer(cardGraphicsLayer)
+                            },
+                        song = song,
+                        sortedLines = sortedLines
+                    )
+
+                    "Genius" -> GeniusCard(
+                        modifier = Modifier
+                            .drawWithContent {
+                                cardGraphicsLayer.record {
+                                    this@drawWithContent.drawContent()
+                                }
+                                drawLayer(cardGraphicsLayer)
+                            },
+                        song = song,
+                        sortedLines = sortedLines
+                    )
+                }
+
+                SingleChoiceSegmentedButtonRow(
                     modifier = Modifier
-                        .drawWithContent {
-                            cardGraphicsLayer.record {
-                                this@drawWithContent.drawContent()
+                        .align(Alignment.TopCenter)
+                        .padding(top = 32.dp)
+                ) {
+                    listOf("Default", "Genius").forEachIndexed { index, style ->
+                        SegmentedButton(
+                            label = { Text(text = style) },
+                            selected = cardTheme == style,
+                            onClick = {
+                                coroutineScope.launch {
+                                    SettingsDataStore.updateCardTheme(context, style)
+                                }
+                            },
+                            shape = when (index) {
+                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                                1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                                else -> RoundedCornerShape(0.dp)
                             }
-                            drawLayer(cardGraphicsLayer)
-                        },
-                    logo = logo,
-                    song = song,
-                    sortedLines = sortedLines
-                )
+                        )
+                    }
+                }
 
                 Row(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 64.dp)
+                        .padding(bottom = 32.dp)
                 ) {
                     FloatingActionButton(
                         onClick = {
                             coroutineScope.launch {
-                                when (logo) {
-                                    "Rush" -> SettingsDataStore.updateLogo(context, "None")
-                                    else -> SettingsDataStore.updateLogo(context, "Rush")
-                                }
+                                namePicker = true
                             }
                         },
-                        containerColor = if (logo == "Rush") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.rush_transparent),
+                            painter = painterResource(id = R.drawable.round_download_done_24),
                             contentDescription = null,
                             modifier = Modifier.size(36.dp)
                         )
@@ -121,6 +174,37 @@ fun SharePage(
 
         }
     )
+
+    if (namePicker) {
+        BasicAlertDialog(onDismissRequest = { namePicker = false }
+        ) {
+            var name by remember { mutableStateOf("${song.artists}-${song.title}.png") }
+
+            Card(shape = RoundedCornerShape(32.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    singleLine = true,
+                    modifier = Modifier.padding(16.dp),
+                    shape = RoundedCornerShape(32.dp)
+                )
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            namePicker = false
+                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                            shareImage(context, bitmap, name, true)
+                        }
+                    },
+                    enabled = name.isNotEmpty() && name.isNotBlank() && name.endsWith(".png"),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.save))
+                }
+            }
+        }
+    }
 }
 
 private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
@@ -132,10 +216,20 @@ private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     return sortedMap
 }
 
-fun shareImage(context: Context, bitmap: Bitmap, name: String) {
-    val cachePath = File(context.cacheDir, "images")
-    cachePath.mkdirs()
-    val file = File(cachePath, name)
+fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: Boolean = false) {
+    val file: File = if (saveToPictures) {
+        val picturesDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "Rush"
+        )
+        picturesDir.mkdirs()
+        File(picturesDir, name)
+    } else {
+        val cachePath = File(context.cacheDir, "images")
+        cachePath.mkdirs()
+        File(cachePath, name)
+    }
+
     try {
         val stream = FileOutputStream(file)
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -145,14 +239,18 @@ fun shareImage(context: Context, bitmap: Bitmap, name: String) {
         return
     }
 
-    val contentUri: Uri =
-        FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-    val shareIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_STREAM, contentUri)
-        type = "image/png"
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    if (saveToPictures) {
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
+        Toast.makeText(context, "Image saved to Pictures/$name", Toast.LENGTH_SHORT).show()
+    } else {
+        val contentUri: Uri =
+            FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, contentUri)
+            type = "image/png"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(Intent.createChooser(shareIntent, "Share image using"))
     }
-
-    context.startActivity(Intent.createChooser(shareIntent, "Share image using"))
 }

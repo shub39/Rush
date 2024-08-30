@@ -1,6 +1,7 @@
 package com.shub39.rush.component
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,17 +50,16 @@ import org.koin.compose.koinInject
 @Composable
 fun MaterialCard(
     modifier: Modifier,
-    logo: String,
     song: Song,
     sortedLines: Map<Int, String>,
     imageLoader: ImageLoader = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val cardColorType by SettingsDataStore.getCardColorFlow(context)
-        .collectAsState(initial = "Default")
-    val cardCornersType by SettingsDataStore.getCardRoundnessFlow(context)
-        .collectAsState(initial = "Rounded")
+    val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
+    val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
+    val cardColorType by cardColorFlow.collectAsState(initial = "")
+    val cardCornersType by cardCornersFlow.collectAsState(initial = "")
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
     var cardContentDominant by remember { mutableStateOf(Color.White) }
     var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
@@ -107,26 +106,31 @@ fun MaterialCard(
         }
     }
 
-    val cardCorners = when (cardCornersType) {
-        "Rounded" -> RoundedCornerShape(16.dp)
-        else -> RoundedCornerShape(0.dp)
-    }
-    val cardColor = when (cardColorType) {
-        "Muted" -> CardDefaults.cardColors(
-            containerColor = cardBackgroundMuted,
-            contentColor = cardContentMuted
-        )
-
-        "Vibrant" -> CardDefaults.cardColors(
-            containerColor = cardBackgroundDominant,
-            contentColor = cardContentDominant
-        )
-
-        else -> CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    }
+    val cornerRadius by animateDpAsState(
+        targetValue = when (cardCornersType) {
+            "Rounded" -> 16.dp
+            else -> 0.dp
+        }, label = "corners"
+    )
+    val containerColor by animateColorAsState(
+        targetValue = when (cardColorType) {
+            "Muted" -> cardBackgroundMuted
+            "Vibrant" -> cardBackgroundDominant
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }, label = "container"
+    )
+    val contentColor by animateColorAsState(
+        targetValue = when (cardColorType) {
+            "Muted" -> cardContentMuted
+            "Vibrant" -> cardContentDominant
+            else -> MaterialTheme.colorScheme.onPrimaryContainer
+        }, label = "content"
+    )
+    val cardColor = CardDefaults.cardColors(
+        containerColor = containerColor,
+        contentColor = contentColor
+    )
+    val cardCorners = RoundedCornerShape(cornerRadius)
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -187,30 +191,11 @@ fun MaterialCard(
 
                 Spacer(modifier = Modifier.padding(8.dp))
 
-                AnimatedVisibility (logo == "Rush") {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.rush_transparent),
-                            contentDescription = null,
-                            modifier = Modifier.size(36.dp)
-                        )
-
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
             }
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
-
         Row(
-            modifier = Modifier.align(Alignment.TopEnd).padding(end = 32.dp),
+            modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             IconButton(
                 onClick = {
