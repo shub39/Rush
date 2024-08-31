@@ -1,12 +1,12 @@
 package com.shub39.rush.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -41,7 +41,7 @@ import com.shub39.rush.database.Song
 import org.koin.compose.koinInject
 
 @Composable
-fun GeniusCard(
+fun GeniusShareCard(
     modifier: Modifier,
     song: Song,
     sortedLines: Map<Int, String>,
@@ -82,9 +82,18 @@ fun GeniusCard(
         }
     }
 
+    val animContentColor by animateColorAsState(
+        targetValue = cardContentDominant,
+        label = "container"
+    )
+    val animContainerColor by animateColorAsState(
+        targetValue = cardBackgroundDominant,
+        label = "content"
+    )
+
     val cardColor = CardDefaults.cardColors(
-        containerColor = cardBackgroundDominant,
-        contentColor = cardContentDominant
+        containerColor = animContainerColor,
+        contentColor = animContentColor
     )
 
     Column(
@@ -122,7 +131,7 @@ fun GeniusCard(
                             )
                         )
                     )
-                    .height(100.dp)
+                    .matchParentSize()
                     .align(Alignment.BottomCenter)
             )
 

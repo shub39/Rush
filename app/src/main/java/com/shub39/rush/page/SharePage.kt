@@ -47,8 +47,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import com.shub39.rush.R
-import com.shub39.rush.component.GeniusCard
-import com.shub39.rush.component.MaterialCard
+import com.shub39.rush.component.GeniusShareCard
+import com.shub39.rush.component.MaterialShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
@@ -82,7 +82,7 @@ fun SharePage(
                 contentAlignment = Alignment.Center
             ) {
                 when (cardTheme) {
-                    "Default" -> MaterialCard(
+                    "Default" -> MaterialShareCard(
                         modifier = Modifier
                             .drawWithContent {
                                 cardGraphicsLayer.record {
@@ -94,7 +94,7 @@ fun SharePage(
                         sortedLines = sortedLines
                     )
 
-                    "Genius" -> GeniusCard(
+                    "Genius" -> GeniusShareCard(
                         modifier = Modifier
                             .drawWithContent {
                                 cardGraphicsLayer.record {

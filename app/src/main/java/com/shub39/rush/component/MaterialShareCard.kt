@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
-fun MaterialCard(
+fun MaterialShareCard(
     modifier: Modifier,
     song: Song,
     sortedLines: Map<Int, String>,
