@@ -1,6 +1,5 @@
 package com.shub39.rush.component
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,96 +13,61 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import com.shub39.rush.R
+import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.database.Song
-import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
 
 @Composable
 fun GeniusShareCard(
     modifier: Modifier,
     song: Song,
     sortedLines: Map<Int, String>,
-    imageLoader: ImageLoader = koinInject()
+    cardColors: CardColors,
+    cardColorType: String
 ) {
     val context = LocalContext.current
-    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentDominant by remember { mutableStateOf(Color.White) }
+    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(song) {
-        val request = ImageRequest.Builder(context)
-            .data(song.artUrl)
-            .allowHardware(false)
-            .build()
-
-        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
-        result.let { drawable ->
-            if (drawable != null) {
-                Palette.from(drawable.toBitmap()).generate { palette ->
-                    palette?.let {
-                        cardBackgroundDominant =
-                            Color(
-                                it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
-                                ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
-                                ?: Color.DarkGray.toArgb()
-                            )
-                        cardContentDominant =
-                            Color(
-                                it.vibrantSwatch?.bodyTextColor
-                                    ?: it.lightVibrantSwatch?.bodyTextColor
-                                    ?: it.darkVibrantSwatch?.bodyTextColor
-                                    ?: it.dominantSwatch?.bodyTextColor
-                                    ?: Color.White.toArgb()
-                            )
-                    }
-                }
-            }
-        }
-    }
-
-    val animContentColor by animateColorAsState(
-        targetValue = cardContentDominant,
-        label = "container"
-    )
-    val animContainerColor by animateColorAsState(
-        targetValue = cardBackgroundDominant,
-        label = "content"
-    )
-
-    val cardColor = CardDefaults.cardColors(
-        containerColor = animContainerColor,
-        contentColor = animContentColor
-    )
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier
+            .width(350.dp)
+            .wrapContentHeight()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Black.copy(alpha = 0.7f)
+                    )
+                )
+            ),
     ) {
+        ArtFromUrl(
+            imageUrl = song.artUrl,
+            modifier = Modifier
+                .matchParentSize()
+                .blur(5.dp)
+        )
+
         Box(
-            modifier = modifier
-                .width(350.dp)
-                .wrapContentHeight()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
@@ -111,83 +75,85 @@ fun GeniusShareCard(
                             Color.Black.copy(alpha = 0.7f)
                         )
                     )
-                ),
+                )
+                .matchParentSize()
+                .align(Alignment.BottomCenter)
+        )
+
+        Row(
+            modifier = Modifier
+                .padding(20.dp)
+                .align(Alignment.BottomStart),
         ) {
             ArtFromUrl(
                 imageUrl = song.artUrl,
-                modifier = Modifier
-                    .matchParentSize()
-                    .blur(5.dp)
+                modifier = Modifier.size(70.dp)
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
-                            )
-                        )
-                    )
-                    .matchParentSize()
-                    .align(Alignment.BottomCenter)
-            )
+            Spacer(modifier = Modifier.padding(5.dp))
 
-            Row(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .align(Alignment.BottomStart),
-            ) {
-                ArtFromUrl(
-                    imageUrl = song.artUrl,
-                    modifier = Modifier.size(70.dp)
+            Column {
+                Text(
+                    text = song.title,
+                    fontWeight = FontWeight.ExtraBold
                 )
+                Text(
+                    text = song.artists,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
 
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                Column {
+        LazyColumn(
+            modifier = Modifier
+                .padding(
+                    start = 32.dp,
+                    end = 32.dp,
+                    bottom = 120.dp,
+                    top = 32.dp
+                )
+                .wrapContentHeight()
+        ) {
+            items(sortedLines.values.toList()) {
+                Card(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    shape = MaterialTheme.shapes.small,
+                    colors = cardColors
+                ) {
                     Text(
-                        text = song.title,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                    Text(
-                        text = song.artists,
-                        style = MaterialTheme.typography.bodySmall
+                        text = it,
+                        modifier = Modifier.padding(
+                            start = 6.dp,
+                            end = 6.dp,
+                            top = 4.dp,
+                            bottom = 4.dp
+                        ),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
+        }
 
-            LazyColumn(
-                modifier = Modifier
-                    .padding(
-                        start = 32.dp,
-                        end = 32.dp,
-                        bottom = 120.dp,
-                        top = 32.dp
-                    )
-                    .wrapContentHeight()
-            ) {
-                items(sortedLines.values.toList()) {
-                    Card(
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        shape = MaterialTheme.shapes.small,
-                        colors = cardColor
-                    ) {
-                        Text(
-                            text = it,
-                            modifier = Modifier.padding(
-                                start = 6.dp,
-                                end = 6.dp,
-                                top = 4.dp,
-                                bottom = 4.dp
-                            ),
-                            fontWeight = FontWeight.Bold
-                        )
+        IconButton(
+            onClick = {
+                coroutineScope.launch {
+                    when (cardColorType) {
+                        "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
+                        "Muted" -> SettingsDataStore.updateCardColor(context, "Default")
+                        else -> SettingsDataStore.updateCardColor(context, "Vibrant")
                     }
                 }
-            }
+            },
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
+            Icon(
+                painter = when (cardColorType) {
+                    "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
+                    "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
+                    else -> painterResource(id = R.drawable.round_disabled_by_default_24)
+                },
+                contentDescription = null
+            )
         }
     }
 }

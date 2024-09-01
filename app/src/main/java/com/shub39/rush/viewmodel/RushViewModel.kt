@@ -107,7 +107,7 @@ class RushViewModel(
 
         viewModelScope.launch {
             _isSearchingLyrics.value = true
-            songsToSearchResult(songDao.searchSong(query.split(" ").first()))
+            songsToSearchResult(songDao.searchSong(query))
             try {
                 val result = withContext(Dispatchers.IO) {
                     SongProvider.search(query)

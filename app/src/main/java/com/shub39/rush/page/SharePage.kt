@@ -7,6 +7,8 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,6 +30,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +40,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,12 +52,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.component.GeniusShareCard
 import com.shub39.rush.component.MaterialShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -61,6 +73,7 @@ import java.io.IOException
 fun SharePage(
     onDismiss: () -> Unit,
     rushViewModel: RushViewModel,
+    imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
@@ -71,6 +84,81 @@ fun SharePage(
     val cardTheme by cardThemeFlow.collectAsState(initial = "Default")
     val sortedLines = sortMapByKeys(selectedLines)
     var namePicker by remember { mutableStateOf(false) }
+    val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
+    val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
+    val cardColorType by cardColorFlow.collectAsState(initial = "")
+    val cardCornersType by cardCornersFlow.collectAsState(initial = "")
+    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
+    var cardContentDominant by remember { mutableStateOf(Color.White) }
+    var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
+    var cardContentMuted by remember { mutableStateOf(Color.LightGray) }
+
+    LaunchedEffect(song) {
+        val request = ImageRequest.Builder(context)
+            .data(song.artUrl)
+            .allowHardware(false)
+            .build()
+
+        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
+        result.let { drawable ->
+            if (drawable != null) {
+                Palette.from(drawable.toBitmap()).generate { palette ->
+                    palette?.let {
+                        cardBackgroundDominant =
+                            Color(
+                                it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
+                                ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
+                                ?: Color.DarkGray.toArgb()
+                            )
+                        cardContentDominant =
+                            Color(
+                                it.vibrantSwatch?.bodyTextColor
+                                    ?: it.lightVibrantSwatch?.bodyTextColor
+                                    ?: it.darkVibrantSwatch?.bodyTextColor
+                                    ?: it.dominantSwatch?.bodyTextColor
+                                    ?: Color.White.toArgb()
+                            )
+                        cardBackgroundMuted =
+                            Color(
+                                it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
+                                ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
+                            )
+                        cardContentMuted =
+                            Color(
+                                it.mutedSwatch?.bodyTextColor ?: it.darkMutedSwatch?.bodyTextColor
+                                ?: it.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
+                            )
+                    }
+                }
+            }
+        }
+    }
+
+    val cornerRadius by animateDpAsState(
+        targetValue = when (cardCornersType) {
+            "Rounded" -> 16.dp
+            else -> 0.dp
+        }, label = "corners"
+    )
+    val containerColor by animateColorAsState(
+        targetValue = when (cardColorType) {
+            "Muted" -> cardBackgroundMuted
+            "Vibrant" -> cardBackgroundDominant
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }, label = "container"
+    )
+    val contentColor by animateColorAsState(
+        targetValue = when (cardColorType) {
+            "Muted" -> cardContentMuted
+            "Vibrant" -> cardContentDominant
+            else -> MaterialTheme.colorScheme.onPrimaryContainer
+        }, label = "content"
+    )
+    val cardColor = CardDefaults.cardColors(
+        containerColor = containerColor,
+        contentColor = contentColor
+    )
+    val cardCorners = RoundedCornerShape(cornerRadius)
 
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -91,7 +179,11 @@ fun SharePage(
                                 drawLayer(cardGraphicsLayer)
                             },
                         song = song,
-                        sortedLines = sortedLines
+                        sortedLines = sortedLines,
+                        cardColors = cardColor,
+                        cardColorType = cardColorType,
+                        cardCorners = cardCorners,
+                        cardCornersType = cardCornersType
                     )
 
                     "Genius" -> GeniusShareCard(
@@ -103,7 +195,9 @@ fun SharePage(
                                 drawLayer(cardGraphicsLayer)
                             },
                         song = song,
-                        sortedLines = sortedLines
+                        sortedLines = sortedLines,
+                        cardColors = cardColor,
+                        cardColorType = cardColorType
                     )
                 }
 

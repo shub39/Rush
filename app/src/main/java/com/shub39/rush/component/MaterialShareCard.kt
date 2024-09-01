@@ -1,145 +1,53 @@
 package com.shub39.rush.component
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.database.Song
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 @Composable
 fun MaterialShareCard(
     modifier: Modifier,
     song: Song,
     sortedLines: Map<Int, String>,
-    imageLoader: ImageLoader = koinInject()
+    cardColors: CardColors,
+    cardColorType: String,
+    cardCorners: RoundedCornerShape,
+    cardCornersType: String
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
-    val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
-    val cardColorType by cardColorFlow.collectAsState(initial = "")
-    val cardCornersType by cardCornersFlow.collectAsState(initial = "")
-    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentDominant by remember { mutableStateOf(Color.White) }
-    var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentMuted by remember { mutableStateOf(Color.LightGray) }
 
-    LaunchedEffect(song) {
-        val request = ImageRequest.Builder(context)
-            .data(song.artUrl)
-            .allowHardware(false)
-            .build()
-
-        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
-        result.let { drawable ->
-            if (drawable != null) {
-                Palette.from(drawable.toBitmap()).generate { palette ->
-                    palette?.let {
-                        cardBackgroundDominant =
-                            Color(
-                                it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
-                                ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
-                                ?: Color.DarkGray.toArgb()
-                            )
-                        cardContentDominant =
-                            Color(
-                                it.vibrantSwatch?.bodyTextColor
-                                    ?: it.lightVibrantSwatch?.bodyTextColor
-                                    ?: it.darkVibrantSwatch?.bodyTextColor
-                                    ?: it.dominantSwatch?.bodyTextColor
-                                    ?: Color.White.toArgb()
-                            )
-                        cardBackgroundMuted =
-                            Color(
-                                it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
-                                ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                            )
-                        cardContentMuted =
-                            Color(
-                                it.mutedSwatch?.bodyTextColor ?: it.darkMutedSwatch?.bodyTextColor
-                                ?: it.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
-                            )
-                    }
-                }
-            }
-        }
-    }
-
-    val cornerRadius by animateDpAsState(
-        targetValue = when (cardCornersType) {
-            "Rounded" -> 16.dp
-            else -> 0.dp
-        }, label = "corners"
-    )
-    val containerColor by animateColorAsState(
-        targetValue = when (cardColorType) {
-            "Muted" -> cardBackgroundMuted
-            "Vibrant" -> cardBackgroundDominant
-            else -> MaterialTheme.colorScheme.primaryContainer
-        }, label = "container"
-    )
-    val contentColor by animateColorAsState(
-        targetValue = when (cardColorType) {
-            "Muted" -> cardContentMuted
-            "Vibrant" -> cardContentDominant
-            else -> MaterialTheme.colorScheme.onPrimaryContainer
-        }, label = "content"
-    )
-    val cardColor = CardDefaults.cardColors(
-        containerColor = containerColor,
-        contentColor = contentColor
-    )
-    val cardCorners = RoundedCornerShape(cornerRadius)
-
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(contentAlignment = Alignment.Center) {
         Card(
             modifier = modifier
                 .width(350.dp),
-            colors = cardColor,
+            colors = cardColors,
             shape = cardCorners
         ) {
             Column(
@@ -195,29 +103,8 @@ fun MaterialShareCard(
         }
 
         Row(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomEnd)
         ) {
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        when (cardColorType) {
-                            "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
-                            "Muted" -> SettingsDataStore.updateCardColor(context, "Default")
-                            else -> SettingsDataStore.updateCardColor(context, "Vibrant")
-                        }
-                    }
-                }
-            ) {
-                Icon(
-                    painter = when (cardColorType) {
-                        "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
-                        "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
-                        else -> painterResource(id = R.drawable.round_disabled_by_default_24)
-                    },
-                    contentDescription = null
-                )
-            }
-
             IconButton(
                 onClick = {
                     coroutineScope.launch {
@@ -239,6 +126,27 @@ fun MaterialShareCard(
                     painter = when (cardCornersType) {
                         "Rounded" -> painterResource(id = R.drawable.baseline_circle_24)
                         else -> painterResource(id = R.drawable.baseline_square_24)
+                    },
+                    contentDescription = null
+                )
+            }
+
+            IconButton(
+                onClick = {
+                    coroutineScope.launch {
+                        when (cardColorType) {
+                            "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
+                            "Muted" -> SettingsDataStore.updateCardColor(context, "Default")
+                            else -> SettingsDataStore.updateCardColor(context, "Vibrant")
+                        }
+                    }
+                }
+            ) {
+                Icon(
+                    painter = when (cardColorType) {
+                        "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
+                        "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
+                        else -> painterResource(id = R.drawable.round_disabled_by_default_24)
                     },
                     contentDescription = null
                 )
