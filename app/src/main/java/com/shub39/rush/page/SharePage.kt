@@ -291,8 +291,10 @@ fun SharePage(
                             shareImage(context, bitmap, name, true)
                         }
                     },
-                    enabled = name.isNotEmpty() && name.isNotBlank() && name.endsWith(".png"),
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    enabled = isValidFilename(name),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Text(text = stringResource(id = R.string.save))
                 }
@@ -309,6 +311,16 @@ private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     }
     return sortedMap
 }
+
+private fun isValidFilename(filename: String): Boolean {
+    val invalidCharsPattern = Regex("[/\\\\:*?\"<>|\u0000\r\n]")
+    return !invalidCharsPattern.containsMatchIn(filename)
+            && filename.length <= 50
+            && filename.isNotBlank()
+            && filename.isNotEmpty()
+            && filename.endsWith(".png")
+}
+
 
 fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: Boolean = false) {
     val file: File = if (saveToPictures) {

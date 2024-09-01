@@ -60,7 +60,7 @@ fun MaterialShareCard(
                         imageUrl = song.artUrl,
                         modifier = Modifier
                             .size(90.dp)
-                            .clip(MaterialTheme.shapes.small),
+                            .clip(cardCorners),
                     )
                     Column(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
