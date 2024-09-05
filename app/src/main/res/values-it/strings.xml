@@ -13,11 +13,11 @@
     <string name="unknown_album">Album sconosciuto</string>
     <string name="width">Larghezza</string>
     <string name="colors">Colori</string>
-    <string name="grant_permission">Dai l'accesso alle notifiche</string>
-    <string name="notification_permission">L'accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l'app dopo aver dato il permesso.</string>
+    <string name="grant_permission">Dai l\'accesso alle notifiche</string>
+    <string name="notification_permission">L\'accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l\'app dopo aver dato il permesso.</string>
     <string name="rounded_corners">Angoli arrotondati</string>
     <string name="max_lines">Linee massime condivisibili</string>
-    <string name="theme">Tema dell'app</string>
+    <string name="theme">Tema dell\'app</string>
     <string name="sort_title_asc">Titolo (A-Z)</string>
     <string name="sort_title_desc">Titolo (Z-A)</string>
     <string name="sort_artists_asc">Raggruppati per Artista</string>
