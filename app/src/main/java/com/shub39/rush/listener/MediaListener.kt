@@ -13,21 +13,22 @@ import androidx.core.content.getSystemService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 object MediaListener {
 
     private const val TAG = "MediaListener"
 
-    private lateinit var msm: MediaSessionManager
-    private lateinit var nls: ComponentName
+    private var msm: MediaSessionManager? = null
+    private var nls: ComponentName? = null
     private var activeMediaController: MediaController? = null
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
     val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
     val songPositionFlow = MutableSharedFlow<Long>()
 
     private var initialised = false
+
+    private var coroutineScope = CoroutineScope(Dispatchers.IO)
 
     fun init(context: Context) {
 
@@ -37,15 +38,16 @@ object MediaListener {
 
         initialised = true
 
-        msm = context.getSystemService()!!
+        msm = context.getSystemService<MediaSessionManager>()
         nls = ComponentName(context, NotificationListener::class.java)
 
-        val activeSessions = msm.getActiveSessions(nls)
-        val activeSession = activeSessions.find { isActive(it.playbackState) }
-        activeMediaController = activeSession ?: activeSessions.firstOrNull()
-        onActiveSessionsChanged(activeSessions)
-
-        Log.d("MediaListener", "init $msm")
+        msm?.let { manager ->
+            val activeSessions = manager.getActiveSessions(nls!!)
+            val activeSession = activeSessions.find { isActive(it.playbackState) }
+            activeMediaController = activeSession ?: activeSessions.firstOrNull()
+            onActiveSessionsChanged(activeSessions)
+            Log.d(TAG, "init $manager")
+        } ?: Log.e(TAG, "MediaSessionManager is null")
     }
 
     fun destroy() {
@@ -61,24 +63,25 @@ object MediaListener {
 
     private fun onActiveSessionsChanged(controllers: List<MediaController?>?) {
         val callbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
-        controllers?.filterNotNull()?.forEach {
-            Log.d(TAG, "Session: $it (${it.sessionToken})")
+        controllers?.filterNotNull()?.forEach { controller ->
+            Log.d(TAG, "Session: $controller (${controller.sessionToken})")
 
-            if (internalCallbacks.containsKey(it.sessionToken)) {
-                callbacks[it.sessionToken] = internalCallbacks[it.sessionToken]!!
+            if (internalCallbacks.containsKey(controller.sessionToken)) {
+                callbacks[controller.sessionToken] = internalCallbacks[controller.sessionToken]!!
             } else {
                 val callback = object : MediaController.Callback() {
                     override fun onPlaybackStateChanged(state: PlaybackState?) {
-                        this@MediaListener.onPlaybackStateChanged(it, state)
-                        this@MediaListener.updateTitle(it, it.metadata)
+                        this@MediaListener.onPlaybackStateChanged(controller, state)
+                        this@MediaListener.updateTitle(controller, controller.metadata)
                     }
 
-                    override fun onMetadataChanged(metadata: MediaMetadata?) =
-                        this@MediaListener.updateTitle(it, metadata)
+                    override fun onMetadataChanged(metadata: MediaMetadata?) {
+                        this@MediaListener.updateTitle(controller, metadata)
+                    }
                 }
 
-                it.registerCallback(callback)
-                callbacks[it.sessionToken] = callback
+                controller.registerCallback(callback)
+                callbacks[controller.sessionToken] = callback
             }
         }
 
@@ -87,15 +90,22 @@ object MediaListener {
     }
 
     private fun isActive(playbackState: PlaybackState?): Boolean {
-        if (playbackState == null)
-            return false
+        if (playbackState == null) return false
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            return playbackState.isActive
-
-        return when (playbackState.state) {
-            PlaybackState.STATE_FAST_FORWARDING, PlaybackState.STATE_REWINDING, PlaybackState.STATE_SKIPPING_TO_PREVIOUS, PlaybackState.STATE_SKIPPING_TO_NEXT, PlaybackState.STATE_SKIPPING_TO_QUEUE_ITEM, PlaybackState.STATE_BUFFERING, PlaybackState.STATE_CONNECTING, PlaybackState.STATE_PLAYING -> true
-            else -> false
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            playbackState.isActive
+        } else {
+            when (playbackState.state) {
+                PlaybackState.STATE_FAST_FORWARDING,
+                PlaybackState.STATE_REWINDING,
+                PlaybackState.STATE_SKIPPING_TO_PREVIOUS,
+                PlaybackState.STATE_SKIPPING_TO_NEXT,
+                PlaybackState.STATE_SKIPPING_TO_QUEUE_ITEM,
+                PlaybackState.STATE_BUFFERING,
+                PlaybackState.STATE_CONNECTING,
+                PlaybackState.STATE_PLAYING -> true
+                else -> false
+            }
         }
     }
 
@@ -107,11 +117,13 @@ object MediaListener {
         activeMediaController = newActive
     }
 
-    private fun updateTitle(controller: MediaController ,metadata: MediaMetadata?) {
+    private fun updateTitle(controller: MediaController, metadata: MediaMetadata?) {
         if (controller.sessionToken != activeMediaController?.sessionToken) return
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
-        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
-        CoroutineScope(Dispatchers.IO).launch {
+        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)
+            ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
+
+        coroutineScope.launch {
             songInfoFlow.emit(Pair(getMainTitle(title), artist))
             controller.playbackState?.position?.let { songPositionFlow.emit(it) }
         }
