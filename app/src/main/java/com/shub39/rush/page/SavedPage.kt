@@ -1,6 +1,5 @@
 package com.shub39.rush.page
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,8 +65,11 @@ fun SavedPage(
         modifier = Modifier.fillMaxSize()
     ) {
         if (sortedSongs.isEmpty() && songs.value.isEmpty()) {
+
             Empty()
+
         } else {
+
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -145,9 +147,7 @@ fun SavedPage(
         }
 
         FloatingActionButton(
-            onClick = {
-                bottomSheet()
-            },
+            onClick = { bottomSheet() },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
@@ -177,14 +177,4 @@ fun SavedPage(
         }
 
     }
-}
-
-enum class SortOrder(
-    val sortOrder: String,
-    @StringRes val textId: Int
-) {
-    TITLE_ASC("title_asc", R.string.sort_title_asc),
-    TITLE_DESC("title_desc", R.string.sort_title_desc),
-    ARTISTS_ASC("artists_asc", R.string.sort_artists_asc),
-    ALBUM_ASC("album_asc", R.string.sort_album_asc),
 }

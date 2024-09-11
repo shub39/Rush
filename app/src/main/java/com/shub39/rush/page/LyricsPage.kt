@@ -1,8 +1,5 @@
 package com.shub39.rush.page
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -56,9 +53,15 @@ import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.EmptyCard
 import com.shub39.rush.component.LoadingCard
-import com.shub39.rush.database.Lyric
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
+import com.shub39.rush.logic.UILogic.breakLyrics
+import com.shub39.rush.logic.UILogic.copyToClipBoard
+import com.shub39.rush.logic.UILogic.getCurrentLyricIndex
+import com.shub39.rush.logic.UILogic.openLinkInBrowser
+import com.shub39.rush.logic.UILogic.parseLyrics
+import com.shub39.rush.logic.UILogic.shareImage
+import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 
@@ -185,8 +188,9 @@ fun LyricsPage(
                                 )
                             },
                     )
+
                     Column(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                        modifier = Modifier.padding(start = 16.dp),
                     ) {
                         Text(
                             text = nonNullSong.title,
@@ -212,6 +216,7 @@ fun LyricsPage(
                         }
                     }
                 }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -240,6 +245,7 @@ fun LyricsPage(
                                 contentDescription = null
                             )
                         }
+
                         AnimatedVisibility(visible = selectedLines.isEmpty()) {
                             IconButton(onClick = {
                                 source = if (source == "LrcLib") "Genius" else "LrcLib"
@@ -258,6 +264,7 @@ fun LyricsPage(
                                 }
                             }
                         }
+
                         AnimatedVisibility(
                             visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
                         ) {
@@ -273,6 +280,7 @@ fun LyricsPage(
                                 }
                             }
                         }
+
                         AnimatedVisibility(visible = notificationAccess) {
                             IconButton(
                                 onClick = { rushViewModel.toggleAutoChange() },
@@ -285,6 +293,7 @@ fun LyricsPage(
                                 )
                             }
                         }
+
                         AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                             Row {
                                 IconButton(onClick = {
@@ -296,6 +305,7 @@ fun LyricsPage(
                                         contentDescription = null
                                     )
                                 }
+
                                 IconButton(onClick = { selectedLines = emptyMap() }) {
                                     Icon(
                                         imageVector = Icons.Rounded.Clear,
@@ -361,6 +371,7 @@ fun LyricsPage(
                     if (lyrics.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.padding(10.dp))
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -404,8 +415,8 @@ fun LyricsPage(
                                         contentDescription = null
                                     )
                                 }
-
                             }
+
                             Spacer(modifier = Modifier.padding(10.dp))
                         }
                     }
@@ -417,12 +428,15 @@ fun LyricsPage(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Spacer(modifier = Modifier.padding(10.dp))
+
                                 Icon(
                                     painter = painterResource(id = R.drawable.round_warning_24),
                                     contentDescription = null,
                                     modifier = Modifier.size(100.dp)
                                 )
+
                                 Spacer(modifier = Modifier.padding(10.dp))
+
                                 Text(text = stringResource(id = R.string.no_lyrics))
                             }
                         }
@@ -455,13 +469,11 @@ fun LyricsPage(
                                 } else {
                                     MaterialTheme.colorScheme.primaryContainer
                                 }
-
                             val targetContentColor = if (lyric.time <= currentSongPosition + 2000) {
                                 MaterialTheme.colorScheme.onPrimary
                             } else {
                                 MaterialTheme.colorScheme.onPrimaryContainer
                             }
-
                             val containerColor by animateColorAsState(
                                 targetValue = targetContainerColor,
                                 label = "container"
@@ -498,57 +510,5 @@ fun LyricsPage(
                 }
             }
         }
-
-    }
-}
-
-private fun breakLyrics(lyrics: String): Map<Int, String> {
-    val lines = lyrics.lines()
-    val map = mutableMapOf<Int, String>()
-    for (i in lines.indices) {
-        map[i] = lines[i]
-    }
-    return map
-}
-
-private fun updateSelectedLines(
-    selectedLines: Map<Int, String>,
-    key: Int,
-    value: String,
-    maxSelections: Int = 6
-): Map<Int, String> {
-    return if (!selectedLines.contains(key) && selectedLines.size < maxSelections) {
-        selectedLines.plus(key to value)
-    } else {
-        selectedLines.minus(key)
-    }
-}
-
-private fun copyToClipBoard(context: Context, text: String, label: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText(label, text)
-    clipboard.setPrimaryClip(clip)
-}
-
-fun parseLyrics(lyricsString: String): List<Lyric> {
-    return lyricsString.lines().mapNotNull { line ->
-        val parts = line.split("] ")
-        if (parts.size == 2) {
-            val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
-                minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
-            }
-            val text = parts[1]
-            Lyric(time, text)
-        } else {
-            null
-        }
-    }
-}
-
-private fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
-    return if (lyrics.indexOfLast { it.time <= playbackPosition } < 0) {
-        0
-    } else {
-        lyrics.indexOfLast { it.time <= playbackPosition }
     }
 }

@@ -1,12 +1,5 @@
 package com.shub39.rush.page
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.media.MediaScannerConnection
-import android.net.Uri
-import android.os.Environment
-import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
@@ -51,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
@@ -61,12 +53,12 @@ import com.shub39.rush.R
 import com.shub39.rush.component.GeniusShareCard
 import com.shub39.rush.component.MaterialShareCard
 import com.shub39.rush.database.SettingsDataStore
+import com.shub39.rush.logic.UILogic.isValidFilename
+import com.shub39.rush.logic.UILogic.shareImage
+import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -300,63 +292,5 @@ fun SharePage(
                 }
             }
         }
-    }
-}
-
-private fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
-    val sortedEntries = map.entries.toList().sortedBy { it.key }
-    val sortedMap = LinkedHashMap<Int, String>()
-    for (entry in sortedEntries) {
-        sortedMap[entry.key] = entry.value
-    }
-    return sortedMap
-}
-
-private fun isValidFilename(filename: String): Boolean {
-    val invalidCharsPattern = Regex("[/\\\\:*?\"<>|\u0000\r\n]")
-    return !invalidCharsPattern.containsMatchIn(filename)
-            && filename.length <= 50
-            && filename.isNotBlank()
-            && filename.isNotEmpty()
-            && filename.endsWith(".png")
-}
-
-
-fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: Boolean = false) {
-    val file: File = if (saveToPictures) {
-        val picturesDir = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-            "Rush"
-        )
-        picturesDir.mkdirs()
-        File(picturesDir, name)
-    } else {
-        val cachePath = File(context.cacheDir, "images")
-        cachePath.mkdirs()
-        File(cachePath, name)
-    }
-
-    try {
-        val stream = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        stream.close()
-    } catch (e: IOException) {
-        e.printStackTrace()
-        return
-    }
-
-    if (saveToPictures) {
-        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
-        Toast.makeText(context, "Image saved to Pictures/$name", Toast.LENGTH_SHORT).show()
-    } else {
-        val contentUri: Uri =
-            FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, contentUri)
-            type = "image/png"
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(Intent.createChooser(shareIntent, "Share image using"))
     }
 }

@@ -40,17 +40,3 @@ fun ArtFromUrl(
         contentScale = ContentScale.Crop
     )
 }
-
-fun provideImageLoader(context: Context): ImageLoader {
-    return ImageLoader.Builder(context)
-        .crossfade(true)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .diskCachePolicy(CachePolicy.ENABLED)
-        .diskCache {
-            DiskCache.Builder()
-                .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.02)
-                .build()
-        }
-        .build()
-}

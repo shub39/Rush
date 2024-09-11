@@ -96,12 +96,10 @@ object SongProvider {
                 val sourceUrl = jsonSong.get("url")?.asString ?: ""
                 val album = getAlbum(jsonSong)
                 val artUrl = jsonSong.get("header_image_thumbnail_url")?.asString ?: ""
-
                 val lrcLib = lyricsFetcher.getLrcLibLyrics(title, artist) ?: Pair("", null)
                 val lyrics = lrcLib.first
                 val syncedLyrics = lrcLib.second
                 val geniusLyrics = lyricsFetcher.scrapeLyrics(sourceUrl)
-
 
                 Result.success(
                     Song(

@@ -1,8 +1,6 @@
 package com.shub39.rush.page
 
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -44,6 +42,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
+import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -172,6 +171,7 @@ fun SettingPage(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = stringResource(id = R.string.max_lines))
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -187,9 +187,13 @@ fun SettingPage(
                                     }
                                 }
                             )
+
                             Spacer(modifier = Modifier.padding(4.dp))
+
                             Text(text = maxLinesFlow.toString())
+
                             Spacer(modifier = Modifier.padding(4.dp))
+
                             Icon(
                                 painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
                                 contentDescription = null,
@@ -249,6 +253,7 @@ fun SettingPage(
                     .fillMaxWidth()
                     .padding(8.dp)
             )
+
             Row(
                 modifier = Modifier
                     .padding(bottom = 12.dp)
@@ -302,14 +307,15 @@ fun SettingPage(
                         modifier = Modifier.size(64.dp)
                     )
 
-
                     Spacer(modifier = Modifier.padding(8.dp))
+
                     Text(
                         text = stringResource(id = R.string.notification_permission),
                         textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
+
                     Button(
                         onClick = {
                             startActivity(context, intent, null)
@@ -342,14 +348,15 @@ fun SettingPage(
                         modifier = Modifier.size(64.dp)
                     )
 
-
                     Spacer(modifier = Modifier.padding(8.dp))
+
                     Text(
                         text = stringResource(id = R.string.delete_confirmation),
                         textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
+
                     Button(
                         onClick = {
                             rushViewModel.songs.value.forEach {
@@ -367,10 +374,4 @@ fun SettingPage(
             }
         }
     }
-
-}
-
-fun openLinkInBrowser(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    context.startActivity(intent)
 }

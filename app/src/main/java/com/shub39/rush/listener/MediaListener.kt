@@ -32,9 +32,7 @@ object MediaListener {
 
     fun init(context: Context) {
 
-        if (!NotificationListener.canAccessNotifications(context)) return
-
-        if (initialised) return
+        if (!NotificationListener.canAccessNotifications(context) || initialised) return
 
         initialised = true
 

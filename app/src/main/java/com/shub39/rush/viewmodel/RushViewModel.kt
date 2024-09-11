@@ -108,6 +108,7 @@ class RushViewModel(
         viewModelScope.launch {
             _isSearchingLyrics.value = true
             songsToSearchResult(songDao.searchSong(query))
+
             try {
                 val result = withContext(Dispatchers.IO) {
                     SongProvider.search(query)
@@ -121,6 +122,7 @@ class RushViewModel(
             } finally {
                 _isSearchingLyrics.value = false
             }
+
             if (fetch) {
                 if (_searchResults.value.isNotEmpty()) {
                     fetchLyrics(_searchResults.value.first().id)
@@ -134,6 +136,7 @@ class RushViewModel(
     private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
         viewModelScope.launch {
             _isFetchingLyrics.value = true
+
             try {
                 if (songId in songs.value.map { it.id }) {
                     val result = songDao.getSongById(songId)
@@ -175,6 +178,7 @@ class RushViewModel(
                     )
                 )
             }
+
             _localSearchResults.value = searchResults
         }
     }

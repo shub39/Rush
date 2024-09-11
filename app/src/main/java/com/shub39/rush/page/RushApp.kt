@@ -86,6 +86,7 @@ fun RushApp(
         ) {
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
+
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
                 keyboardController?.show()
@@ -97,7 +98,6 @@ fun RushApp(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-
                 OutlinedTextField(
                     value = query,
                     singleLine = true,
@@ -180,6 +180,7 @@ fun RushApp(
                             onClick = {
                                 searchSheetState = false
                                 query = ""
+
                                 if (song == null) {
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
@@ -203,6 +204,7 @@ fun RushApp(
                             onClick = {
                                 searchSheetState = false
                                 query = ""
+
                                 if (song == null) {
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
@@ -267,6 +269,7 @@ fun RushApp(
                     rushViewModel = rushViewModel,
                 )
             }
+
             composable("settings") {
                 SettingPage(
                     rushViewModel = rushViewModel
@@ -274,103 +277,4 @@ fun RushApp(
             }
         }
     }
-}
-
-@Composable
-fun RushPager(
-    lazyListState: LazyListState,
-    pagerState: PagerState,
-    bottomSheet: () -> Unit = {},
-    onPageChange: (Int) -> Unit,
-    lazyListRefresh: () -> Unit,
-    rushViewModel: RushViewModel
-) {
-    HorizontalPager(
-        state = pagerState,
-    ) { page ->
-        when (page) {
-            0 -> LyricsPage(
-                lazyListState = lazyListState,
-                rushViewModel = rushViewModel,
-                bottomSheet = bottomSheet,
-            )
-
-            1 -> SavedPage(
-                rushViewModel = rushViewModel,
-                bottomSheet = bottomSheet,
-                onClick = {
-                    onPageChange(0)
-                    lazyListRefresh()
-                }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(
-    navController: NavController,
-    pagerState: PagerState
-) {
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStackEntry?.destination
-
-    TopAppBar(
-        title = {
-            if (currentDestination?.route == "settings") {
-                Text(
-                    text = stringResource(id = R.string.settings),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            } else if (pagerState.currentPage == 1) {
-                Text(
-                    text = stringResource(id = R.string.saved),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            } else {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        actions = {
-            BackHandler(
-                enabled = currentDestination?.route == "settings"
-            ) {
-                navController.navigateUp()
-            }
-
-            IconButton(
-                onClick = {
-                    if (currentDestination?.route != "settings") {
-                        navController.navigate("settings") {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    } else {
-                        navController.navigateUp()
-                    }
-                }
-            ) {
-                if (currentDestination?.route != "settings") {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_settings_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_arrow_back_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        },
-    )
 }
