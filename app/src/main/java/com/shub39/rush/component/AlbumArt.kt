@@ -7,12 +7,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
-import coil.disk.DiskCache
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.shub39.rush.R
 import org.koin.compose.koinInject
-import android.content.Context as Context
 
 
 @Composable
