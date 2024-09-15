@@ -5,10 +5,11 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.shub39.rush.viewmodel.RushViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val rushModules = module {
-    factory { RushViewModel(get()) }
+    viewModel { RushViewModel(get()) }
     single { provideImageLoader(get()) }
 }
 

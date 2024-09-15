@@ -58,13 +58,14 @@ import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
-    rushViewModel: RushViewModel,
+    rushViewModel: RushViewModel = koinViewModel(),
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()

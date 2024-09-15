@@ -12,6 +12,7 @@ import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.page.RushApp
 import com.shub39.rush.ui.theme.RushTheme
+import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity() {
 
@@ -31,9 +32,10 @@ class MainActivity : ComponentActivity() {
                 theme = theme
             ) {
                 val navController = rememberNavController()
-                RushApp(
-                    navController = navController
-                )
+
+                KoinContext {
+                    RushApp(navController = navController)
+                }
             }
 
             splashScreen.setKeepOnScreenCondition {

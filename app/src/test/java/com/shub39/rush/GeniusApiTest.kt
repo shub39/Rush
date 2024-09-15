@@ -1,17 +1,17 @@
 package com.shub39.rush
 
+import com.shub39.rush.lyrics.SongProvider
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class GeniusApiTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun getSearchResults() {
+        val result = SongProvider.search("Hello")
+        println(result)
     }
 }

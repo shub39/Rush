@@ -64,10 +64,11 @@ import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LyricsPage(
-    rushViewModel: RushViewModel,
+    rushViewModel: RushViewModel = koinViewModel(),
     lazyListState: LazyListState,
     bottomSheet: () -> Unit,
 ) {
@@ -88,7 +89,7 @@ fun LyricsPage(
     val autoChange by rushViewModel.autoChange.collectAsState()
 
     if (isShareSheetOpen) {
-        SharePage(onDismiss = { isShareSheetOpen = false }, rushViewModel = rushViewModel)
+        SharePage(onDismiss = { isShareSheetOpen = false })
     }
 
     if (fetching) {
@@ -344,7 +345,7 @@ fun LyricsPage(
                             ) {
                                 Card(
                                     modifier = Modifier
-                                        .padding(3.dp),
+                                        .padding(6.dp),
                                     onClick = {
                                         selectedLines = updateSelectedLines(
                                             selectedLines,

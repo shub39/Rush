@@ -261,14 +261,11 @@ fun RushApp(
                             lazyListState.scrollToItem(0)
                         }
                     },
-                    rushViewModel = rushViewModel,
                 )
             }
 
             composable("settings") {
-                SettingPage(
-                    rushViewModel = rushViewModel
-                )
+                SettingPage()
             }
         }
     }
