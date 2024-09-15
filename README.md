@@ -22,6 +22,13 @@
 
 </div>
 
+## Screenshots 🌟
+
+| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
+|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![7](fastlane/metadata/android/en-US/images/phoneScreenshots/7.png) |
+| ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | 
+| ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | ![8](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png) |
 
 ## Features 🌠
 - [x] Search Lyrics
@@ -32,14 +39,7 @@
 - [x] Synced Lyrics
 
 ## Why ❔
-Spotify removed its feature to see and share lyrics from its free tier. So I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
-Nevermind Lyrics are back on spotify 💀. 
-
-## Screenshots 🌟
-
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) | ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![7](fastlane/metadata/android/en-US/images/phoneScreenshots/7.png) |
-|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
-| ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | ![8](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png) |
+Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
 
 ## Test and Discuss 💭
 
@@ -58,17 +58,17 @@ Nevermind Lyrics are back on spotify 💀.
 
 ## Tech Stack ⚒️
 
-- Retrofit and OkHttp for api calls
+- [Retrofit](https://square.github.io/retrofit/) and [OkHttp](https://square.github.io/okhttp/) for api calls
 
-- Database using ROOM
+- Database using [ROOM](https://developer.android.com/jetpack/androidx/releases/room)
 
 - MVVM architecture
 
-- Dependency injection using Koin
+- Dependency injection using [Koin](https://insert-koin.io/docs/reference/koin-compose/compose/)
 
-- Fuel and Jsoup for scraping
+- [Fuel](https://github.com/kittinunf/fuel) and [Jsoup](https://jsoup.org/) for scraping
 
-- Coil for Images
+- [Coil](https://github.com/coil-kt/coil) for Images
 
 ## Support 💕
 If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
