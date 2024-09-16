@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.EmptyCard
-import com.shub39.rush.component.Error
+import com.shub39.rush.component.ErrorCard
 import com.shub39.rush.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
@@ -91,7 +91,10 @@ fun LyricsPage(
     val autoChange by rushViewModel.autoChange.collectAsState()
 
     if (isShareSheetOpen) {
-        SharePage(onDismiss = { isShareSheetOpen = false })
+        SharePage(
+            onDismiss = { isShareSheetOpen = false },
+            rushViewModel = rushViewModel
+        )
     }
 
     if (fetching) {
@@ -100,7 +103,7 @@ fun LyricsPage(
 
     } else if (error) {
 
-        Error()
+        ErrorCard(rushViewModel)
 
     } else if (song == null) {
 

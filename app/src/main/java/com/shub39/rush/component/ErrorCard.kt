@@ -23,7 +23,7 @@ import com.shub39.rush.viewmodel.RushViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Error(
+fun ErrorCard(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
     Card(
