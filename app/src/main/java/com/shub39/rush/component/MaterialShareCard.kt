@@ -136,7 +136,8 @@ fun MaterialShareCard(
                     coroutineScope.launch {
                         when (cardColorType) {
                             "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
-                            "Muted" -> SettingsDataStore.updateCardColor(context, "Default")
+                            "Muted" -> SettingsDataStore.updateCardColor(context, "Custom")
+                            "Custom" -> SettingsDataStore.updateCardColor(context, "Default")
                             else -> SettingsDataStore.updateCardColor(context, "Vibrant")
                         }
                     }
@@ -146,6 +147,7 @@ fun MaterialShareCard(
                     painter = when (cardColorType) {
                         "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
                         "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
+                        "Custom" -> painterResource(id = R.drawable.baseline_edit_square_24)
                         else -> painterResource(id = R.drawable.round_disabled_by_default_24)
                     },
                     contentDescription = null

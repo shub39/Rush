@@ -2,6 +2,8 @@ package com.shub39.rush.database
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -22,6 +24,24 @@ object SettingsDataStore {
     private val CARD_COLOR = stringPreferencesKey("card_color")
     private val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
     private val CARD_THEME = stringPreferencesKey("card_theme")
+    private val CARD_BACKGROUND = intPreferencesKey("card_background")
+    private val CARD_CONTENT = intPreferencesKey("card_content")
+
+    fun getCardBackgroundFlow(context: Context): Flow<Int> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_BACKGROUND] ?: Color.Black.toArgb()
+        }
+
+    fun getCardContentFlow(context: Context): Flow<Int> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_CONTENT] ?: Color.White.toArgb()
+        }
 
     fun getCardThemeFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -70,6 +90,18 @@ object SettingsDataStore {
         .map { preferences ->
             preferences[MAX_LINES] ?: 6
         }
+
+    suspend fun updateCardBackground(context: Context, newCardBackground: Int) {
+        context.dataStore.edit { settings ->
+            settings[CARD_BACKGROUND] = newCardBackground
+        }
+    }
+
+    suspend fun updateCardContent(context: Context, newCardContent: Int) {
+        context.dataStore.edit { settings ->
+            settings[CARD_CONTENT] = newCardContent
+        }
+    }
 
     suspend fun updateSortOrder(context: Context, newSortOrder: String) {
         context.dataStore.edit { settings ->
