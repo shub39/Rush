@@ -45,11 +45,10 @@ import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingPage(
-    rushViewModel: RushViewModel = koinViewModel(),
+    rushViewModel: RushViewModel,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

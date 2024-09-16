@@ -144,6 +144,7 @@ fun RushApp(
                     onValueChange = {
                         query = it
                         rushViewModel.searchSong(it, false)
+                        rushViewModel.localSearch(it)
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(stringResource(id = R.string.search)) },
@@ -265,7 +266,7 @@ fun RushApp(
             }
 
             composable("settings") {
-                SettingPage()
+                SettingPage(rushViewModel)
             }
         }
     }

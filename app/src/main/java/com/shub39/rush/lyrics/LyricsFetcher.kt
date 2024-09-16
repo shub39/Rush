@@ -5,7 +5,6 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.shub39.rush.database.LrcLibSong
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -21,13 +20,7 @@ object LyricsFetcher {
     private val apiService: LrcLibApiService
 
     init {
-
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
         val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
             .build()
 
         val retrofit = Retrofit.Builder()
@@ -57,6 +50,7 @@ object LyricsFetcher {
                     lyrics += formatGeniusLyrics(it.wholeText())
                     lyrics += "\n"
                 }
+
                 lyrics
             }
         }
@@ -67,6 +61,7 @@ object LyricsFetcher {
         artistName: String
     ): Pair<String, String?>? {
         val response = apiService.getLrcLyrics(trackName, artistName).execute()
+
         if (response.isSuccessful) {
             val jsonSong = response.body()
             if (!jsonSong.isNullOrEmpty()) {
@@ -75,6 +70,7 @@ object LyricsFetcher {
                 return Pair(lyrics, syncedLyrics)
             }
         }
+        
         return null
     }
 

@@ -29,10 +29,12 @@ fun Empty() {
             modifier = Modifier.size(128.dp).padding(16.dp),
             tint = MaterialTheme.colorScheme.secondary
         )
+
         Text(
             text = stringResource(id = R.string.empty),
             color = MaterialTheme.colorScheme.secondary
         )
+
         Text(
             text = stringResource(id = R.string.suggestion),
             color = MaterialTheme.colorScheme.secondary

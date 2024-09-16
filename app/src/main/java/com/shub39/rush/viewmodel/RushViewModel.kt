@@ -35,7 +35,9 @@ class RushViewModel(
     private val _currentSongPosition = MutableStateFlow(0L)
     private val _shareLines = MutableStateFlow(mapOf<Int, String>())
     private val _lastSearched = MutableStateFlow("")
+    private val _errorQuery = MutableStateFlow("")
     private val _autoChange = MutableStateFlow(false)
+    private val _error = MutableStateFlow(false)
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
@@ -48,6 +50,7 @@ class RushViewModel(
     val autoChange: StateFlow<Boolean> get() = _autoChange
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
     val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
+    val error: StateFlow<Boolean> get() = _error
     val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
     val songsGroupedArtists: Flow<List<Map.Entry<String, List<Song>>>>
         get() =
@@ -107,65 +110,43 @@ class RushViewModel(
 
         viewModelScope.launch {
             _isSearchingLyrics.value = true
-            songsToSearchResult(songDao.searchSong(query))
 
             try {
                 val result = withContext(Dispatchers.IO) {
                     SongProvider.search(query)
                 }
+
                 if (result.isSuccess) {
                     _searchResults.value = result.getOrNull() ?: emptyList()
                     if (fetch) _lastSearched.value = query
+                    _error.value = false
                 } else {
                     Log.e("ViewModel", result.exceptionOrNull()?.message, result.exceptionOrNull())
+                    _errorQuery.value = query
+                    _error.value = true
                 }
             } finally {
                 _isSearchingLyrics.value = false
             }
 
-            if (fetch) {
-                if (_searchResults.value.isNotEmpty()) {
-                    fetchLyrics(_searchResults.value.first().id)
-                }
+            if (fetch && !error.value && _searchResults.value.isNotEmpty()) {
+                fetchLyrics(_searchResults.value.first().id)
             } else {
                 _autoChange.value = false
             }
         }
     }
 
-    private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
-        viewModelScope.launch {
-            _isFetchingLyrics.value = true
-
-            try {
-                if (songId in songs.value.map { it.id }) {
-                    val result = songDao.getSongById(songId)
-                    _currentSong.value = result
-                } else {
-                    val result = withContext(Dispatchers.IO) {
-                        SongProvider.fetchLyrics(songId)
-                    }
-                    if (result.isSuccess) {
-                        _currentSong.value = result.getOrNull()
-                        songDao.insertSong(_currentSong.value!!)
-                        _songs.value = songDao.getAllSongs()
-                    } else {
-                        Log.e(
-                            "ViewModel",
-                            result.exceptionOrNull()?.message,
-                            result.exceptionOrNull()
-                        )
-                    }
-                }
-            } finally {
-                _isFetchingLyrics.value = false
-            }
+    fun localSearch(query: String) {
+        if (query.isEmpty()) {
+            _localSearchResults.value = emptyList()
+            return
         }
-    }
 
-    private fun songsToSearchResult(songs: List<Song>) {
         viewModelScope.launch {
+            val songs = songDao.searchSong(query)
             val searchResults = mutableListOf<SearchResult>()
+
             for (song in songs) {
                 searchResults.add(
                     SearchResult(
@@ -180,6 +161,49 @@ class RushViewModel(
             }
 
             _localSearchResults.value = searchResults
+        }
+    }
+
+    fun retry() {
+        if (_errorQuery.value.toLongOrNull() != null) {
+            fetchLyrics(songId = _errorQuery.value.toLong())
+        } else {
+            searchSong(_errorQuery.value)
+        }
+    }
+
+    private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
+        viewModelScope.launch {
+            _isFetchingLyrics.value = true
+
+            try {
+                if (songId in songs.value.map { it.id }) {
+                    val result = songDao.getSongById(songId)
+                    _currentSong.value = result
+                    _error.value = false
+                } else {
+                    val result = withContext(Dispatchers.IO) {
+                        SongProvider.fetchLyrics(songId)
+                    }
+
+                    if (result.isSuccess) {
+                        _currentSong.value = result.getOrNull()
+                        songDao.insertSong(_currentSong.value!!)
+                        _songs.value = songDao.getAllSongs()
+                        _error.value = false
+                    } else {
+                        Log.e(
+                            "ViewModel",
+                            result.exceptionOrNull()?.message,
+                            result.exceptionOrNull()
+                        )
+                        _errorQuery.value = songId.toString()
+                        _error.value = true
+                    }
+                }
+            } finally {
+                _isFetchingLyrics.value = false
+            }
         }
     }
 }

@@ -46,6 +46,7 @@ object SongProvider {
     fun search(query: String): Result<List<SearchResult>> {
         return try {
             val response: Response<JsonElement> = apiService.search(query).execute()
+
             if (response.isSuccessful) {
                 val jsonHits = response.body()?.asJsonObject
                     ?.getAsJsonObject("response")
@@ -82,8 +83,10 @@ object SongProvider {
 
     fun fetchLyrics(songId: Long): Result<Song> {
         Log.i(TAG, "Fetching song $songId")
+
         return try {
             val response: Response<JsonElement> = apiService.getSong(songId).execute()
+
             if (response.isSuccessful) {
                 val jsonSong = response.body()?.asJsonObject
                     ?.getAsJsonObject("response")

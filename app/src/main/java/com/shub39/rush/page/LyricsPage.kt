@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.component.ArtFromUrl
 import com.shub39.rush.component.EmptyCard
+import com.shub39.rush.component.Error
 import com.shub39.rush.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
@@ -74,6 +75,7 @@ fun LyricsPage(
 ) {
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
+    val error by rushViewModel.error.collectAsState()
     val context = LocalContext.current
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
@@ -95,6 +97,10 @@ fun LyricsPage(
     if (fetching) {
 
         LoadingCard()
+
+    } else if (error) {
+
+        Error()
 
     } else if (song == null) {
 
