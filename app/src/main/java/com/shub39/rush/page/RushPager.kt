@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
+import com.shub39.rush.viewmodel.RushViewModel
 
 @Composable
 fun RushPager(
@@ -12,6 +13,7 @@ fun RushPager(
     bottomSheet: () -> Unit = {},
     onPageChange: (Int) -> Unit,
     lazyListRefresh: () -> Unit,
+    rushViewModel: RushViewModel
 ) {
     HorizontalPager(
         state = pagerState,
@@ -20,6 +22,7 @@ fun RushPager(
             0 -> LyricsPage(
                 lazyListState = lazyListState,
                 bottomSheet = bottomSheet,
+                rushViewModel = rushViewModel
             )
 
             1 -> SavedPage(
@@ -27,7 +30,8 @@ fun RushPager(
                 onClick = {
                     onPageChange(0)
                     lazyListRefresh()
-                }
+                },
+                rushViewModel = rushViewModel
             )
         }
     }

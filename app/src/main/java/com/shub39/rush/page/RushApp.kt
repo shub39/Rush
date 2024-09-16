@@ -1,5 +1,6 @@
 package com.shub39.rush.page
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -205,6 +206,7 @@ fun RushApp(
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
                                         rushViewModel.changeCurrentSong(it.id)
+                                        Log.d("RushApp", "changed song?")
                                     }
                                 } else {
                                     coroutineScope.launch {
@@ -262,6 +264,7 @@ fun RushApp(
                             lazyListState.scrollToItem(0)
                         }
                     },
+                    rushViewModel = rushViewModel
                 )
             }
 
