@@ -65,7 +65,6 @@ import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LyricsPage(
