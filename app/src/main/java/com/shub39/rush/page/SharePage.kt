@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -68,14 +70,13 @@ import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
-    rushViewModel: RushViewModel = koinViewModel(),
+    rushViewModel: RushViewModel,
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -84,6 +85,8 @@ fun SharePage(
     val context = LocalContext.current
     val song = rushViewModel.currentSong.collectAsState().value!!
     val selectedLines = rushViewModel.shareLines.collectAsState().value
+    val sortedLines = sortMapByKeys(selectedLines)
+
     val cardThemeFlow = remember { SettingsDataStore.getCardThemeFlow(context) }
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
     val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
@@ -94,14 +97,15 @@ fun SharePage(
     val cardCornersType by cardCornersFlow.collectAsState(initial = "")
     val mCardContent by mutableCardContent.collectAsState(initial = Color.White.toArgb())
     val mCardBackground by mutableCardBackground.collectAsState(initial = Color.Black.toArgb())
-    val sortedLines = sortMapByKeys(selectedLines)
-    var namePicker by remember { mutableStateOf(false) }
-    var colorPickerOpen by remember { mutableStateOf(false) }
-    var editTarget by remember { mutableStateOf("") }
+
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
     var cardContentDominant by remember { mutableStateOf(Color.White) }
     var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
     var cardContentMuted by remember { mutableStateOf(Color.LightGray) }
+
+    var namePicker by remember { mutableStateOf(false) }
+    var colorPickerOpen by remember { mutableStateOf(false) }
+    var editTarget by remember { mutableStateOf("") }
 
     LaunchedEffect(song) {
         val request = ImageRequest.Builder(context)
@@ -349,45 +353,64 @@ fun SharePage(
     if (colorPickerOpen) {
         BasicAlertDialog(
             onDismissRequest = {
-                coroutineScope.launch {
-                    if (editTarget == "content") {
-                        SettingsDataStore.updateCardContent(context, colorPicker.selectedColor.value.toArgb())
-                    } else {
-                        SettingsDataStore.updateCardBackground(context, colorPicker.selectedColor.value.toArgb())
-                    }
-                }
-                colorPickerOpen = false
+               colorPickerOpen = false
             }
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Card(
+                shape = MaterialTheme.shapes.extraLarge
             ) {
-                HsvColorPicker(
-                    modifier = Modifier
-                        .width(350.dp)
-                        .height(450.dp)
-                        .padding(10.dp),
-                    initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
-                    controller = colorPicker
-                )
+                Column(
+                    modifier = Modifier.wrapContentSize().padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    HsvColorPicker(
+                        modifier = Modifier
+                            .width(350.dp)
+                            .height(300.dp)
+                            .padding(10.dp),
+                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
+                        controller = colorPicker
+                    )
 
-                BrightnessSlider(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .height(35.dp),
-                    initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
-                    controller = colorPicker
-                )
+                    BrightnessSlider(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .height(35.dp),
+                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
+                        controller = colorPicker
+                    )
 
-                AlphaTile(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(10.dp)
-                        .clip(RoundedCornerShape(6.dp)),
-                    controller = colorPicker
-                )
+                    AlphaTile(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(6.dp)),
+                        controller = colorPicker
+                    )
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                if (editTarget == "content") {
+                                    SettingsDataStore.updateCardContent(context, colorPicker.selectedColor.value.toArgb())
+                                } else {
+                                    SettingsDataStore.updateCardBackground(context, colorPicker.selectedColor.value.toArgb())
+                                }
+                            }
+                            colorPickerOpen = false
+                        }
+                    ) {
+                        Text(
+                            text = when (editTarget) {
+                                "content" -> "Set Content Color"
+                                else -> "Set Background Color"
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
     }

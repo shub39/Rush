@@ -30,53 +30,53 @@ fun SongCard(
     onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(start = 15.dp, bottom = 7.5.dp, top = 7.5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick() }
-                .padding(start = 15.dp, bottom = 7.5.dp, top = 7.5.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            ArtFromUrl(
+                imageUrl = result.artUrl,
+                contentDescription = result.title,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .size(70.dp)
+                    .clip(MaterialTheme.shapes.small),
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp)
             ) {
-                ArtFromUrl(
-                    imageUrl = result.artUrl,
-                    contentDescription = result.title,
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clip(MaterialTheme.shapes.small),
+                Text(
+                    text = result.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Column(
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                ) {
-                    Text(
-                        text = result.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = result.artists,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            Row {
-                IconButton(onClick = { onDelete() }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_delete_forever_24),
-                        contentDescription = null,
-                    )
-                }
-                Spacer(modifier = Modifier.width(15.dp))
+                Text(
+                    text = result.artists,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
+        Row {
+            IconButton(onClick = { onDelete() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_delete_forever_24),
+                    contentDescription = null,
+                )
+            }
+            Spacer(modifier = Modifier.width(15.dp))
+        }
+    }
 }

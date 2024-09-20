@@ -20,11 +20,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.viewmodel.RushViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ErrorCard(
-    rushViewModel: RushViewModel = koinViewModel()
+    rushViewModel: RushViewModel
 ) {
     Card(
         modifier = Modifier

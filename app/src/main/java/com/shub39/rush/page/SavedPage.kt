@@ -37,11 +37,10 @@ import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SavedPage(
-    rushViewModel: RushViewModel = koinViewModel(),
+    rushViewModel: RushViewModel,
     bottomSheet: () -> Unit,
     onClick: () -> Unit
 ) {
