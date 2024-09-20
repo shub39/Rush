@@ -26,6 +26,15 @@ object SettingsDataStore {
     private val CARD_THEME = stringPreferencesKey("card_theme")
     private val CARD_BACKGROUND = intPreferencesKey("card_background")
     private val CARD_CONTENT = intPreferencesKey("card_content")
+    private val CARD_TEXT = stringPreferencesKey("card_text")
+
+    fun getCardTextFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_TEXT] ?: ""
+        }
 
     fun getCardBackgroundFlow(context: Context): Flow<Int> = context.dataStore.data
         .catch {
@@ -94,6 +103,12 @@ object SettingsDataStore {
     suspend fun updateCardBackground(context: Context, newCardBackground: Int) {
         context.dataStore.edit { settings ->
             settings[CARD_BACKGROUND] = newCardBackground
+        }
+    }
+
+    suspend fun updateCardText(context: Context, newCardText: String) {
+        context.dataStore.edit { settings ->
+            settings[CARD_TEXT] = newCardText
         }
     }
 

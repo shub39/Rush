@@ -11,24 +11,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
-import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.database.Song
-import kotlinx.coroutines.launch
 
 @Composable
 fun MaterialShareCard(
@@ -36,13 +29,9 @@ fun MaterialShareCard(
     song: Song,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
-    cardColorType: String,
     cardCorners: RoundedCornerShape,
-    cardCornersType: String
+    cardTextStyle: TextStyle
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
     Box(contentAlignment = Alignment.Center) {
         Card(
             modifier = modifier
@@ -62,6 +51,7 @@ fun MaterialShareCard(
                             .size(90.dp)
                             .clip(cardCorners),
                     )
+
                     Column(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                     ) {
@@ -72,6 +62,7 @@ fun MaterialShareCard(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
+
                         Text(
                             text = song.artists,
                             style = MaterialTheme.typography.bodySmall,
@@ -89,7 +80,7 @@ fun MaterialShareCard(
                         item {
                             Text(
                                 text = it.value,
-                                style = MaterialTheme.typography.titleMedium,
+                                style = cardTextStyle,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 10.dp)
                             )
@@ -102,57 +93,11 @@ fun MaterialShareCard(
             }
         }
 
-        Row(
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) {
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        when (cardCornersType) {
-                            "Rounded" -> SettingsDataStore.updateCardRoundness(
-                                context,
-                                "Flat"
-                            )
-
-                            else -> SettingsDataStore.updateCardRoundness(
-                                context,
-                                "Rounded"
-                            )
-                        }
-                    }
-                }
-            ) {
-                Icon(
-                    painter = when (cardCornersType) {
-                        "Rounded" -> painterResource(id = R.drawable.baseline_circle_24)
-                        else -> painterResource(id = R.drawable.baseline_square_24)
-                    },
-                    contentDescription = null
-                )
-            }
-
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        when (cardColorType) {
-                            "Vibrant" -> SettingsDataStore.updateCardColor(context, "Muted")
-                            "Muted" -> SettingsDataStore.updateCardColor(context, "Custom")
-                            "Custom" -> SettingsDataStore.updateCardColor(context, "Default")
-                            else -> SettingsDataStore.updateCardColor(context, "Vibrant")
-                        }
-                    }
-                }
-            ) {
-                Icon(
-                    painter = when (cardColorType) {
-                        "Vibrant" -> painterResource(id = R.drawable.round_remove_red_eye_24)
-                        "Muted" -> painterResource(id = R.drawable.round_lens_blur_24)
-                        "Custom" -> painterResource(id = R.drawable.baseline_edit_square_24)
-                        else -> painterResource(id = R.drawable.round_disabled_by_default_24)
-                    },
-                    contentDescription = null
-                )
-            }
-        }
+        CardEditRow(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            colors = true,
+            corners = true,
+            text = true
+        )
     }
 }
