@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -26,14 +27,14 @@ object SettingsDataStore {
     private val CARD_THEME = stringPreferencesKey("card_theme")
     private val CARD_BACKGROUND = intPreferencesKey("card_background")
     private val CARD_CONTENT = intPreferencesKey("card_content")
-    private val CARD_TEXT = stringPreferencesKey("card_text")
+    private val LARGE_CARD = booleanPreferencesKey("large_card")
 
-    fun getCardTextFlow(context: Context): Flow<String> = context.dataStore.data
+    fun getLargeCardFlow(context: Context): Flow<Boolean> = context.dataStore.data
         .catch {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_TEXT] ?: ""
+            preferences[LARGE_CARD] ?: false
         }
 
     fun getCardBackgroundFlow(context: Context): Flow<Int> = context.dataStore.data
@@ -106,15 +107,15 @@ object SettingsDataStore {
         }
     }
 
-    suspend fun updateCardText(context: Context, newCardText: String) {
-        context.dataStore.edit { settings ->
-            settings[CARD_TEXT] = newCardText
-        }
-    }
-
     suspend fun updateCardContent(context: Context, newCardContent: Int) {
         context.dataStore.edit { settings ->
             settings[CARD_CONTENT] = newCardContent
+        }
+    }
+
+    suspend fun setLargeCard(context: Context, newLargeCard: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[LARGE_CARD] = newLargeCard
         }
     }
 

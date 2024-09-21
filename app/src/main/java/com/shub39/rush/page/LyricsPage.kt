@@ -75,6 +75,7 @@ fun LyricsPage(
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val error by rushViewModel.error.collectAsState()
+    val searching by rushViewModel.isSearchingLyrics.collectAsState()
     val context = LocalContext.current
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
@@ -96,9 +97,9 @@ fun LyricsPage(
         )
     }
 
-    if (fetching) {
+    if (fetching || (searching && autoChange)) {
 
-        LoadingCard()
+        LoadingCard(rushViewModel)
 
     } else if (error) {
 

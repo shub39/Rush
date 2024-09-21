@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.database.Song
@@ -33,7 +32,6 @@ fun GeniusShareCard(
     song: Song,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
-    cardTextStyle: TextStyle
 ) {
     Box {
         Box(
@@ -120,7 +118,7 @@ fun GeniusShareCard(
                                 bottom = 4.dp
                             ),
                             fontWeight = FontWeight.Bold,
-                            style = cardTextStyle
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }
@@ -130,7 +128,7 @@ fun GeniusShareCard(
         CardEditRow(
             modifier = Modifier.align(Alignment.BottomEnd),
             colors = true,
-            text = true
+//            large = true
         )
     }
 }

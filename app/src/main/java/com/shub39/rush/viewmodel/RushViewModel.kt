@@ -31,7 +31,9 @@ class RushViewModel(
     private val _currentSong = MutableStateFlow<Song?>(null)
     private val _currentPlayingSongInfo = MutableStateFlow<Pair<String, String>?>(null)
     private val _isSearchingLyrics = MutableStateFlow(false)
+    private val _searchQuery = MutableStateFlow("")
     private val _isFetchingLyrics = MutableStateFlow(false)
+    private val _fetchQuery = MutableStateFlow("")
     private val _currentSongPosition = MutableStateFlow(0L)
     private val _shareLines = MutableStateFlow(mapOf<Int, String>())
     private val _lastSearched = MutableStateFlow("")
@@ -47,8 +49,10 @@ class RushViewModel(
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
+    val searchQuery: StateFlow<String> get() = _searchQuery
     val autoChange: StateFlow<Boolean> get() = _autoChange
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
+    val fetchQuery: StateFlow<String> get() = _fetchQuery
     val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
     val error: StateFlow<Boolean> get() = _error
     val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
@@ -109,6 +113,7 @@ class RushViewModel(
         if (query.isEmpty() || query == _lastSearched.value || _isSearchingLyrics.value) return
 
         viewModelScope.launch {
+            _searchQuery.value = query
             _isSearchingLyrics.value = true
 
             try {
@@ -174,6 +179,8 @@ class RushViewModel(
 
     private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
         viewModelScope.launch {
+            val song = _searchResults.value.find { it.id == songId }
+            _fetchQuery.value = "${song?.title} - ${song?.artist}"
             _isFetchingLyrics.value = true
 
             try {

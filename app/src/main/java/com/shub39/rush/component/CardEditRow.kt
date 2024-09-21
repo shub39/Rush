@@ -20,18 +20,18 @@ fun CardEditRow(
     modifier: Modifier,
     corners: Boolean = false,
     colors: Boolean = false,
-    text: Boolean = false
+//    large: Boolean = false
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
-    val cardTextFlow = remember { SettingsDataStore.getCardTextFlow(context) }
     val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
+//    val cardSizeFlow = remember { SettingsDataStore.getLargeCardFlow(context) }
 
-    val cardText by cardTextFlow.collectAsState(initial = "Default")
     val cardColorType by cardColorFlow.collectAsState(initial = "")
     val cardCornersType by cardCornersFlow.collectAsState(initial = "")
+//    val largeCard by cardSizeFlow.collectAsState(initial = false)
 
     Row(
         modifier = modifier
@@ -64,28 +64,26 @@ fun CardEditRow(
             }
         }
 
-        if (text) {
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        when (cardText) {
-                            "Default" -> SettingsDataStore.updateCardText(context, "Large")
-                            "Large" -> SettingsDataStore.updateCardText(context, "Small")
-                            else -> SettingsDataStore.updateCardText(context, "Default")
-                        }
-                    }
-                }
-            ) {
-                Icon(
-                    painter = when (cardText) {
-                        "Default" -> painterResource(id = R.drawable.round_text_fields_24)
-                        "Large" -> painterResource(id = R.drawable.round_text_increase_24)
-                        else -> painterResource(id = R.drawable.round_text_decrease_24)
-                    },
-                    contentDescription = null
-                )
-            }
-        }
+//        if (large) {
+//            IconButton(
+//                onClick = {
+//                    coroutineScope.launch {
+//                        when (largeCard) {
+//                            true -> SettingsDataStore.setLargeCard(context, false)
+//                            false -> SettingsDataStore.setLargeCard(context, true)
+//                        }
+//                    }
+//                }
+//            ) {
+//                Icon(
+//                    painter = when (largeCard) {
+//                        true -> painterResource(id = R.drawable.round_fullscreen_24)
+//                        else -> painterResource(id = R.drawable.round_fullscreen_exit_24)
+//                    },
+//                    contentDescription = null
+//                )
+//            }
+//        }
 
         if (colors) {
             IconButton(

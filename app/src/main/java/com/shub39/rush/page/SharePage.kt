@@ -89,12 +89,10 @@ fun SharePage(
 
     val cardThemeFlow = remember { SettingsDataStore.getCardThemeFlow(context) }
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
-    val cardTextFlow = remember { SettingsDataStore.getCardTextFlow(context) }
     val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
     val mutableCardContent = remember { SettingsDataStore.getCardContentFlow(context) }
     val mutableCardBackground = remember { SettingsDataStore.getCardBackgroundFlow(context) }
     val cardTheme by cardThemeFlow.collectAsState(initial = "Default")
-    val cardText by cardTextFlow.collectAsState(initial = "Default")
     val cardColorType by cardColorFlow.collectAsState(initial = "")
     val cardCornersType by cardCornersFlow.collectAsState(initial = "")
     val mCardContent by mutableCardContent.collectAsState(initial = Color.White.toArgb())
@@ -177,11 +175,6 @@ fun SharePage(
         contentColor = contentColor
     )
     val cardCorners = RoundedCornerShape(cornerRadius)
-    val cardTextStyle = when (cardText) {
-        "Default" -> MaterialTheme.typography.bodyLarge
-        "Large" -> MaterialTheme.typography.bodyMedium
-        else -> MaterialTheme.typography.bodySmall
-    }
 
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -205,7 +198,6 @@ fun SharePage(
                         sortedLines = sortedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        cardTextStyle = cardTextStyle
                     )
 
                     "Genius" -> GeniusShareCard(
@@ -219,7 +211,6 @@ fun SharePage(
                         song = song,
                         sortedLines = sortedLines,
                         cardColors = cardColor,
-                        cardTextStyle = cardTextStyle
                     )
                 }
 
