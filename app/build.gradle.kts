@@ -41,7 +41,6 @@ android {
             resValue("string", "app_name", "$appName Beta")
             applicationIdSuffix = ".beta"
             isMinifyEnabled = true
-            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
