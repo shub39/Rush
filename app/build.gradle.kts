@@ -17,7 +17,7 @@ android {
         minSdk = 29
         targetSdk = 35
         versionCode = 17
-        versionName = "2.2.0"
+        versionName = "2.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -36,6 +36,16 @@ android {
         debug {
             resValue("string", "app_name", "$appName Debug")
             applicationIdSuffix = ".debug"
+        }
+        create("beta"){
+            resValue("string", "app_name", "$appName Beta")
+            applicationIdSuffix = ".beta"
+            isMinifyEnabled = false
+            isDebuggable = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
