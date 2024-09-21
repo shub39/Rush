@@ -40,7 +40,7 @@ android {
         create("beta"){
             resValue("string", "app_name", "$appName Beta")
             applicationIdSuffix = ".beta"
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
