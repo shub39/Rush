@@ -6,9 +6,9 @@
 
 ### 💫 Search, save and share lyrics like Spotify! 💫
 
-![](https://img.shields.io/github/last-commit/shub39/Rush?&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
+![](https://img.shields.io/github/last-commit/shub39/Rush?&style=for-the-badge&logo=github&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/stars/shub39/Rush?style=for-the-badge&logo=andela&color=FFB686&logoColor=D9E0EE&labelColor=292324)
-[![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)](https://github.com/shub39/Rush/releases)
+[![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&logo=github&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)](https://github.com/shub39/Rush/releases)
 ![](https://img.shields.io/f-droid/v/com.shub39.rush?logo=F-Droid&style=for-the-badge&color=CAC992&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.shub39.rush&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 
@@ -37,9 +37,10 @@
 - [x] Customisations
 - [x] Auto-fill current playing song in search 
 - [x] Synced Lyrics
+- [ ] Batch download lyrics
 
-## Why ❔
-Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look.
+## ❔ Why ❔
+Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without dealing with genius's "UI".
 
 ## 💭 Test and Discuss 💭
 
@@ -72,9 +73,8 @@ Spotify removed its feature to see and share lyrics from its free tier just to b
 
 - [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the colors!!
 
-## Support 💕
+## 💕 Support 💕
 If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 
-[<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/BMC.svg"
-	  alt='Donate with BMC'
-	  height="80">](https://www.buymeacoffee.com/shub39)	
+[<img height="80" alt="bmc-button" src="https://github.com/user-attachments/assets/5ed4e619-7341-4346-9186-f7b850ab36ec">](https://www.buymeacoffee.com/shub39)
+	
