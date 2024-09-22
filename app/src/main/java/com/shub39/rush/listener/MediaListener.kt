@@ -25,6 +25,7 @@ object MediaListener {
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
     val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
     val songPositionFlow = MutableSharedFlow<Long>()
+    val playbackSpeedFlow = MutableSharedFlow<Float>()
 
     private var initialised = false
 
@@ -123,6 +124,12 @@ object MediaListener {
 
         coroutineScope.launch {
             songInfoFlow.emit(Pair(getMainTitle(title), artist))
+            playbackSpeedFlow.emit(
+                // Just as a safety measure, not all player controllers report proper speed
+                if (controller.playbackState?.let { isActive(it) } == true)
+                    controller.playbackState?.playbackSpeed ?: 1f
+                else 0f
+            )
             controller.playbackState?.position?.let { songPositionFlow.emit(it) }
         }
     }

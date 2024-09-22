@@ -10,10 +10,14 @@ import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.lyrics.SongProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -79,9 +83,18 @@ class RushViewModel(
             }
         }
         viewModelScope.launch {
-            MediaListener.songPositionFlow.collect { position ->
-                _currentSongPosition.value = position
-                Log.d("RushViewModel", "Position: $position")
+            combine(
+                MediaListener.songPositionFlow,
+                MediaListener.playbackSpeedFlow,
+                ::Pair
+            ).collectLatest { (position, speed) ->
+                val start = System.currentTimeMillis()
+                while (isActive) {
+                    val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
+                    _currentSongPosition.value = position + elapsed
+                    Log.d("RushViewModel", "Position: $position, elapsed: $elapsed")
+                    delay(500)
+                }
             }
         }
     }
