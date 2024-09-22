@@ -1,4 +1,4 @@
-package com.shub39.rush.component
+package com.shub39.rush.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable

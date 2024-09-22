@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.ui.page
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager

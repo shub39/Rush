@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -62,8 +62,8 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
-import com.shub39.rush.component.GeniusShareCard
-import com.shub39.rush.component.MaterialShareCard
+import com.shub39.rush.ui.component.GeniusShareCard
+import com.shub39.rush.ui.component.MaterialShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage

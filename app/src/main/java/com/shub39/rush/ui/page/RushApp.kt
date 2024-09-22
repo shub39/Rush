@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.ui.page
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -52,7 +52,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.shub39.rush.R
-import com.shub39.rush.component.SearchResultCard
+import com.shub39.rush.ui.component.SearchResultCard
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

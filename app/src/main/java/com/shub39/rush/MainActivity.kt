@@ -10,7 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
-import com.shub39.rush.page.RushApp
+import com.shub39.rush.ui.page.RushApp
 import com.shub39.rush.ui.theme.RushTheme
 import org.koin.compose.KoinContext
 

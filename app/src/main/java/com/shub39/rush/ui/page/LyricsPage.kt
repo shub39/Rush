@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -50,10 +50,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.component.ArtFromUrl
-import com.shub39.rush.component.EmptyCard
-import com.shub39.rush.component.ErrorCard
-import com.shub39.rush.component.LoadingCard
+import com.shub39.rush.ui.component.ArtFromUrl
+import com.shub39.rush.ui.component.EmptyCard
+import com.shub39.rush.ui.component.ErrorCard
+import com.shub39.rush.ui.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.logic.UILogic.breakLyrics

@@ -1,4 +1,4 @@
-package com.shub39.rush.component
+package com.shub39.rush.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.logic
 
 import androidx.annotation.StringRes
 import com.shub39.rush.R

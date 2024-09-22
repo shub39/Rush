@@ -1,4 +1,4 @@
-package com.shub39.rush.page
+package com.shub39.rush.ui.page
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.pager.PagerState
