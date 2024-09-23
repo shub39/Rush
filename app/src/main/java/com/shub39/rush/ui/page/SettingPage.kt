@@ -1,6 +1,7 @@
 package com.shub39.rush.ui.page
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,8 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
+import com.shub39.rush.database.AudioFile
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
+import com.shub39.rush.logic.BatchDownloader.Download
+import com.shub39.rush.logic.BatchDownloader.GetAudioFiles
+import com.shub39.rush.logic.BatchDownloader.GetLibraryPath
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
@@ -55,6 +61,7 @@ fun SettingPage(
     var deleteButtonStatus by remember { mutableStateOf(rushViewModel.songs.value.isNotEmpty()) }
     var notificationRequestDialog by remember { mutableStateOf(false) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
+    var batchDownload by remember { mutableStateOf(false) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val appTheme by SettingsDataStore.getToggleThemeFlow(context)
         .collectAsState(initial = "Gruvbox")
@@ -236,6 +243,18 @@ fun SettingPage(
                 }
             }
 
+            item {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        batchDownload = true
+                    },
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Text(text = stringResource(id = R.string.batch_download))
+                }
+            }
+
         }
 
         Column(
@@ -367,6 +386,56 @@ fun SettingPage(
                         shape = MaterialTheme.shapes.large
                     ) {
                         Text(text = stringResource(id = R.string.delete_all))
+                    }
+                }
+            }
+        }
+    }
+
+    if (batchDownload) {
+        var selectedDirectoryUri by remember { mutableStateOf<Uri?>(null) }
+        val audioFiles = remember { mutableStateListOf<AudioFile>() }
+        val downloadIndexes by rushViewModel.downloadIndexes.collectAsState()
+        val isDownloading by rushViewModel.batchDownloading.collectAsState()
+
+        Dialog(
+            onDismissRequest = {
+                if (!isDownloading) {
+                    batchDownload = false
+                }
+            }
+        ) {
+            Card(shape = RoundedCornerShape(16.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    GetLibraryPath(
+                        update = {
+                            selectedDirectoryUri = it
+                        }
+                    )
+
+                    selectedDirectoryUri?.let { uri ->
+                        GetAudioFiles(
+                            directoryUri = uri,
+                            context = context,
+                            audioFiles = audioFiles,
+                            update = {
+                                audioFiles.add(it)
+                            },
+                            indexes = downloadIndexes
+                        )
+                    }
+
+                    if (audioFiles.isNotEmpty()) {
+                        Download(
+                            audioFiles = audioFiles,
+                            rushViewModel = rushViewModel,
+                            isDownloading = isDownloading
+                        )
                     }
                 }
             }

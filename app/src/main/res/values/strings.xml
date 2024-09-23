@@ -22,6 +22,9 @@
     <string name="sort_title_desc">Title (Z-A)</string>
     <string name="sort_artists_asc">Grouped by Artists</string>
     <string name="sort_album_asc">Grouped by Album</string>
+    <string name="batch_download">Batch Download lyrics</string>
+    <string name="select_folder">Select Folder</string>
+    <string name="download">Download</string>
     <string name="fetching">Loading lyrics for</string>
     <string name="searching">Searching for</string>
     <string name="error">Something went wrong…</string>

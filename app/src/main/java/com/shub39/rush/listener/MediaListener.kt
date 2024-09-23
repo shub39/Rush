@@ -71,11 +71,11 @@ object MediaListener {
                 val callback = object : MediaController.Callback() {
                     override fun onPlaybackStateChanged(state: PlaybackState?) {
                         this@MediaListener.onPlaybackStateChanged(controller, state)
-                        this@MediaListener.updateTitle(controller, controller.metadata)
+                        this@MediaListener.updateMetadata(controller, controller.metadata)
                     }
 
                     override fun onMetadataChanged(metadata: MediaMetadata?) {
-                        this@MediaListener.updateTitle(controller, metadata)
+                        this@MediaListener.updateMetadata(controller, metadata)
                     }
                 }
 
@@ -116,7 +116,7 @@ object MediaListener {
         activeMediaController = newActive
     }
 
-    private fun updateTitle(controller: MediaController, metadata: MediaMetadata?) {
+    private fun updateMetadata(controller: MediaController, metadata: MediaMetadata?) {
         if (controller.sessionToken != activeMediaController?.sessionToken) return
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
         val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)

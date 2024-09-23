@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             MediaListener.init(this)
 
             val theme by SettingsDataStore.getToggleThemeFlow(this)
-                .collectAsState(initial = "Gruvbox")
+                .collectAsState(initial = "")
 
             RushTheme(
                 theme = theme
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             }
 
             splashScreen.setKeepOnScreenCondition {
-                theme == "Gruvbox"
+                theme == ""
             }
 
         }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.database.AudioFile
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
@@ -44,6 +45,8 @@ class RushViewModel(
     private val _errorQuery = MutableStateFlow("")
     private val _autoChange = MutableStateFlow(false)
     private val _error = MutableStateFlow(false)
+    private val _batchDownloading = MutableStateFlow(false)
+    private val _downloadIndexes = MutableStateFlow(mapOf<Int, Boolean>())
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
@@ -60,6 +63,9 @@ class RushViewModel(
     val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
     val error: StateFlow<Boolean> get() = _error
     val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
+    val batchDownloading: StateFlow<Boolean> get() = _batchDownloading
+    val downloadIndexes: StateFlow<Map<Int, Boolean>> get() = _downloadIndexes
+
     val songsGroupedArtists: Flow<List<Map.Entry<String, List<Song>>>>
         get() =
             _songs.map { songsList ->
@@ -121,7 +127,7 @@ class RushViewModel(
 
     fun searchSong(
         query: String,
-        fetch: Boolean = _autoChange.value
+        fetch: Boolean = _autoChange.value,
     ) {
         if (query.isEmpty() || query == _lastSearched.value || _isSearchingLyrics.value) return
 
@@ -187,6 +193,47 @@ class RushViewModel(
             fetchLyrics(songId = _errorQuery.value.toLong())
         } else {
             searchSong(_errorQuery.value)
+        }
+    }
+
+    fun batchDownload(
+        list: List<AudioFile>,
+    ) {
+        viewModelScope.launch {
+            _batchDownloading.value = true
+
+            list.forEachIndexed { index, audioFile ->
+                val result = withContext(Dispatchers.IO) {
+                    SongProvider.search("${audioFile.title} ${audioFile.artist}")
+                }
+
+                if (result.isSuccess) {
+                    val id = result.getOrNull()!!.first().id
+
+                    if (id in songs.value.map { it.id }) {
+
+                        _downloadIndexes.value += index to true
+
+                    } else {
+                        val song = withContext(Dispatchers.IO) {
+                            SongProvider.fetchLyrics(id)
+                        }
+
+                        if (song.isSuccess) {
+                            songDao.insertSong(song.getOrNull()!!)
+                            _downloadIndexes.value += index to true
+                            Log.d("ViewModel", "Song downloaded: ${song.getOrNull()!!.title}")
+                        } else {
+                            _downloadIndexes.value += index to false
+                        }
+                    }
+                } else {
+                    _downloadIndexes.value += index to false
+                }
+            }
+
+            _songs.value = songDao.getAllSongs()
+            _batchDownloading.value = false
         }
     }
 
