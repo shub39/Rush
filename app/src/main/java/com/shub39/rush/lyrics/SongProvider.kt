@@ -71,7 +71,11 @@ object SongProvider {
                     }
                 }
 
-                Result.success(results)
+                if (results.isEmpty()) {
+                    Result.failure(Exception("No search results found"))
+                } else {
+                    Result.success(results)
+                }
             } else {
                 Result.failure(Exception("Search request failed"))
             }

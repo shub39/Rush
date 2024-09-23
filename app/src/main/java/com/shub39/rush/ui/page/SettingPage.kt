@@ -3,6 +3,7 @@ package com.shub39.rush.ui.page
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +19,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -33,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,7 +48,6 @@ import com.shub39.rush.R
 import com.shub39.rush.database.AudioFile
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
-import com.shub39.rush.logic.BatchDownloader.Download
 import com.shub39.rush.logic.BatchDownloader.GetAudioFiles
 import com.shub39.rush.logic.BatchDownloader.GetLibraryPath
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
@@ -397,26 +400,33 @@ fun SettingPage(
         val audioFiles = remember { mutableStateListOf<AudioFile>() }
         val downloadIndexes by rushViewModel.downloadIndexes.collectAsState()
         val isDownloading by rushViewModel.batchDownloading.collectAsState()
+        var done by remember { mutableStateOf(false) }
 
         Dialog(
             onDismissRequest = {
                 if (!isDownloading) {
                     batchDownload = false
+                    rushViewModel.clearIndexes()
                 }
             }
         ) {
-            Card(shape = RoundedCornerShape(16.dp)) {
+            Card(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    GetLibraryPath(
-                        update = {
-                            selectedDirectoryUri = it
-                        }
-                    )
+                    if (selectedDirectoryUri == null || audioFiles.isEmpty()) {
+                        GetLibraryPath(
+                            update = {
+                                selectedDirectoryUri = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                        )
+                    }
 
                     selectedDirectoryUri?.let { uri ->
                         GetAudioFiles(
@@ -426,16 +436,40 @@ fun SettingPage(
                             update = {
                                 audioFiles.add(it)
                             },
-                            indexes = downloadIndexes
+                            indexes = downloadIndexes,
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
 
-                    if (audioFiles.isNotEmpty()) {
-                        Download(
-                            audioFiles = audioFiles,
-                            rushViewModel = rushViewModel,
-                            isDownloading = isDownloading
-                        )
+                    Button(
+                        onClick = {
+                            if (!done) {
+                                rushViewModel.batchDownload(audioFiles)
+                                done = true
+                            } else {
+                                batchDownload = false
+                                rushViewModel.clearIndexes()
+                            }
+                        },
+                        enabled = !isDownloading && audioFiles.isNotEmpty(),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                    ) {
+                        if (isDownloading) {
+                            CircularProgressIndicator(
+                                strokeCap = StrokeCap.Round,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else {
+                            Text(
+                                text = when (done) {
+                                    true -> stringResource(R.string.done)
+                                    else -> stringResource(R.string.download)
+                                }
+                            )
+                        }
                     }
                 }
             }

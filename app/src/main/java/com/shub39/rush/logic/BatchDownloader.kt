@@ -27,13 +27,13 @@ import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
 import com.shub39.rush.database.AudioFile
 import com.shub39.rush.ui.component.DownloaderCard
-import com.shub39.rush.viewmodel.RushViewModel
 
 object BatchDownloader {
 
     @Composable
     fun GetLibraryPath(
-        update: (Uri?) -> Unit
+        update: (Uri?) -> Unit,
+        modifier: Modifier
     ) {
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.OpenDocumentTree()
@@ -44,7 +44,8 @@ object BatchDownloader {
         Button(
             onClick = {
                 launcher.launch(null)
-            }
+            },
+            modifier = modifier
         ) {
             Text(
                 text = stringResource(R.string.select_folder)
@@ -58,7 +59,8 @@ object BatchDownloader {
         context: Context,
         audioFiles: List<AudioFile>,
         update: (AudioFile) -> Unit,
-        indexes: Map<Int, Boolean>
+        indexes: Map<Int, Boolean>,
+        modifier: Modifier
     ) {
         val documentFile = DocumentFile.fromTreeUri(context, directoryUri)
         var isLoadingFiles by remember { mutableStateOf(true) }
@@ -87,7 +89,7 @@ object BatchDownloader {
             isLoadingFiles = false
         }
 
-        OutlinedCard {
+        OutlinedCard(modifier = modifier) {
             LazyColumn(
                 modifier = Modifier
                     .height(400.dp)
@@ -99,7 +101,7 @@ object BatchDownloader {
                         DownloaderCard(
                             title = audioFiles[index].title,
                             artist = audioFiles[index].artist,
-                            state = indexes[index]
+                            state = indexes[index],
                         )
                     }
                 } else {
@@ -109,32 +111,6 @@ object BatchDownloader {
                         )
                     }
                 }
-            }
-        }
-    }
-
-    @Composable
-    fun Download(
-        audioFiles: List<AudioFile>,
-        rushViewModel: RushViewModel,
-        isDownloading: Boolean
-    ) {
-        Button(
-            onClick = {
-                rushViewModel.batchDownload(
-                    list = audioFiles
-                )
-            },
-            enabled = !isDownloading
-        ) {
-            Text(
-                stringResource(R.string.download)
-            )
-
-            if (isDownloading) {
-                CircularProgressIndicator(
-                    strokeCap = StrokeCap.Round
-                )
             }
         }
     }

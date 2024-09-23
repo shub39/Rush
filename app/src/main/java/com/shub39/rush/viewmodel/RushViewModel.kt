@@ -201,6 +201,7 @@ class RushViewModel(
     ) {
         viewModelScope.launch {
             _batchDownloading.value = true
+            val savedSongs = songs.value.map { it.id }
 
             list.forEachIndexed { index, audioFile ->
                 val result = withContext(Dispatchers.IO) {
@@ -208,9 +209,9 @@ class RushViewModel(
                 }
 
                 if (result.isSuccess) {
-                    val id = result.getOrNull()!!.first().id
+                    val id = result.getOrNull()?.first()?.id ?: return@forEachIndexed
 
-                    if (id in songs.value.map { it.id }) {
+                    if (id in savedSongs) {
 
                         _downloadIndexes.value += index to true
 
@@ -228,13 +229,19 @@ class RushViewModel(
                         }
                     }
                 } else {
+
                     _downloadIndexes.value += index to false
+
                 }
             }
 
             _songs.value = songDao.getAllSongs()
             _batchDownloading.value = false
         }
+    }
+
+    fun clearIndexes() {
+        _downloadIndexes.value = emptyMap()
     }
 
     private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
