@@ -48,6 +48,10 @@ class RushViewModel(
     private val _batchDownloading = MutableStateFlow(false)
     private val _downloadIndexes = MutableStateFlow(mapOf<Int, Boolean>())
 
+    private val _searchSheet = MutableStateFlow(false)
+    private val _currentPage = MutableStateFlow(1)
+    private val _scrollTrigger = MutableStateFlow(0)
+
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
     val songsSortedDesc: Flow<List<Song>> get() = _songs.map { it -> it.sortedByDescending { it.title } }
@@ -65,7 +69,6 @@ class RushViewModel(
     val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
     val batchDownloading: StateFlow<Boolean> get() = _batchDownloading
     val downloadIndexes: StateFlow<Map<Int, Boolean>> get() = _downloadIndexes
-
     val songsGroupedArtists: Flow<List<Map.Entry<String, List<Song>>>>
         get() =
             _songs.map { songsList ->
@@ -76,6 +79,10 @@ class RushViewModel(
             _songs.map { songsList ->
                 songsList.groupBy { it.album ?: "???" }.entries.toList()
             }
+
+    val searchSheet: StateFlow<Boolean> get() = _searchSheet
+    val currentPage: StateFlow<Int> get() = _currentPage
+    val scrollTrigger: StateFlow<Int> get() = _scrollTrigger
 
     init {
         viewModelScope.launch {
@@ -88,6 +95,7 @@ class RushViewModel(
                 Log.d("RushViewModel", "SongInfo: $songInfo")
             }
         }
+
         viewModelScope.launch {
             combine(
                 MediaListener.songPositionFlow,
@@ -102,26 +110,6 @@ class RushViewModel(
                     delay(500)
                 }
             }
-        }
-    }
-
-    fun changeCurrentSong(songId: Long) {
-        _currentSongId.value = songId
-        fetchLyrics(songId)
-    }
-
-    fun updateShareLines(lines: Map<Int, String>) {
-        _shareLines.value = lines
-    }
-
-    fun toggleAutoChange() {
-        _autoChange.value = !_autoChange.value
-    }
-
-    fun deleteSong(song: Song) {
-        viewModelScope.launch {
-            songDao.deleteSong(song)
-            _songs.value = songDao.getAllSongs()
         }
     }
 
@@ -157,6 +145,43 @@ class RushViewModel(
                 fetchLyrics(_searchResults.value.first().id)
             } else {
                 _autoChange.value = false
+            }
+        }
+    }
+
+    private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
+        viewModelScope.launch {
+            val song = _searchResults.value.find { it.id == songId }
+            _fetchQuery.value = "${song?.title} - ${song?.artist}"
+            _isFetchingLyrics.value = true
+
+            try {
+                if (songId in songs.value.map { it.id }) {
+                    val result = songDao.getSongById(songId)
+                    _currentSong.value = result
+                    _error.value = false
+                } else {
+                    val result = withContext(Dispatchers.IO) {
+                        SongProvider.fetchLyrics(songId)
+                    }
+
+                    if (result.isSuccess) {
+                        _currentSong.value = result.getOrNull()
+                        songDao.insertSong(_currentSong.value!!)
+                        _songs.value = songDao.getAllSongs()
+                        _error.value = false
+                    } else {
+                        Log.e(
+                            "ViewModel",
+                            result.exceptionOrNull()?.message,
+                            result.exceptionOrNull()
+                        )
+                        _errorQuery.value = songId.toString()
+                        _error.value = true
+                    }
+                }
+            } finally {
+                _isFetchingLyrics.value = false
             }
         }
     }
@@ -244,40 +269,35 @@ class RushViewModel(
         _downloadIndexes.value = emptyMap()
     }
 
-    private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
+    fun changeCurrentSong(songId: Long) {
+        _currentSongId.value = songId
+        fetchLyrics(songId)
+    }
+
+    fun updateShareLines(lines: Map<Int, String>) {
+        _shareLines.value = lines
+    }
+
+    fun toggleAutoChange() {
+        _autoChange.value = !_autoChange.value
+    }
+
+    fun toggleSearchSheet() {
+        _searchSheet.value = !_searchSheet.value
+    }
+
+    fun changeCurrentPage(page: Int) {
+        _currentPage.value = page
+    }
+
+    fun triggerScroll() {
+        _scrollTrigger.value++
+    }
+
+    fun deleteSong(song: Song) {
         viewModelScope.launch {
-            val song = _searchResults.value.find { it.id == songId }
-            _fetchQuery.value = "${song?.title} - ${song?.artist}"
-            _isFetchingLyrics.value = true
-
-            try {
-                if (songId in songs.value.map { it.id }) {
-                    val result = songDao.getSongById(songId)
-                    _currentSong.value = result
-                    _error.value = false
-                } else {
-                    val result = withContext(Dispatchers.IO) {
-                        SongProvider.fetchLyrics(songId)
-                    }
-
-                    if (result.isSuccess) {
-                        _currentSong.value = result.getOrNull()
-                        songDao.insertSong(_currentSong.value!!)
-                        _songs.value = songDao.getAllSongs()
-                        _error.value = false
-                    } else {
-                        Log.e(
-                            "ViewModel",
-                            result.exceptionOrNull()?.message,
-                            result.exceptionOrNull()
-                        )
-                        _errorQuery.value = songId.toString()
-                        _error.value = true
-                    }
-                }
-            } finally {
-                _isFetchingLyrics.value = false
-            }
+            songDao.deleteSong(song)
+            _songs.value = songDao.getAllSongs()
         }
     }
 }

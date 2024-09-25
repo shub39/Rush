@@ -69,26 +69,32 @@ import kotlinx.coroutines.launch
 @Composable
 fun LyricsPage(
     rushViewModel: RushViewModel,
-    lazyListState: LazyListState,
-    bottomSheet: () -> Unit,
+    lazyListState: LazyListState
 ) {
+    val context = LocalContext.current
+
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val error by rushViewModel.error.collectAsState()
     val searching by rushViewModel.isSearchingLyrics.collectAsState()
-    val context = LocalContext.current
+    val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
+    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
+    val autoChange by rushViewModel.autoChange.collectAsState()
+
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
-    val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
-    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
-    val artGraphicsLayer = rememberGraphicsLayer()
-    val coroutineScope = rememberCoroutineScope()
     var isShareSheetOpen by remember { mutableStateOf(false) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
-    val autoChange by rushViewModel.autoChange.collectAsState()
+
+    val artGraphicsLayer = rememberGraphicsLayer()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        rushViewModel.changeCurrentPage(0)
+    }
 
     if (isShareSheetOpen) {
         SharePage(
@@ -415,7 +421,7 @@ fun LyricsPage(
                                 }
 
                                 FloatingActionButton(
-                                    onClick = { bottomSheet() },
+                                    onClick = { rushViewModel.toggleSearchSheet() },
                                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
                                     shape = MaterialTheme.shapes.extraLarge,
                                     containerColor = MaterialTheme.colorScheme.primary

@@ -10,7 +10,6 @@ import com.shub39.rush.viewmodel.RushViewModel
 fun RushPager(
     lazyListState: LazyListState,
     pagerState: PagerState,
-    bottomSheet: () -> Unit = {},
     onPageChange: (Int) -> Unit,
     lazyListRefresh: () -> Unit,
     rushViewModel: RushViewModel
@@ -21,12 +20,10 @@ fun RushPager(
         when (page) {
             0 -> LyricsPage(
                 lazyListState = lazyListState,
-                bottomSheet = bottomSheet,
                 rushViewModel = rushViewModel
             )
 
             1 -> SavedPage(
-                bottomSheet = bottomSheet,
                 onClick = {
                     onPageChange(0)
                     lazyListRefresh()
