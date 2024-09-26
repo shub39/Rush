@@ -10,6 +10,7 @@ import android.media.session.PlaybackState
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
+import com.shub39.rush.logic.UILogic.getMainTitle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -132,11 +133,6 @@ object MediaListener {
             )
             controller.playbackState?.position?.let { songPositionFlow.emit(it) }
         }
-    }
-
-    private fun getMainTitle(songTitle: String): String {
-        val regex = Regex("\\s*\\(.*?\\)\\s*$")
-        return songTitle.replace(regex, "").trim()
     }
 
 }

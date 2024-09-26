@@ -129,4 +129,9 @@ object UILogic {
             context.startActivity(Intent.createChooser(shareIntent, "Share image using"))
         }
     }
+
+    fun getMainTitle(songTitle: String): String {
+        val regex = Regex("\\s*\\(.*?\\)\\s*$")
+        return songTitle.replace(regex, "").trim()
+    }
 }

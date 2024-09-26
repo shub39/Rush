@@ -58,6 +58,7 @@ import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.logic.UILogic.breakLyrics
 import com.shub39.rush.logic.UILogic.copyToClipBoard
 import com.shub39.rush.logic.UILogic.getCurrentLyricIndex
+import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.parseLyrics
 import com.shub39.rush.logic.UILogic.shareImage
@@ -148,7 +149,7 @@ fun LyricsPage(
             if (nonNullSong.syncedLyrics != null) {
                 syncedAvailable = true
                 if (
-                    (currentPlayingSong?.first ?: "").trim()
+                    getMainTitle(currentPlayingSong?.first ?: "").trim()
                         .lowercase() == nonNullSong.title.trim()
                         .lowercase()
                 ) {
