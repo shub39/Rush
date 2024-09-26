@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,15 +23,17 @@ fun DownloaderCard(
     title: String,
     artist: String,
     state: Boolean?,
+    cardColors: CardColors
 ) {
     ElevatedCard(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(4.dp),
+        colors = cardColors
     ) {
         Row(
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 

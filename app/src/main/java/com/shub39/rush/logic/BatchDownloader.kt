@@ -5,12 +5,16 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,30 +93,55 @@ object BatchDownloader {
             isLoadingFiles = false
         }
 
-        OutlinedCard(modifier = modifier) {
-            LazyColumn(
-                modifier = Modifier
-                    .height(400.dp)
-                    .padding(8.dp),
-                contentPadding = PaddingValues(4.dp)
-            ) {
-                if (!isLoadingFiles) {
+        if (isLoadingFiles) {
+            CircularProgressIndicator(
+                strokeCap = StrokeCap.Round
+            )
+        } else {
+            OutlinedCard(modifier = modifier) {
+                LazyColumn(
+                    modifier = Modifier
+                        .height(400.dp)
+                        .padding(8.dp),
+                    contentPadding = PaddingValues(4.dp)
+                ) {
                     items(audioFiles.size) { index ->
                         DownloaderCard(
                             title = audioFiles[index].title,
                             artist = audioFiles[index].artist,
                             state = indexes[index],
+                            cardColors = stateCardColors(indexes[index])
                         )
                     }
-                } else {
-                    item {
-                        CircularProgressIndicator(
-                            strokeCap = StrokeCap.Round
-                        )
-                    }
+
                 }
             }
         }
     }
 
+    @Composable
+    private fun stateCardColors(
+        state: Boolean?
+    ): CardColors{
+        val cardContent by animateColorAsState(
+            targetValue = when (state) {
+                null -> MaterialTheme.colorScheme.primary
+                true -> MaterialTheme.colorScheme.primaryContainer
+                else -> MaterialTheme.colorScheme.error
+            }, label = "status"
+        )
+
+        val cardBackground by animateColorAsState(
+            targetValue = when (state) {
+                null -> MaterialTheme.colorScheme.primaryContainer
+                true -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.errorContainer
+            }, label = "status"
+        )
+
+        return CardDefaults.cardColors(
+            containerColor = cardBackground,
+            contentColor = cardContent
+        )
+    }
 }
