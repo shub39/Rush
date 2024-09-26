@@ -43,12 +43,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun SavedPage(
     rushViewModel: RushViewModel,
-    onClick: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
+
     val songs = rushViewModel.songs.collectAsState()
-    val lazyListState = rememberLazyListState(0)
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
     val sortedSongs = when (sortOrder) {
@@ -64,6 +64,10 @@ fun SavedPage(
 
     LaunchedEffect(Unit) {
         rushViewModel.changeCurrentPage(1)
+    }
+
+    LaunchedEffect(sortOrder) {
+        lazyListState.animateScrollToItem(0)
     }
 
     Box(
@@ -112,7 +116,8 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
-                                    onClick()
+                                    rushViewModel.changeCurrentPage(0)
+                                    rushViewModel.triggerScroll()
                                 }
                             )
                         }
@@ -135,7 +140,8 @@ fun SavedPage(
                                 isExpanded = expandedCardId == map.key,
                                 onClick = {
                                     rushViewModel.changeCurrentSong(it.id)
-                                    onClick()
+                                    rushViewModel.changeCurrentPage(0)
+                                    rushViewModel.triggerScroll()
                                 },
                                 onCardClick = {
                                     expandedCardId =
@@ -143,6 +149,7 @@ fun SavedPage(
                                 }
                             )
                         }
+
                         item {
                             Spacer(modifier = Modifier.padding(60.dp))
                         }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -69,9 +68,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun LyricsPage(
     rushViewModel: RushViewModel,
-    lazyListState: LazyListState
 ) {
     val context = LocalContext.current
+    val scrollTrigger by rushViewModel.scrollTrigger.collectAsState()
 
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -91,9 +90,14 @@ fun LyricsPage(
 
     val artGraphicsLayer = rememberGraphicsLayer()
     val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         rushViewModel.changeCurrentPage(0)
+    }
+
+    LaunchedEffect(scrollTrigger) {
+        lazyListState.scrollToItem(0)
     }
 
     if (isShareSheetOpen) {
@@ -460,20 +464,19 @@ fun LyricsPage(
 
                 }
             } else if (nonNullSong.syncedLyrics != null) {
-                val syncedLazyList = rememberLazyListState()
                 val parsedSyncedLyrics = remember { parseLyrics(nonNullSong.syncedLyrics) }
 
                 LaunchedEffect(currentSongPosition) {
                     coroutineScope.launch {
                         val currentIndex =
                             getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
-                        syncedLazyList.animateScrollToItem(currentIndex)
+                        lazyListState.animateScrollToItem(currentIndex)
                     }
                 }
 
                 LazyColumn(
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
-                    state = syncedLazyList
+                    state = lazyListState
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
                         Row(

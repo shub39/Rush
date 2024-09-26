@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,18 +28,12 @@ fun RushApp(
 ) {
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
     val currentPage by rushViewModel.currentPage.collectAsState()
-    val scrollTrigger by rushViewModel.scrollTrigger.collectAsState()
 
     val pagerState = rememberPagerState(initialPage = currentPage) { 2 }
-    val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
-    }
-
-    LaunchedEffect(scrollTrigger) {
-        lazyListState.scrollToItem(0)
     }
 
     if (searchSheetState) {
@@ -69,24 +62,13 @@ fun RushApp(
         ) {
             composable("lyrics") {
                 RushPager(
-                    lazyListState = lazyListState,
-                    pagerState = pagerState,
-                    onPageChange = { page ->
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(page)
-                        }
-                    },
-                    lazyListRefresh = {
-                        coroutineScope.launch {
-                            lazyListState.scrollToItem(0)
-                        }
-                    },
-                    rushViewModel = rushViewModel
+                    rushViewModel = rushViewModel,
+                    pagerState = pagerState
                 )
             }
 
             composable("settings") {
-                SettingPage(rushViewModel)
+                SettingPage(rushViewModel = rushViewModel)
             }
         }
     }
