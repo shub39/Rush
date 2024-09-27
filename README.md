@@ -37,7 +37,7 @@
 - [x] Customisations
 - [x] Auto-fill current playing song in search 
 - [x] Synced Lyrics
-- [ ] Batch download lyrics
+- [x] Batch download lyrics
 
 ## ❔ Why ❔
 Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without dealing with genius's "UI".
