@@ -64,6 +64,7 @@ import com.shub39.rush.logic.UILogic.parseLyrics
 import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -97,7 +98,8 @@ fun LyricsPage(
         rushViewModel.changeCurrentPage(0)
     }
 
-    LaunchedEffect(scrollTrigger) {
+    LaunchedEffect(scrollTrigger, song) {
+        delay(100)
         lazyListState.scrollToItem(0)
     }
 

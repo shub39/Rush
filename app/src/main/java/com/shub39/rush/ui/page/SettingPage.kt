@@ -3,7 +3,6 @@ package com.shub39.rush.ui.page
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -278,30 +278,34 @@ fun SettingPage(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.github_mark),
-                    contentDescription = null,
+                IconButton(
+                    onClick = { openLinkInBrowser(context, "https://github.com/shub39/Rush") },
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable {
-                            openLinkInBrowser(context, "https://github.com/shub39/Rush")
-                        }
-                )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.github_mark),
+                        contentDescription = null
+                    )
+                }
 
                 Spacer(modifier = Modifier.padding(8.dp))
 
-                Image(
-                    painter = painterResource(id = R.drawable.discord_svgrepo_com),
-                    contentDescription = null,
+                IconButton(
+                    onClick = {
+                        openLinkInBrowser(
+                            context,
+                            "https://discord.gg/https://discord.gg/nxA2hgtEKf"
+                        )
+                    },
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable {
-                            openLinkInBrowser(
-                                context,
-                                "https://discord.gg/https://discord.gg/nxA2hgtEKf"
-                            )
-                        }
-                )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.discord_svgrepo_com),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
