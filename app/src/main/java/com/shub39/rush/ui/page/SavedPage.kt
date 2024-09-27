@@ -173,7 +173,10 @@ fun SavedPage(
 
         if (NotificationListener.canAccessNotifications(context)) {
             FloatingActionButton(
-                onClick = { rushViewModel.toggleAutoChange() },
+                onClick = {
+                    rushViewModel.toggleAutoChange()
+                    rushViewModel.changeCurrentPage(0)
+                },
                 shape = MaterialTheme.shapes.extraLarge,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

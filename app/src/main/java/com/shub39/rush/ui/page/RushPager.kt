@@ -8,10 +8,11 @@ import com.shub39.rush.viewmodel.RushViewModel
 @Composable
 fun RushPager(
     rushViewModel: RushViewModel,
-    pagerState: PagerState,
+    pagerState: PagerState
 ) {
     HorizontalPager(
         state = pagerState,
+        userScrollEnabled = false
     ) { page ->
         when (page) {
             0 -> LyricsPage(rushViewModel = rushViewModel)
