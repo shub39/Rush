@@ -4,5 +4,6 @@ Features
 
 - Search, View and store lyrics
 - Share lyrics as a customisable card to your friends!
-- Auto-fill current playing song in search(Requires Notification Access permission)
+- Auto-Search current playing Song (Requires Notification Access permission)
 - Synced Lyrics
+- Batch download lyrics

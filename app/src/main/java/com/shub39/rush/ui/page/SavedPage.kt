@@ -135,7 +135,7 @@ fun SavedPage(
                         }
                     }
                 } else {
-                    var expandedCardId by remember { mutableStateOf<String?>(null) }
+                    var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
 
                     LazyColumn(
                         modifier = Modifier
