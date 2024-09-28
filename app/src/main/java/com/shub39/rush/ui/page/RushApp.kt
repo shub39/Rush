@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,17 +26,15 @@ fun RushApp(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
-    val currentPage by rushViewModel.currentPage.collectAsState()
 
-    val pagerState = rememberPagerState(initialPage = currentPage) { 2 }
+    val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(currentPage) {
-        pagerState.animateScrollToPage(currentPage)
-    }
-
     if (searchSheetState) {
-        SearchSheet(rushViewModel)
+        SearchSheet(
+            rushViewModel = rushViewModel,
+            pagerState = pagerState
+        )
     }
 
     BackHandler(

@@ -11,12 +11,15 @@ fun RushPager(
     pagerState: PagerState
 ) {
     HorizontalPager(
-        state = pagerState,
-        userScrollEnabled = false
+        state = pagerState
     ) { page ->
         when (page) {
             0 -> LyricsPage(rushViewModel = rushViewModel)
-            1 -> SavedPage(rushViewModel = rushViewModel)
+
+            1 -> SavedPage(
+                rushViewModel = rushViewModel,
+                pagerState = pagerState
+            )
         }
     }
 }

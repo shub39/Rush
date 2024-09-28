@@ -69,10 +69,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LyricsPage(
-    rushViewModel: RushViewModel,
+    rushViewModel: RushViewModel
 ) {
     val context = LocalContext.current
-    val scrollTrigger by rushViewModel.scrollTrigger.collectAsState()
+    val artGraphicsLayer = rememberGraphicsLayer()
+    val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
     val song by rushViewModel.currentSong.collectAsState()
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
@@ -90,17 +92,9 @@ fun LyricsPage(
     var isShareSheetOpen by remember { mutableStateOf(false) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
-    val artGraphicsLayer = rememberGraphicsLayer()
-    val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
-
-    LaunchedEffect(Unit) {
-        rushViewModel.changeCurrentPage(0)
-    }
-
-    LaunchedEffect(scrollTrigger, song) {
+    LaunchedEffect(song) {
         delay(100)
-        lazyListState.scrollToItem(0)
+        lazyListState.animateScrollToItem(0)
     }
 
     if (isShareSheetOpen) {

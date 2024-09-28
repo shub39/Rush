@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,12 +52,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchSheet(
     rushViewModel: RushViewModel,
+    pagerState: PagerState
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     val searchResults by rushViewModel.searchResults.collectAsState()
     val localSearchResults by rushViewModel.localSearchResults.collectAsState()
-    val song by rushViewModel.currentSong.collectAsState()
     val isSearchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
 
     var query by remember { mutableStateOf("") }
@@ -165,18 +166,10 @@ fun SearchSheet(
                             rushViewModel.toggleSearchSheet()
                             query = ""
 
-                            if (song == null) {
-                                coroutineScope.launch {
-                                    rushViewModel.changeCurrentPage(0)
-                                    rushViewModel.changeCurrentSong(it.id)
-                                }
-                            } else {
-                                coroutineScope.launch {
-                                    rushViewModel.changeCurrentPage(0)
-                                    rushViewModel.triggerScroll()
-                                    rushViewModel.changeCurrentSong(it.id)
-                                }
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(0)
                             }
+                            rushViewModel.changeCurrentSong(it.id)
                         },
                         downloaded = true
                     )
@@ -189,18 +182,10 @@ fun SearchSheet(
                             rushViewModel.toggleSearchSheet()
                             query = ""
 
-                            if (song == null) {
-                                coroutineScope.launch {
-                                    rushViewModel.changeCurrentPage(0)
-                                    rushViewModel.changeCurrentSong(it.id)
-                                }
-                            } else {
-                                coroutineScope.launch {
-                                    rushViewModel.changeCurrentPage(0)
-                                    rushViewModel.changeCurrentSong(it.id)
-                                    rushViewModel.triggerScroll()
-                                }
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(0)
                             }
+                            rushViewModel.changeCurrentSong(it.id)
                         },
                     )
                 }

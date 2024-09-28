@@ -49,8 +49,6 @@ class RushViewModel(
     private val _downloadIndexes = MutableStateFlow(mapOf<Int, Boolean>())
 
     private val _searchSheet = MutableStateFlow(false)
-    private val _currentPage = MutableStateFlow(1)
-    private val _scrollTrigger = MutableStateFlow(0)
 
     val songs: StateFlow<List<Song>> get() = _songs
     val songsSortedAsc: Flow<List<Song>> get() = _songs.map { it -> it.sortedBy { it.title } }
@@ -81,8 +79,6 @@ class RushViewModel(
             }
 
     val searchSheet: StateFlow<Boolean> get() = _searchSheet
-    val currentPage: StateFlow<Int> get() = _currentPage
-    val scrollTrigger: StateFlow<Int> get() = _scrollTrigger
 
     init {
         viewModelScope.launch {
@@ -265,6 +261,13 @@ class RushViewModel(
         }
     }
 
+    fun deleteSong(song: Song) {
+        viewModelScope.launch {
+            songDao.deleteSong(song)
+            _songs.value = songDao.getAllSongs()
+        }
+    }
+
     fun clearIndexes() {
         _downloadIndexes.value = emptyMap()
     }
@@ -286,18 +289,4 @@ class RushViewModel(
         _searchSheet.value = !_searchSheet.value
     }
 
-    fun changeCurrentPage(page: Int) {
-        _currentPage.value = page
-    }
-
-    fun triggerScroll() {
-        _scrollTrigger.value++
-    }
-
-    fun deleteSong(song: Song) {
-        viewModelScope.launch {
-            songDao.deleteSong(song)
-            _songs.value = songDao.getAllSongs()
-        }
-    }
 }
