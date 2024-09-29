@@ -245,7 +245,7 @@ fun LyricsPage(
                                 if (selectedLines.isEmpty()) {
                                     copyToClipBoard(
                                         context,
-                                        nonNullSong.lyrics,
+                                        if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics ?: "",
                                         "Complete Lyrics"
                                     )
                                 } else {
