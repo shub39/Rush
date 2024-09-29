@@ -32,7 +32,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,16 +45,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.viewmodel.RushViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchSheet(
     rushViewModel: RushViewModel,
-    pagerState: PagerState
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val searchResults by rushViewModel.searchResults.collectAsState()
     val localSearchResults by rushViewModel.localSearchResults.collectAsState()
     val isSearchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
@@ -165,7 +164,6 @@ fun SearchSheet(
                         onClick = {
                             rushViewModel.toggleSearchSheet()
                             query = ""
-
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(0)
                             }
@@ -181,7 +179,6 @@ fun SearchSheet(
                         onClick = {
                             rushViewModel.toggleSearchSheet()
                             query = ""
-
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(0)
                             }

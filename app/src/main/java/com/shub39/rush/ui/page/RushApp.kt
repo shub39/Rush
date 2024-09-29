@@ -33,7 +33,8 @@ fun RushApp(
     if (searchSheetState) {
         SearchSheet(
             rushViewModel = rushViewModel,
-            pagerState = pagerState
+            pagerState = pagerState,
+            coroutineScope = coroutineScope
         )
     }
 
