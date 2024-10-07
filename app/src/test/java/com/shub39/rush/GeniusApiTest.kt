@@ -11,7 +11,13 @@ import org.junit.Test
 class GeniusApiTest {
     @Test
     fun getSearchResults() {
-        val result = SongProvider.search("Hello")
+        val result = SongProvider.search("Cut Throat Death Grips")
+        println(result)
+    }
+
+    @Test
+    fun getSong() {
+        val result = SongProvider.fetchLyrics(1977139)
         println(result)
     }
 }
