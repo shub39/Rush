@@ -16,8 +16,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 19
-        versionName = "2.3.2"
+        versionCode = 233
+        versionName = "2.3.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -36,11 +36,13 @@ android {
         debug {
             resValue("string", "app_name", "$appName Debug")
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
         create("beta"){
             resValue("string", "app_name", "$appName Beta")
             applicationIdSuffix = ".beta"
             isMinifyEnabled = true
+            versionNameSuffix = "-beta"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -117,4 +119,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.colorpicker.compose)
 
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
