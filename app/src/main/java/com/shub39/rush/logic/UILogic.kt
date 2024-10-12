@@ -16,13 +16,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 object UILogic {
-    fun breakLyrics(lyrics: String): Map<Int, String> {
+    fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
         val lines = lyrics.lines()
         val map = mutableMapOf<Int, String>()
         for (i in lines.indices) {
             map[i] = lines[i]
         }
-        return map
+        return map.entries.toList()
     }
 
     fun updateSelectedLines(

@@ -57,20 +57,24 @@ fun SavedPage(
     val songs = rushViewModel.songs.collectAsState()
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
         .collectAsState(initial = "title_asc")
-    val sortedSongs = when (sortOrder) {
-        "title_asc" -> rushViewModel.songsSortedAsc.collectAsState(initial = emptyList()).value
-        else -> rushViewModel.songsSortedDesc.collectAsState(initial = emptyList()).value
-    }
-    val groupedSongs = when (sortOrder) {
-        "artists_asc" -> rushViewModel.songsGroupedArtists.collectAsState(initial = emptyList()).value
-        else -> rushViewModel.songsGroupedAlbums.collectAsState(initial = emptyList()).value
-    }
+    val sortedSongs by remember(sortOrder) {
+        when (sortOrder) {
+            "title_asc" -> rushViewModel.songsSortedAsc
+            else -> rushViewModel.songsSortedDesc
+        }
+    }.collectAsState(initial = emptyList())
+    val groupedSongs by remember(sortOrder) {
+        when (sortOrder) {
+            "artists_asc" -> rushViewModel.songsGroupedArtists
+            else -> rushViewModel.songsGroupedAlbums
+        }
+    }.collectAsState(initial = emptyList())
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
     val autoChange by rushViewModel.autoChange.collectAsState()
 
     LaunchedEffect(listIndex, sortedSongs, groupedSongs) {
         if (sortedSongs.isNotEmpty() && groupedSongs.isNotEmpty()) {
-            lazyListState.animateScrollToItem(listIndex)
+            lazyListState.scrollToItem(listIndex)
             Log.i("Saved Page", "scrolled to $listIndex")
         }
     }

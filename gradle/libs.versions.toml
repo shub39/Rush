@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.0"
 coilCompose = "2.6.0"
 colorpickerCompose = "1.1.2"
 converterGson = "2.9.0"

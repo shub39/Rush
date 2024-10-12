@@ -315,7 +315,8 @@ fun SharePage(
     )
 
     if (namePicker) {
-        BasicAlertDialog(onDismissRequest = { namePicker = false }
+        BasicAlertDialog(
+            onDismissRequest = { namePicker = false }
         ) {
             var name by remember { mutableStateOf("${song.artists}-${song.title}.png") }
 
@@ -350,14 +351,16 @@ fun SharePage(
     if (colorPickerOpen) {
         BasicAlertDialog(
             onDismissRequest = {
-               colorPickerOpen = false
+                colorPickerOpen = false
             }
         ) {
             Card(
                 shape = MaterialTheme.shapes.extraLarge
             ) {
                 Column(
-                    modifier = Modifier.wrapContentSize().padding(16.dp),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -366,7 +369,9 @@ fun SharePage(
                             .width(350.dp)
                             .height(300.dp)
                             .padding(10.dp),
-                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
+                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(
+                            mCardBackground
+                        ),
                         controller = colorPicker
                     )
 
@@ -374,7 +379,9 @@ fun SharePage(
                         modifier = Modifier
                             .padding(10.dp)
                             .height(35.dp),
-                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(mCardBackground),
+                        initialColor = if (editTarget == "content") Color(mCardContent) else Color(
+                            mCardBackground
+                        ),
                         controller = colorPicker
                     )
 
@@ -390,9 +397,15 @@ fun SharePage(
                         onClick = {
                             coroutineScope.launch {
                                 if (editTarget == "content") {
-                                    SettingsDataStore.updateCardContent(context, colorPicker.selectedColor.value.toArgb())
+                                    SettingsDataStore.updateCardContent(
+                                        context,
+                                        colorPicker.selectedColor.value.toArgb()
+                                    )
                                 } else {
-                                    SettingsDataStore.updateCardBackground(context, colorPicker.selectedColor.value.toArgb())
+                                    SettingsDataStore.updateCardBackground(
+                                        context,
+                                        colorPicker.selectedColor.value.toArgb()
+                                    )
                                 }
                             }
                             colorPickerOpen = false

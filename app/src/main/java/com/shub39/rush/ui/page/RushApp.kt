@@ -12,9 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.ui.component.SearchSheet
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
@@ -22,13 +22,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RushApp(
-    navController: NavHostController,
     rushViewModel: RushViewModel = koinViewModel()
 ) {
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
 
     val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val coroutineScope = rememberCoroutineScope()
+    val navController = rememberNavController()
 
     if (searchSheetState) {
         SearchSheet(

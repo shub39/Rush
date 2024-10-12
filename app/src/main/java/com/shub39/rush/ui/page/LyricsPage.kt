@@ -2,7 +2,6 @@ package com.shub39.rush.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,11 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,7 +55,6 @@ import com.shub39.rush.logic.UILogic.getCurrentLyricIndex
 import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.parseLyrics
-import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.delay
@@ -72,7 +65,6 @@ fun LyricsPage(
     rushViewModel: RushViewModel
 ) {
     val context = LocalContext.current
-    val artGraphicsLayer = rememberGraphicsLayer()
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
@@ -122,11 +114,11 @@ fun LyricsPage(
         val lyrics = remember(nonNullSong, source) {
             when {
                 source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
-                    breakLyrics(nonNullSong.lyrics).entries.toList()
+                    breakLyrics(nonNullSong.lyrics)
                 }
 
                 source == "Genius" && nonNullSong.geniusLyrics != null -> {
-                    breakLyrics(nonNullSong.geniusLyrics).entries.toList()
+                    breakLyrics(nonNullSong.geniusLyrics)
                 }
 
                 else -> {
@@ -144,20 +136,18 @@ fun LyricsPage(
 
             if (nonNullSong.syncedLyrics != null) {
                 syncedAvailable = true
-                if (
-                    getMainTitle(currentPlayingSong?.first ?: "").trim()
-                        .lowercase() == nonNullSong.title.trim()
-                        .lowercase()
-                ) {
-                    sync = true
-                }
+
+                sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
+                    .lowercase() == nonNullSong.title.trim()
+                    .lowercase()
+
             }
         }
 
         LaunchedEffect(currentPlayingSong) {
             syncedAvailable = (nonNullSong.syncedLyrics != null)
 
-            sync = (currentPlayingSong?.first ?: "").trim()
+            sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
                 .lowercase() == nonNullSong.title.trim()
                 .lowercase() && syncedAvailable
         }
@@ -184,26 +174,7 @@ fun LyricsPage(
                         imageUrl = nonNullSong.artUrl,
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(MaterialTheme.shapes.small)
-                            .drawWithContent {
-                                artGraphicsLayer.record {
-                                    this@drawWithContent.drawContent()
-                                }
-                                drawLayer(artGraphicsLayer)
-                            }
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onLongPress = {
-                                        coroutineScope.launch {
-                                            val bitmap =
-                                                artGraphicsLayer
-                                                    .toImageBitmap()
-                                                    .asAndroidBitmap()
-                                            shareImage(context, bitmap, "${nonNullSong.title}.png")
-                                        }
-                                    }
-                                )
-                            },
+                            .clip(MaterialTheme.shapes.small),
                     )
 
                     Column(
@@ -216,6 +187,7 @@ fun LyricsPage(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
+
                         Text(
                             text = nonNullSong.artists,
                             style = MaterialTheme.typography.bodyMedium,
@@ -223,6 +195,7 @@ fun LyricsPage(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+
                         nonNullSong.album?.let {
                             Text(
                                 text = it,
@@ -237,7 +210,8 @@ fun LyricsPage(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 16.dp), contentAlignment = Alignment.CenterEnd
+                        .padding(end = 16.dp),
+                    contentAlignment = Alignment.CenterEnd
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
@@ -245,7 +219,8 @@ fun LyricsPage(
                                 if (selectedLines.isEmpty()) {
                                     copyToClipBoard(
                                         context,
-                                        if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics ?: "",
+                                        if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics
+                                            ?: "",
                                         "Complete Lyrics"
                                     )
                                 } else {
@@ -343,17 +318,18 @@ fun LyricsPage(
                     items(lyrics, key = { it.key }) {
                         if (it.value.isNotBlank()) {
                             val isSelected = selectedLines.contains(it.key)
-                            val color = if (!isSelected) {
-                                CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            } else {
-                                CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
+                            val contentColor by animateColorAsState(
+                                targetValue = when (!isSelected) {
+                                    true -> MaterialTheme.colorScheme.onPrimaryContainer
+                                    else -> MaterialTheme.colorScheme.onPrimary
+                                }
+                            )
+                            val containerColor by animateColorAsState(
+                                targetValue = when (!isSelected) {
+                                    true -> MaterialTheme.colorScheme.primaryContainer
+                                    else -> MaterialTheme.colorScheme.primary
+                                }
+                            )
 
                             Row(
                                 modifier = Modifier
@@ -372,7 +348,10 @@ fun LyricsPage(
                                         isSelected != isSelected
                                     },
                                     shape = MaterialTheme.shapes.small,
-                                    colors = color
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = containerColor,
+                                        contentColor = contentColor
+                                    )
                                 ) {
                                     Text(
                                         text = it.value,
@@ -479,23 +458,20 @@ fun LyricsPage(
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            val targetContainerColor =
-                                if (lyric.time <= currentSongPosition + 2000) {
+                            val containerColor by animateColorAsState(
+                                targetValue = if (lyric.time <= currentSongPosition + 2000) {
                                     MaterialTheme.colorScheme.primary
                                 } else {
                                     MaterialTheme.colorScheme.primaryContainer
-                                }
-                            val targetContentColor = if (lyric.time <= currentSongPosition + 2000) {
-                                MaterialTheme.colorScheme.onPrimary
-                            } else {
-                                MaterialTheme.colorScheme.onPrimaryContainer
-                            }
-                            val containerColor by animateColorAsState(
-                                targetValue = targetContainerColor,
+                                },
                                 label = "container"
                             )
                             val contentColor by animateColorAsState(
-                                targetValue = targetContentColor,
+                                targetValue = if (lyric.time <= currentSongPosition + 2000) {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
                                 label = "content"
                             )
 

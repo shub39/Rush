@@ -31,10 +31,8 @@ class MainActivity : ComponentActivity() {
             RushTheme(
                 theme = theme
             ) {
-                val navController = rememberNavController()
-
                 KoinContext {
-                    RushApp(navController = navController)
+                    RushApp()
                 }
             }
 

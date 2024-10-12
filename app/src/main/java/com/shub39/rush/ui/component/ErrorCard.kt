@@ -28,7 +28,7 @@ fun ErrorCard(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 15.dp, end = 16.dp, bottom = 16.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -42,7 +42,9 @@ fun ErrorCard(
             Icon(
                 painter = painterResource(id = R.drawable.round_warning_24),
                 contentDescription = null,
-                modifier = Modifier.size(128.dp).padding(16.dp),
+                modifier = Modifier
+                    .size(128.dp)
+                    .padding(16.dp),
                 tint = MaterialTheme.colorScheme.secondary
             )
 
@@ -53,7 +55,7 @@ fun ErrorCard(
 
             Spacer(Modifier.padding(4.dp))
 
-            Button(onClick = {rushViewModel.retry()}) {
+            Button(onClick = { rushViewModel.retry() }) {
                 Text(stringResource(R.string.try_again))
             }
         }
