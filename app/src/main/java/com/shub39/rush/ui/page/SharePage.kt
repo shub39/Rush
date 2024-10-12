@@ -1,5 +1,6 @@
 package com.shub39.rush.ui.page
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -50,8 +51,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
@@ -176,143 +175,137 @@ fun SharePage(
     )
     val cardCorners = RoundedCornerShape(cornerRadius)
 
-    Dialog(
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-        onDismissRequest = { onDismiss() },
-        content = {
-            Box(
+    BackHandler { onDismiss() }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (cardTheme) {
+            "Default" -> MaterialShareCard(
                 modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                when (cardTheme) {
-                    "Default" -> MaterialShareCard(
-                        modifier = Modifier
-                            .drawWithContent {
-                                cardGraphicsLayer.record {
-                                    this@drawWithContent.drawContent()
-                                }
-                                drawLayer(cardGraphicsLayer)
-                            },
-                        song = song,
-                        sortedLines = sortedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                    )
-
-                    "Genius" -> GeniusShareCard(
-                        modifier = Modifier
-                            .drawWithContent {
-                                cardGraphicsLayer.record {
-                                    this@drawWithContent.drawContent()
-                                }
-                                drawLayer(cardGraphicsLayer)
-                            },
-                        song = song,
-                        sortedLines = sortedLines,
-                        cardColors = cardColor,
-                    )
-                }
-
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 32.dp)
-                ) {
-                    listOf("Default", "Genius").forEachIndexed { index, style ->
-                        SegmentedButton(
-                            label = { Text(text = style) },
-                            selected = cardTheme == style,
-                            onClick = {
-                                coroutineScope.launch {
-                                    SettingsDataStore.updateCardTheme(context, style)
-                                }
-                            },
-                            shape = when (index) {
-                                0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                                1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                                else -> RoundedCornerShape(0.dp)
-                            }
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp)
-                ) {
-                    AnimatedVisibility(visible = cardColorType == "Custom") {
-                        Row {
-                            FloatingActionButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        editTarget = "content"
-                                        colorPickerOpen = true
-                                    }
-                                },
-                                containerColor = Color(mCardContent),
-                                shape = MaterialTheme.shapes.extraLarge,
-                                content = {}
-                            )
-
-                            Spacer(modifier = Modifier.padding(4.dp))
-
-                            FloatingActionButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        editTarget = "background"
-                                        colorPickerOpen = true
-                                    }
-                                },
-                                containerColor = Color(mCardBackground),
-                                shape = MaterialTheme.shapes.extraLarge,
-                                content = {}
-                            )
+                    .drawWithContent {
+                        cardGraphicsLayer.record {
+                            this@drawWithContent.drawContent()
                         }
+                        drawLayer(cardGraphicsLayer)
+                    },
+                song = song,
+                sortedLines = sortedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+            )
+
+            "Genius" -> GeniusShareCard(
+                modifier = Modifier
+                    .drawWithContent {
+                        cardGraphicsLayer.record {
+                            this@drawWithContent.drawContent()
+                        }
+                        drawLayer(cardGraphicsLayer)
+                    },
+                song = song,
+                sortedLines = sortedLines,
+                cardColors = cardColor,
+            )
+        }
+
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+        ) {
+            listOf("Default", "Genius").forEachIndexed { index, style ->
+                SegmentedButton(
+                    label = { Text(text = style) },
+                    selected = cardTheme == style,
+                    onClick = {
+                        coroutineScope.launch {
+                            SettingsDataStore.updateCardTheme(context, style)
+                        }
+                    },
+                    shape = when (index) {
+                        0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                        1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                        else -> RoundedCornerShape(0.dp)
                     }
+                )
+            }
+        }
 
-                    Spacer(modifier = Modifier.padding(4.dp))
-
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp)
+        ) {
+            AnimatedVisibility(visible = cardColorType == "Custom") {
+                Row {
                     FloatingActionButton(
                         onClick = {
                             coroutineScope.launch {
-                                namePicker = true
+                                editTarget = "content"
+                                colorPickerOpen = true
                             }
                         },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        shape = MaterialTheme.shapes.extraLarge
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_download_done_24),
-                            contentDescription = null,
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.padding(4.dp))
-
-                    FloatingActionButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                                shareImage(context, bitmap, "${song.artists}-${song.title}.png")
-                                onDismiss()
-                            }
-                        },
+                        containerColor = Color(mCardContent),
                         shape = MaterialTheme.shapes.extraLarge,
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_share_24),
-                            contentDescription = null
-                        )
-                    }
+                        content = {}
+                    )
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    FloatingActionButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                editTarget = "background"
+                                colorPickerOpen = true
+                            }
+                        },
+                        containerColor = Color(mCardBackground),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        content = {}
+                    )
                 }
             }
 
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        namePicker = true
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_download_done_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                        shareImage(context, bitmap, "${song.artists}-${song.title}.png")
+                        onDismiss()
+                    }
+                },
+                shape = MaterialTheme.shapes.extraLarge,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_share_24),
+                    contentDescription = null
+                )
+            }
         }
-    )
+    }
 
     if (namePicker) {
         BasicAlertDialog(

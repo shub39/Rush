@@ -126,7 +126,6 @@ fun SavedPage(
                                 },
                                 onClick = {
                                     listIndex = lazyListState.firstVisibleItemIndex
-                                    Log.i("Saved Page", "saved $listIndex")
                                     rushViewModel.changeCurrentSong(it.id)
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)
@@ -153,7 +152,6 @@ fun SavedPage(
                                 isExpanded = expandedCardId == map.key,
                                 onClick = {
                                     listIndex = lazyListState.firstVisibleItemIndex
-                                    Log.i("Saved Page", "saved $listIndex")
                                     rushViewModel.changeCurrentSong(it.id)
                                     coroutineScope.launch {
                                         pagerState.animateScrollToPage(0)

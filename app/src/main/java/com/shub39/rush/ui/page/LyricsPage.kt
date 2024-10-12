@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.shub39.rush.R
 import com.shub39.rush.ui.component.ArtFromUrl
 import com.shub39.rush.ui.component.EmptyCard
@@ -62,7 +64,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LyricsPage(
-    rushViewModel: RushViewModel
+    rushViewModel: RushViewModel,
+    navController: NavController,
+    onShare: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -81,19 +85,11 @@ fun LyricsPage(
     var sync by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
-    var isShareSheetOpen by remember { mutableStateOf(false) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     LaunchedEffect(song) {
         delay(100)
         lazyListState.animateScrollToItem(0)
-    }
-
-    if (isShareSheetOpen) {
-        SharePage(
-            onDismiss = { isShareSheetOpen = false },
-            rushViewModel = rushViewModel
-        )
     }
 
     if (fetching || (searching && autoChange)) {
@@ -158,16 +154,18 @@ fun LyricsPage(
 
         Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            ),
+            shape = RoundedCornerShape(0.dp)
         ) {
-            Column {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
                 Row(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    modifier = Modifier.padding(top = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     ArtFromUrl(
@@ -290,7 +288,8 @@ fun LyricsPage(
                             Row {
                                 IconButton(onClick = {
                                     rushViewModel.updateShareLines(selectedLines)
-                                    isShareSheetOpen = true
+                                    navController.navigate("share")
+                                    onShare()
                                 }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_share_24),
@@ -444,9 +443,9 @@ fun LyricsPage(
 
                 LaunchedEffect(currentSongPosition) {
                     coroutineScope.launch {
-                        val currentIndex =
-                            getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
-                        lazyListState.animateScrollToItem(currentIndex)
+                        var currentIndex = getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
+                        currentIndex -= 5
+                        lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
                     }
                 }
 

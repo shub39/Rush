@@ -1,7 +1,6 @@
 package com.shub39.rush.ui.page
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,8 +18,7 @@ import com.shub39.rush.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    navController: NavController,
-    pagerState: PagerState
+    navController: NavController
 ) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
@@ -33,15 +31,15 @@ fun TopBar(
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-            } else if (pagerState.currentPage == 1) {
+            } else if (currentDestination?.route == "share") {
                 Text(
-                    text = stringResource(id = R.string.saved),
+                    text = stringResource(id = R.string.share),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             } else {
                 Text(
-                    text = stringResource(id = R.string.app_name),
+                    text = stringResource(id = R.string.saved),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )

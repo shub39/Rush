@@ -3,6 +3,7 @@
     <string name="saved">Saved</string>
     <string name="settings">Settings</string>
     <string name="empty">Nothing yet…</string>
+    <string name="share">Share</string>
     <string name="save">Save changes</string>
     <string name="delete_confirmation">Are you sure you want to delete all saved lyrics?</string>
     <string name="no_lyrics">Could not get Lyrics</string>

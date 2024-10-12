@@ -1,7 +1,7 @@
 package com.shub39.rush.ui.component
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -13,12 +13,12 @@ import androidx.compose.ui.unit.dp
 fun EmptyCard() {
     Card(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 15.dp, end = 16.dp, bottom = 16.dp),
+            .fillMaxSize(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+        ),
+        shape = RoundedCornerShape(0.dp)
     ) {
         Empty()
     }

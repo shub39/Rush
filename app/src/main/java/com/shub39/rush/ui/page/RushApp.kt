@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,48 +27,72 @@ fun RushApp(
 ) {
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
 
-    val pagerState = rememberPagerState(initialPage = 1) { 2 }
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
+    val pagerState = rememberPagerState(1) { 2 }
 
     if (searchSheetState) {
         SearchSheet(
             rushViewModel = rushViewModel,
-            pagerState = pagerState,
-            coroutineScope = coroutineScope
+            coroutineScope = coroutineScope,
+            pagerState = pagerState
         )
     }
 
-    BackHandler(
-        enabled = pagerState.currentPage == 0
-    ) {
+    BackHandler(pagerState.currentPage == 0) {
         coroutineScope.launch {
             pagerState.animateScrollToPage(1)
         }
     }
 
-    Scaffold(
-        topBar = { TopBar(navController = navController, pagerState = pagerState) },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "lyrics",
-            modifier = Modifier.padding(innerPadding),
-            enterTransition = { fadeIn(animationSpec = tween(200)) },
-            exitTransition = { fadeOut(animationSpec = tween(200)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(200)) },
-            popExitTransition = { fadeOut(animationSpec = tween(200)) }
-        ) {
-            composable("lyrics") {
-                RushPager(
-                    rushViewModel = rushViewModel,
-                    pagerState = pagerState
-                )
+    HorizontalPager(pagerState) {
+        when (it) {
+            1 -> Scaffold(
+                topBar = { TopBar(navController = navController) },
+            ) { innerPadding ->
+                NavHost(
+                    navController = navController,
+                    startDestination = "saved",
+                    modifier = Modifier.padding(innerPadding),
+                    enterTransition = { fadeIn(animationSpec = tween(200)) },
+                    exitTransition = { fadeOut(animationSpec = tween(200)) },
+                    popEnterTransition = { fadeIn(animationSpec = tween(200)) },
+                    popExitTransition = { fadeOut(animationSpec = tween(200)) }
+                ) {
+                    composable("saved") {
+                        SavedPage(
+                            rushViewModel = rushViewModel,
+                            pagerState = pagerState
+                        )
+                    }
+
+                    composable("settings") {
+                        SettingPage(rushViewModel = rushViewModel)
+                    }
+
+                    composable("share") {
+                        SharePage(
+                            onDismiss = {
+                                navController.navigateUp()
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                            },
+                            rushViewModel = rushViewModel
+                        )
+                    }
+                }
             }
 
-            composable("settings") {
-                SettingPage(rushViewModel = rushViewModel)
-            }
+            0 -> LyricsPage(
+                rushViewModel = rushViewModel,
+                navController = navController,
+                onShare = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(1)
+                    }
+                }
+            )
         }
     }
 }

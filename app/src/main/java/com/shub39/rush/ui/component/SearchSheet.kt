@@ -52,8 +52,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchSheet(
     rushViewModel: RushViewModel,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    pagerState: PagerState
 ) {
     val searchResults by rushViewModel.searchResults.collectAsState()
     val localSearchResults by rushViewModel.localSearchResults.collectAsState()
@@ -164,10 +164,10 @@ fun SearchSheet(
                         onClick = {
                             rushViewModel.toggleSearchSheet()
                             query = ""
+                            rushViewModel.changeCurrentSong(it.id)
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(0)
                             }
-                            rushViewModel.changeCurrentSong(it.id)
                         },
                         downloaded = true
                     )
@@ -179,10 +179,10 @@ fun SearchSheet(
                         onClick = {
                             rushViewModel.toggleSearchSheet()
                             query = ""
+                            rushViewModel.changeCurrentSong(it.id)
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(0)
                             }
-                            rushViewModel.changeCurrentSong(it.id)
                         },
                     )
                 }

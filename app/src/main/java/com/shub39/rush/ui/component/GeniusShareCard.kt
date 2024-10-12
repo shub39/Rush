@@ -84,11 +84,13 @@ fun GeniusShareCard(
                 Column {
                     Text(
                         text = song.title,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                     )
                     Text(
                         text = song.artists,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.surface
                     )
                 }
             }
