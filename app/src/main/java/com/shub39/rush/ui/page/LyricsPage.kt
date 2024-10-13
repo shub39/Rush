@@ -2,6 +2,8 @@ package com.shub39.rush.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,8 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -36,17 +37,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
+import androidx.palette.graphics.Palette
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.ui.component.ArtFromUrl
-import com.shub39.rush.ui.component.EmptyCard
 import com.shub39.rush.ui.component.ErrorCard
 import com.shub39.rush.ui.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
@@ -58,15 +69,18 @@ import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.parseLyrics
 import com.shub39.rush.logic.UILogic.updateSelectedLines
+import com.shub39.rush.ui.component.Empty
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun LyricsPage(
     rushViewModel: RushViewModel,
     navController: NavController,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    imageLoader: ImageLoader = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -77,231 +91,315 @@ fun LyricsPage(
     val error by rushViewModel.error.collectAsState()
     val searching by rushViewModel.isSearchingLyrics.collectAsState()
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
     val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
     val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
     val autoChange by rushViewModel.autoChange.collectAsState()
 
+    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
+    var cardContentDominant by remember { mutableStateOf(Color.White) }
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
+    val cardBackground by animateColorAsState(
+        targetValue = cardBackgroundDominant
+    )
+    val cardContent by animateColorAsState(
+        targetValue = cardContentDominant
+    )
+
     LaunchedEffect(song) {
         delay(100)
         lazyListState.animateScrollToItem(0)
     }
 
-    if (fetching || (searching && autoChange)) {
+    Card(
+        modifier = Modifier
+            .fillMaxSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = cardBackground,
+            contentColor = cardContent
+        ),
+        shape = RoundedCornerShape(0.dp)
+    ) {
 
-        LoadingCard(rushViewModel)
+        if (fetching || (searching && autoChange)) {
 
-    } else if (error) {
+            LoadingCard(rushViewModel, Pair(cardContentDominant, cardBackgroundDominant))
 
-        ErrorCard(rushViewModel)
+        } else if (error) {
 
-    } else if (song == null) {
+            ErrorCard(rushViewModel, Pair(cardContentDominant, cardBackgroundDominant))
 
-        EmptyCard()
+        } else if (song == null) {
 
-    } else {
+            Empty()
 
-        val nonNullSong = song!!
-        val lyrics = remember(nonNullSong, source) {
-            when {
-                source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
-                    breakLyrics(nonNullSong.lyrics)
-                }
+        } else {
 
-                source == "Genius" && nonNullSong.geniusLyrics != null -> {
-                    breakLyrics(nonNullSong.geniusLyrics)
-                }
+            val nonNullSong = song!!
+            val lyrics = remember(nonNullSong, source) {
+                when {
+                    source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
+                        breakLyrics(nonNullSong.lyrics)
+                    }
 
-                else -> {
-                    emptyList()
+                    source == "Genius" && nonNullSong.geniusLyrics != null -> {
+                        breakLyrics(nonNullSong.geniusLyrics)
+                    }
+
+                    else -> {
+                        emptyList()
+                    }
                 }
             }
-        }
 
-        LaunchedEffect(nonNullSong) {
-            if (nonNullSong.lyrics.isNotEmpty()) {
-                source = "LrcLib"
-            } else if (nonNullSong.geniusLyrics != null) {
-                source = "Genius"
-            }
+            LaunchedEffect(nonNullSong) {
+                if (nonNullSong.lyrics.isNotEmpty()) {
+                    source = "LrcLib"
+                } else if (nonNullSong.geniusLyrics != null) {
+                    source = "Genius"
+                }
 
-            if (nonNullSong.syncedLyrics != null) {
-                syncedAvailable = true
+                if (nonNullSong.syncedLyrics != null) {
+                    syncedAvailable = true
 
-                sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
-                    .lowercase() == nonNullSong.title.trim()
-                    .lowercase()
+                    sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
+                        .lowercase() == nonNullSong.title.trim()
+                        .lowercase()
 
-            }
-        }
+                }
 
-        LaunchedEffect(currentPlayingSong) {
-            syncedAvailable = (nonNullSong.syncedLyrics != null)
+                val request = ImageRequest.Builder(context)
+                    .data(nonNullSong.artUrl)
+                    .allowHardware(false)
+                    .build()
+                val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
 
-            sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
-                .lowercase() == nonNullSong.title.trim()
-                .lowercase() && syncedAvailable
-        }
-
-        LaunchedEffect(source) {
-            selectedLines = emptyMap()
-        }
-
-        Card(
-            modifier = Modifier
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            shape = RoundedCornerShape(0.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(top = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ArtFromUrl(
-                        imageUrl = nonNullSong.artUrl,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(MaterialTheme.shapes.small),
-                    )
-
-                    Column(
-                        modifier = Modifier.padding(start = 16.dp),
-                    ) {
-                        Text(
-                            text = nonNullSong.title,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Text(
-                            text = nonNullSong.artists,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        nonNullSong.album?.let {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.bodyMedium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                result.let { drawable ->
+                    if (drawable != null) {
+                        Palette.from(drawable.toBitmap()).generate { palette ->
+                            palette?.let {
+                                if (colorPreference == "muted") {
+                                    cardBackgroundDominant =
+                                        Color(
+                                            it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
+                                            ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
+                                        )
+                                    cardContentDominant =
+                                        Color(
+                                            it.mutedSwatch?.bodyTextColor
+                                                ?: it.darkMutedSwatch?.bodyTextColor
+                                                ?: it.lightMutedSwatch?.bodyTextColor
+                                                ?: Color.White.toArgb()
+                                        )
+                                } else {
+                                    cardBackgroundDominant =
+                                        Color(
+                                            it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
+                                            ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
+                                            ?: Color.DarkGray.toArgb()
+                                        )
+                                    cardContentDominant =
+                                        Color(
+                                            it.vibrantSwatch?.bodyTextColor
+                                                ?: it.lightVibrantSwatch?.bodyTextColor
+                                                ?: it.darkVibrantSwatch?.bodyTextColor
+                                                ?: it.dominantSwatch?.bodyTextColor
+                                                ?: Color.White.toArgb()
+                                        )
+                                }
+                            }
                         }
                     }
                 }
+            }
+
+            LaunchedEffect(currentPlayingSong) {
+                syncedAvailable = (nonNullSong.syncedLyrics != null)
+
+                sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
+                    .lowercase() == nonNullSong.title.trim()
+                    .lowercase() && syncedAvailable
+            }
+
+            LaunchedEffect(source) {
+                selectedLines = emptyMap()
+            }
+
+            Box {
+                ArtFromUrl(
+                    imageUrl = nonNullSong.artUrl,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                )
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 16.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(
-                            onClick = {
-                                if (selectedLines.isEmpty()) {
-                                    copyToClipBoard(
-                                        context,
-                                        if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics
-                                            ?: "",
-                                        "Complete Lyrics"
-                                    )
-                                } else {
-                                    copyToClipBoard(
-                                        context,
-                                        selectedLines.toSortedMap().values.joinToString("\n"),
-                                        "Selected Lyrics"
-                                    )
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_content_copy_24),
-                                contentDescription = null
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    cardBackgroundDominant
+                                )
                             )
-                        }
+                        )
+                        .height(150.dp)
+                )
 
-                        AnimatedVisibility(visible = selectedLines.isEmpty()) {
-                            IconButton(onClick = {
-                                source = if (source == "LrcLib") "Genius" else "LrcLib"
-                                sync = false
-                            }) {
-                                if (source == "Genius") {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.round_lyrics_24),
-                                        contentDescription = null
-                                    )
-                                } else {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.genius),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        }
-
-                        AnimatedVisibility(
-                            visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
+                Column(
+                    modifier = Modifier.padding(top = 64.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(top = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Row {
-                                IconButton(
-                                    onClick = { sync = !sync },
-                                    colors = if (sync) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.round_sync_24),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        }
+                            Text(
+                                text = nonNullSong.title,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                            )
 
-                        AnimatedVisibility(visible = notificationAccess) {
+                            Text(
+                                text = nonNullSong.artists,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
-                                onClick = { rushViewModel.toggleAutoChange() },
-                                colors = if (autoChange) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors()
+                                onClick = {
+                                    if (selectedLines.isEmpty()) {
+                                        copyToClipBoard(
+                                            context,
+                                            if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics
+                                                ?: "",
+                                            "Complete Lyrics"
+                                        )
+                                    } else {
+                                        copyToClipBoard(
+                                            context,
+                                            selectedLines.toSortedMap().values.joinToString("\n"),
+                                            "Selected Lyrics"
+                                        )
+                                    }
+                                }
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.rush_transparent),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(28.dp)
+                                    painter = painterResource(id = R.drawable.round_content_copy_24),
+                                    contentDescription = null
                                 )
                             }
-                        }
 
-                        AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
-                            Row {
+                            AnimatedVisibility(visible = selectedLines.isEmpty()) {
                                 IconButton(onClick = {
-                                    rushViewModel.updateShareLines(selectedLines)
-                                    navController.navigate("share")
-                                    onShare()
+                                    source = if (source == "LrcLib") "Genius" else "LrcLib"
+                                    sync = false
                                 }) {
+                                    if (source == "Genius") {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.round_lyrics_24),
+                                            contentDescription = null
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.genius),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+
+                            AnimatedVisibility(
+                                visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
+                            ) {
+                                Row {
+                                    IconButton(
+                                        onClick = { sync = !sync },
+                                        colors = if (sync) {
+                                            IconButtonDefaults.iconButtonColors(
+                                                contentColor = cardBackground,
+                                                containerColor = cardContent
+                                            )
+                                        } else {
+                                            IconButtonDefaults.filledIconButtonColors(
+                                                contentColor = cardContent,
+                                                containerColor = cardBackground
+                                            )
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.round_sync_24),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+
+                            AnimatedVisibility(visible = notificationAccess) {
+                                IconButton(
+                                    onClick = { rushViewModel.toggleAutoChange() },
+                                    colors = if (autoChange) {
+                                        IconButtonDefaults.iconButtonColors(
+                                            contentColor = cardBackground,
+                                            containerColor = cardContent
+                                        )
+                                    } else {
+                                        IconButtonDefaults.filledIconButtonColors(
+                                            contentColor = cardContent,
+                                            containerColor = cardBackground
+                                        )
+                                    }
+                                ) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.round_share_24),
-                                        contentDescription = null
+                                        painter = painterResource(id = R.drawable.rush_transparent),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp)
                                     )
                                 }
+                            }
 
-                                IconButton(onClick = { selectedLines = emptyMap() }) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Clear,
-                                        contentDescription = null
-                                    )
+                            AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
+                                Row {
+                                    IconButton(onClick = {
+                                        rushViewModel.updateShareLines(selectedLines)
+                                        navController.navigate("share")
+                                        onShare()
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.round_share_24),
+                                            contentDescription = null
+                                        )
+                                    }
+
+                                    IconButton(onClick = { selectedLines = emptyMap() }) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Clear,
+                                            contentDescription = null
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -311,7 +409,7 @@ fun LyricsPage(
 
             if (!sync && (source == "LrcLib" || source == "Genius")) {
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 32.dp),
                     state = lazyListState
                 ) {
                     items(lyrics, key = { it.key }) {
@@ -319,14 +417,14 @@ fun LyricsPage(
                             val isSelected = selectedLines.contains(it.key)
                             val contentColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
-                                    true -> MaterialTheme.colorScheme.onPrimaryContainer
-                                    else -> MaterialTheme.colorScheme.onPrimary
+                                    true -> cardContentDominant
+                                    else -> cardBackgroundDominant
                                 }
                             )
                             val containerColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
-                                    true -> MaterialTheme.colorScheme.primaryContainer
-                                    else -> MaterialTheme.colorScheme.primary
+                                    true -> cardBackgroundDominant
+                                    else -> cardContentDominant
                                 }
                             )
 
@@ -336,7 +434,7 @@ fun LyricsPage(
                             ) {
                                 Card(
                                     modifier = Modifier
-                                        .padding(6.dp),
+                                        .padding(3.dp),
                                     onClick = {
                                         selectedLines = updateSelectedLines(
                                             selectedLines,
@@ -354,7 +452,11 @@ fun LyricsPage(
                                 ) {
                                     Text(
                                         text = it.value,
-                                        style = MaterialTheme.typography.bodyLarge,
+                                        style = TextStyle(
+                                            fontSize = 19.sp,
+                                            fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                                            color = contentColor
+                                        ),
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(6.dp)
                                     )
@@ -371,15 +473,12 @@ fun LyricsPage(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                FloatingActionButton(
+                                IconButton(
                                     onClick = {
                                         coroutineScope.launch {
                                             lazyListState.scrollToItem(0)
                                         }
-                                    },
-                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    containerColor = MaterialTheme.colorScheme.primary
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_arrow_upward_24),
@@ -387,11 +486,13 @@ fun LyricsPage(
                                     )
                                 }
 
-                                FloatingActionButton(
-                                    onClick = { openLinkInBrowser(context, nonNullSong.sourceUrl) },
-                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    containerColor = MaterialTheme.colorScheme.primary
+                                IconButton(
+                                    onClick = {
+                                        openLinkInBrowser(
+                                            context,
+                                            nonNullSong.sourceUrl
+                                        )
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.genius),
@@ -399,11 +500,8 @@ fun LyricsPage(
                                     )
                                 }
 
-                                FloatingActionButton(
+                                IconButton(
                                     onClick = { rushViewModel.toggleSearchSheet() },
-                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    containerColor = MaterialTheme.colorScheme.primary
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_search_24),
@@ -443,49 +541,56 @@ fun LyricsPage(
 
                 LaunchedEffect(currentSongPosition) {
                     coroutineScope.launch {
-                        var currentIndex = getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
-                        currentIndex -= 5
+                        var currentIndex =
+                            getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
+                        currentIndex -= 3
                         lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
                     }
                 }
 
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 32.dp),
                     state = lazyListState
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            val containerColor by animateColorAsState(
-                                targetValue = if (lyric.time <= currentSongPosition + 2000) {
-                                    MaterialTheme.colorScheme.primary
+                            val textColor by animateColorAsState(
+                                targetValue = if (lyric.time <= currentSongPosition + 1000) {
+                                    cardContent
                                 } else {
-                                    MaterialTheme.colorScheme.primaryContainer
+                                    cardContent.copy(alpha = 0.5f)
                                 },
-                                label = "container"
+                                label = "textColor"
                             )
-                            val contentColor by animateColorAsState(
-                                targetValue = if (lyric.time <= currentSongPosition + 2000) {
-                                    MaterialTheme.colorScheme.primaryContainer
+                            val textSize by animateFloatAsState(
+                                targetValue = if (lyric.time <= currentSongPosition + 1000) {
+                                    20f
                                 } else {
-                                    MaterialTheme.colorScheme.primary
+                                    19f
                                 },
-                                label = "content"
+                                label = "textSize"
                             )
+
+
 
                             Card(
                                 modifier = Modifier.padding(6.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = containerColor,
-                                    contentColor = contentColor
+                                    containerColor = cardBackground,
+                                    contentColor = cardContent
                                 ),
                                 shape = MaterialTheme.shapes.small,
                             ) {
                                 if (lyric.text.isNotEmpty()) {
                                     Text(
                                         text = lyric.text,
-                                        style = MaterialTheme.typography.bodyLarge,
+                                        style = TextStyle(
+                                            fontSize = textSize.sp,
+                                            color = textColor,
+                                            fontFamily = FontFamily(Font(R.font.poppins_regular))
+                                        ),
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(6.dp)
                                     )
@@ -498,6 +603,11 @@ fun LyricsPage(
                             }
                         }
                     }
+
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
+                    }
+
                 }
             }
         }

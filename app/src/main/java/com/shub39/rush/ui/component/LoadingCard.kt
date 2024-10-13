@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,45 +23,37 @@ import com.shub39.rush.viewmodel.RushViewModel
 
 @Composable
 fun LoadingCard(
-    rushViewModel: RushViewModel
+    rushViewModel: RushViewModel,
+    colors: Pair<Color, Color>
 ) {
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val searching by rushViewModel.isSearchingLyrics.collectAsState()
     val searchTerm by rushViewModel.searchQuery.collectAsState()
     val fetchTerm by rushViewModel.fetchQuery.collectAsState()
 
-    Card(
+    Column(
         modifier = Modifier
-            .fillMaxSize(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        shape = RoundedCornerShape(0.dp)
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            if (fetching || searching) {
-                Text(
-                    text = if (fetching) {
-                        "${stringResource(R.string.fetching)} \n$fetchTerm"
-                    } else {
-                        "${stringResource(R.string.searching)} \n$searchTerm"
-                    },
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            CircularProgressIndicator(
-                strokeCap = StrokeCap.Round
+        if (fetching || searching) {
+            Text(
+                text = if (fetching) {
+                    "${stringResource(R.string.fetching)} \n$fetchTerm"
+                } else {
+                    "${stringResource(R.string.searching)} \n$searchTerm"
+                },
+                textAlign = TextAlign.Center
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        CircularProgressIndicator(
+            strokeCap = StrokeCap.Round,
+            color = colors.first
+        )
     }
 }

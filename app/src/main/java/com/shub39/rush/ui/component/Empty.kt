@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,17 +26,14 @@ fun Empty() {
             painter = painterResource(id = R.drawable.baseline_library_music_24),
             contentDescription = null,
             modifier = Modifier.size(128.dp).padding(16.dp),
-            tint = MaterialTheme.colorScheme.secondary
         )
 
         Text(
             text = stringResource(id = R.string.empty),
-            color = MaterialTheme.colorScheme.secondary
         )
 
         Text(
             text = stringResource(id = R.string.suggestion),
-            color = MaterialTheme.colorScheme.secondary
         )
     }
 }

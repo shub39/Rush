@@ -27,7 +27,16 @@ object SettingsDataStore {
     private val CARD_THEME = stringPreferencesKey("card_theme")
     private val CARD_BACKGROUND = intPreferencesKey("card_background")
     private val CARD_CONTENT = intPreferencesKey("card_content")
+    private val LYRICS_COLOR = stringPreferencesKey("lyrics_color")
     private val LARGE_CARD = booleanPreferencesKey("large_card")
+
+    fun getLyricsColorFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[LYRICS_COLOR] ?: "muted"
+        }
 
     fun getLargeCardFlow(context: Context): Flow<Boolean> = context.dataStore.data
         .catch {
@@ -116,6 +125,12 @@ object SettingsDataStore {
     suspend fun setLargeCard(context: Context, newLargeCard: Boolean) {
         context.dataStore.edit { settings ->
             settings[LARGE_CARD] = newLargeCard
+        }
+    }
+
+    suspend fun setLyricsColor(context: Context, new: String) {
+        context.dataStore.edit { settings ->
+            settings[LYRICS_COLOR] = new
         }
     }
 

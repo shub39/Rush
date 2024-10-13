@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -152,6 +153,48 @@ fun SettingPage(
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    shape = RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 8.dp,
+                        bottomEnd = 8.dp,
+                        bottomStart = 8.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
+
+                        Text(text = stringResource(id = R.string.vibrant_colors))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Switch(
+                                checked = colorPreference == "vibrant",
+                                onCheckedChange = {
+                                    coroutineScope.launch {
+                                        when (it) {
+                                            true -> SettingsDataStore.setLyricsColor(context, "vibrant")
+                                            else -> SettingsDataStore.setLyricsColor(context, "muted")
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
                 }

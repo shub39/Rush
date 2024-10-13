@@ -90,7 +90,6 @@ object UILogic {
                 && filename.endsWith(".png")
     }
 
-
     fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: Boolean = false) {
         val file: File = if (saveToPictures) {
             val picturesDir = File(
