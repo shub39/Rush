@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +41,7 @@ fun ErrorCard(
 
         Text(
             text = stringResource(id = R.string.error),
-            color = MaterialTheme.colorScheme.secondary
+            color = colors.first
         )
 
         Spacer(Modifier.padding(4.dp))
@@ -50,8 +49,8 @@ fun ErrorCard(
         Button(
             onClick = { rushViewModel.retry() },
             colors = ButtonDefaults.buttonColors(
-                containerColor = colors.second,
-                contentColor = colors.first
+                containerColor = colors.first,
+                contentColor = colors.second
             )
         ) {
             Text(stringResource(R.string.try_again))
