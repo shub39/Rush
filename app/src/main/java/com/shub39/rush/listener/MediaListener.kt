@@ -135,4 +135,7 @@ object MediaListener {
         }
     }
 
+    fun seek(timestamp: Long) {
+        activeMediaController?.transportControls?.seekTo(timestamp)
+    }
 }
