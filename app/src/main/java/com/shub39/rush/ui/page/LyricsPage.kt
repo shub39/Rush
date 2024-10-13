@@ -2,7 +2,6 @@ package com.shub39.rush.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -255,8 +255,24 @@ fun LyricsPage(
                 Column(
                     modifier = Modifier.padding(top = 64.dp)
                 ) {
+                    val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
+                    AnimatedVisibility(
+                        visible = top < 3
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ArtFromUrl(
+                                imageUrl = nonNullSong.artUrl,
+                                modifier = Modifier.size(150.dp)
+                            )
+                        }
+                    }
+
                     Row(
-                        modifier = Modifier.padding(top = 16.dp),
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
@@ -409,7 +425,7 @@ fun LyricsPage(
 
             if (!sync && (source == "LrcLib" || source == "Genius")) {
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 32.dp),
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 16.dp, bottom = 32.dp),
                     state = lazyListState
                 ) {
                     items(lyrics, key = { it.key }) {
@@ -549,7 +565,7 @@ fun LyricsPage(
                 }
 
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, bottom = 32.dp),
+                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 16.dp, bottom = 32.dp),
                     state = lazyListState
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
@@ -560,20 +576,10 @@ fun LyricsPage(
                                 targetValue = if (lyric.time <= currentSongPosition + 1000) {
                                     cardContent
                                 } else {
-                                    cardContent.copy(alpha = 0.5f)
+                                    cardContent.copy(0.5f, 0.9f, 0.9f, 0.9f)
                                 },
                                 label = "textColor"
                             )
-                            val textSize by animateFloatAsState(
-                                targetValue = if (lyric.time <= currentSongPosition + 1000) {
-                                    20f
-                                } else {
-                                    19f
-                                },
-                                label = "textSize"
-                            )
-
-
 
                             Card(
                                 modifier = Modifier.padding(6.dp),
@@ -586,18 +592,17 @@ fun LyricsPage(
                                 if (lyric.text.isNotEmpty()) {
                                     Text(
                                         text = lyric.text,
-                                        style = TextStyle(
-                                            fontSize = textSize.sp,
-                                            color = textColor,
-                                            fontFamily = FontFamily(Font(R.font.poppins_regular))
-                                        ),
+                                        style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
+                                        color = textColor,
+                                        fontSize = 19.sp,
                                         modifier = Modifier.padding(6.dp)
                                     )
                                 } else {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_music_note_24),
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        tint = textColor
                                     )
                                 }
                             }
