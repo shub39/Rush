@@ -190,8 +190,10 @@ fun SavedPage(
                 onClick = {
                     listIndex = lazyListState.firstVisibleItemIndex
                     rushViewModel.toggleAutoChange()
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(0)
+                    if (!autoChange) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(0)
+                        }
                     }
                 },
                 shape = MaterialTheme.shapes.extraLarge,

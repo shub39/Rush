@@ -61,7 +61,7 @@ fun GeniusShareCard(
                         Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
+                                cardColors.containerColor
                             )
                         )
                     )
@@ -85,12 +85,12 @@ fun GeniusShareCard(
                     Text(
                         text = song.title,
                         fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = cardColors.contentColor,
                     )
                     Text(
                         text = song.artists,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.surface
+                        color = cardColors.contentColor
                     )
                 }
             }

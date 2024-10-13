@@ -235,7 +235,7 @@ fun LyricsPage(
                 val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
                 Column {
-                    AnimatedVisibility (top > 3) {
+                    AnimatedVisibility (top > 2) {
                         ArtFromUrl(
                             imageUrl = nonNullSong.artUrl,
                             modifier = Modifier
@@ -583,7 +583,7 @@ fun LyricsPage(
                                 targetValue = if (lyric.time <= currentSongPosition + 1000) {
                                     cardContent
                                 } else {
-                                    cardContent.copy(0.5f, 0.9f, 0.9f, 0.9f)
+                                    cardContent.copy(0.3f)
                                 },
                                 label = "textColor"
                             )

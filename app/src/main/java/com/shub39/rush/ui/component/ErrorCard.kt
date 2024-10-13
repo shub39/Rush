@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +47,13 @@ fun ErrorCard(
 
         Spacer(Modifier.padding(4.dp))
 
-        Button(onClick = { rushViewModel.retry() }) {
+        Button(
+            onClick = { rushViewModel.retry() },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colors.second,
+                contentColor = colors.first
+            )
+        ) {
             Text(stringResource(R.string.try_again))
         }
     }
