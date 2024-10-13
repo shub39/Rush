@@ -37,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -231,32 +232,36 @@ fun LyricsPage(
             }
 
             Box {
-                ArtFromUrl(
-                    imageUrl = nonNullSong.artUrl,
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth(),
-                )
+                val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    cardBackgroundDominant
-                                )
-                            )
+                Column {
+                    AnimatedVisibility (top > 3) {
+                        ArtFromUrl(
+                            imageUrl = nonNullSong.artUrl,
+                            modifier = Modifier
+                                .height(150.dp)
+                                .fillMaxWidth(),
                         )
-                        .height(150.dp)
-                )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            cardBackgroundDominant
+                                        )
+                                    )
+                                )
+                                .height(150.dp)
+                        )
+                    }
+                }
 
                 Column(
                     modifier = Modifier.padding(top = 64.dp)
                 ) {
-                    val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
-
                     AnimatedVisibility(
                         visible = top < 3
                     ) {
@@ -266,7 +271,9 @@ fun LyricsPage(
                         ) {
                             ArtFromUrl(
                                 imageUrl = nonNullSong.artUrl,
-                                modifier = Modifier.size(150.dp)
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .size(150.dp)
                             )
                         }
                     }
