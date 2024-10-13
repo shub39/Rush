@@ -62,6 +62,7 @@ import com.shub39.rush.ui.component.ArtFromUrl
 import com.shub39.rush.ui.component.ErrorCard
 import com.shub39.rush.ui.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
+import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.logic.UILogic.breakLyrics
 import com.shub39.rush.logic.UILogic.copyToClipBoard
@@ -595,6 +596,9 @@ fun LyricsPage(
                                     contentColor = cardContent
                                 ),
                                 shape = MaterialTheme.shapes.small,
+                                onClick = {
+                                    MediaListener.seek(lyric.time)
+                                }
                             ) {
                                 if (lyric.text.isNotEmpty()) {
                                     Text(
