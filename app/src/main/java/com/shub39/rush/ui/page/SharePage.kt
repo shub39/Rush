@@ -61,8 +61,8 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
-import com.shub39.rush.ui.component.GeniusShareCard
-import com.shub39.rush.ui.component.MaterialShareCard
+import com.shub39.rush.ui.component.RushedShareCard
+import com.shub39.rush.ui.component.SpotifyShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage
@@ -104,7 +104,18 @@ fun SharePage(
 
     var namePicker by remember { mutableStateOf(false) }
     var colorPickerOpen by remember { mutableStateOf(false) }
+    var cardSelect by remember { mutableStateOf(true) }
     var editTarget by remember { mutableStateOf("") }
+
+    val modifier = Modifier
+        .height(640.dp)
+        .width(360.dp)
+        .drawWithContent {
+            cardGraphicsLayer.record {
+                this@drawWithContent.drawContent()
+            }
+            drawLayer(cardGraphicsLayer)
+        }
 
     LaunchedEffect(song) {
         val request = ImageRequest.Builder(context)
@@ -183,31 +194,20 @@ fun SharePage(
         contentAlignment = Alignment.Center
     ) {
         when (cardTheme) {
-            "Default" -> MaterialShareCard(
-                modifier = Modifier
-                    .drawWithContent {
-                        cardGraphicsLayer.record {
-                            this@drawWithContent.drawContent()
-                        }
-                        drawLayer(cardGraphicsLayer)
-                    },
+            "Spotify" -> SpotifyShareCard(
+                modifier = modifier,
                 song = song,
                 sortedLines = sortedLines,
                 cardColors = cardColor,
                 cardCorners = cardCorners,
             )
 
-            "Genius" -> GeniusShareCard(
-                modifier = Modifier
-                    .drawWithContent {
-                        cardGraphicsLayer.record {
-                            this@drawWithContent.drawContent()
-                        }
-                        drawLayer(cardGraphicsLayer)
-                    },
+            "Rushed" -> RushedShareCard(
+                modifier = modifier,
                 song = song,
                 sortedLines = sortedLines,
                 cardColors = cardColor,
+                cardCorners = cardCorners
             )
         }
 
@@ -215,7 +215,7 @@ fun SharePage(
             modifier = Modifier
                 .align(Alignment.TopCenter)
         ) {
-            listOf("Default", "Genius").forEachIndexed { index, style ->
+            listOf("Spotify", "Rushed").forEachIndexed { index, style ->
                 SegmentedButton(
                     label = { Text(text = style) },
                     selected = cardTheme == style,

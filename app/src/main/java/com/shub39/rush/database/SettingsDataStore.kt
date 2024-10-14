@@ -67,7 +67,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_THEME] ?: "Default"
+            preferences[CARD_THEME] ?: "Spotify"
         }
 
     fun getCardColorFlow(context: Context): Flow<String> = context.dataStore.data
