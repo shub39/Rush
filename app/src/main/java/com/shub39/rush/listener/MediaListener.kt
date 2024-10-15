@@ -13,6 +13,7 @@ import androidx.core.content.getSystemService
 import com.shub39.rush.logic.UILogic.getMainTitle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
@@ -70,9 +71,11 @@ object MediaListener {
             Log.d(TAG, "Session: $controller (${controller.sessionToken})")
 
             // Workaround for spotify, HELP NEEDED!
-            if (controller.packageName.contains("spotify")) {
-                controller.transportControls.pause()
-                controller.transportControls.play()
+            if (controller.packageName == "com.spotify.music") {
+                coroutineScope.launch {
+                    delay(2000)
+                    setActiveMediaSession(controller)
+                }
             }
 
             if (internalCallbacks.containsKey(controller.sessionToken)) {

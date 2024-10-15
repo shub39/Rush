@@ -283,6 +283,11 @@ class RushViewModel(
 
     fun toggleAutoChange() {
         _autoChange.value = !_autoChange.value
+
+        if (_autoChange.value) {
+            val info = "${_currentPlayingSongInfo.value?.first} ${_currentPlayingSongInfo.value?.second}".trim()
+            searchSong(info)
+        }
     }
 
     fun toggleSearchSheet() {

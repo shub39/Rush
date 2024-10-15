@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.ui.page.RushApp
@@ -20,10 +19,11 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        MediaListener.init(this)
+
         enableEdgeToEdge()
         setContent {
 
-            MediaListener.init(this)
 
             val theme by SettingsDataStore.getToggleThemeFlow(this)
                 .collectAsState(initial = "")
