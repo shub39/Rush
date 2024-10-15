@@ -33,7 +33,6 @@ object MediaListener {
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
 
     fun init(context: Context) {
-
         if (!NotificationListener.canAccessNotifications(context) || initialised) return
 
         initialised = true
@@ -42,6 +41,11 @@ object MediaListener {
         nls = ComponentName(context, NotificationListener::class.java)
 
         msm?.let { manager ->
+            manager.addOnActiveSessionsChangedListener(
+                MediaSessionManager.OnActiveSessionsChangedListener { onActiveSessionsChanged(it) },
+                nls
+            )
+
             val activeSessions = manager.getActiveSessions(nls!!)
             val activeSession = activeSessions.find { isActive(it.playbackState) }
             activeMediaController = activeSession ?: activeSessions.firstOrNull()
@@ -51,28 +55,32 @@ object MediaListener {
     }
 
     fun destroy() {
-
         if (!initialised) return
         internalCallbacks.forEach { (_, callback) ->
             activeMediaController?.unregisterCallback(callback)
         }
         internalCallbacks.clear()
         initialised = false
-
     }
 
     private fun onActiveSessionsChanged(controllers: List<MediaController?>?) {
-        val callbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
+        val newCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
+
         controllers?.filterNotNull()?.forEach { controller ->
             Log.d(TAG, "Session: $controller (${controller.sessionToken})")
 
+            // Workaround for spotify, HELP NEEDED!
+            if (controller.packageName.contains("spotify")) {
+                controller.transportControls.pause()
+                controller.transportControls.play()
+            }
+
             if (internalCallbacks.containsKey(controller.sessionToken)) {
-                callbacks[controller.sessionToken] = internalCallbacks[controller.sessionToken]!!
+                newCallbacks[controller.sessionToken] = internalCallbacks[controller.sessionToken]!!
             } else {
                 val callback = object : MediaController.Callback() {
                     override fun onPlaybackStateChanged(state: PlaybackState?) {
                         this@MediaListener.onPlaybackStateChanged(controller, state)
-                        this@MediaListener.updateMetadata(controller, controller.metadata)
                     }
 
                     override fun onMetadataChanged(metadata: MediaMetadata?) {
@@ -81,12 +89,12 @@ object MediaListener {
                 }
 
                 controller.registerCallback(callback)
-                callbacks[controller.sessionToken] = callback
+                newCallbacks[controller.sessionToken] = callback
             }
         }
 
         internalCallbacks.clear()
-        internalCallbacks.putAll(callbacks)
+        internalCallbacks.putAll(newCallbacks)
     }
 
     private fun isActive(playbackState: PlaybackState?): Boolean {
@@ -104,6 +112,7 @@ object MediaListener {
                 PlaybackState.STATE_BUFFERING,
                 PlaybackState.STATE_CONNECTING,
                 PlaybackState.STATE_PLAYING -> true
+
                 else -> false
             }
         }
@@ -115,10 +124,12 @@ object MediaListener {
 
     private fun setActiveMediaSession(newActive: MediaController) {
         activeMediaController = newActive
+        updateMetadata(newActive, newActive.metadata)
     }
 
     private fun updateMetadata(controller: MediaController, metadata: MediaMetadata?) {
         if (controller.sessionToken != activeMediaController?.sessionToken) return
+
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
         val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)
             ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
@@ -126,13 +137,13 @@ object MediaListener {
         coroutineScope.launch {
             songInfoFlow.emit(Pair(getMainTitle(title), artist))
             playbackSpeedFlow.emit(
-                // Just as a safety measure, not all player controllers report proper speed
                 if (controller.playbackState?.let { isActive(it) } == true)
                     controller.playbackState?.playbackSpeed ?: 1f
                 else 0f
             )
             controller.playbackState?.position?.let { songPositionFlow.emit(it) }
         }
+
     }
 
     fun seek(timestamp: Long) {

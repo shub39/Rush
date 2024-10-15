@@ -6,6 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -186,119 +188,123 @@ fun SharePage(
 
     BackHandler { onDismiss() }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
     ) {
-        when (cardTheme) {
-            "Spotify" -> SpotifyShareCard(
-                modifier = modifier,
-                song = song,
-                sortedLines = sortedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners,
-            )
+        item {
+            when (cardTheme) {
+                "Spotify" -> SpotifyShareCard(
+                    modifier = modifier,
+                    song = song,
+                    sortedLines = sortedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                )
 
-            "Rushed" -> RushedShareCard(
-                modifier = modifier,
-                song = song,
-                sortedLines = sortedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        SingleChoiceSegmentedButtonRow {
-            listOf("Spotify", "Rushed").forEachIndexed { index, style ->
-                SegmentedButton(
-                    label = { Text(text = style) },
-                    selected = cardTheme == style,
-                    onClick = {
-                        coroutineScope.launch {
-                            SettingsDataStore.updateCardTheme(context, style)
-                        }
-                    },
-                    shape = when (index) {
-                        0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                        1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                        else -> RoundedCornerShape(0.dp)
-                    }
+                "Rushed" -> RushedShareCard(
+                    modifier = modifier,
+                    song = song,
+                    sortedLines = sortedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners
                 )
             }
         }
 
-        Spacer(modifier = Modifier.padding(8.dp))
 
-        Row {
-            AnimatedVisibility(visible = cardColorType == "Custom") {
-                Row {
-                    FloatingActionButton(
+        item {
+            SingleChoiceSegmentedButtonRow {
+                listOf("Spotify", "Rushed").forEachIndexed { index, style ->
+                    SegmentedButton(
+                        label = { Text(text = style) },
+                        selected = cardTheme == style,
                         onClick = {
                             coroutineScope.launch {
-                                editTarget = "content"
-                                colorPickerOpen = true
+                                SettingsDataStore.updateCardTheme(context, style)
                             }
                         },
-                        containerColor = Color(mCardContent),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        content = {}
-                    )
-
-                    Spacer(modifier = Modifier.padding(4.dp))
-
-                    FloatingActionButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                editTarget = "background"
-                                colorPickerOpen = true
-                            }
-                        },
-                        containerColor = Color(mCardBackground),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        content = {}
+                        shape = when (index) {
+                            0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                            1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+                            else -> RoundedCornerShape(0.dp)
+                        }
                     )
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.padding(4.dp))
+        item {
+            Row {
+                AnimatedVisibility(visible = cardColorType == "Custom") {
+                    Row {
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    editTarget = "content"
+                                    colorPickerOpen = true
+                                }
+                            },
+                            containerColor = Color(mCardContent),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            content = {}
+                        )
 
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        namePicker = true
+                        Spacer(modifier = Modifier.padding(4.dp))
+
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    editTarget = "background"
+                                    colorPickerOpen = true
+                                }
+                            },
+                            containerColor = Color(mCardBackground),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            content = {}
+                        )
                     }
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_download_done_24),
-                    contentDescription = null,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
+                }
 
-            Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(4.dp))
 
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                        shareImage(context, bitmap, "${song.artists}-${song.title}.png")
-                        onDismiss()
-                    }
-                },
-                shape = MaterialTheme.shapes.extraLarge,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_share_24),
-                    contentDescription = null
-                )
+                FloatingActionButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            namePicker = true
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    shape = MaterialTheme.shapes.extraLarge
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_download_done_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                FloatingActionButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                            shareImage(context, bitmap, "${song.artists}-${song.title}.png")
+                            onDismiss()
+                        }
+                    },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_share_24),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
