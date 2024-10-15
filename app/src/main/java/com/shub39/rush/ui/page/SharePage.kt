@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -104,7 +103,6 @@ fun SharePage(
 
     var namePicker by remember { mutableStateOf(false) }
     var colorPickerOpen by remember { mutableStateOf(false) }
-    var cardSelect by remember { mutableStateOf(true) }
     var editTarget by remember { mutableStateOf("") }
 
     val modifier = Modifier
@@ -188,10 +186,11 @@ fun SharePage(
 
     BackHandler { onDismiss() }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         when (cardTheme) {
             "Spotify" -> SpotifyShareCard(
@@ -211,10 +210,9 @@ fun SharePage(
             )
         }
 
-        SingleChoiceSegmentedButtonRow(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-        ) {
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        SingleChoiceSegmentedButtonRow {
             listOf("Spotify", "Rushed").forEachIndexed { index, style ->
                 SegmentedButton(
                     label = { Text(text = style) },
@@ -233,11 +231,9 @@ fun SharePage(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
-        ) {
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Row {
             AnimatedVisibility(visible = cardColorType == "Custom") {
                 Row {
                     FloatingActionButton(

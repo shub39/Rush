@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +43,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
 import com.shub39.rush.database.AudioFile
@@ -54,6 +55,7 @@ import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingPage(
     rushViewModel: RushViewModel,
@@ -267,7 +269,7 @@ fun SettingPage(
                             notificationRequestDialog = true
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.large,
+                        shape = MaterialTheme.shapes.extraLarge,
                     ) {
                         Text(text = stringResource(id = R.string.grant_permission))
                     }
@@ -280,7 +282,7 @@ fun SettingPage(
                     onClick = {
                         deleteConfirmationDialog = true
                     },
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.extraLarge,
                     enabled = deleteButtonStatus
                 ) {
                     Text(text = stringResource(id = R.string.delete_all))
@@ -293,7 +295,7 @@ fun SettingPage(
                     onClick = {
                         batchDownload = true
                     },
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.extraLarge,
                 ) {
                     Text(text = stringResource(id = R.string.batch_download))
                 }
@@ -354,12 +356,12 @@ fun SettingPage(
     }
 
     if (notificationRequestDialog) {
-        Dialog(
+        BasicAlertDialog(
             onDismissRequest = { notificationRequestDialog = false }
         ) {
             val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 
-            Card(shape = RoundedCornerShape(16.dp)) {
+            Card(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -376,7 +378,8 @@ fun SettingPage(
 
                     Text(
                         text = stringResource(id = R.string.notification_permission),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -387,7 +390,7 @@ fun SettingPage(
                             notificationRequestDialog = false
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Text(text = stringResource(id = R.string.grant_permission))
                     }
@@ -397,10 +400,10 @@ fun SettingPage(
     }
 
     if (deleteConfirmationDialog) {
-        Dialog(
+        BasicAlertDialog(
             onDismissRequest = { deleteConfirmationDialog = false }
         ) {
-            Card(shape = RoundedCornerShape(16.dp)) {
+            Card(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -417,7 +420,8 @@ fun SettingPage(
 
                     Text(
                         text = stringResource(id = R.string.delete_confirmation),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -431,7 +435,7 @@ fun SettingPage(
                             deleteButtonStatus = false
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Text(text = stringResource(id = R.string.delete_all))
                     }
@@ -447,7 +451,7 @@ fun SettingPage(
         val isDownloading by rushViewModel.batchDownloading.collectAsState()
         var done by remember { mutableStateOf(false) }
 
-        Dialog(
+        BasicAlertDialog(
             onDismissRequest = {
                 if (!isDownloading) {
                     batchDownload = false
@@ -486,34 +490,36 @@ fun SettingPage(
                         )
                     }
 
-                    Button(
-                        onClick = {
-                            if (!done) {
-                                rushViewModel.batchDownload(audioFiles)
-                                done = true
-                            } else {
-                                batchDownload = false
-                                rushViewModel.clearIndexes()
-                            }
-                        },
-                        enabled = !isDownloading && audioFiles.isNotEmpty(),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                    ) {
-                        if (isDownloading) {
-                            CircularProgressIndicator(
-                                strokeCap = StrokeCap.Round,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        } else {
-                            Text(
-                                text = when (done) {
-                                    true -> stringResource(R.string.done)
-                                    else -> stringResource(R.string.download)
+                    if (selectedDirectoryUri != null) {
+                        Button(
+                            onClick = {
+                                if (!done) {
+                                    rushViewModel.batchDownload(audioFiles)
+                                    done = true
+                                } else {
+                                    batchDownload = false
+                                    rushViewModel.clearIndexes()
                                 }
-                            )
+                            },
+                            enabled = !isDownloading && audioFiles.isNotEmpty(),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
+                        ) {
+                            if (isDownloading) {
+                                CircularProgressIndicator(
+                                    strokeCap = StrokeCap.Round,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            } else {
+                                Text(
+                                    text = when (done) {
+                                        true -> stringResource(R.string.done)
+                                        else -> stringResource(R.string.download)
+                                    }
+                                )
+                            }
                         }
                     }
                 }

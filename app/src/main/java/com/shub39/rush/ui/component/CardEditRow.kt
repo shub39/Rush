@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.shub39.rush.R
@@ -20,18 +21,16 @@ fun CardEditRow(
     modifier: Modifier,
     corners: Boolean = false,
     colors: Boolean = false,
-//    large: Boolean = false
+    tint: Color
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
     val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
-//    val cardSizeFlow = remember { SettingsDataStore.getLargeCardFlow(context) }
 
     val cardColorType by cardColorFlow.collectAsState(initial = "")
     val cardCornersType by cardCornersFlow.collectAsState(initial = "")
-//    val largeCard by cardSizeFlow.collectAsState(initial = false)
 
     Row(
         modifier = modifier
@@ -59,31 +58,11 @@ fun CardEditRow(
                         "Rounded" -> painterResource(id = R.drawable.baseline_circle_24)
                         else -> painterResource(id = R.drawable.baseline_square_24)
                     },
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = tint
                 )
             }
         }
-
-//        if (large) {
-//            IconButton(
-//                onClick = {
-//                    coroutineScope.launch {
-//                        when (largeCard) {
-//                            true -> SettingsDataStore.setLargeCard(context, false)
-//                            false -> SettingsDataStore.setLargeCard(context, true)
-//                        }
-//                    }
-//                }
-//            ) {
-//                Icon(
-//                    painter = when (largeCard) {
-//                        true -> painterResource(id = R.drawable.round_fullscreen_24)
-//                        else -> painterResource(id = R.drawable.round_fullscreen_exit_24)
-//                    },
-//                    contentDescription = null
-//                )
-//            }
-//        }
 
         if (colors) {
             IconButton(
@@ -105,7 +84,8 @@ fun CardEditRow(
                         "Custom" -> painterResource(id = R.drawable.baseline_edit_square_24)
                         else -> painterResource(id = R.drawable.round_disabled_by_default_24)
                     },
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = tint
                 )
             }
         }

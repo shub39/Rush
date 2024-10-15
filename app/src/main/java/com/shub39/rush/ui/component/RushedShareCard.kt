@@ -14,9 +14,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -54,7 +57,8 @@ fun RushedShareCard(
                         Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                cardColors.containerColor.copy(0.5f)
+                                cardColors.containerColor.copy(0.3f),
+                                cardColors.containerColor
                             )
                         )
                     )
@@ -68,7 +72,8 @@ fun RushedShareCard(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                cardColors.containerColor.copy(0.5f),
+                                cardColors.containerColor,
+                                cardColors.containerColor.copy(0.3f),
                                 Color.Transparent
                             )
                         )
@@ -87,10 +92,19 @@ fun RushedShareCard(
                         .wrapContentHeight()
                 ) {
                     items(sortedLines.values.toList()) {
+                        var variant by remember { mutableStateOf(false) }
+
                         Card(
-                            modifier = Modifier.padding(bottom = 10.dp),
+                            modifier = Modifier.padding(bottom = 8.dp),
                             shape = MaterialTheme.shapes.small,
-                            colors = cardColors
+                            colors = when (variant) {
+                                true -> CardDefaults.cardColors(
+                                    containerColor = cardColors.contentColor,
+                                    contentColor = cardColors.containerColor
+                                )
+                                else -> cardColors
+                            },
+                            onClick = { variant = !variant }
                         ) {
                             Text(
                                 text = it,
@@ -101,7 +115,7 @@ fun RushedShareCard(
                                     bottom = 4.dp
                                 ),
                                 fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -139,8 +153,8 @@ fun RushedShareCard(
         CardEditRow(
             modifier = Modifier.align(Alignment.BottomEnd),
             colors = true,
-            corners = true
-//            large = true
+            corners = true,
+            tint = cardColors.contentColor
         )
     }
 }

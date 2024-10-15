@@ -2,12 +2,13 @@ package com.shub39.rush.logic
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.shub39.rush.database.Lyric
@@ -16,6 +17,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 object UILogic {
+    // Break lyrics into a list of lines with index
     fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
         val lines = lyrics.lines()
         val map = mutableMapOf<Int, String>()
@@ -25,6 +27,7 @@ object UILogic {
         return map.entries.toList()
     }
 
+    // Update the selected lines map with the given key and value and handle exceptions
     fun updateSelectedLines(
         selectedLines: Map<Int, String>,
         key: Int,
@@ -44,15 +47,26 @@ object UILogic {
         clipboard.setPrimaryClip(clip)
     }
 
+    /*
+    * Parse the synced lyrics data and convert them into a simpler format to show in the UI
+    * Removes lines with same times because it caused crashes when passing the time as key in LazyColumn
+    */
     fun parseLyrics(lyricsString: String): List<Lyric> {
+        val seenTimes = mutableSetOf<Long>()
+
         return lyricsString.lines().mapNotNull { line ->
             val parts = line.split("] ")
             if (parts.size == 2) {
                 val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
                     minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
                 }
-                val text = parts[1]
-                Lyric(time, text)
+                if (time in seenTimes) {
+                    null
+                } else {
+                    seenTimes.add(time)
+                    val text = parts[1]
+                    Lyric(time, text)
+                }
             } else {
                 null
             }
@@ -90,14 +104,30 @@ object UILogic {
                 && filename.endsWith(".png")
     }
 
+    /*
+    * Converts a given Bitmap into a png image and opens dialog to share the image
+    * if shareToPictures is True then it stores the image in /Pictures/Rush in internal storage
+    */
     fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: Boolean = false) {
         val file: File = if (saveToPictures) {
-            val picturesDir = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                "Rush"
-            )
-            picturesDir.mkdirs()
-            File(picturesDir, name)
+            val resolver = context.contentResolver
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Rush")
+            }
+            val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            uri?.let {
+                val stream = resolver.openOutputStream(it)
+                if (stream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                }
+                stream?.close()
+            } ?: run {
+                Toast.makeText(context, "Error saving image", Toast.LENGTH_SHORT).show()
+                return
+            }
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), name)
         } else {
             val cachePath = File(context.cacheDir, "images")
             cachePath.mkdirs()
@@ -105,16 +135,17 @@ object UILogic {
         }
 
         try {
-            val stream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            stream.close()
+            if (!saveToPictures) {
+                val stream = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                stream.close()
+            }
         } catch (e: IOException) {
             e.printStackTrace()
             return
         }
 
         if (saveToPictures) {
-            MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
             Toast.makeText(context, "Image saved to Pictures/$name", Toast.LENGTH_SHORT).show()
         } else {
             val contentUri: Uri =

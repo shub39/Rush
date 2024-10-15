@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,6 +71,7 @@ fun SearchSheet(
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusRequester = remember { FocusRequester() }
+        var searchJob: Job? by remember { mutableStateOf(null) }
 
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -131,8 +134,15 @@ fun SearchSheet(
                 },
                 onValueChange = {
                     query = it
-                    rushViewModel.searchSong(it, false)
-                    rushViewModel.localSearch(it)
+                    searchJob?.cancel()
+
+                    searchJob = coroutineScope.launch {
+                        delay(500)
+                        if (it.isNotEmpty()) {
+                            rushViewModel.localSearch(it)
+                            rushViewModel.searchSong(it, false)
+                        }
+                    }
                 },
                 shape = MaterialTheme.shapes.extraLarge,
                 label = { Text(stringResource(id = R.string.search)) },

@@ -121,7 +121,7 @@ fun SpotifyShareCard(
             modifier = Modifier.align(Alignment.BottomEnd),
             colors = true,
             corners = true,
-//            large = true
+            tint = cardColors.contentColor
         )
     }
 }
