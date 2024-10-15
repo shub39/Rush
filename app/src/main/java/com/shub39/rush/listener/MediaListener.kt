@@ -70,7 +70,7 @@ object MediaListener {
         controllers?.filterNotNull()?.forEach { controller ->
             Log.d(TAG, "Session: $controller (${controller.sessionToken})")
 
-            // Workaround for spotify, HELP NEEDED!
+            // Workaround for spotify, dunno if this is the most elegant solution but works :)
             if (controller.packageName == "com.spotify.music") {
                 coroutineScope.launch {
                     delay(2000)
