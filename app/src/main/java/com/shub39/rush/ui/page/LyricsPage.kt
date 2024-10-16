@@ -370,6 +370,7 @@ fun LyricsPage(
                                 IconButton(
                                     onClick = {
                                         lyricsCorrect = true
+                                        sync = false
                                         if (autoChange) rushViewModel.toggleAutoChange()
                                     }
                                 ) {
