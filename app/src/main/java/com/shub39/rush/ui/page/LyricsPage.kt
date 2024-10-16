@@ -19,12 +19,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,6 +83,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsPage(
     rushViewModel: RushViewModel,
@@ -102,6 +109,7 @@ fun LyricsPage(
     var cardContentDominant by remember { mutableStateOf(Color.White) }
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
+    var lyricsCorrect by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     val notificationAccess = NotificationListener.canAccessNotifications(context)
@@ -236,7 +244,7 @@ fun LyricsPage(
                 val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
                 Column {
-                    AnimatedVisibility (top > 2) {
+                    AnimatedVisibility(top > 2) {
                         ArtFromUrl(
                             imageUrl = nonNullSong.artUrl,
                             modifier = Modifier
@@ -357,6 +365,22 @@ fun LyricsPage(
                             }
 
                             AnimatedVisibility(
+                                visible = source == "LrcLib" && selectedLines.isEmpty()
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        lyricsCorrect = true
+                                        if (autoChange) rushViewModel.toggleAutoChange()
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_edit_note_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                            AnimatedVisibility(
                                 visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
                             ) {
                                 Row {
@@ -433,7 +457,12 @@ fun LyricsPage(
 
             if (!sync && (source == "LrcLib" || source == "Genius")) {
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 16.dp, bottom = 32.dp),
+                    modifier = Modifier.padding(
+                        end = 16.dp,
+                        start = 16.dp,
+                        top = 16.dp,
+                        bottom = 32.dp
+                    ),
                     state = lazyListState
                 ) {
                     items(lyrics, key = { it.key }) {
@@ -573,7 +602,12 @@ fun LyricsPage(
                 }
 
                 LazyColumn(
-                    modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 16.dp, bottom = 32.dp),
+                    modifier = Modifier.padding(
+                        end = 16.dp,
+                        start = 16.dp,
+                        top = 16.dp,
+                        bottom = 32.dp
+                    ),
                     state = lazyListState
                 ) {
                     items(parsedSyncedLyrics, key = { it.time }) { lyric ->
@@ -624,6 +658,130 @@ fun LyricsPage(
                         Spacer(modifier = Modifier.padding(60.dp))
                     }
 
+                }
+            }
+        }
+    }
+
+    if (lyricsCorrect) {
+        val lrcSearchResults by rushViewModel.lrcSearchResults.collectAsState()
+        val searching by rushViewModel.isFetchingLrc.collectAsState()
+
+        var track by remember { mutableStateOf("") }
+        var artist by remember { mutableStateOf("") }
+
+        BasicAlertDialog(
+            onDismissRequest = { lyricsCorrect = false }
+        ) {
+            Card(
+                shape = MaterialTheme.shapes.extraLarge,
+                modifier = Modifier.padding(top = 32.dp, bottom = 32.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.correct_lyrics),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = track,
+                            onValueChange = { track = it },
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.extraLarge,
+                            label = { Text(text = stringResource(R.string.track)) }
+                        )
+
+                        OutlinedTextField(
+                            value = artist,
+                            onValueChange = { artist = it },
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.extraLarge,
+                            label = { Text(text = stringResource(R.string.artist)) }
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            rushViewModel.lrcSearch(track, artist)
+                        },
+                        enabled = track.isNotBlank() && !searching,
+                        shape = MaterialTheme.shapes.extraLarge,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (!searching) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_search_24),
+                                contentDescription = null
+                            )
+                        } else {
+                            CircularProgressIndicator(
+                                strokeCap = StrokeCap.Round,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        items(lrcSearchResults, key = { it.id }) {
+                            Card(
+                                onClick = {
+                                    rushViewModel.updateSong(it.plainLyrics!!, it.syncedLyrics)
+                                    lyricsCorrect = false
+                                },
+                                colors = when (it.syncedLyrics) {
+                                    null -> CardDefaults.elevatedCardColors()
+                                    else -> CardDefaults.elevatedCardColors(
+                                        contentColor = MaterialTheme.colorScheme.primary,
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    )
+                                },
+                                shape = MaterialTheme.shapes.large,
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(0.7f)
+                                    ) {
+                                        Text(
+                                            text = it.name,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = it.artistName,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+
+                                    if (it.syncedLyrics != null) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.round_sync_24),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

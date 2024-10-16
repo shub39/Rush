@@ -62,8 +62,8 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
-import com.shub39.rush.ui.component.RushedShareCard
-import com.shub39.rush.ui.component.SpotifyShareCard
+import com.shub39.rush.ui.component.share.RushedShareCard
+import com.shub39.rush.ui.component.share.SpotifyShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage

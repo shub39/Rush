@@ -179,7 +179,8 @@ fun SettingPage(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
+                        val colorPreference by SettingsDataStore.getLyricsColorFlow(context)
+                            .collectAsState("muted")
 
                         Text(text = stringResource(id = R.string.vibrant_colors))
 
@@ -191,8 +192,15 @@ fun SettingPage(
                                 onCheckedChange = {
                                     coroutineScope.launch {
                                         when (it) {
-                                            true -> SettingsDataStore.setLyricsColor(context, "vibrant")
-                                            else -> SettingsDataStore.setLyricsColor(context, "muted")
+                                            true -> SettingsDataStore.setLyricsColor(
+                                                context,
+                                                "vibrant"
+                                            )
+
+                                            else -> SettingsDataStore.setLyricsColor(
+                                                context,
+                                                "muted"
+                                            )
                                         }
                                     }
                                 }
@@ -490,36 +498,34 @@ fun SettingPage(
                         )
                     }
 
-                    if (selectedDirectoryUri != null) {
-                        Button(
-                            onClick = {
-                                if (!done) {
-                                    rushViewModel.batchDownload(audioFiles)
-                                    done = true
-                                } else {
-                                    batchDownload = false
-                                    rushViewModel.clearIndexes()
-                                }
-                            },
-                            enabled = !isDownloading && audioFiles.isNotEmpty(),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp)
-                        ) {
-                            if (isDownloading) {
-                                CircularProgressIndicator(
-                                    strokeCap = StrokeCap.Round,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                    Button(
+                        onClick = {
+                            if (!done) {
+                                rushViewModel.batchDownload(audioFiles)
+                                done = true
                             } else {
-                                Text(
-                                    text = when (done) {
-                                        true -> stringResource(R.string.done)
-                                        else -> stringResource(R.string.download)
-                                    }
-                                )
+                                batchDownload = false
+                                rushViewModel.clearIndexes()
                             }
+                        },
+                        enabled = !isDownloading && audioFiles.isNotEmpty(),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                    ) {
+                        if (isDownloading) {
+                            CircularProgressIndicator(
+                                strokeCap = StrokeCap.Round,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else {
+                            Text(
+                                text = when (done) {
+                                    true -> stringResource(R.string.done)
+                                    else -> stringResource(R.string.download)
+                                }
+                            )
                         }
                     }
                 }

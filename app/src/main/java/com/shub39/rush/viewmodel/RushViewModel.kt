@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.database.AudioFile
+import com.shub39.rush.database.LrcLibSong
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.listener.MediaListener
+import com.shub39.rush.lyrics.LyricsFetcher
 import com.shub39.rush.lyrics.SongProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,12 +34,14 @@ class RushViewModel(
     private val _songs = MutableStateFlow(listOf<Song>())
     private val _searchResults = MutableStateFlow(listOf<SearchResult>())
     private val _localSearchResults = MutableStateFlow(listOf<SearchResult>())
+    private val _lrcSearchResults = MutableStateFlow(listOf<LrcLibSong>())
     private val _currentSongId = MutableStateFlow<Long?>(null)
     private val _currentSong = MutableStateFlow<Song?>(null)
     private val _currentPlayingSongInfo = MutableStateFlow<Pair<String, String>?>(null)
     private val _isSearchingLyrics = MutableStateFlow(false)
     private val _searchQuery = MutableStateFlow("")
     private val _isFetchingLyrics = MutableStateFlow(false)
+    private val _isFetchingLrc = MutableStateFlow(false)
     private val _fetchQuery = MutableStateFlow("")
     private val _currentSongPosition = MutableStateFlow(0L)
     private val _shareLines = MutableStateFlow(mapOf<Int, String>())
@@ -55,12 +59,14 @@ class RushViewModel(
     val songsSortedDesc: Flow<List<Song>> get() = _songs.map { it -> it.sortedByDescending { it.title } }
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
     val localSearchResults: StateFlow<List<SearchResult>> get() = _localSearchResults
+    val lrcSearchResults: StateFlow<List<LrcLibSong>> get() = _lrcSearchResults
     val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val currentPlayingSongInfo: StateFlow<Pair<String, String>?> get() = _currentPlayingSongInfo
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
     val searchQuery: StateFlow<String> get() = _searchQuery
     val autoChange: StateFlow<Boolean> get() = _autoChange
     val isFetchingLyrics: StateFlow<Boolean> get() = _isFetchingLyrics
+    val isFetchingLrc: StateFlow<Boolean> get() = _isFetchingLrc
     val fetchQuery: StateFlow<String> get() = _fetchQuery
     val currentSongPosition: StateFlow<Long> get() = _currentSongPosition
     val error: StateFlow<Boolean> get() = _error
@@ -145,6 +151,21 @@ class RushViewModel(
         }
     }
 
+    fun lrcSearch(
+        trackName: String,
+        artistName: String
+    ) {
+        viewModelScope.launch {
+            _isFetchingLrc.value = true
+
+            _lrcSearchResults.value = withContext(Dispatchers.IO) {
+                LyricsFetcher.getLrcLibSearchResults(trackName, artistName) ?: emptyList()
+            }
+
+            _isFetchingLrc.value = false
+        }
+    }
+
     private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
         viewModelScope.launch {
             val song = _searchResults.value.find { it.id == songId }
@@ -214,6 +235,23 @@ class RushViewModel(
             fetchLyrics(songId = _errorQuery.value.toLong())
         } else {
             searchSong(_errorQuery.value)
+        }
+    }
+
+    fun updateSong(
+        lyrics: String,
+        syncedLyrics: String?
+    ) {
+        viewModelScope.launch {
+            songDao.updateSong(
+                currentSong.value!!.copy(
+                    lyrics = lyrics,
+                    syncedLyrics = syncedLyrics
+                )
+            )
+
+            _songs.value = songDao.getAllSongs()
+            _currentSong.value = songDao.getSongById(currentSong.value!!.id)
         }
     }
 

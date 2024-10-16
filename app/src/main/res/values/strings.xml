@@ -13,6 +13,8 @@
     <string name="delete_all">Delete all lyrics</string>
     <string name="notification">Notification Listener Service</string>
     <string name="unknown_album">Unknown album</string>
+    <string name="track">track</string>
+    <string name="artist">artist</string>
     <string name="width">Width</string>
     <string name="colors">Colors</string>
     <string name="grant_permission">Grant Notification Access</string>
@@ -32,4 +34,5 @@
     <string name="searching">Searching for</string>
     <string name="error">Something went wrong…</string>
     <string name="try_again">Try again?</string>
+    <string name="correct_lyrics">Correct Lyrics</string>
 </resources>

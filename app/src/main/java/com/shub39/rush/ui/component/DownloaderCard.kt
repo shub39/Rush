@@ -26,7 +26,7 @@ fun DownloaderCard(
     cardColors: CardColors
 ) {
     ElevatedCard(
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.large,
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
@@ -36,7 +36,6 @@ fun DownloaderCard(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             when (state) {
                 true -> Icon(
                     painter = painterResource(R.drawable.round_check_circle_outline_24),

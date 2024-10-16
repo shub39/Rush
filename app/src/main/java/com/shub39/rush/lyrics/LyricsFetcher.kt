@@ -64,13 +64,24 @@ object LyricsFetcher {
 
         if (response.isSuccessful) {
             val jsonSong = response.body()
-            if (!jsonSong.isNullOrEmpty()) {
-                val lyrics = jsonSong[0].plainLyrics ?: jsonSong[1].plainLyrics ?: ""
-                val syncedLyrics = jsonSong[0].syncedLyrics ?: if (jsonSong.size > 1) jsonSong[1].syncedLyrics else null
+            if (jsonSong != null) {
+                val lyrics = jsonSong.plainLyrics ?: ""
+                val syncedLyrics = jsonSong.syncedLyrics
                 return Pair(lyrics, syncedLyrics)
             }
         }
         
+        return null
+    }
+
+    fun getLrcLibSearchResults(
+        trackName: String,
+        artistName: String = ""
+    ): List<LrcLibSong>? {
+        val response = apiService.getSearchResults(trackName, artistName).execute()
+
+        if (response.isSuccessful) return response.body()
+
         return null
     }
 
@@ -83,10 +94,16 @@ object LyricsFetcher {
     }
 
     interface LrcLibApiService {
-        @GET("api/search")
+        @GET("api/get")
         fun getLrcLyrics(
             @Query("track_name") trackName: String,
             @Query("artist_name") artistName: String
+        ) : Call<LrcLibSong>
+
+        @GET("api/search")
+        fun getSearchResults(
+            @Query("track_name") query: String,
+            @Query("artist_name") artistName: String = ""
         ) : Call<List<LrcLibSong>>
     }
 
