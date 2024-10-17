@@ -77,4 +77,7 @@ Spotify removed its feature to see and share lyrics from its free tier just to b
 If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 
 [<img height="80" alt="bmc-button" src="https://github.com/user-attachments/assets/5ed4e619-7341-4346-9186-f7b850ab36ec">](https://www.buymeacoffee.com/shub39)
-	
+
+## 🌟 Star History 🌟
+
+[![Star History Chart](https://api.star-history.com/svg?repos=shub39/Rush&type=Date)](https://star-history.com/#shub39/Rush&Date)
