@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component
+package com.shub39.rush.ui.page.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -10,7 +10,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.shub39.rush.R
 import org.koin.compose.koinInject
-
 
 @Composable
 fun ArtFromUrl(

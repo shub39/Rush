@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component.share
+package com.shub39.rush.ui.page.share.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.database.Song
-import com.shub39.rush.ui.component.ArtFromUrl
+import com.shub39.rush.ui.page.component.ArtFromUrl
 
 @Composable
 fun RushedShareCard(

@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.page
+package com.shub39.rush.ui.page.lyrics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -64,9 +64,9 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.R
-import com.shub39.rush.ui.component.ArtFromUrl
-import com.shub39.rush.ui.component.ErrorCard
-import com.shub39.rush.ui.component.LoadingCard
+import com.shub39.rush.ui.page.component.ArtFromUrl
+import com.shub39.rush.ui.page.lyrics.component.ErrorCard
+import com.shub39.rush.ui.page.lyrics.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.listener.NotificationListener
@@ -77,7 +77,8 @@ import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.parseLyrics
 import com.shub39.rush.logic.UILogic.updateSelectedLines
-import com.shub39.rush.ui.component.Empty
+import com.shub39.rush.ui.page.SharePage
+import com.shub39.rush.ui.page.lyrics.component.Empty
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -99,11 +100,11 @@ fun LyricsPage(
     val fetching by rushViewModel.isFetchingLyrics.collectAsState()
     val error by rushViewModel.error.collectAsState()
     val searching by rushViewModel.isSearchingLyrics.collectAsState()
-    val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
     val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
     val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
     val autoChange by rushViewModel.autoChange.collectAsState()
+    val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
+    val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
 
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
     var cardContentDominant by remember { mutableStateOf(Color.White) }
@@ -142,7 +143,7 @@ fun LyricsPage(
 
         } else if (error) {
 
-            ErrorCard(rushViewModel, Pair(cardContentDominant, cardBackgroundDominant))
+            ErrorCard(Pair(cardContentDominant, cardBackgroundDominant))
 
         } else if (song == null) {
 
@@ -434,7 +435,7 @@ fun LyricsPage(
                                 Row {
                                     IconButton(onClick = {
                                         rushViewModel.updateShareLines(selectedLines)
-                                        navController.navigate("share")
+                                        navController.navigate(SharePage)
                                         onShare()
                                     }) {
                                         Icon(

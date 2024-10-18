@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component
+package com.shub39.rush.ui.page.setting.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

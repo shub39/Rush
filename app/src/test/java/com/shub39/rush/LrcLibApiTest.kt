@@ -1,6 +1,6 @@
 package com.shub39.rush
 
-import com.shub39.rush.lyrics.LyricsFetcher
+import com.shub39.rush.network.LyricsFetcher
 import org.junit.Test
 
 class LrcLibApiTest {

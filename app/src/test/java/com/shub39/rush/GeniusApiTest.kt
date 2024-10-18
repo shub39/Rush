@@ -1,6 +1,6 @@
 package com.shub39.rush
 
-import com.shub39.rush.lyrics.SongProvider
+import com.shub39.rush.network.SongProvider
 import org.junit.Test
 
 /**

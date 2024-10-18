@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component
+package com.shub39.rush.ui.page.component.searchsheet
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

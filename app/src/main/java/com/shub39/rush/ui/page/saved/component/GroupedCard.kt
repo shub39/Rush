@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component
+package com.shub39.rush.ui.page.saved.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -20,10 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.database.Song
-import org.koin.compose.koinInject
+import com.shub39.rush.ui.page.component.ArtFromUrl
 
 @Composable
 fun GroupedCard(
@@ -31,7 +30,6 @@ fun GroupedCard(
     isExpanded: Boolean = false,
     onClick: (Song) -> Unit,
     onCardClick: () -> Unit,
-    imageLoader: ImageLoader = koinInject()
 ) {
     Card(
         modifier = Modifier
@@ -47,7 +45,6 @@ fun GroupedCard(
         ) {
             ArtFromUrl(
                 imageUrl = map.value.first().artUrl,
-                imageLoader = imageLoader,
                 modifier = Modifier
                     .size(60.dp)
                     .clip(MaterialTheme.shapes.small)

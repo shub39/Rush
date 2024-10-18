@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.page
+package com.shub39.rush.ui.page.component
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,6 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.shub39.rush.R
+import com.shub39.rush.ui.page.SettingsPage
+import com.shub39.rush.ui.page.SharePage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,13 +27,13 @@ fun TopBar(
 
     TopAppBar(
         title = {
-            if (currentDestination?.route == "settings") {
+            if (currentDestination?.route == SettingsPage::class.qualifiedName) {
                 Text(
                     text = stringResource(id = R.string.settings),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-            } else if (currentDestination?.route == "share") {
+            } else if (currentDestination?.route == SharePage::class.qualifiedName) {
                 Text(
                     text = stringResource(id = R.string.share),
                     style = MaterialTheme.typography.headlineMedium,
@@ -47,15 +49,15 @@ fun TopBar(
         },
         actions = {
             BackHandler(
-                enabled = currentDestination?.route == "settings"
+                enabled = currentDestination?.route == SettingsPage::class.qualifiedName
             ) {
                 navController.navigateUp()
             }
 
             IconButton(
                 onClick = {
-                    if (currentDestination?.route != "settings") {
-                        navController.navigate("settings") {
+                    if (currentDestination?.route != SettingsPage::class.qualifiedName) {
+                        navController.navigate(SettingsPage) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -64,7 +66,7 @@ fun TopBar(
                     }
                 }
             ) {
-                if (currentDestination?.route != "settings") {
+                if (currentDestination?.route !=  SettingsPage::class.qualifiedName) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_settings_24),
                         contentDescription = null,

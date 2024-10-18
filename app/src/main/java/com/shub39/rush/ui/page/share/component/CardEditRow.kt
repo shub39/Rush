@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component.share
+package com.shub39.rush.ui.page.share.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon

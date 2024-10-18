@@ -16,9 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.ui.component.SearchSheet
+import com.shub39.rush.ui.page.component.searchsheet.SearchSheet
+import com.shub39.rush.ui.page.component.TopBar
+import com.shub39.rush.ui.page.lyrics.LyricsPage
+import com.shub39.rush.ui.page.saved.SavedPage
+import com.shub39.rush.ui.page.setting.SettingPage
+import com.shub39.rush.ui.page.share.SharePage
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,25 +58,25 @@ fun RushApp(
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = "saved",
+                    startDestination = SavedPage,
                     modifier = Modifier.padding(innerPadding),
                     enterTransition = { fadeIn(animationSpec = tween(200)) },
                     exitTransition = { fadeOut(animationSpec = tween(200)) },
                     popEnterTransition = { fadeIn(animationSpec = tween(200)) },
                     popExitTransition = { fadeOut(animationSpec = tween(200)) }
                 ) {
-                    composable("saved") {
+                    composable<SavedPage> {
                         SavedPage(
                             rushViewModel = rushViewModel,
                             pagerState = pagerState
                         )
                     }
 
-                    composable("settings") {
+                    composable<SettingsPage> {
                         SettingPage(rushViewModel = rushViewModel)
                     }
 
-                    composable("share") {
+                    composable<SharePage> {
                         SharePage(
                             onDismiss = {
                                 navController.navigateUp()
@@ -96,3 +102,12 @@ fun RushApp(
         }
     }
 }
+
+@Serializable
+object SavedPage
+
+@Serializable
+object SettingsPage
+
+@Serializable
+object SharePage

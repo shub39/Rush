@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics
+package com.shub39.rush.network
 
 import android.util.Log
 import com.google.gson.JsonElement

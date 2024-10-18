@@ -10,8 +10,8 @@ import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.listener.MediaListener
-import com.shub39.rush.lyrics.LyricsFetcher
-import com.shub39.rush.lyrics.SongProvider
+import com.shub39.rush.network.LyricsFetcher
+import com.shub39.rush.network.SongProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.component
+package com.shub39.rush.ui.page.component.searchsheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,17 +17,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import com.shub39.rush.R
 import com.shub39.rush.database.SearchResult
-import org.koin.compose.koinInject
+import com.shub39.rush.ui.page.component.ArtFromUrl
 
 @Composable
 fun SearchResultCard(
     result: SearchResult,
     onClick: () -> Unit,
-    downloaded: Boolean = false,
-    imageLoader: ImageLoader = koinInject(),
+    downloaded: Boolean = false
 ) {
     Box(
         modifier = Modifier
@@ -47,7 +45,6 @@ fun SearchResultCard(
                     .size(80.dp)
                     .padding(8.dp)
                     .clip(MaterialTheme.shapes.small),
-                imageLoader = imageLoader
             )
 
             Column(

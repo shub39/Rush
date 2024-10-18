@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
 import com.shub39.rush.database.AudioFile
-import com.shub39.rush.ui.component.DownloaderCard
+import com.shub39.rush.ui.page.setting.component.DownloaderCard
 
 object BatchDownloader {
 

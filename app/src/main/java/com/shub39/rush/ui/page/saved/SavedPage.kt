@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.page
+package com.shub39.rush.ui.page.saved
 
 import android.util.Log
 import androidx.compose.animation.animateContentSize
@@ -35,9 +35,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.ui.component.Empty
-import com.shub39.rush.ui.component.GroupedCard
-import com.shub39.rush.ui.component.SongCard
+import com.shub39.rush.ui.page.lyrics.component.Empty
+import com.shub39.rush.ui.page.saved.component.GroupedCard
+import com.shub39.rush.ui.page.saved.component.SongCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.logic.SortOrder

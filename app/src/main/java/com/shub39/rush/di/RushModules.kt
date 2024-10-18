@@ -1,4 +1,4 @@
-package com.shub39.rush
+package com.shub39.rush.di
 
 import android.content.Context
 import coil.ImageLoader

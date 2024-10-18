@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.page
+package com.shub39.rush.ui.page.setting
 
 import android.content.Intent
 import android.net.Uri

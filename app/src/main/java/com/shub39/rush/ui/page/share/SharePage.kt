@@ -1,4 +1,4 @@
-package com.shub39.rush.ui.page
+package com.shub39.rush.ui.page.share
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -62,12 +62,12 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
-import com.shub39.rush.ui.component.share.RushedShareCard
-import com.shub39.rush.ui.component.share.SpotifyShareCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage
 import com.shub39.rush.logic.UILogic.sortMapByKeys
+import com.shub39.rush.ui.page.share.component.RushedShareCard
+import com.shub39.rush.ui.page.share.component.SpotifyShareCard
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
