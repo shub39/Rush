@@ -48,8 +48,8 @@ import com.shub39.rush.R
 import com.shub39.rush.database.AudioFile
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
-import com.shub39.rush.logic.BatchDownloader.GetAudioFiles
-import com.shub39.rush.logic.BatchDownloader.GetLibraryPath
+import com.shub39.rush.ui.page.setting.component.GetAudioFiles
+import com.shub39.rush.ui.page.setting.component.GetLibraryPath
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive

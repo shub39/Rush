@@ -1,6 +1,5 @@
 package com.shub39.rush.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,10 +24,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RushViewModel(
-    application: Application,
+    database: SongDatabase
 ) : ViewModel() {
 
-    private val database = SongDatabase.getDatabase(application)
     private val songDao = database.songDao()
 
     private val _songs = MutableStateFlow(listOf<Song>())
@@ -227,14 +225,6 @@ class RushViewModel(
             }
 
             _localSearchResults.value = searchResults
-        }
-    }
-
-    fun retry() {
-        if (_errorQuery.value.toLongOrNull() != null) {
-            fetchLyrics(songId = _errorQuery.value.toLong())
-        } else {
-            searchSong(_errorQuery.value)
         }
     }
 
