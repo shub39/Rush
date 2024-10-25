@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +33,8 @@ fun RushApp(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
+    val lyricsState by rushViewModel.lyricsPageState.collectAsStateWithLifecycle()
+    val savedState by rushViewModel.savedPageState.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -67,8 +70,14 @@ fun RushApp(
                 ) {
                     composable<SavedPage> {
                         SavedPage(
-                            rushViewModel = rushViewModel,
-                            pagerState = pagerState
+                            state = savedState,
+                            action = rushViewModel::onSavedPageAction,
+                            onSongClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                            }
+
                         )
                     }
 
@@ -91,12 +100,13 @@ fun RushApp(
             }
 
             0 -> LyricsPage(
-                rushViewModel = rushViewModel,
-                navController = navController,
+                state = lyricsState,
+                action = rushViewModel::onLyricsPageAction,
                 onShare = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(1)
                     }
+                    navController.navigate(SharePage)
                 }
             )
         }

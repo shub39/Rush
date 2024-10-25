@@ -35,4 +35,10 @@
     <string name="error">Something went wrong…</string>
     <string name="try_again">Try again?</string>
     <string name="correct_lyrics">Correct Lyrics</string>
+    <string name="no_internet">No internet!!</string>
+    <string name="request_failed">Request failed</string>
+    <string name="no_results">No Results</string>
+    <string name="parse_error">Parse Error</string>
+    <string name="io_error">IO Error, Try something else</string>
+    <string name="unknown_error">An Error occured</string>
 </resources>

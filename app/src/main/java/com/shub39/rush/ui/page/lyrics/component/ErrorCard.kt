@@ -1,5 +1,6 @@
 package com.shub39.rush.ui.page.lyrics.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import com.shub39.rush.R
 
 @Composable
 fun ErrorCard(
+    @StringRes error: Int,
     colors: Pair<Color, Color>
 ) {
     Column(
@@ -35,9 +37,8 @@ fun ErrorCard(
         )
 
         Text(
-            text = stringResource(id = R.string.error),
+            text = stringResource(id = error),
             color = colors.first
         )
-
     }
 }

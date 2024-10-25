@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,17 +17,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.viewmodel.RushViewModel
 
 @Composable
 fun LoadingCard(
-    rushViewModel: RushViewModel,
+    fetching: Pair<Boolean, String>,
+    searching: Pair<Boolean, String>,
     colors: Pair<Color, Color>
 ) {
-    val fetching by rushViewModel.isFetchingLyrics.collectAsState()
-    val searching by rushViewModel.isSearchingLyrics.collectAsState()
-    val searchTerm by rushViewModel.searchQuery.collectAsState()
-    val fetchTerm by rushViewModel.fetchQuery.collectAsState()
 
     Column(
         modifier = Modifier
@@ -38,12 +32,12 @@ fun LoadingCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (fetching || searching) {
+        if (fetching.first || searching.first) {
             Text(
-                text = if (fetching) {
-                    "${stringResource(R.string.fetching)} \n$fetchTerm"
+                text = if (fetching.first) {
+                    "${stringResource(R.string.fetching)} \n${fetching.second}"
                 } else {
-                    "${stringResource(R.string.searching)} \n$searchTerm"
+                    "${stringResource(R.string.searching)} \n${searching.second}"
                 },
                 textAlign = TextAlign.Center
             )

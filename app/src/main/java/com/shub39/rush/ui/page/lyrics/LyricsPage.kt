@@ -58,7 +58,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
-import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -70,16 +69,12 @@ import com.shub39.rush.ui.page.lyrics.component.LoadingCard
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.listener.NotificationListener
-import com.shub39.rush.logic.UILogic.breakLyrics
 import com.shub39.rush.logic.UILogic.copyToClipBoard
 import com.shub39.rush.logic.UILogic.getCurrentLyricIndex
 import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
-import com.shub39.rush.logic.UILogic.parseLyrics
 import com.shub39.rush.logic.UILogic.updateSelectedLines
-import com.shub39.rush.ui.page.SharePage
 import com.shub39.rush.ui.page.lyrics.component.Empty
-import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -87,22 +82,15 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsPage(
-    rushViewModel: RushViewModel,
-    navController: NavController,
     onShare: () -> Unit,
+    action: (LyricsPageAction) -> Unit,
+    state: LyricsPageState,
     imageLoader: ImageLoader = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
-    val song by rushViewModel.currentSong.collectAsState()
-    val fetching by rushViewModel.isFetchingLyrics.collectAsState()
-    val error by rushViewModel.error.collectAsState()
-    val searching by rushViewModel.isSearchingLyrics.collectAsState()
-    val currentSongPosition by rushViewModel.currentSongPosition.collectAsState()
-    val currentPlayingSong by rushViewModel.currentPlayingSongInfo.collectAsState()
-    val autoChange by rushViewModel.autoChange.collectAsState()
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
 
@@ -116,13 +104,15 @@ fun LyricsPage(
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     val cardBackground by animateColorAsState(
-        targetValue = cardBackgroundDominant
+        targetValue = cardBackgroundDominant,
+        label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = cardContentDominant
+        targetValue = cardContentDominant,
+        label = "cardContent"
     )
 
-    LaunchedEffect(song) {
+    LaunchedEffect(state.song) {
         delay(100)
         lazyListState.animateScrollToItem(0)
     }
@@ -137,55 +127,44 @@ fun LyricsPage(
         shape = RoundedCornerShape(0.dp)
     ) {
 
-        if (fetching || (searching && autoChange)) {
+        if (state.fetching.first || (state.searching.first && state.autoChange)) {
 
-            LoadingCard(rushViewModel, Pair(cardContentDominant, cardBackgroundDominant))
+            LoadingCard(
+                state.fetching,
+                state.searching,
+                Pair(cardContentDominant, cardBackgroundDominant)
+            )
 
-        } else if (error) {
+        } else if (state.error != null) {
 
-            ErrorCard(Pair(cardContentDominant, cardBackgroundDominant))
+            ErrorCard(state.error, Pair(cardContentDominant, cardBackgroundDominant))
 
-        } else if (song == null) {
+        } else if (state.song == null) {
 
             Empty()
 
         } else {
 
-            val nonNullSong = song!!
-            val lyrics = remember(nonNullSong, source) {
-                when {
-                    source == "LrcLib" && nonNullSong.lyrics.isNotEmpty() -> {
-                        breakLyrics(nonNullSong.lyrics)
-                    }
+            val displaySong = state.song
 
-                    source == "Genius" && nonNullSong.geniusLyrics != null -> {
-                        breakLyrics(nonNullSong.geniusLyrics)
-                    }
-
-                    else -> {
-                        emptyList()
-                    }
-                }
-            }
-
-            LaunchedEffect(nonNullSong) {
-                if (nonNullSong.lyrics.isNotEmpty()) {
+            LaunchedEffect(displaySong.lyrics) {
+                if (displaySong.lyrics.isNotEmpty()) {
                     source = "LrcLib"
-                } else if (nonNullSong.geniusLyrics != null) {
+                } else if (displaySong.geniusLyrics != null) {
                     source = "Genius"
                 }
 
-                if (nonNullSong.syncedLyrics != null) {
+                if (displaySong.syncedLyrics != null) {
                     syncedAvailable = true
 
-                    sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
-                        .lowercase() == nonNullSong.title.trim()
+                    sync = getMainTitle(state.playingSong.title).trim()
+                        .lowercase() == displaySong.title.trim()
                         .lowercase()
 
                 }
 
                 val request = ImageRequest.Builder(context)
-                    .data(nonNullSong.artUrl)
+                    .data(displaySong.artUrl)
                     .allowHardware(false)
                     .build()
                 val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
@@ -229,11 +208,11 @@ fun LyricsPage(
                 }
             }
 
-            LaunchedEffect(currentPlayingSong) {
-                syncedAvailable = (nonNullSong.syncedLyrics != null)
+            LaunchedEffect(state.playingSong.title) {
+                syncedAvailable = (displaySong.syncedLyrics != null)
 
-                sync = getMainTitle(currentPlayingSong?.first ?: "").trim()
-                    .lowercase() == nonNullSong.title.trim()
+                sync = getMainTitle(state.playingSong.title).trim()
+                    .lowercase() == displaySong.title.trim()
                     .lowercase() && syncedAvailable
             }
 
@@ -247,7 +226,7 @@ fun LyricsPage(
                 Column {
                     AnimatedVisibility(top > 2) {
                         ArtFromUrl(
-                            imageUrl = nonNullSong.artUrl,
+                            imageUrl = displaySong.artUrl,
                             modifier = Modifier
                                 .height(150.dp)
                                 .fillMaxWidth(),
@@ -280,7 +259,7 @@ fun LyricsPage(
                             contentAlignment = Alignment.Center
                         ) {
                             ArtFromUrl(
-                                imageUrl = nonNullSong.artUrl,
+                                imageUrl = displaySong.artUrl,
                                 modifier = Modifier
                                     .clip(MaterialTheme.shapes.small)
                                     .size(150.dp)
@@ -297,7 +276,7 @@ fun LyricsPage(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = nonNullSong.title,
+                                text = displaySong.title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 2,
@@ -305,7 +284,7 @@ fun LyricsPage(
                             )
 
                             Text(
-                                text = nonNullSong.artists,
+                                text = displaySong.artists,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
@@ -327,8 +306,11 @@ fun LyricsPage(
                                     if (selectedLines.isEmpty()) {
                                         copyToClipBoard(
                                             context,
-                                            if (source == "LrcLib") nonNullSong.lyrics else nonNullSong.geniusLyrics
-                                                ?: "",
+                                            if (source == "LrcLib") {
+                                                displaySong.lyrics.joinToString("\n") { it.value }
+                                            } else {
+                                                displaySong.geniusLyrics?.joinToString("\n") ?: ""
+                                            },
                                             "Complete Lyrics"
                                         )
                                     } else {
@@ -372,7 +354,9 @@ fun LyricsPage(
                                     onClick = {
                                         lyricsCorrect = true
                                         sync = false
-                                        if (autoChange) rushViewModel.toggleAutoChange()
+                                        if (state.autoChange) action(
+                                            LyricsPageAction.OnToggleAutoChange
+                                        )
                                     }
                                 ) {
                                     Icon(
@@ -410,8 +394,8 @@ fun LyricsPage(
 
                             AnimatedVisibility(visible = notificationAccess) {
                                 IconButton(
-                                    onClick = { rushViewModel.toggleAutoChange() },
-                                    colors = if (autoChange) {
+                                    onClick = { action(LyricsPageAction.OnToggleAutoChange) },
+                                    colors = if (state.autoChange) {
                                         IconButtonDefaults.iconButtonColors(
                                             contentColor = cardBackground,
                                             containerColor = cardContent
@@ -434,8 +418,7 @@ fun LyricsPage(
                             AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                                 Row {
                                     IconButton(onClick = {
-                                        rushViewModel.updateShareLines(selectedLines)
-                                        navController.navigate(SharePage)
+                                        action(LyricsPageAction.OnUpdateShareLines(selectedLines))
                                         onShare()
                                     }) {
                                         Icon(
@@ -467,20 +450,26 @@ fun LyricsPage(
                     ),
                     state = lazyListState
                 ) {
-                    items(lyrics, key = { it.key }) {
+                    items(
+                        items = if (source == "LrcLib") displaySong.lyrics else displaySong.geniusLyrics
+                            ?: emptyList(),
+                        key = { it.key }
+                    ) {
                         if (it.value.isNotBlank()) {
                             val isSelected = selectedLines.contains(it.key)
                             val contentColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
                                     true -> cardContentDominant
                                     else -> cardBackgroundDominant
-                                }
+                                },
+                                label = "content"
                             )
                             val containerColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
                                     true -> cardBackgroundDominant
                                     else -> cardContentDominant
-                                }
+                                },
+                                label = "container"
                             )
 
                             Row(
@@ -520,7 +509,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (lyrics.isNotEmpty()) {
+                    if (displaySong.lyrics.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.padding(10.dp))
 
@@ -545,7 +534,7 @@ fun LyricsPage(
                                     onClick = {
                                         openLinkInBrowser(
                                             context,
-                                            nonNullSong.sourceUrl
+                                            displaySong.sourceUrl
                                         )
                                     },
                                 ) {
@@ -556,7 +545,7 @@ fun LyricsPage(
                                 }
 
                                 IconButton(
-                                    onClick = { rushViewModel.toggleSearchSheet() },
+                                    onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_search_24),
@@ -569,7 +558,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (lyrics.isEmpty()) {
+                    if (displaySong.lyrics.isEmpty()) {
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -591,13 +580,15 @@ fun LyricsPage(
                     }
 
                 }
-            } else if (nonNullSong.syncedLyrics != null) {
-                val parsedSyncedLyrics = remember { parseLyrics(nonNullSong.syncedLyrics) }
+            } else if (displaySong.syncedLyrics != null) {
 
-                LaunchedEffect(currentSongPosition) {
+                LaunchedEffect(state.playingSong.position) {
                     coroutineScope.launch {
                         var currentIndex =
-                            getCurrentLyricIndex(currentSongPosition, parsedSyncedLyrics)
+                            getCurrentLyricIndex(
+                                state.playingSong.position,
+                                displaySong.syncedLyrics
+                            )
                         currentIndex -= 3
                         lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
                     }
@@ -612,12 +603,12 @@ fun LyricsPage(
                     ),
                     state = lazyListState
                 ) {
-                    items(parsedSyncedLyrics, key = { it.time }) { lyric ->
+                    items(displaySong.syncedLyrics, key = { it.time }) { lyric ->
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             val textColor by animateColorAsState(
-                                targetValue = if (lyric.time <= currentSongPosition + 1000) {
+                                targetValue = if (lyric.time <= state.playingSong.position + 1000) {
                                     cardContent
                                 } else {
                                     cardContent.copy(0.3f)
@@ -666,9 +657,6 @@ fun LyricsPage(
     }
 
     if (lyricsCorrect) {
-        val lrcSearchResults by rushViewModel.lrcSearchResults.collectAsState()
-        val searching by rushViewModel.isFetchingLrc.collectAsState()
-
         var track by remember { mutableStateOf("") }
         var artist by remember { mutableStateOf("") }
 
@@ -714,13 +702,13 @@ fun LyricsPage(
 
                     Button(
                         onClick = {
-                            rushViewModel.lrcSearch(track, artist)
+                            action(LyricsPageAction.OnLrcSearch(track, artist))
                         },
-                        enabled = track.isNotBlank() && !searching,
+                        enabled = track.isNotBlank() && !state.lrcCorrect.searching,
                         shape = MaterialTheme.shapes.extraLarge,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        if (!searching) {
+                        if (!state.lrcCorrect.searching) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_search_24),
                                 contentDescription = null
@@ -736,10 +724,16 @@ fun LyricsPage(
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        items(lrcSearchResults, key = { it.id }) {
+                        items(state.lrcCorrect.searchResults, key = { it.id }) {
                             Card(
                                 onClick = {
-                                    rushViewModel.updateSong(it.plainLyrics!!, it.syncedLyrics)
+                                    action(
+                                        LyricsPageAction.OnUpdateSongLyrics(
+                                            state.song?.id!!,
+                                            it.plainLyrics!!,
+                                            it.syncedLyrics
+                                        )
+                                    )
                                     lyricsCorrect = false
                                 },
                                 colors = when (it.syncedLyrics) {
