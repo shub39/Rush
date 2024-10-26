@@ -8,10 +8,10 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class GeniusApiTest {
+class ApiTest {
     @Test
     fun getSearchResults() {
-        val result = SongProvider.search("Cut Throat Death Grips")
+        val result = SongProvider.geniusSearch("Cut Throat Death Grips")
         println(result)
     }
 
@@ -19,5 +19,10 @@ class GeniusApiTest {
     fun getSong() {
         val result = SongProvider.fetchLyrics(1977139)
         println(result)
+    }
+
+    @Test
+    fun getLrc() {
+        println(SongProvider.lrcLibSearch("lil boy", "death"))
     }
 }

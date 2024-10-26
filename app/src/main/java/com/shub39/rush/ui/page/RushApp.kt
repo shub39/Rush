@@ -9,10 +9,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,17 +31,25 @@ import org.koin.androidx.compose.koinViewModel
 fun RushApp(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
-    val searchSheetState by rushViewModel.searchSheet.collectAsState()
+    val lyricsState by rushViewModel.lyricsPageState.collectAsStateWithLifecycle()
+    val savedState by rushViewModel.savedPageState.collectAsStateWithLifecycle()
+    val shareState by rushViewModel.sharePageState.collectAsStateWithLifecycle()
+    val settingsState by rushViewModel.settingsPageState.collectAsStateWithLifecycle()
+    val searchSheetState by rushViewModel.searchSheetState.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val pagerState = rememberPagerState(1) { 2 }
 
-    if (searchSheetState) {
+    if (searchSheetState.visible) {
         SearchSheet(
-            rushViewModel = rushViewModel,
-            coroutineScope = coroutineScope,
-            pagerState = pagerState
+            state = searchSheetState,
+            action = rushViewModel::onSearchSheetAction,
+            onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(0)
+                }
+            }
         )
     }
 
@@ -67,13 +75,22 @@ fun RushApp(
                 ) {
                     composable<SavedPage> {
                         SavedPage(
-                            rushViewModel = rushViewModel,
-                            pagerState = pagerState
+                            state = savedState,
+                            action = rushViewModel::onSavedPageAction,
+                            onSongClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                            }
+
                         )
                     }
 
                     composable<SettingsPage> {
-                        SettingPage(rushViewModel = rushViewModel)
+                        SettingPage(
+                            state = settingsState,
+                            action = rushViewModel::onSettingsPageAction
+                        )
                     }
 
                     composable<SharePage> {
@@ -84,19 +101,20 @@ fun RushApp(
                                     pagerState.animateScrollToPage(0)
                                 }
                             },
-                            rushViewModel = rushViewModel
+                            state = shareState
                         )
                     }
                 }
             }
 
             0 -> LyricsPage(
-                rushViewModel = rushViewModel,
-                navController = navController,
+                state = lyricsState,
+                action = rushViewModel::onLyricsPageAction,
                 onShare = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(1)
                     }
+                    navController.navigate(SharePage)
                 }
             )
         }

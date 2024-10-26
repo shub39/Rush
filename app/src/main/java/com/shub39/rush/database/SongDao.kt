@@ -26,4 +26,10 @@ interface SongDao {
 
     @Query("SELECT * FROM songs WHERE title LIKE :query || '%'")
     suspend fun searchSong(query: String): List<Song>
+
+    @Query("UPDATE songs SET lyrics = :lrcAsync, syncedLyrics = :lrcSync WHERE id = :id")
+    suspend fun updateLrcLyricsById(id: Long, lrcAsync: String, lrcSync: String?)
+
+    @Query("DELETE FROM songs")
+    suspend fun deleteAllSongs()
 }
