@@ -9,7 +9,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -32,21 +31,25 @@ import org.koin.androidx.compose.koinViewModel
 fun RushApp(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
-    val searchSheetState by rushViewModel.searchSheet.collectAsState()
     val lyricsState by rushViewModel.lyricsPageState.collectAsStateWithLifecycle()
     val savedState by rushViewModel.savedPageState.collectAsStateWithLifecycle()
     val shareState by rushViewModel.sharePageState.collectAsStateWithLifecycle()
     val settingsState by rushViewModel.settingsPageState.collectAsStateWithLifecycle()
+    val searchSheetState by rushViewModel.searchSheetState.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val pagerState = rememberPagerState(1) { 2 }
 
-    if (searchSheetState) {
+    if (searchSheetState.visible) {
         SearchSheet(
-            rushViewModel = rushViewModel,
-            coroutineScope = coroutineScope,
-            pagerState = pagerState
+            state = searchSheetState,
+            action = rushViewModel::onSearchSheetAction,
+            onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(0)
+                }
+            }
         )
     }
 

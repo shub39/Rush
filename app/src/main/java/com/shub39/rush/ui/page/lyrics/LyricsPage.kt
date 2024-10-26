@@ -310,7 +310,7 @@ fun LyricsPage(
                                             if (source == "LrcLib") {
                                                 displaySong.lyrics.joinToString("\n") { it.value }
                                             } else {
-                                                displaySong.geniusLyrics?.joinToString("\n") ?: ""
+                                                displaySong.geniusLyrics?.joinToString("\n") { it.value } ?: ""
                                             },
                                             "Complete Lyrics"
                                         )

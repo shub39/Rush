@@ -5,13 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.ui.page.setting.component.AudioFile
 import com.shub39.rush.database.SearchResult
-import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.error.Result
 import com.shub39.rush.listener.MediaListener
 import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.logic.errorStringRes
 import com.shub39.rush.network.SongProvider
+import com.shub39.rush.ui.page.component.searchsheet.SearchSheetAction
+import com.shub39.rush.ui.page.component.searchsheet.SearchSheetState
 import com.shub39.rush.ui.page.lyrics.LrcCorrect
 import com.shub39.rush.ui.page.lyrics.LyricsPageAction
 import com.shub39.rush.ui.page.lyrics.LyricsPageState
@@ -26,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -43,22 +43,13 @@ class RushViewModel(
 
     private val songDao = database.songDao()
 
-    private val _songs = MutableStateFlow(listOf<Song>())
-    private val _searchResults = MutableStateFlow(listOf<SearchResult>())
-    private val _localSearchResults = MutableStateFlow(listOf<SearchResult>())
-    private val _currentSongId = MutableStateFlow<Long?>(null)
-    private val _isSearchingLyrics = MutableStateFlow(false)
     private val _lastSearched = MutableStateFlow("")
-    private val _error = MutableStateFlow(false)
-    private val _batchDownloading = MutableStateFlow(false)
-    private val _downloadIndexes = MutableStateFlow(mapOf<Int, Boolean>())
 
     private val _lyricsPageState = MutableStateFlow(LyricsPageState())
     private val _savedPageState = MutableStateFlow(SavedPageState())
     private val _sharePageState = MutableStateFlow(SharePageState())
     private val _settingsPageState = MutableStateFlow(SettingsPageState())
-
-    private val _searchSheet = MutableStateFlow(false)
+    private val _searchSheetState = MutableStateFlow(SearchSheetState())
 
     val lyricsPageState = _lyricsPageState.asStateFlow()
         .stateIn(
@@ -85,20 +76,15 @@ class RushViewModel(
             SharingStarted.WhileSubscribed(5000),
             SettingsPageState()
         )
-
-    val songs: StateFlow<List<Song>> get() = _songs
-    val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
-    val localSearchResults: StateFlow<List<SearchResult>> get() = _localSearchResults
-    val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
-    val error: StateFlow<Boolean> get() = _error
-    val batchDownloading: StateFlow<Boolean> get() = _batchDownloading
-    val downloadIndexes: StateFlow<Map<Int, Boolean>> get() = _downloadIndexes
-
-    val searchSheet: StateFlow<Boolean> get() = _searchSheet
+    val searchSheetState = _searchSheetState.asStateFlow()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            SearchSheetState()
+        )
 
     init {
         viewModelScope.launch {
-            _songs.value = songDao.getAllSongs()
             MediaListener.songInfoFlow.collect { songInfo ->
                 _lyricsPageState.update {
                     it.copy(
@@ -255,7 +241,27 @@ class RushViewModel(
         }
     }
 
-    fun searchSong(
+    fun onSearchSheetAction(action: SearchSheetAction) {
+        viewModelScope.launch {
+            when (action) {
+                is SearchSheetAction.OnCardClicked -> {
+                    toggleSearchSheet()
+                    fetchLyrics(action.id)
+                }
+
+                is SearchSheetAction.OnSearch -> {
+                    localSearch(action.query)
+                    searchSong(action.query, false)
+                }
+
+                SearchSheetAction.OnToggleSearchSheet -> {
+                    toggleSearchSheet()
+                }
+            }
+        }
+    }
+
+    private fun searchSong(
         query: String,
         fetch: Boolean = _lyricsPageState.value.autoChange,
     ) {
@@ -265,6 +271,12 @@ class RushViewModel(
             _lyricsPageState.update {
                 it.copy(
                     searching = Pair(true, query)
+                )
+            }
+
+            _searchSheetState.update {
+                it.copy(
+                    isSearching = true
                 )
             }
 
@@ -283,8 +295,14 @@ class RushViewModel(
                     }
 
                     is Result.Success -> {
-                        _searchResults.value = result.data
+                        _searchSheetState.update {
+                            it.copy(
+                                searchResults = result.data,
+                            )
+                        }
+
                         if (fetch) _lastSearched.value = query
+
                         _lyricsPageState.update {
                             it.copy(
                                 error = null
@@ -299,25 +317,29 @@ class RushViewModel(
                         searching = Pair(false, "")
                     )
                 }
-            }
 
-            if (fetch && _lyricsPageState.value.error == null && _searchResults.value.isNotEmpty()) {
-
-                fetchLyrics(_searchResults.value.first().id)
-
-            } else {
-                _lyricsPageState.update {
+                _searchSheetState.update {
                     it.copy(
-                        autoChange = false
+                        isSearching = false
                     )
                 }
+            }
+
+            if (fetch && _lyricsPageState.value.error == null && _searchSheetState.value.searchResults.isNotEmpty()) {
+
+                fetchLyrics(_searchSheetState.value.searchResults.first().id)
+
+            } else {
+
+                toggleAutoChange(false)
+
             }
         }
     }
 
-    private fun fetchLyrics(songId: Long = _currentSongId.value!!) {
+    private fun fetchLyrics(songId: Long) {
         viewModelScope.launch {
-            val song = _searchResults.value.find { it.id == songId }
+            val song = _searchSheetState.value.searchResults.find { it.id == songId }
             _lyricsPageState.update {
                 it.copy(
                     fetching = Pair(true, "${song?.title} - ${song?.artist}")
@@ -325,7 +347,7 @@ class RushViewModel(
             }
 
             try {
-                if (songId in songs.value.map { it.id }) {
+                if (songId in _savedPageState.value.songsAsc.map { it.id }) {
                     val result = songDao.getSongById(songId)
                     _lyricsPageState.update {
                         it.copy(
@@ -348,13 +370,15 @@ class RushViewModel(
 
                         is Result.Success -> {
                             songDao.insertSong(result.data)
+
                             _lyricsPageState.update {
                                 it.copy(
                                     song = result.data.toSongUi(),
                                     error = null
                                 )
                             }
-                            _songs.value = songDao.getAllSongs()
+
+                            updateSavedState()
                         }
                     }
 
@@ -370,9 +394,13 @@ class RushViewModel(
         }
     }
 
-    fun localSearch(query: String) {
+    private fun localSearch(query: String) {
         if (query.isEmpty()) {
-            _localSearchResults.value = emptyList()
+            _searchSheetState.update {
+                it.copy(
+                    localSearchResults = emptyList()
+                )
+            }
             return
         }
 
@@ -393,11 +421,15 @@ class RushViewModel(
                 )
             }
 
-            _localSearchResults.value = searchResults
+            _searchSheetState.update {
+                it.copy(
+                    localSearchResults = searchResults,
+                )
+            }
         }
     }
 
-    fun batchDownload(
+    private fun batchDownload(
         list: List<AudioFile>,
     ) {
         viewModelScope.launch {
@@ -486,22 +518,6 @@ class RushViewModel(
         }
     }
 
-    fun deleteSong(song: Song) {
-        viewModelScope.launch {
-            songDao.deleteSong(song)
-            _songs.value = songDao.getAllSongs()
-        }
-    }
-
-    fun clearIndexes() {
-        _downloadIndexes.value = emptyMap()
-    }
-
-    fun changeCurrentSong(songId: Long) {
-        _currentSongId.value = songId
-        fetchLyrics(songId)
-    }
-
     private suspend fun updateSavedState() {
         val songs = songDao.getAllSongs()
 
@@ -519,16 +535,23 @@ class RushViewModel(
         _lyricsPageState.update { it.copy(autoChange = !it.autoChange) }
         _savedPageState.update { it.copy(autoChange = !it.autoChange) }
 
-        if (_lyricsPageState.value.autoChange) {
+        if (_lyricsPageState.value.autoChange && _lyricsPageState.value.playingSong.title.isNotEmpty()) {
             val info =
                 "${_lyricsPageState.value.playingSong.title} ${_lyricsPageState.value.playingSong.artist}"
             searchSong(info)
         }
     }
 
-    fun toggleSearchSheet() {
-        _searchSheet.update {
-            it.not()
+    private fun toggleAutoChange(boolean: Boolean) {
+        _lyricsPageState.update { it.copy(autoChange = boolean) }
+        _savedPageState.update { it.copy(autoChange = boolean) }
+    }
+
+    private fun toggleSearchSheet() {
+        _searchSheetState.update {
+            it.copy(
+                visible = !it.visible
+            )
         }
     }
 

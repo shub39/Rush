@@ -63,7 +63,7 @@ fun SettingPage(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    var deleteButtonStatus by remember { mutableStateOf(false) }
+    var deleteButtonStatus by remember { mutableStateOf(true) }
     var notificationRequestDialog by remember { mutableStateOf(false) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var batchDownload by remember { mutableStateOf(false) }
@@ -238,7 +238,7 @@ fun SettingPage(
                                     enabled = maxLinesFlow > 2 && coroutineScope.isActive
                                 ) {
                                     coroutineScope.launch {
-                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow)
+                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow - 1)
                                     }
                                 }
                             )
@@ -256,7 +256,7 @@ fun SettingPage(
                                     enabled = maxLinesFlow < 8 && coroutineScope.isActive
                                 ) {
                                     coroutineScope.launch {
-                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow)
+                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow + 1)
                                     }
                                 }
                             )

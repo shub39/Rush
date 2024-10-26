@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,10 +27,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,8 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.viewmodel.RushViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,20 +50,18 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchSheet(
-    rushViewModel: RushViewModel,
-    coroutineScope: CoroutineScope,
-    pagerState: PagerState
+    state: SearchSheetState,
+    action: (SearchSheetAction) -> Unit,
+    onClick: () -> Unit,
 ) {
-    val searchResults by rushViewModel.searchResults.collectAsState()
-    val localSearchResults by rushViewModel.localSearchResults.collectAsState()
-    val isSearchingLyrics by rushViewModel.isSearchingLyrics.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     var query by remember { mutableStateOf("") }
 
     ModalBottomSheet(
         onDismissRequest = {
-            rushViewModel.toggleSearchSheet()
             query = ""
+            action(SearchSheetAction.OnToggleSearchSheet)
         }
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -100,7 +95,7 @@ fun SearchSheet(
                         modifier = Modifier.padding(2.dp)
                     ) {
                         AnimatedVisibility(
-                            visible = isSearchingLyrics,
+                            visible = state.isSearching,
                             enter = fadeIn(animationSpec = tween(200)),
                             exit = fadeOut(animationSpec = tween(200))
                         ) {
@@ -139,8 +134,7 @@ fun SearchSheet(
                     searchJob = coroutineScope.launch {
                         delay(500)
                         if (it.isNotEmpty()) {
-                            rushViewModel.localSearch(it)
-                            rushViewModel.searchSong(it, false)
+                            action(SearchSheetAction.OnSearch(it))
                         }
                     }
                 },
@@ -156,7 +150,6 @@ fun SearchSheet(
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         keyboardController?.hide()
-                        rushViewModel.searchSong(query)
                     }
                 )
             )
@@ -167,32 +160,26 @@ fun SearchSheet(
                 state = LazyListState(0)
             ) {
                 items(
-                    localSearchResults,
+                    state.localSearchResults,
                     key = { it.title.hashCode() + it.artist.hashCode() }) {
                     SearchResultCard(
                         result = it,
                         onClick = {
-                            rushViewModel.toggleSearchSheet()
                             query = ""
-                            rushViewModel.changeCurrentSong(it.id)
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(0)
-                            }
+                            action(SearchSheetAction.OnCardClicked(it.id))
+                            onClick()
                         },
                         downloaded = true
                     )
                 }
 
-                items(searchResults, key = { it.id }) {
+                items(state.searchResults, key = { it.id }) {
                     SearchResultCard(
                         result = it,
                         onClick = {
-                            rushViewModel.toggleSearchSheet()
                             query = ""
-                            rushViewModel.changeCurrentSong(it.id)
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(0)
-                            }
+                            action(SearchSheetAction.OnCardClicked(it.id))
+                            onClick()
                         },
                     )
                 }
