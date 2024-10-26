@@ -45,32 +45,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
-import com.shub39.rush.database.AudioFile
+import com.shub39.rush.ui.page.setting.component.AudioFile
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
 import com.shub39.rush.ui.page.setting.component.GetAudioFiles
 import com.shub39.rush.ui.page.setting.component.GetLibraryPath
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
-import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingPage(
-    rushViewModel: RushViewModel,
+   state: SettingsPageState,
+   action: (SettingsPageAction) -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var deleteButtonStatus by remember { mutableStateOf(rushViewModel.songs.value.isNotEmpty()) }
+
+    var deleteButtonStatus by remember { mutableStateOf(false) }
     var notificationRequestDialog by remember { mutableStateOf(false) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var batchDownload by remember { mutableStateOf(false) }
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val appTheme by SettingsDataStore.getToggleThemeFlow(context)
         .collectAsState(initial = "Gruvbox")
-    var theme = appTheme
-    var maxLines = maxLinesFlow
 
     Box {
         LazyColumn(
@@ -108,11 +107,10 @@ fun SettingPage(
                                 ).forEachIndexed { index, color ->
                                     SegmentedButton(
                                         label = { Text(text = color) },
-                                        selected = theme == color,
+                                        selected = appTheme == color,
                                         onClick = {
-                                            theme = color
                                             coroutineScope.launch {
-                                                SettingsDataStore.updateToggleTheme(context, theme)
+                                                SettingsDataStore.updateToggleTheme(context, color)
                                             }
                                         },
                                         shape = when (index) {
@@ -134,11 +132,10 @@ fun SettingPage(
                                 listOf("Yellow", "Lime").forEachIndexed { index, color ->
                                     SegmentedButton(
                                         label = { Text(text = color) },
-                                        selected = theme == color,
+                                        selected = appTheme == color,
                                         onClick = {
-                                            theme = color
                                             coroutineScope.launch {
-                                                SettingsDataStore.updateToggleTheme(context, theme)
+                                                SettingsDataStore.updateToggleTheme(context, color)
                                             }
                                         },
                                         shape = when (index) {
@@ -238,11 +235,10 @@ fun SettingPage(
                                 painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
                                 contentDescription = null,
                                 modifier = Modifier.clickable(
-                                    enabled = maxLines > 2 && coroutineScope.isActive
+                                    enabled = maxLinesFlow > 2 && coroutineScope.isActive
                                 ) {
-                                    maxLines--
                                     coroutineScope.launch {
-                                        SettingsDataStore.updateMaxLines(context, maxLines)
+                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow)
                                     }
                                 }
                             )
@@ -257,11 +253,10 @@ fun SettingPage(
                                 painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
                                 contentDescription = null,
                                 modifier = Modifier.clickable(
-                                    enabled = maxLines < 8 && coroutineScope.isActive
+                                    enabled = maxLinesFlow < 8 && coroutineScope.isActive
                                 ) {
-                                    maxLines++
                                     coroutineScope.launch {
-                                        SettingsDataStore.updateMaxLines(context, maxLines)
+                                        SettingsDataStore.updateMaxLines(context, maxLinesFlow)
                                     }
                                 }
                             )
@@ -436,9 +431,7 @@ fun SettingPage(
 
                     Button(
                         onClick = {
-                            rushViewModel.songs.value.forEach {
-                                rushViewModel.deleteSong(it)
-                            }
+                            action(SettingsPageAction.OnDeleteSongs)
                             deleteConfirmationDialog = false
                             deleteButtonStatus = false
                         },
@@ -455,15 +448,13 @@ fun SettingPage(
     if (batchDownload) {
         var selectedDirectoryUri by remember { mutableStateOf<Uri?>(null) }
         val audioFiles = remember { mutableStateListOf<AudioFile>() }
-        val downloadIndexes by rushViewModel.downloadIndexes.collectAsState()
-        val isDownloading by rushViewModel.batchDownloading.collectAsState()
         var done by remember { mutableStateOf(false) }
 
         BasicAlertDialog(
             onDismissRequest = {
-                if (!isDownloading) {
+                if (!state.batchDownload.isDownloading) {
                     batchDownload = false
-                    rushViewModel.clearIndexes()
+                    action(SettingsPageAction.OnClearIndexes)
                 }
             }
         ) {
@@ -493,7 +484,7 @@ fun SettingPage(
                             update = {
                                 audioFiles.add(it)
                             },
-                            indexes = downloadIndexes,
+                            indexes = state.batchDownload.indexes,
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
@@ -501,20 +492,20 @@ fun SettingPage(
                     Button(
                         onClick = {
                             if (!done) {
-                                rushViewModel.batchDownload(audioFiles)
+                                action(SettingsPageAction.OnBatchDownload(audioFiles))
                                 done = true
                             } else {
                                 batchDownload = false
-                                rushViewModel.clearIndexes()
+                                action(SettingsPageAction.OnClearIndexes)
                             }
                         },
-                        enabled = !isDownloading && audioFiles.isNotEmpty(),
+                        enabled = !state.batchDownload.isDownloading && audioFiles.isNotEmpty(),
                         shape = MaterialTheme.shapes.extraLarge,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp)
                     ) {
-                        if (isDownloading) {
+                        if (state.batchDownload.isDownloading) {
                             CircularProgressIndicator(
                                 strokeCap = StrokeCap.Round,
                                 modifier = Modifier.size(20.dp)

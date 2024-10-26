@@ -75,6 +75,7 @@ import com.shub39.rush.logic.UILogic.getMainTitle
 import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.ui.page.lyrics.component.Empty
+import com.shub39.rush.ui.page.share.SongDetails
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -418,7 +419,15 @@ fun LyricsPage(
                             AnimatedVisibility(visible = selectedLines.isNotEmpty()) {
                                 Row {
                                     IconButton(onClick = {
-                                        action(LyricsPageAction.OnUpdateShareLines(selectedLines))
+                                        action(LyricsPageAction.OnUpdateShareLines(
+                                            songDetails = SongDetails(
+                                                title = displaySong.title,
+                                                artist = displaySong.artists,
+                                                album = displaySong.album,
+                                                artUrl = displaySong.artUrl ?: ""
+                                            ),
+                                            shareLines = selectedLines
+                                        ))
                                         onShare()
                                     }) {
                                         Icon(

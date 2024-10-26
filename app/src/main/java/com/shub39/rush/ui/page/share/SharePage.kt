@@ -65,10 +65,8 @@ import com.shub39.rush.R
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage
-import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.ui.page.share.component.RushedShareCard
 import com.shub39.rush.ui.page.share.component.SpotifyShareCard
-import com.shub39.rush.viewmodel.RushViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -76,16 +74,13 @@ import org.koin.compose.koinInject
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
-    rushViewModel: RushViewModel,
+    state: SharePageState,
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     val colorPicker = rememberColorPickerController()
     val context = LocalContext.current
-    val song = rushViewModel.currentSong.collectAsState().value!!
-    val selectedLines = rushViewModel.shareLines.collectAsState().value
-    val sortedLines = sortMapByKeys(selectedLines)
 
     val cardThemeFlow = remember { SettingsDataStore.getCardThemeFlow(context) }
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
@@ -117,9 +112,9 @@ fun SharePage(
             drawLayer(cardGraphicsLayer)
         }
 
-    LaunchedEffect(song) {
+    LaunchedEffect(state.songDetails) {
         val request = ImageRequest.Builder(context)
-            .data(song.artUrl)
+            .data(state.songDetails.artUrl)
             .allowHardware(false)
             .build()
         val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
@@ -199,22 +194,21 @@ fun SharePage(
             when (cardTheme) {
                 "Spotify" -> SpotifyShareCard(
                     modifier = modifier,
-                    song = song,
-                    sortedLines = sortedLines,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
                     cardColors = cardColor,
                     cardCorners = cardCorners,
                 )
 
                 "Rushed" -> RushedShareCard(
                     modifier = modifier,
-                    song = song,
-                    sortedLines = sortedLines,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
                     cardColors = cardColor,
                     cardCorners = cardCorners
                 )
             }
         }
-
 
         item {
             SingleChoiceSegmentedButtonRow {
@@ -293,7 +287,7 @@ fun SharePage(
                     onClick = {
                         coroutineScope.launch {
                             val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                            shareImage(context, bitmap, "${song.artists}-${song.title}.png")
+                            shareImage(context, bitmap, "${state.songDetails.artist}-${state.songDetails.title}.png")
                             onDismiss()
                         }
                     },
@@ -313,7 +307,7 @@ fun SharePage(
         BasicAlertDialog(
             onDismissRequest = { namePicker = false }
         ) {
-            var name by remember { mutableStateOf("${song.artists}-${song.title}.png") }
+            var name by remember { mutableStateOf("${state.songDetails.artist}-${state.songDetails.title}.png") }
 
             Card(shape = RoundedCornerShape(32.dp)) {
                 OutlinedTextField(
@@ -407,10 +401,7 @@ fun SharePage(
                         }
                     ) {
                         Text(
-                            text = when (editTarget) {
-                                "content" -> "Set Content Color"
-                                else -> "Set Background Color"
-                            },
+                            text = "Set $editTarget",
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )

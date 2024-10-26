@@ -3,12 +3,13 @@ package com.shub39.rush.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.database.AudioFile
+import com.shub39.rush.ui.page.setting.component.AudioFile
 import com.shub39.rush.database.SearchResult
 import com.shub39.rush.database.Song
 import com.shub39.rush.database.SongDatabase
 import com.shub39.rush.error.Result
 import com.shub39.rush.listener.MediaListener
+import com.shub39.rush.logic.UILogic.sortMapByKeys
 import com.shub39.rush.logic.errorStringRes
 import com.shub39.rush.network.SongProvider
 import com.shub39.rush.ui.page.lyrics.LrcCorrect
@@ -17,6 +18,10 @@ import com.shub39.rush.ui.page.lyrics.LyricsPageState
 import com.shub39.rush.ui.page.lyrics.toSongUi
 import com.shub39.rush.ui.page.saved.SavedPageAction
 import com.shub39.rush.ui.page.saved.SavedPageState
+import com.shub39.rush.ui.page.setting.BatchDownload
+import com.shub39.rush.ui.page.setting.SettingsPageAction
+import com.shub39.rush.ui.page.setting.SettingsPageState
+import com.shub39.rush.ui.page.share.SharePageState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,9 +47,7 @@ class RushViewModel(
     private val _searchResults = MutableStateFlow(listOf<SearchResult>())
     private val _localSearchResults = MutableStateFlow(listOf<SearchResult>())
     private val _currentSongId = MutableStateFlow<Long?>(null)
-    private val _currentSong = MutableStateFlow<Song?>(null)
     private val _isSearchingLyrics = MutableStateFlow(false)
-    private val _shareLines = MutableStateFlow(mapOf<Int, String>())
     private val _lastSearched = MutableStateFlow("")
     private val _error = MutableStateFlow(false)
     private val _batchDownloading = MutableStateFlow(false)
@@ -52,6 +55,8 @@ class RushViewModel(
 
     private val _lyricsPageState = MutableStateFlow(LyricsPageState())
     private val _savedPageState = MutableStateFlow(SavedPageState())
+    private val _sharePageState = MutableStateFlow(SharePageState())
+    private val _settingsPageState = MutableStateFlow(SettingsPageState())
 
     private val _searchSheet = MutableStateFlow(false)
 
@@ -68,14 +73,24 @@ class RushViewModel(
             SharingStarted.WhileSubscribed(5000),
             SavedPageState()
         )
+    val sharePageState = _sharePageState.asStateFlow()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            SharePageState()
+        )
+    val settingsPageState = _settingsPageState.asStateFlow()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            SettingsPageState()
+        )
 
     val songs: StateFlow<List<Song>> get() = _songs
     val searchResults: StateFlow<List<SearchResult>> get() = _searchResults
     val localSearchResults: StateFlow<List<SearchResult>> get() = _localSearchResults
-    val currentSong: MutableStateFlow<Song?> get() = _currentSong
     val isSearchingLyrics: StateFlow<Boolean> get() = _isSearchingLyrics
     val error: StateFlow<Boolean> get() = _error
-    val shareLines: StateFlow<Map<Int, String>> get() = _shareLines
     val batchDownloading: StateFlow<Boolean> get() = _batchDownloading
     val downloadIndexes: StateFlow<Map<Int, Boolean>> get() = _downloadIndexes
 
@@ -171,7 +186,12 @@ class RushViewModel(
                 }
 
                 is LyricsPageAction.OnUpdateShareLines -> {
-                    TODO()
+                    _sharePageState.update {
+                        it.copy(
+                            songDetails = action.songDetails,
+                            selectedLines = sortMapByKeys(action.shareLines)
+                        )
+                    }
                 }
 
                 is LyricsPageAction.OnUpdateSongLyrics -> {
@@ -205,6 +225,31 @@ class RushViewModel(
 
                 SavedPageAction.OnToggleSearchSheet -> {
                     toggleSearchSheet()
+                }
+            }
+        }
+    }
+
+    fun onSettingsPageAction(action: SettingsPageAction) {
+        viewModelScope.launch {
+            when (action) {
+                is SettingsPageAction.OnBatchDownload -> {
+                    batchDownload(action.files)
+                }
+
+                SettingsPageAction.OnClearIndexes -> {
+                    _settingsPageState.update {
+                        it.copy(
+                            batchDownload = BatchDownload(
+                                indexes = emptyMap()
+                            )
+                        )
+                    }
+                }
+
+                SettingsPageAction.OnDeleteSongs -> {
+                    songDao.deleteAllSongs()
+                    updateSavedState()
                 }
             }
         }
@@ -356,8 +401,14 @@ class RushViewModel(
         list: List<AudioFile>,
     ) {
         viewModelScope.launch {
-            _batchDownloading.value = true
-            val savedSongs = songs.value.map { it.id }
+            _settingsPageState.update {
+                it.copy(
+                    batchDownload = it.batchDownload.copy(
+                        isDownloading = true
+                    )
+                )
+            }
+            val savedSongs = _savedPageState.value.songsAsc.map { it.id }
 
             list.forEachIndexed { index, audioFile ->
                 val result = withContext(Dispatchers.IO) {
@@ -365,12 +416,30 @@ class RushViewModel(
                 }
 
                 when (result) {
-                    is Result.Error -> TODO()
+                    is Result.Error -> {
+                        _settingsPageState.update {
+                            it.copy(
+                                batchDownload = it.batchDownload.copy(
+                                    error = errorStringRes(result.error)
+                                )
+                            )
+                        }
+                    }
+
                     is Result.Success -> {
                         val id = result.data.first().id
 
                         if (id in savedSongs) {
-                            _downloadIndexes.value += index to true
+
+                            _settingsPageState.update {
+                                it.copy(
+                                    batchDownload = it.batchDownload.copy(
+                                        indexes = it.batchDownload.indexes + (index to true),
+                                        error = null
+                                    )
+                                )
+                            }
+
                         } else {
                             val song = withContext(Dispatchers.IO) {
                                 SongProvider.fetchLyrics(id)
@@ -378,12 +447,25 @@ class RushViewModel(
 
                             when (song) {
                                 is Result.Error -> {
-                                    _downloadIndexes.value += index to false
+                                    _settingsPageState.update {
+                                        it.copy(
+                                            batchDownload = it.batchDownload.copy(
+                                                indexes = it.batchDownload.indexes + (index to false)
+                                            )
+                                        )
+                                    }
                                 }
 
                                 is Result.Success -> {
                                     songDao.insertSong(song.data)
-                                    _downloadIndexes.value += index to true
+
+                                    _settingsPageState.update {
+                                        it.copy(
+                                            batchDownload = it.batchDownload.copy(
+                                                indexes = it.batchDownload.indexes + (index to true),
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -392,8 +474,15 @@ class RushViewModel(
 
             }
 
-            _songs.value = songDao.getAllSongs()
-            _batchDownloading.value = false
+            updateSavedState()
+            _settingsPageState.update {
+                it.copy(
+                    batchDownload = it.batchDownload.copy(
+                        isDownloading = false,
+                        error = null,
+                    )
+                )
+            }
         }
     }
 

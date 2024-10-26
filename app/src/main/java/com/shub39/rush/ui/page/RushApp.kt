@@ -35,6 +35,8 @@ fun RushApp(
     val searchSheetState by rushViewModel.searchSheet.collectAsState()
     val lyricsState by rushViewModel.lyricsPageState.collectAsStateWithLifecycle()
     val savedState by rushViewModel.savedPageState.collectAsStateWithLifecycle()
+    val shareState by rushViewModel.sharePageState.collectAsStateWithLifecycle()
+    val settingsState by rushViewModel.settingsPageState.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -82,7 +84,10 @@ fun RushApp(
                     }
 
                     composable<SettingsPage> {
-                        SettingPage(rushViewModel = rushViewModel)
+                        SettingPage(
+                            state = settingsState,
+                            action = rushViewModel::onSettingsPageAction
+                        )
                     }
 
                     composable<SharePage> {
@@ -93,7 +98,7 @@ fun RushApp(
                                     pagerState.animateScrollToPage(0)
                                 }
                             },
-                            rushViewModel = rushViewModel
+                            state = shareState
                         )
                     }
                 }

@@ -22,13 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.database.Song
 import com.shub39.rush.ui.page.component.ArtFromUrl
+import com.shub39.rush.ui.page.share.SongDetails
 
 @Composable
 fun SpotifyShareCard(
     modifier: Modifier,
-    song: Song,
+    song: SongDetails,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
@@ -89,7 +89,7 @@ fun SpotifyShareCard(
                                 )
 
                                 Text(
-                                    text = song.artists,
+                                    text = song.artist,
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 1,
