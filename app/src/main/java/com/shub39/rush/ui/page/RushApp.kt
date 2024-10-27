@@ -66,14 +66,14 @@ fun RushApp(
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = SavedPage,
+                    startDestination = SavedPage.ROUTE,
                     modifier = Modifier.padding(innerPadding),
                     enterTransition = { fadeIn(animationSpec = tween(200)) },
                     exitTransition = { fadeOut(animationSpec = tween(200)) },
                     popEnterTransition = { fadeIn(animationSpec = tween(200)) },
                     popExitTransition = { fadeOut(animationSpec = tween(200)) }
                 ) {
-                    composable<SavedPage> {
+                    composable(SavedPage.ROUTE) {
                         SavedPage(
                             state = savedState,
                             action = rushViewModel::onSavedPageAction,
@@ -82,18 +82,17 @@ fun RushApp(
                                     pagerState.animateScrollToPage(0)
                                 }
                             }
-
                         )
                     }
 
-                    composable<SettingsPage> {
+                    composable(SettingsPage.ROUTE) {
                         SettingPage(
                             state = settingsState,
                             action = rushViewModel::onSettingsPageAction
                         )
                     }
 
-                    composable<SharePage> {
+                    composable(SharePage.ROUTE) {
                         SharePage(
                             onDismiss = {
                                 navController.navigateUp()
@@ -114,7 +113,7 @@ fun RushApp(
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(1)
                     }
-                    navController.navigate(SharePage)
+                    navController.navigate(SharePage.ROUTE)
                 }
             )
         }
@@ -122,10 +121,16 @@ fun RushApp(
 }
 
 @Serializable
-object SavedPage
+object SavedPage {
+    const val ROUTE = "saved"
+}
 
 @Serializable
-object SettingsPage
+object SettingsPage {
+    const val ROUTE = "settings"
+}
 
 @Serializable
-object SharePage
+object SharePage {
+    const val ROUTE = "share"
+}

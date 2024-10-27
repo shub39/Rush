@@ -27,13 +27,13 @@ fun TopBar(
 
     TopAppBar(
         title = {
-            if (currentDestination?.route == SettingsPage::class.qualifiedName) {
+            if (currentDestination?.route == SettingsPage.ROUTE) {
                 Text(
                     text = stringResource(id = R.string.settings),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-            } else if (currentDestination?.route == SharePage::class.qualifiedName) {
+            } else if (currentDestination?.route == SharePage.ROUTE) {
                 Text(
                     text = stringResource(id = R.string.share),
                     style = MaterialTheme.typography.headlineMedium,
@@ -49,15 +49,15 @@ fun TopBar(
         },
         actions = {
             BackHandler(
-                enabled = currentDestination?.route == SettingsPage::class.qualifiedName
+                enabled = currentDestination?.route == SettingsPage.ROUTE
             ) {
                 navController.navigateUp()
             }
 
             IconButton(
                 onClick = {
-                    if (currentDestination?.route != SettingsPage::class.qualifiedName) {
-                        navController.navigate(SettingsPage) {
+                    if (currentDestination?.route != SettingsPage.ROUTE) {
+                        navController.navigate(SettingsPage.ROUTE) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -66,7 +66,7 @@ fun TopBar(
                     }
                 }
             ) {
-                if (currentDestination?.route !=  SettingsPage::class.qualifiedName) {
+                if (currentDestination?.route !=  SettingsPage.ROUTE) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_settings_24),
                         contentDescription = null,
