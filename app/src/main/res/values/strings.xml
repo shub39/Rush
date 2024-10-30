@@ -39,6 +39,6 @@
     <string name="request_failed">Request failed</string>
     <string name="no_results">No Results</string>
     <string name="parse_error">Parse Error</string>
-    <string name="io_error">IO Error, Try something else</string>
+    <string name="io_error">Network Error</string>
     <string name="unknown_error">An Error occurred</string>
 </resources>

@@ -76,7 +76,6 @@ import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.ui.page.lyrics.component.Empty
 import com.shub39.rush.ui.page.share.SongDetails
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -114,7 +113,6 @@ fun LyricsPage(
     )
 
     LaunchedEffect(state.song) {
-        delay(100)
         lazyListState.animateScrollToItem(0)
     }
 
@@ -146,26 +144,27 @@ fun LyricsPage(
 
         } else {
 
-            val displaySong = state.song
+            val song = state.song
 
-            LaunchedEffect(displaySong.lyrics) {
-                if (displaySong.lyrics.isNotEmpty()) {
+            LaunchedEffect(song.lyrics) {
+
+                if (song.lyrics.isNotEmpty()) {
                     source = "LrcLib"
-                } else if (displaySong.geniusLyrics != null) {
+                } else if (song.geniusLyrics != null) {
                     source = "Genius"
                 }
 
-                if (displaySong.syncedLyrics != null) {
+                if (song.syncedLyrics != null) {
                     syncedAvailable = true
 
                     sync = getMainTitle(state.playingSong.title).trim()
-                        .lowercase() == displaySong.title.trim()
+                        .lowercase() == song.title.trim()
                         .lowercase()
 
                 }
 
                 val request = ImageRequest.Builder(context)
-                    .data(displaySong.artUrl)
+                    .data(song.artUrl)
                     .allowHardware(false)
                     .build()
                 val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
@@ -210,10 +209,10 @@ fun LyricsPage(
             }
 
             LaunchedEffect(state.playingSong.title) {
-                syncedAvailable = (displaySong.syncedLyrics != null)
+                syncedAvailable = (song.syncedLyrics != null)
 
                 sync = getMainTitle(state.playingSong.title).trim()
-                    .lowercase() == displaySong.title.trim()
+                    .lowercase() == song.title.trim()
                     .lowercase() && syncedAvailable
             }
 
@@ -227,7 +226,7 @@ fun LyricsPage(
                 Column {
                     AnimatedVisibility(top > 2) {
                         ArtFromUrl(
-                            imageUrl = displaySong.artUrl,
+                            imageUrl = song.artUrl,
                             modifier = Modifier
                                 .height(150.dp)
                                 .fillMaxWidth(),
@@ -260,7 +259,7 @@ fun LyricsPage(
                             contentAlignment = Alignment.Center
                         ) {
                             ArtFromUrl(
-                                imageUrl = displaySong.artUrl,
+                                imageUrl = song.artUrl,
                                 modifier = Modifier
                                     .clip(MaterialTheme.shapes.small)
                                     .size(150.dp)
@@ -277,7 +276,7 @@ fun LyricsPage(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = displaySong.title,
+                                text = song.title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 2,
@@ -285,7 +284,7 @@ fun LyricsPage(
                             )
 
                             Text(
-                                text = displaySong.artists,
+                                text = song.artists,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
@@ -308,9 +307,9 @@ fun LyricsPage(
                                         copyToClipBoard(
                                             context,
                                             if (source == "LrcLib") {
-                                                displaySong.lyrics.joinToString("\n") { it.value }
+                                                song.lyrics.joinToString("\n") { it.value }
                                             } else {
-                                                displaySong.geniusLyrics?.joinToString("\n") { it.value } ?: ""
+                                                song.geniusLyrics?.joinToString("\n") { it.value } ?: ""
                                             },
                                             "Complete Lyrics"
                                         )
@@ -421,10 +420,10 @@ fun LyricsPage(
                                     IconButton(onClick = {
                                         action(LyricsPageAction.OnUpdateShareLines(
                                             songDetails = SongDetails(
-                                                title = displaySong.title,
-                                                artist = displaySong.artists,
-                                                album = displaySong.album,
-                                                artUrl = displaySong.artUrl ?: ""
+                                                title = song.title,
+                                                artist = song.artists,
+                                                album = song.album,
+                                                artUrl = song.artUrl ?: ""
                                             ),
                                             shareLines = selectedLines
                                         ))
@@ -460,7 +459,7 @@ fun LyricsPage(
                     state = lazyListState
                 ) {
                     items(
-                        items = if (source == "LrcLib") displaySong.lyrics else displaySong.geniusLyrics
+                        items = if (source == "LrcLib") song.lyrics else song.geniusLyrics
                             ?: emptyList(),
                         key = { it.key }
                     ) {
@@ -518,7 +517,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (displaySong.lyrics.isNotEmpty()) {
+                    if (song.lyrics.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.padding(10.dp))
 
@@ -543,7 +542,7 @@ fun LyricsPage(
                                     onClick = {
                                         openLinkInBrowser(
                                             context,
-                                            displaySong.sourceUrl
+                                            song.sourceUrl
                                         )
                                     },
                                 ) {
@@ -567,7 +566,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (displaySong.lyrics.isEmpty()) {
+                    if (song.lyrics.isEmpty()) {
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -589,14 +588,14 @@ fun LyricsPage(
                     }
 
                 }
-            } else if (displaySong.syncedLyrics != null) {
+            } else if (song.syncedLyrics != null) {
 
                 LaunchedEffect(state.playingSong.position) {
                     coroutineScope.launch {
                         var currentIndex =
                             getCurrentLyricIndex(
                                 state.playingSong.position,
-                                displaySong.syncedLyrics
+                                song.syncedLyrics
                             )
                         currentIndex -= 3
                         lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
@@ -612,7 +611,7 @@ fun LyricsPage(
                     ),
                     state = lazyListState
                 ) {
-                    items(displaySong.syncedLyrics, key = { it.time }) { lyric ->
+                    items(song.syncedLyrics, key = { it.time }) { lyric ->
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {

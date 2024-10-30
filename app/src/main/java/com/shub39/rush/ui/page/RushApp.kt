@@ -31,11 +31,11 @@ import org.koin.androidx.compose.koinViewModel
 fun RushApp(
     rushViewModel: RushViewModel = koinViewModel()
 ) {
-    val lyricsState by rushViewModel.lyricsPageState.collectAsStateWithLifecycle()
-    val savedState by rushViewModel.savedPageState.collectAsStateWithLifecycle()
-    val shareState by rushViewModel.sharePageState.collectAsStateWithLifecycle()
-    val settingsState by rushViewModel.settingsPageState.collectAsStateWithLifecycle()
-    val searchSheetState by rushViewModel.searchSheetState.collectAsStateWithLifecycle()
+    val lyricsState by rushViewModel.lyricsState.collectAsStateWithLifecycle()
+    val savedState by rushViewModel.savedState.collectAsStateWithLifecycle()
+    val shareState by rushViewModel.shareState.collectAsStateWithLifecycle()
+    val settingsState by rushViewModel.settingsState.collectAsStateWithLifecycle()
+    val searchSheetState by rushViewModel.searchState.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
