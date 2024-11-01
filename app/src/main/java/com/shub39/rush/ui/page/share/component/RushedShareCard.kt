@@ -151,11 +151,5 @@ fun RushedShareCard(
             }
         }
 
-        CardEditRow(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            colors = true,
-            corners = true,
-            tint = cardColors.contentColor
-        )
     }
 }

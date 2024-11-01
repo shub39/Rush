@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
+import com.shub39.rush.database.CardColors
 import com.shub39.rush.ui.page.setting.component.AudioFile
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.listener.NotificationListener
@@ -70,6 +71,8 @@ fun SettingPage(
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val appTheme by SettingsDataStore.getToggleThemeFlow(context)
         .collectAsState(initial = "Gruvbox")
+    val colorPreference by SettingsDataStore.getLyricsColorFlow(context)
+        .collectAsState(CardColors.MUTED.color)
 
     Box {
         LazyColumn(
@@ -176,27 +179,24 @@ fun SettingPage(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val colorPreference by SettingsDataStore.getLyricsColorFlow(context)
-                            .collectAsState("muted")
-
                         Text(text = stringResource(id = R.string.vibrant_colors))
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Switch(
-                                checked = colorPreference == "vibrant",
+                                checked = colorPreference == CardColors.VIBRANT.color,
                                 onCheckedChange = {
                                     coroutineScope.launch {
                                         when (it) {
                                             true -> SettingsDataStore.setLyricsColor(
                                                 context,
-                                                "vibrant"
+                                                CardColors.VIBRANT.color
                                             )
 
                                             else -> SettingsDataStore.setLyricsColor(
                                                 context,
-                                                "muted"
+                                                CardColors.MUTED.color
                                             )
                                         }
                                     }

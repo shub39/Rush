@@ -7,6 +7,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.shub39.rush.database.AppTheme
 
 @Composable
 fun RushTheme(
@@ -21,13 +22,13 @@ fun RushTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme && theme == "Yellow" -> YellowDarkScheme
+        darkTheme && theme == AppTheme.YELLOW.type -> YellowDarkScheme
 
-        darkTheme && theme == "Lime" -> LimeDarkScheme
+        darkTheme && theme == AppTheme.LIME.type -> LimeDarkScheme
 
-        !darkTheme && theme == "Lime" -> LimeLightScheme
+        !darkTheme && theme == AppTheme.LIME.type -> LimeLightScheme
 
-        !darkTheme && theme == "Yellow" -> YellowLightScheme
+        !darkTheme && theme == AppTheme.YELLOW.type -> YellowLightScheme
 
         else -> {
             if (darkTheme) YellowDarkScheme else YellowLightScheme

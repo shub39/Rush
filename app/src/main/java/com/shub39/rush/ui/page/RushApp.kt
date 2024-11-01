@@ -100,7 +100,8 @@ fun RushApp(
                                     pagerState.animateScrollToPage(0)
                                 }
                             },
-                            state = shareState
+                            state = shareState,
+                            action = rushViewModel::onSharePageAction
                         )
                     }
                 }

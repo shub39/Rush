@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.shub39.rush.logic.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -18,22 +19,31 @@ object SettingsDataStore {
     private const val DATA_STORE_FILE_NAME = "settings.pb"
     private val Context.dataStore by preferencesDataStore( name = DATA_STORE_FILE_NAME )
 
-    private val MAX_LINES = intPreferencesKey("max_lines")
-    private val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
-    private val SORT_ORDER = stringPreferencesKey("sort_order")
-    private val CARD_COLOR = stringPreferencesKey("card_color")
-    private val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
-    private val CARD_THEME = stringPreferencesKey("card_theme")
-    private val CARD_BACKGROUND = intPreferencesKey("card_background")
-    private val CARD_CONTENT = intPreferencesKey("card_content")
-    private val LYRICS_COLOR = stringPreferencesKey("lyrics_color")
+    val MAX_LINES = intPreferencesKey("max_lines")
+    val TOGGLE_THEME = stringPreferencesKey("toggle_theme")
+    val SORT_ORDER = stringPreferencesKey("sort_order")
+    val CARD_COLOR = stringPreferencesKey("card_color")
+    val CARD_ROUNDNESS = stringPreferencesKey("card_roundness")
+    val CARD_THEME = stringPreferencesKey("card_theme")
+    val CARD_BACKGROUND = intPreferencesKey("card_background")
+    val CARD_CONTENT = intPreferencesKey("card_content")
+    val LYRICS_COLOR = stringPreferencesKey("lyrics_color")
+    val CARD_FIT = stringPreferencesKey("card_fit")
+
+    fun getCardFitFlow(context: Context): Flow<String> = context.dataStore.data
+        .catch {
+            Log.e(TAG, it.message, it)
+        }
+        .map { preferences ->
+            preferences[CARD_FIT] ?: CardFit.STANDARD.type
+        }
 
     fun getLyricsColorFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[LYRICS_COLOR] ?: "muted"
+            preferences[LYRICS_COLOR] ?: CardColors.MUTED.color
         }
 
     fun getCardBackgroundFlow(context: Context): Flow<Int> = context.dataStore.data
@@ -57,7 +67,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_THEME] ?: "Spotify"
+            preferences[CARD_THEME] ?: CardTheme.SPOTIFY.type
         }
 
     fun getCardColorFlow(context: Context): Flow<String> = context.dataStore.data
@@ -65,7 +75,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_COLOR] ?: "Vibrant"
+            preferences[CARD_COLOR] ?: CardColors.VIBRANT.color
         }
 
     fun getCardRoundnessFlow(context: Context): Flow<String> = context.dataStore.data
@@ -73,7 +83,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[CARD_ROUNDNESS] ?: "Rounded"
+            preferences[CARD_ROUNDNESS] ?: CornerRadius.ROUNDED.type
         }
 
     fun getSortOrderFlow(context: Context): Flow<String> = context.dataStore.data
@@ -81,7 +91,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[SORT_ORDER] ?: "title_asc"
+            preferences[SORT_ORDER] ?: SortOrder.TITLE_ASC.sortOrder
         }
 
     fun getToggleThemeFlow(context: Context): Flow<String> = context.dataStore.data
@@ -89,7 +99,7 @@ object SettingsDataStore {
             Log.e(TAG, it.message, it)
         }
         .map { preferences ->
-            preferences[TOGGLE_THEME] ?: "Yellow"
+            preferences[TOGGLE_THEME] ?: AppTheme.YELLOW.type
         }
 
     fun getMaxLinesFlow(context: Context): Flow<Int> = context.dataStore.data
@@ -99,6 +109,12 @@ object SettingsDataStore {
         .map { preferences ->
             preferences[MAX_LINES] ?: 6
         }
+
+    suspend fun updateCardFit(context: Context, newCardFit: String) {
+        context.dataStore.edit { settings ->
+            settings[CARD_FIT] = newCardFit
+        }
+    }
 
     suspend fun updateCardBackground(context: Context, newCardBackground: Int) {
         context.dataStore.edit { settings ->
@@ -153,4 +169,31 @@ object SettingsDataStore {
             settings[TOGGLE_THEME] = newToggleTheme
         }
     }
+}
+
+enum class CardColors(val color: String) {
+    MUTED("Muted"),
+    VIBRANT("Vibrant"),
+    CUSTOM("Custom")
+}
+
+enum class CornerRadius(val type: String) {
+    DEFAULT("Default"),
+    ROUNDED("Rounded")
+}
+
+enum class CardTheme(val type: String) {
+    SPOTIFY("Spotify"),
+    RUSHED("Rushed")
+}
+
+enum class AppTheme(val type: String) {
+    YELLOW("Yellow"),
+    LIME("Lime"),
+    MATERIAL("Material")
+}
+
+enum class CardFit(val type: String) {
+    FIT("Fit"),
+    STANDARD("Standard")
 }

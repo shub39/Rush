@@ -1,6 +1,7 @@
 package com.shub39.rush.ui.page.share.component
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.database.CardFit
 import com.shub39.rush.ui.page.component.ArtFromUrl
 import com.shub39.rush.ui.page.share.SongDetails
 
@@ -32,6 +34,7 @@ fun SpotifyShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
+    fit: String
 ) {
     var variant by remember { mutableStateOf(true) }
 
@@ -49,80 +52,138 @@ fun SpotifyShareCard(
     )
 
     Box(contentAlignment = Alignment.Center) {
-        Card(
-            modifier = modifier,
-            colors = cardColors,
-            shape = cardCorners
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+        if (fit == CardFit.FIT.type) {
+            Card(
+                modifier = modifier,
+                colors = cardColors,
+                shape = cardCorners,
             ) {
-                Card(
-                    modifier = Modifier.padding(46.dp),
-                    onClick = { variant = !variant },
-                    colors = CardDefaults.cardColors(
-                        contentColor = innerContentColor,
-                        containerColor = innerContainerColor
-                    )
+                Box(
+                    modifier = Modifier,
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column (modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            ArtFromUrl(
-                                imageUrl = song.artUrl,
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(MaterialTheme.shapes.small)
-                            )
-
-                            Column(
-                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    Card(
+                        modifier = Modifier.padding(32.dp),
+                        onClick = { variant = !variant },
+                        colors = CardDefaults.cardColors(
+                            contentColor = innerContentColor,
+                            containerColor = innerContainerColor
+                        )
+                    ) {
+                        Column (modifier = Modifier.padding(16.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = song.title,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
+                                ArtFromUrl(
+                                    imageUrl = song.artUrl,
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(MaterialTheme.shapes.small)
                                 )
 
-                                Text(
-                                    text = song.artist,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.padding(8.dp))
-
-                        LazyColumn {
-                            sortedLines.forEach {
-                                item {
+                                Column(
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                                ) {
                                     Text(
-                                        text = it.value,
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        text = song.title,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+
+                                    Text(
+                                        text = song.artist,
+                                        style = MaterialTheme.typography.bodySmall,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(bottom = 10.dp)
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                             }
+
+                            Spacer(modifier = Modifier.padding(8.dp))
+
+                            LazyColumn {
+                                sortedLines.forEach {
+                                    item {
+                                        Text(
+                                            text = it.value,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        } else {
+            Card(
+                modifier = modifier,
+                onClick = { variant = !variant },
+                colors = CardDefaults.cardColors(
+                    contentColor = innerContentColor,
+                    containerColor = innerContainerColor
+                )
+            ) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ArtFromUrl(
+                            imageUrl = song.artUrl,
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(MaterialTheme.shapes.small)
+                        )
+
+                        Column(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                        ) {
+                            Text(
+                                text = song.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.ExtraBold,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Text(
+                                text = song.artist,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
                     }
 
+                    Spacer(modifier = Modifier.padding(8.dp))
+
+                    LazyColumn {
+                        sortedLines.forEach {
+                            item {
+                                Text(
+                                    text = it.value,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(bottom = 10.dp)
+                                )
+                            }
+                        }
+                    }
                 }
+
             }
         }
-
-        CardEditRow(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            colors = true,
-            corners = true,
-            tint = cardColors.contentColor
-        )
     }
 }

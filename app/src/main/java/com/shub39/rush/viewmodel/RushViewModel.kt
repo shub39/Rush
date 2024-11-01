@@ -22,6 +22,8 @@ import com.shub39.rush.ui.page.saved.SavedPageState
 import com.shub39.rush.ui.page.setting.BatchDownload
 import com.shub39.rush.ui.page.setting.SettingsPageAction
 import com.shub39.rush.ui.page.setting.SettingsPageState
+import com.shub39.rush.ui.page.share.ExtractedColors
+import com.shub39.rush.ui.page.share.SharePageAction
 import com.shub39.rush.ui.page.share.SharePageState
 import com.shub39.rush.ui.page.share.SongDetails
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RushViewModel(
-    database: SongDatabase
+    database: SongDatabase,
 ) : ViewModel() {
 
     private val songDao = database.songDao()
@@ -199,6 +201,16 @@ class RushViewModel(
         }
     }
 
+    fun onSharePageAction(action: SharePageAction) {
+        viewModelScope.launch {
+            when (action) {
+                is SharePageAction.UpdateExtractedColors -> {
+                    updateExtractedColors(action.colors)
+                }
+            }
+        }
+    }
+
     fun onSearchSheetAction(action: SearchSheetAction) {
         viewModelScope.launch {
             when (action) {
@@ -227,6 +239,21 @@ class RushViewModel(
             it.copy(
                 songDetails = songDetails,
                 selectedLines = sortMapByKeys(shareLines)
+            )
+        }
+    }
+
+    private fun updateExtractedColors(
+        colors: ExtractedColors
+    ) {
+        _shareState.update {
+            it.copy(
+                extractedColors = it.extractedColors.copy(
+                    cardContentMuted = colors.cardContentMuted,
+                    cardContentDominant = colors.cardContentDominant,
+                    cardBackgroundMuted = colors.cardBackgroundMuted,
+                    cardBackgroundDominant = colors.cardBackgroundDominant
+                )
             )
         }
     }

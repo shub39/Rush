@@ -54,30 +54,32 @@ fun TopBar(
                 navController.navigateUp()
             }
 
-            IconButton(
-                onClick = {
-                    if (currentDestination?.route != SettingsPage.ROUTE) {
-                        navController.navigate(SettingsPage.ROUTE) {
-                            launchSingleTop = true
-                            restoreState = true
+            if (currentDestination?.route != SharePage.ROUTE) {
+                IconButton(
+                    onClick = {
+                        if (currentDestination?.route != SettingsPage.ROUTE) {
+                            navController.navigate(SettingsPage.ROUTE) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        } else {
+                            navController.navigateUp()
                         }
-                    } else {
-                        navController.navigateUp()
                     }
-                }
-            ) {
-                if (currentDestination?.route !=  SettingsPage.ROUTE) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_settings_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_arrow_back_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                ) {
+                    if (currentDestination?.route !=  SettingsPage.ROUTE) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_settings_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_arrow_back_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         }

@@ -48,7 +48,7 @@ fun SavedPage(
     val coroutineScope = rememberCoroutineScope()
 
     val sortOrder by SettingsDataStore.getSortOrderFlow(context)
-        .collectAsState(initial = "title_asc")
+        .collectAsState(initial = SortOrder.TITLE_ASC.sortOrder)
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(
@@ -82,14 +82,14 @@ fun SavedPage(
                     }
                 }
 
-                if (sortOrder == "title_asc" || sortOrder == "title_desc") {
+                if (sortOrder == SortOrder.TITLE_ASC.sortOrder || sortOrder == SortOrder.TITLE_DESC.sortOrder) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                             .animateContentSize()
                     ) {
                         items(
-                            if (sortOrder == "title_asc") state.songsAsc else state.songsDesc,
+                            if (sortOrder == SortOrder.TITLE_ASC.sortOrder) state.songsAsc else state.songsDesc,
                             key = { it.id }
                         ) {
                             SongCard(
@@ -117,7 +117,7 @@ fun SavedPage(
                             .animateContentSize()
                     ) {
                         items(
-                            if (sortOrder == "artist_asc") state.groupedArtist else state.groupedAlbum,
+                            if (sortOrder == SortOrder.ARTISTS_ASC.sortOrder) state.groupedArtist else state.groupedAlbum,
                             key = { it.key }
                         ) { map ->
                             GroupedCard(

@@ -5,8 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -26,13 +25,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,9 +59,14 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
+import com.shub39.rush.database.CardColors
+import com.shub39.rush.database.CardFit
+import com.shub39.rush.database.CardTheme
+import com.shub39.rush.database.CornerRadius
 import com.shub39.rush.database.SettingsDataStore
 import com.shub39.rush.logic.UILogic.isValidFilename
 import com.shub39.rush.logic.UILogic.shareImage
+import com.shub39.rush.ui.page.share.component.ListSelect
 import com.shub39.rush.ui.page.share.component.RushedShareCard
 import com.shub39.rush.ui.page.share.component.SpotifyShareCard
 import kotlinx.coroutines.launch
@@ -75,42 +77,53 @@ import org.koin.compose.koinInject
 fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
+    action: (SharePageAction) -> Unit,
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
-    val colorPicker = rememberColorPickerController()
+    val colorPickerController = rememberColorPickerController()
     val context = LocalContext.current
 
+    val cardFitFlow = remember { SettingsDataStore.getCardFitFlow(context) }
     val cardThemeFlow = remember { SettingsDataStore.getCardThemeFlow(context) }
     val cardColorFlow = remember { SettingsDataStore.getCardColorFlow(context) }
     val cardCornersFlow = remember { SettingsDataStore.getCardRoundnessFlow(context) }
     val mutableCardContent = remember { SettingsDataStore.getCardContentFlow(context) }
     val mutableCardBackground = remember { SettingsDataStore.getCardBackgroundFlow(context) }
-    val cardTheme by cardThemeFlow.collectAsState(initial = "Default")
-    val cardColorType by cardColorFlow.collectAsState(initial = "")
-    val cardCornersType by cardCornersFlow.collectAsState(initial = "")
+    val cardFit by cardFitFlow.collectAsState(initial = CardFit.FIT.type)
+    val cardTheme by cardThemeFlow.collectAsState(initial = CardTheme.RUSHED.type)
+    val cardColorType by cardColorFlow.collectAsState(initial = CardColors.MUTED.color)
+    val cardCornersType by cardCornersFlow.collectAsState(initial = CornerRadius.DEFAULT.type)
     val mCardContent by mutableCardContent.collectAsState(initial = Color.White.toArgb())
     val mCardBackground by mutableCardBackground.collectAsState(initial = Color.Black.toArgb())
 
-    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentDominant by remember { mutableStateOf(Color.White) }
-    var cardBackgroundMuted by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentMuted by remember { mutableStateOf(Color.LightGray) }
-
     var namePicker by remember { mutableStateOf(false) }
-    var colorPickerOpen by remember { mutableStateOf(false) }
-    var editTarget by remember { mutableStateOf("") }
+    var editSheet by remember { mutableStateOf(false) }
+    var colorPicker by remember { mutableStateOf(false) }
+    var editTarget by remember { mutableStateOf("content") }
 
-    val modifier = Modifier
-        .height(640.dp)
-        .width(360.dp)
-        .drawWithContent {
-            cardGraphicsLayer.record {
-                this@drawWithContent.drawContent()
+
+    val modifier = if (cardFit == CardFit.FIT.type) {
+        Modifier
+            .width(360.dp)
+            .drawWithContent {
+                cardGraphicsLayer.record {
+                    this@drawWithContent.drawContent()
+                }
+                drawLayer(cardGraphicsLayer)
             }
-            drawLayer(cardGraphicsLayer)
-        }
+    } else {
+        Modifier
+            .height(640.dp)
+            .width(360.dp)
+            .drawWithContent {
+                cardGraphicsLayer.record {
+                    this@drawWithContent.drawContent()
+                }
+                drawLayer(cardGraphicsLayer)
+            }
+    }
 
     LaunchedEffect(state.songDetails) {
         val request = ImageRequest.Builder(context)
@@ -123,13 +136,13 @@ fun SharePage(
             if (drawable != null) {
                 Palette.from(drawable.toBitmap()).generate { palette ->
                     palette?.let {
-                        cardBackgroundDominant =
+                        val cardBackgroundDominant =
                             Color(
                                 it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
                                 ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
                                 ?: Color.DarkGray.toArgb()
                             )
-                        cardContentDominant =
+                        val cardContentDominant =
                             Color(
                                 it.vibrantSwatch?.bodyTextColor
                                     ?: it.lightVibrantSwatch?.bodyTextColor
@@ -137,16 +150,27 @@ fun SharePage(
                                     ?: it.dominantSwatch?.bodyTextColor
                                     ?: Color.White.toArgb()
                             )
-                        cardBackgroundMuted =
+                        val cardBackgroundMuted =
                             Color(
                                 it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
                                 ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
                             )
-                        cardContentMuted =
+                        val cardContentMuted =
                             Color(
                                 it.mutedSwatch?.bodyTextColor ?: it.darkMutedSwatch?.bodyTextColor
                                 ?: it.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
                             )
+
+                        action(
+                            SharePageAction.UpdateExtractedColors(
+                                ExtractedColors(
+                                    cardBackgroundDominant = cardBackgroundDominant,
+                                    cardContentDominant = cardContentDominant,
+                                    cardBackgroundMuted = cardBackgroundMuted,
+                                    cardContentMuted = cardContentMuted
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -155,23 +179,24 @@ fun SharePage(
 
     val cornerRadius by animateDpAsState(
         targetValue = when (cardCornersType) {
-            "Rounded" -> 16.dp
+            CornerRadius.DEFAULT.type -> 0.dp
+            CornerRadius.ROUNDED.type -> 16.dp
             else -> 0.dp
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
         targetValue = when (cardColorType) {
-            "Muted" -> cardBackgroundMuted
-            "Vibrant" -> cardBackgroundDominant
-            "Custom" -> Color(mCardBackground)
+            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
+            CardColors.VIBRANT.color -> state.extractedColors.cardBackgroundDominant
+            CardColors.CUSTOM.color -> Color(mCardBackground)
             else -> MaterialTheme.colorScheme.primaryContainer
         }, label = "container"
     )
     val contentColor by animateColorAsState(
         targetValue = when (cardColorType) {
-            "Muted" -> cardContentMuted
-            "Vibrant" -> cardContentDominant
-            "Custom" -> Color(mCardContent)
+            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
+            CardColors.VIBRANT.color -> state.extractedColors.cardContentDominant
+            CardColors.CUSTOM.color -> Color(mCardContent)
             else -> MaterialTheme.colorScheme.onPrimaryContainer
         }, label = "content"
     )
@@ -183,122 +208,117 @@ fun SharePage(
 
     BackHandler { onDismiss() }
 
-    LazyColumn(
+    Box(
         modifier = Modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
+        contentAlignment = Alignment.Center
     ) {
-        item {
-            when (cardTheme) {
-                "Spotify" -> SpotifyShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                )
+        when (cardTheme) {
+            "Spotify" -> SpotifyShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+                fit = cardFit
+            )
 
-                "Rushed" -> RushedShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners
-                )
-            }
+            "Rushed" -> RushedShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners
+            )
         }
 
-        item {
-            SingleChoiceSegmentedButtonRow {
-                listOf("Spotify", "Rushed").forEachIndexed { index, style ->
-                    SegmentedButton(
-                        label = { Text(text = style) },
-                        selected = cardTheme == style,
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 32.dp)
+        ) {
+            AnimatedVisibility(
+                visible = cardColorType == CardColors.CUSTOM.color
+            ) {
+                Row {
+                    FloatingActionButton(
                         onClick = {
                             coroutineScope.launch {
-                                SettingsDataStore.updateCardTheme(context, style)
+                                editTarget = "content"
+                                colorPicker = true
                             }
                         },
-                        shape = when (index) {
-                            0 -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                            1 -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
-                            else -> RoundedCornerShape(0.dp)
-                        }
+                        containerColor = Color(mCardContent),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        content = {}
+                    )
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    FloatingActionButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                editTarget = "background"
+                                colorPicker = true
+                            }
+                        },
+                        containerColor = Color(mCardBackground),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        content = {}
                     )
                 }
             }
-        }
 
-        item {
-            Row {
-                AnimatedVisibility(visible = cardColorType == "Custom") {
-                    Row {
-                        FloatingActionButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    editTarget = "content"
-                                    colorPickerOpen = true
-                                }
-                            },
-                            containerColor = Color(mCardContent),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            content = {}
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            FloatingActionButton(
+                onClick = { namePicker = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_download_done_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+
+                        shareImage(
+                            context,
+                            bitmap,
+                            "${state.songDetails.artist}-${state.songDetails.title}.png"
                         )
 
-                        Spacer(modifier = Modifier.padding(4.dp))
-
-                        FloatingActionButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    editTarget = "background"
-                                    colorPickerOpen = true
-                                }
-                            },
-                            containerColor = Color(mCardBackground),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            content = {}
-                        )
+                        onDismiss()
                     }
-                }
+                },
+                shape = MaterialTheme.shapes.extraLarge,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_share_24),
+                    contentDescription = null
+                )
+            }
 
-                Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = Modifier.padding(4.dp))
 
-                FloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            namePicker = true
-                        }
-                    },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.extraLarge
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_download_done_24),
-                        contentDescription = null,
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.padding(4.dp))
-
-                FloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                            shareImage(context, bitmap, "${state.songDetails.artist}-${state.songDetails.title}.png")
-                            onDismiss()
-                        }
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_share_24),
-                        contentDescription = null
-                    )
-                }
+            FloatingActionButton(
+                onClick = { editSheet = true },
+                shape = MaterialTheme.shapes.extraLarge,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    painterResource(R.drawable.baseline_edit_square_24),
+                    contentDescription = null
+                )
             }
         }
     }
@@ -337,10 +357,68 @@ fun SharePage(
         }
     }
 
-    if (colorPickerOpen) {
+    if (editSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { editSheet = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ListSelect(
+                    title = stringResource(R.string.card_theme),
+                    options = CardTheme.entries.map { it.type }.toList(),
+                    selected = cardTheme,
+                    onSelectedChange = {
+                        coroutineScope.launch {
+                            SettingsDataStore.updateCardTheme(context, it)
+                        }
+                    }
+                )
+
+                ListSelect(
+                    title = stringResource(R.string.card_color),
+                    options = CardColors.entries.map { it.color }.toList(),
+                    selected = cardColorType,
+                    onSelectedChange = {
+                        coroutineScope.launch {
+                            SettingsDataStore.updateCardColor(context, it)
+                        }
+                    }
+                )
+
+                ListSelect(
+                    title = stringResource(R.string.card_size),
+                    options = CardFit.entries.map { it.type }.toList(),
+                    selected = cardFit,
+                    onSelectedChange = {
+                        coroutineScope.launch {
+                            SettingsDataStore.updateCardFit(context, it)
+                        }
+                    }
+                )
+
+                ListSelect(
+                    title = stringResource(R.string.card_corners),
+                    options = CornerRadius.entries.map { it.type }.toList(),
+                    selected = cardCornersType,
+                    onSelectedChange = {
+                        coroutineScope.launch {
+                            SettingsDataStore.updateCardRoundness(context, it)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    if (colorPicker) {
         BasicAlertDialog(
             onDismissRequest = {
-                colorPickerOpen = false
+                colorPicker = false
             }
         ) {
             Card(
@@ -361,7 +439,7 @@ fun SharePage(
                         initialColor = if (editTarget == "content") Color(mCardContent) else Color(
                             mCardBackground
                         ),
-                        controller = colorPicker
+                        controller = colorPickerController
                     )
 
                     BrightnessSlider(
@@ -371,7 +449,7 @@ fun SharePage(
                         initialColor = if (editTarget == "content") Color(mCardContent) else Color(
                             mCardBackground
                         ),
-                        controller = colorPicker
+                        controller = colorPickerController
                     )
 
                     AlphaTile(
@@ -379,7 +457,7 @@ fun SharePage(
                             .size(80.dp)
                             .padding(10.dp)
                             .clip(RoundedCornerShape(6.dp)),
-                        controller = colorPicker
+                        controller = colorPickerController
                     )
 
                     Button(
@@ -388,16 +466,16 @@ fun SharePage(
                                 if (editTarget == "content") {
                                     SettingsDataStore.updateCardContent(
                                         context,
-                                        colorPicker.selectedColor.value.toArgb()
+                                        colorPickerController.selectedColor.value.toArgb()
                                     )
                                 } else {
                                     SettingsDataStore.updateCardBackground(
                                         context,
-                                        colorPicker.selectedColor.value.toArgb()
+                                        colorPickerController.selectedColor.value.toArgb()
                                     )
                                 }
                             }
-                            colorPickerOpen = false
+                            colorPicker = false
                         }
                     ) {
                         Text(

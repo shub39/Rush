@@ -41,4 +41,8 @@
     <string name="parse_error">Parse Error</string>
     <string name="io_error">Network Error</string>
     <string name="unknown_error">An Error occurred</string>
+    <string name="card_theme">Card Theme</string>
+    <string name="card_color">Card Colors</string>
+    <string name="card_size">Card Size</string>
+    <string name="card_corners">Card Corners</string>
 </resources>
