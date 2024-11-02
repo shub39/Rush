@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -22,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -29,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -63,32 +67,50 @@ fun GetAudioFiles(
     indexes: Map<Int, Boolean>,
     modifier: Modifier
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
     val documentFile = DocumentFile.fromTreeUri(context, directoryUri)
     var isLoadingFiles by remember { mutableStateOf(true) }
 
     LaunchedEffect(directoryUri) {
-        if (documentFile != null && documentFile.isDirectory) {
-            for (file in documentFile.listFiles()) {
-                if (file.isFile && file.type?.startsWith("audio/") == true) {
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(context, file.uri)
+        coroutineScope.launch(Dispatchers.IO) {
+            if (documentFile != null && documentFile.isDirectory) {
+                fun processFiles(directory: DocumentFile) {
+                    for (file in directory.listFiles()) {
+                        if (file.isDirectory) {
+                            processFiles(file)
+                        } else if (file.isFile && file.type?.startsWith("audio/") == true) {
+                            val retriever = MediaMetadataRetriever()
+                            retriever.setDataSource(context, file.uri)
 
-                    val title =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                    val artist =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                            val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                            val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
 
-                    if (title != null && artist != null) {
-                        update(AudioFile(title, artist))
+                            if (title != null && artist != null) {
+                                update(AudioFile(title, artist))
+                            }
+
+                            retriever.release()
+                        }
                     }
-
-                    retriever.release()
                 }
-            }
-        }
 
-        isLoadingFiles = false
+                processFiles(documentFile)
+            }
+
+            isLoadingFiles = false
+        }
     }
+
+    LaunchedEffect(indexes) {
+        val index = indexes.size - 3
+
+        if (index > 0) {
+            listState.animateScrollToItem(index)
+        }
+    }
+
 
     if (isLoadingFiles) {
         CircularProgressIndicator(
@@ -100,7 +122,8 @@ fun GetAudioFiles(
                 modifier = Modifier
                     .height(400.dp)
                     .padding(8.dp),
-                contentPadding = PaddingValues(4.dp)
+                contentPadding = PaddingValues(4.dp),
+                state = listState
             ) {
                 items(audioFiles.size) { index ->
                     DownloaderCard(

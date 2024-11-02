@@ -76,6 +76,7 @@ import com.shub39.rush.logic.UILogic.openLinkInBrowser
 import com.shub39.rush.logic.UILogic.updateSelectedLines
 import com.shub39.rush.ui.page.lyrics.component.Empty
 import com.shub39.rush.ui.page.share.SongDetails
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -113,6 +114,7 @@ fun LyricsPage(
     )
 
     LaunchedEffect(state.song) {
+        delay(100)
         lazyListState.animateScrollToItem(0)
     }
 
