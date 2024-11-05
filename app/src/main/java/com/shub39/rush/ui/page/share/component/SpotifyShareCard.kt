@@ -128,12 +128,13 @@ fun SpotifyShareCard(
                 colors = CardDefaults.cardColors(
                     contentColor = innerContentColor,
                     containerColor = innerContainerColor
-                )
+                ),
+                shape = cardCorners
             ) {
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(46.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Row(

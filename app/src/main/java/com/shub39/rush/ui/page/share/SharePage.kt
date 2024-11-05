@@ -1,6 +1,7 @@
 package com.shub39.rush.ui.page.share
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -213,23 +214,27 @@ fun SharePage(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (cardTheme) {
-            "Spotify" -> SpotifyShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners,
-                fit = cardFit
-            )
+        AnimatedContent(
+            targetState = cardTheme, label = "cardTheme"
+        ) {
+            when (it) {
+                "Spotify" -> SpotifyShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    fit = cardFit
+                )
 
-            "Rushed" -> RushedShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners
-            )
+                "Rushed" -> RushedShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners
+                )
+            }
         }
 
         Row(
