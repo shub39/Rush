@@ -316,7 +316,7 @@ class RushViewModel(
         query: String,
         fetch: Boolean = _lyricsState.value.autoChange,
     ) {
-        if (query.isEmpty() || _lyricsState.value.searching.first) return
+        if (query.isEmpty() || _lyricsState.value.searching.first || query == _lastSearched.value) return
 
         viewModelScope.launch {
             _lyricsState.update {

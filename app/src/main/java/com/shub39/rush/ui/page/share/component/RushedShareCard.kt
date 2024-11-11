@@ -85,7 +85,8 @@ fun RushedShareCard(
 
             Column(
                 modifier = Modifier
-                    .padding(46.dp)
+                    .fillMaxWidth()
+                    .padding(28.dp)
                     .align(Alignment.Center)
             ) {
                 LazyColumn(

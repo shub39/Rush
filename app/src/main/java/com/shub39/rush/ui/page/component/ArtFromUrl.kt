@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
@@ -20,6 +21,8 @@ import org.koin.compose.koinInject
 fun ArtFromUrl(
     imageUrl: String?,
     modifier: Modifier = Modifier,
+    baseColor: Color = MaterialTheme.colorScheme.surface,
+    highlightColor: Color = MaterialTheme.colorScheme.primary,
     imageLoader: ImageLoader = koinInject()
 ) {
     CoilImage(
@@ -29,8 +32,8 @@ fun ArtFromUrl(
         component = rememberImageComponent {
             +ShimmerPlugin(
                 Shimmer.Resonate(
-                    baseColor = MaterialTheme.colorScheme.surface,
-                    highlightColor = MaterialTheme.colorScheme.primary
+                    baseColor = baseColor,
+                    highlightColor = highlightColor
                 )
             )
         },

@@ -229,6 +229,8 @@ fun LyricsPage(
                     AnimatedVisibility(top > 2) {
                         ArtFromUrl(
                             imageUrl = song.artUrl,
+                            highlightColor = cardContent,
+                            baseColor = cardBackground,
                             modifier = Modifier
                                 .height(150.dp)
                                 .fillMaxWidth(),
@@ -262,6 +264,8 @@ fun LyricsPage(
                         ) {
                             ArtFromUrl(
                                 imageUrl = song.artUrl,
+                                highlightColor = cardContent,
+                                baseColor = cardBackground,
                                 modifier = Modifier
                                     .clip(MaterialTheme.shapes.small)
                                     .size(150.dp)

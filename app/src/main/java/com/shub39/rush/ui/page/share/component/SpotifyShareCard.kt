@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -63,7 +64,9 @@ fun SpotifyShareCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
-                        modifier = Modifier.padding(32.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(28.dp),
                         onClick = { variant = !variant },
                         colors = CardDefaults.cardColors(
                             contentColor = innerContentColor,
@@ -134,7 +137,7 @@ fun SpotifyShareCard(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(46.dp),
+                        .padding(32.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Row(
