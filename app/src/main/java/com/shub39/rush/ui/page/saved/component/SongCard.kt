@@ -46,7 +46,6 @@ fun SongCard(
         ) {
             ArtFromUrl(
                 imageUrl = result.artUrl,
-                contentDescription = result.title,
                 modifier = Modifier
                     .size(70.dp)
                     .clip(MaterialTheme.shapes.small),

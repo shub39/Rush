@@ -43,7 +43,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import com.shub39.rush.R
 import com.shub39.rush.database.CardColors
 import com.shub39.rush.ui.page.setting.component.AudioFile
@@ -389,7 +388,7 @@ fun SettingPage(
 
                     Button(
                         onClick = {
-                            startActivity(context, intent, null)
+                            context.startActivity(intent)
                             notificationRequestDialog = false
                         },
                         modifier = Modifier.fillMaxWidth(),

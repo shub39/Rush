@@ -40,7 +40,6 @@ fun SearchResultCard(
         ) {
             ArtFromUrl(
                 imageUrl = result.artUrl,
-                contentDescription = result.title,
                 modifier = Modifier
                     .size(80.dp)
                     .padding(8.dp)
