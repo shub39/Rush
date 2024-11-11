@@ -316,7 +316,7 @@ class RushViewModel(
         query: String,
         fetch: Boolean = _lyricsState.value.autoChange,
     ) {
-        if (query.isEmpty() || query == _lastSearched.value) return
+        if (query.isEmpty() || _lyricsState.value.searching.first) return
 
         viewModelScope.launch {
             _lyricsState.update {
@@ -389,6 +389,8 @@ class RushViewModel(
     }
 
     private suspend fun fetchLyrics(songId: Long) {
+        if (_lyricsState.value.searching.first) return
+
         val song = _searchState.value.searchResults.find { it.id == songId }
 
         _lyricsState.update {

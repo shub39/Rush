@@ -49,7 +49,10 @@ fun LoadingCard(
 
             Spacer(modifier = Modifier.padding(4.dp))
 
-            LinearProgressIndicator()
+            LinearProgressIndicator(
+                color = colors.first,
+                trackColor = colors.second
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -95,6 +98,8 @@ fun LoadingCard(
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.padding(8.dp))
 
             Row (
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
