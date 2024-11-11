@@ -30,7 +30,7 @@
 | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | 
 | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | ![8](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png) |
 
-## 🌠 Features 🌠
+## 🌠 Features / Road Map 🌠
 - [x] Search Lyrics
 - [x] Download Lyrics
 - [x] Share Lyrics
@@ -38,9 +38,13 @@
 - [x] Auto-fill current playing song in search 
 - [x] Synced Lyrics
 - [x] Batch download lyrics
+- [ ] Import and Export saved lyrics
 
 ## ❔ Why ❔
-Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without dealing with genius's "UI".
+Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
+So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify,
+all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without 
+dealing with genius's "UI".
 
 ## 💭 Test and Discuss 💭
 
@@ -69,9 +73,9 @@ Spotify removed its feature to see and share lyrics from its free tier just to b
 
 - [Fuel](https://github.com/kittinunf/fuel) and [Jsoup](https://jsoup.org/) for scraping
 
-- [Coil](https://github.com/coil-kt/coil) for Images
+- [Landscapist](https://github.com/skydoves/landscapist) for Images
 
-- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the colors!!
+- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the color picker
 
 ## 💕 Support 💕
 If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
