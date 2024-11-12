@@ -67,7 +67,7 @@ dealing with genius's "UI".
 
 - Database using [ROOM](https://developer.android.com/jetpack/androidx/releases/room)
 
-- MVVM architecture
+- MVI architecture
 
 - Dependency injection using [Koin](https://insert-koin.io/docs/reference/koin-compose/compose/)
 
