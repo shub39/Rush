@@ -1,0 +1,9 @@
+Rush é um aplicativo Android simples para pesquisar, visualizar, salvar e compartilhar letras de suas músicas favoritas
+
+Funcionalidades 
+
+- Pesquise, visualize e armazene letras
+- Compartilhe letras como um cartão personalizável para seus amigos!
+- Busca automática da música atual em reprodução (Requer permissão de Acesso à Notificação)
+- Letras Sincronizadas
+- Download em lote de letras
