@@ -573,7 +573,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (song.lyrics.isEmpty()) {
+                    if (song.lyrics.isEmpty() && source != "Genius") {
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),

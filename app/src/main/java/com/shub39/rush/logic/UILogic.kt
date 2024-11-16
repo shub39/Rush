@@ -19,6 +19,7 @@ import java.io.IOException
 object UILogic {
     // Break lyrics into a list of lines with index
     fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
+        if (lyrics.isEmpty()) return emptyList()
         val lines = lyrics.lines()
         val map = mutableMapOf<Int, String>()
         for (i in lines.indices) {
