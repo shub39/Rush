@@ -51,9 +51,12 @@ dealing with genius's "UI".
 
 | LANGUAGE | UPDATED BY |
 |:--------:|:-----------|
-| English  | Myself     |
-| Japanese |            |
-
+| English | Myself |
+| Japanese | [kuragehimekuara1](https://github.com/kuragehimekurara1) |
+| Italian | [colozzacristian](https://github.com/colozzacristian) |
+| Turkish | [mikropsoft](https://github.com/mikropsoft) |
+| French | [Valyyme](https://github.com/Valyyme) |
+| Brazilian Portuguese | [luxdev01](https://github.com/luxdev01) | 
 
 
 
