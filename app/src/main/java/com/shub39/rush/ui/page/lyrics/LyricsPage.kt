@@ -63,6 +63,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.R
+import com.shub39.rush.database.CardColors
 import com.shub39.rush.ui.page.component.ArtFromUrl
 import com.shub39.rush.ui.page.lyrics.component.ErrorCard
 import com.shub39.rush.ui.page.lyrics.component.LoadingCard
@@ -93,7 +94,7 @@ fun LyricsPage(
     val lazyListState = rememberLazyListState()
 
     val maxLinesFlow by SettingsDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState("muted")
+    val colorPreference by SettingsDataStore.getLyricsColorFlow(context).collectAsState(CardColors.MUTED.color)
 
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
     var cardContentDominant by remember { mutableStateOf(Color.White) }
@@ -175,7 +176,7 @@ fun LyricsPage(
                     if (drawable != null) {
                         Palette.from(drawable.toBitmap()).generate { palette ->
                             palette?.let {
-                                if (colorPreference == "muted") {
+                                if (colorPreference == CardColors.MUTED.color) {
                                     cardBackgroundDominant =
                                         Color(
                                             it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
