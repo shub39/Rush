@@ -11,6 +11,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/Shub39/Rush?include_prereleases&logo=github&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)](https://github.com/shub39/Rush/releases)
 ![](https://img.shields.io/f-droid/v/com.shub39.rush?logo=F-Droid&style=for-the-badge&color=CAC992&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.shub39.rush&style=for-the-badge&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/nxA2hgtEKf)](https://discord.gg/https://discord.gg/nxA2hgtEKf)
 
 </div>
 
@@ -46,9 +47,14 @@ So, I made this app to get and store lyrics for my favorite songs from Genius an
 all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without 
 dealing with genius's "UI".
 
-## 💭 Test and Discuss 💭
+## 💭 Translations 💭
 
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/nxA2hgtEKf)](https://discord.gg/https://discord.gg/nxA2hgtEKf)
+| LANGUAGE | UPDATED BY |
+|:--------:|:-----------|
+| English  | Myself     |
+| Japanese |            |
+
+
 
 
 ## 💡 References and Inspiration 💡
