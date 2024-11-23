@@ -6,12 +6,12 @@
 
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio3.svg">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
+> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
 
 > ### Stats and Socials
 > [<img src="https://m3-markdown-badges.vercel.app/stars/1/3/shub39/Rush">]()
 > [<img src="https://m3-markdown-badges.vercel.app/issues/1/2/shub39/Rush">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">]()
+> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
 
 > ### Get From
 > [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/)
