@@ -1,3 +1,5 @@
+-dontobfuscate
+-keep class com.shub39.rush.** { *; }
 -keepattributes *Annotation*
 
 -keepclassmembers,allowobfuscation interface * {
