@@ -10,29 +10,38 @@ import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.lyrics.domain.Song
 import com.shub39.rush.lyrics.domain.SongRepo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class RushRepository(
     private val localDao: SongDao
 ) : SongRepo {
+
     override suspend fun fetchSong(id: Long): Result<Song, SourceError> {
-        return SongProvider.fetchLyrics(id).also {
-            if (it is Result.Success) {
-                localDao.insertSong(it.data.toSongEntity())
+        return withContext(Dispatchers.IO) {
+            SongProvider.fetchLyrics(id).also {
+                if (it is Result.Success) {
+                    localDao.insertSong(it.data.toSongEntity())
+                }
             }
         }
     }
 
     override suspend fun searchGenius(query: String): Result<List<SearchResult>, SourceError> {
-        return SongProvider.geniusSearch(query)
+        return withContext(Dispatchers.IO) {
+            SongProvider.geniusSearch(query)
+        }
     }
 
     override suspend fun searchLrcLib(
         track: String,
         artist: String
     ): Result<List<LrcLibSong>, SourceError> {
-        return SongProvider.lrcLibSearch(track, artist)
+        return withContext(Dispatchers.IO) {
+            SongProvider.lrcLibSearch(track, artist)
+        }
     }
 
     override fun getSongs(): Flow<List<Song>> {

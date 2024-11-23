@@ -6,7 +6,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.SearchResult
-import com.shub39.rush.lyrics.data.database.SongEntity
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException

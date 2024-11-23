@@ -1,8 +1,10 @@
 package com.shub39.rush.lyrics.presentation.saved
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,7 +43,8 @@ import kotlinx.coroutines.launch
 fun SavedPage(
     state: SavedPageState,
     action: (SavedPageAction) -> Unit,
-    onSongClick: () -> Unit
+    onSongClick: () -> Unit,
+    paddingValues: PaddingValues
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -51,7 +54,9 @@ fun SavedPage(
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()
     ) {
         if (state.songsAsc.isEmpty()) {
 
@@ -81,60 +86,113 @@ fun SavedPage(
                     }
                 }
 
-                if (sortOrder == SortOrder.TITLE_ASC.sortOrder || sortOrder == SortOrder.TITLE_DESC.sortOrder) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .animateContentSize()
-                    ) {
-                        items(
-                            if (sortOrder == SortOrder.TITLE_ASC.sortOrder) state.songsAsc else state.songsDesc,
-                            key = { it.id }
-                        ) {
-                            SongCard(
-                                result = it,
-                                onDelete = {
-                                    action(SavedPageAction.OnDeleteSong(it))
-                                },
-                                onClick = {
-                                    action(SavedPageAction.ChangeCurrentSong(it.id))
-                                    onSongClick()
+                AnimatedContent(
+                    targetState = sortOrder
+                ) { sortOrder ->
+                    when(sortOrder) {
+                        SortOrder.TITLE_ASC.sortOrder -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize()
+                            ) {
+                                items(state.songsAsc, key = { it.id }) {
+                                    SongCard(
+                                        result = it,
+                                        onDelete = {
+                                            action(SavedPageAction.OnDeleteSong(it))
+                                        },
+                                        onClick = {
+                                            action(SavedPageAction.ChangeCurrentSong(it.id))
+                                            onSongClick()
+                                        }
+                                    )
                                 }
-                            )
-                        }
 
-                        item {
-                            Spacer(modifier = Modifier.padding(60.dp))
-                        }
-                    }
-                } else {
-                    var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .animateContentSize()
-                    ) {
-                        items(
-                            if (sortOrder == SortOrder.ARTISTS_ASC.sortOrder) state.groupedArtist else state.groupedAlbum,
-                            key = { it.key }
-                        ) { map ->
-                            GroupedCard(
-                                map = map,
-                                isExpanded = expandedCardId == map.key,
-                                onClick = {
-                                    action(SavedPageAction.ChangeCurrentSong(it.id))
-                                    onSongClick()
-                                },
-                                onCardClick = {
-                                    expandedCardId =
-                                        if (expandedCardId == map.key) null else map.key
+                                item {
+                                    Spacer(modifier = Modifier.padding(60.dp))
                                 }
-                            )
+                            }
                         }
+                        SortOrder.TITLE_DESC.sortOrder -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize()
+                            ) {
+                                items(state.songsDesc, key = { it.id }) {
+                                    SongCard(
+                                        result = it,
+                                        onDelete = {
+                                            action(SavedPageAction.OnDeleteSong(it))
+                                        },
+                                        onClick = {
+                                            action(SavedPageAction.ChangeCurrentSong(it.id))
+                                            onSongClick()
+                                        }
+                                    )
+                                }
 
-                        item {
-                            Spacer(modifier = Modifier.padding(60.dp))
+                                item {
+                                    Spacer(modifier = Modifier.padding(60.dp))
+                                }
+                            }
+                        }
+                        SortOrder.ARTISTS_ASC.sortOrder -> {
+                            var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
+
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize()
+                            ) {
+                                items(state.groupedArtist, key = { it.key }) { map ->
+                                    GroupedCard(
+                                        map = map,
+                                        isExpanded = expandedCardId == map.key,
+                                        onClick = {
+                                            action(SavedPageAction.ChangeCurrentSong(it.id))
+                                            onSongClick()
+                                        },
+                                        onCardClick = {
+                                            expandedCardId =
+                                                if (expandedCardId == map.key) null else map.key
+                                        }
+                                    )
+                                }
+
+                                item {
+                                    Spacer(modifier = Modifier.padding(60.dp))
+                                }
+                            }
+                        }
+                        SortOrder.ALBUM_ASC.sortOrder -> {
+                            var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
+
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize()
+                            ) {
+                                items(state.groupedAlbum, key = { it.key }) { map ->
+                                    GroupedCard(
+                                        map = map,
+                                        isExpanded = expandedCardId == map.key,
+                                        onClick = {
+                                            action(SavedPageAction.ChangeCurrentSong(it.id))
+                                            onSongClick()
+                                        },
+                                        onCardClick = {
+                                            expandedCardId =
+                                                if (expandedCardId == map.key) null else map.key
+                                        }
+                                    )
+                                }
+
+                                item {
+                                    Spacer(modifier = Modifier.padding(60.dp))
+                                }
+                            }
                         }
                     }
                 }

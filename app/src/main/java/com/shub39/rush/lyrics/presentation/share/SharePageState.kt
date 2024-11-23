@@ -1,4 +1,4 @@
-package com.shub39.rush.share.presentation
+package com.shub39.rush.lyrics.presentation.share
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color

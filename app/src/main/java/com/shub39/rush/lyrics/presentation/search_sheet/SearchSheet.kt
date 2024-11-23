@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.component.searchsheet
+package com.shub39.rush.lyrics.presentation.search_sheet
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -27,11 +27,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -43,8 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,15 +52,9 @@ fun SearchSheet(
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    var searchJob: Job? by remember { mutableStateOf(null) }
-
-    var query by remember { mutableStateOf("") }
 
     ModalBottomSheet(
-        onDismissRequest = {
-            query = ""
-            action(SearchSheetAction.OnToggleSearchSheet)
-        }
+        onDismissRequest = { action(SearchSheetAction.OnToggleSearchSheet) }
     ) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -79,7 +68,7 @@ fun SearchSheet(
             verticalArrangement = Arrangement.Top
         ) {
             OutlinedTextField(
-                value = query,
+                value = state.searchQuery,
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -105,13 +94,13 @@ fun SearchSheet(
                         }
 
                         AnimatedVisibility(
-                            visible = query.isNotBlank(),
+                            visible = state.searchQuery.isNotBlank(),
                             enter = fadeIn(animationSpec = tween(200)),
                             exit = fadeOut(animationSpec = tween(200))
                         ) {
                             IconButton(
                                 onClick = {
-                                    query = ""
+                                    action(SearchSheetAction.OnQueryChange(""))
                                     coroutineScope.launch {
                                         focusRequester.requestFocus()
                                         keyboardController?.show()
@@ -126,17 +115,7 @@ fun SearchSheet(
                         }
                     }
                 },
-                onValueChange = {
-                    query = it
-                    searchJob?.cancel()
-
-                    searchJob = coroutineScope.launch {
-                        delay(500)
-                        if (it.isNotEmpty()) {
-                            action(SearchSheetAction.OnSearch(it))
-                        }
-                    }
-                },
+                onValueChange = { action(SearchSheetAction.OnQueryChange(it)) },
                 shape = MaterialTheme.shapes.extraLarge,
                 label = { Text(stringResource(id = R.string.search)) },
                 modifier = Modifier
@@ -164,7 +143,6 @@ fun SearchSheet(
                     SearchResultCard(
                         result = it,
                         onClick = {
-                            query = ""
                             action(SearchSheetAction.OnCardClicked(it.id))
                             onClick()
                         },
@@ -176,7 +154,6 @@ fun SearchSheet(
                     SearchResultCard(
                         result = it,
                         onClick = {
-                            query = ""
                             action(SearchSheetAction.OnCardClicked(it.id))
                             onClick()
                         },

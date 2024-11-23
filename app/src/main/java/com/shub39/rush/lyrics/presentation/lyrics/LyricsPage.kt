@@ -76,7 +76,7 @@ import com.shub39.rush.lyrics.domain.UILogic.getMainTitle
 import com.shub39.rush.lyrics.domain.UILogic.openLinkInBrowser
 import com.shub39.rush.lyrics.domain.UILogic.updateSelectedLines
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
-import com.shub39.rush.share.presentation.SongDetails
+import com.shub39.rush.lyrics.presentation.share.SongDetails
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject

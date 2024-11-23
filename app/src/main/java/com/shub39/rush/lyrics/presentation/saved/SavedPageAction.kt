@@ -1,10 +1,10 @@
 package com.shub39.rush.lyrics.presentation.saved
 
-import com.shub39.rush.lyrics.data.database.SongEntity
+import com.shub39.rush.lyrics.domain.Song
 
 sealed interface SavedPageAction {
-    object OnToggleAutoChange : SavedPageAction
-    object OnToggleSearchSheet: SavedPageAction
-    data class OnDeleteSong(val songEntity: SongEntity) : SavedPageAction
+    data object OnToggleAutoChange : SavedPageAction
+    data object OnToggleSearchSheet: SavedPageAction
+    data class OnDeleteSong(val song: Song) : SavedPageAction
     data class ChangeCurrentSong(val id: Long): SavedPageAction
 }

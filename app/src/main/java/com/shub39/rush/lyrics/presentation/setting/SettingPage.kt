@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingPage(
     state: SettingsPageState,
-    action: (SettingsPageAction) -> Unit
+    action: (SettingsPageAction) -> Unit,
+    paddingValues: PaddingValues
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -73,7 +75,9 @@ fun SettingPage(
     val colorPreference by RushDataStore.getLyricsColorFlow(context)
         .collectAsState(CardColors.MUTED.color)
 
-    Box {
+    Box(
+        modifier = Modifier.padding(paddingValues)
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

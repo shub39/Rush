@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.component.searchsheet
+package com.shub39.rush.lyrics.presentation.search_sheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

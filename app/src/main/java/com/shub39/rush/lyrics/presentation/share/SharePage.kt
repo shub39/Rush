@@ -1,4 +1,4 @@
-package com.shub39.rush.share.presentation
+package com.shub39.rush.lyrics.presentation.share
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -8,6 +8,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,9 +68,9 @@ import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.data.RushDataStore
 import com.shub39.rush.lyrics.domain.UILogic.isValidFilename
 import com.shub39.rush.lyrics.domain.UILogic.shareImage
-import com.shub39.rush.share.presentation.component.ListSelect
-import com.shub39.rush.share.presentation.component.RushedShareCard
-import com.shub39.rush.share.presentation.component.SpotifyShareCard
+import com.shub39.rush.lyrics.presentation.share.component.ListSelect
+import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
+import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -79,6 +80,7 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
+    paddingValues: PaddingValues,
     imageLoader: ImageLoader = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -211,6 +213,7 @@ fun SharePage(
 
     Box(
         modifier = Modifier
+            .padding(paddingValues)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {

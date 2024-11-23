@@ -10,8 +10,8 @@ import com.shub39.rush.lyrics.domain.listener.MediaListener
 import com.shub39.rush.lyrics.domain.UILogic.sortMapByKeys
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.presentation.component.searchsheet.SearchSheetAction
-import com.shub39.rush.lyrics.presentation.component.searchsheet.SearchSheetState
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
@@ -20,10 +20,11 @@ import com.shub39.rush.lyrics.presentation.saved.SavedPageState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import com.shub39.rush.share.presentation.ExtractedColors
-import com.shub39.rush.share.presentation.SharePageAction
-import com.shub39.rush.share.presentation.SharePageState
-import com.shub39.rush.share.presentation.SongDetails
+import com.shub39.rush.lyrics.presentation.share.ExtractedColors
+import com.shub39.rush.lyrics.presentation.share.SharePageAction
+import com.shub39.rush.lyrics.presentation.share.SharePageState
+import com.shub39.rush.lyrics.presentation.share.SongDetails
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +32,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -57,7 +61,7 @@ class RushViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _lyricsState
+            LyricsPageState()
         )
     val savedState = _savedState.asStateFlow()
         .onStart {
@@ -67,25 +71,28 @@ class RushViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _savedState
+            SavedPageState()
         )
     val shareState = _shareState.asStateFlow()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _shareState
+            SharePageState()
         )
     val settingsState = _settingsState.asStateFlow()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _settingsState
+            SettingsPageState()
         )
     val searchState = _searchState.asStateFlow()
+        .onStart {
+            observeSearchSheet()
+        }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _searchState
+            SearchSheetState()
         )
 
     private fun observePlayingMedia() {
@@ -134,6 +141,48 @@ class RushViewModel(
         }
     }
 
+    private fun observeSongs() {
+        savedJob?.cancel()
+        savedJob = repo
+            .getSongs()
+            .onEach { songs ->
+                _savedState.update { state ->
+                    state.copy(
+                        songsAsc = songs.sortedBy { it.title },
+                        songsDesc = songs.sortedByDescending { it.title },
+                        groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),
+                        groupedArtist = songs.groupBy { it.artists }.entries.toList()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeSearchSheet() {
+        searchState
+            .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(500L)
+            .onEach { query ->
+                when {
+                    query.isBlank() -> {
+                        _searchState.update {
+                            it.copy(
+                                error = null
+                            )
+                        }
+                    }
+
+                    query.length >= 3 -> {
+                        localSearch(query)
+                        searchSong(query, false)
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun onLyricsPageAction(action: LyricsPageAction) {
         viewModelScope.launch {
             when (action) {
@@ -168,7 +217,7 @@ class RushViewModel(
                 }
 
                 is SavedPageAction.OnDeleteSong -> {
-                    deleteSong(action.songEntity.id)
+                    deleteSong(action.song.id)
                 }
 
                 SavedPageAction.OnToggleAutoChange -> {
@@ -218,9 +267,12 @@ class RushViewModel(
                     fetchLyrics(action.id)
                 }
 
-                is SearchSheetAction.OnSearch -> {
-                    localSearch(action.query)
-                    searchSong(action.query, false)
+                is SearchSheetAction.OnQueryChange -> {
+                    _searchState.update {
+                        it.copy(
+                            searchQuery = action.query
+                        )
+                    }
                 }
 
                 SearchSheetAction.OnToggleSearchSheet -> {
@@ -537,22 +589,7 @@ class RushViewModel(
         }
     }
 
-    private fun observeSongs() {
-        savedJob?.cancel()
-        savedJob = repo
-            .getSongs()
-            .onEach { songs ->
-                _savedState.update { state ->
-                    state.copy(
-                        songsAsc = songs.sortedBy { it.title },
-                        songsDesc = songs.sortedByDescending { it.title },
-                        groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),
-                        groupedArtist = songs.groupBy { it.artists }.entries.toList()
-                    )
-                }
-            }
-            .launchIn(viewModelScope)
-    }
+
 
     private fun toggleAutoChange() {
         _lyricsState.update { it.copy(autoChange = !it.autoChange) }

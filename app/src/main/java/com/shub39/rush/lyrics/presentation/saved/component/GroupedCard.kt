@@ -21,14 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.lyrics.data.database.SongEntity
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.lyrics.domain.Song
 
 @Composable
 fun GroupedCard(
-    map: Map.Entry<String?, List<SongEntity>>,
+    map: Map.Entry<String?, List<Song>>,
     isExpanded: Boolean = false,
-    onClick: (SongEntity) -> Unit,
+    onClick: (Song) -> Unit,
     onCardClick: () -> Unit,
 ) {
     Card(

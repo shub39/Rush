@@ -22,12 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.lyrics.data.database.SongEntity
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.lyrics.domain.Song
 
 @Composable
 fun SongCard(
-    result: SongEntity,
+    result: Song,
     onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {

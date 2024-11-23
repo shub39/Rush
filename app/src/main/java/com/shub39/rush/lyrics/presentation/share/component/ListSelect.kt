@@ -1,4 +1,4 @@
-package com.shub39.rush.share.presentation.component
+package com.shub39.rush.lyrics.presentation.share.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,7 +39,7 @@ fun ListSelect(
                 ElevatedFilterChip(
                     selected = it == selected,
                     onClick = { onSelectedChange(it) },
-                    label = { Text(text = it.toString()) }
+                    label = { Text(text = it) }
                 )
             }
         }

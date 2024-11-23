@@ -1,4 +1,4 @@
-package com.shub39.rush.share.presentation.component
+package com.shub39.rush.lyrics.presentation.share.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
-import com.shub39.rush.share.presentation.SongDetails
+import com.shub39.rush.lyrics.presentation.share.SongDetails
 
 @Composable
 fun SpotifyShareCard(
