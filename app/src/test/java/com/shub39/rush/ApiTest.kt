@@ -1,6 +1,6 @@
 package com.shub39.rush
 
-import com.shub39.rush.network.SongProvider
+import com.shub39.rush.lyrics.data.network.SongProvider
 import org.junit.Test
 
 /**
@@ -17,7 +17,7 @@ class ApiTest {
 
     @Test
     fun getSong() {
-        val result = SongProvider.fetchLyrics(1977139)
+        val result = SongProvider.fetchLyrics(1977140)
         println(result)
     }
 
