@@ -8,8 +8,8 @@ import com.shub39.rush.lyrics.data.database.SongDatabase
 import com.shub39.rush.lyrics.presentation.RushViewModel
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.SongRepo
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
