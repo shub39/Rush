@@ -148,6 +148,7 @@ class RushViewModel(
             .onEach { songs ->
                 _savedState.update { state ->
                     state.copy(
+                        songsByTime = songs.sortedByDescending { it.dateAdded },
                         songsAsc = songs.sortedBy { it.title },
                         songsDesc = songs.sortedByDescending { it.title },
                         groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),

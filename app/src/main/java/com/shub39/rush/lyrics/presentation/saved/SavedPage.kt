@@ -90,6 +90,31 @@ fun SavedPage(
                     targetState = sortOrder
                 ) { sortOrder ->
                     when(sortOrder) {
+                        SortOrder.DATE_ADDED.sortOrder -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .animateContentSize()
+                            ) {
+                                items(state.songsByTime, key = { it.id }) {
+                                    SongCard(
+                                        result = it,
+                                        onDelete = {
+                                            action(SavedPageAction.OnDeleteSong(it))
+                                        },
+                                        onClick = {
+                                            action(SavedPageAction.ChangeCurrentSong(it.id))
+                                            onSongClick()
+                                        }
+                                    )
+                                }
+
+                                item {
+                                    Spacer(modifier = Modifier.padding(60.dp))
+                                }
+                            }
+                        }
+
                         SortOrder.TITLE_ASC.sortOrder -> {
                             LazyColumn(
                                 modifier = Modifier
@@ -114,6 +139,7 @@ fun SavedPage(
                                 }
                             }
                         }
+
                         SortOrder.TITLE_DESC.sortOrder -> {
                             LazyColumn(
                                 modifier = Modifier
@@ -138,6 +164,7 @@ fun SavedPage(
                                 }
                             }
                         }
+
                         SortOrder.ARTISTS_ASC.sortOrder -> {
                             var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -166,6 +193,7 @@ fun SavedPage(
                                 }
                             }
                         }
+
                         SortOrder.ALBUM_ASC.sortOrder -> {
                             var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
 

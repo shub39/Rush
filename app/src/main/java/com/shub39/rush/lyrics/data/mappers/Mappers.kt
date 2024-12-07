@@ -13,7 +13,8 @@ fun SongEntity.toSong(): Song {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics
+        geniusLyrics = geniusLyrics,
+        dateAdded = dateAdded
     )
 }
 
@@ -27,6 +28,7 @@ fun Song.toSongEntity(): SongEntity {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics
+        geniusLyrics = geniusLyrics,
+        dateAdded = dateAdded
     )
 }

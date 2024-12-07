@@ -20,6 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 /*
 Currently using Genius as a primary source of search results, the url provided is them scraped and the song title and artist is
@@ -158,7 +160,8 @@ object SongProvider {
                         sourceUrl,
                         artUrl,
                         syncedLyrics,
-                        geniusLyrics
+                        geniusLyrics,
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
                     )
                 )
             } else {
