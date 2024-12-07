@@ -18,7 +18,7 @@
     <string name="width">Width</string>
     <string name="colors">Colors</string>
     <string name="grant_permission">Grant Notification Access</string>
-    <string name="notification_permission">Notification Access is required to get lyrics automatically. Clear and restart the app after granting permission.</string>
+    <string name="notification_permission">Notification Access is required to get lyrics automatically.</string>
     <string name="rounded_corners">Rounded Corners</string>
     <string name="max_lines">Maximum Lines to share</string>
     <string name="theme">App Theme</string>
@@ -45,4 +45,8 @@
     <string name="card_color">Card Colors</string>
     <string name="card_size">Card Size</string>
     <string name="card_corners">Card Corners</string>
+    <string name="vibrant_colors_info">Use more vibrant colors for lyrics page</string>
+    <string name="backup">Backup</string>
+    <string name="backup_info">Import or Export the database of saved lyrics</string>
+    <string name="batch_download_info">Download lyrics for your locally saved songs in one go.</string>
 </resources>

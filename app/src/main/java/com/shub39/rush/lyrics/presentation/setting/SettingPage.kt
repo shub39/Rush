@@ -3,8 +3,6 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +29,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +58,6 @@ import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.lyrics.presentation.setting.component.GetAudioFiles
 import com.shub39.rush.lyrics.presentation.setting.component.GetLibraryPath
 import com.shub39.rush.lyrics.domain.UILogic.openLinkInBrowser
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,31 +99,27 @@ fun SettingPage(
                     trailingContent = {
                         val material = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-                        AnimatedContent(
-                            targetState = appTheme, label = "theme_button"
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    val newTheme = when (it) {
-                                        AppTheme.LIME.type -> AppTheme.YELLOW.type
-                                        AppTheme.YELLOW.type -> if (material) AppTheme.MATERIAL.type else AppTheme.LIME.type
-                                        else -> AppTheme.LIME.type
-                                    }
+                        IconButton(
+                            onClick = {
+                                val newTheme = when (appTheme) {
+                                    AppTheme.LIME.type -> AppTheme.YELLOW.type
+                                    AppTheme.YELLOW.type -> if (material) AppTheme.MATERIAL.type else AppTheme.LIME.type
+                                    else -> AppTheme.LIME.type
+                                }
 
-                                    coroutineScope.launch {
-                                        RushDataStore.updateToggleTheme(context, newTheme)
-                                    }
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = null
-                                )
-                            }
+                                coroutineScope.launch {
+                                    RushDataStore.updateToggleTheme(context, newTheme)
+                                }
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = null
+                            )
                         }
                     }
                 )
@@ -134,6 +128,7 @@ fun SettingPage(
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.vibrant_colors)) },
+                    supportingContent = { Text(text = stringResource(id = R.string.vibrant_colors_info)) },
                     trailingContent = {
                         Switch(
                             checked = colorPreference == CardColors.VIBRANT.color,
@@ -160,35 +155,17 @@ fun SettingPage(
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.max_lines)) },
-                    trailingContent = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
-                                contentDescription = null,
-                                modifier = Modifier.clickable(
-                                    enabled = maxLinesFlow > 2 && coroutineScope.isActive
-                                ) {
-                                    coroutineScope.launch {
-                                        RushDataStore.updateMaxLines(context, maxLinesFlow - 1)
-                                    }
-                                }
-                            )
+                    supportingContent = {
+                        Column {
+                            Text(maxLinesFlow.toString())
 
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Text(
-                                text = maxLinesFlow.toString(),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(modifier = Modifier.padding(4.dp))
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null,
-                                modifier = Modifier.clickable(
-                                    enabled = maxLinesFlow < 8 && coroutineScope.isActive
-                                ) {
+                            Slider(
+                                value = maxLinesFlow.toFloat(),
+                                valueRange = 2f..8f,
+                                steps = 7,
+                                onValueChange = {
                                     coroutineScope.launch {
-                                        RushDataStore.updateMaxLines(context, maxLinesFlow + 1)
+                                        RushDataStore.updateMaxLines(context, it.toInt())
                                     }
                                 }
                             )
@@ -221,6 +198,7 @@ fun SettingPage(
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.batch_download)) },
+                    supportingContent = { Text(text = stringResource(id = R.string.batch_download_info)) },
                     trailingContent = {
                         IconButton(
                             onClick = { batchDownloadDialog = true },
@@ -228,10 +206,49 @@ fun SettingPage(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                        ) { Icon(
-                            painter = painterResource(id = R.drawable.round_download_done_24),
-                            contentDescription = null
-                        ) }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_download_done_24),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+
+            item {
+
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.backup)) },
+                    supportingContent = { Text(text = stringResource(R.string.backup_info)) },
+                    trailingContent = {
+                        Row {
+                            IconButton(
+                                onClick = {},
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.round_file_download_24),
+                                    contentDescription = null
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {},
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.round_file_upload_24),
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     }
                 )
             }
@@ -250,10 +267,12 @@ fun SettingPage(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                            ) { Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null
-                            ) }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     )
                 }
@@ -262,12 +281,16 @@ fun SettingPage(
             item {
                 ListItem(
                     headlineContent = { Text("Made by shub39") },
-                    supportingContent = { Text("Your friendly audiophile schizoid") },
+                    supportingContent = { Text("Your friendly neighbourhood audiophile schizoid") },
                     trailingContent = {
                         Row {
                             IconButton(
-                                onClick = { openLinkInBrowser(context, "https://github.com/shub39/Rush") },
-                                modifier = Modifier.size(32.dp),
+                                onClick = {
+                                    openLinkInBrowser(
+                                        context,
+                                        "https://github.com/shub39/Rush"
+                                    )
+                                },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -275,11 +298,10 @@ fun SettingPage(
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.github_mark),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
-
-                            Spacer(modifier = Modifier.padding(8.dp))
 
                             IconButton(
                                 onClick = {
@@ -288,7 +310,6 @@ fun SettingPage(
                                         "https://discord.gg/https://discord.gg/nxA2hgtEKf"
                                     )
                                 },
-                                modifier = Modifier.size(32.dp),
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -296,7 +317,8 @@ fun SettingPage(
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.discord_svgrepo_com),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
@@ -439,7 +461,7 @@ fun SettingPage(
 
 @Preview(
     showSystemUi = true, showBackground = true, backgroundColor = 0xFFFFFFFF,
-    device = "spec:width=673dp,height=841dp"
+    device = "spec:width=411dp,height=891dp"
 )
 @Composable
 private fun SettingPagePreview() {
