@@ -11,11 +11,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.lyrics.domain.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
@@ -35,6 +37,7 @@ fun RushApp(
     val searchSheetState by rushViewModel.searchState.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     var currentRoute: Route by remember { mutableStateOf(Route.SavedPage) }
 
@@ -95,6 +98,7 @@ fun RushApp(
                     SettingPage(
                         state = settingsState,
                         action = rushViewModel::onSettingsPageAction,
+                        notificationAccess = NotificationListener.canAccessNotifications(context),
                         paddingValues = paddingValues
                     )
                 }

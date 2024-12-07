@@ -3,8 +3,8 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -23,9 +27,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,13 +47,15 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.core.data.RushDataStore
-import com.shub39.rush.lyrics.domain.listener.NotificationListener
+import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.lyrics.presentation.setting.component.GetAudioFiles
 import com.shub39.rush.lyrics.presentation.setting.component.GetLibraryPath
 import com.shub39.rush.lyrics.domain.UILogic.openLinkInBrowser
@@ -59,6 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingPage(
     state: SettingsPageState,
+    notificationAccess: Boolean,
     action: (SettingsPageAction) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -66,9 +74,9 @@ fun SettingPage(
     val coroutineScope = rememberCoroutineScope()
 
     var deleteButtonStatus by remember { mutableStateOf(true) }
-    var notificationRequestDialog by remember { mutableStateOf(false) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
-    var batchDownload by remember { mutableStateOf(false) }
+    var batchDownloadDialog by remember { mutableStateOf(false) }
+
     val maxLinesFlow by RushDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
     val appTheme by RushDataStore.getToggleThemeFlow(context)
         .collectAsState(initial = "Gruvbox")
@@ -76,164 +84,84 @@ fun SettingPage(
         .collectAsState(CardColors.MUTED.color)
 
     Box(
-        modifier = Modifier.padding(paddingValues)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues),
+        contentAlignment = Alignment.Center
     ) {
         LazyColumn(
             modifier = Modifier
+                .widthIn(max = 500.dp)
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
             item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp),
-                    shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomEnd = 8.dp,
-                        bottomStart = 8.dp
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.theme))
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.theme)) },
+                    trailingContent = {
+                        val material = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-                        Spacer(modifier = Modifier.padding(4.dp))
-
-                        SingleChoiceSegmentedButtonRow(
-                            modifier = Modifier.fillMaxWidth()
+                        AnimatedContent(
+                            targetState = appTheme, label = "theme_button"
                         ) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                listOf(
-                                    "Material",
-                                    "Yellow",
-                                    "Lime"
-                                ).forEachIndexed { index, color ->
-                                    SegmentedButton(
-                                        label = { Text(text = color) },
-                                        selected = appTheme == color,
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                RushDataStore.updateToggleTheme(context, color)
-                                            }
-                                        },
-                                        shape = when (index) {
-                                            0 -> RoundedCornerShape(
-                                                topStart = 16.dp,
-                                                bottomStart = 16.dp
-                                            )
+                            IconButton(
+                                onClick = {
+                                    val newTheme = when (it) {
+                                        AppTheme.LIME.type -> AppTheme.YELLOW.type
+                                        AppTheme.YELLOW.type -> if (material) AppTheme.MATERIAL.type else AppTheme.LIME.type
+                                        else -> AppTheme.LIME.type
+                                    }
 
-                                            2 -> RoundedCornerShape(
-                                                topEnd = 16.dp,
-                                                bottomEnd = 16.dp
-                                            )
-
-                                            else -> RoundedCornerShape(0.dp)
-                                        }
-                                    )
-                                }
-                            } else {
-                                listOf("Yellow", "Lime").forEachIndexed { index, color ->
-                                    SegmentedButton(
-                                        label = { Text(text = color) },
-                                        selected = appTheme == color,
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                RushDataStore.updateToggleTheme(context, color)
-                                            }
-                                        },
-                                        shape = when (index) {
-                                            0 -> RoundedCornerShape(
-                                                topStart = 16.dp,
-                                                bottomStart = 16.dp
-                                            )
-
-                                            else -> RoundedCornerShape(
-                                                topEnd = 16.dp,
-                                                bottomEnd = 16.dp
-                                            )
-                                        }
-                                    )
-                                }
+                                    coroutineScope.launch {
+                                        RushDataStore.updateToggleTheme(context, newTheme)
+                                    }
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
+                                )
                             }
                         }
                     }
-                }
+                )
             }
 
             item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp),
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        topEnd = 8.dp,
-                        bottomEnd = 8.dp,
-                        bottomStart = 8.dp
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = stringResource(id = R.string.vibrant_colors))
+                ListItem(
+                    headlineContent = { Text(text = stringResource(id = R.string.vibrant_colors)) },
+                    trailingContent = {
+                        Switch(
+                            checked = colorPreference == CardColors.VIBRANT.color,
+                            onCheckedChange = {
+                                coroutineScope.launch {
+                                    when (it) {
+                                        true -> RushDataStore.setLyricsColor(
+                                            context,
+                                            CardColors.VIBRANT.color
+                                        )
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Switch(
-                                checked = colorPreference == CardColors.VIBRANT.color,
-                                onCheckedChange = {
-                                    coroutineScope.launch {
-                                        when (it) {
-                                            true -> RushDataStore.setLyricsColor(
-                                                context,
-                                                CardColors.VIBRANT.color
-                                            )
-
-                                            else -> RushDataStore.setLyricsColor(
-                                                context,
-                                                CardColors.MUTED.color
-                                            )
-                                        }
+                                        else -> RushDataStore.setLyricsColor(
+                                            context,
+                                            CardColors.MUTED.color
+                                        )
                                     }
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
-                }
+                )
             }
 
             item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        topEnd = 8.dp,
-                        bottomEnd = 16.dp,
-                        bottomStart = 16.dp
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = stringResource(id = R.string.max_lines))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(id = R.string.max_lines)) },
+                    trailingContent = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 painter = painterResource(id = R.drawable.round_arrow_back_ios_24),
                                 contentDescription = null,
@@ -247,9 +175,10 @@ fun SettingPage(
                             )
 
                             Spacer(modifier = Modifier.padding(4.dp))
-
-                            Text(text = maxLinesFlow.toString())
-
+                            Text(
+                                text = maxLinesFlow.toString(),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
                             Spacer(modifier = Modifier.padding(4.dp))
 
                             Icon(
@@ -265,142 +194,114 @@ fun SettingPage(
                             )
                         }
                     }
-                }
+                )
             }
 
-            if (!NotificationListener.canAccessNotifications(context)) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(id = R.string.delete_all)) },
+                    trailingContent = {
+                        IconButton(
+                            onClick = { deleteConfirmationDialog = true },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            enabled = deleteButtonStatus
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(id = R.string.batch_download)) },
+                    trailingContent = {
+                        IconButton(
+                            onClick = { batchDownloadDialog = true },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        ) { Icon(
+                            painter = painterResource(id = R.drawable.round_download_done_24),
+                            contentDescription = null
+                        ) }
+                    }
+                )
+            }
+
+            if (!notificationAccess) {
                 item {
-                    Button(
-                        onClick = {
-                            notificationRequestDialog = true
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Text(text = stringResource(id = R.string.grant_permission))
-                    }
+                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(id = R.string.grant_permission)) },
+                        supportingContent = { Text(text = stringResource(id = R.string.notification_permission)) },
+                        trailingContent = {
+                            IconButton(
+                                onClick = { context.startActivity(intent) },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) { Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null
+                            ) }
+                        }
+                    )
                 }
             }
 
             item {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        deleteConfirmationDialog = true
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    enabled = deleteButtonStatus
-                ) {
-                    Text(text = stringResource(id = R.string.delete_all))
-                }
-            }
+                ListItem(
+                    headlineContent = { Text("Made by shub39") },
+                    supportingContent = { Text("Your friendly audiophile schizoid") },
+                    trailingContent = {
+                        Row {
+                            IconButton(
+                                onClick = { openLinkInBrowser(context, "https://github.com/shub39/Rush") },
+                                modifier = Modifier.size(32.dp),
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.github_mark),
+                                    contentDescription = null
+                                )
+                            }
 
-            item {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        batchDownload = true
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                ) {
-                    Text(text = stringResource(id = R.string.batch_download))
-                }
-            }
+                            Spacer(modifier = Modifier.padding(8.dp))
 
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp)
-                .align(Alignment.BottomCenter)
-        ) {
-            Text(
-                text = "Made by shub39",
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .padding(bottom = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                IconButton(
-                    onClick = { openLinkInBrowser(context, "https://github.com/shub39/Rush") },
-                    modifier = Modifier
-                        .size(32.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.github_mark),
-                        contentDescription = null
-                    )
-                }
-
-                Spacer(modifier = Modifier.padding(8.dp))
-
-                IconButton(
-                    onClick = {
-                        openLinkInBrowser(
-                            context,
-                            "https://discord.gg/https://discord.gg/nxA2hgtEKf"
-                        )
-                    },
-                    modifier = Modifier
-                        .size(32.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.discord_svgrepo_com),
-                        contentDescription = null
-                    )
-                }
-            }
-        }
-    }
-
-    if (notificationRequestDialog) {
-        BasicAlertDialog(
-            onDismissRequest = { notificationRequestDialog = false }
-        ) {
-            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-
-            Card(shape = MaterialTheme.shapes.extraLarge) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_warning_24),
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp)
-                    )
-
-                    Spacer(modifier = Modifier.padding(8.dp))
-
-                    Text(
-                        text = stringResource(id = R.string.notification_permission),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    Spacer(modifier = Modifier.padding(8.dp))
-
-                    Button(
-                        onClick = {
-                            context.startActivity(intent)
-                            notificationRequestDialog = false
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.extraLarge
-                    ) {
-                        Text(text = stringResource(id = R.string.grant_permission))
+                            IconButton(
+                                onClick = {
+                                    openLinkInBrowser(
+                                        context,
+                                        "https://discord.gg/https://discord.gg/nxA2hgtEKf"
+                                    )
+                                },
+                                modifier = Modifier.size(32.dp),
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.discord_svgrepo_com),
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     }
-                }
+                )
             }
         }
     }
@@ -412,22 +313,29 @@ fun SettingPage(
             Card(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier
+                        .widthIn(max = 300.dp)
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_warning_24),
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp)
+                        contentDescription = null
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
 
                     Text(
+                        text = stringResource(R.string.delete_all),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
                         text = stringResource(id = R.string.delete_confirmation),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyLarge
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -438,8 +346,8 @@ fun SettingPage(
                             deleteConfirmationDialog = false
                             deleteButtonStatus = false
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.extraLarge
+                        shape = MaterialTheme.shapes.extraLarge,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = stringResource(id = R.string.delete_all))
                     }
@@ -448,7 +356,7 @@ fun SettingPage(
         }
     }
 
-    if (batchDownload) {
+    if (batchDownloadDialog) {
         var selectedDirectoryUri by remember { mutableStateOf<Uri?>(null) }
         val audioFiles = remember { mutableStateListOf<AudioFile>() }
         var done by remember { mutableStateOf(false) }
@@ -456,7 +364,7 @@ fun SettingPage(
         BasicAlertDialog(
             onDismissRequest = {
                 if (!state.batchDownload.isDownloading) {
-                    batchDownload = false
+                    batchDownloadDialog = false
                     action(SettingsPageAction.OnClearIndexes)
                 }
             }
@@ -464,6 +372,7 @@ fun SettingPage(
             Card(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier
+                        .widthIn(max = 300.dp)
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -488,7 +397,7 @@ fun SettingPage(
                                 audioFiles.add(it)
                             },
                             indexes = state.batchDownload.indexes,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
@@ -498,7 +407,7 @@ fun SettingPage(
                                 action(SettingsPageAction.OnBatchDownload(audioFiles))
                                 done = true
                             } else {
-                                batchDownload = false
+                                batchDownloadDialog = false
                                 action(SettingsPageAction.OnClearIndexes)
                             }
                         },
@@ -525,5 +434,21 @@ fun SettingPage(
                 }
             }
         }
+    }
+}
+
+@Preview(
+    showSystemUi = true, showBackground = true, backgroundColor = 0xFFFFFFFF,
+    device = "spec:width=673dp,height=841dp"
+)
+@Composable
+private fun SettingPagePreview() {
+    Scaffold { inner ->
+        SettingPage(
+            state = SettingsPageState(),
+            action = {},
+            paddingValues = inner,
+            notificationAccess = false
+        )
     }
 }

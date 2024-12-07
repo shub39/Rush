@@ -65,7 +65,7 @@ fun GetAudioFiles(
     audioFiles: List<AudioFile>,
     update: (AudioFile) -> Unit,
     indexes: Map<Int, Boolean>,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
