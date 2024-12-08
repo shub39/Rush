@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.domain.listener
+package com.shub39.rush.lyrics.data.listener
 
 import android.content.ComponentName
 import android.content.Context
@@ -10,6 +10,7 @@ import android.media.session.PlaybackState
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
+import com.shub39.rush.lyrics.domain.UILogic.getMainArtist
 import com.shub39.rush.lyrics.domain.UILogic.getMainTitle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -138,7 +139,7 @@ object MediaListener {
             ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
 
         coroutineScope.launch {
-            songInfoFlow.emit(Pair(getMainTitle(title), artist))
+            songInfoFlow.emit(Pair(getMainTitle(title), getMainArtist(artist)))
             playbackSpeedFlow.emit(
                 if (controller.playbackState?.let { isActive(it) } == true)
                     controller.playbackState?.playbackSpeed ?: 1f
@@ -149,6 +150,7 @@ object MediaListener {
 
     }
 
+    // 🙏
     fun seek(timestamp: Long) {
         activeMediaController?.transportControls?.seekTo(timestamp)
     }

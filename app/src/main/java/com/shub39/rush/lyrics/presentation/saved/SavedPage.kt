@@ -36,7 +36,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import com.shub39.rush.core.data.RushDataStore
-import com.shub39.rush.lyrics.domain.listener.NotificationListener
+import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
 
 @Composable

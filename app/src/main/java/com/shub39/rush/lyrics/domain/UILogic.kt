@@ -164,4 +164,8 @@ object UILogic {
         val regex = Regex("\\s*\\(.*?\\)\\s*$")
         return songTitle.replace(regex, "").trim()
     }
+
+    fun getMainArtist(artists: String): String {
+        return artists.split(",")[0].trim()
+    }
 }

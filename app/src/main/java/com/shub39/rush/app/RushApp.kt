@@ -1,6 +1,5 @@
 package com.shub39.rush.app
 
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.lyrics.domain.listener.NotificationListener
+import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
@@ -52,12 +51,11 @@ fun RushApp(
     NavHost(
         navController = navController,
         startDestination = Route.RushGraph,
-        modifier = Modifier
-            .fillMaxSize(),
-        enterTransition = { fadeIn(animationSpec = tween(500)) },
-        exitTransition = { fadeOut(animationSpec = tween(500)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(500)) },
-        popExitTransition = { fadeOut(animationSpec = tween(500)) }
+        modifier = Modifier.fillMaxSize(),
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() }
     ) {
         navigation<Route.RushGraph>(
             startDestination = Route.SavedPage
@@ -77,7 +75,7 @@ fun RushApp(
                         state = savedState,
                         action = rushViewModel::onSavedPageAction,
                         onSongClick = {
-                            navController.navigate(Route.LyricsPage)
+                            navController.navigate(Route.LyricsGraph)
                         },
                         paddingValues = paddingValues
                     )
@@ -103,7 +101,11 @@ fun RushApp(
                     )
                 }
             }
+        }
 
+        navigation<Route.LyricsGraph>(
+            startDestination = Route.LyricsPage
+        ) {
             composable<Route.SharePage> {
                 currentRoute = Route.SharePage
 

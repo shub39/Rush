@@ -69,8 +69,8 @@ import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.core.data.RushDataStore
-import com.shub39.rush.lyrics.domain.listener.MediaListener
-import com.shub39.rush.lyrics.domain.listener.NotificationListener
+import com.shub39.rush.lyrics.data.listener.MediaListener
+import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.domain.UILogic.copyToClipBoard
 import com.shub39.rush.lyrics.domain.UILogic.getCurrentLyricIndex
 import com.shub39.rush.lyrics.domain.UILogic.getMainTitle

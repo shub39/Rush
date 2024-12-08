@@ -162,7 +162,7 @@ fun SettingPage(
                             Slider(
                                 value = maxLinesFlow.toFloat(),
                                 valueRange = 2f..8f,
-                                steps = 7,
+                                steps = 5,
                                 onValueChange = {
                                     coroutineScope.launch {
                                         RushDataStore.updateMaxLines(context, it.toInt())

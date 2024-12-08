@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.domain.listener
+package com.shub39.rush.lyrics.data.listener
 
 import android.content.Context
 import android.service.notification.NotificationListenerService
