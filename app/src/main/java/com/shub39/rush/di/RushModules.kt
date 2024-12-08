@@ -5,7 +5,9 @@ import com.shub39.rush.lyrics.presentation.RushViewModel
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.data.backup.export.ExportImpl
-import com.shub39.rush.lyrics.domain.ExportRepo
+import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
+import com.shub39.rush.lyrics.domain.backup.ExportRepo
+import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -17,6 +19,7 @@ val rushModules = module {
 
     singleOf(::RushRepository).bind<SongRepo>()
     singleOf(::ExportImpl).bind<ExportRepo>()
+    singleOf(::RestoreImpl).bind<RestoreRepo>()
 
     viewModelOf(::RushViewModel)
 

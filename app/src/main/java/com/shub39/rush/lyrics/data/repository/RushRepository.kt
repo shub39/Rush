@@ -44,6 +44,10 @@ class RushRepository(
         }
     }
 
+    override suspend fun insertSong(song: Song) {
+        localDao.insertSong(song.toSongEntity())
+    }
+
     override fun getSongs(): Flow<List<Song>> {
         return localDao
             .getAllSongs().map { entities ->
