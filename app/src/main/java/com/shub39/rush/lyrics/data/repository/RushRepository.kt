@@ -51,6 +51,10 @@ class RushRepository(
             }
     }
 
+    override suspend fun getAllSongs(): List<Song> {
+        return localDao.getSongs().map { it.toSong() }
+    }
+
     override suspend fun getSong(id: Long): Song {
         return localDao.getSongById(id).toSong()
     }

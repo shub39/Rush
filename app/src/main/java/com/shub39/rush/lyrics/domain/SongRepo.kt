@@ -10,6 +10,7 @@ interface SongRepo {
     suspend fun searchLrcLib(track: String, artist: String): Result<List<LrcLibSong>, SourceError>
 
     fun getSongs(): Flow<List<Song>>
+    suspend fun getAllSongs(): List<Song>
     suspend fun getSong(id: Long): Song
     suspend fun getSong(query: String): List<Song>
     suspend fun deleteSong(id: Long)

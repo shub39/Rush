@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,10 +56,12 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.core.data.RushDataStore
 import com.shub39.rush.core.domain.AppTheme
+import com.shub39.rush.lyrics.domain.ExportRepo
 import com.shub39.rush.lyrics.presentation.setting.component.GetAudioFiles
 import com.shub39.rush.lyrics.presentation.setting.component.GetLibraryPath
 import com.shub39.rush.lyrics.domain.UILogic.openLinkInBrowser
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,13 +69,15 @@ fun SettingPage(
     state: SettingsPageState,
     notificationAccess: Boolean,
     action: (SettingsPageAction) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    exportRepo: ExportRepo = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     var deleteButtonStatus by remember { mutableStateOf(true) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
+    var exportStatus by remember { mutableStateOf(true) }
     var batchDownloadDialog by remember { mutableStateOf(false) }
 
     val maxLinesFlow by RushDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
@@ -237,11 +242,18 @@ fun SettingPage(
                             }
 
                             IconButton(
-                                onClick = {},
+                                onClick = {
+                                    coroutineScope.launch {
+                                        exportRepo.exportToJson()
+                                        Toast.makeText(context, "Exported to Downloads/Rush", Toast.LENGTH_SHORT).show()
+                                    }
+                                    exportStatus = false
+                                },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                ),
+                                enabled = exportStatus
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.round_file_upload_24),
