@@ -17,12 +17,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.lyrics.domain.listener.NotificationListener
+import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
-import com.shub39.rush.lyrics.presentation.share.SharePage
+import com.shub39.rush.share.SharePage
 import com.shub39.rush.lyrics.presentation.RushViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,12 +52,11 @@ fun RushApp(
     NavHost(
         navController = navController,
         startDestination = Route.RushGraph,
-        modifier = Modifier
-            .fillMaxSize(),
-        enterTransition = { fadeIn(animationSpec = tween(500)) },
-        exitTransition = { fadeOut(animationSpec = tween(500)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(500)) },
-        popExitTransition = { fadeOut(animationSpec = tween(500)) }
+        modifier = Modifier.fillMaxSize(),
+        enterTransition = { fadeIn(animationSpec = tween(300)) },
+        exitTransition = { fadeOut(animationSpec = tween(300)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+        popExitTransition = { fadeOut(animationSpec = tween(300)) }
     ) {
         navigation<Route.RushGraph>(
             startDestination = Route.SavedPage
@@ -75,9 +74,10 @@ fun RushApp(
                 ) { paddingValues ->
                     SavedPage(
                         state = savedState,
+                        currentSongImg = lyricsState.song?.artUrl,
                         action = rushViewModel::onSavedPageAction,
                         onSongClick = {
-                            navController.navigate(Route.LyricsPage)
+                            navController.navigate(Route.LyricsGraph)
                         },
                         paddingValues = paddingValues
                     )
@@ -103,7 +103,11 @@ fun RushApp(
                     )
                 }
             }
+        }
 
+        navigation<Route.LyricsGraph>(
+            startDestination = Route.LyricsPage
+        ) {
             composable<Route.SharePage> {
                 currentRoute = Route.SharePage
 

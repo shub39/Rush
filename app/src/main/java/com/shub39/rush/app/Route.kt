@@ -7,6 +7,9 @@ sealed interface Route {
     data object RushGraph: Route
 
     @Serializable
+    data object LyricsGraph: Route
+
+    @Serializable
     data object LyricsPage: Route
 
     @Serializable

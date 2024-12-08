@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.shub39.rush.core.data.RushDataStore
-import com.shub39.rush.lyrics.domain.listener.MediaListener
+import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.core.presentation.RushTheme
 import org.koin.compose.KoinContext
 

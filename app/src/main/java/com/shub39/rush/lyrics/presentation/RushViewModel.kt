@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.core.domain.Result
-import com.shub39.rush.lyrics.domain.listener.MediaListener
-import com.shub39.rush.lyrics.domain.UILogic.sortMapByKeys
+import com.shub39.rush.core.domain.sortMapByKeys
+import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
@@ -20,10 +20,10 @@ import com.shub39.rush.lyrics.presentation.saved.SavedPageState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import com.shub39.rush.lyrics.presentation.share.ExtractedColors
-import com.shub39.rush.lyrics.presentation.share.SharePageAction
-import com.shub39.rush.lyrics.presentation.share.SharePageState
-import com.shub39.rush.lyrics.presentation.share.SongDetails
+import com.shub39.rush.share.ExtractedColors
+import com.shub39.rush.share.SharePageAction
+import com.shub39.rush.share.SharePageState
+import com.shub39.rush.share.SongDetails
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -148,6 +148,7 @@ class RushViewModel(
             .onEach { songs ->
                 _savedState.update { state ->
                     state.copy(
+                        songsByTime = songs.sortedByDescending { it.dateAdded },
                         songsAsc = songs.sortedBy { it.title },
                         songsDesc = songs.sortedByDescending { it.title },
                         groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),
