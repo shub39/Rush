@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -35,7 +34,6 @@ object RushDataStore {
     private val CARD_CONTENT = intPreferencesKey("card_content")
     private val LYRICS_COLOR = stringPreferencesKey("lyrics_color")
     private val CARD_FIT = stringPreferencesKey("card_fit")
-    private val RUSH_BRANDING = booleanPreferencesKey("rush_branding")
 
     fun getCardFitFlow(context: Context): Flow<String> = context.dataStore.data
         .catch {
@@ -51,14 +49,6 @@ object RushDataStore {
         }
         .map { preferences ->
             preferences[LYRICS_COLOR] ?: CardColors.MUTED.color
-        }
-
-    fun getRushBrandingFlow(context: Context): Flow<Boolean> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[RUSH_BRANDING] ?: true
         }
 
     fun getCardBackgroundFlow(context: Context): Flow<Int> = context.dataStore.data
@@ -128,12 +118,6 @@ object RushDataStore {
     suspend fun updateCardFit(context: Context, newCardFit: String) {
         context.dataStore.edit { settings ->
             settings[CARD_FIT] = newCardFit
-        }
-    }
-
-    suspend fun rushBranding(context: Context, newRushBranding: Boolean) {
-        context.dataStore.edit { settings ->
-            settings[RUSH_BRANDING] = newRushBranding
         }
     }
 

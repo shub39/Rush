@@ -5,8 +5,6 @@ import androidx.compose.runtime.Immutable
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
 import com.shub39.rush.lyrics.domain.Song
-import com.shub39.rush.lyrics.domain.UILogic.breakLyrics
-import com.shub39.rush.lyrics.domain.UILogic.parseLyrics
 
 @Immutable
 data class LyricsPageState(

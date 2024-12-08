@@ -50,7 +50,7 @@ fun SavedPage(
     val coroutineScope = rememberCoroutineScope()
 
     val sortOrder by RushDataStore.getSortOrderFlow(context)
-        .collectAsState(initial = SortOrder.TITLE_ASC.sortOrder)
+        .collectAsState(initial = SortOrder.DATE_ADDED.sortOrder)
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(

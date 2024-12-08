@@ -1,5 +1,6 @@
 package com.shub39.rush.app
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +22,7 @@ import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
-import com.shub39.rush.lyrics.presentation.share.SharePage
+import com.shub39.rush.share.SharePage
 import com.shub39.rush.lyrics.presentation.RushViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,10 +53,10 @@ fun RushApp(
         navController = navController,
         startDestination = Route.RushGraph,
         modifier = Modifier.fillMaxSize(),
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() }
+        enterTransition = { fadeIn(animationSpec = tween(300)) },
+        exitTransition = { fadeOut(animationSpec = tween(300)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+        popExitTransition = { fadeOut(animationSpec = tween(300)) }
     ) {
         navigation<Route.RushGraph>(
             startDestination = Route.SavedPage

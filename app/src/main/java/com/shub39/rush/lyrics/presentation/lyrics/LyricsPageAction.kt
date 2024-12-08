@@ -1,6 +1,6 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import com.shub39.rush.lyrics.presentation.share.SongDetails
+import com.shub39.rush.share.SongDetails
 
 sealed interface LyricsPageAction {
     data object OnToggleAutoChange: LyricsPageAction
