@@ -74,6 +74,7 @@ fun RushApp(
                 ) { paddingValues ->
                     SavedPage(
                         state = savedState,
+                        currentSongImg = lyricsState.song?.artUrl,
                         action = rushViewModel::onSavedPageAction,
                         onSongClick = {
                             navController.navigate(Route.LyricsGraph)

@@ -27,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,12 +37,14 @@ import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import com.shub39.rush.core.data.RushDataStore
+import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
 
 @Composable
 fun SavedPage(
     state: SavedPageState,
+    currentSongImg: String?,
     action: (SavedPageAction) -> Unit,
     onSongClick: () -> Unit,
     paddingValues: PaddingValues
@@ -262,5 +265,28 @@ fun SavedPage(
             }
         }
 
+        AnimatedContent(
+            targetState = currentSongImg,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomStart)
+        ) {
+            when (it) {
+                null -> {}
+                else -> {
+                    FloatingActionButton(
+                        onClick = onSongClick,
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ) {
+                        ArtFromUrl(
+                            imageUrl = it,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(MaterialTheme.shapes.extraLarge)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
