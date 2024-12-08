@@ -26,9 +26,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.LaunchedEffect
@@ -94,18 +96,20 @@ fun SharePage(
     val cardCornersFlow = remember { RushDataStore.getCardRoundnessFlow(context) }
     val mutableCardContent = remember { RushDataStore.getCardContentFlow(context) }
     val mutableCardBackground = remember { RushDataStore.getCardBackgroundFlow(context) }
+    val rushBrandingFlow = remember { RushDataStore.getRushBrandingFlow(context) }
+
     val cardFit by cardFitFlow.collectAsState(initial = CardFit.FIT.type)
     val cardTheme by cardThemeFlow.collectAsState(initial = CardTheme.RUSHED.type)
     val cardColorType by cardColorFlow.collectAsState(initial = CardColors.MUTED.color)
     val cardCornersType by cardCornersFlow.collectAsState(initial = CornerRadius.DEFAULT.type)
     val mCardContent by mutableCardContent.collectAsState(initial = Color.White.toArgb())
     val mCardBackground by mutableCardBackground.collectAsState(initial = Color.Black.toArgb())
+    val rushBranding by rushBrandingFlow.collectAsState(initial = true)
 
     var namePicker by remember { mutableStateOf(false) }
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
-
 
     val modifier = if (cardFit == CardFit.FIT.type) {
         Modifier
@@ -221,20 +225,22 @@ fun SharePage(
             targetState = cardTheme, label = "cardTheme"
         ) {
             when (it) {
-                "Spotify" -> SpotifyShareCard(
+                CardTheme.SPOTIFY.type -> SpotifyShareCard(
                     modifier = modifier,
                     song = state.songDetails,
                     sortedLines = state.selectedLines,
                     cardColors = cardColor,
                     cardCorners = cardCorners,
+                    branding = rushBranding,
                     fit = cardFit
                 )
 
-                "Rushed" -> RushedShareCard(
+                CardTheme.RUSHED.type -> RushedShareCard(
                     modifier = modifier,
                     song = state.songDetails,
                     sortedLines = state.selectedLines,
                     cardColors = cardColor,
+                    branding = rushBranding,
                     cardCorners = cardCorners
                 )
             }
@@ -418,6 +424,19 @@ fun SharePage(
                             RushDataStore.updateCardRoundness(context, it)
                         }
                     }
+                )
+
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.rush_branding)) },
+                    trailingContent = {
+                        Switch(
+                            checked = rushBranding,
+                            onCheckedChange = { coroutineScope.launch {
+                                RushDataStore.rushBranding(context, it)
+                            } }
+                        )
+                    },
+                    modifier = Modifier.clip(MaterialTheme.shapes.large)
                 )
             }
         }

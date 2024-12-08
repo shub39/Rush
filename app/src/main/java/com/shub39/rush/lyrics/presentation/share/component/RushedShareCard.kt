@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.share.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +28,12 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.share.SongDetails
 
@@ -37,6 +43,7 @@ fun RushedShareCard(
     song: SongDetails,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
+    branding: Boolean,
     cardCorners: RoundedCornerShape
 ) {
     Box {
@@ -116,6 +123,7 @@ fun RushedShareCard(
                                     top = 4.dp,
                                     bottom = 4.dp
                                 ),
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyMedium
                             )
@@ -134,18 +142,37 @@ fun RushedShareCard(
                             .size(70.dp)
                     )
 
-                    Spacer(modifier = Modifier.padding(5.dp))
+                    Spacer(modifier = Modifier.padding(4.dp))
 
-                    Column {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
                             text = song.title,
                             fontWeight = FontWeight.ExtraBold,
                             color = cardColors.contentColor,
+                            fontSize = 17.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = song.artist,
                             style = MaterialTheme.typography.bodySmall,
-                            color = cardColors.contentColor
+                            color = cardColors.contentColor,
+                            fontSize = 15.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    AnimatedVisibility(
+                        visible = branding
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.rush_transparent),
+                            contentDescription = null,
+                            tint = cardColors.contentColor,
+                            modifier = Modifier.size(32.dp)
                         )
                     }
                 }

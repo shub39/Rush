@@ -50,4 +50,5 @@
     <string name="backup_info">Import or Export the database of saved lyrics</string>
     <string name="batch_download_info">Download lyrics for your locally saved songs in one go.</string>
     <string name="sort_date_added">Last added</string>
+    <string name="rush_branding">Rush branding</string>
 </resources>
