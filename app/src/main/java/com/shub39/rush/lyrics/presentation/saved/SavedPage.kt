@@ -36,10 +36,11 @@ import com.shub39.rush.R
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
-import com.shub39.rush.core.data.RushDataStore
+import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun SavedPage(
@@ -47,12 +48,13 @@ fun SavedPage(
     currentSongImg: String?,
     action: (SavedPageAction) -> Unit,
     onSongClick: () -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    datastore: RushDatastore = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val sortOrder by RushDataStore.getSortOrderFlow(context)
+    val sortOrder by datastore.getSortOrderFlow()
         .collectAsState(initial = SortOrder.DATE_ADDED.sortOrder)
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
@@ -80,7 +82,7 @@ fun SavedPage(
                             selected = it.sortOrder == sortOrder,
                             onClick = {
                                 coroutineScope.launch {
-                                    RushDataStore.updateSortOrder(context, it.sortOrder)
+                                    datastore.updateSortOrder(it.sortOrder)
                                 }
                             },
                             label = { Text(stringResource(id = it.textId)) },

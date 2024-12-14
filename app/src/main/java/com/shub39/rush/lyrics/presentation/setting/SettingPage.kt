@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.core.data.RushDataStore
+import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.openLinkInBrowser
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
@@ -79,7 +79,8 @@ fun SettingPage(
     action: (SettingsPageAction) -> Unit,
     paddingValues: PaddingValues,
     exportRepo: ExportRepo = koinInject(),
-    restoreRepo: RestoreRepo = koinInject()
+    restoreRepo: RestoreRepo = koinInject(),
+    datastore: RushDatastore = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -90,10 +91,10 @@ fun SettingPage(
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var batchDownloadDialog by remember { mutableStateOf(false) }
 
-    val maxLinesFlow by RushDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val appTheme by RushDataStore.getToggleThemeFlow(context)
+    val maxLinesFlow by datastore.getMaxLinesFlow().collectAsState(initial = 6)
+    val appTheme by datastore.getToggleThemeFlow()
         .collectAsState(initial = "Gruvbox")
-    val colorPreference by RushDataStore.getLyricsColorFlow(context)
+    val colorPreference by datastore.getLyricsColorFlow()
         .collectAsState(CardColors.MUTED.color)
 
     LaunchedEffect(Unit) {
@@ -152,7 +153,7 @@ fun SettingPage(
                                 }
 
                                 coroutineScope.launch {
-                                    RushDataStore.updateToggleTheme(context, newTheme)
+                                    datastore.updateToggleTheme(newTheme)
                                 }
                             },
                             colors = IconButtonDefaults.iconButtonColors(
@@ -179,13 +180,11 @@ fun SettingPage(
                             onCheckedChange = {
                                 coroutineScope.launch {
                                     when (it) {
-                                        true -> RushDataStore.setLyricsColor(
-                                            context,
+                                        true -> datastore.setLyricsColor(
                                             CardColors.VIBRANT.color
                                         )
 
-                                        else -> RushDataStore.setLyricsColor(
-                                            context,
+                                        else -> datastore.setLyricsColor(
                                             CardColors.MUTED.color
                                         )
                                     }
@@ -209,7 +208,7 @@ fun SettingPage(
                                 steps = 5,
                                 onValueChange = {
                                     coroutineScope.launch {
-                                        RushDataStore.updateMaxLines(context, it.toInt())
+                                        datastore.updateMaxLines(it.toInt())
                                     }
                                 }
                             )

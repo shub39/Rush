@@ -65,7 +65,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
-import com.shub39.rush.core.data.RushDataStore
+import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.share.component.ListSelect
 import com.shub39.rush.share.component.RushedShareCard
 import com.shub39.rush.share.component.SpotifyShareCard
@@ -79,19 +79,20 @@ fun SharePage(
     state: SharePageState,
     action: (SharePageAction) -> Unit,
     paddingValues: PaddingValues,
-    imageLoader: ImageLoader = koinInject()
+    imageLoader: ImageLoader = koinInject(),
+    datastore: RushDatastore = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     val colorPickerController = rememberColorPickerController()
     val context = LocalContext.current
 
-    val cardFitFlow = remember { RushDataStore.getCardFitFlow(context) }
-    val cardThemeFlow = remember { RushDataStore.getCardThemeFlow(context) }
-    val cardColorFlow = remember { RushDataStore.getCardColorFlow(context) }
-    val cardCornersFlow = remember { RushDataStore.getCardRoundnessFlow(context) }
-    val mutableCardContent = remember { RushDataStore.getCardContentFlow(context) }
-    val mutableCardBackground = remember { RushDataStore.getCardBackgroundFlow(context) }
+    val cardFitFlow = remember { datastore.getCardFitFlow() }
+    val cardThemeFlow = remember { datastore.getCardThemeFlow() }
+    val cardColorFlow = remember { datastore.getCardColorFlow() }
+    val cardCornersFlow = remember { datastore.getCardRoundnessFlow() }
+    val mutableCardContent = remember { datastore.getCardContentFlow() }
+    val mutableCardBackground = remember { datastore.getCardBackgroundFlow() }
 
     val cardFit by cardFitFlow.collectAsState(initial = CardFit.FIT.type)
     val cardTheme by cardThemeFlow.collectAsState(initial = CardTheme.RUSHED.type)
@@ -380,7 +381,7 @@ fun SharePage(
                     selected = cardTheme,
                     onSelectedChange = {
                         coroutineScope.launch {
-                            RushDataStore.updateCardTheme(context, it)
+                            datastore.updateCardTheme(it)
                         }
                     }
                 )
@@ -391,7 +392,7 @@ fun SharePage(
                     selected = cardColorType,
                     onSelectedChange = {
                         coroutineScope.launch {
-                            RushDataStore.updateCardColor(context, it)
+                            datastore.updateCardColor(it)
                         }
                     }
                 )
@@ -402,7 +403,7 @@ fun SharePage(
                     selected = cardFit,
                     onSelectedChange = {
                         coroutineScope.launch {
-                            RushDataStore.updateCardFit(context, it)
+                            datastore.updateCardFit(it)
                         }
                     }
                 )
@@ -413,7 +414,7 @@ fun SharePage(
                     selected = cardCornersType,
                     onSelectedChange = {
                         coroutineScope.launch {
-                            RushDataStore.updateCardRoundness(context, it)
+                            datastore.updateCardRoundness(it)
                         }
                     }
                 )
@@ -470,13 +471,11 @@ fun SharePage(
                         onClick = {
                             coroutineScope.launch {
                                 if (editTarget == "content") {
-                                    RushDataStore.updateCardContent(
-                                        context,
+                                    datastore.updateCardContent(
                                         colorPickerController.selectedColor.value.toArgb()
                                     )
                                 } else {
-                                    RushDataStore.updateCardBackground(
-                                        context,
+                                    datastore.updateCardBackground(
                                         colorPickerController.selectedColor.value.toArgb()
                                     )
                                 }

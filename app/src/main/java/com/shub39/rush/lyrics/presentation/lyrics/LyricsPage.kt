@@ -68,7 +68,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
-import com.shub39.rush.core.data.RushDataStore
+import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.domain.getMainTitle
 import com.shub39.rush.core.domain.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
@@ -85,14 +85,15 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
-    imageLoader: ImageLoader = koinInject()
+    imageLoader: ImageLoader = koinInject(),
+    datastore: RushDatastore = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
-    val maxLinesFlow by RushDataStore.getMaxLinesFlow(context).collectAsState(initial = 6)
-    val colorPreference by RushDataStore.getLyricsColorFlow(context).collectAsState(CardColors.MUTED.color)
+    val maxLinesFlow by datastore.getMaxLinesFlow().collectAsState(initial = 6)
+    val colorPreference by datastore.getLyricsColorFlow().collectAsState(CardColors.MUTED.color)
 
     var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
     var cardContentDominant by remember { mutableStateOf(Color.White) }
