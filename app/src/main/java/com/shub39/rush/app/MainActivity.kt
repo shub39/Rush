@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.lyrics.data.listener.MediaListener
-import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.core.presentation.theme.RushTheme
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
 

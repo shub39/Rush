@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.core.domain.Result
-import com.shub39.rush.core.domain.sortMapByKeys
+import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.domain.SongRepo

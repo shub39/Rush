@@ -4,6 +4,10 @@
 # Rush
 ### Search, save and share lyrics like Spotify! 
 
+> [!NOTE]
+> Genius changed its website to prevent scraping!
+> Genius lyrics are unavailable until I figure out something else
+
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio3.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()

@@ -1,4 +1,4 @@
-package com.shub39.rush.core.presentation
+package com.shub39.rush.core.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

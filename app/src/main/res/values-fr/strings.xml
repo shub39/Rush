@@ -35,7 +35,7 @@
     <string name="error">Quelque chose s\'est mal passé…</string>
     <string name="try_again">Réessayer?</string>
     <string name="correct_lyrics">Corriger les paroles</string>
-    <string name="no_internet">Internet n'est pas disponible !!</string>
+    <string name="no_internet">Internet n\'est pas disponible !!</string>
     <string name="request_failed">La requête a échouée.</string>
     <string name="no_results">Pas de résultats</string>
     <string name="parse_error">Erreur d\'analyse.</string>

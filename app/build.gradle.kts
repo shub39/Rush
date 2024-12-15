@@ -16,8 +16,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 238
-        versionName = "2.3.9"
+        versionCode = 250
+        versionName = "2.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -118,6 +118,8 @@ dependencies {
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.colorpicker.compose)
+
+    implementation(libs.bundles.ktor)
 
 }
 

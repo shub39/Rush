@@ -1,4 +1,4 @@
-package com.shub39.rush.core.presentation
+package com.shub39.rush.core.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

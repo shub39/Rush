@@ -59,7 +59,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.domain.AppTheme
-import com.shub39.rush.core.domain.openLinkInBrowser
+import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.presentation.setting.component.GetAudioFiles
 import com.shub39.rush.lyrics.presentation.setting.component.GetLibraryPath

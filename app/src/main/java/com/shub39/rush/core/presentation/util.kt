@@ -1,4 +1,4 @@
-package com.shub39.rush.core.domain
+package com.shub39.rush.core.presentation
 
 import android.content.Context
 import android.content.Intent

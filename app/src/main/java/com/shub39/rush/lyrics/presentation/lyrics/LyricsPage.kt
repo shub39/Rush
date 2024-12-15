@@ -69,8 +69,8 @@ import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.core.data.RushDatastore
-import com.shub39.rush.core.domain.getMainTitle
-import com.shub39.rush.core.domain.openLinkInBrowser
+import com.shub39.rush.core.presentation.getMainTitle
+import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
