@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.colorpicker.compose)
+    implementation(libs.ksoup)
 
     implementation(libs.bundles.ktor)
 

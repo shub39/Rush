@@ -149,15 +149,16 @@ object SongProvider {
 
                 Result.Success(
                     Song(
-                        songId,
-                        title,
-                        artist,
-                        lyrics,
-                        album,
-                        sourceUrl,
-                        artUrl,
-                        syncedLyrics,
-                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+                        id = songId,
+                        title = title,
+                        artists = artist,
+                        lyrics = lyrics,
+                        album = album,
+                        sourceUrl = sourceUrl,
+                        artUrl = artUrl,
+                        geniusLyrics = null,
+                        syncedLyrics = syncedLyrics,
+                        dateAdded = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
                     )
                 )
             } else {
