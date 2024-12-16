@@ -1,7 +1,6 @@
 package com.shub39.rush.lyrics.data.network
 
 import android.util.Log
-import com.github.kittinunf.fuel.httpGet
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.shub39.rush.lyrics.domain.LrcLibSong
@@ -15,7 +14,6 @@ import retrofit2.Retrofit
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SourceError
 import com.shub39.rush.lyrics.domain.Song
-import org.jsoup.Jsoup
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -148,7 +146,6 @@ object SongProvider {
                 val lrcLib = getLrcLibLyrics(title, artist) ?: Pair("", null)
                 val lyrics = lrcLib.first
                 val syncedLyrics = lrcLib.second
-                val geniusLyrics = scrapeLyrics(sourceUrl)
 
                 Result.Success(
                     Song(
@@ -160,7 +157,6 @@ object SongProvider {
                         sourceUrl,
                         artUrl,
                         syncedLyrics,
-                        geniusLyrics,
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
                     )
                 )
@@ -195,42 +191,10 @@ object SongProvider {
         return null
     }
 
-    private fun scrapeLyrics(songUrl: String): String? {
-        val (_, _, result) = songUrl.httpGet().responseString()
-
-        return when (result) {
-            is com.github.kittinunf.result.Result.Failure -> {
-                Log.e(TAG, "Error scraping lyrics: ${result.error}")
-                return null
-            }
-
-            is com.github.kittinunf.result.Result.Success -> {
-                val html = result.get()
-                val document = Jsoup.parse(html)
-                var lyrics = ""
-                val lyricsElement = document.select("div.lyrics, div[class*='Lyrics__Container']")
-                lyricsElement.forEach {
-                    lyrics += formatGeniusLyrics(it.wholeText())
-                    lyrics += "\n"
-                }
-
-                lyrics
-            }
-        }
-    }
-
     private fun getAlbum(jsonObject: JsonObject): String? {
         val albumJson = jsonObject["album"] ?: return null
         if (albumJson.isJsonNull) return null
         return albumJson.asJsonObject.get("name").asString
-    }
-
-    private fun formatGeniusLyrics(rawLyrics: String): String {
-        return rawLyrics.lines()
-            .filter { it.isNotBlank() }
-            .joinToString("\n")
-            .replace("[", "\n[")
-            .removePrefix("\n")
     }
 
     interface GeniusApiService {

@@ -14,7 +14,6 @@ fun SongEntity.toSong(): Song {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics,
         dateAdded = dateAdded
     )
 }
@@ -29,7 +28,6 @@ fun Song.toSongEntity(): SongEntity {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics,
         dateAdded = dateAdded
     )
 }
@@ -44,7 +42,6 @@ fun Song.toSongSchema(): SongSchema {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics,
         dateAdded = dateAdded
     )
 }
@@ -59,7 +56,6 @@ fun SongSchema.toSong(): Song {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         syncedLyrics = syncedLyrics,
-        geniusLyrics = geniusLyrics,
         dateAdded = dateAdded,
     )
 }

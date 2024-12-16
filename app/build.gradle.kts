@@ -103,9 +103,6 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.placeholder)
-    implementation(libs.fuel)
-    implementation(libs.fuel.coroutines)
-    implementation(libs.jsoup)
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.room.compiler)

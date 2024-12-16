@@ -152,8 +152,6 @@ fun LyricsPage(
 
                 if (song.lyrics.isNotEmpty()) {
                     source = "LrcLib"
-                } else if (song.geniusLyrics != null) {
-                    source = "Genius"
                 }
 
                 if (song.syncedLyrics != null) {
@@ -314,11 +312,7 @@ fun LyricsPage(
                                     if (selectedLines.isEmpty()) {
                                         copyToClipBoard(
                                             context,
-                                            if (source == "LrcLib") {
-                                                song.lyrics.joinToString("\n") { it.value }
-                                            } else {
-                                                song.geniusLyrics?.joinToString("\n") { it.value } ?: ""
-                                            },
+                                            song.lyrics.joinToString("\n") { it.value },
                                             "Complete Lyrics"
                                         )
                                     } else {
@@ -469,8 +463,7 @@ fun LyricsPage(
                     state = lazyListState
                 ) {
                     items(
-                        items = if (source == "LrcLib") song.lyrics else song.geniusLyrics
-                            ?: emptyList(),
+                        items = song.lyrics,
                         key = { it.key }
                     ) {
                         if (it.value.isNotBlank()) {

@@ -27,7 +27,6 @@ data class SongUi(
     val artUrl: String? = null,
     val lyrics:  List<Map.Entry<Int, String>> = emptyList(),
     val syncedLyrics: List<Lyric>? = null,
-    val geniusLyrics:  List<Map.Entry<Int, String>>? = null,
 )
 
 data class PlayingSong(
@@ -53,6 +52,5 @@ fun Song.toSongUi(): SongUi {
         artUrl = artUrl,
         lyrics = breakLyrics(lyrics),
         syncedLyrics = if (syncedLyrics == null) null else parseLyrics(syncedLyrics),
-        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics)
     )
 }

@@ -9,6 +9,5 @@ data class Song(
     val sourceUrl: String,
     val artUrl: String?,
     val syncedLyrics: String?,
-    val geniusLyrics: String?,
     val dateAdded: Long
 )
