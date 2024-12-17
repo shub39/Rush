@@ -26,17 +26,6 @@ class RushDatastore(
 ) {
     private val Context.dataStore by preferencesDataStore( name = DATA_STORE_FILE_NAME )
 
-    private val maxLines = intPreferencesKey("max_lines")
-    private val toggleTheme = stringPreferencesKey("toggle_theme")
-    private val sortOrder = stringPreferencesKey("sort_order")
-    private val cardColor = stringPreferencesKey("card_color")
-    private val cardRoundness = stringPreferencesKey("card_roundness")
-    private val cardTheme = stringPreferencesKey("card_theme")
-    private val cardBackground = intPreferencesKey("card_background")
-    private val cardContent = intPreferencesKey("card_content")
-    private val lyricsColor = stringPreferencesKey("lyrics_color")
-    private val cardFit = stringPreferencesKey("card_fit")
-
     fun getCardFitFlow(): Flow<String> = context.dataStore.data
         .catch {
             Log.e(TAG, it.message, it)
@@ -175,5 +164,18 @@ class RushDatastore(
         context.dataStore.edit { settings ->
             settings[toggleTheme] = newToggleTheme
         }
+    }
+
+    companion object {
+        private val maxLines = intPreferencesKey("max_lines")
+        private val toggleTheme = stringPreferencesKey("toggle_theme")
+        private val sortOrder = stringPreferencesKey("sort_order")
+        private val cardColor = stringPreferencesKey("card_color")
+        private val cardRoundness = stringPreferencesKey("card_roundness")
+        private val cardTheme = stringPreferencesKey("card_theme")
+        private val cardBackground = intPreferencesKey("card_background")
+        private val cardContent = intPreferencesKey("card_content")
+        private val lyricsColor = stringPreferencesKey("lyrics_color")
+        private val cardFit = stringPreferencesKey("card_fit")
     }
 }

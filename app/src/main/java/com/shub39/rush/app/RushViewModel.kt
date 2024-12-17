@@ -11,7 +11,8 @@ import androidx.palette.graphics.Palette
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.shub39.rush.core.domain.ExtractedColors
+import com.shub39.rush.core.data.ExtractedColors
+import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.core.domain.Result

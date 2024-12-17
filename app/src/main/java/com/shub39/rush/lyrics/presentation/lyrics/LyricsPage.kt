@@ -33,7 +33,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,35 +57,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
-import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
-import com.shub39.rush.share.SongDetails
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
-    state: LyricsPageState,
-    datastore: RushDatastore = koinInject(),
+    state: LyricsPageState
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
-
-    val maxLinesFlow by datastore.getMaxLinesFlow().collectAsState(initial = 6)
-    val colorPreference by datastore.getLyricsColorFlow().collectAsState(CardColors.MUTED.color)
 
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
@@ -96,14 +89,14 @@ fun LyricsPage(
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     val cardBackground by animateColorAsState(
-        targetValue = when (colorPreference) {
+        targetValue = when (state.colorPref) {
             CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
             else -> state.extractedColors.cardBackgroundDominant
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = when (colorPreference) {
+        targetValue = when (state.colorPref) {
             CardColors.MUTED.color -> state.extractedColors.cardContentMuted
             else -> state.extractedColors.cardContentDominant
         },
@@ -449,7 +442,7 @@ fun LyricsPage(
                                             selectedLines,
                                             it.key,
                                             it.value,
-                                            maxLinesFlow
+                                            state.maxLines
                                         )
                                         isSelected != isSelected
                                     },
