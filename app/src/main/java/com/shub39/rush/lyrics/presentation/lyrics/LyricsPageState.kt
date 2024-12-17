@@ -2,6 +2,7 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import com.shub39.rush.core.domain.ExtractedColors
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
 import com.shub39.rush.lyrics.domain.Song
@@ -14,7 +15,8 @@ data class LyricsPageState(
     @StringRes val error: Int? = null,
     val autoChange: Boolean = false,
     val playingSong: PlayingSong = PlayingSong(),
-    val lrcCorrect: LrcCorrect = LrcCorrect()
+    val lrcCorrect: LrcCorrect = LrcCorrect(),
+    val extractedColors: ExtractedColors = ExtractedColors()
 )
 
 @Immutable

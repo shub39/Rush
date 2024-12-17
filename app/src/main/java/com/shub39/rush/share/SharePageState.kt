@@ -1,7 +1,7 @@
 package com.shub39.rush.share
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.Color
+import com.shub39.rush.core.domain.ExtractedColors
 
 @Immutable
 data class SharePageState(
@@ -15,11 +15,4 @@ data class SongDetails(
     val artist: String = "",
     val album: String? = null,
     val artUrl: String = ""
-)
-
-data class ExtractedColors(
-    val cardBackgroundDominant: Color = Color.DarkGray,
-    val cardContentDominant: Color = Color.White,
-    val cardBackgroundMuted: Color = Color.DarkGray,
-    val cardContentMuted: Color = Color.LightGray
 )

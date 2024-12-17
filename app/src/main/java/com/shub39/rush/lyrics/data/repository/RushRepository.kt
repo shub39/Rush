@@ -2,6 +2,8 @@ package com.shub39.rush.lyrics.data.repository
 
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SourceError
+import com.shub39.rush.core.presentation.getMainArtist
+import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.data.database.SongDao
 import com.shub39.rush.lyrics.data.mappers.toSong
 import com.shub39.rush.lyrics.data.mappers.toSongEntity
@@ -39,7 +41,7 @@ class RushRepository(
                     geniusScraper.scrapeLyrics(song.url)
                 }
                 val lrcLibLyrics = withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(trackName = song.title, artistName = song.artistNames.split(",")[0])
+                    lrcLibApi.getLrcLyrics(trackName = getMainTitle(song.title), artistName = getMainArtist(song.artistNames))
                 }
 
                  return Result.Success<Song, SourceError>(Song(

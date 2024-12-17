@@ -31,7 +31,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,11 +50,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.github.skydoves.colorpicker.compose.AlphaTile
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
@@ -77,9 +71,7 @@ import org.koin.compose.koinInject
 fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
-    action: (SharePageAction) -> Unit,
     paddingValues: PaddingValues,
-    imageLoader: ImageLoader = koinInject(),
     datastore: RushDatastore = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -125,58 +117,6 @@ fun SharePage(
                 }
                 drawLayer(cardGraphicsLayer)
             }
-    }
-
-    LaunchedEffect(state.songDetails) {
-        val request = ImageRequest.Builder(context)
-            .data(state.songDetails.artUrl)
-            .allowHardware(false)
-            .build()
-        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
-
-        result.let { drawable ->
-            if (drawable != null) {
-                Palette.from(drawable.toBitmap()).generate { palette ->
-                    palette?.let {
-                        val cardBackgroundDominant =
-                            Color(
-                                it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
-                                ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
-                                ?: Color.DarkGray.toArgb()
-                            )
-                        val cardContentDominant =
-                            Color(
-                                it.vibrantSwatch?.bodyTextColor
-                                    ?: it.lightVibrantSwatch?.bodyTextColor
-                                    ?: it.darkVibrantSwatch?.bodyTextColor
-                                    ?: it.dominantSwatch?.bodyTextColor
-                                    ?: Color.White.toArgb()
-                            )
-                        val cardBackgroundMuted =
-                            Color(
-                                it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
-                                ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                            )
-                        val cardContentMuted =
-                            Color(
-                                it.mutedSwatch?.bodyTextColor ?: it.darkMutedSwatch?.bodyTextColor
-                                ?: it.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
-                            )
-
-                        action(
-                            SharePageAction.UpdateExtractedColors(
-                                ExtractedColors(
-                                    cardBackgroundDominant = cardBackgroundDominant,
-                                    cardContentDominant = cardContentDominant,
-                                    cardBackgroundMuted = cardBackgroundMuted,
-                                    cardContentMuted = cardContentMuted
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-        }
     }
 
     val cornerRadius by animateDpAsState(

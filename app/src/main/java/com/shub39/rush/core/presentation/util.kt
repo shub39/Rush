@@ -19,7 +19,8 @@ fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
 }
 
 fun getMainArtist(artists: String): String {
-    return artists.split(",")[0].trim()
+    val regex = Regex("\\s*\\(.*?\\)\\s*$")
+    return artists.replace(regex, "").split(",")[0].trim()
 }
 
 fun getMainTitle(songTitle: String): String {

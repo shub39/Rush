@@ -46,7 +46,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,11 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
@@ -85,8 +79,7 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
-    imageLoader: ImageLoader = koinInject(),
-    datastore: RushDatastore = koinInject()
+    datastore: RushDatastore = koinInject(),
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -95,8 +88,6 @@ fun LyricsPage(
     val maxLinesFlow by datastore.getMaxLinesFlow().collectAsState(initial = 6)
     val colorPreference by datastore.getLyricsColorFlow().collectAsState(CardColors.MUTED.color)
 
-    var cardBackgroundDominant by remember { mutableStateOf(Color.DarkGray) }
-    var cardContentDominant by remember { mutableStateOf(Color.White) }
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
     var lyricsCorrect by remember { mutableStateOf(false) }
@@ -105,11 +96,17 @@ fun LyricsPage(
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     val cardBackground by animateColorAsState(
-        targetValue = cardBackgroundDominant,
+        targetValue = when (colorPreference) {
+            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
+            else -> state.extractedColors.cardBackgroundDominant
+        },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = cardContentDominant,
+        targetValue = when (colorPreference) {
+            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
+            else -> state.extractedColors.cardContentDominant
+        },
         label = "cardContent"
     )
 
@@ -119,8 +116,7 @@ fun LyricsPage(
     }
 
     Card(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
             containerColor = cardBackground,
             contentColor = cardContent
@@ -133,12 +129,12 @@ fun LyricsPage(
             LoadingCard(
                 state.fetching,
                 state.searching,
-                Pair(cardContentDominant, cardBackgroundDominant)
+                Pair(cardContent, cardBackground)
             )
 
         } else if (state.error != null) {
 
-            ErrorCard(state.error, Pair(cardContentDominant, cardBackgroundDominant))
+            ErrorCard(state.error, Pair(cardContent, cardBackground))
 
         } else if (state.song == null) {
 
@@ -146,73 +142,32 @@ fun LyricsPage(
 
         } else {
 
-            val song = state.song
-
-            LaunchedEffect(song.lyrics) {
-
-                if (song.lyrics.isNotEmpty()) {
-                    source = "LrcLib"
+            LaunchedEffect(state.song.lyrics) {
+                source = if (state.song.lyrics.isNotEmpty()) {
+                    "LrcLib"
+                } else {
+                    "Genius"
                 }
 
-                if (song.syncedLyrics != null) {
+                if (state.song.syncedLyrics != null) {
                     syncedAvailable = true
 
                     sync = getMainTitle(state.playingSong.title).trim()
-                        .lowercase() == song.title.trim()
+                        .lowercase() == state.song.title.trim()
                         .lowercase()
 
                 }
 
-                val request = ImageRequest.Builder(context)
-                    .data(song.artUrl)
-                    .allowHardware(false)
-                    .build()
-                val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
-
-                result.let { drawable ->
-                    if (drawable != null) {
-                        Palette.from(drawable.toBitmap()).generate { palette ->
-                            palette?.let {
-                                if (colorPreference == CardColors.MUTED.color) {
-                                    cardBackgroundDominant =
-                                        Color(
-                                            it.mutedSwatch?.rgb ?: it.darkMutedSwatch?.rgb
-                                            ?: it.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                                        )
-                                    cardContentDominant =
-                                        Color(
-                                            it.mutedSwatch?.bodyTextColor
-                                                ?: it.darkMutedSwatch?.bodyTextColor
-                                                ?: it.lightMutedSwatch?.bodyTextColor
-                                                ?: Color.White.toArgb()
-                                        )
-                                } else {
-                                    cardBackgroundDominant =
-                                        Color(
-                                            it.vibrantSwatch?.rgb ?: it.lightVibrantSwatch?.rgb
-                                            ?: it.darkVibrantSwatch?.rgb ?: it.dominantSwatch?.rgb
-                                            ?: Color.DarkGray.toArgb()
-                                        )
-                                    cardContentDominant =
-                                        Color(
-                                            it.vibrantSwatch?.bodyTextColor
-                                                ?: it.lightVibrantSwatch?.bodyTextColor
-                                                ?: it.darkVibrantSwatch?.bodyTextColor
-                                                ?: it.dominantSwatch?.bodyTextColor
-                                                ?: Color.White.toArgb()
-                                        )
-                                }
-                            }
-                        }
-                    }
-                }
+                action(
+                    LyricsPageAction.UpdateExtractedColors(context)
+                )
             }
 
             LaunchedEffect(state.playingSong.title) {
-                syncedAvailable = (song.syncedLyrics != null)
+                syncedAvailable = (state.song.syncedLyrics != null)
 
                 sync = getMainTitle(state.playingSong.title).trim()
-                    .lowercase() == song.title.trim()
+                    .lowercase() == state.song.title.trim()
                     .lowercase() && syncedAvailable
             }
 
@@ -226,7 +181,7 @@ fun LyricsPage(
                 Column {
                     AnimatedVisibility(top > 2) {
                         ArtFromUrl(
-                            imageUrl = song.artUrl,
+                            imageUrl = state.song.artUrl,
                             highlightColor = cardContent,
                             baseColor = cardBackground,
                             modifier = Modifier
@@ -241,7 +196,7 @@ fun LyricsPage(
                                     Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            cardBackgroundDominant
+                                            cardBackground
                                         )
                                     )
                                 )
@@ -261,7 +216,7 @@ fun LyricsPage(
                             contentAlignment = Alignment.Center
                         ) {
                             ArtFromUrl(
-                                imageUrl = song.artUrl,
+                                imageUrl = state.song.artUrl,
                                 highlightColor = cardContent,
                                 baseColor = cardBackground,
                                 modifier = Modifier
@@ -280,7 +235,7 @@ fun LyricsPage(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = song.title,
+                                text = state.song.title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 2,
@@ -289,14 +244,13 @@ fun LyricsPage(
                             )
 
                             Text(
-                                text = song.artists,
+                                text = state.song.artists,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
                                 overflow = TextOverflow.Ellipsis,
                             )
-
                         }
                     }
 
@@ -312,7 +266,7 @@ fun LyricsPage(
                                     if (selectedLines.isEmpty()) {
                                         copyToClipBoard(
                                             context,
-                                            song.lyrics.joinToString("\n") { it.value },
+                                            state.song.lyrics.joinToString("\n") { it.value },
                                             "Complete Lyrics"
                                         )
                                     } else {
@@ -423,10 +377,10 @@ fun LyricsPage(
                                         action(
                                             LyricsPageAction.OnUpdateShareLines(
                                                 songDetails = SongDetails(
-                                                    title = song.title,
-                                                    artist = song.artists,
-                                                    album = song.album,
-                                                    artUrl = song.artUrl ?: ""
+                                                    title = state.song.title,
+                                                    artist = state.song.artists,
+                                                    album = state.song.album,
+                                                    artUrl = state.song.artUrl ?: ""
                                                 ),
                                                 shareLines = selectedLines
                                             )
@@ -463,22 +417,22 @@ fun LyricsPage(
                     state = lazyListState
                 ) {
                     items(
-                        items = song.lyrics,
+                        items = state.song.lyrics,
                         key = { it.key }
                     ) {
                         if (it.value.isNotBlank()) {
                             val isSelected = selectedLines.contains(it.key)
                             val contentColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
-                                    true -> cardContentDominant
-                                    else -> cardBackgroundDominant
+                                    true -> cardContent
+                                    else -> cardBackground
                                 },
                                 label = "content"
                             )
                             val containerColor by animateColorAsState(
                                 targetValue = when (!isSelected) {
-                                    true -> cardBackgroundDominant
-                                    else -> cardContentDominant
+                                    true -> cardBackground
+                                    else -> cardContent
                                 },
                                 label = "container"
                             )
@@ -520,7 +474,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (song.lyrics.isNotEmpty()) {
+                    if (state.song.lyrics.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.padding(10.dp))
 
@@ -545,7 +499,7 @@ fun LyricsPage(
                                     onClick = {
                                         openLinkInBrowser(
                                             context,
-                                            song.sourceUrl
+                                            state.song.sourceUrl
                                         )
                                     },
                                 ) {
@@ -569,7 +523,7 @@ fun LyricsPage(
                         }
                     }
 
-                    if (song.lyrics.isEmpty() && source != "Genius") {
+                    if (state.song.lyrics.isEmpty() && source != "Genius") {
                         item {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -591,14 +545,14 @@ fun LyricsPage(
                     }
 
                 }
-            } else if (song.syncedLyrics != null) {
+            } else if (state.song.syncedLyrics != null) {
 
                 LaunchedEffect(state.playingSong.position) {
                     coroutineScope.launch {
                         var currentIndex =
                             getCurrentLyricIndex(
                                 state.playingSong.position,
-                                song.syncedLyrics
+                                state.song.syncedLyrics
                             )
                         currentIndex -= 3
                         lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
@@ -614,7 +568,7 @@ fun LyricsPage(
                     ),
                     state = lazyListState
                 ) {
-                    items(song.syncedLyrics, key = { it.time }) { lyric ->
+                    items(state.song.syncedLyrics, key = { it.time }) { lyric ->
                         Row(
                             modifier = Modifier.fillMaxWidth()
                         ) {

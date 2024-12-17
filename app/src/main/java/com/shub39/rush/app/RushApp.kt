@@ -23,7 +23,6 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
 import com.shub39.rush.share.SharePage
-import com.shub39.rush.lyrics.presentation.RushViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -118,7 +117,6 @@ fun RushApp(
                         },
                         state = shareState,
                         paddingValues = paddingValues,
-                        action = rushViewModel::onSharePageAction
                     )
                 }
             }
