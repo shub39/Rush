@@ -22,6 +22,8 @@ data class Song (
 
     val id: Long,
 
+    val url: String,
+
     val language: String,
 
     val path: String,

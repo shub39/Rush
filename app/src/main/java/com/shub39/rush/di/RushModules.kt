@@ -9,6 +9,7 @@ import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.data.backup.export.ExportImpl
 import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
 import com.shub39.rush.lyrics.data.network.GeniusApi
+import com.shub39.rush.lyrics.data.network.LrcLibApi
 import com.shub39.rush.lyrics.data.network.GeniusScraper
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
@@ -23,6 +24,7 @@ val rushModules = module {
     single { HttpClientFactory.create() }
     singleOf(::GeniusScraper)
     singleOf(::GeniusApi)
+    singleOf(::LrcLibApi)
 
     singleOf(::RushRepository).bind<SongRepo>()
     singleOf(::ExportImpl).bind<ExportRepo>()

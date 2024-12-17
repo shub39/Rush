@@ -24,42 +24,29 @@ class GeniusScraper(
 
         when (response) {
             is Result.Success -> {
-                val doc = Ksoup.parse(response.data.body())
-                val lyricsElements = doc.select("div[data-lyrics-container='true']")
-                val lyrics = StringBuilder()
+                val lyricsElements = Ksoup.parse(response.data.body()).select("div[data-lyrics-container='true']")
 
-                lyricsElements.forEach { element ->
-                    element.childNodes().forEach { node ->
-                        when (node) {
-                            is TextNode -> {
-                                val text = node.text().trim()
-                                if (text.isNotEmpty()) {
-                                    if (text.startsWith("[") || text.endsWith("]")) {
-                                        lyrics.append("\n")
-                                    }
-                                    lyrics.append("\n$text")
-                                }
-                            }
+                return buildString {
+                    lyricsElements.forEach { element ->
+                        element.childNodes().forEachIndexed { _, node ->
+                            val text = when (node) {
+                                is TextNode -> node.text()
+                                is Element -> node.wholeText()
+                                else -> return@forEachIndexed
+                            }.trim()
 
-                            is Element -> {
-                                val nestedText = node.wholeText().trim()
-                                if (nestedText.isNotEmpty()) {
-                                    if (nestedText.startsWith("[") || nestedText.endsWith("]")) {
-                                        lyrics.append("\n")
-                                    }
-                                    lyrics.append("\n$nestedText")
+                            if (text.isNotEmpty()) {
+                                if (text.startsWith("[") || text.endsWith("]")) {
+                                    append("\n")
                                 }
+                                append("\n$text")
                             }
                         }
                     }
                 }
-
-                return lyrics.toString()
             }
 
-            is Result.Error -> {
-                return null
-            }
+            is Result.Error -> return null
         }
     }
 }
