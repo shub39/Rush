@@ -1,8 +1,9 @@
 package com.shub39.rush
 
+import com.shub39.rush.core.data.HttpClientFactory
+import com.shub39.rush.lyrics.data.network.GeniusApi
 import com.shub39.rush.lyrics.data.network.GeniusScraper
-import com.shub39.rush.lyrics.data.network.SongProvider
-import okhttp3.OkHttpClient
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 /**
@@ -11,28 +12,25 @@ import org.junit.Test
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ApiTest {
-    private val okHttpClient = OkHttpClient()
+    private val client = HttpClientFactory.create()
 
     @Test
-    fun getSearchResults() {
-        val result = SongProvider.geniusSearch("Cut Throat Death Grips")
+    fun getGeniusSearchResults() = runBlocking {
+        val api = GeniusApi(client)
+        val result = api.geniusSearch("Satan in the wait")
         println(result)
     }
 
     @Test
-    fun getSong() {
-        val result = SongProvider.fetchLyrics(1977140)
+    fun getGeniusSong() = runBlocking {
+        val api = GeniusApi(client)
+        val result = api.geniusSong(3836181)
         println(result)
     }
 
     @Test
-    fun getLrc() {
-        println(SongProvider.lrcLibSearch("lil boy", "death"))
-    }
-
-    @Test
-    fun scrape() {
-        val scraper = GeniusScraper(okHttpClient)
+    fun scrape() = runBlocking {
+        val scraper = GeniusScraper(client)
         val lyrics = scraper.scrapeLyrics("https://genius.com/Dalek-speak-volumes-lyrics")
         println(lyrics)
     }
