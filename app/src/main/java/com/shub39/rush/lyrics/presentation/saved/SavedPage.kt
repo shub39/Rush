@@ -4,10 +4,14 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -48,7 +52,6 @@ fun SavedPage(
     state: SavedPageState,
     currentSongImg: String?,
     action: (SavedPageAction) -> Unit,
-    onSongClick: () -> Unit,
     settings: Settings,
     navigator: (Route) -> Unit
 ) {
@@ -56,27 +59,12 @@ fun SavedPage(
 
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
-    Scaffold (
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.saved)) },
-                actions = {
-                    IconButton(
-                        onClick = { navigator(Route.SettingsGraph) }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.round_settings_24),
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
             if (state.songsAsc.isEmpty()) {
 
@@ -85,8 +73,25 @@ fun SavedPage(
             } else {
 
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .widthIn(max = 500.dp)
+                        .padding(16.dp)
+                        .fillMaxSize()
                 ) {
+                    TopAppBar(
+                        title = { Text(stringResource(R.string.saved)) },
+                        actions = {
+                            IconButton(
+                                onClick = { navigator(Route.SettingsGraph) }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.round_settings_24),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+
                     LazyRow(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp)
@@ -107,7 +112,7 @@ fun SavedPage(
                     AnimatedContent(
                         targetState = settings.sortOrder
                     ) { sortOrder ->
-                        when(sortOrder) {
+                        when (sortOrder) {
                             SortOrder.DATE_ADDED.sortOrder -> {
                                 LazyColumn(
                                     modifier = Modifier
@@ -122,7 +127,7 @@ fun SavedPage(
                                             },
                                             onClick = {
                                                 action(SavedPageAction.ChangeCurrentSong(it.id))
-                                                onSongClick()
+                                                navigator(Route.LyricsGraph)
                                             }
                                         )
                                     }
@@ -147,7 +152,7 @@ fun SavedPage(
                                             },
                                             onClick = {
                                                 action(SavedPageAction.ChangeCurrentSong(it.id))
-                                                onSongClick()
+                                                navigator(Route.LyricsGraph)
                                             }
                                         )
                                     }
@@ -172,7 +177,7 @@ fun SavedPage(
                                             },
                                             onClick = {
                                                 action(SavedPageAction.ChangeCurrentSong(it.id))
-                                                onSongClick()
+                                                navigator(Route.LyricsGraph)
                                             }
                                         )
                                     }
@@ -184,7 +189,11 @@ fun SavedPage(
                             }
 
                             SortOrder.ARTISTS_ASC.sortOrder -> {
-                                var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
+                                var expandedCardId by rememberSaveable {
+                                    mutableStateOf<String?>(
+                                        null
+                                    )
+                                }
 
                                 LazyColumn(
                                     modifier = Modifier
@@ -197,7 +206,7 @@ fun SavedPage(
                                             isExpanded = expandedCardId == map.key,
                                             onClick = {
                                                 action(SavedPageAction.ChangeCurrentSong(it.id))
-                                                onSongClick()
+                                                navigator(Route.LyricsGraph)
                                             },
                                             onCardClick = {
                                                 expandedCardId =
@@ -213,7 +222,11 @@ fun SavedPage(
                             }
 
                             SortOrder.ALBUM_ASC.sortOrder -> {
-                                var expandedCardId by rememberSaveable { mutableStateOf<String?>(null) }
+                                var expandedCardId by rememberSaveable {
+                                    mutableStateOf<String?>(
+                                        null
+                                    )
+                                }
 
                                 LazyColumn(
                                     modifier = Modifier
@@ -226,7 +239,7 @@ fun SavedPage(
                                             isExpanded = expandedCardId == map.key,
                                             onClick = {
                                                 action(SavedPageAction.ChangeCurrentSong(it.id))
-                                                onSongClick()
+                                                navigator(Route.LyricsGraph)
                                             },
                                             onCardClick = {
                                                 expandedCardId =
@@ -245,62 +258,65 @@ fun SavedPage(
                 }
             }
 
-            FloatingActionButton(
-                onClick = { action(SavedPageAction.OnToggleSearchSheet) },
+            Row(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_search_24),
-                    contentDescription = null
-                )
-            }
-
-            if (NotificationListener.canAccessNotifications(context)) {
-                FloatingActionButton(
-                    onClick = {
-                        action(SavedPageAction.OnToggleAutoChange)
-                        if (!state.autoChange) {
-                            onSongClick()
-                        }
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(top = 16.dp, end = 80.dp, bottom = 16.dp),
-                    containerColor = if (state.autoChange) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.rush_transparent),
-                        contentDescription = null,
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
-            }
-
-            AnimatedContent(
-                targetState = currentSongImg,
-                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .widthIn(max = 500.dp)
                     .padding(16.dp)
-                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
             ) {
-                when (it) {
-                    null -> {}
-                    else -> {
-                        FloatingActionButton(
-                            onClick = onSongClick,
-                            shape = MaterialTheme.shapes.extraLarge,
-                        ) {
-                            ArtFromUrl(
-                                imageUrl = it,
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(MaterialTheme.shapes.extraLarge)
-                            )
+                AnimatedContent(
+                    targetState = currentSongImg
+                ) {
+                    when (it) {
+                        null -> {}
+                        else -> {
+                            FloatingActionButton(
+                                onClick = { navigator(Route.LyricsGraph) },
+                                shape = MaterialTheme.shapes.extraLarge,
+                            ) {
+                                ArtFromUrl(
+                                    imageUrl = it,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(MaterialTheme.shapes.extraLarge)
+                                )
+                            }
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (NotificationListener.canAccessNotifications(context)) {
+                    FloatingActionButton(
+                        onClick = {
+                            action(SavedPageAction.OnToggleAutoChange)
+                            if (!state.autoChange) {
+                                navigator(Route.LyricsGraph)
+                            }
+                        },
+                        shape = MaterialTheme.shapes.extraLarge,
+                        containerColor = if (state.autoChange) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.rush_transparent),
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                FloatingActionButton(
+                    onClick = { action(SavedPageAction.OnToggleSearchSheet) },
+                    shape = MaterialTheme.shapes.extraLarge
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_search_24),
+                        contentDescription = null
+                    )
                 }
             }
         }

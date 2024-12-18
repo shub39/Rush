@@ -69,11 +69,6 @@ fun RushApp(
                     state = savedState,
                     currentSongImg = lyricsState.song?.artUrl,
                     action = rushViewModel::onSavedPageAction,
-                    onSongClick = {
-                        navController.navigate(Route.LyricsGraph) {
-                            launchSingleTop = true
-                        }
-                    },
                     settings = datastoreSettings,
                     navigator = {
                         navController.navigate(it) {

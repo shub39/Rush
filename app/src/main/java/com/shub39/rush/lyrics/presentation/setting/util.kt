@@ -36,10 +36,12 @@ fun stateListColors(
 }
 
 fun getRandomLine(): String {
-    return when(Random.nextInt(0, 3)) {
+    return when(Random.nextInt(0, 5)) {
         1 -> "Time will lead us to the same Realm"
-        2 -> "Foot shook ground when I stepped on it, Didn't look back when I broke soil, cause everytime I did it" +
+        2 -> "Foot shook ground when I stepped on it, \nDidn't look back when I broke soil, \ncause everytime I did it" +
                 " would hurt more"
-        else -> "Today's gonna feel like tomorrow someday, Tomorrow's gonna feel like yesterday"
+        3 -> "I got a cellphone but it don't ever rang"
+        4 -> "The air shrieks \nThe breath is long \nAnd the fires are out \nThe waters sit still"
+        else -> "Today's gonna feel like tomorrow someday, \nTomorrow's gonna feel like yesterday"
     }
 }
