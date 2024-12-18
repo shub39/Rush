@@ -24,7 +24,8 @@ sealed class RestoreResult {
 enum class RestoreState {
     IDLE,
     RESTORING,
-    RESTORED
+    RESTORED,
+    FAILURE
 }
 
 sealed interface RestoreFailedException {

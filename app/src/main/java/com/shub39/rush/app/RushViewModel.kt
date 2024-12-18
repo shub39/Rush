@@ -22,6 +22,10 @@ import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.domain.SongRepo
+import com.shub39.rush.lyrics.domain.backup.ExportRepo
+import com.shub39.rush.lyrics.domain.backup.RestoreRepo
+import com.shub39.rush.lyrics.domain.backup.RestoreResult
+import com.shub39.rush.lyrics.domain.backup.RestoreState
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
@@ -57,7 +61,9 @@ import kotlinx.coroutines.launch
 class RushViewModel(
     private val repo: SongRepo,
     private val imageLoader: ImageLoader,
-    private val datastore: RushDatastore
+    private val datastore: RushDatastore,
+    private val exportRepo: ExportRepo,
+    private val restoreRepo: RestoreRepo
 ) : ViewModel() {
 
     private var savedJob: Job? = null
@@ -306,6 +312,30 @@ class RushViewModel(
 
                 is SettingsPageAction.OnUpdateTheme -> {
                     datastore.updateToggleTheme(action.theme)
+                }
+
+                SettingsPageAction.OnExportSongs -> {
+                    exportRepo.exportToJson()
+                }
+
+                is SettingsPageAction.OnRestoreSongs -> {
+                    when (restoreRepo.restoreSongs(action.uri, action.context)) {
+                        is RestoreResult.Failiure -> {
+                            _settingsState.update {
+                                it.copy(
+                                    restoreState = RestoreState.FAILURE
+                                )
+                            }
+                        }
+
+                        RestoreResult.Success -> {
+                            _settingsState.update {
+                                it.copy(
+                                    restoreState = RestoreState.RESTORED
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

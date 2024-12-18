@@ -37,7 +37,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,16 +59,13 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.presentation.openLinkInBrowser
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.presentation.setting.component.GetAudioFiles
 import com.shub39.rush.lyrics.presentation.setting.component.GetLibraryPath
 import com.shub39.rush.lyrics.domain.backup.ExportResult
 import com.shub39.rush.lyrics.domain.backup.ExportState
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
 import com.shub39.rush.lyrics.domain.backup.RestoreState
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,13 +75,9 @@ fun SettingPage(
     action: (SettingsPageAction) -> Unit,
     paddingValues: PaddingValues,
     settings: Settings,
-    exportRepo: ExportRepo = koinInject(),
-    restoreRepo: RestoreRepo = koinInject(),
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val exportState by ExportResult.state.collectAsState()
-    val restoreState by RestoreResult.state.collectAsState()
 
     var deleteButtonStatus by remember { mutableStateOf(true) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -96,8 +88,8 @@ fun SettingPage(
         RestoreResult.resetState()
     }
 
-    LaunchedEffect(exportState) {
-        when (exportState) {
+    LaunchedEffect(state.exportState) {
+        when (state.exportState) {
             ExportState.EXPORTING -> {
                 Toast.makeText(context, context.getText(R.string.exporting), Toast.LENGTH_SHORT).show()
             }
@@ -108,8 +100,8 @@ fun SettingPage(
         }
     }
 
-    LaunchedEffect(restoreState) {
-        when (restoreState) {
+    LaunchedEffect(state.restoreState) {
+        when (state.restoreState) {
             RestoreState.RESTORING -> {
                 Toast.makeText(context, context.getText(R.string.restoring), Toast.LENGTH_SHORT).show()
             }
@@ -279,13 +271,7 @@ fun SettingPage(
                                 onClick = {
                                     coroutineScope.launch {
                                         uri?.let {
-                                            when (restoreRepo.restoreSongs(it, context)) {
-                                                is RestoreResult.Failiure -> {
-                                                    Toast.makeText(context, context.getText(R.string.restore_failed), Toast.LENGTH_SHORT).show()
-                                                }
-                                                else -> {}
-                                            }
-
+                                            action(SettingsPageAction.OnRestoreSongs(it, context))
                                             uri = null
                                         }
                                     }
@@ -294,7 +280,7 @@ fun SettingPage(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),
-                                enabled = restoreState == RestoreState.IDLE && uri != null
+                                enabled = state.restoreState == RestoreState.IDLE && uri != null
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.round_file_download_24),
@@ -305,14 +291,14 @@ fun SettingPage(
                             IconButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        exportRepo.exportToJson()
+                                        action(SettingsPageAction.OnExportSongs)
                                     }
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),
-                                enabled = exportState == ExportState.IDLE
+                                enabled = state.exportState == ExportState.IDLE
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.round_file_upload_24),
