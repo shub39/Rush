@@ -18,93 +18,50 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-private const val TAG = "SettingsDataStore"
-private const val DATA_STORE_FILE_NAME = "settings.pb"
-
 class RushDatastore(
     private val context: Context
 ) {
-    private val Context.dataStore by preferencesDataStore( name = DATA_STORE_FILE_NAME )
+    private val Context.dataStore by preferencesDataStore(name = DATA_STORE_FILE_NAME)
 
     fun getCardFitFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardFit] ?: CardFit.STANDARD.type
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardFit] ?: CardFit.STANDARD.type }
 
     fun getLyricsColorFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[lyricsColor] ?: CardColors.MUTED.color
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[lyricsColor] ?: CardColors.MUTED.color }
 
     fun getCardBackgroundFlow(): Flow<Int> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardBackground] ?: Color.Black.toArgb()
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardBackground] ?: Color.Black.toArgb() }
 
     fun getCardContentFlow(): Flow<Int> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardContent] ?: Color.White.toArgb()
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardContent] ?: Color.White.toArgb() }
 
     fun getCardThemeFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardTheme] ?: CardTheme.SPOTIFY.type
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardTheme] ?: CardTheme.SPOTIFY.type }
 
     fun getCardColorFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardColor] ?: CardColors.VIBRANT.color
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardColor] ?: CardColors.VIBRANT.color }
 
     fun getCardRoundnessFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[cardRoundness] ?: CornerRadius.ROUNDED.type
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[cardRoundness] ?: CornerRadius.ROUNDED.type }
 
     fun getSortOrderFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder }
 
     fun getToggleThemeFlow(): Flow<String> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[toggleTheme] ?: AppTheme.YELLOW.type
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[toggleTheme] ?: AppTheme.YELLOW.type }
 
     fun getMaxLinesFlow(): Flow<Int> = context.dataStore.data
-        .catch {
-            Log.e(TAG, it.message, it)
-        }
-        .map { preferences ->
-            preferences[maxLines] ?: 6
-        }
+        .catch { Log.e(TAG, it.message, it) }
+        .map { preferences -> preferences[maxLines] ?: 6 }
 
     suspend fun updateCardFit(newCardFit: String) {
         context.dataStore.edit { settings ->
@@ -124,7 +81,7 @@ class RushDatastore(
         }
     }
 
-    suspend fun setLyricsColor(new: String) {
+    suspend fun updateLyricsColor(new: String) {
         context.dataStore.edit { settings ->
             settings[lyricsColor] = new
         }
@@ -167,6 +124,9 @@ class RushDatastore(
     }
 
     companion object {
+        private const val TAG = "SettingsDataStore"
+        private const val DATA_STORE_FILE_NAME = "settings.pb"
+
         private val maxLines = intPreferencesKey("max_lines")
         private val toggleTheme = stringPreferencesKey("toggle_theme")
         private val sortOrder = stringPreferencesKey("sort_order")

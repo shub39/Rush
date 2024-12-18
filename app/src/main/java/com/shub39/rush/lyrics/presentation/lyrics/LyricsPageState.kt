@@ -2,7 +2,6 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
@@ -17,8 +16,6 @@ data class LyricsPageState(
     val autoChange: Boolean = false,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
-    val maxLines: Int = 6,
-    val colorPref: String = CardColors.MUTED.color,
     val extractedColors: ExtractedColors = ExtractedColors()
 )
 

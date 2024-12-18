@@ -55,9 +55,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
@@ -78,9 +78,9 @@ fun SettingPage(
     notificationAccess: Boolean,
     action: (SettingsPageAction) -> Unit,
     paddingValues: PaddingValues,
+    settings: Settings,
     exportRepo: ExportRepo = koinInject(),
     restoreRepo: RestoreRepo = koinInject(),
-    datastore: RushDatastore = koinInject()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -90,12 +90,6 @@ fun SettingPage(
     var deleteButtonStatus by remember { mutableStateOf(true) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var batchDownloadDialog by remember { mutableStateOf(false) }
-
-    val maxLinesFlow by datastore.getMaxLinesFlow().collectAsState(initial = 6)
-    val appTheme by datastore.getToggleThemeFlow()
-        .collectAsState(initial = "Gruvbox")
-    val colorPreference by datastore.getLyricsColorFlow()
-        .collectAsState(CardColors.MUTED.color)
 
     LaunchedEffect(Unit) {
         ExportResult.resetState()
@@ -146,15 +140,13 @@ fun SettingPage(
 
                         IconButton(
                             onClick = {
-                                val newTheme = when (appTheme) {
+                                val newTheme = when (settings.toggleTheme) {
                                     AppTheme.LIME.type -> AppTheme.YELLOW.type
                                     AppTheme.YELLOW.type -> if (material) AppTheme.MATERIAL.type else AppTheme.LIME.type
                                     else -> AppTheme.LIME.type
                                 }
 
-                                coroutineScope.launch {
-                                    datastore.updateToggleTheme(newTheme)
-                                }
+                                action(SettingsPageAction.OnUpdateTheme(newTheme))
                             },
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -176,17 +168,17 @@ fun SettingPage(
                     supportingContent = { Text(text = stringResource(id = R.string.vibrant_colors_info)) },
                     trailingContent = {
                         Switch(
-                            checked = colorPreference == CardColors.VIBRANT.color,
+                            checked = settings.lyricsColor == CardColors.VIBRANT.color,
                             onCheckedChange = {
                                 coroutineScope.launch {
                                     when (it) {
-                                        true -> datastore.setLyricsColor(
+                                        true -> action(SettingsPageAction.OnUpdateLyricsColor(
                                             CardColors.VIBRANT.color
-                                        )
+                                        ))
 
-                                        else -> datastore.setLyricsColor(
+                                        else -> action(SettingsPageAction.OnUpdateLyricsColor(
                                             CardColors.MUTED.color
-                                        )
+                                        ))
                                     }
                                 }
                             }
@@ -200,16 +192,14 @@ fun SettingPage(
                     headlineContent = { Text(text = stringResource(id = R.string.max_lines)) },
                     supportingContent = {
                         Column {
-                            Text(maxLinesFlow.toString())
+                            Text(settings.maxLines.toString())
 
                             Slider(
-                                value = maxLinesFlow.toFloat(),
+                                value = settings.maxLines.toFloat(),
                                 valueRange = 2f..8f,
                                 steps = 5,
                                 onValueChange = {
-                                    coroutineScope.launch {
-                                        datastore.updateMaxLines(it.toInt())
-                                    }
+                                    action(SettingsPageAction.OnUpdateMaxLines(it.toInt()))
                                 }
                             )
                         }
@@ -551,7 +541,8 @@ private fun SettingPagePreview() {
             state = SettingsPageState(),
             action = {},
             paddingValues = inner,
-            notificationAccess = false
+            notificationAccess = false,
+            settings = Settings()
         )
     }
 }

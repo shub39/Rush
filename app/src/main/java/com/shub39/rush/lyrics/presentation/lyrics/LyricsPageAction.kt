@@ -1,7 +1,7 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
 import android.content.Context
-import com.shub39.rush.share.SongDetails
+import com.shub39.rush.core.data.SongDetails
 
 sealed interface LyricsPageAction {
     data object OnToggleAutoChange: LyricsPageAction

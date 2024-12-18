@@ -34,6 +34,7 @@ fun RushApp(
     val shareState by rushViewModel.shareState.collectAsStateWithLifecycle()
     val settingsState by rushViewModel.settingsState.collectAsStateWithLifecycle()
     val searchSheetState by rushViewModel.searchState.collectAsStateWithLifecycle()
+    val datastoreSettings by rushViewModel.datastoreSettings.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -78,6 +79,7 @@ fun RushApp(
                         onSongClick = {
                             navController.navigate(Route.LyricsGraph)
                         },
+                        settings = datastoreSettings,
                         paddingValues = paddingValues
                     )
                 }
@@ -98,7 +100,8 @@ fun RushApp(
                         state = settingsState,
                         action = rushViewModel::onSettingsPageAction,
                         notificationAccess = NotificationListener.canAccessNotifications(context),
-                        paddingValues = paddingValues
+                        paddingValues = paddingValues,
+                        settings = datastoreSettings
                     )
                 }
             }
@@ -117,6 +120,8 @@ fun RushApp(
                         },
                         state = shareState,
                         paddingValues = paddingValues,
+                        settings = datastoreSettings,
+                        action = rushViewModel::onSharePageAction
                     )
                 }
             }
@@ -126,6 +131,7 @@ fun RushApp(
 
                 LyricsPage(
                     state = lyricsState,
+                    settings = datastoreSettings,
                     action = rushViewModel::onLyricsPageAction,
                     onShare = {
                         navController.navigate(Route.SharePage)

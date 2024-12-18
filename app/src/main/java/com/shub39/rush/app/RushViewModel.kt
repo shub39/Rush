@@ -12,6 +12,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
+import com.shub39.rush.core.data.RushDatastore
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.lyrics.domain.SearchResult
@@ -30,12 +32,14 @@ import com.shub39.rush.lyrics.presentation.saved.SavedPageState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
+import com.shub39.rush.share.SharePageAction
 import com.shub39.rush.share.SharePageState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -52,7 +56,8 @@ import kotlinx.coroutines.launch
 
 class RushViewModel(
     private val repo: SongRepo,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val datastore: RushDatastore
 ) : ViewModel() {
 
     private var savedJob: Job? = null
@@ -102,6 +107,35 @@ class RushViewModel(
             SharingStarted.WhileSubscribed(5000),
             SearchSheetState()
         )
+    val datastoreSettings: StateFlow<Settings> = combine(
+        datastore.getCardFitFlow(),
+        datastore.getLyricsColorFlow(),
+        datastore.getCardBackgroundFlow(),
+        datastore.getCardContentFlow(),
+        datastore.getCardThemeFlow(),
+        datastore.getCardColorFlow(),
+        datastore.getCardRoundnessFlow(),
+        datastore.getSortOrderFlow(),
+        datastore.getToggleThemeFlow(),
+        datastore.getMaxLinesFlow()
+    ) { param: Array<Any> ->
+        Settings(
+            cardFit = param[0] as String,
+            lyricsColor = param[1] as String,
+            cardBackground = param[2] as Int,
+            cardContent = param[3] as Int,
+            cardTheme = param[4] as String,
+            cardColor = param[5] as String,
+            cardRoundness = param[6] as String,
+            sortOrder = param[7] as String,
+            toggleTheme = param[8] as String,
+            maxLines = param[9] as Int
+        )
+    }.stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Settings()
+    )
 
     private fun observePlayingMedia() {
         viewModelScope.launch {
@@ -239,6 +273,10 @@ class RushViewModel(
                 SavedPageAction.OnToggleSearchSheet -> {
                     toggleSearchSheet()
                 }
+
+                is SavedPageAction.UpdateSortOrder -> {
+                    datastore.updateSortOrder(action.sortOrder)
+                }
             }
         }
     }
@@ -256,6 +294,18 @@ class RushViewModel(
 
                 SettingsPageAction.OnDeleteSongs -> {
                     deleteSongs()
+                }
+
+                is SettingsPageAction.OnUpdateLyricsColor -> {
+                    datastore.updateLyricsColor(action.color)
+                }
+
+                is SettingsPageAction.OnUpdateMaxLines -> {
+                    datastore.updateMaxLines(action.lines)
+                }
+
+                is SettingsPageAction.OnUpdateTheme -> {
+                    datastore.updateToggleTheme(action.theme)
                 }
             }
         }
@@ -280,6 +330,19 @@ class RushViewModel(
                 SearchSheetAction.OnToggleSearchSheet -> {
                     toggleSearchSheet()
                 }
+            }
+        }
+    }
+
+    fun onSharePageAction(action: SharePageAction) {
+        viewModelScope.launch {
+            when (action) {
+                is SharePageAction.OnUpdateCardBackground -> datastore.updateCardBackground(action.color)
+                is SharePageAction.OnUpdateCardColor -> datastore.updateCardColor(action.color)
+                is SharePageAction.OnUpdateCardContent -> datastore.updateCardContent(action.color)
+                is SharePageAction.OnUpdateCardFit -> datastore.updateCardFit(action.fit)
+                is SharePageAction.OnUpdateCardRoundness -> datastore.updateCardRoundness(action.roundness)
+                is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
             }
         }
     }

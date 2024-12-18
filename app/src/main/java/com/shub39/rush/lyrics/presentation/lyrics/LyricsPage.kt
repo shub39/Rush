@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
@@ -75,7 +76,8 @@ import kotlinx.coroutines.launch
 fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
-    state: LyricsPageState
+    state: LyricsPageState,
+    settings: Settings
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -89,14 +91,14 @@ fun LyricsPage(
     val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     val cardBackground by animateColorAsState(
-        targetValue = when (state.colorPref) {
+        targetValue = when (settings.lyricsColor) {
             CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
             else -> state.extractedColors.cardBackgroundDominant
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = when (state.colorPref) {
+        targetValue = when (settings.lyricsColor) {
             CardColors.MUTED.color -> state.extractedColors.cardContentMuted
             else -> state.extractedColors.cardContentDominant
         },
@@ -442,7 +444,7 @@ fun LyricsPage(
                                             selectedLines,
                                             it.key,
                                             it.value,
-                                            state.maxLines
+                                            settings.maxLines
                                         )
                                         isSelected != isSelected
                                     },

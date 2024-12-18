@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
-import com.shub39.rush.share.SongDetails
 
 @Composable
 fun RushedShareCard(

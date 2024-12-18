@@ -18,11 +18,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,11 +34,9 @@ import com.shub39.rush.R
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
-import com.shub39.rush.core.data.RushDatastore
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.data.listener.NotificationListener
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 @Composable
 fun SavedPage(
@@ -49,13 +45,10 @@ fun SavedPage(
     action: (SavedPageAction) -> Unit,
     onSongClick: () -> Unit,
     paddingValues: PaddingValues,
-    datastore: RushDatastore = koinInject()
+    settings: Settings
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
-    val sortOrder by datastore.getSortOrderFlow()
-        .collectAsState(initial = SortOrder.DATE_ADDED.sortOrder)
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Box(
@@ -79,11 +72,9 @@ fun SavedPage(
                 ) {
                     items(sortOrderChips, key = { it.textId }) {
                         FilterChip(
-                            selected = it.sortOrder == sortOrder,
+                            selected = it.sortOrder == settings.sortOrder,
                             onClick = {
-                                coroutineScope.launch {
-                                    datastore.updateSortOrder(it.sortOrder)
-                                }
+                                action(SavedPageAction.UpdateSortOrder(it.sortOrder))
                             },
                             label = { Text(stringResource(id = it.textId)) },
                             modifier = Modifier.padding(end = 8.dp)
@@ -92,7 +83,7 @@ fun SavedPage(
                 }
 
                 AnimatedContent(
-                    targetState = sortOrder
+                    targetState = settings.sortOrder
                 ) { sortOrder ->
                     when(sortOrder) {
                         SortOrder.DATE_ADDED.sortOrder -> {
