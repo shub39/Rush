@@ -45,4 +45,15 @@
     <string name="card_color">Cores do Cartão</string>
     <string name="card_size">Tamanho do Cartão</string>
     <string name="card_corners">Cantos do Cartão</string>
+    <string name="vibrant_colors_info">Usar cores mais vibrantes para a página de letras</string>
+    <string name="backup">Backup</string>
+    <string name="backup_info">Importar ou Exportar o banco de dados de letras salvas</string>
+    <string name="batch_download_info">Baixar letras de suas músicas salvas localmente de uma só vez.</string>
+    <string name="sort_date_added">Última adicionada</string>
+    <string name="rush_branding">Rush branding</string>
+    <string name="exporting">Exportando músicas para Downloads/Rush</string>
+    <string name="exported">Músicas exportadas para Downloads/Rush</string>
+    <string name="restoring">Restaurando músicas</string>
+    <string name="restored">Músicas restauradas</string>
+    <string name="restore_failed">Falha na restauração</string>
 </resources>
