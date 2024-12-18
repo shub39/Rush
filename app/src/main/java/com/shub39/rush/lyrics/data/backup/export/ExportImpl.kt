@@ -4,8 +4,6 @@ import android.os.Environment
 import com.shub39.rush.lyrics.data.mappers.toSongSchema
 import kotlinx.coroutines.async
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.ExportResult
-import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.SongRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -19,8 +17,6 @@ class ExportImpl(
     private val songRepo: SongRepo
 ): ExportRepo {
     override suspend fun exportToJson() = coroutineScope {
-        ExportResult.updateState(ExportState.EXPORTING)
-
         val songsData = async {
             withContext(Dispatchers.IO) {
                 songRepo.getAllSongs().map { it.toSongSchema() }
@@ -46,7 +42,5 @@ class ExportImpl(
                 )
             )
         )
-
-        ExportResult.updateState(ExportState.EXPORTED)
     }
 }

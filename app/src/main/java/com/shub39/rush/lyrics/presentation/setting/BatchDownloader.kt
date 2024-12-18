@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -86,18 +87,22 @@ fun BatchDownloader(
                                 processFiles(file)
                             } else if (file.isFile && file.type?.startsWith("audio/") == true) {
                                 val retriever = MediaMetadataRetriever()
-                                retriever.setDataSource(context, file.uri)
+                                try {
+                                    retriever.setDataSource(context, file.uri)
 
-                                val title =
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                                val artist =
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                                    val title =
+                                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                                    val artist =
+                                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
 
-                                if (title != null && artist != null) {
-                                    audioFiles.add(AudioFile(title, artist))
+                                    if (title != null && artist != null) {
+                                        audioFiles.add(AudioFile(title, artist))
+                                    }
+
+                                    retriever.release()
+                                } catch (e: Exception) {
+                                    Log.d("BatchDownloader", "Can't set data source $e")
                                 }
-
-                                retriever.release()
                             }
                         }
                     }
@@ -107,6 +112,7 @@ fun BatchDownloader(
 
                 isLoadingFiles = false
             }
+
         }
     }
 
@@ -170,7 +176,13 @@ fun BatchDownloader(
                             ) {
                                 if (!state.batchDownload.isDownloading) {
                                     BetterIconButton(
-                                        onClick = { action(SettingsPageAction.OnBatchDownload(audioFiles)) }
+                                        onClick = {
+                                            action(
+                                                SettingsPageAction.OnBatchDownload(
+                                                    audioFiles
+                                                )
+                                            )
+                                        }
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.round_play_arrow_24),

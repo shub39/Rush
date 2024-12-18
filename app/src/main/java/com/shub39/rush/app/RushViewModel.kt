@@ -23,6 +23,7 @@ import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
+import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
 import com.shub39.rush.lyrics.domain.backup.RestoreState
@@ -315,12 +316,30 @@ class RushViewModel(
                 }
 
                 SettingsPageAction.OnExportSongs -> {
+                    _settingsState.update {
+                        it.copy(
+                            exportState = ExportState.EXPORTING
+                        )
+                    }
+
                     exportRepo.exportToJson()
+
+                    _settingsState.update {
+                        it.copy(
+                            exportState = ExportState.EXPORTED
+                        )
+                    }
                 }
 
                 is SettingsPageAction.OnRestoreSongs -> {
+                    _settingsState.update {
+                        it.copy(
+                            restoreState = RestoreState.RESTORING
+                        )
+                    }
+
                     when (restoreRepo.restoreSongs(action.uri, action.context)) {
-                        is RestoreResult.Failiure -> {
+                        is RestoreResult.Failure -> {
                             _settingsState.update {
                                 it.copy(
                                     restoreState = RestoreState.FAILURE
@@ -335,6 +354,15 @@ class RushViewModel(
                                 )
                             }
                         }
+                    }
+                }
+
+                SettingsPageAction.ResetBackup -> {
+                    _settingsState.update {
+                        it.copy(
+                            restoreState = RestoreState.IDLE,
+                            exportState = ExportState.IDLE
+                        )
                     }
                 }
             }

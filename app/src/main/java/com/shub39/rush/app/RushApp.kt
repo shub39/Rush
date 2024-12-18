@@ -3,9 +3,10 @@ package com.shub39.rush.app
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,6 +21,8 @@ import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
+import com.shub39.rush.lyrics.presentation.setting.About
+import com.shub39.rush.lyrics.presentation.setting.Backup
 import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
 import com.shub39.rush.share.SharePage
@@ -50,7 +53,9 @@ fun RushApp(
     NavHost(
         navController = navController,
         startDestination = Route.HomeGraph,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize(),
         enterTransition = { fadeIn(animationSpec = tween(300)) },
         exitTransition = { fadeOut(animationSpec = tween(300)) },
         popEnterTransition = { fadeIn(animationSpec = tween(300)) },
@@ -135,11 +140,14 @@ fun RushApp(
             }
 
             composable<Route.BackupPage> {
-                Text("Backup Page")
+                Backup(
+                    state = settingsState,
+                    action = rushViewModel::onSettingsPageAction
+                )
             }
 
             composable<Route.AboutPage> {
-                Text("About Page")
+                About()
             }
         }
     }

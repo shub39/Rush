@@ -11,6 +11,7 @@ sealed interface SettingsPageAction {
     data class OnUpdateTheme(val theme: String): SettingsPageAction
     data class OnUpdateLyricsColor(val color: String): SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
+    data object ResetBackup: SettingsPageAction
     data class OnRestoreSongs(val uri: Uri, val context: Context): SettingsPageAction
     data object OnExportSongs: SettingsPageAction
 }
