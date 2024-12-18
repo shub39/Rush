@@ -11,6 +11,6 @@ data class LrcGetDto (
     val albumName: String,
     val duration: Double,
     val instrumental: Boolean,
-    val plainLyrics: String,
-    val syncedLyrics: String
+    val plainLyrics: String?,
+    val syncedLyrics: String?
 )
