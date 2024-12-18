@@ -56,4 +56,7 @@
     <string name="restoring">Restoring songs</string>
     <string name="restored">Songs restored</string>
     <string name="restore_failed">Restore failed</string>
+    <string name="about">About app</string>
+    <string name="no_audio_files">No audio Files</string>
+    <string name="no_folder_selected">No folder selected</string>
 </resources>

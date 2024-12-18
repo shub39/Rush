@@ -66,7 +66,6 @@ import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
-import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,6 +76,7 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
+    notificationAccess: Boolean,
     settings: Settings
 ) {
     val context = LocalContext.current
@@ -88,7 +88,6 @@ fun LyricsPage(
     var lyricsCorrect by remember { mutableStateOf(false) }
     var source by remember { mutableStateOf("") }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
-    val notificationAccess = NotificationListener.canAccessNotifications(context)
 
     val cardBackground by animateColorAsState(
         targetValue = when (settings.lyricsColor) {
