@@ -66,31 +66,31 @@ fun SavedPage(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (state.songsAsc.isEmpty()) {
-
-                Empty()
-
-            } else {
-
-                Column(
-                    modifier = Modifier
-                        .widthIn(max = 500.dp)
-                        .padding(16.dp)
-                        .fillMaxSize()
-                ) {
-                    TopAppBar(
-                        title = { Text(stringResource(R.string.saved)) },
-                        actions = {
-                            IconButton(
-                                onClick = { navigator(Route.SettingsGraph) }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.round_settings_24),
-                                    contentDescription = null
-                                )
-                            }
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 500.dp)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.saved)) },
+                    actions = {
+                        IconButton(
+                            onClick = { navigator(Route.SettingsGraph) }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.round_settings_24),
+                                contentDescription = null
+                            )
                         }
-                    )
+                    }
+                )
+
+                if (state.songsAsc.isEmpty()) {
+
+                    Empty()
+
+                } else {
 
                     LazyRow(
                         modifier = Modifier
