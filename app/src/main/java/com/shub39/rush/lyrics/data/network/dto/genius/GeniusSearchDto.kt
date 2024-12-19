@@ -36,20 +36,10 @@ data class Result (
 
     val instrumental: Boolean = false,
 
-    @SerialName("release_date_components")
-    val releaseDateComponents: ReleaseDateComponents? = null,
-
     @SerialName("song_art_image_url")
     val songArtImageURL: String,
 
     val title: String,
 
     val url: String,
-)
-
-@Serializable
-data class ReleaseDateComponents (
-    val year: Long,
-    val month: Long? = null,
-    val day: Long? = null
 )

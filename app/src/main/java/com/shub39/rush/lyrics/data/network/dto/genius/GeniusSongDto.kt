@@ -17,9 +17,6 @@ data class Song (
     @SerialName("artist_names")
     val artistNames: String,
 
-    @SerialName("full_title")
-    val fullTitle: String,
-
     val id: Long,
 
     val url: String,
@@ -27,21 +24,6 @@ data class Song (
     val language: String,
 
     val path: String,
-
-    @SerialName("primary_artist_names")
-    val primaryArtistNames: String,
-
-    @SerialName("release_date")
-    val releaseDate: String,
-
-    @SerialName("primary_artist")
-    val primaryArtist: Artist,
-
-    @SerialName("primary_artists")
-    val primaryArtists: List<Artist>,
-
-    @SerialName("producer_artists")
-    val producerArtists: List<Artist>,
 
     @SerialName("song_art_image_url")
     val songArtImageURL: String?,
@@ -53,10 +35,5 @@ data class Song (
 
 @Serializable
 data class Album (
-    val name: String,
-)
-
-@Serializable
-data class Artist (
     val name: String,
 )
