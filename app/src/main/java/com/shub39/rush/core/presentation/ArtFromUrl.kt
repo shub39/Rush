@@ -20,7 +20,7 @@ import org.koin.compose.koinInject
 // General Image Composable
 @Composable
 fun ArtFromUrl(
-    imageUrl: String?,
+    imageUrl: Any?,
     modifier: Modifier = Modifier,
     baseColor: Color = MaterialTheme.colorScheme.surface,
     highlightColor: Color = MaterialTheme.colorScheme.primary,

@@ -1,6 +1,10 @@
 package com.shub39.rush.share
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -60,6 +64,7 @@ import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.data.Settings
+import com.shub39.rush.share.component.ImageShareCard
 import com.shub39.rush.share.component.ListSelect
 import com.shub39.rush.share.component.RushedShareCard
 import com.shub39.rush.share.component.SpotifyShareCard
@@ -83,6 +88,11 @@ fun SharePage(
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
+    var selectedUri: Uri? by remember { mutableStateOf(null) }
+
+    val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
+        selectedUri = uri
+    }
 
     val modifier = if (settings.cardFit == CardFit.FIT.type) {
         Modifier
@@ -161,6 +171,15 @@ fun SharePage(
                     sortedLines = state.selectedLines,
                     cardColors = cardColor,
                     cardCorners = cardCorners
+                )
+
+                CardTheme.IMAGE.type -> ImageShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    selectedUri = selectedUri
                 )
             }
         }
@@ -252,6 +271,27 @@ fun SharePage(
                     painterResource(R.drawable.baseline_edit_square_24),
                     contentDescription = null
                 )
+            }
+
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            AnimatedVisibility(
+                visible = settings.cardTheme == CardTheme.IMAGE.type
+            ) {
+                FloatingActionButton(
+                    onClick = { launcher.launch(
+                        PickVisualMediaRequest(
+                            PickVisualMedia.ImageOnly
+                        )
+                    ) },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_photo_library_24),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
@@ -388,13 +428,17 @@ fun SharePage(
                     Button(
                         onClick = {
                             if (editTarget == "content") {
-                                action(SharePageAction.OnUpdateCardContent(
-                                    colorPickerController.selectedColor.value.toArgb()
-                                ))
+                                action(
+                                    SharePageAction.OnUpdateCardContent(
+                                        colorPickerController.selectedColor.value.toArgb()
+                                    )
+                                )
                             } else {
-                                action(SharePageAction.OnUpdateCardBackground(
-                                    colorPickerController.selectedColor.value.toArgb()
-                                ))
+                                action(
+                                    SharePageAction.OnUpdateCardBackground(
+                                        colorPickerController.selectedColor.value.toArgb()
+                                    )
+                                )
                             }
                             colorPicker = false
                         }
