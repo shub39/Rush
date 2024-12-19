@@ -7,7 +7,6 @@ import com.shub39.rush.lyrics.data.mappers.toSong
 import com.shub39.rush.lyrics.domain.backup.RestoreFailedException
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
-import com.shub39.rush.lyrics.domain.backup.RestoreState
 import com.shub39.rush.lyrics.domain.SongRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,8 +22,6 @@ class RestoreImpl(
 ): RestoreRepo {
     override suspend fun restoreSongs(uri: Uri, context: Context): RestoreResult {
         return try {
-            RestoreResult.updateState(RestoreState.RESTORING)
-
             val file = kotlin.io.path.createTempFile()
 
             context.contentResolver.openInputStream(uri).use { input ->
@@ -51,18 +48,13 @@ class RestoreImpl(
                 )
             }
 
-            RestoreResult.updateState(RestoreState.RESTORED)
             RestoreResult.Success
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-            RestoreResult.resetState()
-
-            RestoreResult.Failiure(RestoreFailedException.InvalidFile)
+            RestoreResult.Failure(RestoreFailedException.InvalidFile)
         } catch (e: SerializationException) {
             e.printStackTrace()
-            RestoreResult.resetState()
-
-            RestoreResult.Failiure(RestoreFailedException.OldSchema)
+            RestoreResult.Failure(RestoreFailedException.OldSchema)
         }
     }
 }
