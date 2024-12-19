@@ -8,7 +8,7 @@ data class LrcGetDto (
     val name: String,
     val trackName: String,
     val artistName: String,
-    val albumName: String,
+    val albumName: String?,
     val duration: Double,
     val instrumental: Boolean,
     val plainLyrics: String?,

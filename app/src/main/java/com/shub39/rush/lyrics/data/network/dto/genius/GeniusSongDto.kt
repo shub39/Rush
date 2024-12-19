@@ -44,11 +44,11 @@ data class Song (
     val producerArtists: List<Artist>,
 
     @SerialName("song_art_image_url")
-    val songArtImageURL: String,
+    val songArtImageURL: String?,
 
     val title: String,
 
-    val album: Album,
+    val album: Album?,
 )
 
 @Serializable
