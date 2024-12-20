@@ -56,4 +56,12 @@
     <string name="restoring">Restauration des musiques</string>
     <string name="restored">Musiques restaurées</string>
     <string name="restore_failed">La restauration a echouée</string>
+    <string name="about">À propos</string>
+    <string name="no_audio_files">Aucun fichier audio</string>
+    <string name="no_folder_selected">Aucun dossier sélectionné</string>
+    <string name="export">Exporter</string>
+    <string name="export_info">Exporter les musiques vers Downloads/Rush</string>
+    <string name="restore">Restaurer</string>
+    <string name="restore_info">Restaurer depuis un fichier d'export sélectionné</string>
+    <string name="choose_file">Choisir un fichier.</string>
 </resources>
