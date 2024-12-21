@@ -13,6 +13,7 @@ data class SongEntity(
     val album: String?,
     val sourceUrl: String,
     val artUrl: String?,
+    val geniusLyrics: String?,
     val syncedLyrics: String?,
     val dateAdded: Long = 0
 )

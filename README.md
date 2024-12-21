@@ -4,10 +4,6 @@
 # Rush
 ### Search, save and share lyrics like Spotify! 
 
-> [!NOTE]
-> Genius changed its website to prevent scraping!
-> Genius lyrics are unavailable until I figure out something else
-
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio3.svg">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
@@ -26,9 +22,8 @@
 
 | ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
-| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![7](fastlane/metadata/android/en-US/images/phoneScreenshots/7.png) |
-| ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | 
-| ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | ![8](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png) |
+| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
+| ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
 ## Features / Road Map 🛣️
 >- [x] Search Lyrics
@@ -38,7 +33,7 @@
 >- [x] Auto-fill current playing song in search 
 >- [x] Synced Lyrics
 >- [x] Batch download lyrics
->- [ ] Import and Export saved lyrics
+>- [x] Import and Export saved lyrics
 
 ## Why ❔
 Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
@@ -69,11 +64,11 @@ dealing with genius's "UI".
 
 ## Tech Stack ⚒️
 
->- [Retrofit](https://square.github.io/retrofit/) and [OkHttp](https://square.github.io/okhttp/) for api calls
+>- [Ktor](https://github.com/ktorio/ktor) for networking
+>- [Ksoup](https://github.com/fleeksoft/ksoup) for parsing html
 >- Database using [ROOM](https://developer.android.com/jetpack/androidx/releases/room)
 >- MVI architecture
 >- Dependency injection using [Koin](https://insert-koin.io/docs/reference/koin-compose/compose/)
->- [Fuel](https://github.com/kittinunf/fuel) and [Jsoup](https://jsoup.org/) for scraping
 >- [Landscapist](https://github.com/skydoves/landscapist) for Images
 >- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the color picker
 
