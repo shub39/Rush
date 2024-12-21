@@ -62,6 +62,6 @@
     <string name="export">Exporter</string>
     <string name="export_info">Exporter les musiques vers Downloads/Rush</string>
     <string name="restore">Restaurer</string>
-    <string name="restore_info">Restaurer depuis un fichier d'export sélectionné</string>
+    <string name="restore_info">Restaurer depuis un fichier d\'export sélectionné</string>
     <string name="choose_file">Choisir un fichier.</string>
 </resources>
