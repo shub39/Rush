@@ -65,7 +65,6 @@ fun Backup (
                 modifier = Modifier
                     .widthIn(max = 500.dp)
                     .fillMaxSize()
-                    .padding(16.dp)
             ) {
                 TopAppBar(
                     title = {

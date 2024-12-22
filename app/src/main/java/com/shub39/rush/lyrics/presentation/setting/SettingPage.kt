@@ -77,7 +77,6 @@ fun SettingPage(
                 modifier = Modifier
                     .widthIn(max = 500.dp)
                     .fillMaxSize()
-                    .padding(16.dp)
             ) {
                 item {
                     TopAppBar(
@@ -307,7 +306,7 @@ fun SettingPage(
 
 @Preview(
     showSystemUi = true, showBackground = true, backgroundColor = 0xFFFFFFFF,
-    device = "spec:width=673dp,height=841dp",
+    device = "spec:width=411dp,height=891dp,dpi=160",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable

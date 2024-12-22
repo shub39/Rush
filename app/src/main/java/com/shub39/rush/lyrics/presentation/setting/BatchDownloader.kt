@@ -132,7 +132,6 @@ fun BatchDownloader(
             Column(
                 modifier = Modifier
                     .widthIn(max = 500.dp)
-                    .padding(16.dp)
                     .fillMaxSize()
             ) {
                 TopAppBar(

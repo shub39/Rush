@@ -69,7 +69,6 @@ fun SavedPage(
             Column(
                 modifier = Modifier
                     .widthIn(max = 500.dp)
-                    .padding(16.dp)
                     .fillMaxSize()
             ) {
                 TopAppBar(
@@ -93,9 +92,7 @@ fun SavedPage(
                 } else {
 
                     LazyRow(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp)
-                            .animateContentSize()
+                        modifier = Modifier.animateContentSize()
                     ) {
                         items(sortOrderChips, key = { it.textId }) {
                             FilterChip(
@@ -104,7 +101,7 @@ fun SavedPage(
                                     action(SavedPageAction.UpdateSortOrder(it.sortOrder))
                                 },
                                 label = { Text(stringResource(id = it.textId)) },
-                                modifier = Modifier.padding(end = 8.dp)
+                                modifier = Modifier.padding(horizontal = 8.dp)
                             )
                         }
                     }

@@ -594,7 +594,7 @@ class RushViewModel(
     }
 
     private suspend fun fetchLyrics(songId: Long) {
-        if (_lyricsState.value.searching.first) return
+        if (_lyricsState.value.fetching.first) return
 
         val song = _searchState.value.searchResults.find { it.id == songId }
 
