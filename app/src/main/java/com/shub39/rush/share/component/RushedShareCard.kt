@@ -26,10 +26,10 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
 
@@ -118,7 +118,7 @@ fun RushedShareCard(
                                     top = 4.dp,
                                     bottom = 4.dp
                                 ),
-                                fontSize = 15.sp,
+                                fontSize = with(LocalDensity.current) { 40.toSp() },
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyMedium
                             )
@@ -146,7 +146,7 @@ fun RushedShareCard(
                             text = song.title,
                             fontWeight = FontWeight.ExtraBold,
                             color = cardColors.contentColor,
-                            fontSize = 17.sp,
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -154,7 +154,7 @@ fun RushedShareCard(
                             text = song.artist,
                             style = MaterialTheme.typography.bodySmall,
                             color = cardColors.contentColor,
-                            fontSize = 15.sp,
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )

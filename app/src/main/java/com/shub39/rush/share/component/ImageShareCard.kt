@@ -3,6 +3,7 @@ package com.shub39.rush.share.component
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,10 +31,10 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
 
@@ -79,8 +80,8 @@ fun ImageShareCard(
                     .align(Alignment.BottomStart)
             ) {
                 LazyColumn(
-                    modifier = Modifier
-                        .wrapContentHeight()
+                    modifier = Modifier.wrapContentHeight(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(sortedLines.values.toList()) {
                         var variant by remember { mutableStateOf(false) }
@@ -104,7 +105,7 @@ fun ImageShareCard(
                                     top = 4.dp,
                                     bottom = 4.dp
                                 ),
-                                fontSize = 13.sp,
+                                fontSize = with(LocalDensity.current) { 35.toSp() },
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyMedium
                             )
@@ -132,7 +133,7 @@ fun ImageShareCard(
                             text = song.title,
                             fontWeight = FontWeight.ExtraBold,
                             color = cardColors.contentColor,
-                            fontSize = 15.sp,
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -140,7 +141,7 @@ fun ImageShareCard(
                             text = song.artist,
                             style = MaterialTheme.typography.bodySmall,
                             color = cardColors.contentColor,
-                            fontSize = 13.sp,
+                            fontSize = with(LocalDensity.current) { 30.toSp() },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )

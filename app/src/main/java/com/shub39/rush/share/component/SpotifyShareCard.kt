@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -151,7 +152,7 @@ fun SpotifyShareCard(
                         ArtFromUrl(
                             imageUrl = song.artUrl,
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(50.dp)
                                 .clip(MaterialTheme.shapes.small)
                         )
 
@@ -162,7 +163,7 @@ fun SpotifyShareCard(
                                 text = song.title,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 17.sp,
+                                fontSize = with(LocalDensity.current) { 40.toSp() },
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -171,7 +172,7 @@ fun SpotifyShareCard(
                                 text = song.artist,
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
+                                fontSize = with(LocalDensity.current) { 35.toSp() },
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -187,7 +188,7 @@ fun SpotifyShareCard(
                                     text = it.value,
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
+                                    fontSize = with(LocalDensity.current) { 40.toSp() },
                                     modifier = Modifier.padding(bottom = 10.dp)
                                 )
                             }
