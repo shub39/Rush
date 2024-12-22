@@ -74,7 +74,7 @@ class RushRepository(
         when (result) {
             is Result.Success -> {
                 val results = result.data.response.hits.filter { it.type == "song" }
-                val searchResults = results.map { hit ->
+                val searchResults = results.filter { it.type == "song" }.map { hit ->
                     SearchResult(
                         title = hit.result.title,
                         artist = hit.result.artistNames,
@@ -104,7 +104,7 @@ class RushRepository(
 
         when (result) {
             is Result.Success -> {
-                val searchResults = result.data.map { dto ->
+                val searchResults = result.data.filter { !it.instrumental }.map { dto ->
                     LrcLibSong(
                         id = dto.id.toInt(),
                         name = dto.name,
