@@ -1,6 +1,6 @@
-Rush ist eine einfache Android-App, um Songtexte deiner Lieblingssongs zu suchen, anzusehen, zu speichern und zu teilen.
+Rush ist eine einfache App, um Songtexte deiner Lieblingssongs zu suchen, anzusehen, zu speichern und zu teilen.
 
-Funktionen
+Funktionen:
 
 - Songtexte suchen, ansehen und speichern
 - Songtexte als anpassbare Karte mit deinen Freunden teilen!

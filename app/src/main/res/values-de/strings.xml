@@ -60,7 +60,7 @@
     <string name="no_audio_files">Keine Audiodateien</string>
     <string name="no_folder_selected">Kein Ordner ausgewählt</string>
     <string name="export">Exportieren</string>
-    <string name="export_info">Songs nach Downloads/Rush exportieren</string>
+    <string name="export_info">Songs nach Download/Rush exportieren</string>
     <string name="restore">Wiederherstellen</string>
     <string name="restore_info">Wiederherstellen aus der ausgewählten Exportdatei</string>
     <string name="choose_file">Datei auswählen</string>
