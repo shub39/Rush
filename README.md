@@ -52,6 +52,7 @@ dealing with genius's "UI".
 |             French             | [Valyyme](https://github.com/Valyyme)                    |
 |      Brazilian Portuguese      | [luxdev01](https://github.com/luxdev01)                  | 
 | Simplified/Traditional Chinese | [AC19970](https://github.com/AC19970)                    |
+|             German             | [Irgendeinwer](https://github.com/Irgendeinwer)          |
 
 
 
