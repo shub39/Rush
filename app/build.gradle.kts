@@ -16,8 +16,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 241
-        versionName = "2.4.1"
+        versionCode = 242
+        versionName = "2.4.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -43,6 +43,16 @@ android {
             applicationIdSuffix = ".beta"
             isMinifyEnabled = true
             versionNameSuffix = "-beta"
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        create("play") {
+            resValue("string", "app_name", appName)
+            applicationIdSuffix = ".play"
+            isMinifyEnabled = true
+            versionNameSuffix = "-playstore"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

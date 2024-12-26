@@ -104,15 +104,15 @@ class RushRepository(
 
         when (result) {
             is Result.Success -> {
-                val searchResults = result.data.filter { !it.instrumental }.map { dto ->
+                val searchResults = result.data.filter { it.instrumental == false }.map { dto ->
                     LrcLibSong(
                         id = dto.id.toInt(),
                         name = dto.name,
                         trackName = dto.trackName,
-                        artistName = dto.artistName,
+                        artistName = dto.artistName ?: "???",
                         albumName = dto.albumName ?: "???",
-                        duration = dto.duration,
-                        instrumental = dto.instrumental,
+                        duration = dto.duration ?: 0.0,
+                        instrumental = false,
                         plainLyrics = dto.plainLyrics,
                         syncedLyrics = dto.syncedLyrics,
                     )

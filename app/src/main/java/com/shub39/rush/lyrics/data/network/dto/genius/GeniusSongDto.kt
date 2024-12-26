@@ -21,8 +21,6 @@ data class Song (
 
     val url: String,
 
-    val language: String,
-
     val path: String,
 
     @SerialName("song_art_image_url")
