@@ -27,7 +27,7 @@
     <string name="sort_artists_asc">Agrupado por artistas</string>
     <string name="sort_album_asc">Agrupadas por álbum</string>
     <string name="batch_download">Descargar letras por lotes</string>
-    <string name="select_folder">Seleccionar Carpeta
+    <string name="select_folder">Seleccionar Carpeta</string>
     <string name="download">Descargar</string>
     <string name="done">Hecho</string>
     <string name="fetching">Cargando letras para</string>
