@@ -53,7 +53,8 @@ dealing with genius's "UI".
 |      Brazilian Portuguese      | [luxdev01](https://github.com/luxdev01)                  | 
 | Simplified/Traditional Chinese | [AC19970](https://github.com/AC19970)                    |
 |             German             | [Irgendeinwer](https://github.com/Irgendeinwer)          |
-
+|            Persian             | [alr86](https://github.com/alr86)                        |
+|            Spanish             | [WaifuPX-DG](https://github.com/WaifuPX-DG)              |
 
 
 ## References and Inspiration 💡

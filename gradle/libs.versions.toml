@@ -1,11 +1,11 @@
 [versions]
-agp = "8.7.3"
+agp = "8.8.0"
 colorpickerCompose = "1.1.2"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
 koinAndroidxCompose = "4.0.0"
 ksoup = "0.2.1"
-ktor = "3.0.1"
+ktor = "3.0.3"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
 coreKtx = "1.15.0"
