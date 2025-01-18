@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -53,71 +54,82 @@ fun About() {
                     title = { Text(stringResource(R.string.about)) }
                 )
 
-                Icon(
-                    painter = painterResource(R.drawable.rush_transparent),
-                    contentDescription = null,
-                    modifier = Modifier.padding(32.dp).fillMaxWidth(),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text(stringResource(R.string.app_name))
-                    },
-                    supportingContent = {
-                        Column {
-                            Text(context.packageName)
-                            Text(
-                                context.packageManager.getPackageInfo(
-                                    context.packageName,
-                                    0
-                                ).versionName ?: ""
-                            )
-                        }
-                    },
-                    trailingContent = {
-                        Row {
-                            BetterIconButton(
-                                onClick = {
-                                    openLinkInBrowser(context, "https://github.com/shub39/Rush")
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.github_mark),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.padding(4.dp))
-
-                            BetterIconButton(
-                                onClick = {
-                                    openLinkInBrowser(context, "https://discord.gg/https://discord.gg/nxA2hgtEKf")
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.discord_svgrepo_com),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
-                    }
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text("Made By shub39")
-                    },
-                    supportingContent = {
-                        Text(
-                            text = getRandomLine(),
-                            fontStyle = FontStyle.Italic,
-                            fontWeight = FontWeight.Thin
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Icon(
+                            painter = painterResource(R.drawable.rush_transparent),
+                            contentDescription = null,
+                            modifier = Modifier.padding(vertical = 60.dp).size(150.dp),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                )
+
+                    item {
+                        ListItem(
+                            headlineContent = {
+                                Text(stringResource(R.string.app_name))
+                            },
+                            supportingContent = {
+                                Column {
+                                    Text(context.packageName)
+                                    Text(
+                                        context.packageManager.getPackageInfo(
+                                            context.packageName,
+                                            0
+                                        ).versionName ?: ""
+                                    )
+                                }
+                            },
+                            trailingContent = {
+                                Row {
+                                    BetterIconButton(
+                                        onClick = {
+                                            openLinkInBrowser(context, "https://github.com/shub39/Rush")
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.github_mark),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.padding(4.dp))
+
+                                    BetterIconButton(
+                                        onClick = {
+                                            openLinkInBrowser(context, "https://discord.gg/https://discord.gg/nxA2hgtEKf")
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.discord_svgrepo_com),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = {
+                                Text("Made By shub39")
+                            },
+                            supportingContent = {
+                                Text(
+                                    text = getRandomLine(),
+                                    fontStyle = FontStyle.Italic,
+                                    fontWeight = FontWeight.Thin
+                                )
+                            }
+                        )
+                    }
+                }
             }
         }
     }

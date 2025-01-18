@@ -64,4 +64,6 @@
     <string name="restore">Restore</string>
     <string name="restore_info">Restore from selected export file</string>
     <string name="choose_file">Choose file</string>
+    <string name="rush_mode">Rush Mode</string>
+    <string name="rush_mode_desc">Searches your notifications for current playing song and fetches lyrics for it. Changes lyrics automatically with your music player.</string>
 </resources>

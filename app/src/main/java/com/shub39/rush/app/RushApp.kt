@@ -67,7 +67,8 @@ fun RushApp(
             composable<Route.SavedPage> {
                 SavedPage(
                     state = savedState,
-                    currentSongImg = lyricsState.song?.artUrl,
+                    currentSong = lyricsState.song,
+                    notificationAccess = NotificationListener.canAccessNotifications(context),
                     action = rushViewModel::onSavedPageAction,
                     settings = datastoreSettings,
                     navigator = {
