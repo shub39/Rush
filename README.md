@@ -16,6 +16,7 @@
 > ### Get From
 > [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/)
 > <a href="https://apt.izzysoft.de/packages/com.shub39.rush/latest"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+> [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
 > ### Or Get Latest [Release](https://github.com/shub39/Rush/releases) from Github
 
 ## Screenshots 📱
@@ -25,7 +26,7 @@
 | ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
 | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
-## Features / Road Map 🛣️
+## Features ✨
 >- [x] Search Lyrics
 >- [x] Download Lyrics
 >- [x] Share Lyrics
