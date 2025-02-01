@@ -104,6 +104,7 @@ dependencies {
     annotationProcessor(libs.androidx.room.room.compiler)
     ksp(libs.androidx.room.room.compiler)
     implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.sqlite.bundled)
     implementation(libs.colorpicker.compose)
     implementation(libs.ksoup)
 

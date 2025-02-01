@@ -1,6 +1,8 @@
 package com.shub39.rush.di
 
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.rush.core.data.HttpClientFactory
+import com.shub39.rush.lyrics.data.database.DatabaseFactory
 import com.shub39.rush.lyrics.data.database.SongDatabase
 import com.shub39.rush.app.RushViewModel
 import com.shub39.rush.core.data.DatastoreFactory
@@ -20,9 +22,17 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val rushModules = module {
-    single { SongDatabase.getDatabase(get()) }
+    singleOf(::DatabaseFactory)
+    single {
+        get<DatabaseFactory>()
+            .create()
+            .fallbackToDestructiveMigration(true)
+            .setDriver(BundledSQLiteDriver())
+            .build()
+    }
     single { get<SongDatabase>().songDao() }
     single { HttpClientFactory.create() }
+
     singleOf(::GeniusScraper)
     singleOf(::GeniusApi)
     singleOf(::LrcLibApi)

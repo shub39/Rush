@@ -12,6 +12,7 @@ abstract class SongDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
 
     companion object {
+        const val DB_NAME = "song_database"
         @Volatile
         private var INSTANCE: SongDatabase? = null
 

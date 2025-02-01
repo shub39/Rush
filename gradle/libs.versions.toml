@@ -15,6 +15,7 @@ composeBom = "2025.01.01"
 navigation = "2.8.6"
 palette = "1.0.0"
 room = "2.7.0-alpha13"
+sqlite = "2.5.0-alpha12"
 serialization = "1.7.3"
 
 [libraries]
@@ -22,6 +23,7 @@ serialization = "1.7.3"
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
