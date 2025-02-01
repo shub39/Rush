@@ -95,7 +95,7 @@ dependencies {
     implementation(libs.androidx.palette)
     implementation(libs.koin.androidx.compose)
 
-    implementation(libs.navigation.compose)
+    implementation(libs.jetbrains.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.placeholder)
