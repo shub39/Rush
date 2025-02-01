@@ -338,7 +338,7 @@ class RushViewModel(
                         )
                     }
 
-                    when (restoreRepo.restoreSongs(action.uri, action.context)) {
+                    when (restoreRepo.restoreSongs(action.uri)) {
                         is RestoreResult.Failure -> {
                             _settingsState.update {
                                 it.copy(

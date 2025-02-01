@@ -18,9 +18,10 @@ import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 
 class RestoreImpl(
-    private val songRepo: SongRepo
+    private val songRepo: SongRepo,
+    private val context: Context
 ): RestoreRepo {
-    override suspend fun restoreSongs(uri: Uri, context: Context): RestoreResult {
+    override suspend fun restoreSongs(uri: Uri): RestoreResult {
         return try {
             val file = kotlin.io.path.createTempFile()
 
