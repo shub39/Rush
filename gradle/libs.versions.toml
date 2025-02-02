@@ -1,6 +1,7 @@
 [versions]
 agp = "8.8.0"
 colorpicker = "1.1.2"
+materialKolor = "2.0.1"
 splashScreen = "1.0.1"
 datastore = "1.1.2"
 koin = "4.0.1"
@@ -42,6 +43,7 @@ landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.re
 landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapist" }
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigation"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
