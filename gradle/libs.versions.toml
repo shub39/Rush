@@ -1,6 +1,7 @@
 [versions]
 agp = "8.8.0"
 colorpicker = "1.1.2"
+materialKolor = "2.0.1"
 splashScreen = "1.0.1"
 datastore = "1.1.2"
 koin = "4.0.1"
@@ -12,10 +13,10 @@ kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.0"
 composeBom = "2025.01.01"
-navigation = "2.8.6"
+navigation = "2.8.0-alpha10"
 palette = "1.0.0"
 room = "2.7.0-alpha13"
-sqlite = "2.5.0-alpha12"
+sqlite = "2.5.0-alpha13"
 serialization = "1.7.3"
 
 [libraries]
@@ -40,8 +41,9 @@ colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", vers
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
 landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.ref = "landscapist" }
 landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapist" }
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigation"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

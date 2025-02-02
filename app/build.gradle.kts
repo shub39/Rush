@@ -7,6 +7,8 @@ plugins {
 }
 
 val appName = "Rush"
+val versionCode = 2440
+val versionName = "2.4.4"
 
 android {
     namespace = "com.shub39.rush"
@@ -16,8 +18,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2440
-        versionName = "2.4.4"
+        versionCode = versionCode
+        versionName = versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,16 +92,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.palette)
     implementation(libs.koin.androidx.compose)
-
-    implementation(libs.navigation.compose)
+    implementation(libs.jetbrains.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.placeholder)
-
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.room.compiler)
     ksp(libs.androidx.room.room.compiler)
@@ -107,7 +106,7 @@ dependencies {
     implementation(libs.sqlite.bundled)
     implementation(libs.colorpicker.compose)
     implementation(libs.ksoup)
-
+    implementation(libs.materialKolor)
     implementation(libs.bundles.ktor)
 }
 
