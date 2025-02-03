@@ -51,7 +51,7 @@ fun LoadingCard(
 
             LinearProgressIndicator(
                 color = colors.first,
-                trackColor = colors.second
+                trackColor = Color.Transparent
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -81,7 +81,7 @@ fun LoadingCard(
                     .clip(MaterialTheme.shapes.medium),
                 shimmer = Shimmer.Resonate(
                     highlightColor = colors.first,
-                    baseColor = colors.second
+                    baseColor = Color.Transparent
                 )
             )
 
@@ -111,7 +111,7 @@ fun LoadingCard(
                             .clip(MaterialTheme.shapes.extraLarge),
                         shimmer = Shimmer.Resonate(
                             highlightColor = colors.first,
-                            baseColor = colors.second
+                            baseColor = Color.Transparent
                         )
                     )
                 }
@@ -129,7 +129,7 @@ fun LoadingCard(
                         .clip(MaterialTheme.shapes.medium),
                     shimmer = Shimmer.Resonate(
                         highlightColor = colors.first,
-                        baseColor = colors.second
+                        baseColor = Color.Transparent
                     )
                 )
             }

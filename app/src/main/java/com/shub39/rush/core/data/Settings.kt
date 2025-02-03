@@ -17,5 +17,6 @@ data class Settings(
     val cardTheme: String = CardTheme.SPOTIFY.type,
     val cardColor: String = CardColors.VIBRANT.color,
     val cardRoundness: String = CornerRadius.ROUNDED.type,
-    val sortOrder: String = SortOrder.TITLE_ASC.sortOrder
+    val sortOrder: String = SortOrder.TITLE_ASC.sortOrder,
+    val hypnoticCanvas: Boolean = true
 )

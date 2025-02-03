@@ -95,8 +95,7 @@ fun SettingPage(
 
                             Slider(
                                 value = state.maxLines.toFloat(),
-                                valueRange = 2f..8f,
-                                steps = 5,
+                                valueRange = 2f..16f,
                                 onValueChange = {
                                     action(SettingsPageAction.OnUpdateMaxLines(it.toInt()))
                                 }

@@ -18,6 +18,7 @@ palette = "1.0.0"
 room = "2.7.0-alpha13"
 sqlite = "2.5.0-alpha13"
 serialization = "1.7.3"
+hypnoticcanvas = "0.3.0"
 
 [libraries]
 # Android
@@ -44,6 +45,7 @@ landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholde
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigation"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

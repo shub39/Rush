@@ -28,8 +28,6 @@ import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.saved.SavedPageState
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.share.SharePageAction
 import com.shub39.rush.share.SharePageState
 import kotlinx.coroutines.FlowPreview
@@ -65,7 +63,6 @@ class RushViewModel(
     private val _lyricsState = MutableStateFlow(LyricsPageState())
     private val _savedState = MutableStateFlow(SavedPageState())
     private val _shareState = MutableStateFlow(SharePageState())
-    private val _settingsState = MutableStateFlow(SettingsPageState())
     private val _searchState = MutableStateFlow(SearchSheetState())
 
     val lyricsState = _lyricsState.asStateFlow()
@@ -109,6 +106,7 @@ class RushViewModel(
         datastore.getCardRoundnessFlow(),
         datastore.getSortOrderFlow(),
         datastore.getMaxLinesFlow(),
+        datastore.getHypnoticCanvasFlow()
     ) { param: Array<Any> ->
         Settings(
             cardFit = param[0] as String,
@@ -120,6 +118,7 @@ class RushViewModel(
             cardRoundness = param[6] as String,
             sortOrder = param[7] as String,
             maxLines = param[8] as Int,
+            hypnoticCanvas = param[9] as Boolean
         )
     }.stateIn(
         viewModelScope,
@@ -575,80 +574,6 @@ class RushViewModel(
         _searchState.update {
             it.copy(
                 localSearchResults = searchResults,
-            )
-        }
-    }
-
-    private suspend fun batchDownload(
-        list: List<AudioFile>,
-    ) {
-        _settingsState.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = true
-                )
-            )
-        }
-
-        val savedSongs = _savedState.value.songsAsc.map { it.id }
-
-        list.forEachIndexed { index, audioFile ->
-            when (val result = repo.searchGenius(audioFile.title)) {
-                is Result.Error -> {
-                    _settingsState.update {
-                        it.copy(
-                            batchDownload = it.batchDownload.copy(
-                                indexes = it.batchDownload.indexes.plus(index to false)
-                            )
-                        )
-                    }
-                }
-
-                is Result.Success -> {
-                    val id = result.data.first().id
-
-                    if (id in savedSongs) {
-
-                        _settingsState.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    indexes = it.batchDownload.indexes.plus(index to true),
-                                )
-                            )
-                        }
-
-                    } else {
-                        when (repo.fetchSong(id)) {
-                            is Result.Error -> {
-                                _settingsState.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to false)
-                                        )
-                                    )
-                                }
-                            }
-
-                            is Result.Success -> {
-                                _settingsState.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to true),
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        _settingsState.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = false
-                )
             )
         }
     }

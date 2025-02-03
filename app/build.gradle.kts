@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.ksoup)
     implementation(libs.materialKolor)
     implementation(libs.bundles.ktor)
+    implementation(libs.hypnoticcanvas)
 }
 
 java {

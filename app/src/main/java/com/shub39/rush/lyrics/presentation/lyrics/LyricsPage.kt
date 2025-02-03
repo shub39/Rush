@@ -57,17 +57,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mikepenz.hypnoticcanvas.shaderBackground
+import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
-import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
-import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
+import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
+import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -105,15 +107,29 @@ fun LyricsPage(
         label = "cardContent"
     )
 
+    val modifier = if (settings.hypnoticCanvas) {
+        Modifier.shaderBackground(
+            MeshGradient(
+                colors = generateGradientColors(
+                    state.extractedColors.cardBackgroundDominant,
+                    state.extractedColors.cardBackgroundMuted,
+                    steps = 6
+                ).toTypedArray()
+            )
+        )
+    } else {
+        Modifier
+    }
+
     LaunchedEffect(state.song) {
         delay(100)
         lazyListState.animateScrollToItem(0)
     }
 
     Card(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
-            containerColor = cardBackground,
+            containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
             contentColor = cardContent
         ),
         shape = RoundedCornerShape(0.dp)
@@ -177,11 +193,11 @@ fun LyricsPage(
                     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
                     Column {
-                        AnimatedVisibility(top > 2) {
+                        AnimatedVisibility(top > 2 && !settings.hypnoticCanvas) {
                             ArtFromUrl(
                                 imageUrl = state.song.artUrl,
                                 highlightColor = cardContent,
-                                baseColor = cardBackground,
+                                baseColor = Color.Transparent,
                                 modifier = Modifier
                                     .height(150.dp)
                                     .fillMaxWidth(),
@@ -267,7 +283,8 @@ fun LyricsPage(
                                                 if (source == "LrcLib") {
                                                     state.song.lyrics.joinToString("\n") { it.value }
                                                 } else {
-                                                    state.song.geniusLyrics?.joinToString("\n") { it.value } ?: ""
+                                                    state.song.geniusLyrics?.joinToString("\n") { it.value }
+                                                        ?: ""
                                                 },
                                                 "Complete Lyrics"
                                             )
@@ -336,10 +353,7 @@ fun LyricsPage(
                                                     containerColor = cardContent
                                                 )
                                             } else {
-                                                IconButtonDefaults.filledIconButtonColors(
-                                                    contentColor = cardContent,
-                                                    containerColor = cardBackground
-                                                )
+                                                IconButtonDefaults.iconButtonColors()
                                             }
                                         ) {
                                             Icon(
@@ -359,10 +373,7 @@ fun LyricsPage(
                                                 containerColor = cardContent
                                             )
                                         } else {
-                                            IconButtonDefaults.filledIconButtonColors(
-                                                contentColor = cardContent,
-                                                containerColor = cardBackground
-                                            )
+                                            IconButtonDefaults.iconButtonColors()
                                         }
                                     ) {
                                         Icon(
@@ -414,11 +425,11 @@ fun LyricsPage(
                             .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .padding(
-                            end = 16.dp,
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 32.dp
-                        ),
+                                end = 16.dp,
+                                start = 16.dp,
+                                top = 16.dp,
+                                bottom = 32.dp
+                            ),
                         state = lazyListState
                     ) {
                         items(
@@ -437,7 +448,7 @@ fun LyricsPage(
                                 )
                                 val containerColor by animateColorAsState(
                                     targetValue = when (!isSelected) {
-                                        true -> cardBackground
+                                        true -> Color.Transparent
                                         else -> cardContent
                                     },
                                     label = "container"
@@ -570,11 +581,11 @@ fun LyricsPage(
                             .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .padding(
-                            end = 16.dp,
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 32.dp
-                        ),
+                                end = 16.dp,
+                                start = 16.dp,
+                                top = 16.dp,
+                                bottom = 32.dp
+                            ),
                         state = lazyListState
                     ) {
                         items(state.song.syncedLyrics, key = { it.time }) { lyric ->
@@ -593,7 +604,7 @@ fun LyricsPage(
                                 Card(
                                     modifier = Modifier.padding(6.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = cardBackground,
+                                        containerColor = Color.Transparent,
                                         contentColor = cardContent
                                     ),
                                     shape = MaterialTheme.shapes.small,
