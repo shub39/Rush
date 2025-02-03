@@ -25,6 +25,7 @@ import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.setting.About
 import com.shub39.rush.lyrics.presentation.setting.Backup
 import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
+import com.shub39.rush.lyrics.presentation.setting.LookAndFeel
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
 import com.shub39.rush.lyrics.presentation.setting.SettingsVM
 import com.shub39.rush.share.SharePage
@@ -142,6 +143,13 @@ fun RushApp(
 
                 composable<Route.AboutPage> {
                     About()
+                }
+
+                composable<Route.LookAndFeelPage> {
+                    LookAndFeel(
+                        state = settingsState,
+                        action = settingsVM::onSettingsPageAction
+                    )
                 }
             }
         }

@@ -123,6 +123,22 @@ class SettingsVM(
                         )
                     }
                 }
+
+                is SettingsPageAction.OnThemeSwitch -> {
+                    datastore.updateDarkThemePref(action.useDarkTheme)
+                }
+
+                is SettingsPageAction.OnAmoledSwitch -> {
+                    datastore.updateAmoledPref(action.amoled)
+                }
+
+                is SettingsPageAction.OnSeedColorChange -> {
+                    datastore.updateSeedColor(action.color)
+                }
+
+                is SettingsPageAction.OnPaletteChange -> {
+                    datastore.updatePaletteStyle(action.style)
+                }
             }
         }
     }

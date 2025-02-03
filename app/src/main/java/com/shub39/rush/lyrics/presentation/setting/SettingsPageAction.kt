@@ -1,9 +1,15 @@
 package com.shub39.rush.lyrics.presentation.setting
 
 import android.net.Uri
+import com.materialkolor.PaletteStyle
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 
 sealed interface SettingsPageAction {
+    data class OnSeedColorChange(val color: Int): SettingsPageAction
+    data class OnThemeSwitch(val useDarkTheme: Boolean?): SettingsPageAction
+    data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
+    data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction
+
     data object OnClearIndexes: SettingsPageAction
     data class OnBatchDownload(val files: List<AudioFile>): SettingsPageAction
     data class OnUpdateMaxLines(val lines: Int): SettingsPageAction

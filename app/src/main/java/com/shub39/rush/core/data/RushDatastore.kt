@@ -31,7 +31,7 @@ class RushDatastore(
         }
     suspend fun updateDarkThemePref(pref: Boolean?) {
         dataStore.edit { settings ->
-            settings[darkThemePref] = pref.toString()
+            settings[darkThemePref] = pref.toString().also { println(it) }
         }
     }
 

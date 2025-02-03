@@ -55,6 +55,7 @@ fun SettingPage(
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -66,9 +67,25 @@ fun SettingPage(
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
-                .widthIn(max = 700.dp)
                 .fillMaxSize()
         ) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.look_and_feel)) },
+                    supportingContent = { Text(text = stringResource(R.string.look_and_feel_info)) },
+                    trailingContent = {
+                        BetterIconButton(
+                            onClick = { navigator(Route.LookAndFeelPage) },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.max_lines)) },

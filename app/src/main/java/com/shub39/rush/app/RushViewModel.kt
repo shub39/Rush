@@ -15,28 +15,22 @@ import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.data.listener.MediaListener
-import com.shub39.rush.core.presentation.errorStringRes
+import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.ExportState
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
-import com.shub39.rush.lyrics.domain.backup.RestoreResult
-import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
 import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.saved.SavedPageState
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
+import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.share.SharePageAction
 import com.shub39.rush.share.SharePageState
 import kotlinx.coroutines.FlowPreview
@@ -63,8 +57,6 @@ class RushViewModel(
     private val repo: SongRepo,
     private val imageLoader: ImageLoader,
     private val datastore: RushDatastore,
-    private val exportRepo: ExportRepo,
-    private val restoreRepo: RestoreRepo
 ) : ViewModel() {
 
     private var savedJob: Job? = null
@@ -98,12 +90,6 @@ class RushViewModel(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             SharePageState()
-        )
-    val settingsState = _settingsState.asStateFlow()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SettingsPageState()
         )
     val searchState = _searchState.asStateFlow()
         .onStart {
@@ -283,87 +269,6 @@ class RushViewModel(
 
                 is SavedPageAction.UpdateSortOrder -> {
                     datastore.updateSortOrder(action.sortOrder)
-                }
-            }
-        }
-    }
-
-    fun onSettingsPageAction(action: SettingsPageAction) {
-        viewModelScope.launch {
-            when (action) {
-                is SettingsPageAction.OnBatchDownload -> {
-                    batchDownload(action.files)
-                }
-
-                SettingsPageAction.OnClearIndexes -> {
-                    onClearIndexes()
-                }
-
-                SettingsPageAction.OnDeleteSongs -> {
-                    deleteSongs()
-                }
-
-                is SettingsPageAction.OnUpdateLyricsColor -> {
-                    datastore.updateLyricsColor(action.color)
-                }
-
-                is SettingsPageAction.OnUpdateMaxLines -> {
-                    datastore.updateMaxLines(action.lines)
-                }
-
-                is SettingsPageAction.OnUpdateTheme -> {
-                    datastore.updateToggleTheme(action.theme)
-                }
-
-                SettingsPageAction.OnExportSongs -> {
-                    _settingsState.update {
-                        it.copy(
-                            exportState = ExportState.EXPORTING
-                        )
-                    }
-
-                    exportRepo.exportToJson()
-
-                    _settingsState.update {
-                        it.copy(
-                            exportState = ExportState.EXPORTED
-                        )
-                    }
-                }
-
-                is SettingsPageAction.OnRestoreSongs -> {
-                    _settingsState.update {
-                        it.copy(
-                            restoreState = RestoreState.RESTORING
-                        )
-                    }
-
-                    when (restoreRepo.restoreSongs(action.uri)) {
-                        is RestoreResult.Failure -> {
-                            _settingsState.update {
-                                it.copy(
-                                    restoreState = RestoreState.FAILURE
-                                )
-                            }
-                        }
-
-                        RestoreResult.Success -> {
-                            _settingsState.update {
-                                it.copy(
-                                    restoreState = RestoreState.RESTORED
-                                )
-                            }
-                        }
-                    }
-                }
-
-                SettingsPageAction.ResetBackup -> {
-                    _settingsState.update {
-                        it.copy(
-                            restoreState = RestoreState.IDLE,
-                            exportState = ExportState.IDLE
-                        )
-                    }
                 }
             }
         }
@@ -772,19 +677,4 @@ class RushViewModel(
             )
         }
     }
-
-    private fun onClearIndexes() {
-        _settingsState.update {
-            it.copy(
-                batchDownload = BatchDownload(
-                    indexes = emptyMap()
-                )
-            )
-        }
-    }
-
-    private suspend fun deleteSongs() {
-        repo.deleteAllSongs()
-    }
-
 }
