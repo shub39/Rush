@@ -50,6 +50,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.materialkolor.PaletteStyle
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.PageFill
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -104,19 +105,19 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.extract_colors)
+                            text = stringResource(R.string.vibrant_colors)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(R.string.extract_colors_desc)
+                            text = stringResource(R.string.vibrant_colors_info)
                         )
                     },
                     trailingContent = {
                         Switch(
-                            checked = state.theme.extractColors,
+                            checked = state.theme.lyricsColor == CardColors.VIBRANT.color,
                             onCheckedChange = {
-                                action(SettingsPageAction.OnExtractToggle(it))
+                                action(SettingsPageAction.OnUpdateLyricsColor(it))
                             }
                         )
                     }

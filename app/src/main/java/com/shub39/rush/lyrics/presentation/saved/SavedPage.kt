@@ -186,7 +186,12 @@ fun SavedPage(
                             onClick = {
                                 action(SavedPageAction.UpdateSortOrder(it.sortOrder))
                             },
-                            label = { Text(stringResource(id = it.textId)) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = it.textId),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            },
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }

@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.data.RushDatastore
+import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
@@ -64,15 +65,13 @@ class SettingsVM(
                 }
 
                 is SettingsPageAction.OnUpdateLyricsColor -> {
-                    datastore.updateLyricsColor(action.color)
+                    datastore.updateLyricsColor(
+                        if (action.vibrant) CardColors.VIBRANT.color else CardColors.MUTED.color
+                    )
                 }
 
                 is SettingsPageAction.OnUpdateMaxLines -> {
                     datastore.updateMaxLines(action.lines)
-                }
-
-                is SettingsPageAction.OnUpdateTheme -> {
-                    datastore.updateToggleTheme(action.theme)
                 }
 
                 SettingsPageAction.OnExportSongs -> {
@@ -145,10 +144,6 @@ class SettingsVM(
                 is SettingsPageAction.OnHypnoticToggle -> {
                     datastore.updateHypnoticCanvas(action.toggle)
                 }
-
-                is SettingsPageAction.OnExtractToggle -> {
-                    datastore.updateExtractColors(action.toggle)
-                }
             }
         }
     }
@@ -157,12 +152,12 @@ class SettingsVM(
         observeJob?.cancel()
         observeJob = launch {
             observeTheme().launchIn(this)
-            datastore.getExtractColorsFlow()
-                .onEach { extractColors ->
+            datastore.getLyricsColorFlow()
+                .onEach { color ->
                     _state.update {
                         it.copy(
                             theme = it.theme.copy(
-                                extractColors = extractColors
+                                lyricsColor = color
                             )
                         )
                     }

@@ -10,13 +10,11 @@ sealed interface SettingsPageAction {
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
     data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction
     data class OnHypnoticToggle(val toggle: Boolean): SettingsPageAction
-    data class OnExtractToggle(val toggle: Boolean): SettingsPageAction
 
     data object OnClearIndexes: SettingsPageAction
     data class OnBatchDownload(val files: List<AudioFile>): SettingsPageAction
     data class OnUpdateMaxLines(val lines: Int): SettingsPageAction
-    data class OnUpdateTheme(val theme: String): SettingsPageAction
-    data class OnUpdateLyricsColor(val color: String): SettingsPageAction
+    data class OnUpdateLyricsColor(val vibrant: Boolean): SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
     data object ResetBackup: SettingsPageAction
     data class OnRestoreSongs(val uri: Uri): SettingsPageAction

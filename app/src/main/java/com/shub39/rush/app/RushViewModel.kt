@@ -28,7 +28,6 @@ import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.saved.SavedPageState
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
-import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.share.SharePageAction
@@ -104,25 +103,23 @@ class RushViewModel(
         datastore.getCardFitFlow(),
         datastore.getLyricsColorFlow(),
         datastore.getCardBackgroundFlow(),
-        datastore.getSeedColorFlow(),
+        datastore.getCardContentFlow(),
         datastore.getCardThemeFlow(),
         datastore.getCardColorFlow(),
         datastore.getCardRoundnessFlow(),
         datastore.getSortOrderFlow(),
-        datastore.getToggleThemeFlow(),
         datastore.getMaxLinesFlow(),
     ) { param: Array<Any> ->
         Settings(
             cardFit = param[0] as String,
             lyricsColor = param[1] as String,
             cardBackground = param[2] as Int,
-            seedColor = param[3] as Int,
+            cardContent = param[3] as Int,
             cardTheme = param[4] as String,
             cardColor = param[5] as String,
             cardRoundness = param[6] as String,
             sortOrder = param[7] as String,
-            toggleTheme = param[8] as String,
-            maxLines = param[9] as Int,
+            maxLines = param[8] as Int,
         )
     }.stateIn(
         viewModelScope,
@@ -302,7 +299,7 @@ class RushViewModel(
             when (action) {
                 is SharePageAction.OnUpdateCardBackground -> datastore.updateCardBackground(action.color)
                 is SharePageAction.OnUpdateCardColor -> datastore.updateCardColor(action.color)
-                is SharePageAction.OnUpdateCardContent -> datastore.updateSeedColor(action.color)
+                is SharePageAction.OnUpdateCardContent -> datastore.updateCardContent(action.color)
                 is SharePageAction.OnUpdateCardFit -> datastore.updateCardFit(action.fit)
                 is SharePageAction.OnUpdateCardRoundness -> datastore.updateCardRoundness(action.roundness)
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)

@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.materialkolor.PaletteStyle
-import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
@@ -85,14 +84,6 @@ class RushDatastore(
         }
     }
 
-    fun getExtractColorsFlow(): Flow<Boolean> = dataStore.data
-        .map { preferences -> preferences[extractColors] ?: true }
-    suspend fun updateExtractColors(newExtractColors: Boolean) {
-        dataStore.edit { settings ->
-            settings[extractColors] = newExtractColors
-        }
-    }
-
     // Undefined
 
     fun getCardFitFlow(): Flow<String> = dataStore.data
@@ -116,6 +107,14 @@ class RushDatastore(
     suspend fun updateCardBackground(newCardBackground: Int) {
         dataStore.edit { settings ->
             settings[cardBackground] = newCardBackground
+        }
+    }
+
+    fun getCardContentFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[cardContent] ?: Color.White.toArgb() }
+    suspend fun updateCardContent(newCardContent: Int) {
+        dataStore.edit { settings ->
+            settings[cardContent] = newCardContent
         }
     }
 
@@ -143,33 +142,19 @@ class RushDatastore(
         }
     }
 
-
-
-    fun getToggleThemeFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[toggleTheme] ?: AppTheme.YELLOW.type }
-    suspend fun updateToggleTheme(newToggleTheme: String) {
-        dataStore.edit { settings ->
-            settings[toggleTheme] = newToggleTheme
-        }
-    }
-
-
-
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
         private val amoledPref = booleanPreferencesKey("with_amoled")
         private val paletteStyle = stringPreferencesKey("palette_style")
         private val hypnoticCanvas = booleanPreferencesKey("hypnotic_canvas")
-        private val extractColors = booleanPreferencesKey("extract_colors")
-
         private val maxLines = intPreferencesKey("max_lines")
-        private val toggleTheme = stringPreferencesKey("toggle_theme")
         private val sortOrder = stringPreferencesKey("sort_order")
         private val cardColor = stringPreferencesKey("card_color")
         private val cardRoundness = stringPreferencesKey("card_roundness")
         private val cardTheme = stringPreferencesKey("card_theme")
         private val cardBackground = intPreferencesKey("card_background")
+        private val cardContent = intPreferencesKey("card_content")
         private val lyricsColor = stringPreferencesKey("lyrics_color")
         private val cardFit = stringPreferencesKey("card_fit")
     }
