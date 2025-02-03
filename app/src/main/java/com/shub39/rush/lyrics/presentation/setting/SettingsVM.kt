@@ -14,9 +14,11 @@ import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -139,31 +141,66 @@ class SettingsVM(
                 is SettingsPageAction.OnPaletteChange -> {
                     datastore.updatePaletteStyle(action.style)
                 }
+
+                is SettingsPageAction.OnHypnoticToggle -> {
+                    datastore.updateHypnoticCanvas(action.toggle)
+                }
+
+                is SettingsPageAction.OnExtractToggle -> {
+                    datastore.updateExtractColors(action.toggle)
+                }
             }
         }
     }
 
-    private fun observeJob() {
+    private fun observeJob() = viewModelScope.launch {
         observeJob?.cancel()
-        observeJob = combine(
+        observeJob = launch {
+            observeTheme().launchIn(this)
+            datastore.getExtractColorsFlow()
+                .onEach { extractColors ->
+                    _state.update {
+                        it.copy(
+                            theme = it.theme.copy(
+                                extractColors = extractColors
+                            )
+                        )
+                    }
+                }
+                .launchIn(this)
+            datastore.getMaxLinesFlow()
+                .onEach { lines ->
+                    _state.update {
+                        it.copy(
+                            maxLines = lines
+                        )
+                    }
+                }
+                .launchIn(this)
+        }
+    }
+
+    // this variant of combine takes at most 5 flows and the other variant doesnt work with nullable values
+    private fun observeTheme(): Flow<Unit> {
+        return combine(
             datastore.getSeedColorFlow(),
             datastore.getDarkThemePrefFlow(),
             datastore.getAmoledPrefFlow(),
             datastore.getPaletteStyle(),
-            datastore.getMaxLinesFlow()
-        ) { seedColor, useDarkTheme, withAmoled, style, maxLines ->
+            datastore.getHypnoticCanvasFlow()
+        ) { seedColor, useDarkTheme, withAmoled, style, hypnoticCanvas ->
             _state.update {
                 it.copy(
                     theme = it.theme.copy(
                         seedColor = seedColor,
                         useDarkTheme = useDarkTheme,
                         withAmoled = withAmoled,
-                        style = style
-                    ),
-                    maxLines = maxLines
+                        style = style,
+                        hypnoticCanvas = hypnoticCanvas
+                    )
                 )
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
     private suspend fun batchDownload(

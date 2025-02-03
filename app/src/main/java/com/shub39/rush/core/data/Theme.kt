@@ -9,4 +9,6 @@ data class Theme(
     val useDarkTheme: Boolean? = null,
     val withAmoled: Boolean = false,
     val style: PaletteStyle = PaletteStyle.TonalSpot,
+    val hypnoticCanvas: Boolean = true,
+    val extractColors: Boolean = true
 )

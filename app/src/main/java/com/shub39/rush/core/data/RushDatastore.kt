@@ -31,7 +31,7 @@ class RushDatastore(
         }
     suspend fun updateDarkThemePref(pref: Boolean?) {
         dataStore.edit { settings ->
-            settings[darkThemePref] = pref.toString().also { println(it) }
+            settings[darkThemePref] = pref.toString()
         }
     }
 
@@ -77,6 +77,22 @@ class RushDatastore(
         }
     }
 
+    fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[hypnoticCanvas] ?: true }
+    suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
+        dataStore.edit { settings ->
+            settings[hypnoticCanvas] = newHypnoticCanvas
+        }
+    }
+
+    fun getExtractColorsFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[extractColors] ?: true }
+    suspend fun updateExtractColors(newExtractColors: Boolean) {
+        dataStore.edit { settings ->
+            settings[extractColors] = newExtractColors
+        }
+    }
+
     // Undefined
 
     fun getCardFitFlow(): Flow<String> = dataStore.data
@@ -102,9 +118,6 @@ class RushDatastore(
             settings[cardBackground] = newCardBackground
         }
     }
-
-
-
 
     fun getCardThemeFlow(): Flow<String> = dataStore.data
         .map { preferences -> preferences[cardTheme] ?: CardTheme.SPOTIFY.type }
@@ -147,6 +160,8 @@ class RushDatastore(
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
         private val amoledPref = booleanPreferencesKey("with_amoled")
         private val paletteStyle = stringPreferencesKey("palette_style")
+        private val hypnoticCanvas = booleanPreferencesKey("hypnotic_canvas")
+        private val extractColors = booleanPreferencesKey("extract_colors")
 
         private val maxLines = intPreferencesKey("max_lines")
         private val toggleTheme = stringPreferencesKey("toggle_theme")

@@ -81,6 +81,52 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
+                            text = stringResource(R.string.hypnotic_canvas)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.hypnotic_canvas_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.theme.hypnoticCanvas,
+                            onCheckedChange = {
+                                action(SettingsPageAction.OnHypnoticToggle(it))
+                            }
+                        )
+                    }
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.extract_colors)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.extract_colors_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.theme.extractColors,
+                            onCheckedChange = {
+                                action(SettingsPageAction.OnExtractToggle(it))
+                            }
+                        )
+                    }
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
                             text = stringResource(R.string.use_system_theme)
                         )
                     },
@@ -256,6 +302,7 @@ fun LookAndFeel(
                     Button(
                         onClick = {
                             action(SettingsPageAction.OnSeedColorChange(controller.selectedColor.value.toArgb()))
+                            colorPickerDialog = false
                         }
                     ) {
                         Text(
