@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,11 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.openLinkInBrowser
-import com.shub39.rush.core.presentation.theme.RushTheme
 import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,17 +129,5 @@ fun About() {
                 }
             }
         }
-    }
-}
-
-@Preview(
-    showSystemUi = true, showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:width=411dp,height=891dp"
-)
-@Composable
-fun AboutPreview() {
-    RushTheme(theme = "Yellow") {
-        About()
     }
 }

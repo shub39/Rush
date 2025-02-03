@@ -14,6 +14,7 @@ import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
 import com.shub39.rush.lyrics.data.network.GeniusApi
 import com.shub39.rush.lyrics.data.network.LrcLibApi
 import com.shub39.rush.lyrics.data.network.GeniusScraper
+import com.shub39.rush.lyrics.presentation.setting.SettingsVM
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import org.koin.core.module.dsl.singleOf
@@ -46,6 +47,7 @@ val rushModules = module {
     singleOf(::RushDatastore)
 
     viewModelOf(::RushViewModel)
+    viewModelOf(::SettingsVM)
 
     singleOf(::provideImageLoader)
 }

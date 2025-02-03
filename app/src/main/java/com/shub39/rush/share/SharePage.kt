@@ -134,7 +134,7 @@ fun SharePage(
         targetValue = when (settings.cardColor) {
             CardColors.MUTED.color -> state.extractedColors.cardContentMuted
             CardColors.VIBRANT.color -> state.extractedColors.cardContentDominant
-            CardColors.CUSTOM.color -> Color(settings.cardContent)
+            CardColors.CUSTOM.color -> Color(settings.seedColor)
             else -> MaterialTheme.colorScheme.onPrimaryContainer
         }, label = "content"
     )
@@ -200,7 +200,7 @@ fun SharePage(
                                 colorPicker = true
                             }
                         },
-                        containerColor = Color(settings.cardContent),
+                        containerColor = Color(settings.seedColor),
                         shape = MaterialTheme.shapes.extraLarge,
                         content = {}
                     )
@@ -401,7 +401,7 @@ fun SharePage(
                             .width(350.dp)
                             .height(300.dp)
                             .padding(10.dp),
-                        initialColor = if (editTarget == "content") Color(settings.cardContent) else Color(
+                        initialColor = if (editTarget == "content") Color(settings.seedColor) else Color(
                             settings.cardBackground
                         ),
                         controller = colorPickerController
@@ -411,7 +411,7 @@ fun SharePage(
                         modifier = Modifier
                             .padding(10.dp)
                             .height(35.dp),
-                        initialColor = if (editTarget == "content") Color(settings.cardContent) else Color(
+                        initialColor = if (editTarget == "content") Color(settings.seedColor) else Color(
                             settings.cardBackground
                         ),
                         controller = colorPickerController
