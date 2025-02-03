@@ -7,8 +7,8 @@ plugins {
 }
 
 val appName = "Rush"
-val versionCode = 2440
-val versionName = "2.4.4"
+val versionCode = 2500
+val versionName = "2.5.0"
 
 android {
     namespace = "com.shub39.rush"
@@ -49,6 +49,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
         create("play") {
             resValue("string", "app_name", appName)
