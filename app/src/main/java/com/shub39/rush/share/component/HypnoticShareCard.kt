@@ -55,7 +55,7 @@ fun HypnoticShareCard(
                     .shaderBackground(
                         MeshGradient(
                             colors = generateGradientColors(
-                                color1 = extractedColors.cardBackgroundMuted,
+                                color1 = cardColors.containerColor,
                                 color2 = extractedColors.cardBackgroundDominant,
                                 steps = 6
                             ).toTypedArray()
@@ -63,7 +63,7 @@ fun HypnoticShareCard(
                         fallback = {
                             Brush.horizontalGradient(
                                 generateGradientColors(
-                                    color1 = extractedColors.cardBackgroundMuted,
+                                    color1 = cardColors.containerColor,
                                     color2 = extractedColors.cardBackgroundDominant,
                                     steps = 6
                                 )
@@ -150,7 +150,7 @@ fun HypnoticShareCard(
                     .shaderBackground(
                         MeshGradient(
                             colors = generateGradientColors(
-                                color1 = extractedColors.cardBackgroundMuted,
+                                color1 = cardColors.containerColor,
                                 color2 = extractedColors.cardBackgroundDominant,
                                 steps = 6
                             ).toTypedArray()
@@ -158,7 +158,7 @@ fun HypnoticShareCard(
                         fallback = {
                             Brush.horizontalGradient(
                                 generateGradientColors(
-                                    color1 = extractedColors.cardBackgroundMuted,
+                                    color1 = cardColors.containerColor,
                                     color2 = extractedColors.cardBackgroundDominant,
                                     steps = 6
                                 )

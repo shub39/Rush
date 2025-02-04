@@ -28,6 +28,7 @@ import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
 import com.shub39.rush.lyrics.presentation.setting.LookAndFeel
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
 import com.shub39.rush.lyrics.presentation.setting.SettingsVM
+import com.shub39.rush.onboarding.OnboardingDialog
 import com.shub39.rush.share.SharePage
 import org.koin.androidx.compose.koinViewModel
 
@@ -164,6 +165,10 @@ fun RushApp(
                     }
                 }
             )
+        }
+
+        if (!datastoreSettings.onboardingDone) {
+            OnboardingDialog()
         }
     }
 }

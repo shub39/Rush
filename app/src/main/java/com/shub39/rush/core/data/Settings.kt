@@ -18,5 +18,6 @@ data class Settings(
     val cardColor: String = CardColors.VIBRANT.color,
     val cardRoundness: String = CornerRadius.ROUNDED.type,
     val sortOrder: String = SortOrder.TITLE_ASC.sortOrder,
-    val hypnoticCanvas: Boolean = true
+    val hypnoticCanvas: Boolean = true,
+    val onboardingDone: Boolean = true
 )

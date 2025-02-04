@@ -85,8 +85,6 @@ class RushDatastore(
         }
     }
 
-    // Undefined
-
     fun getCardFitFlow(): Flow<String> = dataStore.data
         .map { preferences -> preferences[cardFit] ?: CardFit.STANDARD.type }
     suspend fun updateCardFit(newCardFit: String) {
@@ -143,6 +141,14 @@ class RushDatastore(
         }
     }
 
+    fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[onboardingDone] ?: false }
+    suspend fun updateOnboardingDone(done: Boolean) {
+        dataStore.edit { settings ->
+            settings[onboardingDone] = done
+        }
+    }
+
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
@@ -158,5 +164,6 @@ class RushDatastore(
         private val cardContent = intPreferencesKey("card_content")
         private val lyricsColor = stringPreferencesKey("lyrics_color")
         private val cardFit = stringPreferencesKey("card_fit")
+        private val onboardingDone = booleanPreferencesKey("onboarding_done")
     }
 }

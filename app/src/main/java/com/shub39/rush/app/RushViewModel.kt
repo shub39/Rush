@@ -106,7 +106,8 @@ class RushViewModel(
         datastore.getCardRoundnessFlow(),
         datastore.getSortOrderFlow(),
         datastore.getMaxLinesFlow(),
-        datastore.getHypnoticCanvasFlow()
+        datastore.getHypnoticCanvasFlow(),
+        datastore.getOnboardingDoneFlow()
     ) { param: Array<Any> ->
         Settings(
             cardFit = param[0] as String,
@@ -118,7 +119,8 @@ class RushViewModel(
             cardRoundness = param[6] as String,
             sortOrder = param[7] as String,
             maxLines = param[8] as Int,
-            hypnoticCanvas = param[9] as Boolean
+            hypnoticCanvas = param[9] as Boolean,
+            onboardingDone = param[10] as Boolean
         )
     }.stateIn(
         viewModelScope,
