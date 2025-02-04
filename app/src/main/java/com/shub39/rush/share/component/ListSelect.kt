@@ -12,15 +12,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ListSelect(
+fun <T> ListSelect(
     title: String,
-    options: List<String>,
-    selected: String,
-    onSelectedChange: (String) -> Unit
+    options: List<T>,
+    selected: T,
+    onSelectedChange: (T) -> Unit,
+    labelProvider: (T) -> Int
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -35,13 +37,13 @@ fun ListSelect(
         FlowRow(
             horizontalArrangement = Arrangement.Center
         ) {
-            options.forEach {
+            options.forEach { option ->
                 InputChip(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    selected = it == selected,
-                    onClick = { onSelectedChange(it) },
+                    selected = option == selected,
+                    onClick = { onSelectedChange(option) },
                     label = { Text(
-                        text = it,
+                        text = stringResource(labelProvider(option)),
                         style = MaterialTheme.typography.bodyMedium
                     ) }
                 )

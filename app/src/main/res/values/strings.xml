@@ -81,4 +81,15 @@
     <string name="extract_colors">Extract colors</string>
     <string name="extract_colors_desc">Set palette colors to generate from album art of the current viewing song</string>
     <string name="source">Source</string>
+    <string name="muted">Muted</string>
+    <string name="vibrant">Vibrant</string>
+    <string name="custom">Custom</string>
+    <string name="fit">Fit</string>
+    <string name="standard">Standard</string>
+    <string name="spotify">Spotify</string>
+    <string name="rushed">Rushed</string>
+    <string name="image">Image</string>
+    <string name="hypnotic">Hypnotic</string>
+    <string name="rounded">Rounded</string>
+    <string name="default_">Default</string>
 </resources>

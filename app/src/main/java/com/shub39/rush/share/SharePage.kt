@@ -349,38 +349,42 @@ fun SharePage(
             ) {
                 ListSelect(
                     title = stringResource(R.string.card_theme),
-                    options = CardTheme.entries.map { it.name }.toList(),
-                    selected = settings.cardTheme.name,
+                    options = CardTheme.entries.toList(),
+                    selected = settings.cardTheme,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardTheme(CardTheme.valueOf(it)))
-                    }
+                        action(SharePageAction.OnUpdateCardTheme(it))
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_color),
-                    options = CardColors.entries.map { it.name }.toList(),
-                    selected = settings.cardColor.name,
+                    options = CardColors.entries.toList(),
+                    selected = settings.cardColor,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardColor(CardColors.valueOf(it)))
-                    }
+                        action(SharePageAction.OnUpdateCardColor(it))
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_size),
-                    options = CardFit.entries.map { it.name }.toList(),
-                    selected = settings.cardFit.name,
+                    options = CardFit.entries.toList(),
+                    selected = settings.cardFit,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardFit(CardFit.valueOf(it)))
-                    }
+                        action(SharePageAction.OnUpdateCardFit(it))
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_corners),
-                    options = CornerRadius.entries.map { it.name }.toList(),
-                    selected = settings.cardRoundness.name,
+                    options = CornerRadius.entries.toList(),
+                    selected = settings.cardRoundness,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardRoundness(CornerRadius.valueOf(it)))
-                    }
+                        action(SharePageAction.OnUpdateCardRoundness(it))
+                    },
+                    labelProvider = { it.title }
                 )
             }
         }
