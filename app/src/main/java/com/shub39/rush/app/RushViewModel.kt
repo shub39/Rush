@@ -507,8 +507,7 @@ class RushViewModel(
 
         _lyricsState.update {
             it.copy(
-                fetching = Pair(true, "${song?.title} - ${song?.artist}"),
-                extractedColors = ExtractedColors()
+                fetching = Pair(true, "${song?.title} - ${song?.artist}")
             )
         }
 

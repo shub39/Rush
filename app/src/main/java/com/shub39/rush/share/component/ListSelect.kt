@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -33,10 +33,11 @@ fun ListSelect(
         )
 
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.Center
         ) {
             options.forEach {
                 ElevatedFilterChip(
+                    modifier = Modifier.padding(horizontal = 8.dp),
                     selected = it == selected,
                     onClick = { onSelectedChange(it) },
                     label = { Text(text = it) }
@@ -44,15 +45,4 @@ fun ListSelect(
             }
         }
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF)
-@Composable
-private fun ListSelectPreview() {
-    ListSelect(
-        title = "Card Theme",
-        options = listOf("Rushed", "Spotify", "Rushed", "Spotify"),
-        selected = "Rushed",
-        onSelectedChange = {}
-    )
 }

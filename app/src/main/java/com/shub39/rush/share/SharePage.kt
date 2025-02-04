@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -34,7 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,11 +58,12 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
-import com.shub39.rush.core.data.Settings
+import com.shub39.rush.share.component.HypnoticShareCard
 import com.shub39.rush.share.component.ImageShareCard
 import com.shub39.rush.share.component.ListSelect
 import com.shub39.rush.share.component.RushedShareCard
@@ -152,36 +152,43 @@ fun SharePage(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        AnimatedContent(
-            targetState = settings.cardTheme, label = "cardTheme"
-        ) {
-            when (it) {
-                CardTheme.SPOTIFY.type -> SpotifyShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = settings.cardFit
-                )
 
-                CardTheme.RUSHED.type -> RushedShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners
-                )
+        when (settings.cardTheme) {
+            CardTheme.SPOTIFY.type -> SpotifyShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+                fit = settings.cardFit
+            )
 
-                CardTheme.IMAGE.type -> ImageShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    selectedUri = selectedUri
-                )
-            }
+            CardTheme.RUSHED.type -> RushedShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners
+            )
+
+            CardTheme.IMAGE.type -> ImageShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+                selectedUri = selectedUri
+            )
+
+            CardTheme.HYPNOTIC.type -> HypnoticShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                extractedColors = state.extractedColors,
+                cardCorners = cardCorners,
+                fit = settings.cardFit
+            )
         }
 
         Row(
@@ -279,11 +286,13 @@ fun SharePage(
                 visible = settings.cardTheme == CardTheme.IMAGE.type
             ) {
                 FloatingActionButton(
-                    onClick = { launcher.launch(
-                        PickVisualMediaRequest(
-                            PickVisualMedia.ImageOnly
+                    onClick = {
+                        launcher.launch(
+                            PickVisualMediaRequest(
+                                PickVisualMedia.ImageOnly
+                            )
                         )
-                    ) },
+                    },
                     shape = MaterialTheme.shapes.extraLarge,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {

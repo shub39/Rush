@@ -44,7 +44,6 @@ import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.core.presentation.scrollbar
 import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
@@ -61,7 +60,6 @@ fun SavedPage(
     navigator: (Route) -> Unit
 ) = PageFill {
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
-    val listState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -208,18 +206,11 @@ fun SavedPage(
                             null
                         )
                     }
+                    val listState = rememberLazyListState()
 
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
-                            .scrollbar(
-                                state = listState,
-                                horizontal = false,
-                                trackColor = MaterialTheme.colorScheme.surface,
-                                knobColor = MaterialTheme.colorScheme.primary,
-                                trackCornerRadius = 4.dp,
-                                knobCornerRadius = 4.dp
-                            )
                             .fillMaxSize()
                             .animateContentSize()
                     ) {
