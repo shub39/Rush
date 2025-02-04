@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,17 +58,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mikepenz.hypnoticcanvas.shaderBackground
+import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.ArtFromUrl
-import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
-import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
+import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
+import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
+import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -84,36 +89,62 @@ fun LyricsPage(
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
+    // States which change frequently
     var syncedAvailable by remember { mutableStateOf(false) }
     var sync by remember { mutableStateOf(false) }
     var lyricsCorrect by remember { mutableStateOf(false) }
-    var source by remember { mutableStateOf("LrcLib") }
+    var source by remember { mutableStateOf(Sources.LrcLib) }
     var selectedLines by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
 
     val cardBackground by animateColorAsState(
         targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
             else -> state.extractedColors.cardBackgroundDominant
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
         targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
+            CardColors.MUTED -> state.extractedColors.cardContentMuted
             else -> state.extractedColors.cardContentDominant
         },
         label = "cardContent"
     )
+
+    val hypnoticColor1 by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundDominant,
+        label = "hypnotic color 1"
+    )
+
+    val hypnoticColor2 by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundMuted,
+        label = "hypnotic color 2"
+    )
+
+    val modifier = if (settings.hypnoticCanvas) {
+        Modifier.shaderBackground(
+            MeshGradient(
+                colors = generateGradientColors(
+                    color1 = hypnoticColor1,
+                    color2 = hypnoticColor2,
+                    steps = 6
+                ).toTypedArray()
+            )
+        )
+    } else {
+        Modifier
+    }
 
     LaunchedEffect(state.song) {
         delay(100)
         lazyListState.animateScrollToItem(0)
     }
 
+    // Content Start
     Card(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
-            containerColor = cardBackground,
+            containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
             contentColor = cardContent
         ),
         shape = RoundedCornerShape(0.dp)
@@ -140,11 +171,12 @@ fun LyricsPage(
 
             } else {
 
+                // setting the temporary states
                 LaunchedEffect(state.song.lyrics) {
                     if (state.song.lyrics.isNotEmpty()) {
-                        source = "LrcLib"
+                        source = Sources.LrcLib
                     } else if (state.song.geniusLyrics != null) {
-                        source = "Genius"
+                        source = Sources.Genius
                     }
 
                     if (state.song.syncedLyrics != null) {
@@ -177,11 +209,11 @@ fun LyricsPage(
                     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
                     Column {
-                        AnimatedVisibility(top > 2) {
+                        AnimatedVisibility(top > 2 && !settings.hypnoticCanvas) {
                             ArtFromUrl(
                                 imageUrl = state.song.artUrl,
                                 highlightColor = cardContent,
-                                baseColor = cardBackground,
+                                baseColor = Color.Transparent,
                                 modifier = Modifier
                                     .height(150.dp)
                                     .fillMaxWidth(),
@@ -216,7 +248,7 @@ fun LyricsPage(
                                 ArtFromUrl(
                                     imageUrl = state.song.artUrl,
                                     highlightColor = cardContent,
-                                    baseColor = cardBackground,
+                                    baseColor = Color.Transparent,
                                     modifier = Modifier
                                         .clip(MaterialTheme.shapes.small)
                                         .size(150.dp)
@@ -252,6 +284,7 @@ fun LyricsPage(
                             }
                         }
 
+                        // Actions Row
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -264,10 +297,11 @@ fun LyricsPage(
                                         if (selectedLines.isEmpty()) {
                                             copyToClipBoard(
                                                 context,
-                                                if (source == "LrcLib") {
+                                                if (source == Sources.LrcLib) {
                                                     state.song.lyrics.joinToString("\n") { it.value }
                                                 } else {
-                                                    state.song.geniusLyrics?.joinToString("\n") { it.value } ?: ""
+                                                    state.song.geniusLyrics?.joinToString("\n") { it.value }
+                                                        ?: ""
                                                 },
                                                 "Complete Lyrics"
                                             )
@@ -288,10 +322,10 @@ fun LyricsPage(
 
                                 AnimatedVisibility(visible = selectedLines.isEmpty()) {
                                     IconButton(onClick = {
-                                        source = if (source == "LrcLib") "Genius" else "LrcLib"
+                                        source = if (source == Sources.LrcLib) Sources.Genius else Sources.LrcLib
                                         sync = false
                                     }) {
-                                        if (source == "Genius") {
+                                        if (source == Sources.Genius) {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.round_lyrics_24),
                                                 contentDescription = null
@@ -306,7 +340,7 @@ fun LyricsPage(
                                 }
 
                                 AnimatedVisibility(
-                                    visible = source == "LrcLib" && selectedLines.isEmpty()
+                                    visible = source == Sources.LrcLib && selectedLines.isEmpty()
                                 ) {
                                     IconButton(
                                         onClick = {
@@ -325,7 +359,7 @@ fun LyricsPage(
                                 }
 
                                 AnimatedVisibility(
-                                    visible = syncedAvailable && selectedLines.isEmpty() && source == "LrcLib" && notificationAccess
+                                    visible = syncedAvailable && selectedLines.isEmpty() && source == Sources.LrcLib && notificationAccess
                                 ) {
                                     Row {
                                         IconButton(
@@ -336,10 +370,7 @@ fun LyricsPage(
                                                     containerColor = cardContent
                                                 )
                                             } else {
-                                                IconButtonDefaults.filledIconButtonColors(
-                                                    contentColor = cardContent,
-                                                    containerColor = cardBackground
-                                                )
+                                                IconButtonDefaults.iconButtonColors()
                                             }
                                         ) {
                                             Icon(
@@ -359,10 +390,7 @@ fun LyricsPage(
                                                 containerColor = cardContent
                                             )
                                         } else {
-                                            IconButtonDefaults.filledIconButtonColors(
-                                                contentColor = cardContent,
-                                                containerColor = cardBackground
-                                            )
+                                            IconButtonDefaults.iconButtonColors()
                                         }
                                     ) {
                                         Icon(
@@ -408,37 +436,31 @@ fun LyricsPage(
                     }
                 }
 
-                if (!sync && (source == "LrcLib" || source == "Genius")) {
+                // Plain lyrics
+                if (!sync) {
                     LazyColumn(
                         modifier = Modifier
                             .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .padding(
-                            end = 16.dp,
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 32.dp
-                        ),
+                                end = 16.dp,
+                                start = 16.dp,
+                                top = 16.dp,
+                                bottom = 32.dp
+                            ),
                         state = lazyListState
                     ) {
                         items(
-                            items = if (source == "LrcLib") state.song.lyrics else state.song.geniusLyrics
+                            items = if (source == Sources.LrcLib) state.song.lyrics else state.song.geniusLyrics
                                 ?: emptyList(),
                             key = { it.key }
                         ) {
                             if (it.value.isNotBlank()) {
                                 val isSelected = selectedLines.contains(it.key)
-                                val contentColor by animateColorAsState(
-                                    targetValue = when (!isSelected) {
-                                        true -> cardContent
-                                        else -> cardBackground
-                                    },
-                                    label = "content"
-                                )
                                 val containerColor by animateColorAsState(
                                     targetValue = when (!isSelected) {
-                                        true -> cardBackground
-                                        else -> cardContent
+                                        true -> Color.Transparent
+                                        else -> cardContent.copy(alpha = 0.3f)
                                     },
                                     label = "container"
                                 )
@@ -462,15 +484,14 @@ fun LyricsPage(
                                         shape = MaterialTheme.shapes.small,
                                         colors = CardDefaults.cardColors(
                                             containerColor = containerColor,
-                                            contentColor = contentColor
+                                            contentColor = cardContent
                                         )
                                     ) {
                                         Text(
                                             text = it.value,
                                             style = TextStyle(
                                                 fontSize = 19.sp,
-                                                fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                                                color = contentColor
+                                                fontFamily = FontFamily(Font(R.font.poppins_regular))
                                             ),
                                             fontWeight = FontWeight.Bold,
                                             modifier = Modifier.padding(6.dp)
@@ -480,56 +501,8 @@ fun LyricsPage(
                             }
                         }
 
-                        if (state.song.lyrics.isNotEmpty()) {
-                            item {
-                                Spacer(modifier = Modifier.padding(10.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                lazyListState.scrollToItem(0)
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.round_arrow_upward_24),
-                                            contentDescription = null,
-                                        )
-                                    }
-
-                                    IconButton(
-                                        onClick = {
-                                            openLinkInBrowser(
-                                                context,
-                                                state.song.sourceUrl
-                                            )
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.genius),
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    IconButton(
-                                        onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.round_search_24),
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.padding(10.dp))
-                            }
-                        }
-
-                        if (state.song.lyrics.isEmpty() && source != "Genius") {
+                        // Lyrics not found from LRCLIB
+                        if (state.song.lyrics.isEmpty() && source != Sources.Genius) {
                             item {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
@@ -550,9 +523,61 @@ fun LyricsPage(
                             }
                         }
 
+                        // Bottom Actions Row
+                        item {
+                            Spacer(modifier = Modifier.padding(10.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            lazyListState.scrollToItem(0)
+                                        }
+                                    },
+                                    enabled = if (source == Sources.LrcLib) state.song.lyrics.isNotEmpty() else !state.song.geniusLyrics.isNullOrEmpty()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_arrow_upward_24),
+                                        contentDescription = null
+                                    )
+                                }
+
+                                Button(
+                                    onClick = {
+                                        openLinkInBrowser(
+                                            context,
+                                            state.song.sourceUrl
+                                        )
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = cardContent.copy(alpha = 0.3f),
+                                        contentColor = cardContent
+                                    )
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.source)
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_search_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.padding(10.dp))
+                        }
                     }
                 } else if (state.song.syncedLyrics != null) {
 
+                    // updater for synced lyrics
                     LaunchedEffect(state.playingSong.position) {
                         coroutineScope.launch {
                             var currentIndex =
@@ -561,20 +586,21 @@ fun LyricsPage(
                                     state.song.syncedLyrics
                                 )
                             currentIndex -= 3
-                            lazyListState.animateScrollToItem(if (currentIndex < 0) 0 else currentIndex)
+                            lazyListState.animateScrollToItem(currentIndex.coerceAtLeast(0))
                         }
                     }
 
+                    // Synced Lyrics
                     LazyColumn(
                         modifier = Modifier
                             .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .padding(
-                            end = 16.dp,
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 32.dp
-                        ),
+                                end = 16.dp,
+                                start = 16.dp,
+                                top = 16.dp,
+                                bottom = 32.dp
+                            ),
                         state = lazyListState
                     ) {
                         items(state.song.syncedLyrics, key = { it.time }) { lyric ->
@@ -593,7 +619,7 @@ fun LyricsPage(
                                 Card(
                                     modifier = Modifier.padding(6.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = cardBackground,
+                                        containerColor = Color.Transparent,
                                         contentColor = cardContent
                                     ),
                                     shape = MaterialTheme.shapes.small,
@@ -631,6 +657,7 @@ fun LyricsPage(
         }
     }
 
+    // Lyrics Correction from LRCLIB
     if (lyricsCorrect) {
         var track by remember { mutableStateOf("") }
         var artist by remember { mutableStateOf("") }

@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -34,7 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,11 +58,12 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
-import com.shub39.rush.core.data.Settings
+import com.shub39.rush.share.component.HypnoticShareCard
 import com.shub39.rush.share.component.ImageShareCard
 import com.shub39.rush.share.component.ListSelect
 import com.shub39.rush.share.component.RushedShareCard
@@ -94,7 +94,7 @@ fun SharePage(
         selectedUri = uri
     }
 
-    val modifier = if (settings.cardFit == CardFit.FIT.type) {
+    val modifier = if (settings.cardFit == CardFit.FIT) {
         Modifier
             .width(360.dp)
             .drawWithContent {
@@ -117,25 +117,22 @@ fun SharePage(
 
     val cornerRadius by animateDpAsState(
         targetValue = when (settings.cardRoundness) {
-            CornerRadius.DEFAULT.type -> 0.dp
-            CornerRadius.ROUNDED.type -> 16.dp
-            else -> 0.dp
+            CornerRadius.DEFAULT -> 0.dp
+            CornerRadius.ROUNDED -> 16.dp
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
         targetValue = when (settings.cardColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
-            CardColors.VIBRANT.color -> state.extractedColors.cardBackgroundDominant
-            CardColors.CUSTOM.color -> Color(settings.cardBackground)
-            else -> MaterialTheme.colorScheme.primaryContainer
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant
+            CardColors.CUSTOM -> Color(settings.cardBackground)
         }, label = "container"
     )
     val contentColor by animateColorAsState(
         targetValue = when (settings.cardColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
-            CardColors.VIBRANT.color -> state.extractedColors.cardContentDominant
-            CardColors.CUSTOM.color -> Color(settings.cardContent)
-            else -> MaterialTheme.colorScheme.onPrimaryContainer
+            CardColors.MUTED -> state.extractedColors.cardContentMuted
+            CardColors.VIBRANT -> state.extractedColors.cardContentDominant
+            CardColors.CUSTOM -> Color(settings.cardContent)
         }, label = "content"
     )
     val cardColor = CardDefaults.cardColors(
@@ -152,36 +149,43 @@ fun SharePage(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        AnimatedContent(
-            targetState = settings.cardTheme, label = "cardTheme"
-        ) {
-            when (it) {
-                CardTheme.SPOTIFY.type -> SpotifyShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = settings.cardFit
-                )
 
-                CardTheme.RUSHED.type -> RushedShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners
-                )
+        when (settings.cardTheme) {
+            CardTheme.SPOTIFY -> SpotifyShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+                fit = settings.cardFit
+            )
 
-                CardTheme.IMAGE.type -> ImageShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    selectedUri = selectedUri
-                )
-            }
+            CardTheme.RUSHED -> RushedShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners
+            )
+
+            CardTheme.IMAGE -> ImageShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                cardCorners = cardCorners,
+                selectedUri = selectedUri
+            )
+
+            CardTheme.HYPNOTIC -> HypnoticShareCard(
+                modifier = modifier,
+                song = state.songDetails,
+                sortedLines = state.selectedLines,
+                cardColors = cardColor,
+                extractedColors = state.extractedColors,
+                cardCorners = cardCorners,
+                fit = settings.cardFit
+            )
         }
 
         Row(
@@ -190,7 +194,7 @@ fun SharePage(
                 .padding(bottom = 32.dp)
         ) {
             AnimatedVisibility(
-                visible = settings.cardColor == CardColors.CUSTOM.color
+                visible = settings.cardColor == CardColors.CUSTOM
             ) {
                 Row {
                     FloatingActionButton(
@@ -276,14 +280,16 @@ fun SharePage(
             Spacer(modifier = Modifier.padding(4.dp))
 
             AnimatedVisibility(
-                visible = settings.cardTheme == CardTheme.IMAGE.type
+                visible = settings.cardTheme == CardTheme.IMAGE
             ) {
                 FloatingActionButton(
-                    onClick = { launcher.launch(
-                        PickVisualMediaRequest(
-                            PickVisualMedia.ImageOnly
+                    onClick = {
+                        launcher.launch(
+                            PickVisualMediaRequest(
+                                PickVisualMedia.ImageOnly
+                            )
                         )
-                    ) },
+                    },
                     shape = MaterialTheme.shapes.extraLarge,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
@@ -343,38 +349,42 @@ fun SharePage(
             ) {
                 ListSelect(
                     title = stringResource(R.string.card_theme),
-                    options = CardTheme.entries.map { it.type }.toList(),
+                    options = CardTheme.entries.toList(),
                     selected = settings.cardTheme,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardTheme(it))
-                    }
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_color),
-                    options = CardColors.entries.map { it.color }.toList(),
+                    options = CardColors.entries.toList(),
                     selected = settings.cardColor,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardColor(it))
-                    }
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_size),
-                    options = CardFit.entries.map { it.type }.toList(),
+                    options = CardFit.entries.toList(),
                     selected = settings.cardFit,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardFit(it))
-                    }
+                    },
+                    labelProvider = { it.title }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_corners),
-                    options = CornerRadius.entries.map { it.type }.toList(),
+                    options = CornerRadius.entries.toList(),
                     selected = settings.cardRoundness,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardRoundness(it))
-                    }
+                    },
+                    labelProvider = { it.title }
                 )
             }
         }

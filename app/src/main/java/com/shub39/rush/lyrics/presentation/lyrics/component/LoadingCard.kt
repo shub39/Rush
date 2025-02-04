@@ -1,5 +1,8 @@
 package com.shub39.rush.lyrics.presentation.lyrics.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +35,11 @@ fun LoadingCard(
     searching: Pair<Boolean, String>,
     colors: Pair<Color, Color>
 ) {
-    if (searching.first) {
+    AnimatedVisibility (
+        visible = searching.first,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -51,7 +58,7 @@ fun LoadingCard(
 
             LinearProgressIndicator(
                 color = colors.first,
-                trackColor = colors.second
+                trackColor = Color.Transparent
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -64,7 +71,11 @@ fun LoadingCard(
         }
     }
 
-    if (fetching.first) {
+    AnimatedVisibility (
+        visible = fetching.first,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         val artist = fetching.second.split(" - ")[0]
         val album = fetching.second.split(" - ")[1]
 
@@ -81,7 +92,7 @@ fun LoadingCard(
                     .clip(MaterialTheme.shapes.medium),
                 shimmer = Shimmer.Resonate(
                     highlightColor = colors.first,
-                    baseColor = colors.second
+                    baseColor = Color.Transparent
                 )
             )
 
@@ -111,7 +122,7 @@ fun LoadingCard(
                             .clip(MaterialTheme.shapes.extraLarge),
                         shimmer = Shimmer.Resonate(
                             highlightColor = colors.first,
-                            baseColor = colors.second
+                            baseColor = Color.Transparent
                         )
                     )
                 }
@@ -129,7 +140,7 @@ fun LoadingCard(
                         .clip(MaterialTheme.shapes.medium),
                     shimmer = Shimmer.Resonate(
                         highlightColor = colors.first,
-                        baseColor = colors.second
+                        baseColor = Color.Transparent
                     )
                 )
             }

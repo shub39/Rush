@@ -28,4 +28,6 @@ sealed interface Route {
     data object BackupPage: Route
     @Serializable
     data object AboutPage: Route
+    @Serializable
+    data object LookAndFeelPage: Route
 }

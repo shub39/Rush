@@ -15,8 +15,7 @@ import com.shub39.rush.R
 
 @Composable
 fun DownloaderCard(
-    title: String,
-    artist: String,
+    audioFile: AudioFile,
     state: Boolean?,
     listItemColors: ListItemColors
 ) {
@@ -24,13 +23,13 @@ fun DownloaderCard(
         headlineContent = {
             Column {
                 Text(
-                    text = title,
+                    text = audioFile.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
-                    text = artist,
+                    text = audioFile.artist,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

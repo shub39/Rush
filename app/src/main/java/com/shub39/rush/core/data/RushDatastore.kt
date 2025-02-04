@@ -4,10 +4,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.core.domain.AppTheme
+import com.materialkolor.PaletteStyle
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
@@ -19,99 +20,170 @@ import kotlinx.coroutines.flow.map
 class RushDatastore(
     private val dataStore: DataStore<Preferences>
 ) {
-    fun getCardFitFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[cardFit] ?: CardFit.STANDARD.type }
+    fun getDarkThemePrefFlow(): Flow<Boolean?> = dataStore.data
+        .map { preferences ->
+            when (preferences[darkThemePref]) {
+                "true" -> true
+                "false" -> false
+                else -> null
+            }
+        }
 
-    fun getLyricsColorFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[lyricsColor] ?: CardColors.MUTED.color }
+    suspend fun updateDarkThemePref(pref: Boolean?) {
+        dataStore.edit { settings ->
+            settings[darkThemePref] = pref.toString()
+        }
+    }
 
-    fun getCardBackgroundFlow(): Flow<Int> = dataStore.data
-        .map { preferences -> preferences[cardBackground] ?: Color.Black.toArgb() }
+    fun getSeedColorFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[seedColor] ?: Color.White.toArgb() }
+    suspend fun updateSeedColor(newCardContent: Int) {
+        dataStore.edit { settings ->
+            settings[seedColor] = newCardContent
+        }
+    }
 
-    fun getCardContentFlow(): Flow<Int> = dataStore.data
-        .map { preferences -> preferences[cardContent] ?: Color.White.toArgb() }
+    fun getAmoledPrefFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[amoledPref] ?: false }
+    suspend fun updateAmoledPref(amoled: Boolean) {
+        dataStore.edit { settings ->
+            settings[amoledPref] = amoled
+        }
+    }
 
-    fun getCardThemeFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[cardTheme] ?: CardTheme.SPOTIFY.type }
-
-    fun getCardColorFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[cardColor] ?: CardColors.VIBRANT.color }
-
-    fun getCardRoundnessFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[cardRoundness] ?: CornerRadius.ROUNDED.type }
-
-    fun getSortOrderFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder }
-
-    fun getToggleThemeFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[toggleTheme] ?: AppTheme.YELLOW.type }
+    fun getPaletteStyle(): Flow<PaletteStyle> = dataStore.data
+        .map { preferences ->
+            PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TonalSpot.name)
+        }
+    suspend fun updatePaletteStyle(style: PaletteStyle) {
+        dataStore.edit { settings ->
+            settings[paletteStyle] = style.name
+        }
+    }
 
     fun getMaxLinesFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[maxLines] ?: 6 }
-
-    suspend fun updateCardFit(newCardFit: String) {
-        dataStore.edit { settings ->
-            settings[cardFit] = newCardFit
-        }
-    }
-
-    suspend fun updateCardBackground(newCardBackground: Int) {
-        dataStore.edit { settings ->
-            settings[cardBackground] = newCardBackground
-        }
-    }
-
-    suspend fun updateCardContent(newCardContent: Int) {
-        dataStore.edit { settings ->
-            settings[cardContent] = newCardContent
-        }
-    }
-
-    suspend fun updateLyricsColor(new: String) {
-        dataStore.edit { settings ->
-            settings[lyricsColor] = new
-        }
-    }
-
-    suspend fun updateSortOrder(newSortOrder: String) {
-        dataStore.edit { settings ->
-            settings[sortOrder] = newSortOrder
-        }
-    }
-
-    suspend fun updateCardTheme(newCardTheme: String) {
-        dataStore.edit { settings ->
-            settings[cardTheme] = newCardTheme
-        }
-    }
-
-    suspend fun updateCardColor(newCardColor: String) {
-        dataStore.edit { settings ->
-            settings[cardColor] = newCardColor
-        }
-    }
-
-    suspend fun updateCardRoundness(newCardRoundness: String) {
-        dataStore.edit { settings ->
-            settings[cardRoundness] = newCardRoundness
-        }
-    }
-
     suspend fun updateMaxLines(newMaxLines: Int) {
         dataStore.edit { settings ->
             settings[maxLines] = newMaxLines
         }
     }
 
-    suspend fun updateToggleTheme(newToggleTheme: String) {
+    fun getSortOrderFlow(): Flow<String> = dataStore.data
+        .map { preferences -> preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder }
+    suspend fun updateSortOrder(newSortOrder: String) {
         dataStore.edit { settings ->
-            settings[toggleTheme] = newToggleTheme
+            settings[sortOrder] = newSortOrder
+        }
+    }
+
+    fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[hypnoticCanvas] ?: true }
+    suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
+        dataStore.edit { settings ->
+            settings[hypnoticCanvas] = newHypnoticCanvas
+        }
+    }
+
+    fun getCardFitFlow(): Flow<CardFit> = dataStore.data
+        .map { preferences ->
+            when (preferences[cardFit]) {
+                CardFit.FIT.name -> CardFit.FIT
+                else -> CardFit.STANDARD
+            }
+        }
+    suspend fun updateCardFit(newCardFit: CardFit) {
+        dataStore.edit { settings ->
+            settings[cardFit] = newCardFit.name
+        }
+    }
+
+    fun getLyricsColorFlow(): Flow<CardColors> = dataStore.data
+        .map { preferences ->
+            when (preferences[lyricsColor]) {
+                CardColors.MUTED.name -> CardColors.MUTED
+                else -> CardColors.VIBRANT
+            }
+        }
+    suspend fun updateLyricsColor(new: CardColors) {
+        dataStore.edit { settings ->
+            settings[lyricsColor] = new.name
+        }
+    }
+
+    fun getCardBackgroundFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[cardBackground] ?: Color.Black.toArgb() }
+    suspend fun updateCardBackground(newCardBackground: Int) {
+        dataStore.edit { settings ->
+            settings[cardBackground] = newCardBackground
+        }
+    }
+
+    fun getCardContentFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[cardContent] ?: Color.White.toArgb() }
+    suspend fun updateCardContent(newCardContent: Int) {
+        dataStore.edit { settings ->
+            settings[cardContent] = newCardContent
+        }
+    }
+
+    fun getCardThemeFlow(): Flow<CardTheme> = dataStore.data
+        .map { preferences ->
+            when (preferences[cardTheme]) {
+                CardTheme.RUSHED.name -> CardTheme.RUSHED
+                CardTheme.HYPNOTIC.name -> CardTheme.HYPNOTIC
+                CardTheme.IMAGE.name -> CardTheme.IMAGE
+                else -> CardTheme.SPOTIFY
+            }
+        }
+    suspend fun updateCardTheme(newCardTheme: CardTheme) {
+        dataStore.edit { settings ->
+            settings[cardTheme] = newCardTheme.name
+        }
+    }
+
+    fun getCardColorFlow(): Flow<CardColors> = dataStore.data
+        .map { preferences ->
+            when (preferences[cardColor]) {
+                CardColors.VIBRANT.name -> CardColors.VIBRANT
+                CardColors.MUTED.name -> CardColors.MUTED
+                else -> CardColors.CUSTOM
+            }
+        }
+    suspend fun updateCardColor(newCardColor: CardColors) {
+        dataStore.edit { settings ->
+            settings[cardColor] = newCardColor.name
+        }
+    }
+
+    fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
+        .map { preferences ->
+            when (preferences[cardRoundness]) {
+                CornerRadius.ROUNDED.name -> CornerRadius.ROUNDED
+                else -> CornerRadius.DEFAULT
+            }
+        }
+    suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
+        dataStore.edit { settings ->
+            settings[cardRoundness] = newCardRoundness.name
+        }
+    }
+
+    fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[onboardingDone] ?: false }
+    suspend fun updateOnboardingDone(done: Boolean) {
+        dataStore.edit { settings ->
+            settings[onboardingDone] = done
         }
     }
 
     companion object {
+        private val seedColor = intPreferencesKey("seed_color")
+        private val darkThemePref = stringPreferencesKey("use_dark_theme")
+        private val amoledPref = booleanPreferencesKey("with_amoled")
+        private val paletteStyle = stringPreferencesKey("palette_style")
+        private val hypnoticCanvas = booleanPreferencesKey("hypnotic_canvas")
         private val maxLines = intPreferencesKey("max_lines")
-        private val toggleTheme = stringPreferencesKey("toggle_theme")
         private val sortOrder = stringPreferencesKey("sort_order")
         private val cardColor = stringPreferencesKey("card_color")
         private val cardRoundness = stringPreferencesKey("card_roundness")
@@ -120,5 +192,6 @@ class RushDatastore(
         private val cardContent = intPreferencesKey("card_content")
         private val lyricsColor = stringPreferencesKey("lyrics_color")
         private val cardFit = stringPreferencesKey("card_fit")
+        private val onboardingDone = booleanPreferencesKey("onboarding_done")
     }
 }

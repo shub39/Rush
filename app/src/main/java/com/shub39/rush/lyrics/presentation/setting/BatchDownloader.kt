@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
@@ -26,6 +25,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,11 +44,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
-import com.shub39.rush.core.presentation.theme.RushTheme
+import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 import com.shub39.rush.lyrics.presentation.setting.component.DownloaderCard
@@ -60,7 +59,7 @@ import kotlinx.coroutines.launch
 fun BatchDownloader(
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit,
-) {
+) = PageFill {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -122,135 +121,117 @@ fun BatchDownloader(
         }
     }
 
-    Scaffold { innerPadding ->
-        Box(
+    Scaffold(
+        modifier = Modifier.widthIn(max = 700.dp),
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.batch_download)) }
+            )
+        }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 500.dp)
-                    .fillMaxSize()
-            ) {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.batch_download)) }
-                )
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.select_folder)) },
+                trailingContent = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        BetterIconButton(
+                            onClick = { launcher.launch(null) },
+                            enabled = uri == null
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.round_drive_file_move_24),
+                                contentDescription = null
+                            )
+                        }
 
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.select_folder)) },
-                    trailingContent = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            BetterIconButton(
-                                onClick = { launcher.launch(null) },
-                                enabled = uri == null
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.round_drive_file_move_24),
-                                    contentDescription = null
-                                )
-                            }
+                        Spacer(modifier = Modifier.width(8.dp))
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                        BetterIconButton(
+                            onClick = {
+                                uri = null
+                                audioFiles.clear()
+                                action(SettingsPageAction.OnClearIndexes)
+                            },
+                            enabled = !state.batchDownload.isDownloading && uri != null
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.round_delete_forever_24),
+                                contentDescription = null
+                            )
+                        }
 
-                            BetterIconButton(
-                                onClick = {
-                                    uri = null
-                                    audioFiles.clear()
-                                    action(SettingsPageAction.OnClearIndexes)
-                                },
-                                enabled = !state.batchDownload.isDownloading && uri != null
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.round_delete_forever_24),
-                                    contentDescription = null
-                                )
-                            }
+                        Spacer(modifier = Modifier.width(8.dp))
 
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            AnimatedVisibility(
-                                visible = audioFiles.isNotEmpty()
-                            ) {
-                                if (!state.batchDownload.isDownloading) {
-                                    BetterIconButton(
-                                        onClick = {
-                                            action(
-                                                SettingsPageAction.OnBatchDownload(
-                                                    audioFiles
-                                                )
+                        AnimatedVisibility(
+                            visible = audioFiles.isNotEmpty()
+                        ) {
+                            if (!state.batchDownload.isDownloading) {
+                                BetterIconButton(
+                                    onClick = {
+                                        action(
+                                            SettingsPageAction.OnBatchDownload(
+                                                audioFiles
                                             )
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.round_play_arrow_24),
-                                            contentDescription = null
                                         )
                                     }
-                                } else {
-                                    CircularProgressIndicator(
-                                        strokeCap = StrokeCap.Round,
-                                        modifier = Modifier.size(24.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.round_play_arrow_24),
+                                        contentDescription = null
                                     )
                                 }
+                            } else {
+                                CircularProgressIndicator(
+                                    strokeCap = StrokeCap.Round,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
                         }
                     }
-                )
+                }
+            )
 
-                OutlinedCard(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
+            OutlinedCard(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .weight(1f),
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (uri == null) {
-                            Text(stringResource(R.string.no_folder_selected))
-                        } else if (audioFiles.isEmpty()) {
-                            Text(stringResource(R.string.no_audio_files))
-                        } else if (isLoadingFiles) {
-                            CircularProgressIndicator(
-                                strokeCap = StrokeCap.Round
-                            )
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                state = listState,
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(audioFiles.size) { index ->
-                                    DownloaderCard(
-                                        title = audioFiles[index].title,
-                                        artist = audioFiles[index].artist,
-                                        state = state.batchDownload.indexes[index],
-                                        listItemColors = stateListColors(state.batchDownload.indexes[index]),
-                                    )
-                                }
+                    if (uri == null) {
+                        Text(stringResource(R.string.no_folder_selected))
+                    } else if (audioFiles.isEmpty()) {
+                        Text(stringResource(R.string.no_audio_files))
+                    } else if (isLoadingFiles) {
+                        CircularProgressIndicator(
+                            strokeCap = StrokeCap.Round
+                        )
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = listState,
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(audioFiles.size) { index ->
+                                DownloaderCard(
+                                    audioFile = audioFiles[index],
+                                    state = state.batchDownload.indexes[index],
+                                    listItemColors = stateListColors(state.batchDownload.indexes[index]),
+                                )
                             }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:width=673dp,height=841dp", showSystemUi = true, showBackground = true
-)
-@Composable
-fun BatchDownloaderPreview() {
-    RushTheme(theme = "Yellow") {
-        BatchDownloader(
-            state = SettingsPageState(),
-            action = {},
-        )
     }
 }

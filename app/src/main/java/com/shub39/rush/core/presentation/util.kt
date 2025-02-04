@@ -3,6 +3,7 @@ package com.shub39.rush.core.presentation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.graphics.Color
 
 fun openLinkInBrowser(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -26,4 +27,25 @@ fun getMainArtist(artists: String): String {
 fun getMainTitle(songTitle: String): String {
     val regex = Regex("\\s*\\(.*?\\)\\s*$")
     return songTitle.replace(regex, "").trim()
+}
+
+fun generateGradientColors(color1: Color, color2: Color, steps: Int): List<Color> {
+    val colors = mutableListOf<Color>()
+
+    for (i in 0 until steps) {
+        val t = i / (steps - 1).toFloat()
+        val interpolatedColor = lerp(color1, color2, t)
+        colors.add(interpolatedColor)
+    }
+
+    return colors
+}
+
+fun lerp(color1: Color, color2: Color, t: Float): Color {
+    val r = (color1.red * (1 - t) + color2.red * t).coerceIn(0f, 1f)
+    val g = (color1.green * (1 - t) + color2.green * t).coerceIn(0f, 1f)
+    val b = (color1.blue * (1 - t) + color2.blue * t).coerceIn(0f, 1f)
+    val a = (color1.alpha * (1 - t) + color2.alpha * t).coerceIn(0f, 1f)
+
+    return Color(r, g, b, a)
 }

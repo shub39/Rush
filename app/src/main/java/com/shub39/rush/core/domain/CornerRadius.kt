@@ -1,6 +1,12 @@
 package com.shub39.rush.core.domain
 
-enum class CornerRadius(val type: String) {
-    DEFAULT("Default"),
-    ROUNDED("Rounded")
+import androidx.annotation.StringRes
+import com.shub39.rush.R
+
+// default is a reserved java keyword
+enum class CornerRadius(
+    @StringRes val title: Int
+) {
+    DEFAULT(R.string.default_),
+    ROUNDED(R.string.rounded)
 }

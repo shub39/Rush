@@ -1,7 +1,12 @@
 package com.shub39.rush.core.domain
 
-enum class CardColors(val color: String) {
-    MUTED("Muted"),
-    VIBRANT("Vibrant"),
-    CUSTOM("Custom")
+import androidx.annotation.StringRes
+import com.shub39.rush.R
+
+enum class CardColors(
+    @StringRes val title: Int
+) {
+    MUTED(R.string.muted),
+    VIBRANT(R.string.vibrant),
+    CUSTOM(R.string.custom)
 }

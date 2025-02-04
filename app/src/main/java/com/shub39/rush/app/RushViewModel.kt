@@ -15,28 +15,23 @@ import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.lyrics.domain.SearchResult
+import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.CardFit
+import com.shub39.rush.core.domain.CardTheme
+import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.data.listener.MediaListener
-import com.shub39.rush.core.presentation.errorStringRes
+import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.ExportState
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
-import com.shub39.rush.lyrics.domain.backup.RestoreResult
-import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
 import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.saved.SavedPageState
-import com.shub39.rush.lyrics.presentation.setting.BatchDownload
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
+import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
 import com.shub39.rush.share.SharePageAction
 import com.shub39.rush.share.SharePageState
 import kotlinx.coroutines.FlowPreview
@@ -63,8 +58,6 @@ class RushViewModel(
     private val repo: SongRepo,
     private val imageLoader: ImageLoader,
     private val datastore: RushDatastore,
-    private val exportRepo: ExportRepo,
-    private val restoreRepo: RestoreRepo
 ) : ViewModel() {
 
     private var savedJob: Job? = null
@@ -74,7 +67,6 @@ class RushViewModel(
     private val _lyricsState = MutableStateFlow(LyricsPageState())
     private val _savedState = MutableStateFlow(SavedPageState())
     private val _shareState = MutableStateFlow(SharePageState())
-    private val _settingsState = MutableStateFlow(SettingsPageState())
     private val _searchState = MutableStateFlow(SearchSheetState())
 
     val lyricsState = _lyricsState.asStateFlow()
@@ -99,12 +91,6 @@ class RushViewModel(
             SharingStarted.WhileSubscribed(5000),
             SharePageState()
         )
-    val settingsState = _settingsState.asStateFlow()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SettingsPageState()
-        )
     val searchState = _searchState.asStateFlow()
         .onStart {
             observeSearchSheet()
@@ -123,20 +109,22 @@ class RushViewModel(
         datastore.getCardColorFlow(),
         datastore.getCardRoundnessFlow(),
         datastore.getSortOrderFlow(),
-        datastore.getToggleThemeFlow(),
-        datastore.getMaxLinesFlow()
+        datastore.getMaxLinesFlow(),
+        datastore.getHypnoticCanvasFlow(),
+        datastore.getOnboardingDoneFlow()
     ) { param: Array<Any> ->
         Settings(
-            cardFit = param[0] as String,
-            lyricsColor = param[1] as String,
+            cardFit = param[0] as CardFit,
+            lyricsColor = param[1] as CardColors,
             cardBackground = param[2] as Int,
             cardContent = param[3] as Int,
-            cardTheme = param[4] as String,
-            cardColor = param[5] as String,
-            cardRoundness = param[6] as String,
+            cardTheme = param[4] as CardTheme,
+            cardColor = param[5] as CardColors,
+            cardRoundness = param[6] as CornerRadius,
             sortOrder = param[7] as String,
-            toggleTheme = param[8] as String,
-            maxLines = param[9] as Int
+            maxLines = param[8] as Int,
+            hypnoticCanvas = param[9] as Boolean,
+            onboardingDone = param[10] as Boolean
         )
     }.stateIn(
         viewModelScope,
@@ -288,93 +276,17 @@ class RushViewModel(
         }
     }
 
-    fun onSettingsPageAction(action: SettingsPageAction) {
-        viewModelScope.launch {
-            when (action) {
-                is SettingsPageAction.OnBatchDownload -> {
-                    batchDownload(action.files)
-                }
-
-                SettingsPageAction.OnClearIndexes -> {
-                    onClearIndexes()
-                }
-
-                SettingsPageAction.OnDeleteSongs -> {
-                    deleteSongs()
-                }
-
-                is SettingsPageAction.OnUpdateLyricsColor -> {
-                    datastore.updateLyricsColor(action.color)
-                }
-
-                is SettingsPageAction.OnUpdateMaxLines -> {
-                    datastore.updateMaxLines(action.lines)
-                }
-
-                is SettingsPageAction.OnUpdateTheme -> {
-                    datastore.updateToggleTheme(action.theme)
-                }
-
-                SettingsPageAction.OnExportSongs -> {
-                    _settingsState.update {
-                        it.copy(
-                            exportState = ExportState.EXPORTING
-                        )
-                    }
-
-                    exportRepo.exportToJson()
-
-                    _settingsState.update {
-                        it.copy(
-                            exportState = ExportState.EXPORTED
-                        )
-                    }
-                }
-
-                is SettingsPageAction.OnRestoreSongs -> {
-                    _settingsState.update {
-                        it.copy(
-                            restoreState = RestoreState.RESTORING
-                        )
-                    }
-
-                    when (restoreRepo.restoreSongs(action.uri)) {
-                        is RestoreResult.Failure -> {
-                            _settingsState.update {
-                                it.copy(
-                                    restoreState = RestoreState.FAILURE
-                                )
-                            }
-                        }
-
-                        RestoreResult.Success -> {
-                            _settingsState.update {
-                                it.copy(
-                                    restoreState = RestoreState.RESTORED
-                                )
-                            }
-                        }
-                    }
-                }
-
-                SettingsPageAction.ResetBackup -> {
-                    _settingsState.update {
-                        it.copy(
-                            restoreState = RestoreState.IDLE,
-                            exportState = ExportState.IDLE
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     fun onSearchSheetAction(action: SearchSheetAction) {
         viewModelScope.launch {
             when (action) {
                 is SearchSheetAction.OnCardClicked -> {
                     toggleSearchSheet()
                     fetchLyrics(action.id)
+                    _searchState.update {
+                        it.copy(
+                            searchQuery = ""
+                        )
+                    }
                 }
 
                 is SearchSheetAction.OnQueryChange -> {
@@ -387,6 +299,11 @@ class RushViewModel(
 
                 SearchSheetAction.OnToggleSearchSheet -> {
                     toggleSearchSheet()
+                    _searchState.update {
+                        it.copy(
+                            searchQuery = ""
+                        )
+                    }
                 }
             }
         }
@@ -530,7 +447,8 @@ class RushViewModel(
         viewModelScope.launch {
             _lyricsState.update {
                 it.copy(
-                    searching = Pair(true, query)
+                    searching = Pair(true, query),
+                    extractedColors = ExtractedColors()
                 )
             }
 
@@ -677,80 +595,6 @@ class RushViewModel(
         }
     }
 
-    private suspend fun batchDownload(
-        list: List<AudioFile>,
-    ) {
-        _settingsState.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = true
-                )
-            )
-        }
-
-        val savedSongs = _savedState.value.songsAsc.map { it.id }
-
-        list.forEachIndexed { index, audioFile ->
-            when (val result = repo.searchGenius(audioFile.title)) {
-                is Result.Error -> {
-                    _settingsState.update {
-                        it.copy(
-                            batchDownload = it.batchDownload.copy(
-                                indexes = it.batchDownload.indexes.plus(index to false)
-                            )
-                        )
-                    }
-                }
-
-                is Result.Success -> {
-                    val id = result.data.first().id
-
-                    if (id in savedSongs) {
-
-                        _settingsState.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    indexes = it.batchDownload.indexes.plus(index to true),
-                                )
-                            )
-                        }
-
-                    } else {
-                        when (repo.fetchSong(id)) {
-                            is Result.Error -> {
-                                _settingsState.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to false)
-                                        )
-                                    )
-                                }
-                            }
-
-                            is Result.Success -> {
-                                _settingsState.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to true),
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        _settingsState.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = false
-                )
-            )
-        }
-    }
-
     private fun toggleAutoChange() {
         _lyricsState.update { it.copy(autoChange = !it.autoChange) }
         _savedState.update { it.copy(autoChange = !it.autoChange) }
@@ -772,19 +616,4 @@ class RushViewModel(
             )
         }
     }
-
-    private fun onClearIndexes() {
-        _settingsState.update {
-            it.copy(
-                batchDownload = BatchDownload(
-                    indexes = emptyMap()
-                )
-            )
-        }
-    }
-
-    private suspend fun deleteSongs() {
-        repo.deleteAllSongs()
-    }
-
 }

@@ -37,7 +37,7 @@ fun SpotifyShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: String
+    fit: CardFit
 ) {
     var variant by remember { mutableStateOf(true) }
 
@@ -55,7 +55,7 @@ fun SpotifyShareCard(
     )
 
     Box(contentAlignment = Alignment.Center) {
-        if (fit == CardFit.FIT.type) {
+        if (fit == CardFit.FIT) {
             Card(
                 modifier = modifier,
                 colors = cardColors,
