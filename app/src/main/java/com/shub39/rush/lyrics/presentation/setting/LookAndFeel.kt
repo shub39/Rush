@@ -115,7 +115,7 @@ fun LookAndFeel(
                     },
                     trailingContent = {
                         Switch(
-                            checked = state.theme.lyricsColor == CardColors.VIBRANT.color,
+                            checked = state.theme.lyricsColor == CardColors.VIBRANT,
                             onCheckedChange = {
                                 action(SettingsPageAction.OnUpdateLyricsColor(it))
                             }

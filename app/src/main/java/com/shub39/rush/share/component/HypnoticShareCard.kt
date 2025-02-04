@@ -43,13 +43,13 @@ fun HypnoticShareCard(
     cardColors: CardColors,
     extractedColors: ExtractedColors,
     cardCorners: RoundedCornerShape,
-    fit: String
+    fit: CardFit
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.clip(cardCorners),
     ) {
-        if (fit == CardFit.FIT.type) {
+        if (fit == CardFit.FIT) {
             Card(
                 modifier = Modifier
                     .shaderBackground(

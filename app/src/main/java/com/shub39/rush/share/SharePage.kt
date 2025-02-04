@@ -94,7 +94,7 @@ fun SharePage(
         selectedUri = uri
     }
 
-    val modifier = if (settings.cardFit == CardFit.FIT.type) {
+    val modifier = if (settings.cardFit == CardFit.FIT) {
         Modifier
             .width(360.dp)
             .drawWithContent {
@@ -117,25 +117,22 @@ fun SharePage(
 
     val cornerRadius by animateDpAsState(
         targetValue = when (settings.cardRoundness) {
-            CornerRadius.DEFAULT.type -> 0.dp
-            CornerRadius.ROUNDED.type -> 16.dp
-            else -> 0.dp
+            CornerRadius.DEFAULT -> 0.dp
+            CornerRadius.ROUNDED -> 16.dp
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
         targetValue = when (settings.cardColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
-            CardColors.VIBRANT.color -> state.extractedColors.cardBackgroundDominant
-            CardColors.CUSTOM.color -> Color(settings.cardBackground)
-            else -> MaterialTheme.colorScheme.primaryContainer
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant
+            CardColors.CUSTOM -> Color(settings.cardBackground)
         }, label = "container"
     )
     val contentColor by animateColorAsState(
         targetValue = when (settings.cardColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
-            CardColors.VIBRANT.color -> state.extractedColors.cardContentDominant
-            CardColors.CUSTOM.color -> Color(settings.cardContent)
-            else -> MaterialTheme.colorScheme.onPrimaryContainer
+            CardColors.MUTED -> state.extractedColors.cardContentMuted
+            CardColors.VIBRANT -> state.extractedColors.cardContentDominant
+            CardColors.CUSTOM -> Color(settings.cardContent)
         }, label = "content"
     )
     val cardColor = CardDefaults.cardColors(
@@ -154,7 +151,7 @@ fun SharePage(
     ) {
 
         when (settings.cardTheme) {
-            CardTheme.SPOTIFY.type -> SpotifyShareCard(
+            CardTheme.SPOTIFY -> SpotifyShareCard(
                 modifier = modifier,
                 song = state.songDetails,
                 sortedLines = state.selectedLines,
@@ -163,7 +160,7 @@ fun SharePage(
                 fit = settings.cardFit
             )
 
-            CardTheme.RUSHED.type -> RushedShareCard(
+            CardTheme.RUSHED -> RushedShareCard(
                 modifier = modifier,
                 song = state.songDetails,
                 sortedLines = state.selectedLines,
@@ -171,7 +168,7 @@ fun SharePage(
                 cardCorners = cardCorners
             )
 
-            CardTheme.IMAGE.type -> ImageShareCard(
+            CardTheme.IMAGE -> ImageShareCard(
                 modifier = modifier,
                 song = state.songDetails,
                 sortedLines = state.selectedLines,
@@ -180,7 +177,7 @@ fun SharePage(
                 selectedUri = selectedUri
             )
 
-            CardTheme.HYPNOTIC.type -> HypnoticShareCard(
+            CardTheme.HYPNOTIC -> HypnoticShareCard(
                 modifier = modifier,
                 song = state.songDetails,
                 sortedLines = state.selectedLines,
@@ -197,7 +194,7 @@ fun SharePage(
                 .padding(bottom = 32.dp)
         ) {
             AnimatedVisibility(
-                visible = settings.cardColor == CardColors.CUSTOM.color
+                visible = settings.cardColor == CardColors.CUSTOM
             ) {
                 Row {
                     FloatingActionButton(
@@ -283,7 +280,7 @@ fun SharePage(
             Spacer(modifier = Modifier.padding(4.dp))
 
             AnimatedVisibility(
-                visible = settings.cardTheme == CardTheme.IMAGE.type
+                visible = settings.cardTheme == CardTheme.IMAGE
             ) {
                 FloatingActionButton(
                     onClick = {
@@ -352,37 +349,37 @@ fun SharePage(
             ) {
                 ListSelect(
                     title = stringResource(R.string.card_theme),
-                    options = CardTheme.entries.map { it.type }.toList(),
-                    selected = settings.cardTheme,
+                    options = CardTheme.entries.map { it.name }.toList(),
+                    selected = settings.cardTheme.name,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardTheme(it))
+                        action(SharePageAction.OnUpdateCardTheme(CardTheme.valueOf(it)))
                     }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_color),
-                    options = CardColors.entries.map { it.color }.toList(),
-                    selected = settings.cardColor,
+                    options = CardColors.entries.map { it.name }.toList(),
+                    selected = settings.cardColor.name,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardColor(it))
+                        action(SharePageAction.OnUpdateCardColor(CardColors.valueOf(it)))
                     }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_size),
-                    options = CardFit.entries.map { it.type }.toList(),
-                    selected = settings.cardFit,
+                    options = CardFit.entries.map { it.name }.toList(),
+                    selected = settings.cardFit.name,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardFit(it))
+                        action(SharePageAction.OnUpdateCardFit(CardFit.valueOf(it)))
                     }
                 )
 
                 ListSelect(
                     title = stringResource(R.string.card_corners),
-                    options = CornerRadius.entries.map { it.type }.toList(),
-                    selected = settings.cardRoundness,
+                    options = CornerRadius.entries.map { it.name }.toList(),
+                    selected = settings.cardRoundness.name,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardRoundness(it))
+                        action(SharePageAction.OnUpdateCardRoundness(CornerRadius.valueOf(it)))
                     }
                 )
             }

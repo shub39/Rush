@@ -15,6 +15,10 @@ import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
+import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.CardFit
+import com.shub39.rush.core.domain.CardTheme
+import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
@@ -110,13 +114,13 @@ class RushViewModel(
         datastore.getOnboardingDoneFlow()
     ) { param: Array<Any> ->
         Settings(
-            cardFit = param[0] as String,
-            lyricsColor = param[1] as String,
+            cardFit = param[0] as CardFit,
+            lyricsColor = param[1] as CardColors,
             cardBackground = param[2] as Int,
             cardContent = param[3] as Int,
-            cardTheme = param[4] as String,
-            cardColor = param[5] as String,
-            cardRoundness = param[6] as String,
+            cardTheme = param[4] as CardTheme,
+            cardColor = param[5] as CardColors,
+            cardRoundness = param[6] as CornerRadius,
             sortOrder = param[7] as String,
             maxLines = param[8] as Int,
             hypnoticCanvas = param[9] as Boolean,

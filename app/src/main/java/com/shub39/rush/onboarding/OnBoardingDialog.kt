@@ -1,13 +1,13 @@
 package com.shub39.rush.onboarding
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -246,21 +246,37 @@ fun OnboardingDialog(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Box(
-                            modifier = Modifier.clip(MaterialTheme.shapes.large)
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(MaterialTheme.shapes.large),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .height(200.dp)
-                                    .fillMaxWidth()
-                                    .shaderBackground(
-                                        MeshGradient(
-                                            colors = generateGradientColors(
-                                                MaterialTheme.colorScheme.primary,
-                                                MaterialTheme.colorScheme.surface,
-                                                steps = 6
-                                            ).toTypedArray()
+                            if (hypnoticCanvas) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .shaderBackground(
+                                            MeshGradient(
+                                                colors = generateGradientColors(
+                                                    MaterialTheme.colorScheme.primary,
+                                                    MaterialTheme.colorScheme.surfaceContainer,
+                                                    steps = 6
+                                                ).toTypedArray()
+                                            )
                                         )
-                                    )
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                                )
+                            }
+
+                            Text(
+                                text = "This is how Lyrics will appear",
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Center
                             )
                         }
 

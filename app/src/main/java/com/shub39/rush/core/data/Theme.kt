@@ -11,5 +11,5 @@ data class Theme(
     val withAmoled: Boolean = false,
     val style: PaletteStyle = PaletteStyle.TonalSpot,
     val hypnoticCanvas: Boolean = true,
-    val lyricsColor: String = CardColors.MUTED.color,
+    val lyricsColor: CardColors = CardColors.MUTED,
 )

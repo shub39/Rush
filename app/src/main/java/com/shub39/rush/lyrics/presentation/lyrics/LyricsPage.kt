@@ -98,14 +98,14 @@ fun LyricsPage(
 
     val cardBackground by animateColorAsState(
         targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardBackgroundMuted
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
             else -> state.extractedColors.cardBackgroundDominant
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
         targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED.color -> state.extractedColors.cardContentMuted
+            CardColors.MUTED -> state.extractedColors.cardContentMuted
             else -> state.extractedColors.cardContentDominant
         },
         label = "cardContent"
@@ -457,13 +457,6 @@ fun LyricsPage(
                         ) {
                             if (it.value.isNotBlank()) {
                                 val isSelected = selectedLines.contains(it.key)
-                                val contentColor by animateColorAsState(
-                                    targetValue = when (!isSelected) {
-                                        true -> cardContent
-                                        else -> cardBackground
-                                    },
-                                    label = "content"
-                                )
                                 val containerColor by animateColorAsState(
                                     targetValue = when (!isSelected) {
                                         true -> Color.Transparent

@@ -11,12 +11,12 @@ import com.shub39.rush.lyrics.presentation.saved.SortOrder
 data class Settings(
     val cardContent: Int = Color.White.toArgb(),
     val maxLines: Int = 6,
-    val cardFit: String = CardFit.STANDARD.type,
-    val lyricsColor: String = CardColors.MUTED.color,
+    val cardFit: CardFit = CardFit.STANDARD,
+    val lyricsColor: CardColors = CardColors.MUTED,
     val cardBackground: Int = Color.Black.toArgb(),
-    val cardTheme: String = CardTheme.SPOTIFY.type,
-    val cardColor: String = CardColors.VIBRANT.color,
-    val cardRoundness: String = CornerRadius.ROUNDED.type,
+    val cardTheme: CardTheme = CardTheme.SPOTIFY,
+    val cardColor: CardColors = CardColors.VIBRANT,
+    val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
     val sortOrder: String = SortOrder.TITLE_ASC.sortOrder,
     val hypnoticCanvas: Boolean = true,
     val onboardingDone: Boolean = true

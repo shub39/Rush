@@ -66,7 +66,7 @@ class SettingsVM(
 
                 is SettingsPageAction.OnUpdateLyricsColor -> {
                     datastore.updateLyricsColor(
-                        if (action.vibrant) CardColors.VIBRANT.color else CardColors.MUTED.color
+                        if (action.vibrant) CardColors.VIBRANT else CardColors.MUTED
                     )
                 }
 
