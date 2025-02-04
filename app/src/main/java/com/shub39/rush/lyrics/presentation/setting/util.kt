@@ -15,15 +15,15 @@ fun stateListColors(
     val cardContent by animateColorAsState(
         targetValue = when (state) {
             null -> MaterialTheme.colorScheme.primary
-            true -> MaterialTheme.colorScheme.primaryContainer
+            true -> MaterialTheme.colorScheme.onSecondary
             else -> MaterialTheme.colorScheme.error
         }, label = "status"
     )
 
     val cardBackground by animateColorAsState(
         targetValue = when (state) {
-            null -> MaterialTheme.colorScheme.primaryContainer
-            true -> MaterialTheme.colorScheme.primary
+            null -> MaterialTheme.colorScheme.surface
+            true -> MaterialTheme.colorScheme.onSecondaryContainer
             else -> MaterialTheme.colorScheme.errorContainer
         }, label = "status"
     )
@@ -35,14 +35,18 @@ fun stateListColors(
     )
 }
 
+// My Top 10 faves from various distinct artists
 fun getRandomLine(): String {
-    return when(Random.nextInt(0, 6)) {
-        1 -> "Time will lead us to the same Realm"
-        2 -> "Foot shook ground when I stepped on it, \nDidn't look back when I broke soil, \ncause everytime I did it" +
-                " would hurt more"
-        3 -> "I got a cellphone but it don't ever rang"
-        4 -> "The air shrieks \nThe breath is long \nAnd the fires are out \nThe waters sit still"
-        5 -> "Close my eyes and you're still with me \nIn the trees feel locusts buzzing, but I \ncan never keep my eyes close long enough \nAnd no amount of dreaming can bring you back so"
-        else -> "Today's gonna feel like tomorrow someday, \nTomorrow's gonna feel like yesterday"
+    return when(val random = Random.nextInt(0, 10)) {
+        1 -> "($random/10) You wont get what you want by Daughters"
+        2 -> "($random/10) Cold Visions by Bladee"
+        3 -> "($random/10) Rainbow Bridge 3 by Sematary"
+        4 -> "($random/10) Exmilitary by Death Grips"
+        5 -> "($random/10) Diamond eyes by Deftones"
+        6 -> "($random/10) Lionheart by Vestron Vulture"
+        7 -> "($random/10) Issues by Korn"
+        8 -> "($random/10) God's Country by Chatpile"
+        9 -> "($random/10) The New Sound by Geordie Greep"
+        else -> "($random/10) SICK! by Earl Sweatshirt"
     }
 }

@@ -288,6 +288,11 @@ class RushViewModel(
 
                 SearchSheetAction.OnToggleSearchSheet -> {
                     toggleSearchSheet()
+                    _searchState.update {
+                        it.copy(
+                            searchQuery = ""
+                        )
+                    }
                 }
             }
         }

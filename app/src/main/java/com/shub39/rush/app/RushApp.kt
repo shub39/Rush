@@ -158,7 +158,11 @@ fun RushApp(
             SearchSheet(
                 state = searchSheetState,
                 action = rushViewModel::onSearchSheetAction,
-                onClick = { navController.navigate(Route.LyricsPage) }
+                onClick = {
+                    navController.navigate(Route.LyricsPage) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }

@@ -54,7 +54,9 @@ fun SearchSheet(
     val focusRequester = remember { FocusRequester() }
 
     ModalBottomSheet(
-        onDismissRequest = { action(SearchSheetAction.OnToggleSearchSheet) }
+        onDismissRequest = {
+            action(SearchSheetAction.OnToggleSearchSheet)
+        }
     ) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
