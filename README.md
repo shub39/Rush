@@ -74,6 +74,8 @@ dealing with genius's "UI".
 >- Dependency injection using [Koin](https://insert-koin.io/docs/reference/koin-compose/compose/)
 >- [Landscapist](https://github.com/skydoves/landscapist) for Images
 >- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the color picker
+>- [MaterialKolor](https://github.com/jordond/MaterialKolor) for generating color palettes
+>- [Hypnotic Canvas](https://mikepenz.github.io/HypnoticCanvas/) for the mesh gradient background
 
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
