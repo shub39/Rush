@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,11 +36,14 @@ fun ListSelect(
             horizontalArrangement = Arrangement.Center
         ) {
             options.forEach {
-                ElevatedFilterChip(
+                InputChip(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     selected = it == selected,
                     onClick = { onSelectedChange(it) },
-                    label = { Text(text = it) }
+                    label = { Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium
+                    ) }
                 )
             }
         }

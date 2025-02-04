@@ -45,7 +45,7 @@ fun RushApp(
     val datastoreSettings by rushViewModel.datastoreSettings.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
-    val notificationAccess = NotificationListener.canAccessNotifications(LocalContext.current)
+    val context = LocalContext.current
 
     RushTheme(
         state = settingsState.theme
@@ -68,7 +68,7 @@ fun RushApp(
                     SavedPage(
                         state = savedState,
                         currentSong = lyricsState.song,
-                        notificationAccess = notificationAccess,
+                        notificationAccess = NotificationListener.canAccessNotifications(context),
                         action = rushViewModel::onSavedPageAction,
                         settings = datastoreSettings,
                         navigator = {
@@ -107,7 +107,7 @@ fun RushApp(
                                 launchSingleTop = true
                             }
                         },
-                        notificationAccess = notificationAccess
+                        notificationAccess = NotificationListener.canAccessNotifications(context)
                     )
                 }
             }
@@ -119,7 +119,7 @@ fun RushApp(
                     SettingPage(
                         state = settingsState,
                         action = settingsVM::onSettingsPageAction,
-                        notificationAccess = notificationAccess,
+                        notificationAccess = NotificationListener.canAccessNotifications(context),
                         navigator = {
                             navController.navigate(it) {
                                 launchSingleTop = true

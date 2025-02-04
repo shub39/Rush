@@ -278,6 +278,11 @@ class RushViewModel(
                 is SearchSheetAction.OnCardClicked -> {
                     toggleSearchSheet()
                     fetchLyrics(action.id)
+                    _searchState.update {
+                        it.copy(
+                            searchQuery = ""
+                        )
+                    }
                 }
 
                 is SearchSheetAction.OnQueryChange -> {

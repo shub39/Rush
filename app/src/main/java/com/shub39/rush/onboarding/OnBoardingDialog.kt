@@ -29,9 +29,13 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,7 +134,16 @@ fun OnboardingDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val notificationAccess = NotificationListener.canAccessNotifications(context)
+                        var notificationAccess by remember {
+                            mutableStateOf(NotificationListener.canAccessNotifications(context))
+                        }
+
+                        LaunchedEffect(Unit) {
+                            while (!notificationAccess) {
+                                kotlinx.coroutines.delay(500)
+                                notificationAccess = NotificationListener.canAccessNotifications(context)
+                            }
+                        }
 
                         Icon(
                             imageVector = Icons.Default.Notifications,
@@ -197,7 +210,8 @@ fun OnboardingDialog(
                         Button(
                             onClick = {
                                 if (!notificationAccess) {
-                                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                    val intent =
+                                        Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
                                     context.startActivity(intent)
                                 } else {
                                     coroutineScope.launch {
