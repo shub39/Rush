@@ -431,7 +431,8 @@ class RushViewModel(
         viewModelScope.launch {
             _lyricsState.update {
                 it.copy(
-                    searching = Pair(true, query)
+                    searching = Pair(true, query),
+                    extractedColors = ExtractedColors()
                 )
             }
 
@@ -501,7 +502,8 @@ class RushViewModel(
 
         _lyricsState.update {
             it.copy(
-                fetching = Pair(true, "${song?.title} - ${song?.artist}")
+                fetching = Pair(true, "${song?.title} - ${song?.artist}"),
+                extractedColors = ExtractedColors()
             )
         }
 

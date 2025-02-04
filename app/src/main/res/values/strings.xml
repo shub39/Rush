@@ -7,7 +7,7 @@
     <string name="vibrant_colors">Use Vibrant Colors</string>
     <string name="save">Save changes</string>
     <string name="delete_confirmation">Are you sure you want to delete all saved lyrics?</string>
-    <string name="no_lyrics">Could not get Lyrics</string>
+    <string name="no_lyrics">Could not get Lyrics from LRCLIB</string>
     <string name="suggestion">See the search icon below?</string>
     <string name="downloaded">Saved lyrics</string>
     <string name="delete_all">Delete all lyrics</string>
@@ -80,4 +80,5 @@
     <string name="hypnotic_canvas_desc">Hypnotic canvas for the lyrics page. Might impact performance</string>
     <string name="extract_colors">Extract colors</string>
     <string name="extract_colors_desc">Set palette colors to generate from album art of the current viewing song</string>
+    <string name="source">Source</string>
 </resources>

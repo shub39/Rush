@@ -96,7 +96,7 @@ fun SavedPage(
                             else -> {
                                 Row(
                                     modifier = Modifier
-                                        .fillMaxWidth(0.6f)
+                                        .fillMaxWidth(0.75f)
                                         .clickable { navigator(Route.LyricsGraph) }
                                 ) {
                                     ArtFromUrl(
