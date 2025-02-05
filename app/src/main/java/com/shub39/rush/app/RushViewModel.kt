@@ -236,7 +236,7 @@ class RushViewModel(
                 }
 
                 is LyricsPageAction.OnUpdateShareLines -> {
-                    updateShareLines(action.songDetails, action.shareLines)
+                    updateShareLines(action.songDetails, _lyricsState.value.selectedLines)
                 }
 
                 is LyricsPageAction.OnUpdateSongLyrics -> {
@@ -245,6 +245,47 @@ class RushViewModel(
 
                 is LyricsPageAction.UpdateExtractedColors -> {
                     updateExtractedColors(action.context)
+                }
+
+                is LyricsPageAction.OnSourceChange -> {
+                    _lyricsState.update {
+                        it.copy(
+                            source = action.source,
+                            selectedLines = emptyMap()
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnSync -> {
+                    _lyricsState.update {
+                        it.copy(
+                            sync = action.sync
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnSyncAvailable -> {
+                    _lyricsState.update {
+                        it.copy(
+                            syncedAvailable = action.sync
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnLyricsCorrect -> {
+                    _lyricsState.update {
+                        it.copy(
+                            lyricsCorrect = action.show
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnChangeSelectedLines -> {
+                    _lyricsState.update {
+                        it.copy(
+                            selectedLines = action.lines
+                        )
+                    }
                 }
             }
         }
@@ -544,9 +585,10 @@ class RushViewModel(
 
                     is Result.Success -> {
                         _lyricsState.update {
-                            it.copy(
+                            LyricsPageState(
                                 song = result.data.toSongUi(),
-                                error = null
+                                autoChange = it.autoChange,
+                                playingSong = it.playingSong
                             )
                         }
                     }
