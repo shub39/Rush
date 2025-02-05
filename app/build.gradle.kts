@@ -7,8 +7,6 @@ plugins {
 }
 
 val appName = "Rush"
-val versionCode = 2500
-val versionName = "2.5.0"
 
 android {
     namespace = "com.shub39.rush"
@@ -18,8 +16,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = versionCode
-        versionName = versionName
+        versionCode = 2510
+        versionName = "2.5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
