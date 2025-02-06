@@ -30,12 +30,12 @@ fun getMainTitle(songTitle: String): String {
 }
 
 fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {
-    val colors = mutableListOf<Color>()
-
-    for (i in 0 until steps) {
-        val t = i / (steps - 1).toFloat()
-        val interpolatedColor = lerp(color1, color2, t)
-        colors.add(interpolatedColor)
+    val colors = buildList {
+        for (i in 0 until steps) {
+            val t = i / (steps - 1).toFloat()
+            val interpolatedColor = lerp(color1, color2, t)
+            add(interpolatedColor)
+        }
     }
 
     return colors
@@ -51,14 +51,14 @@ fun lerp(color1: Color, color2: Color, t: Float): Color {
 }
 
 fun generateGradientColors(baseColor: Color): List<Color> {
-    val colors = mutableListOf<Color>()
-
     val complementaryColor = Color(1f - baseColor.red, 1f - baseColor.green, 1f - baseColor.blue, baseColor.alpha)
 
-    for (i in 0 until 6) {
-        val t = i / 5f
-        val interpolatedColor = lerp(baseColor, complementaryColor, t)
-        colors.add(interpolatedColor)
+    val colors = buildList {
+        for (i in 0 until 6) {
+            val t = i / 7f
+            val interpolatedColor = lerp(baseColor, complementaryColor, t)
+            add(interpolatedColor)
+        }
     }
 
     return colors

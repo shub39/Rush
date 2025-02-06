@@ -37,16 +37,16 @@ fun stateListColors(
 
 // My Top 10 faves from various distinct artists
 fun getRandomLine(): String {
-    return when(val random = Random.nextInt(0, 10)) {
-        1 -> "($random/10) You wont get what you want by Daughters"
-        2 -> "($random/10) Cold Visions by Bladee"
-        3 -> "($random/10) Rainbow Bridge 3 by Sematary"
-        4 -> "($random/10) Exmilitary by Death Grips"
-        5 -> "($random/10) Diamond eyes by Deftones"
-        6 -> "($random/10) Lionheart by Vestron Vulture"
-        7 -> "($random/10) Issues by Korn"
-        8 -> "($random/10) God's Country by Chatpile"
-        9 -> "($random/10) The New Sound by Geordie Greep"
-        else -> "($random/10) SICK! by Earl Sweatshirt"
+    return when(Random.nextInt(1, 11)) {
+        1 -> "You wont get what you want by Daughters"
+        2 -> "Cold Visions by Bladee"
+        3 -> "Rainbow Bridge 3 by Sematary"
+        4 -> "Exmilitary by Death Grips"
+        5 -> "Diamond eyes by Deftones"
+        6 -> "Lionheart by Vestron Vulture"
+        7 -> "Issues by Korn"
+        8 -> "God's Country by Chatpile"
+        9 -> "The New Sound by Geordie Greep"
+        else -> "SICK! by Earl Sweatshirt"
     }
 }

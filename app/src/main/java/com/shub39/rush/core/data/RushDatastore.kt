@@ -88,8 +88,8 @@ class RushDatastore(
     fun getCardFitFlow(): Flow<CardFit> = dataStore.data
         .map { preferences ->
             when (preferences[cardFit]) {
-                CardFit.FIT.name -> CardFit.FIT
-                else -> CardFit.STANDARD
+                CardFit.STANDARD.name -> CardFit.STANDARD
+                else -> CardFit.FIT
             }
         }
     suspend fun updateCardFit(newCardFit: CardFit) {
@@ -146,8 +146,8 @@ class RushDatastore(
         .map { preferences ->
             when (preferences[cardColor]) {
                 CardColors.VIBRANT.name -> CardColors.VIBRANT
-                CardColors.MUTED.name -> CardColors.MUTED
-                else -> CardColors.CUSTOM
+                CardColors.CUSTOM.name -> CardColors.CUSTOM
+                else -> CardColors.MUTED
             }
         }
     suspend fun updateCardColor(newCardColor: CardColors) {
@@ -159,8 +159,8 @@ class RushDatastore(
     fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
         .map { preferences ->
             when (preferences[cardRoundness]) {
-                CornerRadius.ROUNDED.name -> CornerRadius.ROUNDED
-                else -> CornerRadius.DEFAULT
+                CornerRadius.DEFAULT.name -> CornerRadius.DEFAULT
+                else -> CornerRadius.ROUNDED
             }
         }
     suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
