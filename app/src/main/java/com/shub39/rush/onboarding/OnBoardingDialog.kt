@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -252,17 +253,22 @@ fun OnboardingDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             if (hypnoticCanvas) {
+                                val colors = generateGradientColors(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.surfaceContainer,
+                                    steps = 6
+                                )
+
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .shaderBackground(
                                             MeshGradient(
-                                                colors = generateGradientColors(
-                                                    MaterialTheme.colorScheme.primary,
-                                                    MaterialTheme.colorScheme.surfaceContainer,
-                                                    steps = 6
-                                                ).toTypedArray()
-                                            )
+                                                colors = colors.toTypedArray()
+                                            ),
+                                            fallback = {
+                                                Brush.horizontalGradient(colors)
+                                            }
                                         )
                                 )
                             } else {
@@ -290,7 +296,7 @@ fun OnboardingDialog(
                             },
                             supportingContent = {
                                 Text(
-                                    text = "(Experimental) Enable Animated Background for lyrics page",
+                                    text = "Enable animated background for lyrics on Android 13+; static gradient below. May affect performance.",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             },

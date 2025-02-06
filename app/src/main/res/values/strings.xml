@@ -77,7 +77,7 @@
     <string name="seed_color">Select Seed color</string>
     <string name="seed_color_desc">Select color to generate palette from</string>
     <string name="hypnotic_canvas">Hypnotic Canvas</string>
-    <string name="hypnotic_canvas_desc">Hypnotic canvas for the lyrics page. Might impact performance</string>
+    <string name="hypnotic_canvas_desc">(Experimental) Hypnotic canvas for the lyrics page. Only works on android versions 13 and above. Replaced with a static gradient on lower android versions. Might impact performance</string>
     <string name="extract_colors">Extract colors</string>
     <string name="extract_colors_desc">Set palette colors to generate from album art of the current viewing song</string>
     <string name="source">Source</string>

@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -206,7 +207,7 @@ private fun getModifier(
     hypnoticColor1: Color,
     hypnoticColor2: Color
 ): Modifier {
-    val modifier = if (settings.hypnoticCanvas) {
+    return if (settings.hypnoticCanvas) {
         Modifier.shaderBackground(
             MeshGradient(
                 colors = generateGradientColors(
@@ -214,12 +215,20 @@ private fun getModifier(
                     color2 = hypnoticColor2,
                     steps = 6
                 ).toTypedArray()
-            )
+            ),
+            fallback = {
+                Brush.horizontalGradient(
+                    generateGradientColors(
+                        color1 = hypnoticColor1,
+                        color2 = hypnoticColor2,
+                        steps = 6
+                    )
+                )
+            }
         )
     } else {
         Modifier
     }
-    return modifier
 }
 
 @Composable
