@@ -34,10 +34,8 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
-import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ArtHeader
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
@@ -62,43 +60,11 @@ fun LyricsPage(
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
-    val cardBackground by animateColorAsState(
-        targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
-            else -> state.extractedColors.cardBackgroundDominant
-        },
-        label = "cardBackground"
-    )
-    val cardContent by animateColorAsState(
-        targetValue = when (settings.lyricsColor) {
-            CardColors.MUTED -> state.extractedColors.cardContentMuted
-            else -> state.extractedColors.cardContentDominant
-        },
-        label = "cardContent"
-    )
+    val (cardBackground, cardContent) = getCardColors(settings, state)
 
-    val hypnoticColor1 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundDominant,
-        label = "hypnotic color 1"
-    )
-    val hypnoticColor2 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundMuted,
-        label = "hypnotic color 2"
-    )
+    val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
 
-    val modifier = if (settings.hypnoticCanvas) {
-        Modifier.shaderBackground(
-            MeshGradient(
-                colors = generateGradientColors(
-                    color1 = hypnoticColor1,
-                    color2 = hypnoticColor2,
-                    steps = 6
-                ).toTypedArray()
-            )
-        )
-    } else {
-        Modifier
-    }
+    val modifier = getModifier(settings, hypnoticColor1, hypnoticColor2)
 
     LaunchedEffect(state.song) {
         delay(100)
@@ -136,42 +102,10 @@ fun LyricsPage(
 
             } else {
 
-                // setting the temporary states
-                LaunchedEffect(state.song.lyrics) {
-                    if (state.song.lyrics.isNotEmpty()) {
-                        action(LyricsPageAction.OnSourceChange(Sources.LrcLib))
-                    } else if (state.song.geniusLyrics != null) {
-                        action(LyricsPageAction.OnSourceChange(Sources.Genius))
-                    }
-
-                    if (state.song.syncedLyrics != null) {
-                        action(LyricsPageAction.OnSyncAvailable(true))
-
-                        action(
-                            LyricsPageAction.OnSync(
-                                getMainTitle(state.playingSong.title).trim()
-                                    .lowercase() == state.song.title.trim()
-                                    .lowercase()
-                            )
-                        )
-                    }
-
+                // Updating colors (requires context)
+                LaunchedEffect(state.song) {
                     action(
                         LyricsPageAction.UpdateExtractedColors(context)
-                    )
-                }
-
-                LaunchedEffect(state.playingSong.title) {
-                    action(
-                        LyricsPageAction.OnSyncAvailable(state.song.syncedLyrics != null)
-                    )
-
-                    action(
-                        LyricsPageAction.OnSync(
-                            getMainTitle(state.playingSong.title).trim()
-                                .lowercase() == state.song.title.trim()
-                                .lowercase() && state.syncedAvailable
-                        )
                     )
                 }
 
@@ -266,3 +200,59 @@ fun LyricsPage(
     }
 }
 
+@Composable
+private fun getModifier(
+    settings: Settings,
+    hypnoticColor1: Color,
+    hypnoticColor2: Color
+): Modifier {
+    val modifier = if (settings.hypnoticCanvas) {
+        Modifier.shaderBackground(
+            MeshGradient(
+                colors = generateGradientColors(
+                    color1 = hypnoticColor1,
+                    color2 = hypnoticColor2,
+                    steps = 6
+                ).toTypedArray()
+            )
+        )
+    } else {
+        Modifier
+    }
+    return modifier
+}
+
+@Composable
+private fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
+    val hypnoticColor1 by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundDominant,
+        label = "hypnotic color 1"
+    )
+    val hypnoticColor2 by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundMuted,
+        label = "hypnotic color 2"
+    )
+    return Pair(hypnoticColor1, hypnoticColor2)
+}
+
+@Composable
+private fun getCardColors(
+    settings: Settings,
+    state: LyricsPageState
+): Pair<Color, Color> {
+    val cardBackground by animateColorAsState(
+        targetValue = when (settings.lyricsColor) {
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+            else -> state.extractedColors.cardBackgroundDominant
+        },
+        label = "cardBackground"
+    )
+    val cardContent by animateColorAsState(
+        targetValue = when (settings.lyricsColor) {
+            CardColors.MUTED -> state.extractedColors.cardContentMuted
+            else -> state.extractedColors.cardContentDominant
+        },
+        label = "cardContent"
+    )
+    return Pair(cardBackground, cardContent)
+}

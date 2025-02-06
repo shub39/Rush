@@ -20,7 +20,9 @@ import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.errorStringRes
+import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.domain.SearchResult
@@ -565,12 +567,16 @@ class RushViewModel(
 
         try {
             if (songId in _savedState.value.songsAsc.map { it.id }) {
-                val result = repo.getSong(songId)
+                val result = repo.getSong(songId).toSongUi()
 
                 _lyricsState.update {
-                    it.copy(
-                        song = result.toSongUi(),
-                        error = null
+                    LyricsPageState(
+                        song = result,
+                        autoChange = it.autoChange,
+                        playingSong = it.playingSong,
+                        source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                        syncedAvailable = result.syncedLyrics != null,
+                        sync = getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase()
                     )
                 }
             } else {
@@ -584,11 +590,16 @@ class RushViewModel(
                     }
 
                     is Result.Success -> {
+                        val retrievedSong = result.data.toSongUi()
+
                         _lyricsState.update {
                             LyricsPageState(
-                                song = result.data.toSongUi(),
+                                song = retrievedSong,
                                 autoChange = it.autoChange,
-                                playingSong = it.playingSong
+                                playingSong = it.playingSong,
+                                source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                                syncedAvailable = retrievedSong.syncedLyrics != null,
+                                sync = getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(retrievedSong.title).trim().lowercase()
                             )
                         }
                     }

@@ -182,7 +182,6 @@ fun SharePage(
                 song = state.songDetails,
                 sortedLines = state.selectedLines,
                 cardColors = cardColor,
-                extractedColors = state.extractedColors,
                 cardCorners = cardCorners,
                 fit = settings.cardFit
             )

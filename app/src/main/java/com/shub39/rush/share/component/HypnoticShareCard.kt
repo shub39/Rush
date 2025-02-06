@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
@@ -41,7 +40,6 @@ fun HypnoticShareCard(
     song: SongDetails,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
-    extractedColors: ExtractedColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit
 ) {
@@ -55,17 +53,13 @@ fun HypnoticShareCard(
                     .shaderBackground(
                         MeshGradient(
                             colors = generateGradientColors(
-                                color1 = cardColors.containerColor,
-                                color2 = extractedColors.cardBackgroundDominant,
-                                steps = 6
+                                cardColors.containerColor
                             ).toTypedArray()
                         ),
                         fallback = {
                             Brush.horizontalGradient(
                                 generateGradientColors(
-                                    color1 = cardColors.containerColor,
-                                    color2 = extractedColors.cardBackgroundDominant,
-                                    steps = 6
+                                    cardColors.containerColor
                                 )
                             )
                         }
@@ -150,17 +144,13 @@ fun HypnoticShareCard(
                     .shaderBackground(
                         MeshGradient(
                             colors = generateGradientColors(
-                                color1 = cardColors.containerColor,
-                                color2 = extractedColors.cardBackgroundDominant,
-                                steps = 6
+                                cardColors.containerColor
                             ).toTypedArray()
                         ),
                         fallback = {
                             Brush.horizontalGradient(
                                 generateGradientColors(
-                                    color1 = cardColors.containerColor,
-                                    color2 = extractedColors.cardBackgroundDominant,
-                                    steps = 6
+                                    cardColors.containerColor
                                 )
                             )
                         }

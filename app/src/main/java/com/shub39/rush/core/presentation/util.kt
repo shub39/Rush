@@ -29,7 +29,7 @@ fun getMainTitle(songTitle: String): String {
     return songTitle.replace(regex, "").trim()
 }
 
-fun generateGradientColors(color1: Color, color2: Color, steps: Int): List<Color> {
+fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {
     val colors = mutableListOf<Color>()
 
     for (i in 0 until steps) {
@@ -48,4 +48,18 @@ fun lerp(color1: Color, color2: Color, t: Float): Color {
     val a = (color1.alpha * (1 - t) + color2.alpha * t).coerceIn(0f, 1f)
 
     return Color(r, g, b, a)
+}
+
+fun generateGradientColors(baseColor: Color): List<Color> {
+    val colors = mutableListOf<Color>()
+
+    val complementaryColor = Color(1f - baseColor.red, 1f - baseColor.green, 1f - baseColor.blue, baseColor.alpha)
+
+    for (i in 0 until 6) {
+        val t = i / 5f
+        val interpolatedColor = lerp(baseColor, complementaryColor, t)
+        colors.add(interpolatedColor)
+    }
+
+    return colors
 }

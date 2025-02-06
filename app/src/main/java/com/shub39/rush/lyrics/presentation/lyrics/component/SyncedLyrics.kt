@@ -19,6 +19,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,8 @@ fun SyncedLyrics(
     lazyListState: LazyListState,
     cardContent: Color
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
+
     // updater for synced lyrics
     LaunchedEffect(state.playingSong.position) {
         coroutineScope.launch {
@@ -85,6 +89,7 @@ fun SyncedLyrics(
                     shape = MaterialTheme.shapes.small,
                     onClick = {
                         MediaListener.seek(lyric.time)
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
                 ) {
                     if (lyric.text.isNotEmpty()) {
