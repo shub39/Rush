@@ -388,9 +388,12 @@ class RushViewModel(
     ) {
         repo.updateLrcLyrics(id, plainLyrics, syncedLyrics)
 
+        val song = repo.getSong(id).toSongUi()
+
         _lyricsState.update {
             it.copy(
-                song = repo.getSong(id).toSongUi()
+                song = song,
+                syncedAvailable = song.syncedLyrics != null
             )
         }
     }
