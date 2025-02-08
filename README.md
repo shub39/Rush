@@ -77,10 +77,18 @@ dealing with genius's "UI".
 >- [MaterialKolor](https://github.com/jordond/MaterialKolor) for generating color palettes
 >- [Hypnotic Canvas](https://mikepenz.github.io/HypnoticCanvas/) for the mesh gradient background
 
+## How it works 🤔
+
+Rush is not just a lyrics app. Users can share lyrics as cards too, for that it needs to depend on Genius API Album art
+and other metadata. While genius provides accurate lyrics, It doesn't provide timed lyrics so it fetches that from LRCLIB
+using the title and artist info provided by genius. Users can correct lyrics from LRCLIB with the correct lyrics feature.
+
+Below are some Images I made so almost everyone can understand how Rush works
+
+![Searching](images/search.png)
+![Fetching](images/fetching.png)
+![Rush Mode](images/rush_mode.png)
+
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 > [<img alt="bmc-button" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/BuyMeACoffee/buymeacoffee3.svg">](https://www.buymeacoffee.com/shub39)
-
-## Star History 🌟
-
-[![Star History Chart](https://api.star-history.com/svg?repos=shub39/Rush&type=Date)](https://star-history.com/#shub39/Rush&Date)
