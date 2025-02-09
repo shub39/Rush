@@ -1,0 +1,9 @@
+Rush este o aplicație Android simplă pentru a căuta, vizualiza, salva și distribui versurile melodiilor tale preferate.
+
+Funcționalități
+
+- Căutare, vizualizare și stocare a versurilor
+- Partajează versurile ca un card personalizabil prietenilor tăi!
+- Căutare automată a melodiei redate în prezent (necesită permisiunea de acces la notificări)
+- Versuri sincronizate
+- Descărcare în lot a versurilor
