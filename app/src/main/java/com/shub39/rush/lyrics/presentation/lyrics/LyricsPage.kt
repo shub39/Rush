@@ -1,5 +1,7 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -58,6 +61,14 @@ fun LyricsPage(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
+
+    // keeping the screen on
+    DisposableEffect(Unit) {
+        (context as? ComponentActivity)?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            (context as? ComponentActivity)?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
