@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.setting
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -218,29 +219,31 @@ fun LookAndFeel(
                 )
             }
 
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.material_theme)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.material_theme_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.theme.materialTheme,
-                            onCheckedChange = {
-                                action(
-                                    SettingsPageAction.OnMaterialThemeToggle(it)
-                                )
-                            }
-                        )
-                    }
-                )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.material_theme)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.material_theme_desc)
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = state.theme.materialTheme,
+                                onCheckedChange = {
+                                    action(
+                                        SettingsPageAction.OnMaterialThemeToggle(it)
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
             }
 
             item {
