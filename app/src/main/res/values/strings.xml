@@ -92,4 +92,6 @@
     <string name="hypnotic">Hypnotic</string>
     <string name="rounded">Rounded</string>
     <string name="default_">Default</string>
+    <string name="material_theme">Material Theme</string>
+    <string name="material_theme_desc">Theme based on your wallpaper</string>
 </resources>

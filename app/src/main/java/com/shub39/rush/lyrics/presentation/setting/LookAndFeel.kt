@@ -222,6 +222,31 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
+                            text = stringResource(R.string.material_theme)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.material_theme_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.theme.materialTheme,
+                            onCheckedChange = {
+                                action(
+                                    SettingsPageAction.OnMaterialThemeToggle(it)
+                                )
+                            }
+                        )
+                    }
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
                             text = stringResource(R.string.seed_color)
                         )
                     },
@@ -236,7 +261,8 @@ fun LookAndFeel(
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = Color(state.theme.seedColor),
                                 contentColor = contentColorFor(Color(state.theme.seedColor))
-                            )
+                            ),
+                            enabled = !state.theme.materialTheme
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Create,
@@ -265,7 +291,11 @@ fun LookAndFeel(
                         ) {
                             PaletteStyle.entries.toList().forEach { style ->
                                 val scheme = rememberDynamicColorScheme(
-                                    primary = Color(state.theme.seedColor),
+                                    primary = if (state.theme.materialTheme) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        Color(state.theme.seedColor)
+                                    },
                                     isDark = state.theme.useDarkTheme == true,
                                     isAmoled = state.theme.withAmoled,
                                     style = style

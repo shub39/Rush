@@ -10,6 +10,7 @@ sealed interface SettingsPageAction {
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
     data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction
     data class OnHypnoticToggle(val toggle: Boolean): SettingsPageAction
+    data class OnMaterialThemeToggle(val pref: Boolean): SettingsPageAction
 
     data object OnClearIndexes: SettingsPageAction
     data class OnBatchDownload(val files: List<AudioFile>): SettingsPageAction

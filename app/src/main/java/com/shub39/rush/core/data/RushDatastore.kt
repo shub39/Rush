@@ -177,12 +177,21 @@ class RushDatastore(
         }
     }
 
+    fun getMaterialYouFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[materialTheme] ?: false }
+    suspend fun updateMaterialTheme(pref: Boolean) {
+        dataStore.edit { settings ->
+            settings[materialTheme] = pref
+        }
+    }
+
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
         private val amoledPref = booleanPreferencesKey("with_amoled")
         private val paletteStyle = stringPreferencesKey("palette_style")
         private val hypnoticCanvas = booleanPreferencesKey("hypnotic_canvas")
+        private val materialTheme = booleanPreferencesKey("material_theme")
         private val maxLines = intPreferencesKey("max_lines")
         private val sortOrder = stringPreferencesKey("sort_order")
         private val cardColor = stringPreferencesKey("card_color")

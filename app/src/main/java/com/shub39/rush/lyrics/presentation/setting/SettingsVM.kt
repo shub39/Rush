@@ -144,6 +144,10 @@ class SettingsVM(
                 is SettingsPageAction.OnHypnoticToggle -> {
                     datastore.updateHypnoticCanvas(action.toggle)
                 }
+
+                is SettingsPageAction.OnMaterialThemeToggle -> {
+                    datastore.updateMaterialTheme(action.pref)
+                }
             }
         }
     }
@@ -152,6 +156,17 @@ class SettingsVM(
         observeJob?.cancel()
         observeJob = launch {
             observeTheme().launchIn(this)
+            datastore.getMaterialYouFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            theme = it.theme.copy(
+                                materialTheme = pref
+                            )
+                        )
+                    }
+                }
+                .launchIn(viewModelScope)
             datastore.getLyricsColorFlow()
                 .onEach { color ->
                     _state.update {
