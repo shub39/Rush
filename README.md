@@ -87,17 +87,19 @@ Below are some Flowcharts I made so almost everyone can understand how Rush work
 
 ```mermaid
 flowchart
-	subgraph s1["Searching Songs"]
-		n3
-		n2@{ label: "App" }
-	end
-	n2
-	n2
-	s1
-	n2@{ shape: "rounded", label: "App" } --- |Search Query| n3@{ shape: "circle", label: "Genius API" }
-	style n3 color:#000000,stroke:#000000,fill:#FFDE59
-	style s1 stroke-width:2px,color:#000000,fill:#FFFFFF,stroke:#000000
-	n3 --- |Entities with Matching metatdata containing ID's| n2
+subgraph s1["Searching Songs"]
+n3
+n2@{ label: "App" }
+end
+n2
+n2
+s1
+n2@{ shape: "rounded", label: "App" } --- |Search Query| n3@{ shape: "circle", label: "Genius API" }
+style n3 color:#000000,stroke:#000000,fill:#FFDE59
+n3 --- |Entities with Matching metatdata containing ID's| n2
+style s1 stroke-width:2px,color:#000000,stroke:#000000
+linkStyle 1 color:#000000
+linkStyle 0 color:#000000
 ```
 
 ## Support 💕
