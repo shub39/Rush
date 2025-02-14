@@ -85,6 +85,7 @@ using the title and artist info provided by genius. Users can correct lyrics fro
 
 Below are some Flowcharts I made so almost everyone can understand how Rush works
 
+### Searching 🔍️
 ```mermaid
 flowchart
     n1@{ shape: "rounded", label: "App" }
