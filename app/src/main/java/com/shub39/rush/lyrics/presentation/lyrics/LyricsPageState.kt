@@ -42,6 +42,7 @@ data class PlayingSong(
     val title: String = "",
     val artist: String? = null,
     val position: Long = 0,
+    val speed: Float = 0f
 )
 
 @Immutable

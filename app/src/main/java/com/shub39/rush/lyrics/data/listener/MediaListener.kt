@@ -157,8 +157,17 @@ object MediaListener {
     // 🙏
     fun seek(timestamp: Long) {
         activeMediaController?.transportControls?.seekTo(timestamp)
+        activeMediaController?.transportControls?.play()
         coroutineScope.launch {
             songPositionFlow.emit(timestamp)
+        }
+    }
+
+    fun pauseOrResume(resume: Boolean) {
+        if (resume) {
+            activeMediaController?.transportControls?.play()
+        } else {
+            activeMediaController?.transportControls?.pause()
         }
     }
 }

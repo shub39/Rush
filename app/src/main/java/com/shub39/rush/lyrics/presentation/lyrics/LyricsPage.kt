@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,16 +34,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
+import com.shub39.rush.R
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ArtHeader
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
@@ -84,124 +91,150 @@ fun LyricsPage(
     }
 
     // Content Start
-    Card(
-        modifier = modifier.fillMaxSize(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
-            contentColor = cardContent
-        ),
-        shape = RoundedCornerShape(0.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Box {
+        Card(
+            modifier = modifier.fillMaxSize(),
+            colors = CardDefaults.cardColors(
+                containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
+                contentColor = cardContent
+            ),
+            shape = RoundedCornerShape(0.dp)
         ) {
-            if (state.fetching.first || (state.searching.first && state.autoChange)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (state.fetching.first || (state.searching.first && state.autoChange)) {
 
-                LoadingCard(
-                    state.fetching,
-                    state.searching,
-                    Pair(cardContent, cardBackground)
-                )
-
-            } else if (state.error != null) {
-
-                ErrorCard(state.error, Pair(cardContent, cardBackground))
-
-            } else if (state.song == null) {
-
-                Empty()
-
-            } else {
-
-                // Updating colors (requires context)
-                LaunchedEffect(state.song) {
-                    action(
-                        LyricsPageAction.UpdateExtractedColors(context)
+                    LoadingCard(
+                        state.fetching,
+                        state.searching,
+                        Pair(cardContent, cardBackground)
                     )
-                }
 
-                Box {
-                    ArtHeader(top, settings, state.song, cardContent, cardBackground)
+                } else if (state.error != null) {
 
-                    Column(
-                        modifier = Modifier.padding(top = 64.dp)
-                    ) {
-                        AnimatedVisibility(
-                            visible = top < 3
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                ArtFromUrl(
-                                    imageUrl = state.song.artUrl,
-                                    highlightColor = cardContent,
-                                    baseColor = Color.Transparent,
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .size(150.dp)
-                                )
-                            }
-                        }
+                    ErrorCard(state.error, Pair(cardContent, cardBackground))
 
-                        Row(
-                            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = state.song.title,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold,
-                                    maxLines = 2,
-                                    textAlign = TextAlign.Center,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
+                } else if (state.song == null) {
 
-                                Text(
-                                    text = state.song.artists,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    textAlign = TextAlign.Center,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-                        }
+                    Empty()
 
-                        // Actions Row
-                        ActionsRow(
-                            state,
-                            context,
-                            state.song,
-                            action,
-                            notificationAccess,
-                            cardBackground,
-                            cardContent,
-                            onShare
+                } else {
+
+                    // Updating colors (requires context)
+                    LaunchedEffect(state.song) {
+                        action(
+                            LyricsPageAction.UpdateExtractedColors(context)
                         )
                     }
-                }
 
-                // Plain lyrics
-                if (!state.sync) {
-                    PlainLyrics(
-                        lazyListState,
-                        state,
-                        state.song,
-                        cardContent,
-                        action,
-                        settings,
-                        coroutineScope,
-                        context
-                    )
-                } else if (state.song.syncedLyrics != null) {
-                    SyncedLyrics(state, coroutineScope, lazyListState, cardContent)
+                    Box {
+                        ArtHeader(top, settings, state.song, cardContent, cardBackground)
+
+                        Column(
+                            modifier = Modifier.padding(top = 64.dp)
+                        ) {
+                            AnimatedVisibility(
+                                visible = top < 3
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ArtFromUrl(
+                                        imageUrl = state.song.artUrl,
+                                        highlightColor = cardContent,
+                                        baseColor = Color.Transparent,
+                                        modifier = Modifier
+                                            .clip(MaterialTheme.shapes.small)
+                                            .size(150.dp)
+                                    )
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = state.song.title,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 2,
+                                        textAlign = TextAlign.Center,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+
+                                    Text(
+                                        text = state.song.artists,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                            }
+
+                            // Actions Row
+                            ActionsRow(
+                                state,
+                                context,
+                                state.song,
+                                action,
+                                notificationAccess,
+                                cardBackground,
+                                cardContent,
+                                onShare
+                            )
+                        }
+                    }
+
+                    // Plain lyrics
+                    if (!state.sync) {
+                        PlainLyrics(
+                            lazyListState,
+                            state,
+                            state.song,
+                            cardContent,
+                            action,
+                            settings,
+                            coroutineScope,
+                            context
+                        )
+                    } else if (state.song.syncedLyrics != null) {
+                        SyncedLyrics(state, coroutineScope, lazyListState, cardContent)
+                    }
                 }
+            }
+        }
+
+        AnimatedVisibility (
+            visible = state.sync,
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.BottomEnd)
+        ) {
+            FloatingActionButton(
+                contentColor = cardBackground,
+                containerColor = cardContent,
+                elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
+                shape = CircleShape,
+                onClick = { MediaListener.pauseOrResume(state.playingSong.speed == 0f) },
+            ) {
+                Icon(
+                    painter = if (state.playingSong.speed == 0f) {
+                        painterResource(R.drawable.round_play_arrow_24)
+                    } else {
+                        painterResource(R.drawable.round_pause_24)
+                    },
+                    contentDescription = "Pause or Resume"
+                )
             }
         }
     }

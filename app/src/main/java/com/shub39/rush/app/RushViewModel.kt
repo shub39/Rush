@@ -167,10 +167,9 @@ class RushViewModel(
                     _lyricsState.update { lyricsPageState ->
                         lyricsPageState.copy(
                             playingSong = lyricsPageState.playingSong.copy(
-                                position = position + elapsed
-                            ).also {
-                                Log.d("RushViewModel", "Song Position: ${it.position}")
-                            }
+                                position = position + elapsed,
+                                speed = speed
+                            )
                         )
                     }
 
@@ -495,7 +494,8 @@ class RushViewModel(
         viewModelScope.launch {
             _lyricsState.update {
                 it.copy(
-                    searching = Pair(true, query)
+                    searching = Pair(true, query),
+                    sync = false
                 )
             }
 
@@ -566,7 +566,8 @@ class RushViewModel(
         _lyricsState.update {
             it.copy(
                 fetching = Pair(true, "${song?.title} - ${song?.artist}"),
-                extractedColors = ExtractedColors()
+                extractedColors = ExtractedColors(),
+                sync = false
             )
         }
 
