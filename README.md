@@ -118,6 +118,21 @@ flowchart
 	style n4 color:#FFFFFF,fill:#FF3131
 ```
 
+### Rush mode and Synced lyrics 💫
+```mermaid
+flowchart
+	n1@{ label: "Rectangle" }
+	n1@{ shape: "rounded", label: "Media Player" }
+	style n1 stroke-width:2px,stroke-dasharray:5 5
+	subgraph s1["App"]
+		n3["Fetches 🎣"]
+		n2["Searches 🔍️"]
+	end
+	n1 ---|Playback position| s1
+	n1 ---|Title, Artist| n2
+	n2 ---|Topmost search result| n3
+```
+
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 > [<img alt="bmc-button" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/BuyMeACoffee/buymeacoffee3.svg">](https://www.buymeacoffee.com/shub39)
