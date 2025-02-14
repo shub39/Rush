@@ -90,8 +90,32 @@ Below are some Flowcharts I made so almost everyone can understand how Rush work
 flowchart
     n1@{ shape: "rounded", label: "App" }
 n1 ---|"Search query"| n2@{ shape: "circle", label: "Genius API" }
-n2 ---|"entities containing IDs"| n1
+n2 ---|"Entities containing IDs"| n1
 style n2 color:#000000,fill:#FFDE59
+```
+
+### Fetching 🎣
+```mermaid
+flowchart
+	subgraph s1["Background"]
+		n1@{ shape: "diam", label: "Song exists in database?" }
+        n5["Song title, Artist, Genius lyrics, Synced lyrics (if available) "]
+	end
+	subgraph s2["UI"]
+		n6["ID and Genius URL of selected song "]
+		n2["Song lyrics displayed"]
+	end
+	n3@{ shape: "circle", label: "LRCLIB API" }
+	n4@{ shape: "circle", label: "Scraping" }
+    n6 --- n1
+    n1 ---|Yes| n2
+    n1 ---|No| n4
+    n5 ---|After saving to database| n2 
+    n4 ---|Genius Lyrics| n5
+    n5 ---|Title, Artist| n3
+    n3 ---|Lyrics, Synced Lyrics| n5
+	style n3 color:#FFFFFF,fill:#5E17EB
+	style n4 color:#FFFFFF,fill:#FF3131
 ```
 
 ## Support 💕
