@@ -90,6 +90,7 @@ flowchart
     n1@{ shape: "rounded", label: "App" }
 n1 ---|"Search query"| n2@{ shape: "circle", label: "Genius API" }
 n2 ---|"entities containing IDs"| n1
+style n2 color:#000000,fill:#FFDE59
 ```
 
 ## Support 💕
