@@ -56,7 +56,7 @@ dealing with genius's "UI".
 |             German             | [Irgendeinwer](https://github.com/Irgendeinwer)          |
 |            Persian             | [alr86](https://github.com/alr86)                        |
 |            Spanish             | [WaifuPX-DG](https://github.com/WaifuPX-DG)              |
-
+|            Romanian            | [D4rk7355608](https://github.com/D4rK7355608)            |
 
 ## References and Inspiration 💡
 
@@ -136,3 +136,7 @@ flowchart
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 > [<img alt="bmc-button" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/BuyMeACoffee/buymeacoffee3.svg">](https://www.buymeacoffee.com/shub39)
+
+
+## Stargazers over time ✨
+[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
