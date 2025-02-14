@@ -60,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -294,8 +295,8 @@ fun LookAndFeel(
                         ) {
                             PaletteStyle.entries.toList().forEach { style ->
                                 val scheme = rememberDynamicColorScheme(
-                                    primary = if (state.theme.materialTheme) {
-                                        MaterialTheme.colorScheme.primary
+                                    primary = if (state.theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+                                        colorResource(android.R.color.system_accent1_200)
                                     } else {
                                         Color(state.theme.seedColor)
                                     },
