@@ -83,11 +83,22 @@ Rush is not just a lyrics app. Users can share lyrics as cards too, for that it 
 and other metadata. While genius provides accurate lyrics, It doesn't provide timed lyrics so it fetches that from LRCLIB
 using the title and artist info provided by genius. Users can correct lyrics from LRCLIB with the correct lyrics feature.
 
-Below are some Images I made so almost everyone can understand how Rush works
+Below are some Flowcharts I made so almost everyone can understand how Rush works
 
-![Searching](images/search.png)
-![Fetching](images/fetching.png)
-![Rush Mode](images/rush_mode.png)
+```mermaid
+flowchart
+	subgraph s1["Searching Songs"]
+		n3
+		n2@{ label: "App" }
+	end
+	n2
+	n2
+	s1
+	n2@{ shape: "rounded", label: "App" } --- |Search Query| n3@{ shape: "circle", label: "Genius API" }
+	style n3 color:#000000,stroke:#000000,fill:#FFDE59
+	style s1 stroke-width:2px,color:#000000,fill:#FFFFFF,stroke:#000000
+	n3 --- |Entities with Matching metatdata containing ID's| n2
+```
 
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
