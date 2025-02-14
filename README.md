@@ -56,7 +56,7 @@ dealing with genius's "UI".
 |             German             | [Irgendeinwer](https://github.com/Irgendeinwer)          |
 |            Persian             | [alr86](https://github.com/alr86)                        |
 |            Spanish             | [WaifuPX-DG](https://github.com/WaifuPX-DG)              |
-
+|            Romanian            | [D4rk7355608](https://github.com/D4rK7355608)            |
 
 ## References and Inspiration 💡
 
@@ -83,12 +83,60 @@ Rush is not just a lyrics app. Users can share lyrics as cards too, for that it 
 and other metadata. While genius provides accurate lyrics, It doesn't provide timed lyrics so it fetches that from LRCLIB
 using the title and artist info provided by genius. Users can correct lyrics from LRCLIB with the correct lyrics feature.
 
-Below are some Images I made so almost everyone can understand how Rush works
+Below are some Flowcharts I made so almost everyone can understand how Rush works
 
-![Searching](images/search.png)
-![Fetching](images/fetching.png)
-![Rush Mode](images/rush_mode.png)
+### Searching 🔍️
+```mermaid
+flowchart
+    n1@{ shape: "rounded", label: "App" }
+n1 ---|"Search query"| n2@{ shape: "circle", label: "Genius API" }
+n2 ---|"Entities containing IDs"| n1
+style n2 color:#000000,fill:#FFDE59
+```
+
+### Fetching 🎣
+```mermaid
+flowchart
+	subgraph s1["Background"]
+		n1@{ shape: "diam", label: "Song exists in database?" }
+        n5["Song title, Artist, Genius lyrics, Synced lyrics (if available) "]
+	end
+	subgraph s2["UI"]
+		n6["ID and Genius URL of selected song "]
+		n2["Song lyrics displayed"]
+	end
+	n3@{ shape: "circle", label: "LRCLIB API" }
+	n4@{ shape: "circle", label: "Scraping" }
+    n6 --- n1
+    n1 ---|Yes| n2
+    n1 ---|No| n4
+    n5 ---|After saving to database| n2 
+    n4 ---|Genius Lyrics| n5
+    n5 ---|Title, Artist| n3
+    n3 ---|Lyrics, Synced Lyrics| n5
+	style n3 color:#FFFFFF,fill:#5E17EB
+	style n4 color:#FFFFFF,fill:#FF3131
+```
+
+### Rush mode and Synced lyrics 💫
+```mermaid
+flowchart
+	n1@{ label: "Rectangle" }
+	n1@{ shape: "rounded", label: "Media Player" }
+	style n1 stroke-width:2px,stroke-dasharray:5 5
+	subgraph s1["App"]
+		n3["Fetches 🎣"]
+		n2["Searches 🔍️"]
+	end
+	n1 ---|Playback position| s1
+	n1 ---|Title, Artist| n2
+	n2 ---|Topmost search result| n3
+```
 
 ## Support 💕
 > ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
 > [<img alt="bmc-button" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/BuyMeACoffee/buymeacoffee3.svg">](https://www.buymeacoffee.com/shub39)
+
+
+## Stargazers over time ✨
+[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
