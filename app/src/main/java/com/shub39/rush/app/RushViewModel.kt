@@ -146,7 +146,7 @@ class RushViewModel(
                     )
                 }
 
-                Log.d("Rush", "Song Info: $songInfo")
+                Log.d("RushViewModel", "Song Info: $songInfo")
 
                 if (_lyricsState.value.autoChange) {
                     searchSong("${songInfo.first} ${songInfo.second}".trim())
@@ -164,11 +164,13 @@ class RushViewModel(
 
                 while (isActive) {
                     val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
-                    _lyricsState.update {
-                        it.copy(
-                            playingSong = it.playingSong.copy(
+                    _lyricsState.update { lyricsPageState ->
+                        lyricsPageState.copy(
+                            playingSong = lyricsPageState.playingSong.copy(
                                 position = position + elapsed
-                            )
+                            ).also {
+                                Log.d("RushViewModel", "Song Position: ${it.position}")
+                            }
                         )
                     }
 
@@ -493,8 +495,7 @@ class RushViewModel(
         viewModelScope.launch {
             _lyricsState.update {
                 it.copy(
-                    searching = Pair(true, query),
-                    extractedColors = ExtractedColors()
+                    searching = Pair(true, query)
                 )
             }
 
@@ -564,7 +565,8 @@ class RushViewModel(
 
         _lyricsState.update {
             it.copy(
-                fetching = Pair(true, "${song?.title} - ${song?.artist}")
+                fetching = Pair(true, "${song?.title} - ${song?.artist}"),
+                extractedColors = ExtractedColors()
             )
         }
 

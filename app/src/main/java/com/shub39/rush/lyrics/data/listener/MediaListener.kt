@@ -123,7 +123,13 @@ object MediaListener {
     }
 
     private fun onPlaybackStateChanged(controller: MediaController, state: PlaybackState?) {
-        if (isActive(state)) setActiveMediaSession(controller)
+        if (isActive(state)) {
+            setActiveMediaSession(controller)
+        } else {
+            coroutineScope.launch {
+                playbackSpeedFlow.emit(0f)
+            }
+        }
     }
 
     private fun setActiveMediaSession(newActive: MediaController) {
@@ -139,13 +145,11 @@ object MediaListener {
             ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
 
         coroutineScope.launch {
-            songInfoFlow.emit(Pair(getMainTitle(title), getMainArtist(artist)))
-            playbackSpeedFlow.emit(
-                if (controller.playbackState?.let { isActive(it) } == true)
-                    controller.playbackState?.playbackSpeed ?: 1f
-                else 0f
-            )
-            controller.playbackState?.position?.let { songPositionFlow.emit(it) }
+            if (controller.playbackState?.let { isActive(it) } == true) {
+                songInfoFlow.emit(Pair(getMainTitle(title), getMainArtist(artist)))
+                playbackSpeedFlow.emit(controller.playbackState?.playbackSpeed ?: 1f)
+                controller.playbackState?.position?.let { songPositionFlow.emit(it) }
+            }
         }
 
     }
@@ -153,5 +157,8 @@ object MediaListener {
     // 🙏
     fun seek(timestamp: Long) {
         activeMediaController?.transportControls?.seekTo(timestamp)
+        coroutineScope.launch {
+            songPositionFlow.emit(timestamp)
+        }
     }
 }
