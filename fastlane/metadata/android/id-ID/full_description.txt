@@ -1,0 +1,9 @@
+Rush adalah aplikasi Android sederhana untuk mencari, melihat, menyimpan, dan membagikan lirik lagu favorit Anda
+
+Fitur 
+
+- Mencari, melihat, dan menyimpan lirik
+- Bagikan lirik ke teman Anda dalam bentuk kartu yang dapat disesuaikan!
+- Pencarian otomatis lagu yang sedang diputar (Memerlukan izin Akses Notifikasi)
+- Lirik Tersinkronisasi
+- Unduh lirik masal
