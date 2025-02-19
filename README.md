@@ -133,10 +133,5 @@ flowchart
 	n2 ---|Topmost search result| n3
 ```
 
-## Support 💕
-> ### If you love this app, consider supporting. I'm a undergrad trying to get some pocket money 🥹
-> [<img alt="bmc-button" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/BuyMeACoffee/buymeacoffee3.svg">](https://www.buymeacoffee.com/shub39)
-
-
 ## Stargazers over time ✨
 [![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)

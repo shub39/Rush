@@ -213,17 +213,6 @@ fun About() = PageFill {
                             Row {
                                 BetterIconButton(
                                     onClick = {
-                                        openLinkInBrowser(context, "https://buymeacoffee.com/shub39")
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.round_coffee_24),
-                                        contentDescription = "Buy Me a Coffee"
-                                    )
-                                }
-
-                                BetterIconButton(
-                                    onClick = {
                                         openLinkInBrowser(context, "https://github.com/shub39")
                                     }
                                 ) {
