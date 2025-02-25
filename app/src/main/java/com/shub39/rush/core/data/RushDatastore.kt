@@ -13,14 +13,15 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.lyrics.presentation.saved.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class RushDatastore(
     private val dataStore: DataStore<Preferences>
-) {
-    fun getDarkThemePrefFlow(): Flow<Boolean?> = dataStore.data
+): PrefDatastore {
+    override fun getDarkThemePrefFlow(): Flow<Boolean?> = dataStore.data
         .map { preferences ->
             when (preferences[darkThemePref]) {
                 "true" -> true
@@ -28,106 +29,105 @@ class RushDatastore(
                 else -> null
             }
         }
-
-    suspend fun updateDarkThemePref(pref: Boolean?) {
+    override suspend fun updateDarkThemePref(pref: Boolean?) {
         dataStore.edit { settings ->
             settings[darkThemePref] = pref.toString()
         }
     }
 
-    fun getSeedColorFlow(): Flow<Int> = dataStore.data
+    override fun getSeedColorFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[seedColor] ?: Color.White.toArgb() }
-    suspend fun updateSeedColor(newCardContent: Int) {
+    override suspend fun updateSeedColor(newCardContent: Int) {
         dataStore.edit { settings ->
             settings[seedColor] = newCardContent
         }
     }
 
-    fun getAmoledPrefFlow(): Flow<Boolean> = dataStore.data
+    override fun getAmoledPrefFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[amoledPref] ?: false }
-    suspend fun updateAmoledPref(amoled: Boolean) {
+    override suspend fun updateAmoledPref(amoled: Boolean) {
         dataStore.edit { settings ->
             settings[amoledPref] = amoled
         }
     }
 
-    fun getPaletteStyle(): Flow<PaletteStyle> = dataStore.data
+    override fun getPaletteStyle(): Flow<PaletteStyle> = dataStore.data
         .map { preferences ->
             PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TonalSpot.name)
         }
-    suspend fun updatePaletteStyle(style: PaletteStyle) {
+    override suspend fun updatePaletteStyle(style: PaletteStyle) {
         dataStore.edit { settings ->
             settings[paletteStyle] = style.name
         }
     }
 
-    fun getMaxLinesFlow(): Flow<Int> = dataStore.data
+    override fun getMaxLinesFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[maxLines] ?: 6 }
-    suspend fun updateMaxLines(newMaxLines: Int) {
+    override suspend fun updateMaxLines(newMaxLines: Int) {
         dataStore.edit { settings ->
             settings[maxLines] = newMaxLines
         }
     }
 
-    fun getSortOrderFlow(): Flow<String> = dataStore.data
+    override fun getSortOrderFlow(): Flow<String> = dataStore.data
         .map { preferences -> preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder }
-    suspend fun updateSortOrder(newSortOrder: String) {
+    override suspend fun updateSortOrder(newSortOrder: String) {
         dataStore.edit { settings ->
             settings[sortOrder] = newSortOrder
         }
     }
 
-    fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
+    override fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[hypnoticCanvas] ?: true }
-    suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
+    override suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
         dataStore.edit { settings ->
             settings[hypnoticCanvas] = newHypnoticCanvas
         }
     }
 
-    fun getCardFitFlow(): Flow<CardFit> = dataStore.data
+    override fun getCardFitFlow(): Flow<CardFit> = dataStore.data
         .map { preferences ->
             when (preferences[cardFit]) {
                 CardFit.STANDARD.name -> CardFit.STANDARD
                 else -> CardFit.FIT
             }
         }
-    suspend fun updateCardFit(newCardFit: CardFit) {
+    override suspend fun updateCardFit(newCardFit: CardFit) {
         dataStore.edit { settings ->
             settings[cardFit] = newCardFit.name
         }
     }
 
-    fun getLyricsColorFlow(): Flow<CardColors> = dataStore.data
+    override fun getLyricsColorFlow(): Flow<CardColors> = dataStore.data
         .map { preferences ->
             when (preferences[lyricsColor]) {
                 CardColors.MUTED.name -> CardColors.MUTED
                 else -> CardColors.VIBRANT
             }
         }
-    suspend fun updateLyricsColor(new: CardColors) {
+    override suspend fun updateLyricsColor(new: CardColors) {
         dataStore.edit { settings ->
             settings[lyricsColor] = new.name
         }
     }
 
-    fun getCardBackgroundFlow(): Flow<Int> = dataStore.data
+    override fun getCardBackgroundFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[cardBackground] ?: Color.Black.toArgb() }
-    suspend fun updateCardBackground(newCardBackground: Int) {
+    override suspend fun updateCardBackground(newCardBackground: Int) {
         dataStore.edit { settings ->
             settings[cardBackground] = newCardBackground
         }
     }
 
-    fun getCardContentFlow(): Flow<Int> = dataStore.data
+    override fun getCardContentFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[cardContent] ?: Color.White.toArgb() }
-    suspend fun updateCardContent(newCardContent: Int) {
+    override suspend fun updateCardContent(newCardContent: Int) {
         dataStore.edit { settings ->
             settings[cardContent] = newCardContent
         }
     }
 
-    fun getCardThemeFlow(): Flow<CardTheme> = dataStore.data
+    override fun getCardThemeFlow(): Flow<CardTheme> = dataStore.data
         .map { preferences ->
             when (preferences[cardTheme]) {
                 CardTheme.RUSHED.name -> CardTheme.RUSHED
@@ -136,13 +136,13 @@ class RushDatastore(
                 else -> CardTheme.SPOTIFY
             }
         }
-    suspend fun updateCardTheme(newCardTheme: CardTheme) {
+    override suspend fun updateCardTheme(newCardTheme: CardTheme) {
         dataStore.edit { settings ->
             settings[cardTheme] = newCardTheme.name
         }
     }
 
-    fun getCardColorFlow(): Flow<CardColors> = dataStore.data
+    override fun getCardColorFlow(): Flow<CardColors> = dataStore.data
         .map { preferences ->
             when (preferences[cardColor]) {
                 CardColors.VIBRANT.name -> CardColors.VIBRANT
@@ -150,36 +150,36 @@ class RushDatastore(
                 else -> CardColors.MUTED
             }
         }
-    suspend fun updateCardColor(newCardColor: CardColors) {
+    override suspend fun updateCardColor(newCardColor: CardColors) {
         dataStore.edit { settings ->
             settings[cardColor] = newCardColor.name
         }
     }
 
-    fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
+    override fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
         .map { preferences ->
             when (preferences[cardRoundness]) {
                 CornerRadius.DEFAULT.name -> CornerRadius.DEFAULT
                 else -> CornerRadius.ROUNDED
             }
         }
-    suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
+    override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
         dataStore.edit { settings ->
             settings[cardRoundness] = newCardRoundness.name
         }
     }
 
-    fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
+    override fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[onboardingDone] ?: false }
-    suspend fun updateOnboardingDone(done: Boolean) {
+    override suspend fun updateOnboardingDone(done: Boolean) {
         dataStore.edit { settings ->
             settings[onboardingDone] = done
         }
     }
 
-    fun getMaterialYouFlow(): Flow<Boolean> = dataStore.data
+    override fun getMaterialYouFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[materialTheme] ?: false }
-    suspend fun updateMaterialTheme(pref: Boolean) {
+    override suspend fun updateMaterialTheme(pref: Boolean) {
         dataStore.edit { settings ->
             settings[materialTheme] = pref
         }

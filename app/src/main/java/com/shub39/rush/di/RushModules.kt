@@ -8,6 +8,7 @@ import com.shub39.rush.app.RushViewModel
 import com.shub39.rush.core.data.DatastoreFactory
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.core.data.RushDatastore
+import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.data.backup.export.ExportImpl
 import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
@@ -44,7 +45,7 @@ val rushModules = module {
 
     singleOf(::DatastoreFactory)
     single { get<DatastoreFactory>().getPreferencesDataStore() }
-    singleOf(::RushDatastore)
+    singleOf(::RushDatastore).bind<PrefDatastore>()
 
     viewModelOf(::RushViewModel)
     viewModelOf(::SettingsVM)

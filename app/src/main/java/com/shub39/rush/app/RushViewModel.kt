@@ -12,13 +12,13 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
-import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.errorStringRes
@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 class RushViewModel(
     private val repo: SongRepo,
     private val imageLoader: ImageLoader,
-    private val datastore: RushDatastore,
+    private val datastore: PrefDatastore,
 ) : ViewModel() {
 
     private var savedJob: Job? = null
