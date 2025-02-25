@@ -13,7 +13,6 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.data.Settings
-import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
@@ -239,7 +238,12 @@ class RushViewModel(
                 }
 
                 is LyricsPageAction.OnUpdateShareLines -> {
-                    updateShareLines(action.songDetails, _lyricsState.value.selectedLines)
+                    _shareState.update {
+                        it.copy(
+                            songDetails = action.songDetails,
+                            selectedLines = sortMapByKeys(_lyricsState.value.selectedLines)
+                        )
+                    }
                 }
 
                 is LyricsPageAction.OnUpdateSongLyrics -> {
@@ -302,7 +306,7 @@ class RushViewModel(
                 }
 
                 is SavedPageAction.OnDeleteSong -> {
-                    deleteSong(action.song.id)
+                    repo.deleteSong(action.song.id)
                 }
 
                 SavedPageAction.OnToggleAutoChange -> {
@@ -364,22 +368,6 @@ class RushViewModel(
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
             }
         }
-    }
-
-    private fun updateShareLines(
-        songDetails: SongDetails,
-        shareLines: Map<Int, String>
-    ) {
-        _shareState.update {
-            it.copy(
-                songDetails = songDetails,
-                selectedLines = sortMapByKeys(shareLines)
-            )
-        }
-    }
-
-    private suspend fun deleteSong(songId: Long) {
-        repo.deleteSong(songId)
     }
 
     private suspend fun updateLrcLyrics(
@@ -582,7 +570,7 @@ class RushViewModel(
                         playingSong = it.playingSong,
                         source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                         syncedAvailable = result.syncedLyrics != null,
-                        sync = getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase()
+                        sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase())
                     )
                 }
             } else {
@@ -605,7 +593,7 @@ class RushViewModel(
                                 playingSong = it.playingSong,
                                 source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                                 syncedAvailable = retrievedSong.syncedLyrics != null,
-                                sync = getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(retrievedSong.title).trim().lowercase()
+                                sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(retrievedSong.title).trim().lowercase())
                             )
                         }
                     }
