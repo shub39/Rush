@@ -93,7 +93,32 @@ fun LyricsPage(
     // Content Start
     Box {
         Card(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .let {
+                    if (settings.hypnoticCanvas) {
+                        it.shaderBackground(
+                            MeshGradient(
+                                colors = generateGradientColors(
+                                    color1 = hypnoticColor1,
+                                    color2 = hypnoticColor2,
+                                    steps = 6
+                                ).toTypedArray()
+                            ),
+                            fallback = {
+                                Brush.horizontalGradient(
+                                    generateGradientColors(
+                                        color1 = hypnoticColor1,
+                                        color2 = hypnoticColor2,
+                                        steps = 6
+                                    )
+                                )
+                            }
+                        )
+                    } else {
+                        it
+                    }
+                }
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
                 contentColor = cardContent
@@ -118,7 +143,7 @@ fun LyricsPage(
 
                 } else if (state.song == null) {
 
-                    Empty()
+                    Empty(suggestion = false)
 
                 } else {
 

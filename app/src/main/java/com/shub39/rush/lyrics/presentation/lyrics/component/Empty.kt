@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 
 @Composable
-fun Empty() {
+fun Empty(
+    suggestion: Boolean = true
+) {
     val color = Color.LightGray.copy(0.5f)
 
     Column(
@@ -37,9 +39,11 @@ fun Empty() {
             color = color
         )
 
-        Text(
-            text = stringResource(id = R.string.suggestion),
-            color = color
-        )
+        if (suggestion) {
+            Text(
+                text = stringResource(id = R.string.suggestion),
+                color = color
+            )
+        }
     }
 }
