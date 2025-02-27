@@ -1,8 +1,10 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.ContextWrapper
 import com.shub39.rush.lyrics.domain.Lyric
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
@@ -62,4 +64,13 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
     } else {
         lyrics.indexOfLast { it.time <= playbackPosition }
     }
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
 }
