@@ -1,6 +1,7 @@
 package com.shub39.rush.core.domain
 
 import com.materialkolor.PaletteStyle
+import com.shub39.rush.lyrics.presentation.saved.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 interface PrefDatastore {
@@ -19,8 +20,8 @@ interface PrefDatastore {
     fun getMaxLinesFlow(): Flow<Int>
     suspend fun updateMaxLines(newMaxLines: Int)
 
-    fun getSortOrderFlow(): Flow<String>
-    suspend fun updateSortOrder(newSortOrder: String)
+    fun getSortOrderFlow(): Flow<SortOrder>
+    suspend fun updateSortOrder(newSortOrder: SortOrder)
 
     fun getHypnoticCanvasFlow(): Flow<Boolean>
     suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean)

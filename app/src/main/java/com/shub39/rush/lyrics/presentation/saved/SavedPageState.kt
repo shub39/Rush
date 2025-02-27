@@ -10,5 +10,6 @@ data class SavedPageState(
     val songsDesc: List<Song> = emptyList(),
     val groupedAlbum: List<Map.Entry<String, List<Song>>> = emptyList(),
     val groupedArtist: List<Map.Entry<String, List<Song>>> = emptyList(),
-    val autoChange: Boolean = false
+    val sortOrder: SortOrder = SortOrder.ALBUM_ASC,
+    val onboarding: Boolean = true
 )

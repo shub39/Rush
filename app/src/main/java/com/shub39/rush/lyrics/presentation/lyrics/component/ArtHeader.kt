@@ -11,23 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.presentation.ArtFromUrl
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
+import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 
 
 @Composable
 fun ArtHeader(
     top: Int,
-    settings: Settings,
-    song: SongUi,
+    state: LyricsPageState,
     cardContent: Color,
     cardBackground: Color
 ) {
     Column {
-        AnimatedVisibility(top > 2 && !settings.hypnoticCanvas) {
+        AnimatedVisibility(top > 2 && !state.hypnoticCanvas) {
             ArtFromUrl(
-                imageUrl = song.artUrl,
+                imageUrl = state.song?.artUrl!!,
                 highlightColor = cardContent,
                 baseColor = Color.Transparent,
                 modifier = Modifier

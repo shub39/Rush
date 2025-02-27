@@ -1,4 +1,4 @@
-package com.shub39.rush.share
+package com.shub39.rush.lyrics.presentation.share
 
 import android.content.ContentValues
 import android.content.Context

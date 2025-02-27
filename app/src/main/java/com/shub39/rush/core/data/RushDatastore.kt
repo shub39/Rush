@@ -69,11 +69,14 @@ class RushDatastore(
         }
     }
 
-    override fun getSortOrderFlow(): Flow<String> = dataStore.data
-        .map { preferences -> preferences[sortOrder] ?: SortOrder.TITLE_ASC.sortOrder }
-    override suspend fun updateSortOrder(newSortOrder: String) {
+    override fun getSortOrderFlow(): Flow<SortOrder> = dataStore.data
+        .map { preferences ->
+            val order = preferences[sortOrder] ?: SortOrder.TITLE_ASC.name
+            SortOrder.valueOf(order.uppercase())
+        }
+    override suspend fun updateSortOrder(newSortOrder: SortOrder) {
         dataStore.edit { settings ->
-            settings[sortOrder] = newSortOrder
+            settings[sortOrder] = newSortOrder.name
         }
     }
 

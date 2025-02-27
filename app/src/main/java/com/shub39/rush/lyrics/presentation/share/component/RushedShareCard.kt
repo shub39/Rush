@@ -1,9 +1,6 @@
-package com.shub39.rush.share.component
+package com.shub39.rush.lyrics.presentation.share.component
 
-import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +18,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -39,23 +34,23 @@ import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
 
 @Composable
-fun ImageShareCard(
+fun RushedShareCard(
     modifier: Modifier,
     song: SongDetails,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
-    cardCorners: RoundedCornerShape,
-    selectedUri: Uri?
+    cardCorners: RoundedCornerShape
 ) {
-    var blur by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.clickable { blur = !blur }) {
-        Box(modifier = modifier.clip(cardCorners)) {
+    Box {
+        Box(
+            modifier = modifier
+                .clip(cardCorners),
+        ) {
             ArtFromUrl(
-                imageUrl = selectedUri ?: song.artUrl,
+                imageUrl = song.artUrl,
                 modifier = Modifier
                     .matchParentSize()
-                    .blur(if (blur) 5.dp else 0.dp)
+                    .blur(5.dp)
             )
 
             Box(
@@ -71,22 +66,40 @@ fun ImageShareCard(
                         )
                     )
                     .matchParentSize()
+                    .align(Alignment.BottomCenter)
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                cardColors.containerColor,
+                                cardColors.containerColor.copy(0.3f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+                    .matchParentSize()
+                    .align(Alignment.TopCenter)
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(28.dp)
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.Center)
             ) {
                 LazyColumn(
-                    modifier = Modifier.wrapContentHeight(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    modifier = Modifier
+                        .wrapContentHeight()
                 ) {
                     items(sortedLines.values.toList()) {
                         var variant by remember { mutableStateOf(false) }
 
                         Card(
+                            modifier = Modifier.padding(bottom = 8.dp),
                             shape = MaterialTheme.shapes.small,
                             colors = when (variant) {
                                 true -> CardDefaults.cardColors(
@@ -105,7 +118,7 @@ fun ImageShareCard(
                                     top = 4.dp,
                                     bottom = 4.dp
                                 ),
-                                fontSize = with(LocalDensity.current) { 35.toSp() },
+                                fontSize = with(LocalDensity.current) { 40.toSp() },
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyMedium
                             )
@@ -121,7 +134,7 @@ fun ImageShareCard(
                         imageUrl = song.artUrl,
                         modifier = Modifier
                             .clip(MaterialTheme.shapes.small)
-                            .size(50.dp)
+                            .size(70.dp)
                     )
 
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -141,7 +154,7 @@ fun ImageShareCard(
                             text = song.artist,
                             style = MaterialTheme.typography.bodySmall,
                             color = cardColors.contentColor,
-                            fontSize = with(LocalDensity.current) { 30.toSp() },
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -149,5 +162,6 @@ fun ImageShareCard(
                 }
             }
         }
+
     }
 }

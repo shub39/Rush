@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.lyrics
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.shub39.rush.core.data.ExtractedColors
+import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
@@ -15,6 +16,7 @@ data class LyricsPageState(
     val searching: Pair<Boolean, String> = Pair(false, ""),
     @StringRes val error: Int? = null,
     val autoChange: Boolean = false,
+    val searchSheet: Boolean = false,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),
@@ -22,7 +24,10 @@ data class LyricsPageState(
     val sync: Boolean = false,
     val lyricsCorrect: Boolean = false,
     val source: Sources = Sources.LrcLib,
-    val selectedLines: Map<Int, String> = emptyMap()
+    val selectedLines: Map<Int, String> = emptyMap(),
+    val cardColors: CardColors = CardColors.MUTED,
+    val hypnoticCanvas: Boolean = false,
+    val maxLines: Int = 6
 )
 
 @Immutable

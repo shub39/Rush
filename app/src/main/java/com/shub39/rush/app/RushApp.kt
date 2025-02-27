@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,22 +26,28 @@ import com.shub39.rush.lyrics.presentation.setting.Backup
 import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
 import com.shub39.rush.lyrics.presentation.setting.LookAndFeel
 import com.shub39.rush.lyrics.presentation.setting.SettingPage
-import com.shub39.rush.lyrics.presentation.setting.SettingsVM
+import com.shub39.rush.lyrics.presentation.share.SharePage
+import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
 import com.shub39.rush.onboarding.OnboardingDialog
-import com.shub39.rush.share.SharePage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RushApp(
-    rushViewModel: RushViewModel = koinViewModel(),
-    settingsVM: SettingsVM = koinViewModel()
+    settingsVM: SettingsVM = koinViewModel(),
+    lyricsVM: LyricsVM = koinViewModel(),
+    shareVM: ShareVM = koinViewModel(),
+    searchSheetVM: SearchSheetVM = koinViewModel(),
+    savedVM: SavedVM = koinViewModel()
 ) {
-    val lyricsState by rushViewModel.lyricsState.collectAsStateWithLifecycle()
-    val savedState by rushViewModel.savedState.collectAsStateWithLifecycle()
-    val shareState by rushViewModel.shareState.collectAsStateWithLifecycle()
+    val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val settingsState by settingsVM.state.collectAsStateWithLifecycle()
-    val searchSheetState by rushViewModel.searchState.collectAsStateWithLifecycle()
-    val datastoreSettings by rushViewModel.datastoreSettings.collectAsStateWithLifecycle()
+    val shareState by shareVM.state.collectAsStateWithLifecycle()
+    val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
+    val savedState by savedVM.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -69,14 +74,26 @@ fun RushApp(
                         state = savedState,
                         currentSong = lyricsState.song,
                         notificationAccess = NotificationListener.canAccessNotifications(context),
-                        action = rushViewModel::onSavedPageAction,
-                        settings = datastoreSettings,
+                        action = savedVM::onAction,
+                        autoChange = lyricsState.autoChange,
                         navigator = {
                             navController.navigate(it) {
                                 launchSingleTop = true
                             }
                         }
                     )
+
+                    if (lyricsState.searchSheet) {
+                        SearchSheet(
+                            state = searchState,
+                            action = searchSheetVM::onAction,
+                            onClick = {
+                                navController.navigate(Route.LyricsPage) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
+                    }
                 }
             }
 
@@ -84,24 +101,17 @@ fun RushApp(
                 startDestination = Route.LyricsPage
             ) {
                 composable<Route.SharePage> {
-                    Scaffold { paddingValues ->
-                        SharePage(
-                            onDismiss = {
-                                navController.navigateUp()
-                            },
-                            state = shareState,
-                            paddingValues = paddingValues,
-                            settings = datastoreSettings,
-                            action = rushViewModel::onSharePageAction
-                        )
-                    }
+                    SharePage(
+                        onDismiss = { navController.navigateUp() },
+                        state = shareState,
+                        action = shareVM::onAction
+                    )
                 }
 
                 composable<Route.LyricsPage> {
                     LyricsPage(
                         state = lyricsState,
-                        settings = datastoreSettings,
-                        action = rushViewModel::onLyricsPageAction,
+                        action = lyricsVM::onAction,
                         onShare = {
                             navController.navigate(Route.SharePage) {
                                 launchSingleTop = true
@@ -109,6 +119,18 @@ fun RushApp(
                         },
                         notificationAccess = NotificationListener.canAccessNotifications(context)
                     )
+
+                    if (lyricsState.searchSheet) {
+                        SearchSheet(
+                            state = searchState,
+                            action = searchSheetVM::onAction,
+                            onClick = {
+                                navController.navigate(Route.LyricsPage) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
+                    }
                 }
             }
 
@@ -155,19 +177,7 @@ fun RushApp(
             }
         }
 
-        if (searchSheetState.visible) {
-            SearchSheet(
-                state = searchSheetState,
-                action = rushViewModel::onSearchSheetAction,
-                onClick = {
-                    navController.navigate(Route.LyricsPage) {
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
-
-        if (!datastoreSettings.onboardingDone) {
+        if (!savedState.onboarding) {
             OnboardingDialog()
         }
     }

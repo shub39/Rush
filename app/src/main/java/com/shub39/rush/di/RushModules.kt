@@ -4,7 +4,6 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.lyrics.data.database.DatabaseFactory
 import com.shub39.rush.lyrics.data.database.SongDatabase
-import com.shub39.rush.app.RushViewModel
 import com.shub39.rush.core.data.DatastoreFactory
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.core.data.RushDatastore
@@ -15,7 +14,12 @@ import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
 import com.shub39.rush.lyrics.data.network.GeniusApi
 import com.shub39.rush.lyrics.data.network.LrcLibApi
 import com.shub39.rush.lyrics.data.network.GeniusScraper
-import com.shub39.rush.lyrics.presentation.setting.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
+import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
+import com.shub39.rush.lyrics.presentation.viewmodels.StateLayer
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import org.koin.core.module.dsl.singleOf
@@ -47,7 +51,11 @@ val rushModules = module {
     single { get<DatastoreFactory>().getPreferencesDataStore() }
     singleOf(::RushDatastore).bind<PrefDatastore>()
 
-    viewModelOf(::RushViewModel)
+    singleOf(::StateLayer)
+    viewModelOf(::SearchSheetVM)
+    viewModelOf(::ShareVM)
+    viewModelOf(::SavedVM)
+    viewModelOf(::LyricsVM)
     viewModelOf(::SettingsVM)
 
     singleOf(::provideImageLoader)

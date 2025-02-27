@@ -9,6 +9,5 @@ data class SearchSheetState (
     val searchResults: List<SearchResult> = emptyList(),
     val localSearchResults: List<SearchResult> = emptyList(),
     val isSearching: Boolean = false,
-    val visible: Boolean = false,
     val error: Int? = null
 )
