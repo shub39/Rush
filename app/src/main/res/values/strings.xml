@@ -94,4 +94,5 @@
     <string name="default_">Default</string>
     <string name="material_theme">Material Theme</string>
     <string name="material_theme_desc">Theme based on your wallpaper</string>
+    <string name="font">Select app font</string>
 </resources>

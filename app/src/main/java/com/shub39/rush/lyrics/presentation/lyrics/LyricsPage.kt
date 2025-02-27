@@ -47,6 +47,7 @@ import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.findActivity
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
@@ -86,7 +87,7 @@ fun LyricsPage(
         insetsController.apply {
             hide(WindowInsetsCompat.Type.statusBars())
             hide(WindowInsetsCompat.Type.navigationBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
 
         onDispose {

@@ -13,6 +13,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.lyrics.presentation.saved.SortOrder
 import kotlinx.coroutines.flow.Flow
@@ -188,6 +189,17 @@ class RushDatastore(
         }
     }
 
+    override fun getFontFlow(): Flow<Fonts> = dataStore.data
+        .map { prefs ->
+            val font = prefs[selectedFont] ?: Fonts.POPPINS.name
+            Fonts.valueOf(font)
+        }
+    override suspend fun updateFonts(font: Fonts) {
+        dataStore.edit { settings ->
+            settings[selectedFont] = font.name
+        }
+    }
+
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
@@ -205,5 +217,6 @@ class RushDatastore(
         private val lyricsColor = stringPreferencesKey("lyrics_color")
         private val cardFit = stringPreferencesKey("card_fit")
         private val onboardingDone = booleanPreferencesKey("onboarding_done")
+        private val selectedFont = stringPreferencesKey("font")
     }
 }
