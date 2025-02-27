@@ -1,4 +1,7 @@
 *.iml
+app/beta
+app/play
+app/release
 .gradle
 /local.properties
 .idea
