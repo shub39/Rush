@@ -14,6 +14,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -81,7 +83,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.PageFill
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun LookAndFeel(
     state: SettingsPageState,
@@ -139,7 +141,7 @@ fun LookAndFeel(
                     supportingContent = {
                         val scrollState = rememberScrollState()
 
-                        Row(
+                        FlowRow(
                             modifier = Modifier
                                 .horizontalScroll(scrollState)
                                 .padding(8.dp),

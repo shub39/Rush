@@ -4,6 +4,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,8 +27,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,19 +84,17 @@ fun LyricsPage(
 
     // going fullscreen
     DisposableEffect(Unit) {
-        val window = context.findActivity()?.window ?: return@DisposableEffect onDispose {  }
+        val window = context.findActivity()?.window ?: return@DisposableEffect onDispose {}
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
         insetsController.apply {
-            hide(WindowInsetsCompat.Type.statusBars())
-            hide(WindowInsetsCompat.Type.navigationBars())
+            hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
 
         onDispose {
             insetsController.apply {
-                show(WindowInsetsCompat.Type.statusBars())
-                show(WindowInsetsCompat.Type.navigationBars())
+                show(WindowInsetsCompat.Type.systemBars())
                 systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
             }
         }
@@ -104,6 +105,15 @@ fun LyricsPage(
     val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+    var meshSpeed by remember { mutableStateOf(MeshSpeed._1x) }
+    val hypnoticSpeed by animateFloatAsState(
+        targetValue = when (meshSpeed) {
+            MeshSpeed._1x -> 1f
+            MeshSpeed._2x -> 2f
+            MeshSpeed._3x -> 3f
+            MeshSpeed._0_5x -> 0.5f
+        }
+    )
 
     LaunchedEffect(state.song) {
         delay(100)
@@ -122,7 +132,8 @@ fun LyricsPage(
                                     color1 = hypnoticColor1,
                                     color2 = hypnoticColor2,
                                     steps = 6
-                                ).toTypedArray()
+                                ).toTypedArray(),
+                                speed = hypnoticSpeed
                             ),
                             fallback = {
                                 Brush.horizontalGradient(
@@ -230,7 +241,6 @@ fun LyricsPage(
                             ActionsRow(
                                 state,
                                 context,
-                                state.song,
                                 action,
                                 notificationAccess,
                                 cardBackground,

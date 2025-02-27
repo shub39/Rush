@@ -12,6 +12,7 @@ enum class Fonts(
     FIGTREE("Figtree", R.font.figtree),
     INTER("Inter", R.font.inter),
     MANROPE("Manrope", R.font.manrope),
+    MONTSERRAT("Montserrat", R.font.montserrat),
     OPEN_SANS("Open Sans", R.font.open_sans),
     OUTFIT("Outfit", R.font.outfit),
     QUICKSAND("Quicksand", R.font.quicksand)

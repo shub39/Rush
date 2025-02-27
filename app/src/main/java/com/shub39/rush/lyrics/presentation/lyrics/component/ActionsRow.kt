@@ -23,14 +23,12 @@ import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.copyToClipBoard
 
 @Composable
 fun ActionsRow(
     state: LyricsPageState,
     context: Context,
-    song: SongUi,
     action: (LyricsPageAction) -> Unit,
     notificationAccess: Boolean,
     cardBackground: Color,
@@ -50,10 +48,9 @@ fun ActionsRow(
                         copyToClipBoard(
                             context,
                             if (state.source == Sources.LrcLib) {
-                                song.lyrics.joinToString("\n") { it.value }
+                                state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
                             } else {
-                                song.geniusLyrics?.joinToString("\n") { it.value }
-                                    ?: ""
+                                state.song?.geniusLyrics?.joinToString("\n") { it.value } ?: ""
                             },
                             "Complete Lyrics"
                         )
@@ -176,13 +173,14 @@ fun ActionsRow(
                         action(
                             LyricsPageAction.OnUpdateShareLines(
                                 songDetails = SongDetails(
-                                    title = song.title,
-                                    artist = song.artists,
-                                    album = song.album,
-                                    artUrl = song.artUrl ?: ""
+                                    title = state.song?.title!!,
+                                    artist = state.song.artists,
+                                    album = state.song.album,
+                                    artUrl = state.song.artUrl ?: ""
                                 )
                             )
                         )
+                        
                         onShare()
                     }) {
                         Icon(
@@ -191,9 +189,9 @@ fun ActionsRow(
                         )
                     }
 
-                    IconButton(onClick = {
-                        action(LyricsPageAction.OnChangeSelectedLines(emptyMap()))
-                    }) {
+                    IconButton(
+                        onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
+                    ) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
                             contentDescription = null

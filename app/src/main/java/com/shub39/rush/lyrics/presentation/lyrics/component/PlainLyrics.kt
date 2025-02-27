@@ -142,7 +142,7 @@ fun PlainLyrics(
 
         // Bottom Actions Row
         item {
-            Spacer(modifier = Modifier.padding(10.dp))
+            Spacer(modifier = Modifier.padding(top = 110.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

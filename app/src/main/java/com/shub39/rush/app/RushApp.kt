@@ -1,8 +1,5 @@
 package com.shub39.rush.app
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -60,11 +57,7 @@ fun RushApp(
             startDestination = Route.HomeGraph,
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-            enterTransition = { fadeIn(animationSpec = tween(300)) },
-            exitTransition = { fadeOut(animationSpec = tween(300)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(300)) }
+                .fillMaxSize()
         ) {
             navigation<Route.HomeGraph>(
                 startDestination = Route.SavedPage
