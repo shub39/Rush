@@ -240,7 +240,8 @@ class SearchSheetVM(
                         source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                         syncedAvailable = result.syncedLyrics != null,
                         sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase()),
-                        selectedLines = emptyMap()
+                        selectedLines = emptyMap(),
+                        error = null
                     )
                 }
 
@@ -265,7 +266,8 @@ class SearchSheetVM(
                                 sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                                     .lowercase() == getMainTitle(retrievedSong.title).trim()
                                     .lowercase()),
-                                selectedLines = emptyMap()
+                                selectedLines = emptyMap(),
+                                error = null
                             )
                         }
                     }
