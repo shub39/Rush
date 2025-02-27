@@ -37,12 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
-import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.updateSelectedLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -51,10 +49,8 @@ import kotlinx.coroutines.launch
 fun PlainLyrics(
     lazyListState: LazyListState,
     state: LyricsPageState,
-    song: SongUi,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
-    settings: Settings,
     coroutineScope: CoroutineScope,
     context: Context
 ) {
@@ -73,8 +69,7 @@ fun PlainLyrics(
         state = lazyListState
     ) {
         items(
-            items = if (state.source == Sources.LrcLib) song.lyrics else song.geniusLyrics
-                ?: emptyList(),
+            items = if (state.source == Sources.LrcLib) state.song?.lyrics!! else state.song?.geniusLyrics!!,
             key = { it.key }
         ) {
             if (it.value.isNotBlank()) {
@@ -101,7 +96,7 @@ fun PlainLyrics(
                                         state.selectedLines,
                                         it.key,
                                         it.value,
-                                        settings.maxLines
+                                        state.maxLines
                                     )
                                 )
                             )
@@ -132,7 +127,7 @@ fun PlainLyrics(
         }
 
         // Lyrics not found from LRCLIB
-        if (song.lyrics.isEmpty() && state.source != Sources.Genius) {
+        if (state.song.lyrics.isEmpty() && state.source != Sources.Genius) {
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -167,7 +162,7 @@ fun PlainLyrics(
                             lazyListState.scrollToItem(0)
                         }
                     },
-                    enabled = if (state.source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
+                    enabled = if (state.source == Sources.LrcLib) state.song.lyrics.isNotEmpty() else !state.song.geniusLyrics.isNullOrEmpty()
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_arrow_upward_24),
@@ -179,7 +174,7 @@ fun PlainLyrics(
                     onClick = {
                         openLinkInBrowser(
                             context,
-                            song.sourceUrl
+                            state.song.sourceUrl
                         )
                     },
                     colors = ButtonDefaults.buttonColors(

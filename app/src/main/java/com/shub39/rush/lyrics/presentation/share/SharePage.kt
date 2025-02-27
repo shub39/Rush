@@ -1,4 +1,4 @@
-package com.shub39.rush.share
+package com.shub39.rush.lyrics.presentation.share
 
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -11,7 +11,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,16 +58,15 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
-import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
-import com.shub39.rush.share.component.HypnoticShareCard
-import com.shub39.rush.share.component.ImageShareCard
-import com.shub39.rush.share.component.ListSelect
-import com.shub39.rush.share.component.RushedShareCard
-import com.shub39.rush.share.component.SpotifyShareCard
+import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
+import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
+import com.shub39.rush.lyrics.presentation.share.component.ListSelect
+import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
+import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,8 +75,6 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
-    paddingValues: PaddingValues,
-    settings: Settings
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
@@ -94,7 +91,7 @@ fun SharePage(
         selectedUri = uri
     }
 
-    val modifier = if (settings.cardFit == CardFit.FIT) {
+    val modifier = if (state.cardFit == CardFit.FIT) {
         Modifier
             .width(360.dp)
             .drawWithContent {
@@ -116,23 +113,23 @@ fun SharePage(
     }
 
     val cornerRadius by animateDpAsState(
-        targetValue = when (settings.cardRoundness) {
+        targetValue = when (state.cardRoundness) {
             CornerRadius.DEFAULT -> 0.dp
             CornerRadius.ROUNDED -> 16.dp
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
-        targetValue = when (settings.cardColor) {
+        targetValue = when (state.cardColors) {
             CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
             CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant
-            CardColors.CUSTOM -> Color(settings.cardBackground)
+            CardColors.CUSTOM -> Color(state.cardBackground)
         }, label = "container"
     )
     val contentColor by animateColorAsState(
-        targetValue = when (settings.cardColor) {
+        targetValue = when (state.cardColors) {
             CardColors.MUTED -> state.extractedColors.cardContentMuted
             CardColors.VIBRANT -> state.extractedColors.cardContentDominant
-            CardColors.CUSTOM -> Color(settings.cardContent)
+            CardColors.CUSTOM -> Color(state.cardContent)
         }, label = "content"
     )
     val cardColor = CardDefaults.cardColors(
@@ -143,159 +140,161 @@ fun SharePage(
 
     BackHandler { onDismiss() }
 
-    Box(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-
-        when (settings.cardTheme) {
-            CardTheme.SPOTIFY -> SpotifyShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners,
-                fit = settings.cardFit
-            )
-
-            CardTheme.RUSHED -> RushedShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners
-            )
-
-            CardTheme.IMAGE -> ImageShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners,
-                selectedUri = selectedUri
-            )
-
-            CardTheme.HYPNOTIC -> HypnoticShareCard(
-                modifier = modifier,
-                song = state.songDetails,
-                sortedLines = state.selectedLines,
-                cardColors = cardColor,
-                cardCorners = cardCorners,
-                fit = settings.cardFit
-            )
-        }
-
-        Row(
+    Scaffold { paddingValues ->
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp)
+                .padding(paddingValues)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            AnimatedVisibility(
-                visible = settings.cardColor == CardColors.CUSTOM
+
+            when (state.cardTheme) {
+                CardTheme.SPOTIFY -> SpotifyShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    fit = state.cardFit
+                )
+
+                CardTheme.RUSHED -> RushedShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners
+                )
+
+                CardTheme.IMAGE -> ImageShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    selectedUri = selectedUri
+                )
+
+                CardTheme.HYPNOTIC -> HypnoticShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    fit = state.cardFit
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.dp)
             ) {
-                Row {
-                    FloatingActionButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                editTarget = "content"
-                                colorPicker = true
-                            }
-                        },
-                        containerColor = Color(settings.cardContent),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        content = {}
-                    )
+                AnimatedVisibility(
+                    visible = state.cardColors == CardColors.CUSTOM
+                ) {
+                    Row {
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    editTarget = "content"
+                                    colorPicker = true
+                                }
+                            },
+                            containerColor = Color(state.cardContent),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            content = {}
+                        )
 
-                    Spacer(modifier = Modifier.padding(4.dp))
+                        Spacer(modifier = Modifier.padding(4.dp))
 
-                    FloatingActionButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                editTarget = "background"
-                                colorPicker = true
-                            }
-                        },
-                        containerColor = Color(settings.cardBackground),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        content = {}
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    editTarget = "background"
+                                    colorPicker = true
+                                }
+                            },
+                            containerColor = Color(state.cardBackground),
+                            shape = MaterialTheme.shapes.extraLarge,
+                            content = {}
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                FloatingActionButton(
+                    onClick = { namePicker = true },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    shape = MaterialTheme.shapes.extraLarge
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_download_done_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(4.dp))
 
-            FloatingActionButton(
-                onClick = { namePicker = true },
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_download_done_24),
-                    contentDescription = null,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-
-                        shareImage(
-                            context,
-                            bitmap,
-                            "${state.songDetails.artist}-${state.songDetails.title}.png"
-                        )
-
-                        onDismiss()
-                    }
-                },
-                shape = MaterialTheme.shapes.extraLarge,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_share_24),
-                    contentDescription = null
-                )
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            FloatingActionButton(
-                onClick = { editSheet = true },
-                shape = MaterialTheme.shapes.extraLarge,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    painterResource(R.drawable.baseline_edit_square_24),
-                    contentDescription = null
-                )
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            AnimatedVisibility(
-                visible = settings.cardTheme == CardTheme.IMAGE
-            ) {
                 FloatingActionButton(
                     onClick = {
-                        launcher.launch(
-                            PickVisualMediaRequest(
-                                PickVisualMedia.ImageOnly
+                        coroutineScope.launch {
+                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+
+                            shareImage(
+                                context,
+                                bitmap,
+                                "${state.songDetails.artist}-${state.songDetails.title}.png"
                             )
-                        )
+
+                            onDismiss()
+                        }
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_photo_library_24),
+                        painter = painterResource(id = R.drawable.round_share_24),
                         contentDescription = null
                     )
+                }
+
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                FloatingActionButton(
+                    onClick = { editSheet = true },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        painterResource(R.drawable.baseline_edit_square_24),
+                        contentDescription = null
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                AnimatedVisibility(
+                    visible = state.cardTheme == CardTheme.IMAGE
+                ) {
+                    FloatingActionButton(
+                        onClick = {
+                            launcher.launch(
+                                PickVisualMediaRequest(
+                                    PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
+                        shape = MaterialTheme.shapes.extraLarge,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_photo_library_24),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         }
@@ -349,7 +348,7 @@ fun SharePage(
                 ListSelect(
                     title = stringResource(R.string.card_theme),
                     options = CardTheme.entries.toList(),
-                    selected = settings.cardTheme,
+                    selected = state.cardTheme,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardTheme(it))
                     },
@@ -359,7 +358,7 @@ fun SharePage(
                 ListSelect(
                     title = stringResource(R.string.card_color),
                     options = CardColors.entries.toList(),
-                    selected = settings.cardColor,
+                    selected = state.cardColors,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardColor(it))
                     },
@@ -369,7 +368,7 @@ fun SharePage(
                 ListSelect(
                     title = stringResource(R.string.card_size),
                     options = CardFit.entries.toList(),
-                    selected = settings.cardFit,
+                    selected = state.cardFit,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardFit(it))
                     },
@@ -379,7 +378,7 @@ fun SharePage(
                 ListSelect(
                     title = stringResource(R.string.card_corners),
                     options = CornerRadius.entries.toList(),
-                    selected = settings.cardRoundness,
+                    selected = state.cardRoundness,
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardRoundness(it))
                     },
@@ -410,9 +409,7 @@ fun SharePage(
                             .width(350.dp)
                             .height(300.dp)
                             .padding(10.dp),
-                        initialColor = if (editTarget == "content") Color(settings.cardContent) else Color(
-                            settings.cardBackground
-                        ),
+                        initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
                         controller = colorPickerController
                     )
 
@@ -420,9 +417,7 @@ fun SharePage(
                         modifier = Modifier
                             .padding(10.dp)
                             .height(35.dp),
-                        initialColor = if (editTarget == "content") Color(settings.cardContent) else Color(
-                            settings.cardBackground
-                        ),
+                        initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
                         controller = colorPickerController
                     )
 

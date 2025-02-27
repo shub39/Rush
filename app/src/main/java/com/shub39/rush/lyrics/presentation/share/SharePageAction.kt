@@ -1,4 +1,4 @@
-package com.shub39.rush.share
+package com.shub39.rush.lyrics.presentation.share
 
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit

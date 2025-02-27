@@ -40,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.PageFill
@@ -54,9 +53,9 @@ import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 fun SavedPage(
     state: SavedPageState,
     currentSong: SongUi?,
+    autoChange: Boolean,
     notificationAccess: Boolean,
     action: (SavedPageAction) -> Unit,
-    settings: Settings,
     navigator: (Route) -> Unit
 ) = PageFill {
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
@@ -134,11 +133,11 @@ fun SavedPage(
                         IconButton(
                             onClick = {
                                 action(SavedPageAction.OnToggleAutoChange)
-                                if (!state.autoChange) {
+                                if (!autoChange) {
                                     navigator(Route.LyricsGraph)
                                 }
                             },
-                            colors = if (state.autoChange) {
+                            colors = if (autoChange) {
                                 IconButtonDefaults.filledIconButtonColors()
                             } else {
                                 IconButtonDefaults.iconButtonColors()
@@ -183,9 +182,9 @@ fun SavedPage(
                 ) {
                     items(sortOrderChips, key = { it.textId }) {
                         FilterChip(
-                            selected = it.sortOrder == settings.sortOrder,
+                            selected = it == state.sortOrder,
                             onClick = {
-                                action(SavedPageAction.UpdateSortOrder(it.sortOrder))
+                                action(SavedPageAction.UpdateSortOrder(it))
                             },
                             label = {
                                 Text(
@@ -199,7 +198,7 @@ fun SavedPage(
                 }
 
                 AnimatedContent(
-                    targetState = settings.sortOrder
+                    targetState = state.sortOrder
                 ) { sortOrder ->
                     var expandedCardId by rememberSaveable {
                         mutableStateOf<String?>(
@@ -215,7 +214,7 @@ fun SavedPage(
                             .animateContentSize()
                     ) {
                         when (sortOrder) {
-                            SortOrder.DATE_ADDED.sortOrder -> items(state.songsByTime, key = { it.id }) {
+                            SortOrder.DATE_ADDED -> items(state.songsByTime, key = { it.id }) {
                                 SongCard(
                                     result = it,
                                     onDelete = {
@@ -228,7 +227,7 @@ fun SavedPage(
                                 )
                             }
 
-                            SortOrder.TITLE_ASC.sortOrder -> items(state.songsAsc, key = { it.id }) {
+                            SortOrder.TITLE_ASC -> items(state.songsAsc, key = { it.id }) {
                                 SongCard(
                                     result = it,
                                     onDelete = {
@@ -241,7 +240,7 @@ fun SavedPage(
                                 )
                             }
 
-                            SortOrder.TITLE_DESC.sortOrder -> items(state.songsDesc, key = { it.id }) {
+                            SortOrder.TITLE_DESC -> items(state.songsDesc, key = { it.id }) {
                                 SongCard(
                                     result = it,
                                     onDelete = {
@@ -254,7 +253,7 @@ fun SavedPage(
                                 )
                             }
 
-                            SortOrder.ARTISTS_ASC.sortOrder -> items(state.groupedArtist, key = { it.key }) { map ->
+                            SortOrder.ARTISTS_ASC -> items(state.groupedArtist, key = { it.key }) { map ->
                                 GroupedCard(
                                     map = map,
                                     isExpanded = expandedCardId == map.key,
@@ -269,7 +268,7 @@ fun SavedPage(
                                 )
                             }
 
-                            SortOrder.ALBUM_ASC.sortOrder -> items(state.groupedAlbum, key = { it.key }) { map ->
+                            SortOrder.ALBUM_ASC -> items(state.groupedAlbum, key = { it.key }) { map ->
                                 GroupedCard(
                                     map = map,
                                     isExpanded = expandedCardId == map.key,

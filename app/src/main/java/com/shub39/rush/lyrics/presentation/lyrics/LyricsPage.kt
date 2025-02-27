@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
-import com.shub39.rush.core.data.Settings
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.generateGradientColors
@@ -62,8 +61,7 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
-    notificationAccess: Boolean,
-    settings: Settings
+    notificationAccess: Boolean
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -79,11 +77,9 @@ fun LyricsPage(
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
-    val (cardBackground, cardContent) = getCardColors(settings, state)
+    val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
-
-    val modifier = getModifier(settings, hypnoticColor1, hypnoticColor2)
 
     LaunchedEffect(state.song) {
         delay(100)
@@ -93,9 +89,34 @@ fun LyricsPage(
     // Content Start
     Box {
         Card(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier
+                .let {
+                    if (state.hypnoticCanvas) {
+                        it.shaderBackground(
+                            MeshGradient(
+                                colors = generateGradientColors(
+                                    color1 = hypnoticColor1,
+                                    color2 = hypnoticColor2,
+                                    steps = 6
+                                ).toTypedArray()
+                            ),
+                            fallback = {
+                                Brush.horizontalGradient(
+                                    generateGradientColors(
+                                        color1 = hypnoticColor1,
+                                        color2 = hypnoticColor2,
+                                        steps = 6
+                                    )
+                                )
+                            }
+                        )
+                    } else {
+                        it
+                    }
+                }
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
-                containerColor = if (settings.hypnoticCanvas) Color.Transparent else cardBackground,
+                containerColor = if (state.hypnoticCanvas) Color.Transparent else cardBackground,
                 contentColor = cardContent
             ),
             shape = RoundedCornerShape(0.dp)
@@ -118,7 +139,7 @@ fun LyricsPage(
 
                 } else if (state.song == null) {
 
-                    Empty()
+                    Empty(suggestion = false)
 
                 } else {
 
@@ -130,7 +151,7 @@ fun LyricsPage(
                     }
 
                     Box {
-                        ArtHeader(top, settings, state.song, cardContent, cardBackground)
+                        ArtHeader(top, state, cardContent, cardBackground)
 
                         Column(
                             modifier = Modifier.padding(top = 64.dp)
@@ -200,10 +221,8 @@ fun LyricsPage(
                         PlainLyrics(
                             lazyListState,
                             state,
-                            state.song,
                             cardContent,
                             action,
-                            settings,
                             coroutineScope,
                             context
                         )
@@ -246,36 +265,6 @@ fun LyricsPage(
 }
 
 @Composable
-private fun getModifier(
-    settings: Settings,
-    hypnoticColor1: Color,
-    hypnoticColor2: Color
-): Modifier {
-    return if (settings.hypnoticCanvas) {
-        Modifier.shaderBackground(
-            MeshGradient(
-                colors = generateGradientColors(
-                    color1 = hypnoticColor1,
-                    color2 = hypnoticColor2,
-                    steps = 6
-                ).toTypedArray()
-            ),
-            fallback = {
-                Brush.horizontalGradient(
-                    generateGradientColors(
-                        color1 = hypnoticColor1,
-                        color2 = hypnoticColor2,
-                        steps = 6
-                    )
-                )
-            }
-        )
-    } else {
-        Modifier
-    }
-}
-
-@Composable
 private fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by animateColorAsState(
         targetValue = state.extractedColors.cardBackgroundDominant,
@@ -290,18 +279,17 @@ private fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
 
 @Composable
 private fun getCardColors(
-    settings: Settings,
     state: LyricsPageState
 ): Pair<Color, Color> {
     val cardBackground by animateColorAsState(
-        targetValue = when (settings.lyricsColor) {
+        targetValue = when (state.cardColors) {
             CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
             else -> state.extractedColors.cardBackgroundDominant
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = when (settings.lyricsColor) {
+        targetValue = when (state.cardColors) {
             CardColors.MUTED -> state.extractedColors.cardContentMuted
             else -> state.extractedColors.cardContentDominant
         },
