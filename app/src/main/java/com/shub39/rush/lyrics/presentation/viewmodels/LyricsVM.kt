@@ -190,11 +190,7 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnToggleColorPref -> {
-                    _state.update {
-                        it.copy(
-                            useExtractedColors = action.pref
-                        )
-                    }
+                    datastore.updateUseExtractedFlow(action.pref)
                 }
 
                 is LyricsPageAction.OnUpdatemBackground -> {
@@ -211,6 +207,16 @@ class LyricsVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            datastore.getUseExtractedFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            useExtractedColors = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
             datastore.getCardBackgroundFlow()
                 .onEach { color ->
                     _state.update {

@@ -30,6 +30,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
@@ -111,6 +112,7 @@ fun PlainLyrics(
                         Text(
                             text = it.value,
                             fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(6.dp)
                         )
                     }

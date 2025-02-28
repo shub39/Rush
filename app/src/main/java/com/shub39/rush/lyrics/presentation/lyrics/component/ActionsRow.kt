@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics.component
 
-import android.content.Context
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.materialkolor.ktx.lighten
@@ -45,18 +46,17 @@ import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
-import com.shub39.rush.lyrics.presentation.lyrics.copyToClipBoard
 
 @Composable
 fun ActionsRow(
     state: LyricsPageState,
-    context: Context,
     action: (LyricsPageAction) -> Unit,
     notificationAccess: Boolean,
     cardBackground: Color,
     cardContent: Color,
     onShare: () -> Unit
 ) {
+    val clipboardManager = LocalClipboardManager.current
     var paletteDialog by remember { mutableStateOf(false) }
 
     Box(
@@ -78,22 +78,22 @@ fun ActionsRow(
             IconButton(
                 onClick = {
                     if (state.selectedLines.isEmpty()) {
-                        copyToClipBoard(
-                            context,
-                            if (state.source == Sources.LrcLib) {
-                                state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
-                            } else {
-                                state.song?.geniusLyrics?.joinToString("\n") { it.value } ?: ""
-                            },
-                            "Complete Lyrics"
+                        clipboardManager.setText(
+                            buildAnnotatedString {
+                                append(
+                                    if (state.source == Sources.LrcLib) {
+                                        state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
+                                    } else {
+                                        state.song?.geniusLyrics?.joinToString("\n") { it.value } ?: ""
+                                    }
+                                )
+                            }
                         )
                     } else {
-                        copyToClipBoard(
-                            context,
-                            state.selectedLines.toSortedMap().values.joinToString(
-                                "\n"
-                            ),
-                            "Selected Lyrics"
+                        clipboardManager.setText(
+                            buildAnnotatedString {
+                                append(state.selectedLines.toSortedMap().values.joinToString("\n"))
+                            }
                         )
                     }
                 }

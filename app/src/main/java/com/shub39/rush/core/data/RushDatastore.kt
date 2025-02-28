@@ -200,6 +200,16 @@ class RushDatastore(
         }
     }
 
+    override fun getUseExtractedFlow(): Flow<Boolean> = dataStore.data
+        .map { prefs ->
+            prefs[useExtracted] ?: true
+        }
+    override suspend fun updateUseExtractedFlow(pref: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[useExtracted] = pref
+        }
+    }
+
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val darkThemePref = stringPreferencesKey("use_dark_theme")
@@ -218,5 +228,6 @@ class RushDatastore(
         private val cardFit = stringPreferencesKey("card_fit")
         private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
+        private val useExtracted = booleanPreferencesKey("use_extracted")
     }
 }

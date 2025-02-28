@@ -55,4 +55,7 @@ interface PrefDatastore {
 
     fun getFontFlow(): Flow<Fonts>
     suspend fun updateFonts(font: Fonts)
+
+    fun getUseExtractedFlow(): Flow<Boolean>
+    suspend fun updateUseExtractedFlow(pref: Boolean)
 }

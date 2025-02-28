@@ -239,7 +239,6 @@ fun LyricsPage(
                             // Actions Row
                             ActionsRow(
                                 state,
-                                context,
                                 action,
                                 notificationAccess,
                                 cardBackground,
