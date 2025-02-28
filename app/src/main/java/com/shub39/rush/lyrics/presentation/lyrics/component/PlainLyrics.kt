@@ -142,10 +142,10 @@ fun PlainLyrics(
 
         // Bottom Actions Row
         item {
-            Spacer(modifier = Modifier.padding(top = 110.dp))
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(vertical = 100.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(

@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
@@ -41,7 +40,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -51,17 +49,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.skydoves.colorpicker.compose.AlphaTile
-import com.github.skydoves.colorpicker.compose.BrightnessSlider
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
-import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
@@ -78,7 +72,6 @@ fun SharePage(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
-    val colorPickerController = rememberColorPickerController()
     val context = LocalContext.current
 
     var namePicker by remember { mutableStateOf(false) }
@@ -389,73 +382,19 @@ fun SharePage(
     }
 
     if (colorPicker) {
-        BasicAlertDialog(
-            onDismissRequest = {
+        ColorPickerDialog(
+            initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
+            onSelect = {
+                if (editTarget == "content") {
+                    action(SharePageAction.OnUpdateCardContent(it.toArgb()))
+                } else {
+                    action(SharePageAction.OnUpdateCardBackground(it.toArgb()))
+                }
+            },
+            onDismiss = {
                 colorPicker = false
             }
-        ) {
-            Card(
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    HsvColorPicker(
-                        modifier = Modifier
-                            .width(350.dp)
-                            .height(300.dp)
-                            .padding(10.dp),
-                        initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
-                        controller = colorPickerController
-                    )
-
-                    BrightnessSlider(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(35.dp),
-                        initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
-                        controller = colorPickerController
-                    )
-
-                    AlphaTile(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(6.dp)),
-                        controller = colorPickerController
-                    )
-
-                    Button(
-                        onClick = {
-                            if (editTarget == "content") {
-                                action(
-                                    SharePageAction.OnUpdateCardContent(
-                                        colorPickerController.selectedColor.value.toArgb()
-                                    )
-                                )
-                            } else {
-                                action(
-                                    SharePageAction.OnUpdateCardBackground(
-                                        colorPickerController.selectedColor.value.toArgb()
-                                    )
-                                )
-                            }
-                            colorPicker = false
-                        }
-                    ) {
-                        Text(
-                            text = "Set $editTarget",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
+        )
     }
 
 }

@@ -27,10 +27,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
@@ -105,14 +105,9 @@ fun LyricsPage(
     val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
-    var meshSpeed by remember { mutableStateOf(MeshSpeed._1x) }
+
     val hypnoticSpeed by animateFloatAsState(
-        targetValue = when (meshSpeed) {
-            MeshSpeed._1x -> 1f
-            MeshSpeed._2x -> 2f
-            MeshSpeed._3x -> 3f
-            MeshSpeed._0_5x -> 0.5f
-        }
+        targetValue = state.meshSpeed
     )
 
     LaunchedEffect(state.song) {
@@ -127,14 +122,14 @@ fun LyricsPage(
                 .let {
                     if (state.hypnoticCanvas) {
                         it.shaderBackground(
-                            MeshGradient(
+                            shader = MeshGradient(
                                 colors = generateGradientColors(
                                     color1 = hypnoticColor1,
                                     color2 = hypnoticColor2,
                                     steps = 6
-                                ).toTypedArray(),
-                                speed = hypnoticSpeed
+                                ).toTypedArray()
                             ),
+                            speed = hypnoticSpeed,
                             fallback = {
                                 Brush.horizontalGradient(
                                     generateGradientColors(
@@ -210,7 +205,11 @@ fun LyricsPage(
                             }
 
                             Row(
-                                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                modifier = Modifier.padding(
+                                    top = 16.dp,
+                                    start = 16.dp,
+                                    end = 16.dp
+                                ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(
@@ -267,7 +266,7 @@ fun LyricsPage(
             }
         }
 
-        AnimatedVisibility (
+        AnimatedVisibility(
             visible = state.sync,
             modifier = Modifier
                 .padding(32.dp)
@@ -301,11 +300,25 @@ fun LyricsPage(
 @Composable
 private fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundDominant,
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.lighten(2f)
+                else -> state.extractedColors.cardBackgroundDominant.lighten(2f)
+            }
+        } else {
+            Color(state.mCardBackground).lighten(2f)
+        },
         label = "hypnotic color 1"
     )
     val hypnoticColor2 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundMuted,
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.darken(2f)
+                else -> state.extractedColors.cardBackgroundDominant.darken(2f)
+            }
+        } else {
+            Color(state.mCardBackground).darken(2f)
+        },
         label = "hypnotic color 2"
     )
     return Pair(hypnoticColor1, hypnoticColor2)
@@ -316,16 +329,24 @@ private fun getCardColors(
     state: LyricsPageState
 ): Pair<Color, Color> {
     val cardBackground by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
-            else -> state.extractedColors.cardBackgroundDominant
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+                else -> state.extractedColors.cardBackgroundDominant
+            }
+        } else {
+            Color(state.mCardBackground)
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardContentMuted
-            else -> state.extractedColors.cardContentDominant
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardContentMuted
+                else -> state.extractedColors.cardContentDominant
+            }
+        } else {
+            Color(state.mCardContent)
         },
         label = "cardContent"
     )

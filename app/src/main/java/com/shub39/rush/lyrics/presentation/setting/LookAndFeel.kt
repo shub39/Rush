@@ -13,20 +13,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -34,9 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -68,12 +60,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.skydoves.colorpicker.compose.AlphaTile
-import com.github.skydoves.colorpicker.compose.BrightnessSlider
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
-import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
@@ -81,6 +68,7 @@ import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Fonts
+import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -372,61 +360,11 @@ fun LookAndFeel(
     }
 
     if (colorPickerDialog) {
-        val controller = rememberColorPickerController()
-
-        BasicAlertDialog(
-            onDismissRequest = { colorPickerDialog = false }
-        ) {
-            Card(
-                shape = MaterialTheme.shapes.extraLarge
-            ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    HsvColorPicker(
-                        modifier = Modifier
-                            .width(350.dp)
-                            .height(300.dp)
-                            .padding(top = 10.dp),
-                        initialColor = Color(state.theme.seedColor),
-                        controller = controller
-                    )
-
-                    BrightnessSlider(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .height(35.dp),
-                        initialColor = Color(state.theme.seedColor),
-                        controller = controller
-                    )
-
-                    AlphaTile(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .padding(vertical = 10.dp)
-                            .clip(RoundedCornerShape(6.dp)),
-                        controller = controller
-                    )
-
-                    Button(
-                        onClick = {
-                            action(SettingsPageAction.OnSeedColorChange(controller.selectedColor.value.toArgb()))
-                            colorPickerDialog = false
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.done),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
+        ColorPickerDialog(
+            initialColor = Color(state.theme.seedColor),
+            onSelect = { action(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
+            onDismiss = { colorPickerDialog = false },
+        )
     }
 }
 

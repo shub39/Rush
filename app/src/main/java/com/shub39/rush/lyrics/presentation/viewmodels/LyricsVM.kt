@@ -11,6 +11,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
+import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.errorStringRes
@@ -169,6 +170,40 @@ class LyricsVM(
                         )
                     }
                 }
+
+                is LyricsPageAction.OnHypnoticToggle -> {
+                    datastore.updateHypnoticCanvas(action.pref)
+                }
+
+                is LyricsPageAction.OnMeshSpeedChange -> {
+                    _state.update {
+                        it.copy(
+                            meshSpeed = action.speed
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnVibrantToggle -> {
+                    datastore.updateLyricsColor(
+                        if (action.pref) CardColors.VIBRANT else CardColors.MUTED
+                    )
+                }
+
+                is LyricsPageAction.OnToggleColorPref -> {
+                    _state.update {
+                        it.copy(
+                            useExtractedColors = action.pref
+                        )
+                    }
+                }
+
+                is LyricsPageAction.OnUpdatemBackground -> {
+                    datastore.updateCardBackground(action.color)
+                }
+
+                is LyricsPageAction.OnUpdatemContent -> {
+                    datastore.updateCardContent(action.color)
+                }
             }
         }
     }
@@ -176,6 +211,26 @@ class LyricsVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            datastore.getCardBackgroundFlow()
+                .onEach { color ->
+                    _state.update {
+                        it.copy(
+                            mCardBackground = color
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            datastore.getCardContentFlow()
+                .onEach { color ->
+                    _state.update {
+                        it.copy(
+                            mCardContent = color
+                        )
+                    }
+                }
+                .launchIn(this)
+
             datastore.getLyricsColorFlow()
                 .onEach { color ->
                     _state.update {

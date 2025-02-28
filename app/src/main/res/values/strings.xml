@@ -95,4 +95,6 @@
     <string name="material_theme">Material Theme</string>
     <string name="material_theme_desc">Theme based on your wallpaper</string>
     <string name="font">Select app font</string>
+    <string name="mesh_speed">Mesh speed</string>
+    <string name="use_extracted_colors">Use Extracted Colors</string>
 </resources>
