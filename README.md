@@ -57,6 +57,8 @@ dealing with genius's "UI".
 |            Persian             | [alr86](https://github.com/alr86)                        |
 |            Spanish             | [WaifuPX-DG](https://github.com/WaifuPX-DG)              |
 |            Romanian            | [D4rk7355608](https://github.com/D4rK7355608)            |
+|           Indonesian           | [AzyrRuthless](https://github.com/AzyrRuthless)          |
+|           Ukrainian            | [r0m41q](https://github.com/r0m41q)                      |
 
 ## References and Inspiration 💡
 
