@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -100,43 +101,17 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.hypnotic_canvas)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.hypnotic_canvas_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.theme.hypnoticCanvas,
-                            onCheckedChange = {
-                                action(SettingsPageAction.OnHypnoticToggle(it))
-                            }
-                        )
-                    }
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
                             text = stringResource(R.string.font)
                         )
                     },
                     supportingContent = {
-                        val scrollState = rememberScrollState()
-
                         FlowRow(
-                            modifier = Modifier
-                                .horizontalScroll(scrollState)
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             Fonts.entries.forEach { font ->
                                 FilterChip(
+                                    modifier = Modifier.padding(horizontal = 4.dp),
                                     selected = state.theme.fonts == font,
                                     onClick = { action(SettingsPageAction.OnFontChange(font)) },
                                     label = {
@@ -148,29 +123,6 @@ fun LookAndFeel(
                                 )
                             }
                         }
-                    }
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.vibrant_colors)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.vibrant_colors_info)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.theme.lyricsColor == CardColors.VIBRANT,
-                            onCheckedChange = {
-                                action(SettingsPageAction.OnUpdateLyricsColor(it))
-                            }
-                        )
                     }
                 )
             }
