@@ -30,9 +30,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,10 +111,7 @@ fun PlainLyrics(
                     ) {
                         Text(
                             text = it.value,
-                            style = TextStyle(
-                                fontSize = 19.sp,
-                                fontFamily = FontFamily(Font(R.font.poppins_regular))
-                            ),
+                            fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(6.dp)
                         )
@@ -150,10 +144,10 @@ fun PlainLyrics(
 
         // Bottom Actions Row
         item {
-            Spacer(modifier = Modifier.padding(10.dp))
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(vertical = 100.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(

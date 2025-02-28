@@ -4,6 +4,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,11 +40,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.findActivity
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
@@ -75,11 +82,33 @@ fun LyricsPage(
         }
     }
 
+    // going fullscreen
+    DisposableEffect(Unit) {
+        val window = context.findActivity()?.window ?: return@DisposableEffect onDispose {}
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        insetsController.apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+        }
+
+        onDispose {
+            insetsController.apply {
+                show(WindowInsetsCompat.Type.systemBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            }
+        }
+    }
+
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+
+    val hypnoticSpeed by animateFloatAsState(
+        targetValue = state.meshSpeed
+    )
 
     LaunchedEffect(state.song) {
         delay(100)
@@ -93,13 +122,14 @@ fun LyricsPage(
                 .let {
                     if (state.hypnoticCanvas) {
                         it.shaderBackground(
-                            MeshGradient(
+                            shader = MeshGradient(
                                 colors = generateGradientColors(
                                     color1 = hypnoticColor1,
                                     color2 = hypnoticColor2,
                                     steps = 6
                                 ).toTypedArray()
                             ),
+                            speed = hypnoticSpeed,
                             fallback = {
                                 Brush.horizontalGradient(
                                     generateGradientColors(
@@ -175,7 +205,11 @@ fun LyricsPage(
                             }
 
                             Row(
-                                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                modifier = Modifier.padding(
+                                    top = 16.dp,
+                                    start = 16.dp,
+                                    end = 16.dp
+                                ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(
@@ -205,8 +239,6 @@ fun LyricsPage(
                             // Actions Row
                             ActionsRow(
                                 state,
-                                context,
-                                state.song,
                                 action,
                                 notificationAccess,
                                 cardBackground,
@@ -233,7 +265,7 @@ fun LyricsPage(
             }
         }
 
-        AnimatedVisibility (
+        AnimatedVisibility(
             visible = state.sync,
             modifier = Modifier
                 .padding(32.dp)
@@ -267,11 +299,25 @@ fun LyricsPage(
 @Composable
 private fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundDominant,
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.lighten(2f)
+                else -> state.extractedColors.cardBackgroundDominant.lighten(2f)
+            }
+        } else {
+            Color(state.mCardBackground).lighten(2f)
+        },
         label = "hypnotic color 1"
     )
     val hypnoticColor2 by animateColorAsState(
-        targetValue = state.extractedColors.cardBackgroundMuted,
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.darken(2f)
+                else -> state.extractedColors.cardBackgroundDominant.darken(2f)
+            }
+        } else {
+            Color(state.mCardBackground).darken(2f)
+        },
         label = "hypnotic color 2"
     )
     return Pair(hypnoticColor1, hypnoticColor2)
@@ -282,16 +328,24 @@ private fun getCardColors(
     state: LyricsPageState
 ): Pair<Color, Color> {
     val cardBackground by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
-            else -> state.extractedColors.cardBackgroundDominant
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+                else -> state.extractedColors.cardBackgroundDominant
+            }
+        } else {
+            Color(state.mCardBackground)
         },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardContentMuted
-            else -> state.extractedColors.cardContentDominant
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardContentMuted
+                else -> state.extractedColors.cardContentDominant
+            }
+        } else {
+            Color(state.mCardContent)
         },
         label = "cardContent"
     )

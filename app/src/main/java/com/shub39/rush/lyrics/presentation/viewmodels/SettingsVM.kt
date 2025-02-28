@@ -2,8 +2,8 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.RushDatastore
 import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
@@ -16,9 +16,9 @@ import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 class SettingsVM(
     private val repo: RushRepository,
-    private val datastore: RushDatastore,
+    private val datastore: PrefDatastore,
     private val exportRepo: ExportRepo,
     private val restoreRepo: RestoreRepo
 ) : ViewModel() {
@@ -151,6 +151,10 @@ class SettingsVM(
                 is SettingsPageAction.OnMaterialThemeToggle -> {
                     datastore.updateMaterialTheme(action.pref)
                 }
+
+                is SettingsPageAction.OnFontChange -> {
+                    datastore.updateFonts(action.fonts)
+                }
             }
         }
     }
@@ -159,6 +163,19 @@ class SettingsVM(
         observeJob?.cancel()
         observeJob = launch {
             observeTheme().launchIn(this)
+
+            datastore.getFontFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            theme = it.theme.copy(
+                                fonts = pref
+                            )
+                        )
+                    }
+                }
+                .launchIn(this)
+
             datastore.getMaterialYouFlow()
                 .onEach { pref ->
                     _state.update {
@@ -169,7 +186,8 @@ class SettingsVM(
                         )
                     }
                 }
-                .launchIn(viewModelScope)
+                .launchIn(this)
+
             datastore.getLyricsColorFlow()
                 .onEach { color ->
                     _state.update {
@@ -181,6 +199,7 @@ class SettingsVM(
                     }
                 }
                 .launchIn(this)
+
             datastore.getMaxLinesFlow()
                 .onEach { lines ->
                     _state.update {

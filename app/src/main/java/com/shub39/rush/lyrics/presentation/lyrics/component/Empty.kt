@@ -20,7 +20,7 @@ import com.shub39.rush.R
 fun Empty(
     suggestion: Boolean = true
 ) {
-    val color = Color.LightGray.copy(0.5f)
+    val color = Color.LightGray
 
     Column(
         modifier = Modifier.fillMaxSize(),

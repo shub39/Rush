@@ -1,6 +1,7 @@
 package com.shub39.rush.onboarding
 
 import android.content.Intent
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +50,7 @@ import androidx.compose.ui.window.Dialog
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
-import com.shub39.rush.core.data.RushDatastore
+import com.shub39.rush.core.domain.PrefDatastore
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
@@ -57,13 +58,19 @@ import org.koin.compose.koinInject
 
 @Composable
 fun OnboardingDialog(
-    datastore: RushDatastore = koinInject()
+    datastore: PrefDatastore = koinInject()
 ) {
+    val hypnoticSupport = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
     val context = LocalContext.current
-    val pagerState = rememberPagerState { 3 }
+    val pagerState = rememberPagerState { if (hypnoticSupport) 3 else 2 }
     val coroutineScope = rememberCoroutineScope()
 
     val hypnoticCanvas by datastore.getHypnoticCanvasFlow().collectAsState(true)
+
+    LaunchedEffect(hypnoticSupport) {
+        datastore.updateHypnoticCanvas(hypnoticSupport)
+    }
 
     val cardColors = CardDefaults.cardColors()
     val listItemColors = ListItemDefaults.colors(
@@ -142,7 +149,8 @@ fun OnboardingDialog(
                         LaunchedEffect(Unit) {
                             while (!notificationAccess) {
                                 kotlinx.coroutines.delay(500)
-                                notificationAccess = NotificationListener.canAccessNotifications(context)
+                                notificationAccess =
+                                    NotificationListener.canAccessNotifications(context)
                             }
                         }
 
@@ -216,7 +224,11 @@ fun OnboardingDialog(
                                     context.startActivity(intent)
                                 } else {
                                     coroutineScope.launch {
-                                        pagerState.animateScrollToPage(2)
+                                        if (hypnoticSupport) {
+                                            pagerState.animateScrollToPage(2)
+                                        } else {
+                                            datastore.updateOnboardingDone(true)
+                                        }
                                     }
                                 }
                             }
@@ -230,7 +242,11 @@ fun OnboardingDialog(
                             TextButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        pagerState.animateScrollToPage(2)
+                                        if (hypnoticSupport) {
+                                            pagerState.animateScrollToPage(2)
+                                        } else {
+                                            datastore.updateOnboardingDone(true)
+                                        }
                                     }
                                 }
                             ) {
@@ -296,7 +312,7 @@ fun OnboardingDialog(
                             },
                             supportingContent = {
                                 Text(
-                                    text = "Enable animated background for lyrics on Android 13+; static gradient below. May affect performance.",
+                                    text = "Enable animated background for lyrics. May affect performance.",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             },

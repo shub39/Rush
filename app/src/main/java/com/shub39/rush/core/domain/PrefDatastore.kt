@@ -52,4 +52,10 @@ interface PrefDatastore {
 
     fun getMaterialYouFlow(): Flow<Boolean>
     suspend fun updateMaterialTheme(pref: Boolean)
+
+    fun getFontFlow(): Flow<Fonts>
+    suspend fun updateFonts(font: Fonts)
+
+    fun getUseExtractedFlow(): Flow<Boolean>
+    suspend fun updateUseExtractedFlow(pref: Boolean)
 }

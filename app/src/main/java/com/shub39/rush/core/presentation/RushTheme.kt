@@ -25,7 +25,9 @@ fun RushTheme(
         },
         withAmoled = state.withAmoled,
         style = state.style,
-        typography = provideTypography(1f),
+        typography = provideTypography(
+            font = state.fonts.fontId
+        ),
         content = content
     )
 }

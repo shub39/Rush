@@ -1,8 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import com.shub39.rush.lyrics.domain.Lyric
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
@@ -48,12 +45,6 @@ fun updateSelectedLines(
     } else {
         selectedLines.minus(key)
     }
-}
-
-fun copyToClipBoard(context: Context, text: String, label: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText(label, text)
-    clipboard.setPrimaryClip(clip)
 }
 
 fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {

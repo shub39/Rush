@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.data.SongDetails
@@ -53,13 +55,15 @@ fun HypnoticShareCard(
                     .shaderBackground(
                         MeshGradient(
                             colors = generateGradientColors(
-                                cardColors.containerColor
+                                cardColors.containerColor.lighten(2f),
+                                cardColors.containerColor.darken(2f)
                             ).toTypedArray()
                         ),
                         fallback = {
                             Brush.horizontalGradient(
                                 generateGradientColors(
-                                    cardColors.containerColor
+                                    cardColors.containerColor.lighten(2f),
+                                    cardColors.containerColor.darken(2f)
                                 )
                             )
                         }
