@@ -1,3 +1,5 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -7,6 +9,7 @@ plugins {
 }
 
 val appName = "Rush"
+val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
 android {
     namespace = "com.shub39.rush"
@@ -25,6 +28,7 @@ android {
         }
     }
     buildTypes {
+        // Fdroid, github and IzzOnDroid
         release {
             resValue("string", "app_name", appName)
             isMinifyEnabled = true
@@ -34,26 +38,33 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        // Testing
         debug {
             resValue("string", "app_name", "$appName Debug")
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
         }
+
+        // Beta
         create("beta"){
             resValue("string", "app_name", "$appName Beta")
             applicationIdSuffix = ".beta"
             isMinifyEnabled = true
-            versionNameSuffix = "-beta"
+            isShrinkResources = true
+            versionNameSuffix = "-beta-$gitHash"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
+
+        // Playstore
         create("play") {
             resValue("string", "app_name", appName)
             applicationIdSuffix = ".play"
             isMinifyEnabled = true
+            isShrinkResources = true
             versionNameSuffix = "-playstore"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -62,11 +73,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
@@ -115,4 +126,13 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+fun execute(vararg command: String): String {
+    val outputStream = ByteArrayOutputStream()
+    project.exec {
+        commandLine(*command)
+        standardOutput = outputStream
+    }
+    return outputStream.toString().trim()
 }

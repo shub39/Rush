@@ -1,0 +1,55 @@
+name: beta
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: { }
+
+jobs:
+  build:
+    name: Build Beta APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: echo "$KEYSTORE_FILE" | base64 --decode > $GITHUB_WORKSPACE/keystore.jks
+
+      - name: Grant execute permissions to Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Build Beta APK
+        run: ./gradlew assembleBeta --stacktrace
+
+      - name: Sign APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore $GITHUB_WORKSPACE/keystore.jks -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" app/build/outputs/apk/beta/app-beta-unsigned.apk "key0"
+          mv app/build/outputs/apk/beta/app-beta-unsigned.apk app/build/outputs/apk/beta/app-beta.apk
+
+      - name: Upload Beta APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta-apk
+          path: app/build/outputs/apk/beta/app-beta.apk

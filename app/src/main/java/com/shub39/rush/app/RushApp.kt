@@ -4,9 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +18,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.core.presentation.findActivity
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
@@ -63,6 +68,16 @@ fun RushApp(
                 startDestination = Route.SavedPage
             ) {
                 composable<Route.SavedPage> {
+                    LaunchedEffect(Unit) {
+                        val window = context.findActivity()?.window ?: return@LaunchedEffect
+                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+                        insetsController.apply {
+                            show(WindowInsetsCompat.Type.systemBars())
+                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                        }
+                    }
+
                     SavedPage(
                         state = savedState,
                         currentSong = lyricsState.song,
@@ -94,6 +109,16 @@ fun RushApp(
                 startDestination = Route.LyricsPage
             ) {
                 composable<Route.SharePage> {
+                    LaunchedEffect(Unit) {
+                        val window = context.findActivity()?.window ?: return@LaunchedEffect
+                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+                        insetsController.apply {
+                            show(WindowInsetsCompat.Type.systemBars())
+                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                        }
+                    }
+
                     SharePage(
                         onDismiss = { navController.navigateUp() },
                         state = shareState,
@@ -102,6 +127,16 @@ fun RushApp(
                 }
 
                 composable<Route.LyricsPage> {
+                    LaunchedEffect(Unit) {
+                        val window = context.findActivity()?.window ?: return@LaunchedEffect
+                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+                        insetsController.apply {
+                            hide(WindowInsetsCompat.Type.systemBars())
+                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        }
+                    }
+
                     LyricsPage(
                         state = lyricsState,
                         action = lyricsVM::onAction,
