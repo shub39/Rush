@@ -36,17 +36,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Beta APK
-        run: ./gradlew assembleBeta --stacktrace
-
-      - name: Sign APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore $GITHUB_WORKSPACE/keystore.jks -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" app/build/outputs/apk/beta/app-beta-unsigned.apk "key0"
-          mv app/build/outputs/apk/beta/app-beta-unsigned.apk app/build/outputs/apk/beta/app-beta.apk
+          ./gradlew assembleBeta \
+          -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/keystore.jks \
+          -Pandroid.injected.signing.store.password=${{ secrets.PASSWORD }} \
+          -Pandroid.injected.signing.key.alias=key0 \
+          -Pandroid.injected.signing.key.password=${{ secrets.PASSWORD }}
+          
+          mv app/build/outputs/apk/beta/app-beta-signed.apk app/build/outputs/apk/beta/app-beta.apk
 
       - name: Upload Beta APK
         uses: actions/upload-artifact@v4
