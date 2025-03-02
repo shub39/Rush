@@ -25,7 +25,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/setup-gradle@v4
 
       - name: Decode Keystore
         env:
@@ -53,3 +53,15 @@ jobs:
         with:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
+
+      - name: Upload APK to Discord
+        shell: bash
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          VERSION: $( echo ${{ github.event.head_commit.id }} | cut -c1-7 )
+          COMMIT: $( sed -E "s/(.*) <.*@.*>/\\1/g;t" <<< "${{ github.event.head_commit.message }}" | jq -Rsa . | tail -c +2 | head -c -2 )
+        run: |
+          message=$(echo "**${{ env.VERSION }}**\n${{ env.COMMIT }}")
+          curl -F "payload_json={\"content\":\"${message}\"}" \
+          -F "rush_beta=@app/build/outputs/apk/beta/app-beta.apk" \
+          ${{ env.WEBHOOK }}
