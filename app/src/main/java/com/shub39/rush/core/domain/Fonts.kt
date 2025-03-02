@@ -15,5 +15,6 @@ enum class Fonts(
     MONTSERRAT("Montserrat", R.font.montserrat),
     OPEN_SANS("Open Sans", R.font.open_sans),
     OUTFIT("Outfit", R.font.outfit),
-    QUICKSAND("Quicksand", R.font.quicksand)
+    QUICKSAND("Quicksand", R.font.quicksand),
+    JOSH("Josh", R.font.josh)
 }

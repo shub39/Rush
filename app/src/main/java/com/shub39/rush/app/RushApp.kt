@@ -24,6 +24,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.setting.About
+import com.shub39.rush.lyrics.presentation.setting.AboutLibraries
 import com.shub39.rush.lyrics.presentation.setting.Backup
 import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
 import com.shub39.rush.lyrics.presentation.setting.LookAndFeel
@@ -193,7 +194,13 @@ fun RushApp(
                 }
 
                 composable<Route.AboutPage> {
-                    About()
+                    About(
+                        navigator = {
+                            navController.navigate(it) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
 
                 composable<Route.LookAndFeelPage> {
@@ -201,6 +208,10 @@ fun RushApp(
                         state = settingsState,
                         action = settingsVM::onSettingsPageAction
                     )
+                }
+
+                composable<Route.AboutLibrariesPage> {
+                    AboutLibraries()
                 }
             }
         }

@@ -13,12 +13,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,20 +25,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
@@ -71,7 +73,7 @@ import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeel(
     state: SettingsPageState,
@@ -97,33 +99,58 @@ fun LookAndFeel(
                 .fillMaxSize()
         ) {
             item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.font)
+                var expanded by remember { mutableStateOf(false) }
+
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.font)
+                    )
+
+                    Spacer(modifier = Modifier.padding(40.dp))
+
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it }
+                    ) {
+                        TextField(
+                            value = state.theme.fonts.fullName,
+                            onValueChange = {},
+                            readOnly = true,
+                            singleLine = true,
+                            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Drop Down"
+                                )
+                            }
                         )
-                    },
-                    supportingContent = {
-                        FlowRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            shape = MaterialTheme.shapes.large,
+                            onDismissRequest = { expanded = !expanded }
                         ) {
                             Fonts.entries.forEach { font ->
-                                FilterChip(
-                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                    selected = state.theme.fonts == font,
-                                    onClick = { action(SettingsPageAction.OnFontChange(font)) },
-                                    label = {
+                                DropdownMenuItem(
+                                    text = {
                                         Text(
                                             text = font.fullName,
                                             fontFamily = FontFamily(Font(font.fontId))
                                         )
+                                    },
+                                    onClick = {
+                                        action(SettingsPageAction.OnFontChange(font))
+                                        expanded = false
                                     }
                                 )
                             }
                         }
                     }
-                )
+                }
             }
 
             item {

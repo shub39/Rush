@@ -97,4 +97,5 @@
     <string name="font">Select app font</string>
     <string name="mesh_speed">Mesh speed</string>
     <string name="use_extracted_colors">Use Extracted Colors</string>
+    <string name="about_libraries">About Libraries</string>
 </resources>

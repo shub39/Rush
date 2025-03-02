@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.ksp)
 }
 
@@ -19,8 +20,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2600
-        versionName = "2.6.0"
+        versionCode = 2610
+        versionName = "2.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -96,6 +97,11 @@ android {
     }
 }
 
+aboutLibraries {
+    // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
+    excludeFields = arrayOf("generated")
+}
+
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -120,6 +126,7 @@ dependencies {
     implementation(libs.materialKolor)
     implementation(libs.bundles.ktor)
     implementation(libs.hypnoticcanvas)
+    implementation(libs.aboutLibraries)
 }
 
 java {
