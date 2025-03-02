@@ -59,4 +59,4 @@ jobs:
           message=$(echo "**${{ env.VERSION }}**\n${{ env.COMMIT }}\n") 
           curl -F "payload_json={\"content\":\"${message}\"}" \
           -F "rush_beta=@app/build/outputs/apk/beta/app-beta.apk" \
-          ${{ env.DISCORD_WEBHOOK }}
+          ${{ env.WEBHOOK }}
