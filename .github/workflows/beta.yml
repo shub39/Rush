@@ -39,9 +39,9 @@ jobs:
         run: |
           ./gradlew assembleBeta \
           -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/keystore.jks \
-          -Pandroid.injected.signing.store.password=${{ secrets.PASSWORD }} \
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=key0 \
-          -Pandroid.injected.signing.key.password=${{ secrets.PASSWORD }}
+          -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
           
           mv app/build/outputs/apk/beta/app-beta-signed.apk app/build/outputs/apk/beta/app-beta.apk
 
