@@ -1,5 +1,3 @@
-import java.io.ByteArrayOutputStream
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -10,7 +8,6 @@ plugins {
 }
 
 val appName = "Rush"
-val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
 android {
     namespace = "com.shub39.rush"
@@ -53,7 +50,7 @@ android {
             applicationIdSuffix = ".beta"
             isMinifyEnabled = true
             isShrinkResources = true
-            versionNameSuffix = "-beta-$gitHash"
+            versionNameSuffix = "-beta"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -108,6 +105,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.tooling)
+    implementation(libs.datetime)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.palette)
@@ -133,13 +132,4 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-fun execute(vararg command: String): String {
-    val outputStream = ByteArrayOutputStream()
-    project.exec {
-        commandLine(*command)
-        standardOutput = outputStream
-    }
-    return outputStream.toString().trim()
 }
