@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.core.presentation.openLinkInBrowser
 import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +34,7 @@ fun About(
     navigator: (Route) -> Unit
 ) = PageFill {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
@@ -75,10 +76,7 @@ fun About(
                             Row {
                                 BetterIconButton(
                                     onClick = {
-                                        openLinkInBrowser(
-                                            context,
-                                            "https://discord.gg/https://discord.gg/nxA2hgtEKf"
-                                        )
+                                        uriHandler.openUri("https://discord.gg/https://discord.gg/nxA2hgtEKf")
                                     }
                                 ) {
                                     Icon(
@@ -90,7 +88,7 @@ fun About(
 
                                 BetterIconButton(
                                     onClick = {
-                                        openLinkInBrowser(context, "https://github.com/shub39/Rush")
+                                        uriHandler.openUri("https://github.com/shub39/Rush")
                                     }
                                 ) {
                                     Icon(
@@ -116,7 +114,7 @@ fun About(
                             Row {
                                 BetterIconButton(
                                     onClick = {
-                                        openLinkInBrowser(context, "https://github.com/shub39")
+                                        uriHandler.openUri("https://github.com/shub39")
                                     }
                                 ) {
                                     Icon(

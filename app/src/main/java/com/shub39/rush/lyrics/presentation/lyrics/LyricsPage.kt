@@ -233,8 +233,7 @@ fun LyricsPage(
                             state,
                             cardContent,
                             action,
-                            coroutineScope,
-                            context
+                            coroutineScope
                         )
                     } else if (state.song.syncedLyrics != null) {
                         SyncedLyrics(state, coroutineScope, lazyListState, cardContent)
