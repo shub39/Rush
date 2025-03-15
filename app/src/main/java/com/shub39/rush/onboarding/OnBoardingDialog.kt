@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,11 +45,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
@@ -81,15 +80,14 @@ fun OnboardingDialog(
         trailingIconColor = cardColors.contentColor
     )
 
-    Dialog(
+    RushDialog(
         onDismissRequest = {}
     ) {
-        Card(
+        Column(
             modifier = Modifier
-                .widthIn(max = 700.dp)
+                .widthIn(max = 500.dp)
                 .fillMaxHeight(0.7f)
                 .fillMaxWidth(),
-            shape = MaterialTheme.shapes.extraLarge
         ) {
             HorizontalPager(
                 state = pagerState,

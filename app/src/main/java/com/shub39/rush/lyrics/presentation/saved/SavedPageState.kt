@@ -11,5 +11,6 @@ data class SavedPageState(
     val groupedAlbum: List<Map.Entry<String, List<Song>>> = emptyList(),
     val groupedArtist: List<Map.Entry<String, List<Song>>> = emptyList(),
     val sortOrder: SortOrder = SortOrder.ALBUM_ASC,
-    val onboarding: Boolean = true
+    val onboarding: Boolean = true,
+    val searchSheet: Boolean = false
 )

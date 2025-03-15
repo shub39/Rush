@@ -19,10 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -56,6 +55,8 @@ import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
 import com.shub39.rush.core.presentation.ColorPickerDialog
+import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
@@ -69,7 +70,7 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
-) {
+) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     val context = LocalContext.current
@@ -133,7 +134,9 @@ fun SharePage(
 
     BackHandler { onDismiss() }
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = Modifier.widthIn(max = 500.dp)
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
@@ -294,35 +297,33 @@ fun SharePage(
     }
 
     if (namePicker) {
-        BasicAlertDialog(
+        RushDialog(
             onDismissRequest = { namePicker = false }
         ) {
             var name by remember { mutableStateOf("${state.songDetails.artist}-${state.songDetails.title}.png") }
 
-            Card(shape = RoundedCornerShape(32.dp)) {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    singleLine = true,
-                    modifier = Modifier.padding(16.dp),
-                    shape = RoundedCornerShape(32.dp)
-                )
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                singleLine = true,
+                modifier = Modifier.padding(16.dp),
+                shape = RoundedCornerShape(32.dp)
+            )
 
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            namePicker = false
-                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                            shareImage(context, bitmap, name, true)
-                        }
-                    },
-                    enabled = isValidFilename(name),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(text = stringResource(id = R.string.save))
-                }
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        namePicker = false
+                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                        shareImage(context, bitmap, name, true)
+                    }
+                },
+                enabled = isValidFilename(name),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(text = stringResource(id = R.string.save))
             }
         }
     }
@@ -396,5 +397,4 @@ fun SharePage(
             }
         )
     }
-
 }

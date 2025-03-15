@@ -92,7 +92,7 @@ fun RushApp(
                         }
                     )
 
-                    if (lyricsState.searchSheet) {
+                    if (savedState.searchSheet) {
                         SearchSheet(
                             state = searchState,
                             action = searchSheetVM::onAction,
