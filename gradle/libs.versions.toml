@@ -12,15 +12,16 @@ ksp = "2.1.10-1.0.29"
 kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.1"
-composeBom = "2025.02.00"
+composeBom = "2025.03.00"
 navigation = "2.8.0-alpha10"
 palette = "1.0.0"
-room = "2.7.0-rc01"
-sqlite = "2.5.0-rc01"
+room = "2.7.0-rc02"
+sqlite = "2.5.0-rc02"
 serialization = "1.7.3"
 hypnoticcanvas = "0.4.0-b02"
 aboutLibraries = '11.4.0'
 datetime = "0.6.2"
+composeIcons = "1.1.1"
 
 [libraries]
 # Android
@@ -51,6 +52,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
+composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

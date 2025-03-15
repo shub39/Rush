@@ -12,10 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -35,12 +34,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
+import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.core.presentation.RushTheme
 
+// topmost settings page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingPage(
@@ -55,7 +58,7 @@ fun SettingPage(
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -69,12 +72,13 @@ fun SettingPage(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            // navigate to look and feel
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(R.string.look_and_feel)) },
                     supportingContent = { Text(text = stringResource(R.string.look_and_feel_info)) },
                     trailingContent = {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { navigator(Route.LookAndFeelPage) },
                         ) {
                             Icon(
@@ -86,6 +90,7 @@ fun SettingPage(
                 )
             }
 
+            // slider to set limit on maximum lines to share
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.max_lines)) },
@@ -105,11 +110,12 @@ fun SettingPage(
                 )
             }
 
+            // nuke everything
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.delete_all)) },
                     trailingContent = {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { deleteConfirmationDialog = true },
                             enabled = deleteButtonStatus
                         ) {
@@ -122,12 +128,13 @@ fun SettingPage(
                 )
             }
 
+            // navigate to batch downloader
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(id = R.string.batch_download)) },
                     supportingContent = { Text(text = stringResource(id = R.string.batch_download_info)) },
                     trailingContent = {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { navigator(Route.BatchDownloaderPage) },
                         ) {
                             Icon(
@@ -139,12 +146,13 @@ fun SettingPage(
                 )
             }
 
+            // navigate to backup
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(R.string.backup)) },
                     supportingContent = { Text(text = stringResource(R.string.backup_info)) },
                     trailingContent = {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { navigator(Route.BackupPage) }
                         ) {
                             Icon(
@@ -156,16 +164,16 @@ fun SettingPage(
                 )
             }
 
+            // navigate to notification access permission page
             if (!notificationAccess) {
                 item {
-                    val intent =
-                        Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = R.string.grant_permission)) },
                         supportingContent = { Text(text = stringResource(id = R.string.notification_permission)) },
                         trailingContent = {
-                            BetterIconButton(
+                            FilledTonalIconButton(
                                 onClick = { context.startActivity(intent) }
                             ) {
                                 Icon(
@@ -178,11 +186,12 @@ fun SettingPage(
                 }
             }
 
+            // navigate to about app
             item {
                 ListItem(
                     headlineContent = { Text(stringResource(R.string.about)) },
                     trailingContent = {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { navigator(Route.AboutPage) }
                         ) {
                             Icon(
@@ -197,53 +206,67 @@ fun SettingPage(
         }
     }
 
+    // dialog to confirm nuking
     if (deleteConfirmationDialog) {
-        BasicAlertDialog(
+        RushDialog(
             onDismissRequest = { deleteConfirmationDialog = false }
         ) {
-            Card(shape = MaterialTheme.shapes.extraLarge) {
-                Column(
-                    modifier = Modifier
-                        .widthIn(max = 300.dp)
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_warning_24),
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.padding(8.dp))
+
+                Text(
+                    text = stringResource(R.string.delete_all),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = stringResource(id = R.string.delete_confirmation),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Spacer(modifier = Modifier.padding(8.dp))
+
+                Button(
+                    onClick = {
+                        action(SettingsPageAction.OnDeleteSongs)
+                        deleteConfirmationDialog = false
+                        deleteButtonStatus = false
+                    },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_warning_24),
-                        contentDescription = null
-                    )
-
-                    Spacer(modifier = Modifier.padding(8.dp))
-
-                    Text(
-                        text = stringResource(R.string.delete_all),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.delete_confirmation),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    Spacer(modifier = Modifier.padding(8.dp))
-
-                    Button(
-                        onClick = {
-                            action(SettingsPageAction.OnDeleteSongs)
-                            deleteConfirmationDialog = false
-                            deleteButtonStatus = false
-                        },
-                        shape = MaterialTheme.shapes.extraLarge,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = stringResource(id = R.string.delete_all))
-                    }
+                    Text(text = stringResource(id = R.string.delete_all))
                 }
             }
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview() {
+    RushTheme(
+        Theme(useDarkTheme = true)
+    ) {
+        SettingPage(
+            state = SettingsPageState(),
+            notificationAccess = false,
+            action = {},
+            navigator = {}
+        )
     }
 }

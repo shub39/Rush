@@ -1,9 +1,7 @@
 package com.shub39.rush.lyrics.presentation.setting
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +36,10 @@ import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.brands.Discord
+import compose.icons.fontawesomeicons.brands.Github
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,13 +61,13 @@ fun About(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // github, discord
             item {
                 Card(
                     shape = MaterialTheme.shapes.extraLarge,
+                    modifier = Modifier.padding(16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -104,7 +106,7 @@ fun About(
                                 }
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.discord_svgrepo_com),
+                                    imageVector = FontAwesomeIcons.Brands.Discord,
                                     contentDescription = null,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -116,7 +118,7 @@ fun About(
                                 }
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.github_mark),
+                                    imageVector = FontAwesomeIcons.Brands.Github,
                                     contentDescription = null,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -126,6 +128,7 @@ fun About(
                 }
             }
 
+            // me
             item {
                 ListItem(
                     headlineContent = {
@@ -142,7 +145,7 @@ fun About(
                                 }
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.github_mark),
+                                    imageVector = FontAwesomeIcons.Brands.Github,
                                     contentDescription = "Github",
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -152,6 +155,7 @@ fun About(
                 )
             }
 
+            // navigate to about libraries
             item {
                 ListItem(
                     headlineContent = { Text(text = stringResource(R.string.about_libraries)) },

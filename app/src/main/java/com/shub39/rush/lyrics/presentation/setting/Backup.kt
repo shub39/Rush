@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,12 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreState
 
+// backup page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Backup(
@@ -150,5 +155,19 @@ fun Backup(
                 }
             )
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview() {
+    RushTheme(
+        state = Theme(
+            useDarkTheme = isSystemInDarkTheme()
+        )
+    ) {
+        Backup(
+            SettingsPageState()
+        ) { }
     }
 }
