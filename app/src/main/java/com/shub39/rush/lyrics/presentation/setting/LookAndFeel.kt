@@ -13,9 +13,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,26 +26,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
@@ -63,15 +62,22 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.core.presentation.RushTheme
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.FolderOpen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,9 +86,10 @@ fun LookAndFeel(
     action: (SettingsPageAction) -> Unit
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
+    var fontPickerDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -98,61 +105,31 @@ fun LookAndFeel(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            // Font Picker
             item {
-                var expanded by remember { mutableStateOf(false) }
-
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.font)
-                    )
-
-                    Spacer(modifier = Modifier.padding(40.dp))
-
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = it }
-                    ) {
-                        TextField(
-                            value = state.theme.fonts.fullName,
-                            onValueChange = {},
-                            readOnly = true,
-                            singleLine = true,
-                            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = "Drop Down"
-                                )
-                            }
-                        )
-
-                        DropdownMenu(
-                            expanded = expanded,
-                            shape = MaterialTheme.shapes.large,
-                            onDismissRequest = { expanded = !expanded }
+                ListItem(
+                    headlineContent = {
+                        Text(text = stringResource(R.string.font))
+                    },
+                    supportingContent = {
+                        Text(text = state.theme.fonts.fullName)
+                    },
+                    trailingContent = {
+                        FilledTonalIconButton(
+                            onClick = { fontPickerDialog = true }
                         ) {
-                            Fonts.entries.forEach { font ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = font.fullName,
-                                            fontFamily = FontFamily(Font(font.fontId))
-                                        )
-                                    },
-                                    onClick = {
-                                        action(SettingsPageAction.OnFontChange(font))
-                                        expanded = false
-                                    }
-                                )
-                            }
+                            Icon(
+                                imageVector = FontAwesomeIcons.Solid.FolderOpen,
+                                contentDescription = "Pick Font",
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
+
                     }
-                }
+                )
             }
 
+            // System theme toggle
             item {
                 ListItem(
                     headlineContent = {
@@ -180,6 +157,7 @@ fun LookAndFeel(
                 )
             }
 
+            // Dark Theme Toggle
             item {
                 ListItem(
                     headlineContent = {
@@ -201,6 +179,7 @@ fun LookAndFeel(
                 )
             }
 
+            // Amoled variant toggle
             item {
                 ListItem(
                     headlineContent = {
@@ -226,6 +205,7 @@ fun LookAndFeel(
                 )
             }
 
+            // Material you toggle
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 item {
                     ListItem(
@@ -253,6 +233,7 @@ fun LookAndFeel(
                 }
             }
 
+            // Seed color picker
             item {
                 ListItem(
                     headlineContent = {
@@ -283,6 +264,7 @@ fun LookAndFeel(
                 )
             }
 
+            // palette styles
             item {
                 ListItem(
                     headlineContent = {
@@ -296,7 +278,7 @@ fun LookAndFeel(
                         Row(
                             modifier = Modifier
                                 .horizontalScroll(scrollState)
-                                .padding(8.dp),
+                                .padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             PaletteStyle.entries.toList().forEach { style ->
@@ -337,12 +319,54 @@ fun LookAndFeel(
         }
     }
 
+    // Seed color picker
     if (colorPickerDialog) {
         ColorPickerDialog(
             initialColor = Color(state.theme.seedColor),
             onSelect = { action(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
             onDismiss = { colorPickerDialog = false },
         )
+    }
+
+    // Font picker
+    if (fontPickerDialog) {
+        RushDialog(
+            onDismissRequest = { fontPickerDialog = false }
+        ) {
+            val scrollState = rememberScrollState()
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Fonts.entries.forEach { font ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                action(SettingsPageAction.OnFontChange(font))
+                                fontPickerDialog = false
+                            }
+                    ) {
+                        RadioButton(
+                            selected = state.theme.fonts == font,
+                            onClick = {
+                                action(SettingsPageAction.OnFontChange(font))
+                                fontPickerDialog = false
+                            }
+                        )
+
+                        Text(
+                            text = font.fullName,
+                            fontFamily = FontFamily(Font(font.fontId))
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -419,5 +443,17 @@ private fun SelectableMiniPalette(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    RushTheme(
+        state = Theme(
+            useDarkTheme = true
+        )
+    ) {
+        LookAndFeel(SettingsPageState()) {}
     }
 }

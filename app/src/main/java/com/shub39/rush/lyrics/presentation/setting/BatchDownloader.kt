@@ -1,8 +1,6 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -33,10 +32,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,15 +42,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 import com.shub39.rush.lyrics.presentation.setting.component.DownloaderCard
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
+// batch downloader page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchDownloader(
@@ -61,11 +54,8 @@ fun BatchDownloader(
     action: (SettingsPageAction) -> Unit,
 ) = PageFill {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    val audioFiles = remember { mutableStateListOf<AudioFile>() }
-    var isLoadingFiles by remember { mutableStateOf(true) }
     var uri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -74,44 +64,13 @@ fun BatchDownloader(
 
     BackHandler(enabled = state.batchDownload.isDownloading) {}
 
+    LaunchedEffect(Unit) {
+        action(SettingsPageAction.OnClearIndexes)
+    }
+
     LaunchedEffect(uri) {
-        if (uri != null) {
-            val documentFile = DocumentFile.fromTreeUri(context, uri!!)
-
-            coroutineScope.launch(Dispatchers.IO) {
-                if (documentFile != null && documentFile.isDirectory) {
-                    fun processFiles(directory: DocumentFile) {
-                        for (file in directory.listFiles()) {
-                            if (file.isDirectory) {
-                                processFiles(file)
-                            } else if (file.isFile && file.type?.startsWith("audio/") == true) {
-                                val retriever = MediaMetadataRetriever()
-                                try {
-                                    retriever.setDataSource(context, file.uri)
-
-                                    val title =
-                                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                                    val artist =
-                                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-
-                                    if (title != null && artist != null) {
-                                        audioFiles.add(AudioFile(title, artist))
-                                    }
-
-                                    retriever.release()
-                                } catch (e: Exception) {
-                                    Log.d("BatchDownloader", "Can't set data source $e")
-                                }
-                            }
-                        }
-                    }
-
-                    processFiles(documentFile)
-                }
-
-                isLoadingFiles = false
-            }
-
+        uri?.let {
+            action(SettingsPageAction.OnProcessAudioFiles(context, uri!!))
         }
     }
 
@@ -122,7 +81,7 @@ fun BatchDownloader(
     }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.batch_download)) }
@@ -138,7 +97,7 @@ fun BatchDownloader(
                 headlineContent = { Text(stringResource(R.string.select_folder)) },
                 trailingContent = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { launcher.launch(null) },
                             enabled = uri == null
                         ) {
@@ -150,10 +109,9 @@ fun BatchDownloader(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = {
                                 uri = null
-                                audioFiles.clear()
                                 action(SettingsPageAction.OnClearIndexes)
                             },
                             enabled = !state.batchDownload.isDownloading && uri != null
@@ -167,16 +125,12 @@ fun BatchDownloader(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         AnimatedVisibility(
-                            visible = audioFiles.isNotEmpty()
+                            visible = state.batchDownload.audioFiles.isNotEmpty()
                         ) {
                             if (!state.batchDownload.isDownloading) {
-                                BetterIconButton(
+                                FilledTonalIconButton(
                                     onClick = {
-                                        action(
-                                            SettingsPageAction.OnBatchDownload(
-                                                audioFiles
-                                            )
-                                        )
+                                        action(SettingsPageAction.OnBatchDownload)
                                     }
                                 ) {
                                     Icon(
@@ -208,9 +162,9 @@ fun BatchDownloader(
                 ) {
                     if (uri == null) {
                         Text(stringResource(R.string.no_folder_selected))
-                    } else if (audioFiles.isEmpty()) {
+                    } else if (state.batchDownload.audioFiles.isEmpty()) {
                         Text(stringResource(R.string.no_audio_files))
-                    } else if (isLoadingFiles) {
+                    } else if (state.batchDownload.isLoadingFiles) {
                         CircularProgressIndicator(
                             strokeCap = StrokeCap.Round
                         )
@@ -221,9 +175,9 @@ fun BatchDownloader(
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(audioFiles.size) { index ->
+                            items(state.batchDownload.audioFiles.size) { index ->
                                 DownloaderCard(
-                                    audioFile = audioFiles[index],
+                                    audioFile = state.batchDownload.audioFiles[index],
                                     state = state.batchDownload.indexes[index],
                                     listItemColors = stateListColors(state.batchDownload.indexes[index]),
                                 )

@@ -42,13 +42,9 @@ class SavedVM(
     fun onAction(action: SavedPageAction) {
         viewModelScope.launch {
             when (action) {
-                is SavedPageAction.ChangeCurrentSong -> {
-                    fetchLyrics(action.id)
-                }
+                is SavedPageAction.ChangeCurrentSong -> fetchLyrics(action.id)
 
-                is SavedPageAction.OnDeleteSong -> {
-                    repo.deleteSong(action.song.id)
-                }
+                is SavedPageAction.OnDeleteSong -> repo.deleteSong(action.song.id)
 
                 SavedPageAction.OnToggleAutoChange -> {
                     stateLayer.lyricsState.update {
@@ -59,16 +55,14 @@ class SavedVM(
                 }
 
                 SavedPageAction.OnToggleSearchSheet -> {
-                    stateLayer.lyricsState.update {
+                    stateLayer.searchSheetState.update {
                         it.copy(
-                            searchSheet = !it.searchSheet
+                            visible = !it.visible
                         )
                     }
                 }
 
-                is SavedPageAction.UpdateSortOrder -> {
-                    datastore.updateSortOrder(action.sortOrder)
-                }
+                is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
             }
         }
     }

@@ -3,14 +3,7 @@ package com.shub39.rush.core.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.ui.graphics.Color
-
-fun openLinkInBrowser(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    context.startActivity(intent)
-}
 
 fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     val sortedEntries = map.entries.toList().sortedBy { it.key }

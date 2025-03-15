@@ -18,8 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import kotlinx.datetime.Clock
 
 class RushRepository(
     private val localDao: SongDao,
@@ -27,7 +26,6 @@ class RushRepository(
     private val lrcLibApi: LrcLibApi,
     private val geniusScraper: GeniusScraper
 ) : SongRepo {
-
     override suspend fun fetchSong(id: Long): Result<Song, SourceError> {
         val result = withContext(Dispatchers.IO) {
             geniusApi.geniusSong(id)
@@ -37,32 +35,59 @@ class RushRepository(
             is Result.Success -> {
                 val song = result.data.response.song
 
-                val geniusLyrics = withContext(Dispatchers.IO) {
-                    geniusScraper.scrapeLyrics(song.url)
-                }
                 val lrcLibLyrics = withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(trackName = getMainTitle(song.title), artistName = getMainArtist(song.artistNames))
+                    lrcLibApi.getLrcLyrics(
+                        trackName = getMainTitle(song.title),
+                        artistName = getMainArtist(song.artistNames)
+                    )
+                }
+                val geniusLyrics = if (lrcLibLyrics == null) {
+                    withContext(Dispatchers.IO) {
+                        geniusScraper.scrapeLyrics(song.url)
+                    }
+                } else {
+                    null
                 }
 
-                 return Result.Success<Song, SourceError>(Song(
-                     id = song.id,
-                     title = song.title,
-                     artists = song.artistNames,
-                     lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                     album = song.album?.name,
-                     sourceUrl = song.url,
-                     artUrl = song.songArtImageURL,
-                     geniusLyrics = geniusLyrics,
-                     syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                     dateAdded = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                 )).also {
-                     localDao.insertSong(it.data.toSongEntity())
-                 }
+
+                return Result.Success<Song, SourceError>(
+                    Song(
+                        id = song.id,
+                        title = song.title,
+                        artists = song.artistNames,
+                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                        album = song.album?.name,
+                        sourceUrl = song.url,
+                        artUrl = song.songArtImageURL,
+                        geniusLyrics = geniusLyrics,
+                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        dateAdded = Clock.System.now().epochSeconds,
+                    )
+                ).also {
+                    localDao.insertSong(it.data.toSongEntity())
+                }
             }
 
             is Result.Error -> {
                 return Result.Error(result.error)
             }
+        }
+    }
+
+    override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
+        val geniusLyrics = withContext(Dispatchers.IO) {
+            geniusScraper.scrapeLyrics(url)
+        }
+
+        return if (geniusLyrics != null) {
+            Result.Success<String, SourceError>(geniusLyrics.ifBlank { "[INSTRUMENTAL]" }).also {
+                localDao.updateGeniusLyrics(
+                    id = id,
+                    lyrics = it.data
+                )
+            }
+        } else {
+            Result.Error(SourceError.Network.REQUEST_FAILED)
         }
     }
 

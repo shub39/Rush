@@ -71,7 +71,8 @@ fun RushApp(
                 composable<Route.SavedPage> {
                     LaunchedEffect(Unit) {
                         val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+                        val insetsController =
+                            WindowCompat.getInsetsController(window, window.decorView)
 
                         insetsController.apply {
                             show(WindowInsetsCompat.Type.systemBars())
@@ -91,18 +92,6 @@ fun RushApp(
                             }
                         }
                     )
-
-                    if (lyricsState.searchSheet) {
-                        SearchSheet(
-                            state = searchState,
-                            action = searchSheetVM::onAction,
-                            onClick = {
-                                navController.navigate(Route.LyricsPage) {
-                                    launchSingleTop = true
-                                }
-                            }
-                        )
-                    }
                 }
             }
 
@@ -112,7 +101,8 @@ fun RushApp(
                 composable<Route.SharePage> {
                     LaunchedEffect(Unit) {
                         val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+                        val insetsController =
+                            WindowCompat.getInsetsController(window, window.decorView)
 
                         insetsController.apply {
                             show(WindowInsetsCompat.Type.systemBars())
@@ -130,11 +120,13 @@ fun RushApp(
                 composable<Route.LyricsPage> {
                     LaunchedEffect(Unit) {
                         val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+                        val insetsController =
+                            WindowCompat.getInsetsController(window, window.decorView)
 
                         insetsController.apply {
                             hide(WindowInsetsCompat.Type.systemBars())
-                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                            systemBarsBehavior =
+                                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         }
                     }
 
@@ -148,18 +140,6 @@ fun RushApp(
                         },
                         notificationAccess = NotificationListener.canAccessNotifications(context)
                     )
-
-                    if (lyricsState.searchSheet) {
-                        SearchSheet(
-                            state = searchState,
-                            action = searchSheetVM::onAction,
-                            onClick = {
-                                navController.navigate(Route.LyricsPage) {
-                                    launchSingleTop = true
-                                }
-                            }
-                        )
-                    }
                 }
             }
 
@@ -214,6 +194,18 @@ fun RushApp(
                     AboutLibraries()
                 }
             }
+        }
+
+        if (searchState.visible) {
+            SearchSheet(
+                state = searchState,
+                action = searchSheetVM::onAction,
+                onClick = {
+                    navController.navigate(Route.LyricsPage) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         if (!savedState.onboarding) {

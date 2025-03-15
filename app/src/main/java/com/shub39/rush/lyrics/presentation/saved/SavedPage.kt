@@ -61,7 +61,7 @@ fun SavedPage(
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.saved)) },

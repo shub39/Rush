@@ -1,5 +1,9 @@
 package com.shub39.rush.lyrics.presentation.viewmodels
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.util.Log
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.CardColors
@@ -15,6 +19,7 @@ import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,23 +54,21 @@ class SettingsVM(
     fun onSettingsPageAction(action: SettingsPageAction) {
         viewModelScope.launch {
             when (action) {
-                is SettingsPageAction.OnBatchDownload -> {
-                    batchDownload(action.files)
-                }
+                is SettingsPageAction.OnBatchDownload -> batchDownload()
+
 
                 SettingsPageAction.OnClearIndexes -> {
                     _state.update {
                         it.copy(
                             batchDownload = BatchDownload(
-                                indexes = emptyMap()
+                                indexes = emptyMap(),
+                                audioFiles = emptyList()
                             )
                         )
                     }
                 }
 
-                SettingsPageAction.OnDeleteSongs -> {
-                    repo.deleteAllSongs()
-                }
+                SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
 
                 is SettingsPageAction.OnUpdateLyricsColor -> {
                     datastore.updateLyricsColor(
@@ -73,9 +76,8 @@ class SettingsVM(
                     )
                 }
 
-                is SettingsPageAction.OnUpdateMaxLines -> {
-                    datastore.updateMaxLines(action.lines)
-                }
+                is SettingsPageAction.OnUpdateMaxLines -> datastore.updateMaxLines(action.lines)
+
 
                 SettingsPageAction.OnExportSongs -> {
                     _state.update {
@@ -128,32 +130,44 @@ class SettingsVM(
                     }
                 }
 
-                is SettingsPageAction.OnThemeSwitch -> {
-                    datastore.updateDarkThemePref(action.useDarkTheme)
-                }
+                is SettingsPageAction.OnThemeSwitch -> datastore.updateDarkThemePref(action.useDarkTheme)
 
-                is SettingsPageAction.OnAmoledSwitch -> {
-                    datastore.updateAmoledPref(action.amoled)
-                }
+                is SettingsPageAction.OnAmoledSwitch -> datastore.updateAmoledPref(action.amoled)
 
-                is SettingsPageAction.OnSeedColorChange -> {
-                    datastore.updateSeedColor(action.color)
-                }
+                is SettingsPageAction.OnSeedColorChange -> datastore.updateSeedColor(action.color)
 
-                is SettingsPageAction.OnPaletteChange -> {
-                    datastore.updatePaletteStyle(action.style)
-                }
+                is SettingsPageAction.OnPaletteChange -> datastore.updatePaletteStyle(action.style)
 
-                is SettingsPageAction.OnHypnoticToggle -> {
-                    datastore.updateHypnoticCanvas(action.toggle)
-                }
+                is SettingsPageAction.OnHypnoticToggle -> datastore.updateHypnoticCanvas(action.toggle)
 
-                is SettingsPageAction.OnMaterialThemeToggle -> {
-                    datastore.updateMaterialTheme(action.pref)
-                }
+                is SettingsPageAction.OnMaterialThemeToggle -> datastore.updateMaterialTheme(action.pref)
 
-                is SettingsPageAction.OnFontChange -> {
-                    datastore.updateFonts(action.fonts)
+                is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
+
+                is SettingsPageAction.OnProcessAudioFiles -> {
+                    launch(Dispatchers.IO) {
+                        _state.update {
+                            it.copy(
+                                batchDownload = it.batchDownload.copy(
+                                    isLoadingFiles = true
+                                )
+                            )
+                        }
+
+                        val documentFile = DocumentFile.fromTreeUri(action.context, action.uri)
+
+                        documentFile?.let {
+                            processFiles(action.context, documentFile)
+                        }
+
+                        _state.update {
+                            it.copy(
+                                batchDownload = it.batchDownload.copy(
+                                    isLoadingFiles = false
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -235,8 +249,45 @@ class SettingsVM(
         }
     }
 
+    private fun processFiles(
+        context: Context,
+        directory: DocumentFile
+    ) {
+        for (file in directory.listFiles()) {
+            if (file.isDirectory) {
+                processFiles(context, file)
+            } else if (file.isFile && file.type?.startsWith("audio/") == true) {
+                val retriever = MediaMetadataRetriever()
+                try {
+                    retriever.setDataSource(context, file.uri)
+
+                    val title =
+                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                    val artist =
+                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+
+                    if (title != null && artist != null) {
+                        _state.update {
+                            it.copy(
+                                batchDownload = it.batchDownload.copy(
+                                    audioFiles = it.batchDownload.audioFiles.plus(
+                                        AudioFile(title, artist)
+                                    )
+                                )
+                            )
+                        }
+                    }
+
+                    retriever.release()
+                } catch (e: Exception) {
+                    Log.d("BatchDownloader", "Can't set data source $e")
+                }
+            }
+        }
+    }
+
     private suspend fun batchDownload(
-        list: List<AudioFile>,
+        list: List<AudioFile> = _state.value.batchDownload.audioFiles,
     ) {
         _state.update {
             it.copy(

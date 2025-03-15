@@ -126,6 +126,7 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.hypnoticcanvas)
     implementation(libs.aboutLibraries)
+    implementation(libs.composeIcons.fontAwesome)
 }
 
 java {
