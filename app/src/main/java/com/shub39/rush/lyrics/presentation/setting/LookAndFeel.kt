@@ -63,15 +63,18 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +85,7 @@ fun LookAndFeel(
     var colorPickerDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -296,7 +299,7 @@ fun LookAndFeel(
                         Row(
                             modifier = Modifier
                                 .horizontalScroll(scrollState)
-                                .padding(8.dp),
+                                .padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             PaletteStyle.entries.toList().forEach { style ->
@@ -419,5 +422,17 @@ private fun SelectableMiniPalette(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    RushTheme(
+        state = Theme(
+            useDarkTheme = true
+        )
+    ) {
+        LookAndFeel(SettingsPageState()) {}
     }
 }

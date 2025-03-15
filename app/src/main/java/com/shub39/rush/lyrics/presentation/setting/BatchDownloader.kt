@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +50,6 @@ import androidx.documentfile.provider.DocumentFile
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
-import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 import com.shub39.rush.lyrics.presentation.setting.component.DownloaderCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,7 +122,7 @@ fun BatchDownloader(
     }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.batch_download)) }
@@ -138,7 +138,7 @@ fun BatchDownloader(
                 headlineContent = { Text(stringResource(R.string.select_folder)) },
                 trailingContent = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = { launcher.launch(null) },
                             enabled = uri == null
                         ) {
@@ -150,7 +150,7 @@ fun BatchDownloader(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        BetterIconButton(
+                        FilledTonalIconButton(
                             onClick = {
                                 uri = null
                                 audioFiles.clear()
@@ -170,7 +170,7 @@ fun BatchDownloader(
                             visible = audioFiles.isNotEmpty()
                         ) {
                             if (!state.batchDownload.isDownloading) {
-                                BetterIconButton(
+                                FilledTonalIconButton(
                                     onClick = {
                                         action(
                                             SettingsPageAction.OnBatchDownload(

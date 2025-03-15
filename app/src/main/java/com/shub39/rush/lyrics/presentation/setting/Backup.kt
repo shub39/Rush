@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
@@ -32,7 +33,6 @@ import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.setting.component.BetterIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +50,7 @@ fun Backup(
     }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -68,7 +68,7 @@ fun Backup(
                 headlineContent = { Text(stringResource(R.string.export)) },
                 supportingContent = { Text(stringResource(R.string.export_info)) },
                 trailingContent = {
-                    BetterIconButton(
+                    FilledTonalIconButton(
                         onClick = { action(SettingsPageAction.OnExportSongs) },
                         enabled = state.exportState == ExportState.IDLE
                     ) {
@@ -112,7 +112,7 @@ fun Backup(
                         }
 
                         if (uri != null) {
-                            BetterIconButton(
+                            FilledTonalIconButton(
                                 onClick = { action(SettingsPageAction.OnRestoreSongs(uri!!)) }
                             ) {
                                 when (state.restoreState) {
