@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.Error
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
@@ -16,9 +17,9 @@ data class LyricsPageState(
     val song: SongUi? = null,
     val fetching: Pair<Boolean, String> = Pair(false, ""),
     val searching: Pair<Boolean, String> = Pair(false, ""),
+    val scraping: Pair<Boolean, Error?> = Pair(false, null),
     @StringRes val error: Int? = null,
     val autoChange: Boolean = false,
-    val searchSheet: Boolean = false,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),

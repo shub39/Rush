@@ -136,14 +136,17 @@ fun LyricsPage(
                 if (state.fetching.first || (state.searching.first && state.autoChange)) {
 
                     LoadingCard(
-                        state.fetching,
-                        state.searching,
-                        Pair(cardContent, cardBackground)
+                        fetching = state.fetching,
+                        searching = state.searching,
+                        colors = Pair(cardContent, cardBackground)
                     )
 
                 } else if (state.error != null) {
 
-                    ErrorCard(state.error, Pair(cardContent, cardBackground))
+                    ErrorCard(
+                        error = state.error,
+                        colors = Pair(cardContent, cardBackground)
+                    )
 
                 } else if (state.song == null) {
 
@@ -159,7 +162,13 @@ fun LyricsPage(
                     }
 
                     Box {
-                        ArtHeader(top, state, cardContent, cardBackground)
+                        ArtHeader(
+                            top = top,
+                            hypnoticCanvas = state.hypnoticCanvas,
+                            song = state.song,
+                            cardContent = cardContent,
+                            cardBackground = cardBackground,
+                        )
 
                         Column(
                             modifier = Modifier.padding(top = 64.dp)
@@ -216,12 +225,12 @@ fun LyricsPage(
 
                             // Actions Row
                             ActionsRow(
-                                state,
-                                action,
-                                notificationAccess,
-                                cardBackground,
-                                cardContent,
-                                onShare
+                                state = state,
+                                action = action,
+                                notificationAccess = notificationAccess,
+                                cardBackground = cardBackground,
+                                cardContent = cardContent,
+                                onShare = onShare
                             )
                         }
                     }
@@ -229,14 +238,23 @@ fun LyricsPage(
                     // Plain lyrics
                     if (!state.sync) {
                         PlainLyrics(
-                            lazyListState,
-                            state,
-                            cardContent,
-                            action,
-                            coroutineScope
+                            lazyListState = lazyListState,
+                            source = state.source,
+                            song = state.song,
+                            selectedLines = state.selectedLines,
+                            maxLines = state.maxLines,
+                            cardContent = cardContent,
+                            action = action,
+                            scraping = state.scraping,
+                            coroutineScope = coroutineScope
                         )
                     } else if (state.song.syncedLyrics != null) {
-                        SyncedLyrics(state, coroutineScope, lazyListState, cardContent)
+                        SyncedLyrics(
+                            state = state,
+                            coroutineScope = coroutineScope,
+                            lazyListState = lazyListState,
+                            cardContent = cardContent
+                        )
                     }
                 }
             }
@@ -269,7 +287,10 @@ fun LyricsPage(
 
     // Lyrics Correction from LRCLIB
     if (state.lyricsCorrect) {
-        LrcCorrectDialog(action, state)
+        LrcCorrectDialog(
+            action = action,
+            state = state
+        )
     }
 }
 

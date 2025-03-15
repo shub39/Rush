@@ -8,10 +8,12 @@ import com.shub39.rush.lyrics.domain.SongRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.time.LocalDateTime
 
 class ExportImpl(
     private val songRepo: SongRepo
@@ -29,7 +31,7 @@ class ExportImpl(
 
         if (!exportFolder.exists() || !exportFolder.isDirectory) exportFolder.mkdirs()
 
-        val time = LocalDateTime.now().toString().replace(":", "").replace(" ", "")
+        val time = Clock.System.now().toLocalDateTime(TimeZone.UTC).toString().replace(":", "").replace(" ", "")
         val file = File(exportFolder, "Rush-Export-$time.json")
 
         val songs = songsData.await()

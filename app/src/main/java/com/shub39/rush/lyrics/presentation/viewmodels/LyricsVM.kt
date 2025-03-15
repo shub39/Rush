@@ -20,6 +20,7 @@ import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.presentation.lyrics.breakLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -97,9 +98,9 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnToggleSearchSheet -> {
-                    _state.update {
+                    stateLayer.searchSheetState.update {
                         it.copy(
-                            searchSheet = !it.searchSheet
+                            visible = !it.visible
                         )
                     }
                 }
@@ -199,6 +200,31 @@ class LyricsVM(
 
                 is LyricsPageAction.OnUpdatemContent -> {
                     datastore.updateCardContent(action.color)
+                }
+
+                is LyricsPageAction.OnScrapeGeniusLyrics -> {
+                    _state.update { it.copy(scraping = Pair(true, null)) }
+
+                    when (val result = repo.scrapeGeniusLyrics(action.id, action.url)) {
+                        is Result.Error -> {
+                            _state.update {
+                                it.copy(
+                                    scraping = Pair(false, result.error)
+                                )
+                            }
+                        }
+
+                        is Result.Success -> {
+                            _state.update {
+                                it.copy(
+                                    scraping = Pair(false, null),
+                                    song = it.song?.copy(
+                                        geniusLyrics = breakLyrics(result.data)
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

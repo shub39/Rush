@@ -6,6 +6,7 @@ import com.shub39.rush.core.domain.Sources
 
 sealed interface LyricsPageAction {
     data class OnChangeSelectedLines(val lines: Map<Int, String>): LyricsPageAction
+    data class OnScrapeGeniusLyrics(val id: Long, val url: String): LyricsPageAction
     data class OnLyricsCorrect(val show: Boolean): LyricsPageAction
     data class OnSyncAvailable(val sync: Boolean): LyricsPageAction
     data class OnToggleColorPref(val pref: Boolean): LyricsPageAction

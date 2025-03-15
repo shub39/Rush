@@ -33,6 +33,9 @@ interface SongDao {
     @Query("UPDATE songs SET lyrics = :lrcAsync, syncedLyrics = :lrcSync WHERE id = :id")
     suspend fun updateLrcLyricsById(id: Long, lrcAsync: String, lrcSync: String?)
 
+    @Query("UPDATE songs SET geniusLyrics = :lyrics WHERE id = :id")
+    suspend fun updateGeniusLyrics(id: Long, lyrics: String)
+
     @Query("DELETE FROM songs")
     suspend fun deleteAllSongs()
 }

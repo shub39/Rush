@@ -55,9 +55,9 @@ class SavedVM(
                 }
 
                 SavedPageAction.OnToggleSearchSheet -> {
-                    _state.update {
+                    stateLayer.searchSheetState.update {
                         it.copy(
-                            searchSheet = !it.searchSheet
+                            visible = !it.visible
                         )
                     }
                 }

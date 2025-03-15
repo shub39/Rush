@@ -72,9 +72,9 @@ class SearchSheetVM(
         viewModelScope.launch {
             when (action) {
                 is SearchSheetAction.OnCardClicked -> {
-                    stateLayer.lyricsState.update {
+                    _state.update {
                         it.copy(
-                            searchSheet = !it.searchSheet
+                            visible = !it.visible
                         )
                     }
 
@@ -96,9 +96,9 @@ class SearchSheetVM(
                 }
 
                 SearchSheetAction.OnToggleSearchSheet -> {
-                    stateLayer.lyricsState.update {
+                    _state.update {
                         it.copy(
-                            searchSheet = !it.searchSheet
+                            visible = !it.visible
                         )
                     }
 
