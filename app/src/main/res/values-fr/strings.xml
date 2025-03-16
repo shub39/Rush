@@ -9,7 +9,7 @@
     <string name="save">Sauvegarder les modifications</string>
     <string name="delete_confirmation">Êtes-vous sûr de vouloir supprimer toutes les paroles enregistrées  ?</string>
     <string name="no_lyrics">Les paroles n\'ont pas pu être obtenues depuis LRCLIB</string>
-    <string name="suggestion">Vous devriez peut-être rechercher quelque chose ?</string>
+    <string name="suggestion">Vous devriez peut-être rechercher quelque chose ?</string>
     <string name="downloaded">Paroles enregistrées</string>
     <string name="delete_all">Supprimer toutes les paroles</string>
     <string name="notification">Service d\'écoute des notifications</string>
@@ -34,7 +34,7 @@
     <string name="fetching">Chargement des paroles pour</string>
     <string name="searching">Recherche de</string>
     <string name="error">Une erreur est survenue…</string>
-    <string name="try_again">Réessayer ?</string>
+    <string name="try_again">Réessayer ?</string>
     <string name="correct_lyrics">Corriger les paroles</string>
     <string name="no_internet">Pas d\'accès à Internet.</string>
     <string name="request_failed">La requête a échoué</string>
