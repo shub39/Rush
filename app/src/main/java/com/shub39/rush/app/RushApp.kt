@@ -1,16 +1,17 @@
 package com.shub39.rush.app
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +19,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.core.presentation.findActivity
+import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
@@ -59,6 +60,24 @@ fun RushApp(
         state = settingsState.theme
     ) {
         NavHost(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it }
+                ) + fadeIn()
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it }
+                ) + fadeOut()
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it }
+                ) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
             navController = navController,
             startDestination = Route.HomeGraph,
             modifier = Modifier
@@ -66,18 +85,15 @@ fun RushApp(
                 .fillMaxSize()
         ) {
             navigation<Route.HomeGraph>(
-                startDestination = Route.SavedPage
+                startDestination = Route.SavedPage,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() },
+                popEnterTransition = { fadeIn() },
+                popExitTransition = { fadeOut() }
             ) {
                 composable<Route.SavedPage> {
-                    LaunchedEffect(Unit) {
-                        val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController =
-                            WindowCompat.getInsetsController(window, window.decorView)
-
-                        insetsController.apply {
-                            show(WindowInsetsCompat.Type.systemBars())
-                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-                        }
+                    SideEffect {
+                        updateSystemBars(context, true)
                     }
 
                     SavedPage(
@@ -96,18 +112,15 @@ fun RushApp(
             }
 
             navigation<Route.LyricsGraph>(
-                startDestination = Route.LyricsPage
+                startDestination = Route.LyricsPage,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() },
+                popEnterTransition = { fadeIn() },
+                popExitTransition = { fadeOut() }
             ) {
                 composable<Route.SharePage> {
-                    LaunchedEffect(Unit) {
-                        val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController =
-                            WindowCompat.getInsetsController(window, window.decorView)
-
-                        insetsController.apply {
-                            show(WindowInsetsCompat.Type.systemBars())
-                            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-                        }
+                    SideEffect {
+                        updateSystemBars(context, true)
                     }
 
                     SharePage(
@@ -118,16 +131,8 @@ fun RushApp(
                 }
 
                 composable<Route.LyricsPage> {
-                    LaunchedEffect(Unit) {
-                        val window = context.findActivity()?.window ?: return@LaunchedEffect
-                        val insetsController =
-                            WindowCompat.getInsetsController(window, window.decorView)
-
-                        insetsController.apply {
-                            hide(WindowInsetsCompat.Type.systemBars())
-                            systemBarsBehavior =
-                                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                        }
+                    SideEffect {
+                        updateSystemBars(context, false)
                     }
 
                     LyricsPage(
