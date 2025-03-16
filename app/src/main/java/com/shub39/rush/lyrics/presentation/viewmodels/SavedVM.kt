@@ -2,7 +2,7 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.domain.SongRepo
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class SavedVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
-    private val datastore: PrefDatastore
+    private val datastore: OtherPreferences
 ): ViewModel() {
 
     private var savedJob: Job? = null

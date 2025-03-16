@@ -6,8 +6,7 @@ import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.domain.CardColors
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
@@ -35,7 +34,7 @@ import kotlinx.coroutines.launch
 
 class SettingsVM(
     private val repo: RushRepository,
-    private val datastore: PrefDatastore,
+    private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
     private val restoreRepo: RestoreRepo
 ) : ViewModel() {
@@ -69,12 +68,6 @@ class SettingsVM(
                 }
 
                 SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
-
-                is SettingsPageAction.OnUpdateLyricsColor -> {
-                    datastore.updateLyricsColor(
-                        if (action.vibrant) CardColors.VIBRANT else CardColors.MUTED
-                    )
-                }
 
                 is SettingsPageAction.OnUpdateMaxLines -> datastore.updateMaxLines(action.lines)
 
@@ -130,15 +123,13 @@ class SettingsVM(
                     }
                 }
 
-                is SettingsPageAction.OnThemeSwitch -> datastore.updateDarkThemePref(action.useDarkTheme)
+                is SettingsPageAction.OnThemeSwitch -> datastore.updateAppThemePref(action.appTheme)
 
                 is SettingsPageAction.OnAmoledSwitch -> datastore.updateAmoledPref(action.amoled)
 
                 is SettingsPageAction.OnSeedColorChange -> datastore.updateSeedColor(action.color)
 
                 is SettingsPageAction.OnPaletteChange -> datastore.updatePaletteStyle(action.style)
-
-                is SettingsPageAction.OnHypnoticToggle -> datastore.updateHypnoticCanvas(action.toggle)
 
                 is SettingsPageAction.OnMaterialThemeToggle -> datastore.updateMaterialTheme(action.pref)
 
@@ -202,18 +193,6 @@ class SettingsVM(
                 }
                 .launchIn(this)
 
-            datastore.getLyricsColorFlow()
-                .onEach { color ->
-                    _state.update {
-                        it.copy(
-                            theme = it.theme.copy(
-                                lyricsColor = color
-                            )
-                        )
-                    }
-                }
-                .launchIn(this)
-
             datastore.getMaxLinesFlow()
                 .onEach { lines ->
                     _state.update {
@@ -226,23 +205,21 @@ class SettingsVM(
         }
     }
 
-    // this variant of combine takes at most 5 flows and the other variant doesnt work with nullable values
+    // this variant of combine takes at most 5 flows and the other variant doesn't work with nullable values
     private fun observeTheme(): Flow<Unit> {
         return combine(
             datastore.getSeedColorFlow(),
-            datastore.getDarkThemePrefFlow(),
+            datastore.getAppThemePrefFlow(),
             datastore.getAmoledPrefFlow(),
             datastore.getPaletteStyle(),
-            datastore.getHypnoticCanvasFlow()
-        ) { seedColor, useDarkTheme, withAmoled, style, hypnoticCanvas ->
+        ) { seedColor, useDarkTheme, withAmoled, style->
             _state.update {
                 it.copy(
                     theme = it.theme.copy(
                         seedColor = seedColor,
-                        useDarkTheme = useDarkTheme,
+                        appTheme = useDarkTheme,
                         withAmoled = withAmoled,
-                        style = style,
-                        hypnoticCanvas = hypnoticCanvas
+                        style = style
                     )
                 )
             }

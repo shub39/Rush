@@ -12,7 +12,8 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
@@ -39,7 +40,8 @@ import kotlinx.coroutines.launch
 class LyricsVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
-    private val datastore: PrefDatastore,
+    private val lyricsPrefs: LyricsPagePreferences,
+    private val otherPrefs: OtherPreferences,
     private val imageLoader: ImageLoader
 ): ViewModel() {
 
@@ -173,7 +175,7 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnHypnoticToggle -> {
-                    datastore.updateHypnoticCanvas(action.pref)
+                    lyricsPrefs.updateHypnoticCanvas(action.pref)
                 }
 
                 is LyricsPageAction.OnMeshSpeedChange -> {
@@ -185,21 +187,21 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnVibrantToggle -> {
-                    datastore.updateLyricsColor(
+                    lyricsPrefs.updateLyricsColor(
                         if (action.pref) CardColors.VIBRANT else CardColors.MUTED
                     )
                 }
 
                 is LyricsPageAction.OnToggleColorPref -> {
-                    datastore.updateUseExtractedFlow(action.pref)
+                    lyricsPrefs.updateUseExtractedFlow(action.pref)
                 }
 
                 is LyricsPageAction.OnUpdatemBackground -> {
-                    datastore.updateCardBackground(action.color)
+                    lyricsPrefs.updateCardBackground(action.color)
                 }
 
                 is LyricsPageAction.OnUpdatemContent -> {
-                    datastore.updateCardContent(action.color)
+                    lyricsPrefs.updateCardContent(action.color)
                 }
 
                 is LyricsPageAction.OnScrapeGeniusLyrics -> {
@@ -233,7 +235,7 @@ class LyricsVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
-            datastore.getUseExtractedFlow()
+            lyricsPrefs.getUseExtractedFlow()
                 .onEach { pref ->
                     _state.update {
                         it.copy(
@@ -243,7 +245,7 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            datastore.getCardBackgroundFlow()
+            lyricsPrefs.getCardBackgroundFlow()
                 .onEach { color ->
                     _state.update {
                         it.copy(
@@ -253,7 +255,7 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            datastore.getCardContentFlow()
+            lyricsPrefs.getCardContentFlow()
                 .onEach { color ->
                     _state.update {
                         it.copy(
@@ -263,7 +265,7 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            datastore.getLyricsColorFlow()
+            lyricsPrefs.getLyricsColorFlow()
                 .onEach { color ->
                     _state.update {
                         it.copy(
@@ -273,7 +275,7 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            datastore.getMaxLinesFlow()
+            otherPrefs.getMaxLinesFlow()
                 .onEach { lines ->
                     _state.update {
                         it.copy(
@@ -283,7 +285,7 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            datastore.getHypnoticCanvasFlow()
+            lyricsPrefs.getHypnoticCanvasFlow()
                 .onEach { hyp ->
                     _state.update {
                         it.copy(
