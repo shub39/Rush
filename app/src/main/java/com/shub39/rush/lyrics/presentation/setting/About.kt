@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -179,9 +178,7 @@ fun About(
 @Composable
 private fun Preview() {
     RushTheme(
-        state = Theme(
-            useDarkTheme = isSystemInDarkTheme()
-        )
+        state = Theme()
     ) {
         About {  }
     }

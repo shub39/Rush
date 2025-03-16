@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.materialkolor.DynamicMaterialTheme
 import com.shub39.rush.core.data.Theme
+import com.shub39.rush.core.domain.AppTheme
 
 @Composable
 fun RushTheme(
@@ -19,9 +20,10 @@ fun RushTheme(
         } else {
             Color(state.seedColor)
         },
-        useDarkTheme = when (state.useDarkTheme) {
-            null -> isSystemInDarkTheme()
-            else -> state.useDarkTheme
+        useDarkTheme = when (state.appTheme) {
+            AppTheme.SYSTEM -> isSystemInDarkTheme()
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
         },
         withAmoled = state.withAmoled,
         style = state.style,

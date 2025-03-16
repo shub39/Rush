@@ -5,9 +5,13 @@ import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.lyrics.data.database.DatabaseFactory
 import com.shub39.rush.lyrics.data.database.SongDatabase
 import com.shub39.rush.core.data.DatastoreFactory
+import com.shub39.rush.core.data.LyricsPagePreferencesImpl
 import com.shub39.rush.lyrics.data.repository.RushRepository
-import com.shub39.rush.core.data.RushDatastore
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.data.OtherPreferencesImpl
+import com.shub39.rush.core.data.SharePagePreferencesImpl
+import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.OtherPreferences
+import com.shub39.rush.core.domain.SharePagePreferences
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.data.backup.export.ExportImpl
 import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
@@ -24,6 +28,7 @@ import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -48,8 +53,12 @@ val rushModules = module {
     singleOf(::RestoreImpl).bind<RestoreRepo>()
 
     singleOf(::DatastoreFactory)
-    single { get<DatastoreFactory>().getPreferencesDataStore() }
-    singleOf(::RushDatastore).bind<PrefDatastore>()
+    single(named("LyricsPage")) { get<DatastoreFactory>().getLyricsPagePreferencesDataStore() }
+    single(named("SharePage")) { get<DatastoreFactory>().getSharePagePreferencesDataStore() }
+    single(named("Other")) { get<DatastoreFactory>().getOtherPreferencesDataStore() }
+    single { OtherPreferencesImpl(get(named("Other"))) }.bind<OtherPreferences>()
+    single { LyricsPagePreferencesImpl(get(named("LyricsPage"))) }.bind<LyricsPagePreferences>()
+    single { SharePagePreferencesImpl(get(named("SharePage"))) }.bind<SharePagePreferences>()
 
     singleOf(::StateLayer)
     viewModelOf(::SearchSheetVM)

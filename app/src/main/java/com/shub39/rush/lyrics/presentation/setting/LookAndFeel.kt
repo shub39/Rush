@@ -11,6 +11,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,6 +71,7 @@ import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
+import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
@@ -87,6 +89,7 @@ fun LookAndFeel(
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
     var fontPickerDialog by remember { mutableStateOf(false) }
+    var themePickerDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.widthIn(max = 500.dp),
@@ -129,52 +132,28 @@ fun LookAndFeel(
                 )
             }
 
-            // System theme toggle
+            // App theme switch
             item {
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.use_system_theme)
+                            text = stringResource(R.string.select_app_theme)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(R.string.use_system_theme_desc)
+                            text = stringResource(state.theme.appTheme.fullName)
                         )
                     },
                     trailingContent = {
-                        Switch(
-                            checked = state.theme.useDarkTheme == null,
-                            onCheckedChange = {
-                                action(
-                                    SettingsPageAction.OnThemeSwitch(
-                                        if (it) null else true
-                                    )
-                                )
-                            }
-                        )
-                    }
-                )
-            }
-
-            // Dark Theme Toggle
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.dark_theme)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.theme.useDarkTheme == true,
-                            onCheckedChange = {
-                                action(
-                                    SettingsPageAction.OnThemeSwitch(it)
-                                )
-                            },
-                            enabled = state.theme.useDarkTheme != null
-                        )
+                        FilledTonalIconButton(
+                            onClick = { themePickerDialog = true }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Create,
+                                contentDescription = "Pick"
+                            )
+                        }
                     }
                 )
             }
@@ -288,7 +267,11 @@ fun LookAndFeel(
                                     } else {
                                         Color(state.theme.seedColor)
                                     },
-                                    isDark = state.theme.useDarkTheme == true,
+                                    isDark = when (state.theme.appTheme) {
+                                        AppTheme.SYSTEM -> isSystemInDarkTheme()
+                                        AppTheme.LIGHT -> false
+                                        AppTheme.DARK -> true
+                                    },
                                     isAmoled = state.theme.withAmoled,
                                     style = style
                                 )
@@ -326,6 +309,43 @@ fun LookAndFeel(
             onSelect = { action(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
             onDismiss = { colorPickerDialog = false },
         )
+    }
+
+    // theme picker
+    if (themePickerDialog) {
+        RushDialog(
+            onDismissRequest = { themePickerDialog = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                AppTheme.entries.forEach { appTheme ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                action(SettingsPageAction.OnThemeSwitch(appTheme))
+                                themePickerDialog = false
+                            }
+                    ) {
+                        RadioButton(
+                            selected = state.theme.appTheme == appTheme,
+                            onClick = {
+                                action(SettingsPageAction.OnThemeSwitch(appTheme))
+                                themePickerDialog = false
+                            }
+                        )
+
+                        Text(
+                            text = stringResource(appTheme.fullName)
+                        )
+                    }
+                }
+            }
+        }
     }
 
     // Font picker
@@ -450,9 +470,7 @@ private fun SelectableMiniPalette(
 @Composable
 private fun Preview() {
     RushTheme(
-        state = Theme(
-            useDarkTheme = true
-        )
+        state = Theme()
     ) {
         LookAndFeel(SettingsPageState()) {}
     }

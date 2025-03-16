@@ -3,7 +3,6 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -162,9 +161,7 @@ fun Backup(
 @Composable
 private fun Preview() {
     RushTheme(
-        state = Theme(
-            useDarkTheme = isSystemInDarkTheme()
-        )
+        state = Theme()
     ) {
         Backup(
             SettingsPageState()

@@ -136,6 +136,7 @@ fun PlainLyrics(
             when (source) {
                 Sources.Genius -> {
                     item {
+                        // start scraping
                         LaunchedEffect(Unit) {
                             action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
                         }
@@ -153,7 +154,7 @@ fun PlainLyrics(
                                         modifier = Modifier.padding(16.dp)
                                     )
 
-                                    Text("Loading Genius Lyrics")
+                                    Text(stringResource(R.string.loading_genius))
                                 } else if (it.second != null) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_warning_24),
@@ -177,7 +178,7 @@ fun PlainLyrics(
                                             containerColor = Color.Transparent
                                         )
                                     ) {
-                                        Text("Retry")
+                                        Text(stringResource(R.string.retry))
                                     }
                                 }
                             }

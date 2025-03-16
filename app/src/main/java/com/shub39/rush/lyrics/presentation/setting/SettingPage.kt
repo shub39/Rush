@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
@@ -259,9 +258,7 @@ fun SettingPage(
 @PreviewLightDark
 @Composable
 private fun Preview() {
-    RushTheme(
-        Theme(useDarkTheme = true)
-    ) {
+    RushTheme {
         SettingPage(
             state = SettingsPageState(),
             notificationAccess = false,

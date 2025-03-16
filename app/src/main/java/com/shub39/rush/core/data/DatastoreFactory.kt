@@ -7,12 +7,22 @@ import androidx.datastore.preferences.core.Preferences
 import okio.Path.Companion.toPath
 
 class DatastoreFactory(private val context: Context) {
-    fun getPreferencesDataStore() : DataStore<Preferences> = createDataStore (
-        producePath = { context.filesDir.resolve(DATA_STORE_FILE_NAME).absolutePath }
+    fun getLyricsPagePreferencesDataStore() : DataStore<Preferences> = createDataStore (
+        producePath = { context.filesDir.resolve(LYRICS_DATASTORE).absolutePath }
+    )
+
+    fun getOtherPreferencesDataStore(): DataStore<Preferences> = createDataStore (
+        producePath = { context.filesDir.resolve(OTHER_DATASTORE).absolutePath }
+    )
+
+    fun getSharePagePreferencesDataStore(): DataStore<Preferences> = createDataStore(
+        producePath = { context.filesDir.resolve(SHARE_DATASTORE).absolutePath }
     )
 
     companion object {
-        private const val DATA_STORE_FILE_NAME = "rush.preferences_pb"
+        private const val LYRICS_DATASTORE = "rush.lyrics.preferences_pb"
+        private const val OTHER_DATASTORE = "rush.other.preferences_pb"
+        private const val SHARE_DATASTORE = "rush.share.preferences_pb"
     }
 }
 

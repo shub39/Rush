@@ -2,7 +2,7 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.domain.SharePagePreferences
 import com.shub39.rush.lyrics.presentation.share.SharePageAction
 import com.shub39.rush.lyrics.presentation.share.SharePageState
 import kotlinx.coroutines.Job
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class ShareVM(
     stateLayer: StateLayer,
-    private val datastore: PrefDatastore
+    private val datastore: SharePagePreferences
 ): ViewModel() {
 
     private var observeJob: Job? = null

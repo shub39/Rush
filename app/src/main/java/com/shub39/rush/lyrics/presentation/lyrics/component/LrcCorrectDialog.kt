@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 
@@ -44,127 +44,118 @@ fun LrcCorrectDialog(
     var track by remember { mutableStateOf("") }
     var artist by remember { mutableStateOf("") }
 
-    BasicAlertDialog(
-        onDismissRequest = {
-            action(
-                LyricsPageAction.OnLyricsCorrect(false)
-            )
-        }
+    RushDialog(
+        onDismissRequest = { action(LyricsPageAction.OnLyricsCorrect(false)) }
     ) {
-        Card(
-            shape = MaterialTheme.shapes.extraLarge,
-            modifier = Modifier.padding(top = 32.dp, bottom = 32.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Text(
+                text = stringResource(R.string.correct_lyrics),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.correct_lyrics),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                OutlinedTextField(
+                    value = track,
+                    onValueChange = { track = it },
+                    singleLine = true,
+                    shape = MaterialTheme.shapes.extraLarge,
+                    label = { Text(text = stringResource(R.string.track)) }
                 )
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    OutlinedTextField(
-                        value = track,
-                        onValueChange = { track = it },
-                        singleLine = true,
-                        shape = MaterialTheme.shapes.extraLarge,
-                        label = { Text(text = stringResource(R.string.track)) }
-                    )
-
-                    OutlinedTextField(
-                        value = artist,
-                        onValueChange = { artist = it },
-                        singleLine = true,
-                        shape = MaterialTheme.shapes.extraLarge,
-                        label = { Text(text = stringResource(R.string.artist)) }
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        action(LyricsPageAction.OnLrcSearch(track, artist))
-                    },
-                    enabled = track.isNotBlank() && !state.lrcCorrect.searching,
+                OutlinedTextField(
+                    value = artist,
+                    onValueChange = { artist = it },
+                    singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (!state.lrcCorrect.searching) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_search_24),
-                            contentDescription = null
-                        )
-                    } else {
-                        CircularProgressIndicator(
-                            strokeCap = StrokeCap.Round,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+                    label = { Text(text = stringResource(R.string.artist)) }
+                )
+            }
+
+            Button(
+                onClick = {
+                    action(LyricsPageAction.OnLrcSearch(track, artist))
+                },
+                enabled = track.isNotBlank() && !state.lrcCorrect.searching,
+                shape = MaterialTheme.shapes.extraLarge,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (!state.lrcCorrect.searching) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_search_24),
+                        contentDescription = null
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        strokeCap = StrokeCap.Round,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
+            }
 
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(state.lrcCorrect.searchResults, key = { it.id }) {
-                        Card(
-                            onClick = {
-                                action(
-                                    LyricsPageAction.OnUpdateSongLyrics(
-                                        state.song?.id!!,
-                                        it.plainLyrics!!,
-                                        it.syncedLyrics
-                                    )
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                items(state.lrcCorrect.searchResults, key = { it.id }) {
+                    Card(
+                        onClick = {
+                            action(
+                                LyricsPageAction.OnUpdateSongLyrics(
+                                    state.song?.id!!,
+                                    it.plainLyrics!!,
+                                    it.syncedLyrics
                                 )
+                            )
 
-                                action(
-                                    LyricsPageAction.OnLyricsCorrect(false)
-                                )
-                            },
-                            colors = when (it.syncedLyrics) {
-                                null -> CardDefaults.elevatedCardColors()
-                                else -> CardDefaults.elevatedCardColors(
-                                    contentColor = MaterialTheme.colorScheme.primary,
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                                )
-                            },
-                            shape = MaterialTheme.shapes.large,
+                            action(
+                                LyricsPageAction.OnLyricsCorrect(false)
+                            )
+                        },
+                        colors = when (it.syncedLyrics) {
+                            null -> CardDefaults.elevatedCardColors()
+                            else -> CardDefaults.elevatedCardColors(
+                                contentColor = MaterialTheme.colorScheme.primary,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            )
+                        },
+                        shape = MaterialTheme.shapes.large,
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.fillMaxWidth(0.7f)
                             ) {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(0.7f)
-                                ) {
-                                    Text(
-                                        text = it.name,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it.artistName,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
+                                Text(
+                                    text = it.name,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = it.artistName,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
 
-                                if (it.syncedLyrics != null) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.round_sync_24),
-                                        contentDescription = null
-                                    )
-                                }
+                            if (it.syncedLyrics != null) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_sync_24),
+                                    contentDescription = null
+                                )
                             }
                         }
                     }

@@ -48,7 +48,8 @@ import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
-import com.shub39.rush.core.domain.PrefDatastore
+import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.NotificationListener
@@ -57,7 +58,8 @@ import org.koin.compose.koinInject
 
 @Composable
 fun OnboardingDialog(
-    datastore: PrefDatastore = koinInject()
+    otherDatastore: OtherPreferences = koinInject(),
+    lyricsDatastore: LyricsPagePreferences = koinInject()
 ) {
     val hypnoticSupport = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -65,10 +67,10 @@ fun OnboardingDialog(
     val pagerState = rememberPagerState { if (hypnoticSupport) 3 else 2 }
     val coroutineScope = rememberCoroutineScope()
 
-    val hypnoticCanvas by datastore.getHypnoticCanvasFlow().collectAsState(true)
+    val hypnoticCanvas by lyricsDatastore.getHypnoticCanvasFlow().collectAsState(true)
 
     LaunchedEffect(hypnoticSupport) {
-        datastore.updateHypnoticCanvas(hypnoticSupport)
+        lyricsDatastore.updateHypnoticCanvas(hypnoticSupport)
     }
 
     val cardColors = CardDefaults.cardColors()
@@ -225,7 +227,7 @@ fun OnboardingDialog(
                                         if (hypnoticSupport) {
                                             pagerState.animateScrollToPage(2)
                                         } else {
-                                            datastore.updateOnboardingDone(true)
+                                            otherDatastore.updateOnboardingDone(true)
                                         }
                                     }
                                 }
@@ -243,7 +245,7 @@ fun OnboardingDialog(
                                         if (hypnoticSupport) {
                                             pagerState.animateScrollToPage(2)
                                         } else {
-                                            datastore.updateOnboardingDone(true)
+                                            otherDatastore.updateOnboardingDone(true)
                                         }
                                     }
                                 }
@@ -319,7 +321,7 @@ fun OnboardingDialog(
                                     checked = hypnoticCanvas,
                                     onCheckedChange = {
                                         coroutineScope.launch {
-                                            datastore.updateHypnoticCanvas(it)
+                                            lyricsDatastore.updateHypnoticCanvas(it)
                                         }
                                     }
                                 )
@@ -329,7 +331,7 @@ fun OnboardingDialog(
                         Button(
                             onClick = {
                                 coroutineScope.launch {
-                                    datastore.updateOnboardingDone(true)
+                                    otherDatastore.updateOnboardingDone(true)
                                 }
                             }
                         ) {
