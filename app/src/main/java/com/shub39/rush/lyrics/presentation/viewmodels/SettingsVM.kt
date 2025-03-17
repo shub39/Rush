@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.presentation.getMainArtist
+import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.data.repository.RushRepository
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.ExportState
@@ -212,7 +214,7 @@ class SettingsVM(
             datastore.getAppThemePrefFlow(),
             datastore.getAmoledPrefFlow(),
             datastore.getPaletteStyle(),
-        ) { seedColor, useDarkTheme, withAmoled, style->
+        ) { seedColor, useDarkTheme, withAmoled, style ->
             _state.update {
                 it.copy(
                     theme = it.theme.copy(
@@ -248,7 +250,7 @@ class SettingsVM(
                             it.copy(
                                 batchDownload = it.batchDownload.copy(
                                     audioFiles = it.batchDownload.audioFiles.plus(
-                                        AudioFile(title, artist)
+                                        AudioFile(getMainTitle(title), getMainArtist(artist))
                                     )
                                 )
                             )
@@ -287,26 +289,38 @@ class SettingsVM(
                 }
 
                 is Result.Success -> {
-                    val id = result.data.first().id
+                    val id = result.data.firstOrNull()?.id
 
-                    when (repo.fetchSong(id)) {
-                        is Result.Error -> {
-                            _state.update {
-                                it.copy(
-                                    batchDownload = it.batchDownload.copy(
-                                        indexes = it.batchDownload.indexes + (index to false)
-                                    )
+                    if (id == null) {
+                        _state.update {
+                            it.copy(
+                                batchDownload = it.batchDownload.copy(
+                                    indexes = it.batchDownload.indexes + (index to false)
                                 )
-                            }
+                            )
                         }
 
-                        is Result.Success -> {
-                            _state.update {
-                                it.copy(
-                                    batchDownload = it.batchDownload.copy(
-                                        indexes = it.batchDownload.indexes + (index to true),
+                        return@forEachIndexed
+                    } else {
+                        when (repo.fetchSong(id)) {
+                            is Result.Error -> {
+                                _state.update {
+                                    it.copy(
+                                        batchDownload = it.batchDownload.copy(
+                                            indexes = it.batchDownload.indexes + (index to false)
+                                        )
                                     )
-                                )
+                                }
+                            }
+
+                            is Result.Success -> {
+                                _state.update {
+                                    it.copy(
+                                        batchDownload = it.batchDownload.copy(
+                                            indexes = it.batchDownload.indexes + (index to true),
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
