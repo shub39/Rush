@@ -277,7 +277,7 @@ class SettingsVM(
         }
 
         list.forEachIndexed { index, audioFile ->
-            when (val result = repo.searchGenius(audioFile.title)) {
+            when (val result = repo.searchGenius("${audioFile.title} ${audioFile.artist}")) {
                 is Result.Error -> {
                     _state.update {
                         it.copy(
