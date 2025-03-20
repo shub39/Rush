@@ -7,7 +7,7 @@
     <string name="share">Partager</string>
     <string name="vibrant_colors">Utiliser des couleurs vives</string>
     <string name="save">Sauvegarder les modifications</string>
-    <string name="delete_confirmation">Êtes-vous sûr de vouloir supprimer toutes les paroles enregistrées  ?</string>
+    <string name="delete_confirmation">Êtes-vous sûr de vouloir supprimer toutes les paroles enregistrées ?</string>
     <string name="no_lyrics">Les paroles n\'ont pas pu être obtenues depuis LRCLIB</string>
     <string name="suggestion">Vous devriez peut-être rechercher quelque chose ?</string>
     <string name="downloaded">Paroles enregistrées</string>
