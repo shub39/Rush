@@ -8,11 +8,11 @@
     <string name="vibrant_colors">Lebendige Farben verwenden</string>
     <string name="save">Änderungen speichern</string>
     <string name="delete_confirmation">Möchten Sie wirklich alle gespeicherten Liedtexte löschen?</string>
-    <string name="no_lyrics">Konnte Liedtexte nicht abrufen</string>
+    <string name="no_lyrics">Konnte keine Liedtexte von LRCLIB abrufen</string>
     <string name="suggestion">Vielleicht nach etwas suchen?</string>
     <string name="downloaded">Gespeicherte Liedtexte</string>
     <string name="delete_all">Alle Liedtexte löschen</string>
-    <string name="notification">Benachrichtigungslistenerdienst</string>
+    <string name="notification">Listener-Dienst für Benachrichtigungen</string>
     <string name="unknown_album">Unbekanntes Album</string>
     <string name="track">Titel</string>
     <string name="artist">Künstler</string>
@@ -48,7 +48,7 @@
     <string name="card_corners">Kartenecken</string>
     <string name="vibrant_colors_info">Verwenden Sie lebendigere Farben für die Liedtextseite</string>
     <string name="backup">Sicherung</string>
-    <string name="backup_info">Importieren oder Exportieren Sie die Datenbank der gesichert Liedtexte</string>
+    <string name="backup_info">Importieren oder Exportieren Sie die Datenbank der gesicherten Liedtexte</string>
     <string name="batch_download_info">Laden Sie Liedtexte für Ihre lokal gespeicherten Lieder auf einmal herunter.</string>
     <string name="sort_date_added">Zuletzt hinzugefügt</string>
     <string name="rush_branding">Rush-Branding</string>
@@ -85,4 +85,24 @@
     <string name="default_">Standardmäßig</string>
     <string name="loading_genius">Genius-Liedtexte laden</string>
     <string name="light">Hell</string>
+    <string name="rush_mode">Rush-Modus</string>
+    <string name="amoled_desc">Beste Erfahrung mit AMOLED-Bildschirmen</string>
+    <string name="palette_style">Paletten-Stil</string>
+    <string name="seed_color_desc">Wählen Sie die Farbe, aus der Sie die Palette erstellen möchten</string>
+    <string name="extract_colors">Extrahiere Farben</string>
+    <string name="hypnotic_canvas">Hypnotischer Canvas</string>
+    <string name="muted">Gedämpft</string>
+    <string name="custom">Benutzerdefiniert</string>
+    <string name="rushed">Rushed</string>
+    <string name="fit">Angepasst</string>
+    <string name="rounded">Abgerundet</string>
+    <string name="material_theme_desc">Thema basierend auf Ihrem Hintergrundbild</string>
+    <string name="font">Schriftart der App auswählen</string>
+    <string name="use_extracted_colors">Extrahierte Farben verwenden</string>
+    <string name="mesh_speed">Mesh-Geschwindigkeit</string>
+    <string name="seed_color">Seed-Farbe auswählen</string>
+    <string name="vibrant">Lebendig</string>
+    <string name="hypnotic">Hypnotisch</string>
+    <string name="amoled">AMOLED-Palette</string>
+    <string name="hypnotic_canvas_desc">(Experimentell) Hypnotischer Canvas für die Liedtext-Seite. Funktioniert nur auf Android-Versionen 13 und höher. Ersetzt durch einen statischen Farbverlauf auf niedrigeren Android-Versionen. Könnte die Leistung beeinträchtigen</string>
 </resources>
