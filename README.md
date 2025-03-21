@@ -16,7 +16,7 @@
 > ### Get From
 > [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
 > [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/)
-> <a href="https://apt.izzysoft.de/packages/com.shub39.rush/latest"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+> [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/packages/com.shub39.rush/latest)
 > [<img src="https://www.openapk.net/images/openapk-badge.png" height=80>](https://www.openapk.net/dharmik/com.shub39.rush/)
 > [<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" height=80>](https://www.androidfreeware.net/download-rush-apk.html)
 > ### Or Get Latest [Release](https://github.com/shub39/Rush/releases) from Github
@@ -45,22 +45,9 @@ all in Material 3 look. As an audiophile, This has now become my way to listen t
 dealing with genius's "UI".
 
 ## Translations 🔠
-
-|            LANGUAGE            | UPDATED BY                                               |
-|:------------------------------:|:---------------------------------------------------------|
-|            English             | Myself                                                   |
-|            Japanese            | [kuragehimekuara1](https://github.com/kuragehimekurara1) |
-|            Italian             | [colozzacristian](https://github.com/colozzacristian)    |
-|            Turkish             | [mikropsoft](https://github.com/mikropsoft)              |
-|             French             | [Valyyme](https://github.com/Valyyme)                    |
-|      Brazilian Portuguese      | [luxdev01](https://github.com/luxdev01)                  | 
-| Simplified/Traditional Chinese | [AC19970](https://github.com/AC19970)                    |
-|             German             | [Irgendeinwer](https://github.com/Irgendeinwer)          |
-|            Persian             | [alr86](https://github.com/alr86)                        |
-|            Spanish             | [WaifuPX-DG](https://github.com/WaifuPX-DG)              |
-|            Romanian            | [D4rk7355608](https://github.com/D4rK7355608)            |
-|           Indonesian           | [AzyrRuthless](https://github.com/AzyrRuthless)          |
-|           Ukrainian            | [r0m41q](https://github.com/r0m41q)                      |
+Translations are done via weblate, you can contribute there!
+[<img src="https://hosted.weblate.org/widget/rush/multi-auto.svg" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
+[<img src="https://hosted.weblate.org/widget/rush/287x66-grey.png" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
 
 ## References and Inspiration 💡
 
@@ -68,18 +55,6 @@ dealing with genius's "UI".
 >- [SongSync](https://github.com/Lambada10/SongSync)
 >- [LrcLib](https://lrclib.net/) 
 >- Spotify Lyrics UI
-
-## Tech Stack ⚒️
-
->- [Ktor](https://github.com/ktorio/ktor) for networking
->- [Ksoup](https://github.com/fleeksoft/ksoup) for parsing html
->- Database using [ROOM](https://developer.android.com/jetpack/androidx/releases/room)
->- MVI architecture
->- Dependency injection using [Koin](https://insert-koin.io/docs/reference/koin-compose/compose/)
->- [Landscapist](https://github.com/skydoves/landscapist) for Images
->- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for the color picker
->- [MaterialKolor](https://github.com/jordond/MaterialKolor) for generating color palettes
->- [Hypnotic Canvas](https://mikepenz.github.io/HypnoticCanvas/) for the mesh gradient background
 
 ## How it works 🤔
 
