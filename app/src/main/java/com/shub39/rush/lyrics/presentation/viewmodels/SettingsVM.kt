@@ -57,7 +57,6 @@ class SettingsVM(
             when (action) {
                 is SettingsPageAction.OnBatchDownload -> batchDownload()
 
-
                 SettingsPageAction.OnClearIndexes -> {
                     _state.update {
                         it.copy(
@@ -72,7 +71,6 @@ class SettingsVM(
                 SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
 
                 is SettingsPageAction.OnUpdateMaxLines -> datastore.updateMaxLines(action.lines)
-
 
                 SettingsPageAction.OnExportSongs -> {
                     _state.update {
@@ -162,6 +160,8 @@ class SettingsVM(
                         }
                     }
                 }
+
+                is SettingsPageAction.OnFullscreenToggle -> datastore.setFullScreen(action.pref)
             }
         }
     }
@@ -200,6 +200,16 @@ class SettingsVM(
                     _state.update {
                         it.copy(
                             maxLines = lines
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            datastore.getFullScreenFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            fullscreen = pref
                         )
                     }
                 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -85,6 +86,30 @@ fun SettingPage(
                                 contentDescription = null
                             )
                         }
+                    }
+                )
+            }
+
+            // toggle fullscreen view
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.fullscreen,
+                            onCheckedChange = {
+                                action(SettingsPageAction.OnFullscreenToggle(it))
+                            }
+                        )
                     }
                 )
             }

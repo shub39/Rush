@@ -7,6 +7,7 @@ import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
 
 sealed interface SettingsPageAction {
+    data class OnFullscreenToggle(val pref: Boolean): SettingsPageAction
     data class OnSeedColorChange(val color: Int): SettingsPageAction
     data class OnThemeSwitch(val appTheme: AppTheme): SettingsPageAction
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
