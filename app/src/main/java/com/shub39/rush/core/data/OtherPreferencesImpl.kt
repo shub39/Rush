@@ -30,6 +30,7 @@ class OtherPreferencesImpl(
         private val sortOrder = stringPreferencesKey("sort_order")
         private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
+        private val fullscreen = booleanPreferencesKey("fullscreen")
     }
 
     override fun getAppThemePrefFlow(): Flow<AppTheme> = dataStore.data
@@ -112,6 +113,16 @@ class OtherPreferencesImpl(
     override suspend fun updateFonts(font: Fonts) {
         dataStore.edit { settings ->
             settings[selectedFont] = font.name
+        }
+    }
+
+    override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data
+        .map { prefs ->
+            prefs[fullscreen] != false
+        }
+    override suspend fun setFullScreen(pref: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[fullscreen] = pref
         }
     }
 

@@ -93,7 +93,9 @@ fun RushApp(
             ) {
                 composable<Route.SavedPage> {
                     SideEffect {
-                        updateSystemBars(context, true)
+                        if (settingsState.fullscreen) {
+                            updateSystemBars(context, true)
+                        }
                     }
 
                     SavedPage(
@@ -120,7 +122,9 @@ fun RushApp(
             ) {
                 composable<Route.SharePage> {
                     SideEffect {
-                        updateSystemBars(context, true)
+                        if (settingsState.fullscreen) {
+                            updateSystemBars(context, true)
+                        }
                     }
 
                     SharePage(
@@ -132,7 +136,9 @@ fun RushApp(
 
                 composable<Route.LyricsPage> {
                     SideEffect {
-                        updateSystemBars(context, false)
+                        if (settingsState.fullscreen) {
+                            updateSystemBars(context, false)
+                        }
                     }
 
                     LyricsPage(

@@ -31,4 +31,7 @@ interface OtherPreferences {
 
     fun getFontFlow(): Flow<Fonts>
     suspend fun updateFonts(font: Fonts)
+
+    fun getFullScreenFlow(): Flow<Boolean>
+    suspend fun setFullScreen(pref: Boolean)
 }

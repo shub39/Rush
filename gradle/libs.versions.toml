@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.1"
 colorpicker = "1.1.2"
 materialKolor = "2.0.1"
 splashScreen = "1.0.1"
@@ -8,7 +8,7 @@ koin = "4.0.1"
 ksoup = "0.2.1"
 ktor = "3.0.3"
 kotlin = "2.1.10"
-ksp = "2.1.10-1.0.29"
+ksp = "2.1.10-1.0.31"
 kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.1"
@@ -19,7 +19,7 @@ room = "2.7.0-rc02"
 sqlite = "2.5.0-rc02"
 serialization = "1.7.3"
 hypnoticcanvas = "0.4.0-b02"
-aboutLibraries = '11.4.0'
+aboutLibraries = '11.5.0'
 datetime = "0.6.2"
 composeIcons = "1.1.1"
 
