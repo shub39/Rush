@@ -30,7 +30,7 @@
     <string name="save">Сохранить</string>
     <string name="delete_confirmation">Вы уверены что хотите удалить все сохраненные тексты песен?</string>
     <string name="no_lyrics">Не могу загрузить слова из LRCLIB</string>
-    <string name="delete_all">Удалить все текста песен</string>
+    <string name="delete_all">Удалить все тексты песен</string>
     <string name="notification">Сервис Отслеживания Уведомлений</string>
     <string name="track">трек</string>
     <string name="artist">исполнитель</string>
@@ -78,7 +78,7 @@
     <string name="dark_theme">Использовать темную тему</string>
     <string name="amoled">Цвета Amoled</string>
     <string name="use_system_theme_desc">Использовать тему как в системе</string>
-    <string name="amoled_desc">Лучше всего работает с AMOLED дисплеями</string>
+    <string name="amoled_desc">Лучше всего работает с AMOLED-дисплеями</string>
     <string name="palette_style">Стиль палитры</string>
     <string name="seed_color">Выбрать цвет для основы</string>
     <string name="hypnotic_canvas">Гипнотический фон</string>
@@ -90,7 +90,7 @@
     <string name="custom">Собственный</string>
     <string name="fit">Соответствие</string>
     <string name="standard">Стандартный</string>
-    <string name="spotify">Спотифай</string>
+    <string name="spotify">Spotify</string>
     <string name="rushed">Rushed</string>
     <string name="image">Изображение</string>
     <string name="hypnotic">Гипнотический</string>
