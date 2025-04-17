@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="search">ابحث عن كلمات الأغاني</string>
     <string name="saved">تم الحفظ</string>
@@ -98,4 +99,12 @@
     <string name="mesh_speed">سرعة الشبكة</string>
     <string name="use_extracted_colors">استخدم الألوان المستخرجة</string>
     <string name="about_libraries">حول المكتبات</string>
+    <string name="dark"></string>
+    <string name="fullscreen"></string>
+    <string name="select_app_theme"></string>
+    <string name="retry"></string>
+    <string name="system"></string>
+    <string name="loading_genius"></string>
+    <string name="light"></string>
+    <string name="fullscreen_desc"></string>
 </resources>
