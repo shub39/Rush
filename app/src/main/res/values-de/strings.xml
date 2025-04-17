@@ -105,4 +105,6 @@
     <string name="hypnotic">Hypnotisch</string>
     <string name="amoled">AMOLED-Palette</string>
     <string name="hypnotic_canvas_desc">(Experimentell) Hypnotischer Canvas für die Liedtext-Seite. Funktioniert nur auf Android-Versionen 13 und höher. Ersetzt durch einen statischen Farbverlauf auf niedrigeren Android-Versionen. Könnte die Leistung beeinträchtigen</string>
+    <string name="fullscreen_desc"></string>
+    <string name="fullscreen"></string>
 </resources>
