@@ -6,5 +6,3 @@ Funzionalità:
 - Condividi parte dei testi sotto forma di una cartolina personalizzabile
 - Autocompleta la ricerca, utilizzando le canzoni attualmente in riproduzione(Richiede l'accesso alle notifiche)
 - Testi sincronizzati
-
-
