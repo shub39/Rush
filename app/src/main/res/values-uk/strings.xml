@@ -95,16 +95,4 @@
     <string name="default_">За замовчуванням</string>
     <string name="material_theme">Тема Material</string>
     <string name="material_theme_desc">Тема, заснована на встановленій шпалері</string>
-    <string name="select_app_theme"></string>
-    <string name="fullscreen"></string>
-    <string name="system"></string>
-    <string name="mesh_speed"></string>
-    <string name="font"></string>
-    <string name="use_extracted_colors"></string>
-    <string name="about_libraries"></string>
-    <string name="retry"></string>
-    <string name="loading_genius"></string>
-    <string name="dark"></string>
-    <string name="light"></string>
-    <string name="fullscreen_desc"></string>
 </resources>

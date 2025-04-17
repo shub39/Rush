@@ -92,19 +92,4 @@
     <string name="hypnotic">Hipnotic</string>
     <string name="rounded">Rotunjit</string>
     <string name="default_">Implicit</string>
-    <string name="use_extracted_colors"></string>
-    <string name="fullscreen"></string>
-    <string name="spotify"></string>
-    <string name="material_theme"></string>
-    <string name="about_libraries"></string>
-    <string name="mesh_speed"></string>
-    <string name="material_theme_desc"></string>
-    <string name="font"></string>
-    <string name="loading_genius"></string>
-    <string name="dark"></string>
-    <string name="select_app_theme"></string>
-    <string name="system"></string>
-    <string name="light"></string>
-    <string name="retry"></string>
-    <string name="fullscreen_desc"></string>
 </resources>

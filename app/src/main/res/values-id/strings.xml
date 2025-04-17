@@ -95,16 +95,4 @@
     <string name="default_">Bawaan</string>
     <string name="material_theme">Material Theme</string>
     <string name="material_theme_desc">Tema berdasarkan wallpaper Anda.</string>
-    <string name="font"></string>
-    <string name="mesh_speed"></string>
-    <string name="select_app_theme"></string>
-    <string name="system"></string>
-    <string name="light"></string>
-    <string name="dark"></string>
-    <string name="about_libraries"></string>
-    <string name="use_extracted_colors"></string>
-    <string name="loading_genius"></string>
-    <string name="retry"></string>
-    <string name="fullscreen_desc"></string>
-    <string name="fullscreen"></string>
 </resources>
