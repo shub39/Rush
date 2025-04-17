@@ -104,4 +104,7 @@
     <string name="use_extracted_colors">Usar colores extraídos</string>
     <string name="loading_genius">Cargando letra de Genius</string>
     <string name="material_theme_desc">Tema basado en la imagen de fondo</string>
+    <string name="fullscreen"></string>
+    <string name="mesh_speed"></string>
+    <string name="fullscreen_desc"></string>
 </resources>
