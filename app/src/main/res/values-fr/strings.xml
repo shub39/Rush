@@ -105,4 +105,6 @@
     <string name="rush_mode_desc">Cherche vos notifications pour la chanson en cours et récupère les paroles pour celle-ci. Change les paroles automatiquement avec votre lecteur de musique.</string>
     <string name="use_system_theme">Utiliser le thème du système</string>
     <string name="hypnotic_canvas">Effet hypnotique</string>
+    <string name="fullscreen">Mode plein-écran</string>
+    <string name="fullscreen_desc">Masquer les barres système sur la page des paroles</string>
 </resources>
