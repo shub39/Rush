@@ -12,7 +12,7 @@
 > [<img src="https://m3-markdown-badges.vercel.app/stars/1/3/shub39/Rush">]()
 > [<img src="https://m3-markdown-badges.vercel.app/issues/1/2/shub39/Rush">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
-> > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Twitter/twitter1.svg">](https://x.com/RushedLyrics)
+> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Twitter/twitter1.svg">](https://x.com/RushedLyrics)
 
 > ### Get From
 > [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)

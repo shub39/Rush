@@ -2,8 +2,10 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Error
@@ -20,6 +22,7 @@ data class LyricsPageState(
     val scraping: Pair<Boolean, Error?> = Pair(false, null),
     @StringRes val error: Int? = null,
     val autoChange: Boolean = false,
+    val textAlign: TextAlign = TextAlign.Center,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),
