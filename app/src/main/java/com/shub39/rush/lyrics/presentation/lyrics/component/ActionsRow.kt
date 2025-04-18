@@ -1,47 +1,27 @@
 package com.shub39.rush.lyrics.presentation.lyrics.component
 
-import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
-import com.materialkolor.ktx.lighten
 import com.shub39.rush.R
 import com.shub39.rush.core.data.SongDetails
-import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Sources
-import com.shub39.rush.core.presentation.ColorPickerDialog
-import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 
@@ -52,10 +32,10 @@ fun ActionsRow(
     notificationAccess: Boolean,
     cardBackground: Color,
     cardContent: Color,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onEdit: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
-    var paletteDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -65,11 +45,11 @@ fun ActionsRow(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(
-                onClick = { paletteDialog = true }
+                onClick = onEdit
             ) {
                 Icon(
                     painter = painterResource(R.drawable.round_palette_24),
-                    contentDescription = "palette"
+                    contentDescription = "Edit"
                 )
             }
 
@@ -230,151 +210,6 @@ fun ActionsRow(
                         )
                     }
                 }
-            }
-        }
-    }
-
-    if (paletteDialog) {
-        RushDialog(
-            onDismissRequest = { paletteDialog = false }
-        ) {
-            var colorPickerDialog by remember { mutableStateOf(false) }
-            var editTarget by remember { mutableStateOf("content") }
-
-            if (colorPickerDialog) {
-                ColorPickerDialog(
-                    initialColor = if (editTarget == "content") Color(state.mCardContent) else Color(
-                        state.mCardBackground
-                    ),
-                    onSelect = {
-                        if (editTarget == "content") {
-                            action(LyricsPageAction.OnUpdatemContent(it.toArgb()))
-                        } else {
-                            action(LyricsPageAction.OnUpdatemBackground(it.toArgb()))
-                        }
-                    },
-                    onDismiss = { colorPickerDialog = false }
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    ListItem(
-                        modifier = Modifier.clip(MaterialTheme.shapes.large),
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.hypnotic_canvas)
-                            )
-                        },
-                        trailingContent = {
-                            Switch(
-                                checked = state.hypnoticCanvas,
-                                onCheckedChange = { action(LyricsPageAction.OnHypnoticToggle(it)) }
-                            )
-                        }
-                    )
-
-                    ListItem(
-                        modifier = Modifier.clip(MaterialTheme.shapes.large),
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.mesh_speed)
-                            )
-                        },
-                        supportingContent = {
-                            Slider(
-                                value = state.meshSpeed,
-                                valueRange = 0.5f..3f,
-                                onValueChange = {
-                                    action(LyricsPageAction.OnMeshSpeedChange(it))
-                                },
-                                enabled = state.hypnoticCanvas
-                            )
-                        }
-                    )
-                }
-
-                ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.use_extracted_colors)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.useExtractedColors,
-                            onCheckedChange = { action(LyricsPageAction.OnToggleColorPref(it)) }
-                        )
-                    }
-                )
-
-                ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.vibrant_colors)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.cardColors == CardColors.VIBRANT,
-                            onCheckedChange = { action(LyricsPageAction.OnVibrantToggle(it)) },
-                            enabled = state.useExtractedColors
-                        )
-                    }
-                )
-
-                ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.colors)
-                        )
-                    },
-                    trailingContent = {
-                        Row {
-                            IconButton(
-                                onClick = {
-                                    editTarget = "content"
-                                    colorPickerDialog = true
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = Color(state.mCardContent),
-                                    contentColor = Color(state.mCardContent).lighten(2f)
-                                ),
-                                enabled = !state.useExtractedColors
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Create,
-                                    contentDescription = "Select Color",
-                                )
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    editTarget = "background"
-                                    colorPickerDialog = true
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = Color(state.mCardBackground),
-                                    contentColor = Color(state.mCardBackground).lighten(2f)
-                                ),
-                                enabled = !state.useExtractedColors
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Create,
-                                    contentDescription = "Select Color"
-                                )
-                            }
-                        }
-                    }
-                )
             }
         }
     }

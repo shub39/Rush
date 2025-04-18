@@ -21,6 +21,7 @@ import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.data.listener.NotificationListener
+import com.shub39.rush.lyrics.presentation.lyrics.LyricsCustomisationsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
@@ -134,6 +135,19 @@ fun RushApp(
                     )
                 }
 
+                composable<Route.LyricsCustomisations> {
+                    SideEffect {
+                        if (settingsState.fullscreen) {
+                            updateSystemBars(context, true)
+                        }
+                    }
+
+                    LyricsCustomisationsPage(
+                        state = lyricsState,
+                        action = lyricsVM::onAction
+                    )
+                }
+
                 composable<Route.LyricsPage> {
                     SideEffect {
                         if (settingsState.fullscreen) {
@@ -146,6 +160,11 @@ fun RushApp(
                         action = lyricsVM::onAction,
                         onShare = {
                             navController.navigate(Route.SharePage) {
+                                launchSingleTop = true
+                            }
+                        },
+                        onEdit = {
+                            navController.navigate(Route.LyricsCustomisations) {
                                 launchSingleTop = true
                             }
                         },

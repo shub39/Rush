@@ -3,7 +3,6 @@ package com.shub39.rush.lyrics.presentation.lyrics
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,12 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.materialkolor.ktx.darken
-import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
-import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.MediaListener
@@ -61,6 +57,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun LyricsPage(
+    onEdit: () -> Unit,
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
@@ -230,7 +227,8 @@ fun LyricsPage(
                                 notificationAccess = notificationAccess,
                                 cardBackground = cardBackground,
                                 cardContent = cardContent,
-                                onShare = onShare
+                                onShare = onShare,
+                                onEdit = onEdit
                             )
                         }
                     }
