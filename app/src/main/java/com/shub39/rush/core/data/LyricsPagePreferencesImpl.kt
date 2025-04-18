@@ -37,7 +37,7 @@ class LyricsPagePreferencesImpl(
             settings[cardBackground] = Color.Black.toArgb()
             settings[cardContent] = Color.White.toArgb()
             settings[lyricsColor] = CardColors.MUTED.name
-            settings[useExtracted] = false
+            settings[useExtracted] = true
             settings[lyricAlignment] = TextAlign.Start.toString()
             settings[fontSize] = 28f
             settings[lineHeight] = 32f

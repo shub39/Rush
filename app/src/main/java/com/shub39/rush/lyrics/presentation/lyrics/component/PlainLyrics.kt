@@ -4,9 +4,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -35,26 +37,22 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
-import com.shub39.rush.core.domain.Error
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
+import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.updateSelectedLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun PlainLyrics(
+    state: LyricsPageState,
     lazyListState: LazyListState,
-    scraping: Pair<Boolean, Error?>,
-    source: Sources,
-    song: SongUi,
-    selectedLines: Map<Int, String>,
-    maxLines: Int,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
     coroutineScope: CoroutineScope,
@@ -62,20 +60,22 @@ fun PlainLyrics(
     val hapticFeedback = LocalHapticFeedback.current
     val uriHandler = LocalUriHandler.current
 
-    val items = if (source == Sources.LrcLib) song.lyrics else song.geniusLyrics
+    val song = state.song!!
+
+    val items = if (state.source == Sources.LrcLib) song.lyrics else song.geniusLyrics
 
     LazyColumn(
         modifier = Modifier
             .widthIn(max = 500.dp)
-            .fillMaxWidth()
-            .padding(
-                end = 16.dp,
-                start = 16.dp,
-                top = 16.dp,
-                bottom = 32.dp
-            ),
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
         state = lazyListState
     ) {
+        item {
+            Spacer(modifier = Modifier.height(175.dp))
+        }
+
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
             items(
@@ -83,7 +83,7 @@ fun PlainLyrics(
                 key = { it.key }
             ) {
                 if (it.value.isNotBlank()) {
-                    val isSelected = selectedLines.contains(it.key)
+                    val isSelected = state.selectedLines.contains(it.key)
                     val containerColor by animateColorAsState(
                         targetValue = when (!isSelected) {
                             true -> Color.Transparent
@@ -93,20 +93,22 @@ fun PlainLyrics(
                     )
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = when (state.textAlign) {
+                            TextAlign.Center -> Arrangement.Center
+                            TextAlign.End -> Arrangement.End
+                            else -> Arrangement.Start
+                        }
                     ) {
                         Card(
-                            modifier = Modifier
-                                .padding(3.dp),
                             onClick = {
                                 action(
                                     LyricsPageAction.OnChangeSelectedLines(
                                         updateSelectedLines(
-                                            selectedLines,
+                                            state.selectedLines,
                                             it.key,
                                             it.value,
-                                            maxLines
+                                            state.maxLines
                                         )
                                     )
                                 )
@@ -124,7 +126,10 @@ fun PlainLyrics(
                         ) {
                             Text(
                                 text = it.value,
-                                fontSize = 19.sp,
+                                fontSize = state.fontSize.sp,
+                                letterSpacing = state.letterSpacing.sp,
+                                lineHeight = state.lineHeight.sp,
+                                textAlign = state.textAlign,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(6.dp)
                             )
@@ -133,7 +138,7 @@ fun PlainLyrics(
                 }
             }
         } else {
-            when (source) {
+            when (state.source) {
                 Sources.Genius -> {
                     item {
                         // start scraping
@@ -142,7 +147,7 @@ fun PlainLyrics(
                         }
 
                         AnimatedContent(
-                            targetState = scraping
+                            targetState = state.scraping
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -223,7 +228,7 @@ fun PlainLyrics(
                             lazyListState.scrollToItem(0)
                         }
                     },
-                    enabled = if (source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
+                    enabled = if (state.source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_arrow_upward_24),

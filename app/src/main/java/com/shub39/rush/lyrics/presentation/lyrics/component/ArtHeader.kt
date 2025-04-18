@@ -29,7 +29,7 @@ fun ArtHeader(
                 highlightColor = cardContent,
                 baseColor = Color.Transparent,
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(50.dp)
                     .fillMaxWidth(),
             )
 

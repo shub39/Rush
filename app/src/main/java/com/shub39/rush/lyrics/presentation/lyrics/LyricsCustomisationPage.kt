@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.lyrics
 import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Refresh
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -98,51 +101,57 @@ fun LyricsCustomisationsPage(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Card(
+                Box(
                     modifier = Modifier
-                        .let {
-                            if (state.hypnoticCanvas) {
-                                it.shaderBackground(
-                                    shader = MeshGradient(
-                                        colors = generateGradientColors(
-                                            color1 = hypnoticColor1,
-                                            color2 = hypnoticColor2,
-                                            steps = 6
-                                        ).toTypedArray()
-                                    ),
-                                    speed = hypnoticSpeed,
-                                    fallback = {
-                                        Brush.horizontalGradient(
-                                            generateGradientColors(
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .let {
+                                if (state.hypnoticCanvas) {
+                                    it.shaderBackground(
+                                        shader = MeshGradient(
+                                            colors = generateGradientColors(
                                                 color1 = hypnoticColor1,
                                                 color2 = hypnoticColor2,
                                                 steps = 6
+                                            ).toTypedArray()
+                                        ),
+                                        speed = hypnoticSpeed,
+                                        fallback = {
+                                            Brush.horizontalGradient(
+                                                generateGradientColors(
+                                                    color1 = hypnoticColor1,
+                                                    color2 = hypnoticColor2,
+                                                    steps = 6
+                                                )
                                             )
-                                        )
-                                    }
-                                )
-                            } else {
-                                it
-                            }
-                        }
-                        .padding(horizontal = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (state.hypnoticCanvas) Color.Transparent else cardBackground,
-                        contentColor = cardContent
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "This is a very very long text depicting how lyrics should appear based on these settings",
-                            textAlign = state.textAlign,
-                            fontSize = state.fontSize.sp,
-                            lineHeight = state.lineHeight.sp,
-                            letterSpacing = state.letterSpacing.sp
+                                        }
+                                    )
+                                } else {
+                                    it
+                                }
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (state.hypnoticCanvas) Color.Transparent else cardBackground,
+                            contentColor = cardContent
                         )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "This is a very very long text depicting how lyrics should appear based on these settings",
+                                textAlign = state.textAlign,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = state.fontSize.sp,
+                                lineHeight = state.lineHeight.sp,
+                                letterSpacing = state.letterSpacing.sp
+                            )
+                        }
                     }
                 }
             }

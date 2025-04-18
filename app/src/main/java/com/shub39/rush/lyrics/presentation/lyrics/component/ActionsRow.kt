@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
@@ -37,132 +36,107 @@ fun ActionsRow(
 ) {
     val clipboardManager = LocalClipboardManager.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = onEdit
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.round_palette_24),
-                    contentDescription = "Edit"
-                )
-            }
 
-            IconButton(
-                onClick = {
-                    if (state.selectedLines.isEmpty()) {
-                        clipboardManager.setText(
-                            buildAnnotatedString {
-                                append(
-                                    if (state.source == Sources.LrcLib) {
-                                        state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
-                                    } else {
-                                        state.song?.geniusLyrics?.joinToString("\n") { it.value }
-                                            ?: ""
-                                    }
-                                )
-                            }
-                        )
-                    } else {
-                        clipboardManager.setText(
-                            buildAnnotatedString {
-                                append(state.selectedLines.toSortedMap().values.joinToString("\n"))
-                            }
-                        )
-                    }
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_content_copy_24),
-                    contentDescription = null
-                )
-            }
+    Row {
+        IconButton(
+            onClick = onEdit
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.round_palette_24),
+                contentDescription = "Edit"
+            )
+        }
 
-            AnimatedVisibility(visible = state.selectedLines.isEmpty()) {
-                IconButton(onClick = {
-                    action(
-                        LyricsPageAction.OnSourceChange(
-                            if (state.source == Sources.LrcLib) Sources.Genius else Sources.LrcLib
-                        )
+        IconButton(
+            onClick = {
+                if (state.selectedLines.isEmpty()) {
+                    clipboardManager.setText(
+                        buildAnnotatedString {
+                            append(
+                                if (state.source == Sources.LrcLib) {
+                                    state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
+                                } else {
+                                    state.song?.geniusLyrics?.joinToString("\n") { it.value }
+                                        ?: ""
+                                }
+                            )
+                        }
                     )
-
-                    action(
-                        LyricsPageAction.OnSync(false)
+                } else {
+                    clipboardManager.setText(
+                        buildAnnotatedString {
+                            append(state.selectedLines.toSortedMap().values.joinToString("\n"))
+                        }
                     )
-                }) {
-                    if (state.source == Sources.Genius) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_lyrics_24),
-                            contentDescription = null
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = R.drawable.genius),
-                            contentDescription = null
-                        )
-                    }
                 }
             }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.round_content_copy_24),
+                contentDescription = null
+            )
+        }
 
-            AnimatedVisibility(
-                visible = state.source == Sources.LrcLib && state.selectedLines.isEmpty()
-            ) {
-                IconButton(
-                    onClick = {
-                        action(
-                            LyricsPageAction.OnLyricsCorrect(true)
-                        )
-                        action(
-                            LyricsPageAction.OnSync(false)
-                        )
-                        if (state.autoChange) action(
-                            LyricsPageAction.OnToggleAutoChange
-                        )
-                    }
-                ) {
+        AnimatedVisibility(visible = state.selectedLines.isEmpty()) {
+            IconButton(onClick = {
+                action(
+                    LyricsPageAction.OnSourceChange(
+                        if (state.source == Sources.LrcLib) Sources.Genius else Sources.LrcLib
+                    )
+                )
+
+                action(
+                    LyricsPageAction.OnSync(false)
+                )
+            }) {
+                if (state.source == Sources.Genius) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_edit_note_24),
+                        painter = painterResource(id = R.drawable.round_lyrics_24),
+                        contentDescription = null
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.genius),
                         contentDescription = null
                     )
                 }
             }
+        }
 
-            AnimatedVisibility(
-                visible = state.syncedAvailable && state.selectedLines.isEmpty() && state.source == Sources.LrcLib && notificationAccess
-            ) {
-                Row {
-                    IconButton(
-                        onClick = {
-                            action(
-                                LyricsPageAction.OnSync(!state.sync)
-                            )
-                        },
-                        colors = if (state.sync) {
-                            IconButtonDefaults.iconButtonColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent
-                            )
-                        } else {
-                            IconButtonDefaults.iconButtonColors()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_sync_24),
-                            contentDescription = null
-                        )
-                    }
+        AnimatedVisibility(
+            visible = state.source == Sources.LrcLib && state.selectedLines.isEmpty()
+        ) {
+            IconButton(
+                onClick = {
+                    action(
+                        LyricsPageAction.OnLyricsCorrect(true)
+                    )
+                    action(
+                        LyricsPageAction.OnSync(false)
+                    )
+                    if (state.autoChange) action(
+                        LyricsPageAction.OnToggleAutoChange
+                    )
                 }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_edit_note_24),
+                    contentDescription = null
+                )
             }
+        }
 
-            AnimatedVisibility(visible = notificationAccess) {
+        AnimatedVisibility(
+            visible = state.syncedAvailable && state.selectedLines.isEmpty() && state.source == Sources.LrcLib && notificationAccess
+        ) {
+            Row {
                 IconButton(
-                    onClick = { action(LyricsPageAction.OnToggleAutoChange) },
-                    colors = if (state.autoChange) {
+                    onClick = {
+                        action(
+                            LyricsPageAction.OnSync(!state.sync)
+                        )
+                    },
+                    colors = if (state.sync) {
                         IconButtonDefaults.iconButtonColors(
                             contentColor = cardBackground,
                             containerColor = cardContent
@@ -172,43 +146,62 @@ fun ActionsRow(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.rush_transparent),
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
+                        painter = painterResource(id = R.drawable.round_sync_24),
+                        contentDescription = null
                     )
                 }
             }
+        }
 
-            AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
-                Row {
-                    IconButton(onClick = {
-                        action(
-                            LyricsPageAction.OnUpdateShareLines(
-                                songDetails = SongDetails(
-                                    title = state.song?.title!!,
-                                    artist = state.song.artists,
-                                    album = state.song.album,
-                                    artUrl = state.song.artUrl ?: ""
-                                )
+        AnimatedVisibility(visible = notificationAccess) {
+            IconButton(
+                onClick = { action(LyricsPageAction.OnToggleAutoChange) },
+                colors = if (state.autoChange) {
+                    IconButtonDefaults.iconButtonColors(
+                        contentColor = cardBackground,
+                        containerColor = cardContent
+                    )
+                } else {
+                    IconButtonDefaults.iconButtonColors()
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.rush_transparent),
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+
+        AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
+            Row {
+                IconButton(onClick = {
+                    action(
+                        LyricsPageAction.OnUpdateShareLines(
+                            songDetails = SongDetails(
+                                title = state.song?.title!!,
+                                artist = state.song.artists,
+                                album = state.song.album,
+                                artUrl = state.song.artUrl ?: ""
                             )
                         )
+                    )
 
-                        onShare()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_share_24),
-                            contentDescription = null
-                        )
-                    }
+                    onShare()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_share_24),
+                        contentDescription = null
+                    )
+                }
 
-                    IconButton(
-                        onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Clear,
-                            contentDescription = null
-                        )
-                    }
+                IconButton(
+                    onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = null
+                    )
                 }
             }
         }

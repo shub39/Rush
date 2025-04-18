@@ -41,7 +41,8 @@ data class LyricsPageState(
     val meshSpeed: Float = 1f,
     val useExtractedColors: Boolean = true,
     val mCardBackground: Int = Color.DarkGray.toArgb(),
-    val mCardContent: Int = Color.White.toArgb()
+    val mCardContent: Int = Color.White.toArgb(),
+    val fullscreen: Boolean = false
 )
 
 @Immutable

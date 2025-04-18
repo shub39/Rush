@@ -4,13 +4,16 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,8 +77,6 @@ fun LyricsPage(
             (context as? ComponentActivity)?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-
-    val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     val (cardBackground, cardContent) = getCardColors(state)
 
@@ -159,53 +160,54 @@ fun LyricsPage(
                     }
 
                     Box {
-                        ArtHeader(
-                            top = top,
-                            hypnoticCanvas = state.hypnoticCanvas,
-                            song = state.song,
-                            cardContent = cardContent,
-                            cardBackground = cardBackground,
-                        )
+                        // Plain lyrics
+                        if (!state.sync) {
+                            PlainLyrics(
+                                state = state,
+                                lazyListState = lazyListState,
+                                cardContent = cardContent,
+                                action = action,
+                                coroutineScope = coroutineScope,
+                            )
+                        } else if (state.song.syncedLyrics != null) {
+                            SyncedLyrics(
+                                state = state,
+                                coroutineScope = coroutineScope,
+                                lazyListState = lazyListState,
+                                cardContent = cardContent
+                            )
+                        }
 
                         Column(
-                            modifier = Modifier.padding(top = 64.dp)
+                            modifier = Modifier.padding(vertical = 48.dp)
                         ) {
-                            AnimatedVisibility(
-                                visible = top < 3
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    ArtFromUrl(
-                                        imageUrl = state.song.artUrl,
-                                        highlightColor = cardContent,
-                                        baseColor = Color.Transparent,
-                                        modifier = Modifier
-                                            .clip(MaterialTheme.shapes.small)
-                                            .size(150.dp)
-                                    )
-                                }
-                            }
-
                             Row(
                                 modifier = Modifier.padding(
-                                    top = 16.dp,
                                     start = 16.dp,
                                     end = 16.dp
                                 ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+                                ArtFromUrl(
+                                    imageUrl = state.song.artUrl,
+                                    highlightColor = cardContent,
+                                    baseColor = Color.Transparent,
+                                    modifier = Modifier
+                                        .clip(MaterialTheme.shapes.small)
+                                        .size(100.dp)
+                                )
+
+                                Spacer(modifier = Modifier.padding(8.dp))
+
                                 Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
                                         text = state.song.title,
                                         style = MaterialTheme.typography.titleLarge,
                                         fontWeight = FontWeight.SemiBold,
-                                        maxLines = 2,
-                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        modifier = Modifier.basicMarquee(),
                                         overflow = TextOverflow.Ellipsis,
                                     )
 
@@ -214,7 +216,7 @@ fun LyricsPage(
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
-                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.basicMarquee(),
                                         overflow = TextOverflow.Ellipsis,
                                     )
                                 }
@@ -231,28 +233,6 @@ fun LyricsPage(
                                 onEdit = onEdit
                             )
                         }
-                    }
-
-                    // Plain lyrics
-                    if (!state.sync) {
-                        PlainLyrics(
-                            lazyListState = lazyListState,
-                            source = state.source,
-                            song = state.song,
-                            selectedLines = state.selectedLines,
-                            maxLines = state.maxLines,
-                            cardContent = cardContent,
-                            action = action,
-                            scraping = state.scraping,
-                            coroutineScope = coroutineScope
-                        )
-                    } else if (state.song.syncedLyrics != null) {
-                        SyncedLyrics(
-                            state = state,
-                            coroutineScope = coroutineScope,
-                            lazyListState = lazyListState,
-                            cardContent = cardContent
-                        )
                     }
                 }
             }
