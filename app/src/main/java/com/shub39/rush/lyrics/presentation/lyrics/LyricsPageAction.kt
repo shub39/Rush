@@ -1,10 +1,16 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
 import android.content.Context
+import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.Sources
 
 sealed interface LyricsPageAction {
+    data object OnCustomisationReset: LyricsPageAction
+    data class OnLetterSpacingChange(val spacing: Float): LyricsPageAction
+    data class OnLineHeightChange(val height: Float): LyricsPageAction
+    data class OnFontSizeChange(val size: Float): LyricsPageAction
+    data class OnAlignmentChange(val alignment: TextAlign): LyricsPageAction
     data class OnChangeSelectedLines(val lines: Map<Int, String>): LyricsPageAction
     data class OnScrapeGeniusLyrics(val id: Long, val url: String): LyricsPageAction
     data class OnLyricsCorrect(val show: Boolean): LyricsPageAction

@@ -15,6 +15,8 @@ sealed interface Route {
     @Serializable
     data object LyricsPage: Route
     @Serializable
+    data object LyricsCustomisations: Route
+    @Serializable
     data object SharePage: Route
 
     // Settings and utility Routes

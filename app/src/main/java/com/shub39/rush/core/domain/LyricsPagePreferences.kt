@@ -1,8 +1,11 @@
 package com.shub39.rush.core.domain
 
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.flow.Flow
 
 interface LyricsPagePreferences {
+    suspend fun reset()
+
     fun getHypnoticCanvasFlow(): Flow<Boolean>
     suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean)
 
@@ -17,4 +20,16 @@ interface LyricsPagePreferences {
 
     fun getUseExtractedFlow(): Flow<Boolean>
     suspend fun updateUseExtractedFlow(pref: Boolean)
+
+    fun getLyricAlignmentFlow(): Flow<TextAlign>
+    suspend fun updateLyricAlignment(alignment: TextAlign)
+
+    fun getFontSizeFlow(): Flow<Float>
+    suspend fun updateFontSize(newFontSize: Float)
+
+    fun getLineHeightFlow(): Flow<Float>
+    suspend fun updateLineHeight(newLineHeight: Float)
+
+    fun getLetterSpacingFlow(): Flow<Float>
+    suspend fun updateLetterSpacing(newLetterSpacing: Float)
 }

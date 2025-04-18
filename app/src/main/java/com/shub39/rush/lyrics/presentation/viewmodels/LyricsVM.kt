@@ -43,7 +43,7 @@ class LyricsVM(
     private val lyricsPrefs: LyricsPagePreferences,
     private val otherPrefs: OtherPreferences,
     private val imageLoader: ImageLoader
-): ViewModel() {
+) : ViewModel() {
 
     private var observeJob: Job? = null
 
@@ -129,9 +129,7 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.UpdateExtractedColors -> {
-                    updateExtractedColors(action.context)
-                }
+                is LyricsPageAction.UpdateExtractedColors -> updateExtractedColors(action.context)
 
                 is LyricsPageAction.OnSourceChange -> {
                     _state.update {
@@ -174,9 +172,7 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnHypnoticToggle -> {
-                    lyricsPrefs.updateHypnoticCanvas(action.pref)
-                }
+                is LyricsPageAction.OnHypnoticToggle -> lyricsPrefs.updateHypnoticCanvas(action.pref)
 
                 is LyricsPageAction.OnMeshSpeedChange -> {
                     _state.update {
@@ -186,19 +182,13 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnVibrantToggle -> {
-                    lyricsPrefs.updateLyricsColor(
-                        if (action.pref) CardColors.VIBRANT else CardColors.MUTED
-                    )
-                }
+                is LyricsPageAction.OnVibrantToggle -> lyricsPrefs.updateLyricsColor(
+                    if (action.pref) CardColors.VIBRANT else CardColors.MUTED
+                )
 
-                is LyricsPageAction.OnToggleColorPref -> {
-                    lyricsPrefs.updateUseExtractedFlow(action.pref)
-                }
+                is LyricsPageAction.OnToggleColorPref -> lyricsPrefs.updateUseExtractedFlow(action.pref)
 
-                is LyricsPageAction.OnUpdatemBackground -> {
-                    lyricsPrefs.updateCardBackground(action.color)
-                }
+                is LyricsPageAction.OnUpdatemBackground -> lyricsPrefs.updateCardBackground(action.color)
 
                 is LyricsPageAction.OnUpdatemContent -> {
                     lyricsPrefs.updateCardContent(action.color)
@@ -228,6 +218,16 @@ class LyricsVM(
                         }
                     }
                 }
+
+                is LyricsPageAction.OnAlignmentChange -> lyricsPrefs.updateLyricAlignment(action.alignment)
+
+                is LyricsPageAction.OnFontSizeChange -> lyricsPrefs.updateFontSize(action.size)
+
+                is LyricsPageAction.OnLineHeightChange -> lyricsPrefs.updateLineHeight(action.height)
+
+                is LyricsPageAction.OnLetterSpacingChange -> lyricsPrefs.updateLetterSpacing(action.spacing)
+
+                LyricsPageAction.OnCustomisationReset -> lyricsPrefs.reset()
             }
         }
     }
@@ -235,6 +235,46 @@ class LyricsVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            lyricsPrefs.getLyricAlignmentFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            textAlign = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            lyricsPrefs.getFontSizeFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            fontSize = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            lyricsPrefs.getLineHeightFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            lineHeight = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            lyricsPrefs.getLetterSpacingFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            letterSpacing = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
             lyricsPrefs.getUseExtractedFlow()
                 .onEach { pref ->
                     _state.update {
@@ -339,29 +379,31 @@ class LyricsVM(
                     palette?.let { colors ->
                         val extractedColors = ExtractedColors(
                             cardBackgroundDominant =
-                            Color(
-                                colors.vibrantSwatch?.rgb ?: colors.lightVibrantSwatch?.rgb
-                                ?: colors.darkVibrantSwatch?.rgb ?: colors.dominantSwatch?.rgb
-                                ?: Color.DarkGray.toArgb()
-                            ),
+                                Color(
+                                    colors.vibrantSwatch?.rgb ?: colors.lightVibrantSwatch?.rgb
+                                    ?: colors.darkVibrantSwatch?.rgb ?: colors.dominantSwatch?.rgb
+                                    ?: Color.DarkGray.toArgb()
+                                ),
                             cardContentDominant =
-                            Color(
-                                colors.vibrantSwatch?.bodyTextColor
-                                    ?: colors.lightVibrantSwatch?.bodyTextColor
-                                    ?: colors.darkVibrantSwatch?.bodyTextColor
-                                    ?: colors.dominantSwatch?.bodyTextColor
-                                    ?: Color.White.toArgb()
-                            ),
+                                Color(
+                                    colors.vibrantSwatch?.bodyTextColor
+                                        ?: colors.lightVibrantSwatch?.bodyTextColor
+                                        ?: colors.darkVibrantSwatch?.bodyTextColor
+                                        ?: colors.dominantSwatch?.bodyTextColor
+                                        ?: Color.White.toArgb()
+                                ),
                             cardBackgroundMuted =
-                            Color(
-                                colors.mutedSwatch?.rgb ?: colors.darkMutedSwatch?.rgb
-                                ?: colors.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                            ),
+                                Color(
+                                    colors.mutedSwatch?.rgb ?: colors.darkMutedSwatch?.rgb
+                                    ?: colors.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
+                                ),
                             cardContentMuted =
-                            Color(
-                                colors.mutedSwatch?.bodyTextColor ?: colors.darkMutedSwatch?.bodyTextColor
-                                ?: colors.lightMutedSwatch?.bodyTextColor ?: Color.White.toArgb()
-                            )
+                                Color(
+                                    colors.mutedSwatch?.bodyTextColor
+                                        ?: colors.darkMutedSwatch?.bodyTextColor
+                                        ?: colors.lightMutedSwatch?.bodyTextColor
+                                        ?: Color.White.toArgb()
+                                )
                         )
 
                         _state.update { lyricsPageState ->

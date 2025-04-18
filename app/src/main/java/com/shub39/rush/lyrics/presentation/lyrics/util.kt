@@ -1,5 +1,12 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
+import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.domain.Lyric
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
@@ -53,4 +60,60 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
     } else {
         lyrics.indexOfLast { it.time <= playbackPosition }
     }
+}
+
+@Composable
+fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
+    val hypnoticColor1 by animateColorAsState(
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.lighten(2f)
+                else -> state.extractedColors.cardBackgroundDominant.lighten(2f)
+            }
+        } else {
+            Color(state.mCardBackground).lighten(2f)
+        },
+        label = "hypnotic color 1"
+    )
+    val hypnoticColor2 by animateColorAsState(
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.darken(2f)
+                else -> state.extractedColors.cardBackgroundDominant.darken(2f)
+            }
+        } else {
+            Color(state.mCardBackground).darken(2f)
+        },
+        label = "hypnotic color 2"
+    )
+    return Pair(hypnoticColor1, hypnoticColor2)
+}
+
+@Composable
+fun getCardColors(
+    state: LyricsPageState
+): Pair<Color, Color> {
+    val cardBackground by animateColorAsState(
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+                else -> state.extractedColors.cardBackgroundDominant
+            }
+        } else {
+            Color(state.mCardBackground)
+        },
+        label = "cardBackground"
+    )
+    val cardContent by animateColorAsState(
+        targetValue = if (state.useExtractedColors) {
+            when (state.cardColors) {
+                CardColors.MUTED -> state.extractedColors.cardContentMuted
+                else -> state.extractedColors.cardContentDominant
+            }
+        } else {
+            Color(state.mCardContent)
+        },
+        label = "cardContent"
+    )
+    return Pair(cardBackground, cardContent)
 }

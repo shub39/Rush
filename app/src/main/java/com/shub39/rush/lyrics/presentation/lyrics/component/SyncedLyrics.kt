@@ -6,17 +6,19 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +32,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
@@ -45,7 +48,8 @@ fun SyncedLyrics(
     state: LyricsPageState,
     coroutineScope: CoroutineScope,
     lazyListState: LazyListState,
-    cardContent: Color
+    cardContent: Color,
+    modifier: Modifier = Modifier
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -56,27 +60,29 @@ fun SyncedLyrics(
                 getCurrentLyricIndex(
                     state.playingSong.position,
                     state.song?.syncedLyrics!!
-                ) - 3
+                ) - 4
             lazyListState.animateScrollToItem(currentIndex.coerceAtLeast(0))
         }
     }
 
     // Synced Lyrics
     LazyColumn(
-        modifier = Modifier
-            .widthIn(max = 500.dp)
-            .fillMaxWidth()
-            .padding(
-                end = 16.dp,
-                start = 16.dp,
-                top = 16.dp,
-                bottom = 32.dp
-            ),
+        modifier = modifier,
+        contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
         state = lazyListState
     ) {
+        item {
+            Spacer(modifier = Modifier.height(200.dp))
+        }
+
         items(state.song?.syncedLyrics!!, key = { it.time }) { lyric ->
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = when (state.textAlign) {
+                    TextAlign.Center -> Arrangement.Center
+                    TextAlign.End -> Arrangement.End
+                    else -> Arrangement.Start
+                }
             ) {
                 val isCurrent = lyric.time <= state.playingSong.position &&
                         state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
@@ -99,7 +105,6 @@ fun SyncedLyrics(
 
                 Box(
                     modifier = Modifier
-                        .padding(6.dp)
                         .clickable {
                             MediaListener.seek(lyric.time)
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -109,10 +114,12 @@ fun SyncedLyrics(
                     if (lyric.text.isNotEmpty()) {
                         Text(
                             text = lyric.text,
-                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = cardContent.lighten(2f).copy(alpha = glowAlpha),
-                            fontSize = 19.sp,
+                            fontSize = state.fontSize.sp,
+                            letterSpacing = state.letterSpacing.sp,
+                            lineHeight = state.lineHeight.sp,
+                            textAlign = state.textAlign,
                             modifier = Modifier
                                 .padding(6.dp)
                                 .blur(
@@ -123,10 +130,12 @@ fun SyncedLyrics(
 
                         Text(
                             text = lyric.text,
-                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = textColor,
-                            fontSize = 19.sp,
+                            fontSize = state.fontSize.sp,
+                            letterSpacing = state.letterSpacing.sp,
+                            lineHeight = state.lineHeight.sp,
+                            textAlign = state.textAlign,
                             modifier = Modifier.padding(6.dp)
                         )
                     } else {
@@ -134,16 +143,19 @@ fun SyncedLyrics(
                             painter = painterResource(id = R.drawable.round_music_note_24),
                             contentDescription = null,
                             tint = cardContent.lighten(2f).copy(alpha = glowAlpha),
-                            modifier = Modifier.blur(
-                                radius = 10.dp,
-                                edgeTreatment = BlurredEdgeTreatment.Unbounded
-                            )
+                            modifier = Modifier
+                                .size(state.fontSize.dp)
+                                .blur(
+                                    radius = 10.dp,
+                                    edgeTreatment = BlurredEdgeTreatment.Unbounded
+                                )
                         )
 
                         Icon(
                             painter = painterResource(id = R.drawable.round_music_note_24),
                             contentDescription = null,
-                            tint = textColor
+                            tint = textColor,
+                            modifier = Modifier.size(state.fontSize.dp)
                         )
                     }
                 }
