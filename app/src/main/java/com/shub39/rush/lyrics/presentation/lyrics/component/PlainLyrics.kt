@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -56,6 +55,7 @@ fun PlainLyrics(
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
     coroutineScope: CoroutineScope,
+    modifier: Modifier = Modifier
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val uriHandler = LocalUriHandler.current
@@ -65,15 +65,13 @@ fun PlainLyrics(
     val items = if (state.source == Sources.LrcLib) song.lyrics else song.geniusLyrics
 
     LazyColumn(
-        modifier = Modifier
-            .widthIn(max = 500.dp)
-            .fillMaxWidth(),
+        modifier = modifier,
         contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = lazyListState
     ) {
         item {
-            Spacer(modifier = Modifier.height(175.dp))
+            Spacer(modifier = Modifier.height(200.dp))
         }
 
         // plain lyrics with logic

@@ -15,12 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +48,8 @@ fun SyncedLyrics(
     state: LyricsPageState,
     coroutineScope: CoroutineScope,
     lazyListState: LazyListState,
-    cardContent: Color
+    cardContent: Color,
+    modifier: Modifier = Modifier
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -68,14 +67,12 @@ fun SyncedLyrics(
 
     // Synced Lyrics
     LazyColumn(
-        modifier = Modifier
-            .widthIn(max = 500.dp)
-            .fillMaxWidth(),
+        modifier = modifier,
         contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
         state = lazyListState
     ) {
         item {
-            Spacer(modifier = Modifier.height(175.dp))
+            Spacer(modifier = Modifier.height(200.dp))
         }
 
         items(state.song?.syncedLyrics!!, key = { it.time }) { lyric ->
