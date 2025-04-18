@@ -107,4 +107,12 @@
     <string name="fullscreen">Fullscreen View</string>
     <string name="fullscreen_desc">Hide system bars on lyrics page</string>
     <string name="customisations">Lyrics Customisations</string>
+    <string name="text_alignment">Alignment</string>
+    <string name="center">Center</string>
+    <string name="end">End</string>
+    <string name="start">Start</string>
+    <string name="font_size">Font size</string>
+    <string name="font_weight">Font weight</string>
+    <string name="line_height">Line height</string>
+    <string name="letter_spacing">Letter spacing</string>
 </resources>

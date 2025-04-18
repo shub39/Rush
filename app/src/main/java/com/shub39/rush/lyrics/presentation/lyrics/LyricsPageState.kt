@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
@@ -23,6 +24,9 @@ data class LyricsPageState(
     @StringRes val error: Int? = null,
     val autoChange: Boolean = false,
     val textAlign: TextAlign = TextAlign.Center,
+    val fontSize: Float = 28f,
+    val lineHeight: Float = 32f,
+    val letterSpacing: Float = 0f,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),
@@ -48,9 +52,9 @@ data class SongUi(
     val album: String? = null,
     val sourceUrl: String = "",
     val artUrl: String? = null,
-    val lyrics:  List<Map.Entry<Int, String>> = emptyList(),
+    val lyrics: List<Map.Entry<Int, String>> = emptyList(),
     val syncedLyrics: List<Lyric>? = null,
-    val geniusLyrics:  List<Map.Entry<Int, String>>? = null
+    val geniusLyrics: List<Map.Entry<Int, String>>? = null
 )
 
 data class PlayingSong(
