@@ -71,7 +71,7 @@ fun PlainLyrics(
         state = lazyListState
     ) {
         item {
-            Spacer(modifier = Modifier.height(200.dp))
+            Spacer(modifier = Modifier.height(220.dp))
         }
 
         // plain lyrics with logic

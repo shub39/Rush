@@ -72,7 +72,7 @@ fun SyncedLyrics(
         state = lazyListState
     ) {
         item {
-            Spacer(modifier = Modifier.height(200.dp))
+            Spacer(modifier = Modifier.height(220.dp))
         }
 
         items(state.song?.syncedLyrics!!, key = { it.time }) { lyric ->

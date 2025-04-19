@@ -8,10 +8,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
@@ -156,7 +157,7 @@ fun LyricsPage(
                         )
                     }
 
-                    Box {
+                    Box(modifier = Modifier.fillMaxSize()) {
                         // Plain lyrics
                         if (!state.sync) {
                             PlainLyrics(
@@ -183,53 +184,55 @@ fun LyricsPage(
 
                         Column(
                             modifier = Modifier
-                                .background(Brush.verticalGradient(
-                                    0.0f to cardBackground,
-                                    0.8f to cardBackground,
-                                    1f to Color.Transparent
-                                ))
-                                .padding(vertical = 48.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp
+                                .fillMaxWidth()
+                                .background(
+                                    Brush.verticalGradient(
+                                        0f to cardBackground,
+                                        0.9f to cardBackground,
+                                        1f to Color.Transparent
+                                    )
                                 ),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                ArtFromUrl(
-                                    imageUrl = state.song.artUrl,
-                                    highlightColor = cardContent,
-                                    baseColor = Color.Transparent,
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .size(100.dp)
-                                )
-
-                                Spacer(modifier = Modifier.padding(8.dp))
-
-                                Column(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = state.song.title,
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.SemiBold,
-                                        maxLines = 1,
-                                        modifier = Modifier.basicMarquee(),
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-
-                                    Text(
-                                        text = state.song.artists,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        modifier = Modifier.basicMarquee(),
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
+                            horizontalAlignment = when (state.textAlign) {
+                                TextAlign.Center -> Alignment.CenterHorizontally
+                                TextAlign.End -> Alignment.End
+                                else -> Alignment.Start
                             }
+                        ) {
+                            Spacer(modifier = Modifier.height(48.dp))
+
+                            ArtFromUrl(
+                                imageUrl = state.song.artUrl!!,
+                                highlightColor = cardContent,
+                                baseColor = Color.Transparent,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .clip(MaterialTheme.shapes.small)
+                                    .size(64.dp)
+                            )
+
+                            Spacer(modifier = Modifier.padding(8.dp))
+
+                            Text(
+                                text = state.song.title,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .basicMarquee()
+                            )
+
+                            Text(
+                                text = state.song.artists,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .basicMarquee()
+                            )
 
                             // Actions Row
                             ActionsRow(
@@ -239,7 +242,8 @@ fun LyricsPage(
                                 cardBackground = cardBackground,
                                 cardContent = cardContent,
                                 onShare = onShare,
-                                onEdit = onEdit
+                                onEdit = onEdit,
+                                modifier = Modifier.padding(bottom = 32.dp)
                             )
                         }
                     }
