@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.hypnoticcanvas)
     implementation(libs.aboutLibraries)
     implementation(libs.composeIcons.fontAwesome)
+    testImplementation(libs.junit)
 }
 
 java {
