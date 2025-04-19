@@ -35,6 +35,11 @@ class GeniusScraper(
                                 else -> return@forEachIndexed
                             }.trim()
 
+                            if (text.isBlank()) return@forEachIndexed
+
+                            // skips contributor info and all that
+                            if (text.matches(Regex("^\\d+ Contributors.*"))) return@forEachIndexed
+
                             if (text.isNotEmpty()) {
                                 if (text.startsWith("[") || text.endsWith("]")) {
                                     append("\n")

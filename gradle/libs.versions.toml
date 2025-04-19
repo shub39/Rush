@@ -22,6 +22,7 @@ hypnoticcanvas = "0.4.0-b02"
 aboutLibraries = '11.5.0'
 datetime = "0.6.2"
 composeIcons = "1.1.1"
+junit = "4.13.2"
 
 [libraries]
 # Android
@@ -39,6 +40,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # Others
 androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
