@@ -41,7 +41,7 @@ class ApiTest {
     @Test
     fun scrape() = runBlocking {
         val scraper = GeniusScraper(client)
-        val lyrics = scraper.scrapeLyrics("https://genius.com/Dalek-speak-volumes-lyrics")
+        val lyrics = scraper.scrapeLyrics("https://genius.com/Lana-del-rey-bluebird-lyrics")
         println(lyrics)
     }
 }
