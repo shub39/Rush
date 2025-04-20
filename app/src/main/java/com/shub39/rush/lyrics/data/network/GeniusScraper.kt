@@ -39,6 +39,7 @@ class GeniusScraper(
 
                             // skips contributor info and all that
                             if (text.matches(Regex("^\\d+ Contributors.*"))) return@forEachIndexed
+                            if (text.matches(Regex("^\\d+ Contributor.*"))) return@forEachIndexed
 
                             if (text.isNotEmpty()) {
                                 if (text.startsWith("[") || text.endsWith("]")) {

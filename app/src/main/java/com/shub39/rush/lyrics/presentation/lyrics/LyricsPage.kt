@@ -185,13 +185,21 @@ fun LyricsPage(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(
-                                    Brush.verticalGradient(
-                                        0f to cardBackground,
-                                        0.9f to cardBackground,
-                                        1f to Color.Transparent
-                                    )
-                                ),
+                                .let {
+                                    if (!state.hypnoticCanvas) {
+                                        it.background(
+                                            Brush.verticalGradient(
+                                                0f to cardBackground,
+                                                0.9f to cardBackground,
+                                                1f to Color.Transparent
+                                            )
+                                        )
+                                    } else {
+                                        it
+                                            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+                                            .background(cardBackground)
+                                    }
+                                },
                             horizontalAlignment = when (state.textAlign) {
                                 TextAlign.Center -> Alignment.CenterHorizontally
                                 TextAlign.End -> Alignment.End
@@ -243,7 +251,7 @@ fun LyricsPage(
                                 cardContent = cardContent,
                                 onShare = onShare,
                                 onEdit = onEdit,
-                                modifier = Modifier.padding(bottom = 32.dp)
+                                modifier = Modifier.padding(bottom = 16.dp)
                             )
                         }
                     }

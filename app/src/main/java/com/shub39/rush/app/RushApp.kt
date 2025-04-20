@@ -62,19 +62,13 @@ fun RushApp(
     ) {
         NavHost(
             enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it }
-                ) + fadeIn()
+                slideInHorizontally(initialOffsetX = { it }) + fadeIn()
             },
             exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -it }
-                ) + fadeOut()
+                slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
             },
             popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it }
-                ) + fadeIn()
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
             },
             popExitTransition = {
                 slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
