@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.map
 
 class OtherPreferencesImpl(
     private val dataStore: DataStore<Preferences>
-): OtherPreferences {
+) : OtherPreferences {
 
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
@@ -26,18 +26,17 @@ class OtherPreferencesImpl(
         private val amoledPref = booleanPreferencesKey("with_amoled")
         private val paletteStyle = stringPreferencesKey("palette_style")
         private val materialTheme = booleanPreferencesKey("material_theme")
-        private val maxLines = intPreferencesKey("max_lines")
         private val sortOrder = stringPreferencesKey("sort_order")
         private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
-        private val fullscreen = booleanPreferencesKey("fullscreen")
     }
 
     override fun getAppThemePrefFlow(): Flow<AppTheme> = dataStore.data
         .map { preferences ->
-            val theme  = preferences[appTheme] ?: AppTheme.SYSTEM.name
+            val theme = preferences[appTheme] ?: AppTheme.SYSTEM.name
             AppTheme.valueOf(theme)
         }
+
     override suspend fun updateAppThemePref(pref: AppTheme) {
         dataStore.edit {
             it[appTheme] = pref.name
@@ -46,6 +45,7 @@ class OtherPreferencesImpl(
 
     override fun getSeedColorFlow(): Flow<Int> = dataStore.data
         .map { preferences -> preferences[seedColor] ?: Color.White.toArgb() }
+
     override suspend fun updateSeedColor(newCardContent: Int) {
         dataStore.edit { settings ->
             settings[seedColor] = newCardContent
@@ -54,6 +54,7 @@ class OtherPreferencesImpl(
 
     override fun getAmoledPrefFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[amoledPref] == true }
+
     override suspend fun updateAmoledPref(amoled: Boolean) {
         dataStore.edit { settings ->
             settings[amoledPref] = amoled
@@ -64,17 +65,10 @@ class OtherPreferencesImpl(
         .map { preferences ->
             PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TonalSpot.name)
         }
+
     override suspend fun updatePaletteStyle(style: PaletteStyle) {
         dataStore.edit { settings ->
             settings[paletteStyle] = style.name
-        }
-    }
-
-    override fun getMaxLinesFlow(): Flow<Int> = dataStore.data
-        .map { preferences -> preferences[maxLines] ?: 6 }
-    override suspend fun updateMaxLines(newMaxLines: Int) {
-        dataStore.edit { settings ->
-            settings[maxLines] = newMaxLines
         }
     }
 
@@ -83,6 +77,7 @@ class OtherPreferencesImpl(
             val order = preferences[sortOrder] ?: SortOrder.TITLE_ASC.name
             SortOrder.valueOf(order.uppercase())
         }
+
     override suspend fun updateSortOrder(newSortOrder: SortOrder) {
         dataStore.edit { settings ->
             settings[sortOrder] = newSortOrder.name
@@ -91,6 +86,7 @@ class OtherPreferencesImpl(
 
     override fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[onboardingDone] == true }
+
     override suspend fun updateOnboardingDone(done: Boolean) {
         dataStore.edit { settings ->
             settings[onboardingDone] = done
@@ -99,6 +95,7 @@ class OtherPreferencesImpl(
 
     override fun getMaterialYouFlow(): Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[materialTheme] == true }
+
     override suspend fun updateMaterialTheme(pref: Boolean) {
         dataStore.edit { settings ->
             settings[materialTheme] = pref
@@ -110,19 +107,10 @@ class OtherPreferencesImpl(
             val font = prefs[selectedFont] ?: Fonts.POPPINS.name
             Fonts.valueOf(font)
         }
+
     override suspend fun updateFonts(font: Fonts) {
         dataStore.edit { settings ->
             settings[selectedFont] = font.name
-        }
-    }
-
-    override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data
-        .map { prefs ->
-            prefs[fullscreen] != false
-        }
-    override suspend fun setFullScreen(pref: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[fullscreen] = pref
         }
     }
 

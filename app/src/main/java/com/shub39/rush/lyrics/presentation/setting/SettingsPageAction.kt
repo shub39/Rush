@@ -7,7 +7,6 @@ import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
 
 sealed interface SettingsPageAction {
-    data class OnFullscreenToggle(val pref: Boolean): SettingsPageAction
     data class OnSeedColorChange(val color: Int): SettingsPageAction
     data class OnThemeSwitch(val appTheme: AppTheme): SettingsPageAction
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
@@ -17,7 +16,6 @@ sealed interface SettingsPageAction {
     data class OnFontChange(val fonts: Fonts): SettingsPageAction
     data object OnClearIndexes: SettingsPageAction
     data object OnBatchDownload: SettingsPageAction
-    data class OnUpdateMaxLines(val lines: Int): SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
     data object ResetBackup: SettingsPageAction
     data class OnRestoreSongs(val uri: Uri): SettingsPageAction

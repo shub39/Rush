@@ -29,6 +29,8 @@ class LyricsPagePreferencesImpl(
         private val fontSize = floatPreferencesKey("font_size")
         private val lineHeight = floatPreferencesKey("line_height")
         private val letterSpacing = floatPreferencesKey("letter_spacing")
+        private val maxLines = intPreferencesKey("max_lines")
+        private val fullscreen = booleanPreferencesKey("fullscreen")
     }
 
     override suspend fun reset() {
@@ -42,11 +44,31 @@ class LyricsPagePreferencesImpl(
             settings[fontSize] = 28f
             settings[lineHeight] = 32f
             settings[letterSpacing] = 0f
+            settings[maxLines] = 6
+            settings[fullscreen] = false
+        }
+    }
+
+    override fun getMaxLinesFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[maxLines] ?: 6 }
+    override suspend fun updateMaxLines(newMaxLines: Int) {
+        dataStore.edit { settings ->
+            settings[maxLines] = newMaxLines
+        }
+    }
+
+    override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data
+        .map { prefs ->
+            prefs[fullscreen] != false
+        }
+    override suspend fun setFullScreen(pref: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[fullscreen] = pref
         }
     }
 
     override fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
-        .map { preferences -> preferences[hypnoticCanvas] != false }
+        .map { preferences -> preferences[hypnoticCanvas] ?: false }
     override suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
         dataStore.edit { settings ->
             settings[hypnoticCanvas] = newHypnoticCanvas

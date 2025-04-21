@@ -8,6 +8,7 @@ import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.lyrics.domain.Lyric
+import com.shub39.rush.lyrics.domain.Song
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
@@ -116,4 +117,18 @@ fun getCardColors(
         label = "cardContent"
     )
     return Pair(cardBackground, cardContent)
+}
+
+fun Song.toSongUi(): SongUi {
+    return SongUi(
+        id = id,
+        title = title,
+        artists = artists,
+        album = album,
+        sourceUrl = sourceUrl,
+        artUrl = artUrl,
+        lyrics = breakLyrics(lyrics),
+        syncedLyrics = if (syncedLyrics == null) null else parseLyrics(syncedLyrics),
+        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics)
+    )
 }

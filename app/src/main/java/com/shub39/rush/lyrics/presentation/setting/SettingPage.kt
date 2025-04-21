@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -41,13 +40,11 @@ import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.core.presentation.SettingSlider
 
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingPage(
-    state: SettingsPageState,
     notificationAccess: Boolean,
     action: (SettingsPageAction) -> Unit,
     navigator: (Route) -> Unit,
@@ -87,43 +84,6 @@ fun SettingPage(
                             )
                         }
                     }
-                )
-            }
-
-            // toggle fullscreen view
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.fullscreen)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.fullscreen_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.fullscreen,
-                            onCheckedChange = {
-                                action(SettingsPageAction.OnFullscreenToggle(it))
-                            }
-                        )
-                    }
-                )
-            }
-
-            // slider to set limit on maximum lines to share
-            item {
-                SettingSlider(
-                    title = stringResource(id = R.string.max_lines),
-                    value = state.maxLines.toFloat(),
-                    onValueChange = { action(SettingsPageAction.OnUpdateMaxLines(it.toInt())) },
-                    valueToShow = state.maxLines.toString(),
-                    steps = 1,
-                    valueRange = 2f..16f,
-                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
 
@@ -278,7 +238,6 @@ fun SettingPage(
 private fun Preview() {
     RushTheme {
         SettingPage(
-            state = SettingsPageState(),
             notificationAccess = false,
             action = {},
             navigator = {}

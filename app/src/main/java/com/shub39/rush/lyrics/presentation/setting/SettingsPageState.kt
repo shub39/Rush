@@ -9,8 +9,6 @@ import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 @Immutable
 data class SettingsPageState(
     val theme: Theme = Theme(),
-    val maxLines: Int = 6,
-    val fullscreen: Boolean = true,
     val batchDownload: BatchDownload = BatchDownload(),
     val exportState: ExportState = ExportState.IDLE,
     val restoreState: RestoreState = RestoreState.IDLE

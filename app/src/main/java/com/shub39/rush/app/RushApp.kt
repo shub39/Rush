@@ -88,7 +88,7 @@ fun RushApp(
             ) {
                 composable<Route.SavedPage> {
                     SideEffect {
-                        if (settingsState.fullscreen) {
+                        if (lyricsState.fullscreen) {
                             updateSystemBars(context, true)
                         }
                     }
@@ -117,7 +117,7 @@ fun RushApp(
             ) {
                 composable<Route.SharePage> {
                     SideEffect {
-                        if (settingsState.fullscreen) {
+                        if (lyricsState.fullscreen) {
                             updateSystemBars(context, true)
                         }
                     }
@@ -131,7 +131,7 @@ fun RushApp(
 
                 composable<Route.LyricsCustomisations> {
                     SideEffect {
-                        if (settingsState.fullscreen) {
+                        if (lyricsState.fullscreen) {
                             updateSystemBars(context, true)
                         }
                     }
@@ -144,7 +144,7 @@ fun RushApp(
 
                 composable<Route.LyricsPage> {
                     SideEffect {
-                        if (settingsState.fullscreen) {
+                        if (lyricsState.fullscreen) {
                             updateSystemBars(context, false)
                         }
                     }
@@ -172,7 +172,6 @@ fun RushApp(
             ) {
                 composable<Route.SettingPage> {
                     SettingPage(
-                        state = settingsState,
                         action = settingsVM::onSettingsPageAction,
                         notificationAccess = NotificationListener.canAccessNotifications(context),
                         navigator = {

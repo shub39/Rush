@@ -2,10 +2,8 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
@@ -13,7 +11,6 @@ import com.shub39.rush.core.domain.Error
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
-import com.shub39.rush.lyrics.domain.Song
 
 @Immutable
 data class LyricsPageState(
@@ -71,17 +68,3 @@ data class LrcCorrect(
     val searching: Boolean = false,
     @StringRes val error: Int? = null
 )
-
-fun Song.toSongUi(): SongUi {
-    return SongUi(
-        id = id,
-        title = title,
-        artists = artists,
-        album = album,
-        sourceUrl = sourceUrl,
-        artUrl = artUrl,
-        lyrics = breakLyrics(lyrics),
-        syncedLyrics = if (syncedLyrics == null) null else parseLyrics(syncedLyrics),
-        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics)
-    )
-}

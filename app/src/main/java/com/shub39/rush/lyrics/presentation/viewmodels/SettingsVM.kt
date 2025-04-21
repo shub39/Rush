@@ -70,8 +70,6 @@ class SettingsVM(
 
                 SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
 
-                is SettingsPageAction.OnUpdateMaxLines -> datastore.updateMaxLines(action.lines)
-
                 SettingsPageAction.OnExportSongs -> {
                     _state.update {
                         it.copy(
@@ -160,8 +158,6 @@ class SettingsVM(
                         }
                     }
                 }
-
-                is SettingsPageAction.OnFullscreenToggle -> datastore.setFullScreen(action.pref)
             }
         }
     }
@@ -190,26 +186,6 @@ class SettingsVM(
                             theme = it.theme.copy(
                                 materialTheme = pref
                             )
-                        )
-                    }
-                }
-                .launchIn(this)
-
-            datastore.getMaxLinesFlow()
-                .onEach { lines ->
-                    _state.update {
-                        it.copy(
-                            maxLines = lines
-                        )
-                    }
-                }
-                .launchIn(this)
-
-            datastore.getFullScreenFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            fullscreen = pref
                         )
                     }
                 }

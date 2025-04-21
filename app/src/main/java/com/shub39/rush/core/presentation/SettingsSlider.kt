@@ -21,6 +21,7 @@ fun SettingSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onValueChangeFinished: (() -> Unit)? = null,
     valueToShow: String? = null,
     @IntRange steps: Int = 0,
@@ -54,6 +55,7 @@ fun SettingSlider(
             onValueChangeFinished = onValueChangeFinished,
             steps = steps,
             valueRange = valueRange,
+            enabled = enabled,
             modifier = Modifier.fillMaxWidth()
         )
     }

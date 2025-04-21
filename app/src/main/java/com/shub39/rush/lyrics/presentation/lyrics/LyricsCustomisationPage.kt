@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -230,6 +229,11 @@ fun LyricsCustomisationsPage(
                                 text = stringResource(R.string.hypnotic_canvas)
                             )
                         },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.hypnotic_canvas_desc)
+                            )
+                        },
                         trailingContent = {
                             Switch(
                                 checked = state.hypnoticCanvas,
@@ -238,23 +242,19 @@ fun LyricsCustomisationsPage(
                         }
                     )
 
-                    ListItem(
-                        modifier = Modifier.clip(MaterialTheme.shapes.large),
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.mesh_speed)
-                            )
+                    SettingSlider(
+                        title = stringResource(R.string.mesh_speed),
+                        value = state.meshSpeed,
+                        valueRange = 0.5f..3f,
+                        enabled = state.hypnoticCanvas,
+                        valueToShow = when (state.meshSpeed) {
+                            in 0f..1f -> "<1"
+                            else -> state.meshSpeed.toInt().toString()
                         },
-                        supportingContent = {
-                            Slider(
-                                value = state.meshSpeed,
-                                valueRange = 0.5f..3f,
-                                onValueChange = {
-                                    action(LyricsPageAction.OnMeshSpeedChange(it))
-                                },
-                                enabled = state.hypnoticCanvas
-                            )
-                        }
+                        onValueChange = {
+                            action(LyricsPageAction.OnMeshSpeedChange(it))
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             }
@@ -265,7 +265,6 @@ fun LyricsCustomisationsPage(
 
             item {
                 ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.use_extracted_colors)
@@ -280,7 +279,6 @@ fun LyricsCustomisationsPage(
                 )
 
                 ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.vibrant_colors)
@@ -296,7 +294,6 @@ fun LyricsCustomisationsPage(
                 )
 
                 ListItem(
-                    modifier = Modifier.clip(MaterialTheme.shapes.large),
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.colors)
@@ -347,6 +344,45 @@ fun LyricsCustomisationsPage(
             }
 
             item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.fullscreen,
+                            onCheckedChange = {
+                                action(LyricsPageAction.OnFullscreenChange(it))
+                            }
+                        )
+                    }
+                )
+
+                SettingSlider(
+                    title = stringResource(id = R.string.max_lines),
+                    value = state.maxLines.toFloat(),
+                    onValueChange = {
+                        action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
+                    },
+                    valueToShow = state.maxLines.toString(),
+                    steps = 13,
+                    valueRange = 2f..16f,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+
+            item {
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
+            }
+
+            item {
                 Spacer(modifier = Modifier.padding(bottom = 60.dp))
             }
         }
@@ -354,9 +390,9 @@ fun LyricsCustomisationsPage(
 
     if (colorPickerDialog) {
         ColorPickerDialog(
-            initialColor = if (editTarget == "content") Color(state.mCardContent) else Color(
-                state.mCardBackground
-            ),
+            initialColor = if (editTarget == "content") {
+                Color(state.mCardContent)
+            } else Color(state.mCardBackground),
             onSelect = {
                 if (editTarget == "content") {
                     action(LyricsPageAction.OnUpdatemContent(it.toArgb()))
@@ -395,6 +431,15 @@ private fun Preview () {
                     }
                     is LyricsPageAction.OnLineHeightChange -> {
                         state = state.copy(lineHeight = it.height)
+                    }
+                    is LyricsPageAction.OnMaxLinesChange -> {
+                        state = state.copy(maxLines = it.lines)
+                    }
+                    is LyricsPageAction.OnFullscreenChange -> {
+                        state = state.copy(fullscreen = it.pref)
+                    }
+                    is LyricsPageAction.OnMeshSpeedChange -> {
+                        state = state.copy(meshSpeed = it.speed)
                     }
                     else -> {}
                 }

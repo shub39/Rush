@@ -32,4 +32,10 @@ interface LyricsPagePreferences {
 
     fun getLetterSpacingFlow(): Flow<Float>
     suspend fun updateLetterSpacing(newLetterSpacing: Float)
+
+    fun getFullScreenFlow(): Flow<Boolean>
+    suspend fun setFullScreen(pref: Boolean)
+
+    fun getMaxLinesFlow(): Flow<Int>
+    suspend fun updateMaxLines(newMaxLines: Int)
 }

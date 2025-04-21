@@ -13,7 +13,6 @@ import coil.request.SuccessResult
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.LyricsPagePreferences
-import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
@@ -41,7 +40,6 @@ class LyricsVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
     private val lyricsPrefs: LyricsPagePreferences,
-    private val otherPrefs: OtherPreferences,
     private val imageLoader: ImageLoader
 ) : ViewModel() {
 
@@ -228,6 +226,10 @@ class LyricsVM(
                 is LyricsPageAction.OnLetterSpacingChange -> lyricsPrefs.updateLetterSpacing(action.spacing)
 
                 LyricsPageAction.OnCustomisationReset -> lyricsPrefs.reset()
+
+                is LyricsPageAction.OnFullscreenChange -> lyricsPrefs.setFullScreen(action.pref)
+
+                is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
             }
         }
     }
@@ -315,11 +317,21 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            otherPrefs.getMaxLinesFlow()
+            lyricsPrefs.getMaxLinesFlow()
                 .onEach { lines ->
                     _state.update {
                         it.copy(
                             maxLines = lines
+                        )
+                    }
+                }
+                .launchIn(this)
+
+            lyricsPrefs.getFullScreenFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            fullscreen = pref
                         )
                     }
                 }

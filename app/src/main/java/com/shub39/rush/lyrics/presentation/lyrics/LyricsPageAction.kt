@@ -6,6 +6,8 @@ import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.Sources
 
 sealed interface LyricsPageAction {
+    data class OnMaxLinesChange(val lines: Int): LyricsPageAction
+    data class OnFullscreenChange(val pref: Boolean): LyricsPageAction
     data object OnCustomisationReset: LyricsPageAction
     data class OnLetterSpacingChange(val spacing: Float): LyricsPageAction
     data class OnLineHeightChange(val height: Float): LyricsPageAction
