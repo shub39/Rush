@@ -168,53 +168,55 @@ fun OnboardingDialog(
                             textAlign = TextAlign.Center
                         )
 
-                        ListItem(
-                            colors = listItemColors,
-                            headlineContent = {
-                                Text(
-                                    text = "Rush Mode",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-                            },
-                            supportingContent = {
-                                Text(
-                                    text = "Fetches songs automatically with your music player",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            },
-                            leadingContent = {
-                                Icon(
-                                    painter = painterResource(R.drawable.rush_transparent),
-                                    contentDescription = "Rush Icon",
-                                    modifier = Modifier.size(48.dp),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                        )
+                        Column {
+                            ListItem(
+                                colors = listItemColors,
+                                headlineContent = {
+                                    Text(
+                                        text = "Rush Mode",
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text = "Fetches songs automatically with your music player",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.rush_transparent),
+                                        contentDescription = "Rush Icon",
+                                        modifier = Modifier.size(48.dp),
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                            )
 
-                        ListItem(
-                            colors = listItemColors,
-                            headlineContent = {
-                                Text(
-                                    text = "Synced Lyrics",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-                            },
-                            supportingContent = {
-                                Text(
-                                    text = "Syncs with your music player if timed lyrics is available",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            },
-                            leadingContent = {
-                                Icon(
-                                    painter = painterResource(R.drawable.round_sync_24),
-                                    contentDescription = "Synced",
-                                    modifier = Modifier.size(48.dp),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                        )
+                            ListItem(
+                                colors = listItemColors,
+                                headlineContent = {
+                                    Text(
+                                        text = "Synced Lyrics",
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text = "Syncs with your music player if timed lyrics is available",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.round_sync_24),
+                                        contentDescription = "Synced",
+                                        modifier = Modifier.size(48.dp),
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                            )
+                        }
 
                         Button(
                             onClick = {

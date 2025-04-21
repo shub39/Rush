@@ -206,7 +206,6 @@ fun LyricsPage(
                             // blur - er
                             Box(
                                 modifier = Modifier
-                                    .align(Alignment.TopCenter)
                                     .background(
                                         brush = Brush.verticalGradient(
                                             0f to Color.Transparent,
