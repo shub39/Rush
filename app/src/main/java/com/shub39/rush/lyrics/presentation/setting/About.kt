@@ -37,8 +37,10 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Discord
 import compose.icons.fontawesomeicons.brands.Github
+import compose.icons.fontawesomeicons.solid.Coffee
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,6 +147,18 @@ fun About(
                             ) {
                                 Icon(
                                     imageVector = FontAwesomeIcons.Brands.Github,
+                                    contentDescription = "Github",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+
+                            FilledTonalIconButton(
+                                onClick = {
+                                    uriHandler.openUri("https://buymeacoffee.com/shub39")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = FontAwesomeIcons.Solid.Coffee,
                                     contentDescription = "Github",
                                     modifier = Modifier.size(24.dp)
                                 )

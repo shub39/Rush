@@ -17,8 +17,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2660
-        versionName = "2.6.6"
+        versionCode = 3000
+        versionName = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -26,7 +26,7 @@ android {
         }
     }
     buildTypes {
-        // Fdroid, github and IzzOnDroid
+        // Fdroid, github and IzzyOnDroid
         release {
             resValue("string", "app_name", appName)
             isMinifyEnabled = true

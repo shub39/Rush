@@ -36,7 +36,8 @@ fun AboutLibraries() = PageFill {
                 backgroundColor = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
                 badgeBackgroundColor = MaterialTheme.colorScheme.primary,
-                badgeContentColor = MaterialTheme.colorScheme.onPrimary
+                badgeContentColor = MaterialTheme.colorScheme.onPrimary,
+                dialogConfirmButtonColor = MaterialTheme.colorScheme.primary
             )
         )
     }

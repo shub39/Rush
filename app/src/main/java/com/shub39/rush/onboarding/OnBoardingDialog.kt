@@ -1,10 +1,7 @@
 package com.shub39.rush.onboarding
 
 import android.content.Intent
-import android.os.Build
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,12 +22,10 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,40 +33,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mikepenz.hypnoticcanvas.shaderBackground
-import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
-import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.presentation.RushDialog
-import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun OnboardingDialog(
-    otherDatastore: OtherPreferences = koinInject(),
-    lyricsDatastore: LyricsPagePreferences = koinInject()
+    otherDatastore: OtherPreferences = koinInject()
 ) {
-    val hypnoticSupport = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-
     val context = LocalContext.current
-    val pagerState = rememberPagerState { if (hypnoticSupport) 3 else 2 }
+    val pagerState = rememberPagerState { 2 }
     val coroutineScope = rememberCoroutineScope()
-
-    val hypnoticCanvas by lyricsDatastore.getHypnoticCanvasFlow().collectAsState(true)
-
-    LaunchedEffect(hypnoticSupport) {
-        lyricsDatastore.updateHypnoticCanvas(hypnoticSupport)
-    }
 
     val cardColors = CardDefaults.cardColors()
     val listItemColors = ListItemDefaults.colors(
@@ -226,11 +206,7 @@ fun OnboardingDialog(
                                     context.startActivity(intent)
                                 } else {
                                     coroutineScope.launch {
-                                        if (hypnoticSupport) {
-                                            pagerState.animateScrollToPage(2)
-                                        } else {
-                                            otherDatastore.updateOnboardingDone(true)
-                                        }
+                                        otherDatastore.updateOnboardingDone(true)
                                     }
                                 }
                             }
@@ -244,11 +220,7 @@ fun OnboardingDialog(
                             TextButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        if (hypnoticSupport) {
-                                            pagerState.animateScrollToPage(2)
-                                        } else {
-                                            otherDatastore.updateOnboardingDone(true)
-                                        }
+                                        otherDatastore.updateOnboardingDone(true)
                                     }
                                 }
                             ) {
@@ -256,88 +228,6 @@ fun OnboardingDialog(
                                     text = "No Thanks"
                                 )
                             }
-                        }
-                    }
-
-                    else -> Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(MaterialTheme.shapes.large),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (hypnoticCanvas) {
-                                val colors = generateGradientColors(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.surfaceContainer,
-                                    steps = 6
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .shaderBackground(
-                                            MeshGradient(
-                                                colors = colors.toTypedArray()
-                                            ),
-                                            fallback = {
-                                                Brush.horizontalGradient(colors)
-                                            }
-                                        )
-                                )
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                                )
-                            }
-
-                            Text(
-                                text = "This is how Lyrics will appear",
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-
-                        ListItem(
-                            colors = listItemColors,
-                            headlineContent = {
-                                Text(
-                                    text = "Hypnotic Canvas",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-                            },
-                            supportingContent = {
-                                Text(
-                                    text = "Enable animated background for lyrics. May affect performance.",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            },
-                            trailingContent = {
-                                Switch(
-                                    checked = hypnoticCanvas,
-                                    onCheckedChange = {
-                                        coroutineScope.launch {
-                                            lyricsDatastore.updateHypnoticCanvas(it)
-                                        }
-                                    }
-                                )
-                            }
-                        )
-
-                        Button(
-                            onClick = {
-                                coroutineScope.launch {
-                                    otherDatastore.updateOnboardingDone(true)
-                                }
-                            }
-                        ) {
-                            Text(text = "Done")
                         }
                     }
                 }
