@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,12 +65,12 @@ fun PlainLyrics(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = lazyListState
     ) {
         item {
-            Spacer(modifier = Modifier.height(220.dp))
+            Spacer(modifier = Modifier.padding(32.dp))
         }
 
         // plain lyrics with logic
