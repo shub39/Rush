@@ -3,7 +3,13 @@ package com.shub39.rush.core.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -84,4 +90,62 @@ fun updateSystemBars(context: Context, show: Boolean) {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
+}
+
+// fades the top of the composable to the bottom
+fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
+    require(fadeHeightFraction in 0f..1f) {
+        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
+    }
+
+    return this
+        .graphicsLayer { alpha = 0.99f }
+        .drawWithCache {
+            val fadeHeight = size.height * fadeHeightFraction
+            val gradient = Brush.verticalGradient(
+                colors = listOf(
+                    Color.Transparent,
+                    Color.Black
+                ),
+                tileMode = TileMode.Clamp,
+                startY = 0f,
+                endY = fadeHeight
+            )
+            onDrawWithContent {
+                drawContent()
+                drawRect(
+                    brush = gradient,
+                    blendMode = BlendMode.DstIn
+                )
+            }
+        }
+}
+
+// reverse of above
+fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
+    require(fadeHeightFraction in 0f..1f) {
+        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
+    }
+
+    return this
+        .graphicsLayer { alpha = 0.99f }
+        .drawWithCache {
+            val fadeHeight = size.height * fadeHeightFraction
+            val gradient = Brush.verticalGradient(
+                colors = listOf(
+                    Color.Black,
+                    Color.Transparent
+                ),
+                tileMode = TileMode.Clamp,
+                startY = size.height - fadeHeight,
+                endY = size.height
+            )
+            onDrawWithContent {
+                drawContent()
+                drawRect(
+                    brush = gradient,
+                    blendMode = BlendMode.DstIn
+                )
+            }
+        }
 }

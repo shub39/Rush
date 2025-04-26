@@ -4,16 +4,17 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -28,12 +29,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +49,8 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.fadeBottomToTop
+import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
@@ -80,6 +87,16 @@ fun LyricsPage(
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
 
     val hypnoticSpeed by animateFloatAsState(targetValue = state.meshSpeed)
+
+    val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
+    val infoHeight by animateFloatAsState(
+        targetValue = if (top <= 2) 0.3f else 0.2f
+    )
+
+    val lyricsHeight by animateFloatAsState(
+        targetValue = if (top <= 2) 0.7f else 0.8f
+    )
 
     LaunchedEffect(state.song) {
         delay(100)
@@ -169,8 +186,9 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .widthIn(max = 500.dp)
-                                    .fillMaxHeight(0.8f)
+                                    .fillMaxHeight(lyricsHeight)
                                     .fillMaxWidth()
+                                    .fadeTopToBottom()
                             )
                         } else if (state.song.syncedLyrics != null) {
                             SyncedLyrics(
@@ -181,8 +199,9 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .widthIn(max = 500.dp)
-                                    .fillMaxHeight(0.8f)
+                                    .fillMaxHeight(lyricsHeight)
                                     .fillMaxWidth()
+                                    .fadeTopToBottom()
                             )
                         }
 
@@ -190,32 +209,26 @@ fun LyricsPage(
                             modifier = Modifier
                                 .align(Alignment.TopCenter)
                                 .fillMaxWidth()
-                                .fillMaxHeight(0.25f),
+                                .fillMaxHeight(infoHeight),
                             contentAlignment = Alignment.Center
                         ) {
-                            ArtFromUrl(
-                                imageUrl = state.song.artUrl!!,
-                                highlightColor = cardContent,
-                                baseColor = Color.Transparent,
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.5f)
-                            )
-
-                            // blur - er
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            0f to Color.Transparent,
-                                            0.5f to cardBackground,
-                                            0.8f to cardBackground,
-                                            1f to Color.Transparent
-                                        )
+                            Column(
+                                modifier = Modifier.align(Alignment.TopCenter)
+                            ) {
+                                AnimatedVisibility(
+                                    visible = top > 2
+                                ) {
+                                    ArtFromUrl(
+                                        imageUrl = state.song.artUrl!!,
+                                        highlightColor = cardContent,
+                                        baseColor = Color.Transparent,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .fillMaxHeight(0.5f)
+                                            .fadeBottomToTop()
                                     )
-                                    .fillMaxSize()
-                            )
+                                }
+                            }
 
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -225,7 +238,23 @@ fun LyricsPage(
                                     else -> Alignment.Start
                                 }
                             ) {
-                                Spacer(modifier = Modifier.height(48.dp))
+                                Spacer(modifier = Modifier.height(40.dp))
+
+                                AnimatedVisibility(
+                                    visible = top <= 2
+                                ) {
+                                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                                        ArtFromUrl(
+                                            imageUrl = state.song.artUrl!!,
+                                            highlightColor = cardContent,
+                                            baseColor = Color.Transparent,
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier
+                                                .size(80.dp)
+                                                .clip(MaterialTheme.shapes.small)
+                                        )
+                                    }
+                                }
 
                                 Text(
                                     text = state.song.title,

@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.lyrics.component
 
+import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -9,9 +10,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
@@ -20,6 +23,7 @@ import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import kotlinx.coroutines.launch
 
 @Composable
 fun ActionsRow(
@@ -32,7 +36,8 @@ fun ActionsRow(
     onEdit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
+    val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = modifier
@@ -48,24 +53,32 @@ fun ActionsRow(
 
         IconButton(
             onClick = {
-                if (state.selectedLines.isEmpty()) {
-                    clipboardManager.setText(
-                        buildAnnotatedString {
-                            append(
-                                if (state.source == Sources.LrcLib) {
-                                    state.song?.lyrics?.joinToString("\n") { it.value } ?: ""
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "lyrics",
+                                if (state.selectedLines.isEmpty()) {
+                                    buildAnnotatedString {
+                                        append(
+                                            if (state.source == Sources.LrcLib) {
+                                                state.song?.lyrics?.joinToString("\n") { it.value }
+                                                    ?: ""
+                                            } else {
+                                                state.song?.geniusLyrics?.joinToString("\n") { it.value }
+                                                    ?: ""
+                                            }
+                                        )
+                                    }
                                 } else {
-                                    state.song?.geniusLyrics?.joinToString("\n") { it.value }
-                                        ?: ""
+                                    buildAnnotatedString {
+                                        append(
+                                            state.selectedLines.toSortedMap().values.joinToString("\n")
+                                        )
+                                    }
                                 }
                             )
-                        }
-                    )
-                } else {
-                    clipboardManager.setText(
-                        buildAnnotatedString {
-                            append(state.selectedLines.toSortedMap().values.joinToString("\n"))
-                        }
+                        )
                     )
                 }
             }

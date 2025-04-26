@@ -22,6 +22,7 @@ import org.koin.compose.koinInject
 fun ArtFromUrl(
     imageUrl: Any?,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
     baseColor: Color = MaterialTheme.colorScheme.surface,
     highlightColor: Color = MaterialTheme.colorScheme.primary,
     imageLoader: ImageLoader = koinInject()
@@ -40,7 +41,7 @@ fun ArtFromUrl(
         },
         imageOptions = ImageOptions(
             alignment = Alignment.Center,
-            contentScale = ContentScale.Crop
+            contentScale = contentScale
         ),
         previewPlaceholder = painterResource(R.drawable.baseline_square_24),
         failure = {
