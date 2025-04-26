@@ -30,6 +30,10 @@
 | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
 ## Features ✨
+
+> [!NOTE]
+> Checkout the roadmap [here](https://github.com/shub39/Rush/discussions/113)
+
 >- [x] Search Lyrics
 >- [x] Download Lyrics
 >- [x] Share Lyrics
