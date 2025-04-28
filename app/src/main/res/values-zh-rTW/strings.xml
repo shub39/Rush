@@ -60,7 +60,7 @@
     <string name="no_audio_files">沒有音訊檔案</string>
     <string name="no_folder_selected">未選擇資料夾</string>
     <string name="export">匯出</string>
-    <string name="export_songs_to_downloads_rush">將歌曲匯出到 Downloads/Rush 資料夾</string>
+    <string name="export_songs_to_downloads_rush">將歌曲匯出到Downloads/Rush資料夾</string>
     <string name="restore">還原</string>
     <string name="restore_from_selected_export_file">從所選匯出檔案還原</string>
     <string name="choose_file">選擇檔案</string>
