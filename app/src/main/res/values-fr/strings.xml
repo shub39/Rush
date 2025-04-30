@@ -17,7 +17,7 @@
     <string name="track">piste</string>
     <string name="artist">artiste</string>
     <string name="width">Largeur</string>
-    <string name="colors">Couleurs</string>
+    <string name="colors">Couleurs personnalisables</string>
     <string name="grant_permission">Accorder l\'accès aux notifications</string>
     <string name="notification_permission">L\'accès aux notifications est requis pour obtenir les paroles automatiquement.</string>
     <string name="rounded_corners">Coins arrondis</string>
@@ -92,7 +92,7 @@
     <string name="system">Système</string>
     <string name="rounded">Arrondi</string>
     <string name="default_">Par défaut</string>
-    <string name="hypnotic_canvas_desc">(Expérimental) Effet hypnotique pour la page des paroles. Fonctionne seulement sur les versions d\'Android 13 et supérieures. Remplacé avec un dégradé statique sur les versions Android inférieures. Peut affecter les performances</string>
+    <string name="hypnotic_canvas_desc">(Expérimental) Effet hypnotique pour la page des paroles. Peut affecter les performances</string>
     <string name="about_libraries">À propos des bibliothèques</string>
     <string name="look_and_feel">Apparence</string>
     <string name="amoled">Palette AMOLED</string>
@@ -107,4 +107,13 @@
     <string name="hypnotic_canvas">Effet hypnotique</string>
     <string name="fullscreen">Mode plein-écran</string>
     <string name="fullscreen_desc">Masquer les barres système sur la page des paroles</string>
+    <string name="center">Centre</string>
+    <string name="font_size">Taille de la police</string>
+    <string name="font_weight">Epaisseur de la police</string>
+    <string name="line_height">Hauteur de ligne</string>
+    <string name="letter_spacing">Espacement des lettres</string>
+    <string name="end">Fin</string>
+    <string name="customisations">Personnalisations des paroles</string>
+    <string name="text_alignment">Alignement</string>
+    <string name="start">Début</string>
 </resources>
