@@ -1,4 +1,4 @@
-Rush è una semplice app per android, utilizzabile per cercare, vedere, salvare e condividere i testi delle tue canzoni preferite.
+Rush è una semplice app per android, utilizzabile per cercare, vedere, salvare e condividere i testi delle tue canzoni preferite
 
 Funzionalità:
 
@@ -6,5 +6,3 @@ Funzionalità:
 - Condividi parte dei testi sotto forma di una cartolina personalizzabile
 - Autocompleta la ricerca, utilizzando le canzoni attualmente in riproduzione(Richiede l'accesso alle notifiche)
 - Testi sincronizzati
-
-
