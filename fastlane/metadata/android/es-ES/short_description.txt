@@ -1,1 +1,1 @@
-App para buscar, ver, guardar y compartir letras
+Aplicación para buscar, ver, guardar y compartir letras
