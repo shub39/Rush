@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="colors">Цвета</string>
+    <string name="colors">Пользовательские Цвета</string>
     <string name="saved">Сохраненные</string>
     <string name="settings">Настройки</string>
     <string name="max_lines">Максимум линий чтобы поделиться</string>
@@ -8,7 +8,7 @@
     <string name="export">Экспорт</string>
     <string name="no_results">Нет результатов</string>
     <string name="card_corners">Углы карточки</string>
-    <string name="hypnotic_canvas_desc">(Экспериментально) Гипнотический фон для страницы с текстом. Работает только на Android 13 и выше. Заменен статическим градиентом на старых версиях Android. Может плохо сказаться на производительности</string>
+    <string name="hypnotic_canvas_desc">(Экспериментально) Гипнотический фон для страницы с текстом. Может плохо сказаться на производительности</string>
     <string name="sort_date_added">Последние</string>
     <string name="backup_info">Импортировать или Экспортировать данные сохраненных текстов песен</string>
     <string name="batch_download_info">Загрузите слова для ваших локально сохраненных песен.</string>
@@ -107,4 +107,13 @@
     <string name="select_app_theme">Тема приложения</string>
     <string name="fullscreen">Полноэкранный просмотр</string>
     <string name="fullscreen_desc">Спрятать системные панели на странице с текстом</string>
+    <string name="customisations">Внешний вид текста</string>
+    <string name="text_alignment">Положение</string>
+    <string name="center">Центер</string>
+    <string name="end">Справа</string>
+    <string name="start">Слева</string>
+    <string name="font_size">Размер шрифта</string>
+    <string name="font_weight">Толщина шрифта</string>
+    <string name="line_height">Расстояние между строками</string>
+    <string name="letter_spacing">Ширина строки</string>
 </resources>
