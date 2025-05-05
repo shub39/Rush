@@ -30,10 +30,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardFitFlow(): Flow<CardFit> = dataStore.data
         .map { preferences ->
-            when (preferences[cardFit]) {
-                CardFit.STANDARD.name -> CardFit.STANDARD
-                else -> CardFit.FIT
-            }
+            val cardFit = preferences[cardFit] ?: CardFit.FIT.name
+            CardFit.valueOf(cardFit)
         }
     override suspend fun updateCardFit(newCardFit: CardFit) {
         dataStore.edit { settings ->
@@ -59,12 +57,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardThemeFlow(): Flow<CardTheme> = dataStore.data
         .map { preferences ->
-            when (preferences[cardTheme]) {
-                CardTheme.RUSHED.name -> CardTheme.RUSHED
-                CardTheme.HYPNOTIC.name -> CardTheme.HYPNOTIC
-                CardTheme.IMAGE.name -> CardTheme.IMAGE
-                else -> CardTheme.SPOTIFY
-            }
+            val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
+            CardTheme.valueOf(theme)
         }
     override suspend fun updateCardTheme(newCardTheme: CardTheme) {
         dataStore.edit { settings ->
@@ -74,11 +68,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardColorFlow(): Flow<CardColors> = dataStore.data
         .map { preferences ->
-            when (preferences[cardColor]) {
-                CardColors.VIBRANT.name -> CardColors.VIBRANT
-                CardColors.CUSTOM.name -> CardColors.CUSTOM
-                else -> CardColors.MUTED
-            }
+            val cardColor = preferences[cardColor] ?: CardColors.MUTED.name
+            CardColors.valueOf(cardColor)
         }
     override suspend fun updateCardColor(newCardColor: CardColors) {
         dataStore.edit { settings ->
@@ -88,10 +79,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
         .map { preferences ->
-            when (preferences[cardRoundness]) {
-                CornerRadius.DEFAULT.name -> CornerRadius.DEFAULT
-                else -> CornerRadius.ROUNDED
-            }
+            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.DEFAULT.name
+            CornerRadius.valueOf(cardRoundness)
         }
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
         dataStore.edit { settings ->

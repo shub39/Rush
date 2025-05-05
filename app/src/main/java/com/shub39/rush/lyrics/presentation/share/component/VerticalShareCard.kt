@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.share.component
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,15 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.rotateVertically
 
 @Composable
-fun SpotifyShareCard(
+fun VerticalShareCard(
     modifier: Modifier,
     song: SongDetails,
     sortedLines: Map<Int, String>,
@@ -41,18 +42,17 @@ fun SpotifyShareCard(
             modifier = modifier,
             colors = cardColors
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .padding(32.dp)
                     .let {
                         if (fit == CardFit.STANDARD) {
                             it.fillMaxHeight()
                         } else it
-                    },
-                verticalArrangement = Arrangement.Center
+                    }
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     ArtFromUrl(
                         imageUrl = song.artUrl,
@@ -61,16 +61,17 @@ fun SpotifyShareCard(
                             .clip(MaterialTheme.shapes.small)
                     )
 
-                    Column(
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
+                    Spacer(modifier = Modifier.padding(8.dp))
+
+                    Row {
                         Text(
                             text = song.title,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.rotateVertically()
                         )
 
                         Text(
@@ -79,18 +80,20 @@ fun SpotifyShareCard(
                             fontWeight = FontWeight.Bold,
                             fontSize = with(LocalDensity.current) { 35.toSp() },
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.rotateVertically()
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.padding(8.dp))
 
-                LazyColumn {
+                LazyColumn(modifier = Modifier.weight(1f)) {
                     sortedLines.forEach {
                         item {
                             Text(
                                 text = it.value,
+                                fontStyle = FontStyle.Italic,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = with(LocalDensity.current) { 40.toSp() },

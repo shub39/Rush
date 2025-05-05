@@ -61,8 +61,10 @@ import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
+import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
 import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
+import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -177,6 +179,24 @@ fun SharePage(
                     cardCorners = cardCorners,
                     fit = state.cardFit
                 )
+
+                CardTheme.VERTICAL -> VerticalShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    fit = state.cardFit
+                )
+
+                CardTheme.QUOTE -> QuoteShareCard(
+                    modifier = modifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    fit = state.cardFit
+                )
             }
 
             Row(
@@ -242,8 +262,6 @@ fun SharePage(
                                 bitmap,
                                 "${state.songDetails.artist}-${state.songDetails.title}.png"
                             )
-
-                            onDismiss()
                         }
                     },
                     shape = MaterialTheme.shapes.extraLarge,

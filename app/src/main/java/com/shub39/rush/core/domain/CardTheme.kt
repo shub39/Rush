@@ -9,5 +9,7 @@ enum class CardTheme(
     SPOTIFY(R.string.spotify),
     RUSHED(R.string.rushed),
     IMAGE(R.string.image),
-    HYPNOTIC(R.string.hypnotic)
+    HYPNOTIC(R.string.hypnotic),
+    VERTICAL(R.string.vertical),
+    QUOTE(R.string.quote)
 }
