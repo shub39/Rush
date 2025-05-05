@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -63,6 +64,8 @@ import com.shub39.rush.lyrics.presentation.share.component.ListSelect
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
 import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import kotlinx.coroutines.launch
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +76,7 @@ fun SharePage(
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
+    val zoomState = rememberZoomState()
     val context = LocalContext.current
 
     var namePicker by remember { mutableStateOf(false) }
@@ -85,26 +89,20 @@ fun SharePage(
         selectedUri = uri
     }
 
-    val modifier = if (state.cardFit == CardFit.FIT) {
-        Modifier
-            .width(360.dp)
-            .drawWithContent {
-                cardGraphicsLayer.record {
-                    this@drawWithContent.drawContent()
-                }
-                drawLayer(cardGraphicsLayer)
+    val modifier = Modifier
+        .width(360.dp)
+        .zoomable(zoomState)
+        .drawWithContent {
+            cardGraphicsLayer.record {
+                this@drawWithContent.drawContent()
             }
-    } else {
-        Modifier
-            .height(640.dp)
-            .width(360.dp)
-            .drawWithContent {
-                cardGraphicsLayer.record {
-                    this@drawWithContent.drawContent()
-                }
-                drawLayer(cardGraphicsLayer)
-            }
-    }
+            drawLayer(cardGraphicsLayer)
+        }
+        .let {
+            if (state.cardFit == CardFit.FIT) {
+                it.heightIn(max = 960.dp)
+            } else it.height(640.dp)
+        }
 
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {

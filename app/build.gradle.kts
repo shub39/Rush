@@ -96,7 +96,7 @@ android {
 
 aboutLibraries {
     // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
-    excludeFields = arrayOf("generated")
+    export.excludeFields.add("generated")
 }
 
 dependencies {
@@ -128,6 +128,7 @@ dependencies {
     implementation(libs.aboutLibraries)
     implementation(libs.composeIcons.fontAwesome)
     testImplementation(libs.junit)
+    implementation(libs.zoomable)
 }
 
 java {
