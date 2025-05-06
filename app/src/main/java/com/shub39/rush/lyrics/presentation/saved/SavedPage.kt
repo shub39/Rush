@@ -3,7 +3,9 @@ package com.shub39.rush.lyrics.presentation.saved
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +45,7 @@ import com.shub39.rush.R
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.simpleVerticalScrollbar
 import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
@@ -178,7 +181,9 @@ fun SavedPage(
             } else {
 
                 LazyRow(
-                    modifier = Modifier.animateContentSize()
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(sortOrderChips, key = { it.textId }) {
                         FilterChip(
@@ -188,11 +193,9 @@ fun SavedPage(
                             },
                             label = {
                                 Text(
-                                    text = stringResource(id = it.textId),
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = stringResource(id = it.textId)
                                 )
-                            },
-                            modifier = Modifier.padding(horizontal = 8.dp)
+                            }
                         )
                     }
                 }
@@ -201,9 +204,7 @@ fun SavedPage(
                     targetState = state.sortOrder
                 ) { sortOrder ->
                     var expandedCardId by rememberSaveable {
-                        mutableStateOf<String?>(
-                            null
-                        )
+                        mutableStateOf<String?>(null)
                     }
                     val listState = rememberLazyListState()
 
@@ -211,6 +212,7 @@ fun SavedPage(
                         state = listState,
                         modifier = Modifier
                             .fillMaxSize()
+                            .simpleVerticalScrollbar(listState)
                             .animateContentSize()
                     ) {
                         when (sortOrder) {
