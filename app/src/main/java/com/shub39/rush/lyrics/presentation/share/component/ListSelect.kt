@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -20,7 +19,7 @@ fun <T> ListSelect(
     options: List<T>,
     selected: T,
     onSelectedChange: (T) -> Unit,
-    labelProvider: (T) -> Int
+    labelProvider: @Composable (T) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -40,10 +39,7 @@ fun <T> ListSelect(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     selected = option == selected,
                     onClick = { onSelectedChange(option) },
-                    label = { Text(
-                        text = stringResource(labelProvider(option)),
-                        style = MaterialTheme.typography.bodyMedium
-                    ) }
+                    label = { labelProvider(option) }
                 )
             }
         }

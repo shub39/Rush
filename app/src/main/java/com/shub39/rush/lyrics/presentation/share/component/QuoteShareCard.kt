@@ -86,7 +86,7 @@ fun QuoteShareCard(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = with(LocalDensity.current) { 40.toSp() },
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
 

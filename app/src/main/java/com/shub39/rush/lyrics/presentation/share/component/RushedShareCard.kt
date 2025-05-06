@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.share.component
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,39 +36,33 @@ fun RushedShareCard(
     song: SongDetails,
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
-    cardCorners: RoundedCornerShape
+    cardCorners: RoundedCornerShape,
+    selectedUri: Uri?
 ) {
-    Box(
-        modifier = modifier
-            .background(
-                color = cardColors.containerColor,
-                shape = cardCorners
-            )
-            .clip(cardCorners)
-    ) {
+    Box(modifier = modifier.clip(cardCorners)) {
         ArtFromUrl(
-            imageUrl = song.artUrl,
-            modifier = Modifier
-                .matchParentSize()
+            imageUrl = selectedUri ?: song.artUrl,
+            modifier = Modifier.matchParentSize()
         )
 
         Box(
             modifier = Modifier
-                .matchParentSize()
+                .fillMaxWidth()
                 .background(
-                    brush = Brush.verticalGradient(
+                    Brush.verticalGradient(
                         0f to Color.Transparent,
-                        0.7f to cardColors.containerColor,
+                        0.5f to cardColors.containerColor.copy(0.3f),
                         1f to cardColors.containerColor
                     )
                 )
+                .matchParentSize()
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomStart)
         ) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(sortedLines.values.toList()) {

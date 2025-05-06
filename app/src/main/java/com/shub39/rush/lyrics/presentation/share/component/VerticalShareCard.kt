@@ -36,10 +36,10 @@ fun VerticalShareCard(
     fit: CardFit
 ) {
     Card(
+        modifier = modifier,
         shape = cardCorners
     ) {
         Card(
-            modifier = modifier,
             colors = cardColors
         ) {
             Row(
@@ -65,20 +65,20 @@ fun VerticalShareCard(
 
                     Row {
                         Text(
-                            text = song.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = with(LocalDensity.current) { 40.toSp() },
-                            maxLines = 2,
+                            text = song.artist,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { 35.toSp() },
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.rotateVertically()
                         )
 
                         Text(
-                            text = song.artist,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = with(LocalDensity.current) { 35.toSp() },
+                            text = song.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.rotateVertically()

@@ -35,68 +35,65 @@ fun SpotifyShareCard(
     fit: CardFit
 ) {
     Card(
-        shape = cardCorners
+        modifier = modifier,
+        shape = cardCorners,
+        colors = cardColors
     ) {
-        Card(
-            modifier = modifier,
-            colors = cardColors
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .let {
+                    if (fit == CardFit.STANDARD) {
+                        it.fillMaxHeight()
+                    } else it
+                },
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(32.dp)
-                    .let {
-                        if (fit == CardFit.STANDARD) {
-                            it.fillMaxHeight()
-                        } else it
-                    },
-                verticalArrangement = Arrangement.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                ArtFromUrl(
+                    imageUrl = song.artUrl,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(MaterialTheme.shapes.small)
+                )
+
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    ArtFromUrl(
-                        imageUrl = song.artUrl,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(MaterialTheme.shapes.small)
+                    Text(
+                        text = song.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = with(LocalDensity.current) { 40.toSp() },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
 
-                    Column(
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = song.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = with(LocalDensity.current) { 40.toSp() },
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Text(
-                            text = song.artist,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = with(LocalDensity.current) { 35.toSp() },
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = song.artist,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = with(LocalDensity.current) { 35.toSp() },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
+            }
 
-                Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.padding(8.dp))
 
-                LazyColumn {
-                    sortedLines.forEach {
-                        item {
-                            Text(
-                                text = it.value,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = with(LocalDensity.current) { 40.toSp() },
-                                modifier = Modifier.padding(bottom = 10.dp)
-                            )
-                        }
+            LazyColumn {
+                sortedLines.forEach {
+                    item {
+                        Text(
+                            text = it.value,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = with(LocalDensity.current) { 40.toSp() },
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
                     }
                 }
             }

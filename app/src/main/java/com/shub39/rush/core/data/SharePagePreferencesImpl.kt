@@ -11,6 +11,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.SharePagePreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,6 +27,7 @@ class SharePagePreferencesImpl(
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
         private val cardFit = stringPreferencesKey("card_fit")
+        private val cardFont = stringPreferencesKey("card_font")
     }
 
     override fun getCardFitFlow(): Flow<CardFit> = dataStore.data
@@ -85,6 +87,16 @@ class SharePagePreferencesImpl(
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
         dataStore.edit { settings ->
             settings[cardRoundness] = newCardRoundness.name
+        }
+    }
+
+    override fun getCardFontFlow(): Flow<Fonts> = dataStore.data.map { prefs ->
+        val font = prefs[cardFont] ?: Fonts.POPPINS.name
+        Fonts.valueOf(font)
+    }
+    override suspend fun updateCardFont(newCardFont: Fonts) {
+        dataStore.edit { prefs ->
+            prefs[cardFont] = newCardFont.name
         }
     }
 

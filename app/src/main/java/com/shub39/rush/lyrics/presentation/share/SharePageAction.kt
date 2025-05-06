@@ -4,6 +4,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 
 sealed interface SharePageAction {
     data class OnUpdateCardTheme(val theme: CardTheme) : SharePageAction
@@ -12,4 +13,5 @@ sealed interface SharePageAction {
     data class OnUpdateCardRoundness(val roundness: CornerRadius) : SharePageAction
     data class OnUpdateCardContent(val color: Int): SharePageAction
     data class OnUpdateCardBackground(val color: Int): SharePageAction
+    data class OnUpdateCardFont(val font: Fonts) : SharePageAction
 }

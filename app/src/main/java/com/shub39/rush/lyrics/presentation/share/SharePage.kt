@@ -49,17 +49,21 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
-import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
 import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
@@ -144,59 +148,55 @@ fun SharePage(
             contentAlignment = Alignment.Center
         ) {
 
-            when (state.cardTheme) {
-                CardTheme.SPOTIFY -> SpotifyShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
+            RushTheme(
+                state = Theme(fonts = state.cardFont)
+            ) {
+                when (state.cardTheme) {
+                    CardTheme.SPOTIFY -> SpotifyShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                CardTheme.RUSHED -> RushedShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners
-                )
+                    CardTheme.RUSHED -> RushedShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        selectedUri = selectedUri
+                    )
 
-                CardTheme.IMAGE -> ImageShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    selectedUri = selectedUri
-                )
+                    CardTheme.HYPNOTIC -> HypnoticShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                CardTheme.HYPNOTIC -> HypnoticShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
+                    CardTheme.VERTICAL -> VerticalShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                CardTheme.VERTICAL -> VerticalShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
-
-                CardTheme.QUOTE -> QuoteShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
+                    CardTheme.QUOTE -> QuoteShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+                }
             }
 
             Row(
@@ -289,7 +289,7 @@ fun SharePage(
                 Spacer(modifier = Modifier.padding(4.dp))
 
                 AnimatedVisibility(
-                    visible = state.cardTheme == CardTheme.IMAGE
+                    visible = state.cardTheme == CardTheme.RUSHED
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -362,7 +362,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardTheme(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -372,7 +376,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardColor(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -382,7 +390,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardFit(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -392,7 +404,26 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardRoundness(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
+                )
+
+                ListSelect(
+                    title = stringResource(R.string.card_font),
+                    options = Fonts.entries.toList(),
+                    selected = state.cardFont,
+                    onSelectedChange = {
+                        action(SharePageAction.OnUpdateCardFont(it))
+                    },
+                    labelProvider = {
+                        Text(
+                            text = it.fullName,
+                            fontFamily = FontFamily(Font(it.fontId))
+                        )
+                    }
                 )
             }
         }
