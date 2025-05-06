@@ -115,4 +115,7 @@
     <string name="font_weight">Font weight</string>
     <string name="line_height">Line height</string>
     <string name="letter_spacing">Letter spacing</string>
+    <string name="vertical">Vertical</string>
+    <string name="quote">Quote</string>
+    <string name="card_font">Card Font</string>
 </resources>

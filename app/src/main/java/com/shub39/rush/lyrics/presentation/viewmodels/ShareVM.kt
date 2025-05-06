@@ -88,6 +88,16 @@ class ShareVM(
                         )
                     }
                 }.launchIn(this)
+
+            datastore.getCardFontFlow()
+                .onEach { font ->
+                    _state.update {
+                        it.copy(
+                            cardFont = font
+                        )
+                    }
+                }
+                .launchIn(this)
         }
     }
 
@@ -100,6 +110,7 @@ class ShareVM(
                 is SharePageAction.OnUpdateCardFit -> datastore.updateCardFit(action.fit)
                 is SharePageAction.OnUpdateCardRoundness -> datastore.updateCardRoundness(action.roundness)
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
+                is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
             }
         }
     }

@@ -11,6 +11,7 @@ import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.SharePagePreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,14 +27,13 @@ class SharePagePreferencesImpl(
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
         private val cardFit = stringPreferencesKey("card_fit")
+        private val cardFont = stringPreferencesKey("card_font")
     }
 
     override fun getCardFitFlow(): Flow<CardFit> = dataStore.data
         .map { preferences ->
-            when (preferences[cardFit]) {
-                CardFit.STANDARD.name -> CardFit.STANDARD
-                else -> CardFit.FIT
-            }
+            val cardFit = preferences[cardFit] ?: CardFit.FIT.name
+            CardFit.valueOf(cardFit)
         }
     override suspend fun updateCardFit(newCardFit: CardFit) {
         dataStore.edit { settings ->
@@ -59,12 +59,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardThemeFlow(): Flow<CardTheme> = dataStore.data
         .map { preferences ->
-            when (preferences[cardTheme]) {
-                CardTheme.RUSHED.name -> CardTheme.RUSHED
-                CardTheme.HYPNOTIC.name -> CardTheme.HYPNOTIC
-                CardTheme.IMAGE.name -> CardTheme.IMAGE
-                else -> CardTheme.SPOTIFY
-            }
+            val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
+            CardTheme.valueOf(theme)
         }
     override suspend fun updateCardTheme(newCardTheme: CardTheme) {
         dataStore.edit { settings ->
@@ -74,11 +70,8 @@ class SharePagePreferencesImpl(
 
     override fun getCardColorFlow(): Flow<CardColors> = dataStore.data
         .map { preferences ->
-            when (preferences[cardColor]) {
-                CardColors.VIBRANT.name -> CardColors.VIBRANT
-                CardColors.CUSTOM.name -> CardColors.CUSTOM
-                else -> CardColors.MUTED
-            }
+            val cardColor = preferences[cardColor] ?: CardColors.MUTED.name
+            CardColors.valueOf(cardColor)
         }
     override suspend fun updateCardColor(newCardColor: CardColors) {
         dataStore.edit { settings ->
@@ -88,14 +81,22 @@ class SharePagePreferencesImpl(
 
     override fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
         .map { preferences ->
-            when (preferences[cardRoundness]) {
-                CornerRadius.DEFAULT.name -> CornerRadius.DEFAULT
-                else -> CornerRadius.ROUNDED
-            }
+            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.DEFAULT.name
+            CornerRadius.valueOf(cardRoundness)
         }
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
         dataStore.edit { settings ->
             settings[cardRoundness] = newCardRoundness.name
+        }
+    }
+
+    override fun getCardFontFlow(): Flow<Fonts> = dataStore.data.map { prefs ->
+        val font = prefs[cardFont] ?: Fonts.POPPINS.name
+        Fonts.valueOf(font)
+    }
+    override suspend fun updateCardFont(newCardFont: Fonts) {
+        dataStore.edit { prefs ->
+            prefs[cardFont] = newCardFont.name
         }
     }
 

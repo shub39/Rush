@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -48,21 +49,29 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
 import com.shub39.rush.core.domain.CardTheme
 import com.shub39.rush.core.domain.CornerRadius
+import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
-import com.shub39.rush.lyrics.presentation.share.component.ImageShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
+import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
 import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
+import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 import kotlinx.coroutines.launch
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +82,7 @@ fun SharePage(
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
+    val zoomState = rememberZoomState()
     val context = LocalContext.current
 
     var namePicker by remember { mutableStateOf(false) }
@@ -85,26 +95,20 @@ fun SharePage(
         selectedUri = uri
     }
 
-    val modifier = if (state.cardFit == CardFit.FIT) {
-        Modifier
-            .width(360.dp)
-            .drawWithContent {
-                cardGraphicsLayer.record {
-                    this@drawWithContent.drawContent()
-                }
-                drawLayer(cardGraphicsLayer)
+    val modifier = Modifier
+        .width(360.dp)
+        .zoomable(zoomState)
+        .drawWithContent {
+            cardGraphicsLayer.record {
+                this@drawWithContent.drawContent()
             }
-    } else {
-        Modifier
-            .height(640.dp)
-            .width(360.dp)
-            .drawWithContent {
-                cardGraphicsLayer.record {
-                    this@drawWithContent.drawContent()
-                }
-                drawLayer(cardGraphicsLayer)
-            }
-    }
+            drawLayer(cardGraphicsLayer)
+        }
+        .let {
+            if (state.cardFit == CardFit.FIT) {
+                it.heightIn(max = 960.dp)
+            } else it.height(640.dp)
+        }
 
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {
@@ -144,41 +148,55 @@ fun SharePage(
             contentAlignment = Alignment.Center
         ) {
 
-            when (state.cardTheme) {
-                CardTheme.SPOTIFY -> SpotifyShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
+            RushTheme(
+                state = Theme(fonts = state.cardFont)
+            ) {
+                when (state.cardTheme) {
+                    CardTheme.SPOTIFY -> SpotifyShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                CardTheme.RUSHED -> RushedShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners
-                )
+                    CardTheme.RUSHED -> RushedShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        selectedUri = selectedUri
+                    )
 
-                CardTheme.IMAGE -> ImageShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    selectedUri = selectedUri
-                )
+                    CardTheme.HYPNOTIC -> HypnoticShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                CardTheme.HYPNOTIC -> HypnoticShareCard(
-                    modifier = modifier,
-                    song = state.songDetails,
-                    sortedLines = state.selectedLines,
-                    cardColors = cardColor,
-                    cardCorners = cardCorners,
-                    fit = state.cardFit
-                )
+                    CardTheme.VERTICAL -> VerticalShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+
+                    CardTheme.QUOTE -> QuoteShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+                }
             }
 
             Row(
@@ -244,8 +262,6 @@ fun SharePage(
                                 bitmap,
                                 "${state.songDetails.artist}-${state.songDetails.title}.png"
                             )
-
-                            onDismiss()
                         }
                     },
                     shape = MaterialTheme.shapes.extraLarge,
@@ -273,7 +289,7 @@ fun SharePage(
                 Spacer(modifier = Modifier.padding(4.dp))
 
                 AnimatedVisibility(
-                    visible = state.cardTheme == CardTheme.IMAGE
+                    visible = state.cardTheme == CardTheme.RUSHED
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -346,7 +362,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardTheme(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -356,7 +376,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardColor(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -366,7 +390,11 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardFit(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
                 )
 
                 ListSelect(
@@ -376,7 +404,26 @@ fun SharePage(
                     onSelectedChange = {
                         action(SharePageAction.OnUpdateCardRoundness(it))
                     },
-                    labelProvider = { it.title }
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.title)
+                        )
+                    }
+                )
+
+                ListSelect(
+                    title = stringResource(R.string.card_font),
+                    options = Fonts.entries.toList(),
+                    selected = state.cardFont,
+                    onSelectedChange = {
+                        action(SharePageAction.OnUpdateCardFont(it))
+                    },
+                    labelProvider = {
+                        Text(
+                            text = it.fullName,
+                            fontFamily = FontFamily(Font(it.fontId))
+                        )
+                    }
                 )
             }
         }

@@ -23,6 +23,7 @@ aboutLibraries = '12.1.0'
 datetime = "0.6.2"
 composeIcons = "1.1.1"
 junit = "4.13.2"
+zoomable = "2.6.0"
 
 [libraries]
 # Android
@@ -55,6 +56,7 @@ materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
+zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
