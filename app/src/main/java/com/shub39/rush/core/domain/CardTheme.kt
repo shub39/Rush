@@ -10,5 +10,6 @@ enum class CardTheme(
     RUSHED(R.string.rushed),
     HYPNOTIC(R.string.hypnotic),
     VERTICAL(R.string.vertical),
-    QUOTE(R.string.quote)
+    QUOTE(R.string.quote),
+    COUPLET(R.string.couplet)
 }

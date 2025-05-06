@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,7 +42,9 @@ import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Discord
 import compose.icons.fontawesomeicons.brands.Github
+import compose.icons.fontawesomeicons.brands.Twitter
 import compose.icons.fontawesomeicons.solid.Coffee
+import compose.icons.fontawesomeicons.solid.Language
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,6 +92,8 @@ fun About(
                             tint = MaterialTheme.colorScheme.primary
                         )
 
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         Text(
                             text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.titleMedium
@@ -124,48 +130,61 @@ fun About(
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
+
+                            IconButton(
+                                onClick = {
+                                    uriHandler.openUri("https://x.com/RushedLyrics")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = FontAwesomeIcons.Brands.Twitter,
+                                    contentDescription = "Twitter",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            // me
             item {
-                ListItem(
-                    headlineContent = {
-                        Text("Made By shub39")
-                    },
-                    supportingContent = {
-                        Text(getRandomLine())
-                    },
-                    trailingContent = {
-                        Row {
-                            FilledTonalIconButton(
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/shub39")
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Brands.Github,
-                                    contentDescription = "Github",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+                Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    FilledTonalButton(
+                        onClick = {
+                            uriHandler.openUri("https://buymeacoffee.com/shub39")
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Language,
+                            contentDescription = "Github",
+                            modifier = Modifier.size(24.dp)
+                        )
 
-                            FilledTonalIconButton(
-                                onClick = {
-                                    uriHandler.openUri("https://buymeacoffee.com/shub39")
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.Coffee,
-                                    contentDescription = "Github",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text("Translate")
                     }
-                )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    FilledTonalButton(
+                        onClick = {
+                            uriHandler.openUri("https://buymeacoffee.com/shub39")
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Coffee,
+                            contentDescription = "Github",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text("Sponsor")
+                    }
+                }
             }
 
             // navigate to about libraries
@@ -194,6 +213,6 @@ private fun Preview() {
     RushTheme(
         state = Theme()
     ) {
-        About {  }
+        About { }
     }
 }

@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.share.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +42,14 @@ fun QuoteShareCard(
         shape = cardCorners
     ) {
         Column(
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier
+                .padding(32.dp)
+                .let {
+                    if (fit == CardFit.STANDARD) {
+                        it.weight(1f)
+                    } else it
+                },
+            verticalArrangement = Arrangement.Center
         ) {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.QuoteLeft,
@@ -59,14 +67,7 @@ fun QuoteShareCard(
                 fontSize = with(LocalDensity.current) { 80.toSp() }
             )
 
-            Spacer(
-                modifier = Modifier
-                    .let {
-                        if (fit == CardFit.STANDARD) {
-                            it.weight(1f)
-                        } else it.padding(32.dp)
-                    }
-            )
+            Spacer(modifier = Modifier.padding(32.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically

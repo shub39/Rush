@@ -63,6 +63,7 @@ import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.lyrics.presentation.share.component.CoupletShareCard
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
 import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
@@ -189,6 +190,15 @@ fun SharePage(
                     )
 
                     CardTheme.QUOTE -> QuoteShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+
+                    CardTheme.COUPLET -> CoupletShareCard(
                         modifier = modifier,
                         song = state.songDetails,
                         sortedLines = state.selectedLines,
