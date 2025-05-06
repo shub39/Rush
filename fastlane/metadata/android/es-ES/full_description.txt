@@ -1,9 +1,9 @@
-Rush es una sencilla aplicación para Android para buscar, ver, guardar y compartir letras de tus canciones favoritas.
+Rush es una sencilla aplicación para Android para buscar, ver, guardar y compartir la letra de sus canciones favoritas.
 
-Características 
+Funcionalidades 
 
-- Busca, lee y almacenar letras
-- ¡Comparte la letra en una tarjeta personalizable con tus amigos!
+- Buscar, leer y almacenar letras
+- Comparta la letra en una tarjeta personalizable con sus amigos
 - Búsqueda automática de la canción que se está reproduciendo actualmente (requiere permiso de acceso a notificaciones)
 - Letras sincronizadas
 - Descarga de letras por lotes
