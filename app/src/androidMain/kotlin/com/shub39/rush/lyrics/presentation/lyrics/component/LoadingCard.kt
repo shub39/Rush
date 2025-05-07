@@ -47,7 +47,7 @@ fun LoadingCard(
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Search,
                 contentDescription = null,
-                modifier = Modifier.size(150.dp),
+                modifier = Modifier.size(120.dp),
                 tint = colors.first
             )
 
