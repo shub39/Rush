@@ -3,7 +3,7 @@
     <string name="search">搜索歌詞</string>
     <string name="saved">已儲存</string>
     <string name="settings">設定</string>
-    <string name="empty">還沒有內容…</string>
+    <string name="empty">尚無內容</string>
     <string name="share">分享</string>
     <string name="vibrant_colors">使用鮮艷的色彩</string>
     <string name="save">儲存變更</string>
@@ -98,4 +98,26 @@
     <string name="rounded">圓角</string>
     <string name="material_theme">Material主題</string>
     <string name="mesh_speed">網格速度</string>
+    <string name="look_and_feel_info">以各種方式自訂應用程式</string>
+    <string name="amoled_desc">在AMOLED顯示幕上提供最佳體驗</string>
+    <string name="loading_genius">正在載入Genius歌詞</string>
+    <string name="card_font">卡片字體</string>
+    <string name="use_system_theme_desc">使用與系統相同的主題</string>
+    <string name="material_theme_desc">基於壁紙的主題</string>
+    <string name="amoled">Amoled調色板</string>
+    <string name="customisations">自訂歌詞</string>
+    <string name="restoring">正在恢復歌曲</string>
+    <string name="restored">歌曲已恢復</string>
+    <string name="restore_info">從選定的匯出檔案中恢復</string>
+    <string name="rush_mode_desc">搜尋通知中的目前播放歌曲並取得相應歌詞。使歌詞隨音樂播放器同步變更。</string>
+    <string name="dark_theme">使用暗黑主題</string>
+    <string name="font">選擇應用程式字體</string>
+    <string name="fullscreen">全螢幕視圖</string>
+    <string name="fullscreen_desc">在歌詞頁面隱藏系統欄</string>
+    <string name="vertical">垂直</string>
+    <string name="quote">引用</string>
+    <string name="couplet">對句</string>
+    <string name="export_info">將歌曲匯出到Downloads/Rush</string>
+    <string name="default_">預設</string>
+    <string name="text_alignment">對齊方式</string>
 </resources>
