@@ -61,7 +61,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -80,6 +79,7 @@ import com.shub39.rush.core.presentation.RushTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.FolderOpen
+import org.jetbrains.compose.resources.Font
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -381,7 +381,7 @@ fun LookAndFeel(
 
                         Text(
                             text = font.fullName,
-                            fontFamily = FontFamily(Font(font.fontId))
+                            fontFamily = FontFamily(Font(font.font))
                         )
                     }
                 }

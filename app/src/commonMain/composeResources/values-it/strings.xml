@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search">Cerca testi</string>
+    <string name="saved">Salvati</string>
+    <string name="settings">Impostazioni</string>
+    <string name="empty">Niente qui</string>
+    <string name="save">Salva modifiche</string>
+    <string name="delete_confirmation">Sei sicuro di voler eliminare tutti i testi salvati?</string>
+    <string name="no_lyrics">Non è stato possibile recuperare il testo</string>
+    <string name="suggestion">Prova a cercare qualcosa</string>
+    <string name="downloaded">Testi salvati</string>
+    <string name="delete_all">Rimuovi tutti i testi</string>
+    <string name="notification">Servizio di ascolto delle notifiche</string>
+    <string name="unknown_album">Album sconosciuto</string>
+    <string name="width">Larghezza</string>
+    <string name="colors">Colori</string>
+    <string name="grant_permission">Dai l\'accesso alle notifiche</string>
+    <string name="notification_permission">L\'accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l\'app dopo aver dato il permesso.</string>
+    <string name="rounded_corners">Angoli arrotondati</string>
+    <string name="max_lines">Linee massime condivisibili</string>
+    <string name="theme">Tema dell\'app</string>
+    <string name="sort_title_asc">Titolo (A-Z)</string>
+    <string name="sort_title_desc">Titolo (Z-A)</string>
+    <string name="sort_artists_asc">Raggruppati per Artista</string>
+    <string name="sort_album_asc">Raggruppati per Album</string>
+    <string name="track">traccia</string>
+    <string name="artist">artista</string>
+    <string name="select_folder">Seleziona una cartella</string>
+    <string name="sort_date_added">Ultimi aggiunti</string>
+    <string name="batch_download">Scarica i testi in lotto</string>
+    <string name="backup_info">Importa o esporta la base di dati dei testi salvati</string>
+    <string name="done">Finito</string>
+    <string name="batch_download_info">Scarica i testi per le tue canzoni salvate localmente in una sola volta.</string>
+    <string name="fetching">Caricamento testi per</string>
+    <string name="share">Condividi</string>
+    <string name="download">Scarica</string>
+    <string name="backup">Backup</string>
+</resources>

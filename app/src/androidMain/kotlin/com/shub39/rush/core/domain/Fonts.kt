@@ -1,20 +1,30 @@
 package com.shub39.rush.core.domain
 
-import androidx.annotation.FontRes
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.FontResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.dm_sans
+import rush.app.generated.resources.figtree
+import rush.app.generated.resources.inter
+import rush.app.generated.resources.jost
+import rush.app.generated.resources.manrope
+import rush.app.generated.resources.montserrat
+import rush.app.generated.resources.open_sans
+import rush.app.generated.resources.outfit
+import rush.app.generated.resources.poppins_regular
+import rush.app.generated.resources.quicksand
 
 enum class Fonts(
     val fullName: String,
-    @FontRes val fontId: Int
+    val font: FontResource
 ) {
-    POPPINS("Poppins", R.font.poppins_regular),
-    DM_SANS("DM Sans", R.font.dm_sans),
-    FIGTREE("Figtree", R.font.figtree),
-    INTER("Inter", R.font.inter),
-    MANROPE("Manrope", R.font.manrope),
-    MONTSERRAT("Montserrat", R.font.montserrat),
-    OPEN_SANS("Open Sans", R.font.open_sans),
-    OUTFIT("Outfit", R.font.outfit),
-    QUICKSAND("Quicksand", R.font.quicksand),
-    JOSH("Jost", R.font.jost)
+    POPPINS("Poppins", Res.font.poppins_regular),
+    DM_SANS("DM Sans", Res.font.dm_sans),
+    FIGTREE("Figtree", Res.font.figtree),
+    INTER("Inter", Res.font.inter),
+    MANROPE("Manrope", Res.font.manrope),
+    MONTSERRAT("Montserrat", Res.font.montserrat),
+    OPEN_SANS("Open Sans", Res.font.open_sans),
+    OUTFIT("Outfit", Res.font.outfit),
+    QUICKSAND("Quicksand", Res.font.quicksand),
+    JOSH("Jost", Res.font.jost)
 }

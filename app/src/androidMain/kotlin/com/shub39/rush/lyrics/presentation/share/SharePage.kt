@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -73,6 +72,7 @@ import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import org.jetbrains.compose.resources.Font
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -431,7 +431,7 @@ fun SharePage(
                     labelProvider = {
                         Text(
                             text = it.fullName,
-                            fontFamily = FontFamily(Font(it.fontId))
+                            fontFamily = FontFamily(Font(it.font))
                         )
                     }
                 )
