@@ -68,7 +68,7 @@ import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Check
+import compose.icons.fontawesomeicons.solid.Download
 import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Image
 import compose.icons.fontawesomeicons.solid.Share
@@ -265,8 +265,8 @@ fun SharePage(
                     shape = MaterialTheme.shapes.extraLarge
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Check,
-                        contentDescription = "Done",
+                        imageVector = FontAwesomeIcons.Solid.Download,
+                        contentDescription = "Save",
                         modifier = Modifier.size(24.dp)
                     )
                 }
