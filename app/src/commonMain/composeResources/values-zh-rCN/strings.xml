@@ -3,7 +3,7 @@
     <string name="search">搜索歌词</string>
     <string name="saved">已保存</string>
     <string name="settings">设置</string>
-    <string name="empty">还没有内容…</string>
+    <string name="empty">尚无内容</string>
     <string name="share">分享</string>
     <string name="vibrant_colors">使用鲜艳的颜色</string>
     <string name="save">保存更改</string>
@@ -98,4 +98,26 @@
     <string name="image">图片</string>
     <string name="hypnotic">催眠</string>
     <string name="letter_spacing">字距</string>
+    <string name="look_and_feel_info">以各种方式自定义应用程序</string>
+    <string name="default_">默认</string>
+    <string name="use_system_theme_desc">使用与系统相同的主题</string>
+    <string name="fullscreen_desc">在歌词页面隐藏系统栏</string>
+    <string name="restored">歌曲已恢复</string>
+    <string name="export_info">将歌曲导出到Downloads/Rush</string>
+    <string name="restore_info">从选定的导出文件恢复</string>
+    <string name="dark_theme">使用暗黑主题</string>
+    <string name="amoled">Amoled调色板</string>
+    <string name="amoled_desc">在AMOLED显示屏上提供最佳体验</string>
+    <string name="material_theme_desc">基于壁纸的主题</string>
+    <string name="loading_genius">正在加载Genius歌词</string>
+    <string name="text_alignment">对齐方式</string>
+    <string name="fullscreen">全屏视图</string>
+    <string name="customisations">自定义歌词</string>
+    <string name="vertical">垂直</string>
+    <string name="quote">引用</string>
+    <string name="couplet">对句</string>
+    <string name="restoring">正在恢复歌曲</string>
+    <string name="rush_mode_desc">搜索通知中的当前播放歌曲并获取相应歌词。使歌词随音乐播放器同步更改。</string>
+    <string name="font">选择应用程序字体</string>
+    <string name="card_font">卡片字体</string>
 </resources>
