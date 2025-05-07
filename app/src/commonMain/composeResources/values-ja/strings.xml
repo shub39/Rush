@@ -3,7 +3,7 @@
     <string name="search">歌詞を見つける</string>
     <string name="saved">保存済み</string>
     <string name="settings">設定</string>
-    <string name="empty">何もありません…</string>
+    <string name="empty">何もありません</string>
     <string name="save">変更内容を保存</string>
     <string name="delete_confirmation">保存した歌詞を全て削除してもよろしいですか？</string>
     <string name="no_lyrics">歌詞を取得出来ませんでした</string>
@@ -23,4 +23,9 @@
     <string name="sort_title_desc">タイトル (Z-A)</string>
     <string name="sort_artists_asc">アーティスト別にグループ化</string>
     <string name="sort_album_asc">アルバム別にグループ化</string>
+    <string name="download">ダウンロード</string>
+    <string name="unknown_error">エラーが発生しました</string>
+    <string name="error">エラーが発生しました……</string>
+    <string name="source">ソース</string>
+    <string name="spotify">Spotify</string>
 </resources>
