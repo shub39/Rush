@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
+import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -13,6 +14,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.room)
+    alias(libs.plugins.hotreload)
 }
 
 val appName = "Rush"
@@ -122,6 +124,8 @@ kotlin {
     }
 
     sourceSets {
+        val desktopMain by getting
+
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(project.dependencies.platform(libs.androidx.compose.bom))
@@ -150,6 +154,17 @@ kotlin {
             implementation(libs.composeIcons.fontAwesome)
             implementation(libs.zoomable)
         }
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+        }
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+        }
         dependencies {
             annotationProcessor(libs.androidx.room.room.compiler)
             ksp(libs.androidx.room.room.compiler)
@@ -171,7 +186,7 @@ java {
 
 compose.desktop {
     application {
-        mainClass = "com.shub39.portfolio.MainKt"
+        mainClass = "com.shub39.rush.MainKt"
     }
 }
 
@@ -179,13 +194,6 @@ composeCompiler {
     featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
 
-tasks.register<Copy>("copyWasmArtifacts") {
-    dependsOn("wasmJsBrowserDistribution")
-
-    from(layout.buildDirectory.dir("dist/wasmJs/productionExecutable"))
-    into(layout.projectDirectory.dir("site"))
+tasks.register<ComposeHotRun>("runHot") {
+    mainClass.set("com.shub39.rush.MainKt")
 }
-
-//tasks.register<ComposeHotRun>("runHot") {
-//    mainClass.set("com.shub39.portfolio.MainKt")
-//}
