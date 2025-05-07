@@ -1,10 +1,18 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.room)
 }
 
 val appName = "Rush"
@@ -70,13 +78,6 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
     buildFeatures {
         compose = true
     }
@@ -94,41 +95,72 @@ android {
     }
 }
 
+kotlin {
+    targets.all {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
+
+    jvm("desktop")
+
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
+            implementation(libs.androidx.ui)
+            implementation(libs.androidx.ui.graphics)
+            implementation(libs.androidx.ui.tooling.preview)
+            implementation(libs.androidx.ui.tooling)
+            implementation(libs.datetime)
+            implementation(libs.androidx.material3)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.palette)
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.jetbrains.compose.navigation)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.landscapist.coil)
+            implementation(libs.landscapist.placeholder)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.datastore.preferences.core)
+            implementation(libs.sqlite.bundled)
+            implementation(libs.colorpicker.compose)
+            implementation(libs.ksoup)
+            implementation(libs.materialKolor)
+            implementation(libs.bundles.ktor)
+            implementation(libs.hypnoticcanvas)
+            implementation(libs.aboutLibraries)
+            implementation(libs.composeIcons.fontAwesome)
+            implementation(libs.zoomable)
+        }
+        dependencies {
+            annotationProcessor(libs.androidx.room.room.compiler)
+            ksp(libs.androidx.room.room.compiler)
+            testImplementation(libs.junit)
+        }
+    }
+}
+
 aboutLibraries {
     // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
     export.excludeFields.add("generated")
-}
-
-dependencies {
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.ui.tooling)
-    implementation(libs.datetime)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.palette)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.jetbrains.compose.navigation)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.landscapist.coil)
-    implementation(libs.landscapist.placeholder)
-    implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.room.compiler)
-    ksp(libs.androidx.room.room.compiler)
-    implementation(libs.androidx.datastore.preferences.core)
-    implementation(libs.sqlite.bundled)
-    implementation(libs.colorpicker.compose)
-    implementation(libs.ksoup)
-    implementation(libs.materialKolor)
-    implementation(libs.bundles.ktor)
-    implementation(libs.hypnoticcanvas)
-    implementation(libs.aboutLibraries)
-    implementation(libs.composeIcons.fontAwesome)
-    testImplementation(libs.junit)
-    implementation(libs.zoomable)
 }
 
 java {
@@ -136,3 +168,24 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
+
+compose.desktop {
+    application {
+        mainClass = "com.shub39.portfolio.MainKt"
+    }
+}
+
+composeCompiler {
+    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
+}
+
+tasks.register<Copy>("copyWasmArtifacts") {
+    dependsOn("wasmJsBrowserDistribution")
+
+    from(layout.buildDirectory.dir("dist/wasmJs/productionExecutable"))
+    into(layout.projectDirectory.dir("site"))
+}
+
+//tasks.register<ComposeHotRun>("runHot") {
+//    mainClass.set("com.shub39.portfolio.MainKt")
+//}
