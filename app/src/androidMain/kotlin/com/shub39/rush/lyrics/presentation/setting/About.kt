@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -45,6 +44,10 @@ import compose.icons.fontawesomeicons.brands.Github
 import compose.icons.fontawesomeicons.brands.Twitter
 import compose.icons.fontawesomeicons.solid.Coffee
 import compose.icons.fontawesomeicons.solid.Language
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.about
+import rush.app.generated.resources.about_libraries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +61,7 @@ fun About(
         modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.about)) }
+                title = { Text(stringResource(Res.string.about)) }
             )
         }
     ) { paddingValues ->
@@ -95,7 +98,7 @@ fun About(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = stringResource(R.string.app_name),
+                            text = "Rush",
                             style = MaterialTheme.typography.titleMedium
                         )
 
@@ -190,7 +193,7 @@ fun About(
             // navigate to about libraries
             item {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.about_libraries)) },
+                    headlineContent = { Text(text = stringResource(Res.string.about_libraries)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { navigator(Route.AboutLibrariesPage) }

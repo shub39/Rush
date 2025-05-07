@@ -1,10 +1,13 @@
 package com.shub39.rush.core.domain
 
-import androidx.annotation.StringRes
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.StringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.dark
+import rush.app.generated.resources.light
+import rush.app.generated.resources.system
 
-enum class AppTheme(@StringRes val fullName: Int) {
-    SYSTEM(R.string.system),
-    LIGHT(R.string.light),
-    DARK(R.string.dark)
+enum class AppTheme(val stringRes: StringResource) {
+    SYSTEM(Res.string.system),
+    LIGHT(Res.string.light),
+    DARK(Res.string.dark)
 }

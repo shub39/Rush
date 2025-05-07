@@ -60,7 +60,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,7 +67,6 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
-import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
@@ -80,6 +78,18 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.FolderOpen
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.amoled
+import rush.app.generated.resources.amoled_desc
+import rush.app.generated.resources.font
+import rush.app.generated.resources.look_and_feel
+import rush.app.generated.resources.material_theme
+import rush.app.generated.resources.material_theme_desc
+import rush.app.generated.resources.palette_style
+import rush.app.generated.resources.seed_color
+import rush.app.generated.resources.seed_color_desc
+import rush.app.generated.resources.select_app_theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,7 +107,7 @@ fun LookAndFeel(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.look_and_feel)
+                        text = stringResource(Res.string.look_and_feel)
                     )
                 }
             )
@@ -112,7 +122,7 @@ fun LookAndFeel(
             item {
                 ListItem(
                     headlineContent = {
-                        Text(text = stringResource(R.string.font))
+                        Text(text = stringResource(Res.string.font))
                     },
                     supportingContent = {
                         Text(text = state.theme.fonts.fullName)
@@ -137,12 +147,12 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.select_app_theme)
+                            text = stringResource(Res.string.select_app_theme)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(state.theme.appTheme.fullName)
+                            text = stringResource(state.theme.appTheme.stringRes)
                         )
                     },
                     trailingContent = {
@@ -163,12 +173,12 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.amoled)
+                            text = stringResource(Res.string.amoled)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(R.string.amoled_desc)
+                            text = stringResource(Res.string.amoled_desc)
                         )
                     },
                     trailingContent = {
@@ -190,12 +200,12 @@ fun LookAndFeel(
                     ListItem(
                         headlineContent = {
                             Text(
-                                text = stringResource(R.string.material_theme)
+                                text = stringResource(Res.string.material_theme)
                             )
                         },
                         supportingContent = {
                             Text(
-                                text = stringResource(R.string.material_theme_desc)
+                                text = stringResource(Res.string.material_theme_desc)
                             )
                         },
                         trailingContent = {
@@ -217,12 +227,12 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.seed_color)
+                            text = stringResource(Res.string.seed_color)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(R.string.seed_color_desc)
+                            text = stringResource(Res.string.seed_color_desc)
                         )
                     },
                     trailingContent = {
@@ -248,7 +258,7 @@ fun LookAndFeel(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.palette_style)
+                            text = stringResource(Res.string.palette_style)
                         )
                     },
                     supportingContent = {
@@ -340,7 +350,7 @@ fun LookAndFeel(
                         )
 
                         Text(
-                            text = stringResource(appTheme.fullName)
+                            text = stringResource(appTheme.stringRes)
                         )
                     }
                 }

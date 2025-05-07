@@ -10,13 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.mikepenz.aboutlibraries.ui.compose.libraryColors
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.about_libraries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +26,7 @@ fun AboutLibraries() = PageFill {
         modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.about_libraries)) }
+                title = { Text(stringResource(Res.string.about_libraries)) }
             )
         }
     ) { padding ->

@@ -16,13 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.domain.Song
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.downloaded
 
 @Composable
 fun GroupedCard(
@@ -60,7 +61,7 @@ fun GroupedCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = map.value.size.toString() + " " + stringResource(id = R.string.downloaded),
+                    text = map.value.size.toString() + " " + stringResource(Res.string.downloaded),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

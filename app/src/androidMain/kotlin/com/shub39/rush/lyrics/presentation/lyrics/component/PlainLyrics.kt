@@ -33,7 +33,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +45,12 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.updateSelectedLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.loading_genius
+import rush.app.generated.resources.no_lyrics
+import rush.app.generated.resources.retry
+import rush.app.generated.resources.source
 
 @Composable
 fun PlainLyrics(
@@ -156,7 +161,7 @@ fun PlainLyrics(
                                         modifier = Modifier.padding(16.dp)
                                     )
 
-                                    Text(stringResource(R.string.loading_genius))
+                                    Text(stringResource(Res.string.loading_genius))
                                 } else if (it.second != null) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.round_warning_24),
@@ -180,7 +185,7 @@ fun PlainLyrics(
                                             containerColor = Color.Transparent
                                         )
                                     ) {
-                                        Text(stringResource(R.string.retry))
+                                        Text(stringResource(Res.string.retry))
                                     }
                                 }
                             }
@@ -204,7 +209,7 @@ fun PlainLyrics(
 
                             Spacer(modifier = Modifier.padding(10.dp))
 
-                            Text(text = stringResource(id = R.string.no_lyrics))
+                            Text(text = stringResource(Res.string.no_lyrics))
                         }
                     }
                 }
@@ -243,7 +248,7 @@ fun PlainLyrics(
                     )
                 ) {
                     Text(
-                        text = stringResource(R.string.source)
+                        text = stringResource(Res.string.source)
                     )
                 }
 

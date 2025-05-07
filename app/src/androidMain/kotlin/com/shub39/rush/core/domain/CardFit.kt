@@ -1,11 +1,13 @@
 package com.shub39.rush.core.domain
 
-import androidx.annotation.StringRes
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.StringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.fit
+import rush.app.generated.resources.standard
 
 enum class CardFit(
-    @StringRes val title: Int
+    val stringRes: StringResource
 ) {
-    FIT(R.string.fit),
-    STANDARD(R.string.standard)
+    FIT(Res.string.fit),
+    STANDARD(Res.string.standard)
 }

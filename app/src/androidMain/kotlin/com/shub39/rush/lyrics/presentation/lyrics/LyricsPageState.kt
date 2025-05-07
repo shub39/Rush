@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -11,6 +10,7 @@ import com.shub39.rush.core.domain.Error
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric
+import org.jetbrains.compose.resources.StringResource
 
 @Immutable
 data class LyricsPageState(
@@ -18,7 +18,7 @@ data class LyricsPageState(
     val fetching: Pair<Boolean, String> = Pair(false, ""),
     val searching: Pair<Boolean, String> = Pair(false, ""),
     val scraping: Pair<Boolean, Error?> = Pair(false, null),
-    @StringRes val error: Int? = null,
+    val error: StringResource? = null,
     val autoChange: Boolean = false,
     val textAlign: TextAlign = TextAlign.Center,
     val fontSize: Float = 28f,
@@ -66,5 +66,5 @@ data class PlayingSong(
 data class LrcCorrect(
     val searchResults: List<LrcLibSong> = emptyList(),
     val searching: Boolean = false,
-    @StringRes val error: Int? = null
+    val error: StringResource? = null
 )

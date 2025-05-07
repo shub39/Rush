@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -36,6 +35,14 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreState
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.backup
+import rush.app.generated.resources.choose_file
+import rush.app.generated.resources.export
+import rush.app.generated.resources.export_info
+import rush.app.generated.resources.restore
+import rush.app.generated.resources.restore_info
 
 // backup page
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +65,7 @@ fun Backup(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.backup))
+                    Text(stringResource(Res.string.backup))
                 }
             )
         }
@@ -69,8 +76,8 @@ fun Backup(
                 .fillMaxSize()
         ) {
             ListItem(
-                headlineContent = { Text(stringResource(R.string.export)) },
-                supportingContent = { Text(stringResource(R.string.export_info)) },
+                headlineContent = { Text(stringResource(Res.string.export)) },
+                supportingContent = { Text(stringResource(Res.string.export_info)) },
                 trailingContent = {
                     FilledTonalIconButton(
                         onClick = { action(SettingsPageAction.OnExportSongs) },
@@ -103,15 +110,15 @@ fun Backup(
             )
 
             ListItem(
-                headlineContent = { Text(stringResource(R.string.restore)) },
-                supportingContent = { Text(stringResource(R.string.restore_info)) },
+                headlineContent = { Text(stringResource(Res.string.restore)) },
+                supportingContent = { Text(stringResource(Res.string.restore_info)) },
                 trailingContent = {
                     Row {
                         if (uri == null) {
                             TextButton(
                                 onClick = { launcher.launch(arrayOf("application/json")) }
                             ) {
-                                Text(text = stringResource(R.string.choose_file))
+                                Text(text = stringResource(Res.string.choose_file))
                             }
                         }
 

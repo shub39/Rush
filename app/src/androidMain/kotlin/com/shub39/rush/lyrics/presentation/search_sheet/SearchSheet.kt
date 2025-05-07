@@ -37,11 +37,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.search
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,7 +123,7 @@ fun SearchSheet(
                 },
                 onValueChange = { action(SearchSheetAction.OnQueryChange(it)) },
                 shape = MaterialTheme.shapes.extraLarge,
-                label = { Text(stringResource(id = R.string.search)) },
+                label = { Text(stringResource(Res.string.search)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

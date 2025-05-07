@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,6 +33,11 @@ import com.shub39.rush.R
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.artist
+import rush.app.generated.resources.correct_lyrics
+import rush.app.generated.resources.track
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +59,7 @@ fun LrcCorrectDialog(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = stringResource(R.string.correct_lyrics),
+                text = stringResource(Res.string.correct_lyrics),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -68,7 +72,7 @@ fun LrcCorrectDialog(
                     onValueChange = { track = it },
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
-                    label = { Text(text = stringResource(R.string.track)) }
+                    label = { Text(text = stringResource(Res.string.track)) }
                 )
 
                 OutlinedTextField(
@@ -76,7 +80,7 @@ fun LrcCorrectDialog(
                     onValueChange = { artist = it },
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
-                    label = { Text(text = stringResource(R.string.artist)) }
+                    label = { Text(text = stringResource(Res.string.artist)) }
                 )
             }
 

@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -40,6 +39,20 @@ import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.about
+import rush.app.generated.resources.backup
+import rush.app.generated.resources.backup_info
+import rush.app.generated.resources.batch_download
+import rush.app.generated.resources.batch_download_info
+import rush.app.generated.resources.delete_all
+import rush.app.generated.resources.delete_confirmation
+import rush.app.generated.resources.grant_permission
+import rush.app.generated.resources.look_and_feel
+import rush.app.generated.resources.look_and_feel_info
+import rush.app.generated.resources.notification_permission
+import rush.app.generated.resources.settings
 
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +72,7 @@ fun SettingPage(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.settings))
+                    Text(stringResource(Res.string.settings))
                 }
             )
         }
@@ -72,8 +85,8 @@ fun SettingPage(
             // navigate to look and feel
             item {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.look_and_feel)) },
-                    supportingContent = { Text(text = stringResource(R.string.look_and_feel_info)) },
+                    headlineContent = { Text(text = stringResource(Res.string.look_and_feel)) },
+                    supportingContent = { Text(text = stringResource(Res.string.look_and_feel_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { navigator(Route.LookAndFeelPage) },
@@ -90,7 +103,7 @@ fun SettingPage(
             // nuke everything
             item {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(id = R.string.delete_all)) },
+                    headlineContent = { Text(text = stringResource(Res.string.delete_all)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { deleteConfirmationDialog = true },
@@ -108,8 +121,8 @@ fun SettingPage(
             // navigate to batch downloader
             item {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(id = R.string.batch_download)) },
-                    supportingContent = { Text(text = stringResource(id = R.string.batch_download_info)) },
+                    headlineContent = { Text(text = stringResource(Res.string.batch_download)) },
+                    supportingContent = { Text(text = stringResource(Res.string.batch_download_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { navigator(Route.BatchDownloaderPage) },
@@ -126,8 +139,8 @@ fun SettingPage(
             // navigate to backup
             item {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.backup)) },
-                    supportingContent = { Text(text = stringResource(R.string.backup_info)) },
+                    headlineContent = { Text(text = stringResource(Res.string.backup)) },
+                    supportingContent = { Text(text = stringResource(Res.string.backup_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { navigator(Route.BackupPage) }
@@ -147,8 +160,8 @@ fun SettingPage(
                     val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 
                     ListItem(
-                        headlineContent = { Text(text = stringResource(id = R.string.grant_permission)) },
-                        supportingContent = { Text(text = stringResource(id = R.string.notification_permission)) },
+                        headlineContent = { Text(text = stringResource(Res.string.grant_permission)) },
+                        supportingContent = { Text(text = stringResource(Res.string.notification_permission)) },
                         trailingContent = {
                             FilledTonalIconButton(
                                 onClick = { context.startActivity(intent) }
@@ -166,7 +179,7 @@ fun SettingPage(
             // navigate to about app
             item {
                 ListItem(
-                    headlineContent = { Text(stringResource(R.string.about)) },
+                    headlineContent = { Text(stringResource(Res.string.about)) },
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { navigator(Route.AboutPage) }
@@ -203,14 +216,14 @@ fun SettingPage(
                 Spacer(modifier = Modifier.padding(8.dp))
 
                 Text(
-                    text = stringResource(R.string.delete_all),
+                    text = stringResource(Res.string.delete_all),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = stringResource(id = R.string.delete_confirmation),
+                    text = stringResource(Res.string.delete_confirmation),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -226,7 +239,7 @@ fun SettingPage(
                     shape = MaterialTheme.shapes.extraLarge,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = stringResource(id = R.string.delete_all))
+                    Text(text = stringResource(Res.string.delete_all))
                 }
             }
         }

@@ -16,14 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.AlphaTile
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.done
 
 // Color picker used app wide
 @Composable
@@ -76,7 +77,7 @@ fun ColorPickerDialog(
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.done),
+                    text = stringResource(Res.string.done),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )

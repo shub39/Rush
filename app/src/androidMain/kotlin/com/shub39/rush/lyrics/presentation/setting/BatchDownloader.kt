@@ -40,11 +40,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.lyrics.presentation.setting.component.DownloaderCard
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.batch_download
+import rush.app.generated.resources.no_audio_files
+import rush.app.generated.resources.no_folder_selected
+import rush.app.generated.resources.select_folder
 
 // batch downloader page
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +89,7 @@ fun BatchDownloader(
         modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.batch_download)) }
+                title = { Text(stringResource(Res.string.batch_download)) }
             )
         }
     ) { innerPadding ->
@@ -94,7 +99,7 @@ fun BatchDownloader(
                 .fillMaxSize()
         ) {
             ListItem(
-                headlineContent = { Text(stringResource(R.string.select_folder)) },
+                headlineContent = { Text(stringResource(Res.string.select_folder)) },
                 trailingContent = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         FilledTonalIconButton(
@@ -161,9 +166,9 @@ fun BatchDownloader(
                     contentAlignment = Alignment.Center
                 ) {
                     if (uri == null) {
-                        Text(stringResource(R.string.no_folder_selected))
+                        Text(stringResource(Res.string.no_folder_selected))
                     } else if (state.batchDownload.audioFiles.isEmpty()) {
-                        Text(stringResource(R.string.no_audio_files))
+                        Text(stringResource(Res.string.no_audio_files))
                     } else if (state.batchDownload.isLoadingFiles) {
                         CircularProgressIndicator(
                             strokeCap = StrokeCap.Round

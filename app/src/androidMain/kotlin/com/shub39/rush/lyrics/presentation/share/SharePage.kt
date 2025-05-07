@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -73,6 +72,14 @@ import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.card_color
+import rush.app.generated.resources.card_corners
+import rush.app.generated.resources.card_font
+import rush.app.generated.resources.card_size
+import rush.app.generated.resources.card_theme
+import rush.app.generated.resources.save
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -349,7 +356,7 @@ fun SharePage(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(text = stringResource(id = R.string.save))
+                Text(text = stringResource(Res.string.save))
             }
         }
     }
@@ -366,7 +373,7 @@ fun SharePage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ListSelect(
-                    title = stringResource(R.string.card_theme),
+                    title = stringResource(Res.string.card_theme),
                     options = CardTheme.entries.toList(),
                     selected = state.cardTheme,
                     onSelectedChange = {
@@ -374,13 +381,13 @@ fun SharePage(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.title)
+                            text = stringResource(it.stringRes)
                         )
                     }
                 )
 
                 ListSelect(
-                    title = stringResource(R.string.card_color),
+                    title = stringResource(Res.string.card_color),
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
                     onSelectedChange = {
@@ -388,13 +395,13 @@ fun SharePage(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.title)
+                            text = stringResource(it.stringRes)
                         )
                     }
                 )
 
                 ListSelect(
-                    title = stringResource(R.string.card_size),
+                    title = stringResource(Res.string.card_size),
                     options = CardFit.entries.toList(),
                     selected = state.cardFit,
                     onSelectedChange = {
@@ -402,13 +409,13 @@ fun SharePage(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.title)
+                            text = stringResource(it.stringRes)
                         )
                     }
                 )
 
                 ListSelect(
-                    title = stringResource(R.string.card_corners),
+                    title = stringResource(Res.string.card_corners),
                     options = CornerRadius.entries.toList(),
                     selected = state.cardRoundness,
                     onSelectedChange = {
@@ -416,13 +423,13 @@ fun SharePage(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.title)
+                            text = stringResource(it.stringRes)
                         )
                     }
                 )
 
                 ListSelect(
-                    title = stringResource(R.string.card_font),
+                    title = stringResource(Res.string.card_font),
                     options = Fonts.entries.toList(),
                     selected = state.cardFont,
                     onSelectedChange = {

@@ -39,7 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -48,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Fonts
@@ -57,6 +55,25 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.center
+import rush.app.generated.resources.colors
+import rush.app.generated.resources.customisations
+import rush.app.generated.resources.end
+import rush.app.generated.resources.font_size
+import rush.app.generated.resources.fullscreen
+import rush.app.generated.resources.fullscreen_desc
+import rush.app.generated.resources.hypnotic_canvas
+import rush.app.generated.resources.hypnotic_canvas_desc
+import rush.app.generated.resources.letter_spacing
+import rush.app.generated.resources.line_height
+import rush.app.generated.resources.max_lines
+import rush.app.generated.resources.mesh_speed
+import rush.app.generated.resources.start
+import rush.app.generated.resources.text_alignment
+import rush.app.generated.resources.use_extracted_colors
+import rush.app.generated.resources.vibrant_colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +93,7 @@ fun LyricsCustomisationsPage(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.customisations))
+                    Text(stringResource(Res.string.customisations))
                 },
                 actions = {
                     IconButton(
@@ -157,7 +174,7 @@ fun LyricsCustomisationsPage(
 
             item {
                 SettingSlider(
-                    title = stringResource(R.string.text_alignment),
+                    title = stringResource(Res.string.text_alignment),
                     value = when (state.textAlign) {
                         TextAlign.Center -> 1f
                         TextAlign.End -> 2f
@@ -173,9 +190,9 @@ fun LyricsCustomisationsPage(
                         ))
                     },
                     valueToShow = when (state.textAlign) {
-                        TextAlign.Center -> stringResource(R.string.center)
-                        TextAlign.End -> stringResource(R.string.end)
-                        else -> stringResource(R.string.start)
+                        TextAlign.Center -> stringResource(Res.string.center)
+                        TextAlign.End -> stringResource(Res.string.end)
+                        else -> stringResource(Res.string.start)
                     },
                     steps = 1,
                     valueRange = 0f..2f,
@@ -183,7 +200,7 @@ fun LyricsCustomisationsPage(
                 )
 
                 SettingSlider(
-                    title = stringResource(R.string.font_size),
+                    title = stringResource(Res.string.font_size),
                     value = state.fontSize,
                     steps = 33,
                     valueRange = 16f..50f,
@@ -194,7 +211,7 @@ fun LyricsCustomisationsPage(
                 )
 
                 SettingSlider(
-                    title = stringResource(R.string.line_height),
+                    title = stringResource(Res.string.line_height),
                     value = state.lineHeight,
                     onValueChange = {
                         action(LyricsPageAction.OnLineHeightChange(it))
@@ -205,7 +222,7 @@ fun LyricsCustomisationsPage(
                 )
 
                 SettingSlider(
-                    title = stringResource(R.string.letter_spacing),
+                    title = stringResource(Res.string.letter_spacing),
                     value = state.letterSpacing,
                     onValueChange = {
                         action(LyricsPageAction.OnLetterSpacingChange(it))
@@ -226,12 +243,12 @@ fun LyricsCustomisationsPage(
                         modifier = Modifier.clip(MaterialTheme.shapes.large),
                         headlineContent = {
                             Text(
-                                text = stringResource(R.string.hypnotic_canvas)
+                                text = stringResource(Res.string.hypnotic_canvas)
                             )
                         },
                         supportingContent = {
                             Text(
-                                text = stringResource(R.string.hypnotic_canvas_desc)
+                                text = stringResource(Res.string.hypnotic_canvas_desc)
                             )
                         },
                         trailingContent = {
@@ -243,7 +260,7 @@ fun LyricsCustomisationsPage(
                     )
 
                     SettingSlider(
-                        title = stringResource(R.string.mesh_speed),
+                        title = stringResource(Res.string.mesh_speed),
                         value = state.meshSpeed,
                         valueRange = 0.5f..3f,
                         enabled = state.hypnoticCanvas,
@@ -267,7 +284,7 @@ fun LyricsCustomisationsPage(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.use_extracted_colors)
+                            text = stringResource(Res.string.use_extracted_colors)
                         )
                     },
                     trailingContent = {
@@ -281,7 +298,7 @@ fun LyricsCustomisationsPage(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.vibrant_colors)
+                            text = stringResource(Res.string.vibrant_colors)
                         )
                     },
                     trailingContent = {
@@ -296,7 +313,7 @@ fun LyricsCustomisationsPage(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.colors)
+                            text = stringResource(Res.string.colors)
                         )
                     },
                     trailingContent = {
@@ -347,12 +364,12 @@ fun LyricsCustomisationsPage(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.fullscreen)
+                            text = stringResource(Res.string.fullscreen)
                         )
                     },
                     supportingContent = {
                         Text(
-                            text = stringResource(R.string.fullscreen_desc)
+                            text = stringResource(Res.string.fullscreen_desc)
                         )
                     },
                     trailingContent = {
@@ -366,7 +383,7 @@ fun LyricsCustomisationsPage(
                 )
 
                 SettingSlider(
-                    title = stringResource(id = R.string.max_lines),
+                    title = stringResource(Res.string.max_lines),
                     value = state.maxLines.toFloat(),
                     onValueChange = {
                         action(LyricsPageAction.OnMaxLinesChange(it.toInt()))

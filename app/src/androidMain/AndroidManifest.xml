@@ -40,7 +40,7 @@
             android:enabled="true"
             android:exported="true"
             android:process=":NLS"
-            android:label="@string/notification">
+            android:label="Notification Listener Service">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>

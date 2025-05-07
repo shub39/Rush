@@ -1,12 +1,14 @@
 package com.shub39.rush.core.domain
 
-import androidx.annotation.StringRes
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.StringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.default_
+import rush.app.generated.resources.rounded
 
 // default is a reserved kotlin keyword
 enum class CornerRadius(
-    @StringRes val title: Int
+    val stringRes: StringResource
 ) {
-    DEFAULT(R.string.default_),
-    ROUNDED(R.string.rounded)
+    DEFAULT(Res.string.default_),
+    ROUNDED(Res.string.rounded)
 }

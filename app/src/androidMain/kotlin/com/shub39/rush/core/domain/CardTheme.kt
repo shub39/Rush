@@ -1,15 +1,21 @@
 package com.shub39.rush.core.domain
 
-import androidx.annotation.StringRes
-import com.shub39.rush.R
+import org.jetbrains.compose.resources.StringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.couplet
+import rush.app.generated.resources.hypnotic
+import rush.app.generated.resources.quote
+import rush.app.generated.resources.rushed
+import rush.app.generated.resources.spotify
+import rush.app.generated.resources.vertical
 
 enum class CardTheme(
-    @StringRes val title: Int
+    val stringRes: StringResource
 ) {
-    SPOTIFY(R.string.spotify),
-    RUSHED(R.string.rushed),
-    HYPNOTIC(R.string.hypnotic),
-    VERTICAL(R.string.vertical),
-    QUOTE(R.string.quote),
-    COUPLET(R.string.couplet)
+    SPOTIFY(Res.string.spotify),
+    RUSHED(Res.string.rushed),
+    HYPNOTIC(Res.string.hypnotic),
+    VERTICAL(Res.string.vertical),
+    QUOTE(Res.string.quote),
+    COUPLET(Res.string.couplet)
 }

@@ -38,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -50,6 +49,9 @@ import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
+import org.jetbrains.compose.resources.stringResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.saved
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,7 @@ fun SavedPage(
         modifier = Modifier.widthIn(max = 500.dp),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.saved)) },
+                title = { Text(stringResource(Res.string.saved)) },
                 actions = {
                     IconButton(
                         onClick = { navigator(Route.SettingsGraph) }
@@ -185,7 +187,7 @@ fun SavedPage(
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(sortOrderChips, key = { it.textId }) {
+                    items(sortOrderChips, key = { it.stringRes.key }) {
                         FilterChip(
                             selected = it == state.sortOrder,
                             onClick = {
@@ -193,7 +195,7 @@ fun SavedPage(
                             },
                             label = {
                                 Text(
-                                    text = stringResource(id = it.textId)
+                                    text = stringResource(it.stringRes)
                                 )
                             }
                         )
