@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,17 +34,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shub39.rush.R
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.updateSelectedLines
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ArrowUp
+import compose.icons.fontawesomeicons.solid.Search
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -164,7 +168,7 @@ fun PlainLyrics(
                                     Text(stringResource(Res.string.loading_genius))
                                 } else if (it.second != null) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.round_warning_24),
+                                        imageVector = Icons.Default.Warning,
                                         contentDescription = null,
                                         modifier = Modifier.size(100.dp)
                                     )
@@ -202,7 +206,7 @@ fun PlainLyrics(
                             Spacer(modifier = Modifier.padding(10.dp))
 
                             Icon(
-                                painter = painterResource(id = R.drawable.round_warning_24),
+                                imageVector = Icons.Default.Warning,
                                 contentDescription = null,
                                 modifier = Modifier.size(100.dp)
                             )
@@ -233,8 +237,9 @@ fun PlainLyrics(
                     enabled = if (state.source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_arrow_upward_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.ArrowUp,
+                        contentDescription = "Move To Top",
+                        modifier = Modifier.size(20.dp),
                     )
                 }
 
@@ -256,8 +261,9 @@ fun PlainLyrics(
                     onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_search_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }

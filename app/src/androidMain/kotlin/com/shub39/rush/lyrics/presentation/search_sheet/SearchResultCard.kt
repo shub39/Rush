@@ -14,12 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.domain.SearchResult
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Download
 
 @Composable
 fun SearchResultCard(
@@ -63,9 +64,9 @@ fun SearchResultCard(
 
         if (downloaded) {
             Icon(
-                painter = painterResource(id = R.drawable.round_download_done_24),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.CenterEnd).padding(end =16.dp),
+                imageVector = FontAwesomeIcons.Solid.Download,
+                contentDescription = "Downloaded",
+                modifier = Modifier.size(20.dp).align(Alignment.CenterEnd).padding(end =16.dp),
             )
         }
     }

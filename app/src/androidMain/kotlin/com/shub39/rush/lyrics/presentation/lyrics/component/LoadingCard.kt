@@ -18,14 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Save
+import compose.icons.fontawesomeicons.solid.Search
 
 @Composable
 fun LoadingCard(
@@ -46,7 +45,7 @@ fun LoadingCard(
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = painterResource(R.drawable.round_search_24),
+                imageVector = FontAwesomeIcons.Solid.Search,
                 contentDescription = null,
                 modifier = Modifier.size(150.dp),
                 tint = colors.first

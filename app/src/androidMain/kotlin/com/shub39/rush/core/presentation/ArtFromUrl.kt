@@ -7,15 +7,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import coil.ImageLoader
-import com.shub39.rush.R
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.placeholder.shimmer.Shimmer
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Music
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.rush_transparent
 
 // General Image Composable
 @Composable
@@ -43,11 +47,11 @@ fun ArtFromUrl(
             alignment = Alignment.Center,
             contentScale = contentScale
         ),
-        previewPlaceholder = painterResource(R.drawable.baseline_square_24),
+        previewPlaceholder = painterResource(Res.drawable.rush_transparent),
         failure = {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_landscape_24),
-                contentDescription = null
+                imageVector = FontAwesomeIcons.Solid.Music,
+                contentDescription = "Placeholder"
             )
         }
     )

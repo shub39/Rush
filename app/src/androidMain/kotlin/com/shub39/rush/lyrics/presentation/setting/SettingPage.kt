@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -29,16 +30,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ArrowRight
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.about
@@ -92,8 +94,9 @@ fun SettingPage(
                             onClick = { navigator(Route.LookAndFeelPage) },
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null
+                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
@@ -128,8 +131,9 @@ fun SettingPage(
                             onClick = { navigator(Route.BatchDownloaderPage) },
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null
+                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
@@ -146,8 +150,9 @@ fun SettingPage(
                             onClick = { navigator(Route.BackupPage) }
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null
+                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
@@ -185,9 +190,9 @@ fun SettingPage(
                             onClick = { navigator(Route.AboutPage) }
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
@@ -209,8 +214,9 @@ fun SettingPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.round_warning_24),
-                    contentDescription = null
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Warning",
+                    modifier = Modifier.size(20.dp)
                 )
 
                 Spacer(modifier = Modifier.padding(8.dp))

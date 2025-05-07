@@ -40,14 +40,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
@@ -60,6 +58,10 @@ import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.component.SyncedLyrics
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Pause
+import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
 
 @Composable
@@ -310,11 +312,12 @@ fun LyricsPage(
                 onClick = { MediaListener.pauseOrResume(state.playingSong.speed == 0f) },
             ) {
                 Icon(
-                    painter = if (state.playingSong.speed == 0f) {
-                        painterResource(R.drawable.round_play_arrow_24)
+                    imageVector = if (state.playingSong.speed == 0f) {
+                        FontAwesomeIcons.Solid.Play
                     } else {
-                        painterResource(R.drawable.round_pause_24)
+                        FontAwesomeIcons.Solid.Pause
                     },
+                    modifier = Modifier.size(20.dp),
                     contentDescription = "Pause or Resume"
                 )
             }

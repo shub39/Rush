@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,10 +38,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Search
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
@@ -78,9 +81,9 @@ fun SearchSheet(
                 singleLine = true,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_search_24),
-                        contentDescription = null,
-                        modifier = Modifier.padding(2.dp)
+                        imageVector = FontAwesomeIcons.Solid.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(20.dp).padding(2.dp)
                     )
                 },
                 trailingIcon = {
@@ -94,7 +97,7 @@ fun SearchSheet(
                             exit = fadeOut(animationSpec = tween(200))
                         ) {
                             CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(20.dp),
                                 strokeCap = StrokeCap.Round
                             )
                         }
@@ -114,8 +117,8 @@ fun SearchSheet(
                                 }
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.round_delete_forever_24),
-                                    contentDescription = null
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete"
                                 )
                             }
                         }

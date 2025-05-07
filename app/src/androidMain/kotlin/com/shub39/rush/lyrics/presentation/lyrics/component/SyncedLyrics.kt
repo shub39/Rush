@@ -29,16 +29,17 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
-import com.shub39.rush.R
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.getCurrentLyricIndex
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Music
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -140,8 +141,8 @@ fun SyncedLyrics(
                         )
                     } else {
                         Icon(
-                            painter = painterResource(id = R.drawable.round_music_note_24),
-                            contentDescription = null,
+                            imageVector = FontAwesomeIcons.Solid.Music,
+                            contentDescription = "Instrumental break",
                             tint = cardContent.lighten(2f).copy(alpha = glowAlpha),
                             modifier = Modifier
                                 .padding(6.dp)
@@ -153,8 +154,8 @@ fun SyncedLyrics(
                         )
 
                         Icon(
-                            painter = painterResource(id = R.drawable.round_music_note_24),
-                            contentDescription = null,
+                            imageVector = FontAwesomeIcons.Solid.Music,
+                            contentDescription = "Instrumental break",
                             tint = textColor,
                             modifier = Modifier.size(state.fontSize.dp)
                         )

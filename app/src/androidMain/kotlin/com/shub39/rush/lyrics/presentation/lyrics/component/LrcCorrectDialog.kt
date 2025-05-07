@@ -25,14 +25,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Search
+import compose.icons.fontawesomeicons.solid.SyncAlt
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.artist
@@ -94,13 +96,14 @@ fun LrcCorrectDialog(
             ) {
                 if (!state.lrcCorrect.searching) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_search_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(20.dp)
                     )
                 } else {
                     CircularProgressIndicator(
                         strokeCap = StrokeCap.Round,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -157,8 +160,9 @@ fun LrcCorrectDialog(
 
                             if (it.syncedLyrics != null) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.round_sync_24),
-                                    contentDescription = null
+                                    imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                                    contentDescription = "Synced",
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -26,15 +28,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreState
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Check
+import compose.icons.fontawesomeicons.solid.Play
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.backup
@@ -86,22 +90,24 @@ fun Backup(
                         when (state.exportState) {
                             ExportState.IDLE -> {
                                 Icon(
-                                    painter = painterResource(R.drawable.round_play_arrow_24),
-                                    contentDescription = null
+                                    imageVector = FontAwesomeIcons.Solid.Play,
+                                    contentDescription = "Start Export",
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
                             ExportState.EXPORTING -> {
                                 CircularProgressIndicator(
                                     strokeCap = StrokeCap.Round,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
                             ExportState.EXPORTED -> {
                                 Icon(
-                                    painter = painterResource(R.drawable.round_check_circle_outline_24),
-                                    contentDescription = null
+                                    imageVector = FontAwesomeIcons.Solid.Check,
+                                    contentDescription = "Done",
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -129,29 +135,32 @@ fun Backup(
                                 when (state.restoreState) {
                                     RestoreState.IDLE -> {
                                         Icon(
-                                            painter = painterResource(R.drawable.round_play_arrow_24),
-                                            contentDescription = null
+                                            imageVector = FontAwesomeIcons.Solid.Play,
+                                            contentDescription = "Start Restore",
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
 
                                     RestoreState.RESTORING -> {
                                         CircularProgressIndicator(
                                             strokeCap = StrokeCap.Round,
-                                            modifier = Modifier.size(24.dp)
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
 
                                     RestoreState.RESTORED -> {
                                         Icon(
-                                            painter = painterResource(R.drawable.round_check_circle_outline_24),
-                                            contentDescription = null
+                                            imageVector = FontAwesomeIcons.Solid.Check,
+                                            contentDescription = "Restored",
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
 
                                     RestoreState.FAILURE -> {
                                         Icon(
-                                            painter = painterResource(R.drawable.round_disabled_by_default_24),
-                                            contentDescription = null
+                                            imageVector = Icons.Default.Warning,
+                                            contentDescription = "Error",
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
                                 }

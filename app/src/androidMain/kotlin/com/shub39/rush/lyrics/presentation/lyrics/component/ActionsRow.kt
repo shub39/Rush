@@ -15,15 +15,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.data.SongDetails
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Copy
+import compose.icons.fontawesomeicons.solid.Edit
+import compose.icons.fontawesomeicons.solid.Palette
+import compose.icons.fontawesomeicons.solid.QuoteLeft
+import compose.icons.fontawesomeicons.solid.Share
+import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.genius
+import rush.app.generated.resources.rush_transparent
 
 @Composable
 fun ActionsRow(
@@ -46,8 +56,9 @@ fun ActionsRow(
             onClick = onEdit
         ) {
             Icon(
-                painter = painterResource(R.drawable.round_palette_24),
-                contentDescription = "Edit"
+                imageVector = FontAwesomeIcons.Solid.Palette,
+                contentDescription = "Edit",
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -84,8 +95,9 @@ fun ActionsRow(
             }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.round_content_copy_24),
-                contentDescription = null
+                imageVector = FontAwesomeIcons.Solid.Copy,
+                contentDescription = "Copy",
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -103,13 +115,14 @@ fun ActionsRow(
             }) {
                 if (state.source == Sources.Genius) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_lyrics_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.QuoteLeft,
+                        contentDescription = "LrcLib",
+                        modifier = Modifier.size(20.dp)
                     )
                 } else {
                     Icon(
-                        painter = painterResource(id = R.drawable.genius),
-                        contentDescription = null
+                        painter = painterResource(Res.drawable.genius),
+                        contentDescription = "Genius"
                     )
                 }
             }
@@ -132,8 +145,9 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.round_edit_note_24),
-                    contentDescription = null
+                    imageVector = FontAwesomeIcons.Solid.Edit,
+                    contentDescription = "Correct Lyrics",
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -158,8 +172,9 @@ fun ActionsRow(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_sync_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                        contentDescription = "Synced Lyrics",
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -178,8 +193,8 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.rush_transparent),
-                    contentDescription = null,
+                    painter = painterResource(Res.drawable.rush_transparent),
+                    contentDescription = "Rush Mode",
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -202,8 +217,9 @@ fun ActionsRow(
                     onShare()
                 }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_share_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 

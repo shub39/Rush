@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -37,10 +39,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.PageFill
@@ -49,8 +49,13 @@ import com.shub39.rush.lyrics.presentation.lyrics.SongUi
 import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Search
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
+import rush.app.generated.resources.rush_transparent
 import rush.app.generated.resources.saved
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,8 +80,8 @@ fun SavedPage(
                         onClick = { navigator(Route.SettingsGraph) }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.round_settings_24),
-                            contentDescription = null
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
                         )
                     }
                 }
@@ -149,8 +154,8 @@ fun SavedPage(
                             }
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.rush_transparent),
-                                contentDescription = null,
+                                painter = painterResource(Res.drawable.rush_transparent),
+                                contentDescription = "App Icon",
                                 modifier = Modifier.size(28.dp)
                             )
                         }
@@ -162,8 +167,9 @@ fun SavedPage(
                         onClick = { action(SavedPageAction.OnToggleSearchSheet) }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.round_search_24),
-                            contentDescription = null
+                            imageVector = FontAwesomeIcons.Solid.Search,
+                            contentDescription = "Search",
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

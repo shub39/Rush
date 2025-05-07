@@ -34,16 +34,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.data.listener.NotificationListener
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import rush.app.generated.resources.Res
+import rush.app.generated.resources.rush_transparent
 
 @Composable
 fun OnboardingDialog(
@@ -84,7 +88,7 @@ fun OnboardingDialog(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.rush_transparent),
+                            painter = painterResource(Res.drawable.rush_transparent),
                             contentDescription = "Rush Icon",
                             modifier = Modifier.size(120.dp),
                             tint = MaterialTheme.colorScheme.secondary
@@ -165,7 +169,7 @@ fun OnboardingDialog(
                                 },
                                 leadingContent = {
                                     Icon(
-                                        painter = painterResource(R.drawable.rush_transparent),
+                                        painter = painterResource(Res.drawable.rush_transparent),
                                         contentDescription = "Rush Icon",
                                         modifier = Modifier.size(48.dp),
                                         tint = MaterialTheme.colorScheme.secondary
@@ -189,7 +193,7 @@ fun OnboardingDialog(
                                 },
                                 leadingContent = {
                                     Icon(
-                                        painter = painterResource(R.drawable.round_sync_24),
+                                        imageVector = FontAwesomeIcons.Solid.SyncAlt,
                                         contentDescription = "Synced",
                                         modifier = Modifier.size(48.dp),
                                         tint = MaterialTheme.colorScheme.secondary

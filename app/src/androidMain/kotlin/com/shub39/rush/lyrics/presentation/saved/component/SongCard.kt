@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,11 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.domain.Song
 
@@ -72,8 +72,8 @@ fun SongCard(
         Row {
             IconButton(onClick = { onDelete() }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.round_delete_forever_24),
-                    contentDescription = null,
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete"
                 )
             }
             Spacer(modifier = Modifier.width(15.dp))

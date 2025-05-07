@@ -1,6 +1,9 @@
 package com.shub39.rush.lyrics.presentation.setting.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
@@ -9,9 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.shub39.rush.R
+import androidx.compose.ui.unit.dp
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.CheckCircle
+import compose.icons.fontawesomeicons.solid.SyncAlt
 
 @Composable
 fun DownloaderCard(
@@ -38,18 +44,21 @@ fun DownloaderCard(
         trailingContent = {
             when (state) {
                 true -> Icon(
-                    painter = painterResource(R.drawable.round_check_circle_outline_24),
-                    contentDescription = null
+                    imageVector = FontAwesomeIcons.Solid.CheckCircle,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(20.dp)
                 )
 
                 null -> Icon(
-                    painter = painterResource(R.drawable.round_sync_24),
-                    contentDescription = null
+                    imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                    contentDescription = "Sync",
+                    modifier = Modifier.size(20.dp)
                 )
 
                 else -> Icon(
-                    painter = painterResource(R.drawable.round_error_outline_24),
-                    contentDescription = null
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(20.dp)
                 )
             }
         },

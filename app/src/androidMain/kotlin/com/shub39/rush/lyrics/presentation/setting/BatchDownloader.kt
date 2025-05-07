@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -39,11 +41,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.lyrics.presentation.setting.component.DownloaderCard
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.FolderOpen
+import compose.icons.fontawesomeicons.solid.Play
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.batch_download
@@ -107,8 +111,9 @@ fun BatchDownloader(
                             enabled = uri == null
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.round_drive_file_move_24),
-                                contentDescription = null
+                                imageVector = FontAwesomeIcons.Solid.FolderOpen,
+                                contentDescription = "Select Folder",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
 
@@ -122,8 +127,9 @@ fun BatchDownloader(
                             enabled = !state.batchDownload.isDownloading && uri != null
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.round_delete_forever_24),
-                                contentDescription = null
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
 
@@ -139,14 +145,15 @@ fun BatchDownloader(
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.round_play_arrow_24),
-                                        contentDescription = null
+                                        imageVector = FontAwesomeIcons.Solid.Play,
+                                        contentDescription = "Start",
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
                             } else {
                                 CircularProgressIndicator(
                                     strokeCap = StrokeCap.Round,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }

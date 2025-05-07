@@ -11,9 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Music
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.empty
@@ -31,8 +32,8 @@ fun Empty(
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.baseline_library_music_24),
-            contentDescription = null,
+            imageVector = FontAwesomeIcons.Solid.Music,
+            contentDescription = "Empty Library",
             modifier = Modifier.size(128.dp).padding(16.dp),
             tint = color
         )

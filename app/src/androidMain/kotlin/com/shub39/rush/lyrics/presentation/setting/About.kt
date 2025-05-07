@@ -28,10 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
@@ -42,12 +40,15 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Discord
 import compose.icons.fontawesomeicons.brands.Github
 import compose.icons.fontawesomeicons.brands.Twitter
+import compose.icons.fontawesomeicons.solid.ArrowRight
 import compose.icons.fontawesomeicons.solid.Coffee
 import compose.icons.fontawesomeicons.solid.Language
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.about
 import rush.app.generated.resources.about_libraries
+import rush.app.generated.resources.rush_transparent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +89,7 @@ fun About(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.rush_transparent),
+                            painter = painterResource(Res.drawable.rush_transparent),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(100.dp),
@@ -118,7 +119,7 @@ fun About(
                                 Icon(
                                     imageVector = FontAwesomeIcons.Brands.Discord,
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
@@ -130,7 +131,7 @@ fun About(
                                 Icon(
                                     imageVector = FontAwesomeIcons.Brands.Github,
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
@@ -142,7 +143,7 @@ fun About(
                                 Icon(
                                     imageVector = FontAwesomeIcons.Brands.Twitter,
                                     contentDescription = "Twitter",
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -161,7 +162,7 @@ fun About(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Language,
                             contentDescription = "Github",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -180,7 +181,7 @@ fun About(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Coffee,
                             contentDescription = "Github",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -199,8 +200,9 @@ fun About(
                             onClick = { navigator(Route.AboutLibrariesPage) }
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.round_arrow_forward_ios_24),
-                                contentDescription = null
+                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
+                                contentDescription = "Navigate",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }

@@ -47,10 +47,8 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.R
 import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.CardFit
@@ -68,6 +66,12 @@ import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
 import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Check
+import compose.icons.fontawesomeicons.solid.Edit
+import compose.icons.fontawesomeicons.solid.Image
+import compose.icons.fontawesomeicons.solid.Share
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -261,9 +265,9 @@ fun SharePage(
                     shape = MaterialTheme.shapes.extraLarge
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_download_done_24),
-                        contentDescription = null,
-                        modifier = Modifier.size(36.dp)
+                        imageVector = FontAwesomeIcons.Solid.Check,
+                        contentDescription = "Done",
+                        modifier = Modifier.size(24.dp)
                     )
                 }
 
@@ -285,8 +289,9 @@ fun SharePage(
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.round_share_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier.size(24.dp)
                     )
                 }
 
@@ -298,8 +303,9 @@ fun SharePage(
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
-                        painterResource(R.drawable.baseline_edit_square_24),
-                        contentDescription = null
+                        imageVector = FontAwesomeIcons.Solid.Edit,
+                        contentDescription = "Edit",
+                        modifier = Modifier.size(24.dp)
                     )
                 }
 
@@ -320,8 +326,9 @@ fun SharePage(
                         containerColor = MaterialTheme.colorScheme.primary
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.baseline_photo_library_24),
-                            contentDescription = null
+                            imageVector = FontAwesomeIcons.Solid.Image,
+                            contentDescription = "Image",
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }

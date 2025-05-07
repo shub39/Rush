@@ -134,7 +134,7 @@ fun LookAndFeel(
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.FolderOpen,
                                 contentDescription = "Pick Font",
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
 
