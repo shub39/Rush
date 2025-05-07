@@ -1,4 +1,4 @@
-package com.shub39.rush.app
+package com.shub39.rush
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut

@@ -81,7 +81,7 @@ class SharePagePreferencesImpl(
 
     override fun getCardRoundnessFlow(): Flow<CornerRadius> = dataStore.data
         .map { preferences ->
-            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.DEFAULT.name
+            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.ROUNDED.name
             CornerRadius.valueOf(cardRoundness)
         }
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {

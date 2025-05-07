@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.shub39.rush.app.RushApp
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import org.koin.compose.KoinContext
 

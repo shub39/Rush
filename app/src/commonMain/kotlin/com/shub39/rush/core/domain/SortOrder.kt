@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.saved
+package com.shub39.rush.core.domain
 
 import org.jetbrains.compose.resources.StringResource
 import rush.app.generated.resources.Res

@@ -56,20 +56,6 @@ fun lerp(color1: Color, color2: Color, t: Float): Color {
     return Color(r, g, b, a)
 }
 
-fun generateGradientColors(baseColor: Color): List<Color> {
-    val complementaryColor = Color(1f - baseColor.red, 1f - baseColor.green, 1f - baseColor.blue, baseColor.alpha)
-
-    val colors = buildList {
-        for (i in 0 until 6) {
-            val t = i / 7f
-            val interpolatedColor = lerp(baseColor, complementaryColor, t)
-            add(interpolatedColor)
-        }
-    }
-
-    return colors
-}
-
 fun Context.findActivity(): Activity? {
     var context = this
     while (context is ContextWrapper) {

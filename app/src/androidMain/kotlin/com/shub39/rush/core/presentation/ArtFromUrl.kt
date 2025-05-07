@@ -7,9 +7,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.coil3.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.placeholder.shimmer.Shimmer
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin

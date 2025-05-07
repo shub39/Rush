@@ -68,7 +68,7 @@ class LyricsPagePreferencesImpl(
     }
 
     override fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
-        .map { preferences -> preferences[hypnoticCanvas] ?: false }
+        .map { preferences -> preferences[hypnoticCanvas] == true }
     override suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
         dataStore.edit { settings ->
             settings[hypnoticCanvas] = newHypnoticCanvas

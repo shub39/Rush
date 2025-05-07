@@ -12,7 +12,6 @@ ksp = "2.1.20-2.0.0"
 kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.1"
-composeBom = "2025.04.01"
 navigation = "2.8.0-alpha10"
 palette = "1.0.0"
 room = "2.7.1"
@@ -35,23 +34,17 @@ androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # Others
-androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
+palette = { module = "androidx.palette:palette", version.ref = "palette" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
-landscapist-coil = { module = "com.github.skydoves:landscapist-coil", version.ref = "landscapist" }
+landscapist-coil = { module = "com.github.skydoves:landscapist-coil3", version.ref = "landscapist" }
 landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapist" }
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigation"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}

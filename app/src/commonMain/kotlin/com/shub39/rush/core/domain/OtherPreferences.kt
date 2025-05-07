@@ -1,7 +1,6 @@
 package com.shub39.rush.core.domain
 
 import com.materialkolor.PaletteStyle
-import com.shub39.rush.lyrics.presentation.saved.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 interface OtherPreferences {

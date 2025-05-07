@@ -1,6 +1,7 @@
 package com.shub39.rush.lyrics.presentation.saved
 
 import androidx.compose.runtime.Immutable
+import com.shub39.rush.core.domain.SortOrder
 import com.shub39.rush.lyrics.domain.Song
 
 @Immutable

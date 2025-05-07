@@ -12,7 +12,7 @@ import com.materialkolor.PaletteStyle
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.lyrics.presentation.saved.SortOrder
+import com.shub39.rush.core.domain.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

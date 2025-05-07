@@ -3,13 +3,14 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowHardware
+import coil3.toBitmap
 import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.LyricsPagePreferences
@@ -383,7 +384,7 @@ class LyricsVM(
             .data(_state.value.song?.artUrl)
             .allowHardware(false)
             .build()
-        val result = (imageLoader.execute(request) as? SuccessResult)?.drawable
+        val result = (imageLoader.execute(request) as? SuccessResult)?.image
 
         result.let { drawable ->
             if (drawable != null) {
