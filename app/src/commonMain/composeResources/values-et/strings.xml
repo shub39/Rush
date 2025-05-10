@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="search">Otsi laulusõnu</string>
+    <string name="saved">Salvestatud</string>
+    <string name="settings">Seadistused</string>
+    <string name="empty">Siin on tühjavõitu</string>
+    <string name="share">Jaga</string>
+    <string name="vibrant_colors">Kasuta elavaid värvide</string>
+    <string name="save">Salvesta muudatused</string>
+    <string name="delete_confirmation">Kas sa oled kindel, et soovid kõik salvestatud laulusõnad kustutada?</string>
+</resources>
