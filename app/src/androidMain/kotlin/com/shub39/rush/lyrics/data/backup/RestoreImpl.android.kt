@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.data.backup.restore
+package com.shub39.rush.lyrics.data.backup
 
 import android.content.Context
 import androidx.core.net.toUri
@@ -14,16 +14,17 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlin.io.path.createTempFile
 import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 
-class RestoreImpl(
+actual class RestoreImpl(
     private val songRepo: SongRepo,
     private val context: Context
 ): RestoreRepo {
     override suspend fun restoreSongs(path: String): RestoreResult {
         return try {
-            val file = kotlin.io.path.createTempFile()
+            val file = createTempFile()
 
             context.contentResolver.openInputStream(path.toUri()).use { input ->
                 file.outputStream().use { output ->
