@@ -43,6 +43,7 @@ import com.shub39.rush.lyrics.data.listener.NotificationListener
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.SyncAlt
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -132,7 +133,7 @@ fun OnboardingDialog(
 
                         LaunchedEffect(Unit) {
                             while (!notificationAccess) {
-                                kotlinx.coroutines.delay(500)
+                                delay(500)
                                 notificationAccess =
                                     NotificationListener.canAccessNotifications(context)
                             }

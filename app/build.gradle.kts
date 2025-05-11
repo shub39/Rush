@@ -114,11 +114,6 @@ kotlin {
 
     jvm("desktop")
 
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
-
     room {
         schemaDirectory("$projectDir/schemas")
     }
@@ -134,15 +129,19 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.palette)
             implementation(libs.koin.androidx.compose)
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.androidx.datastore.preferences.core)
-            implementation(libs.sqlite.bundled)
-            implementation(libs.bundles.ktor)
-            implementation(libs.composeIcons.fontAwesome)
-            implementation(libs.zoomable)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.composeIcons.fontAwesome)
+            implementation(libs.zoomable)
+            implementation(libs.androidx.datastore.preferences.core)
+            implementation(libs.sqlite.bundled)
             implementation(libs.datetime)
+            implementation(libs.bundles.ktor)
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.materialKolor)
             implementation(libs.kotlinx.serialization.json)
