@@ -18,6 +18,6 @@ sealed interface SettingsPageAction {
     data object OnBatchDownload: SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
     data object ResetBackup: SettingsPageAction
-    data class OnRestoreSongs(val uri: Uri): SettingsPageAction
+    data class OnRestoreSongs(val path: String): SettingsPageAction
     data object OnExportSongs: SettingsPageAction
 }

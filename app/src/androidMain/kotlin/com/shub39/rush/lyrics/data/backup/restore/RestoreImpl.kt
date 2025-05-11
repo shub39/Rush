@@ -1,10 +1,10 @@
 package com.shub39.rush.lyrics.data.backup.restore
 
 import android.content.Context
-import android.net.Uri
-import com.shub39.rush.lyrics.data.backup.export.ExportSchema
+import androidx.core.net.toUri
 import com.shub39.rush.lyrics.data.mappers.toSong
 import com.shub39.rush.lyrics.domain.SongRepo
+import com.shub39.rush.lyrics.domain.backup.ExportSchema
 import com.shub39.rush.lyrics.domain.backup.RestoreFailedException
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
@@ -21,11 +21,11 @@ class RestoreImpl(
     private val songRepo: SongRepo,
     private val context: Context
 ): RestoreRepo {
-    override suspend fun restoreSongs(uri: Uri): RestoreResult {
+    override suspend fun restoreSongs(path: String): RestoreResult {
         return try {
             val file = kotlin.io.path.createTempFile()
 
-            context.contentResolver.openInputStream(uri).use { input ->
+            context.contentResolver.openInputStream(path.toUri()).use { input ->
                 file.outputStream().use { output ->
                     input?.copyTo(output)
                 }

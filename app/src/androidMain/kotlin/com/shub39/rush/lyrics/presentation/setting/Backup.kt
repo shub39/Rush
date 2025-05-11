@@ -130,7 +130,7 @@ fun Backup(
 
                         if (uri != null) {
                             FilledTonalIconButton(
-                                onClick = { action(SettingsPageAction.OnRestoreSongs(uri!!)) }
+                                onClick = { action(SettingsPageAction.OnRestoreSongs(uri!!.toString())) }
                             ) {
                                 when (state.restoreState) {
                                     RestoreState.IDLE -> {
