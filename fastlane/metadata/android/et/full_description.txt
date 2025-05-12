@@ -1,0 +1,9 @@
+Rush on lihtne Androidi rakendus sinu lemmiklaulude sõnade otsimiseks, vaatamiseks, salvestamiseks ja jagamiseks
+
+Funktsionaalsused 
+
+- Otsi, vaata ja salvesta laulusõnu
+- Jaga kohendatava kaardina laulusõnu oma sõpradega!
+- Otsi esitamisel oleva laulu sõnu automaatselt (eeldab, et rakendusel on õigus teavitusi saata)
+- Sünkroniseeritud laulusõnad
+- Laadi laulusõnad alla pakktöötlusena
