@@ -93,7 +93,7 @@ class SettingsVM(
                         )
                     }
 
-                    when (restoreRepo.restoreSongs(action.uri)) {
+                    when (restoreRepo.restoreSongs(action.path.toString())) {
                         is RestoreResult.Failure -> {
                             _state.update {
                                 it.copy(

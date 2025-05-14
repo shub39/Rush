@@ -23,6 +23,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.breakLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -128,7 +129,9 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.UpdateExtractedColors -> updateExtractedColors(action.context)
+                is LyricsPageAction.UpdateExtractedColors -> viewModelScope.launch(Dispatchers.Default) {
+                    updateExtractedColors(action.context)
+                }
 
                 is LyricsPageAction.OnSourceChange -> {
                     _state.update {
@@ -352,7 +355,7 @@ class LyricsVM(
 
     // Observes playback position and speed
     private fun observePlayback() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             combine(
                 MediaListener.songPositionFlow,
                 MediaListener.playbackSpeedFlow,

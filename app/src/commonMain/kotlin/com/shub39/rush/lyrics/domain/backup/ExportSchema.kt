@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.data.backup.export
+package com.shub39.rush.lyrics.domain.backup
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

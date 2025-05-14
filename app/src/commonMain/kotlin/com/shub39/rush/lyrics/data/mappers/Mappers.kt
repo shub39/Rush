@@ -1,8 +1,8 @@
 package com.shub39.rush.lyrics.data.mappers
 
-import com.shub39.rush.lyrics.data.backup.export.SongSchema
 import com.shub39.rush.lyrics.data.database.SongEntity
 import com.shub39.rush.lyrics.domain.Song
+import com.shub39.rush.lyrics.domain.backup.SongSchema
 
 fun SongEntity.toSong(): Song {
     return Song(

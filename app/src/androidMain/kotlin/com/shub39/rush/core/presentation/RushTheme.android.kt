@@ -10,8 +10,8 @@ import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.AppTheme
 
 @Composable
-fun RushTheme(
-    state: Theme = Theme(),
+actual fun RushTheme(
+    state: Theme,
     content: @Composable () -> Unit
 ) {
     DynamicMaterialTheme(

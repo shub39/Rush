@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.presentation.setting
 
+import android.R.color.system_accent1_200
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -273,7 +274,7 @@ fun LookAndFeel(
                             PaletteStyle.entries.toList().forEach { style ->
                                 val scheme = rememberDynamicColorScheme(
                                     primary = if (state.theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-                                        colorResource(android.R.color.system_accent1_200)
+                                        colorResource(system_accent1_200)
                                     } else {
                                         Color(state.theme.seedColor)
                                     },

@@ -9,8 +9,8 @@ import com.shub39.rush.core.data.SharePagePreferencesImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.SharePagePreferences
-import com.shub39.rush.lyrics.data.backup.export.ExportImpl
-import com.shub39.rush.lyrics.data.backup.restore.RestoreImpl
+import com.shub39.rush.lyrics.data.backup.ExportImpl
+import com.shub39.rush.lyrics.data.backup.RestoreImpl
 import com.shub39.rush.lyrics.data.database.DatabaseFactory
 import com.shub39.rush.lyrics.data.database.SongDatabase
 import com.shub39.rush.lyrics.data.network.GeniusApi
