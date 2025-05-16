@@ -7,7 +7,7 @@
     <string name="share">Partager</string>
     <string name="vibrant_colors">Utiliser des couleurs vives</string>
     <string name="save">Sauvegarder les modifications</string>
-    <string name="delete_confirmation">Êtes-vous sûr de vouloir supprimer toutes les paroles enregistrées  ?</string>
+    <string name="delete_confirmation">Êtes-vous sûr·e de vouloir supprimer toutes les paroles enregistrées ?</string>
     <string name="no_lyrics">Les paroles n\'ont pas pu être obtenues depuis LRCLIB</string>
     <string name="suggestion">Vous devriez peut-être rechercher quelque chose ?</string>
     <string name="downloaded">Paroles enregistrées</string>
@@ -39,9 +39,9 @@
     <string name="no_internet">Pas d\'accès à Internet.</string>
     <string name="request_failed">La requête a échoué</string>
     <string name="no_results">Aucun résultat</string>
-    <string name="parse_error">Erreur d\'import</string>
+    <string name="parse_error">Erreur d\'importation</string>
     <string name="io_error">Erreur réseau</string>
-    <string name="unknown_error">Une erreur est survenue.</string>
+    <string name="unknown_error">Une erreur est survenue</string>
     <string name="card_theme">Thème de la carte</string>
     <string name="card_color">Couleur de la carte</string>
     <string name="card_size">Taille de la carte</string>
@@ -109,11 +109,14 @@
     <string name="fullscreen_desc">Masquer les barres système sur la page des paroles</string>
     <string name="center">Centre</string>
     <string name="font_size">Taille de la police</string>
-    <string name="font_weight">Epaisseur de la police</string>
+    <string name="font_weight">Épaisseur de la police</string>
     <string name="line_height">Hauteur de ligne</string>
     <string name="letter_spacing">Espacement des lettres</string>
     <string name="end">Fin</string>
     <string name="customisations">Personnalisations des paroles</string>
     <string name="text_alignment">Alignement</string>
     <string name="start">Début</string>
+    <string name="couplet">Couplet</string>
+    <string name="quote">Citation</string>
+    <string name="vertical">Vertical</string>
 </resources>

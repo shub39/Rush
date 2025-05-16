@@ -1,0 +1,1 @@
+Rakendus, mis aitab otsida, vaadata, salvestada ja jagada laulusõnu

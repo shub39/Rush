@@ -116,4 +116,8 @@
     <string name="font_weight">Толщина шрифта</string>
     <string name="line_height">Расстояние между строками</string>
     <string name="letter_spacing">Ширина строки</string>
+    <string name="card_font">Шрифт карты</string>
+    <string name="couplet">Куплет</string>
+    <string name="quote">Цитата</string>
+    <string name="vertical">Вертикально</string>
 </resources>
