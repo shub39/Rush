@@ -155,7 +155,7 @@ fun About(
                 Row(modifier = Modifier.padding(horizontal = 16.dp)) {
                     FilledTonalButton(
                         onClick = {
-                            uriHandler.openUri("https://buymeacoffee.com/shub39")
+                            uriHandler.openUri("https://hosted.weblate.org/engage/rush")
                         },
                         modifier = Modifier.weight(1f)
                     ) {
