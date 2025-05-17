@@ -1,4 +1,3 @@
-
 [<img src="fastlane/metadata/android/en-US/images/icon200x200.png" alt="Rush" width="200"/>]()
 
 # Rush
@@ -14,13 +13,13 @@
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Twitter/twitter1.svg">](https://x.com/RushedLyrics)
 
-> ### Get From
+> ### Get On
 > [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
 > [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/)
 > [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/packages/com.shub39.rush/latest)
 > [<img src="https://www.openapk.net/images/openapk-badge.png" height=80>](https://www.openapk.net/dharmik/com.shub39.rush/)
 > [<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" height=80>](https://www.androidfreeware.net/download-rush-apk.html)
-> ### Or Get Latest [Release](https://github.com/shub39/Rush/releases) from Github
+> ### Or Download latest from [Releases](https://github.com/shub39/Rush/releases)
 
 ## Screenshots 📱
 
@@ -32,8 +31,6 @@
 ## Features ✨
 
 > [!NOTE]
-> Checkout the roadmap [here](https://github.com/shub39/Rush/discussions/113)
-
 >- [x] Search Lyrics
 >- [x] Download Lyrics
 >- [x] Share Lyrics
@@ -43,7 +40,9 @@
 >- [x] Batch download lyrics
 >- [x] Import and Export saved lyrics
 
-## Why ❔
+Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)
+
+## Motivation 💭
 Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
 So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify,
 all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without 
