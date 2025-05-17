@@ -29,8 +29,6 @@
 | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
 ## Features ✨
-
-> [!NOTE]
 >- [x] Search Lyrics
 >- [x] Download Lyrics
 >- [x] Share Lyrics
