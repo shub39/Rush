@@ -2,9 +2,9 @@ package com.shub39.rush.lyrics.presentation.setting
 
 import androidx.compose.runtime.Immutable
 import com.shub39.rush.core.data.Theme
+import com.shub39.rush.lyrics.domain.AudioFile
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 
 @Immutable
 data class SettingsPageState(

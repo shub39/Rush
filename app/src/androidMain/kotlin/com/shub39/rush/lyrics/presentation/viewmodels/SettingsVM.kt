@@ -11,6 +11,7 @@ import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.getMainArtist
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.data.repository.RushRepository
+import com.shub39.rush.lyrics.domain.AudioFile
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
@@ -19,7 +20,6 @@ import com.shub39.rush.lyrics.domain.backup.RestoreState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import com.shub39.rush.lyrics.presentation.setting.component.AudioFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

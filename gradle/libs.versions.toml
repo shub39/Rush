@@ -12,6 +12,7 @@ ksp = "2.1.20-2.0.0"
 kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.1"
+androidx-lifecycle = "2.8.4"
 navigation = "2.8.0-alpha10"
 palette = "1.0.0"
 room = "2.7.1"
@@ -26,12 +27,15 @@ zoomable = "2.6.0"
 compose-multiplatform = "1.8.0"
 kotlinx-coroutines = "1.10.2"
 hotreload = "1.0.0-alpha09"
+materialIconsCore = "1.7.3"
 
 [libraries]
 # Android
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
@@ -59,6 +63,7 @@ hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas"
 aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
+material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Ktor
