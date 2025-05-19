@@ -9,6 +9,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -76,4 +79,18 @@ fun shareImage(context: Context, bitmap: Bitmap, name: String, saveToPictures: B
         }
         context.startActivity(Intent.createChooser(shareIntent, "Share image using"))
     }
+}
+
+fun getFormattedTime(): String {
+    val now = Clock.System.now()
+    val localTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).time
+
+    val hour = localTime.hour % 12
+    val minute = localTime.minute
+    val amPm = if (localTime.hour < 12) "AM" else "PM"
+
+    val hourFormatted = if (hour == 0) 12 else hour
+    val minuteFormatted = minute.toString().padStart(2, '0')
+
+    return "$hourFormatted:$minuteFormatted $amPm"
 }

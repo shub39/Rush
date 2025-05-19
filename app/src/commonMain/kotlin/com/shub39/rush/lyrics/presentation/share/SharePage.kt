@@ -59,9 +59,11 @@ import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.lyrics.presentation.share.component.ChatCard
 import com.shub39.rush.lyrics.presentation.share.component.CoupletShareCard
 import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
 import com.shub39.rush.lyrics.presentation.share.component.ListSelect
+import com.shub39.rush.lyrics.presentation.share.component.MessyCard
 import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
 import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
 import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
@@ -210,6 +212,24 @@ fun SharePage(
                     )
 
                     CardTheme.COUPLET -> CoupletShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+
+                    CardTheme.MESSY -> MessyCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
+
+                    CardTheme.CHAT -> ChatCard(
                         modifier = modifier,
                         song = state.songDetails,
                         sortedLines = state.selectedLines,

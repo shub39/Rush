@@ -119,4 +119,6 @@
     <string name="quote">Quote</string>
     <string name="card_font">Card Font</string>
     <string name="couplet">Couplet</string>
+    <string name="messy">Messy</string>
+    <string name="chat">Chat</string>
 </resources>
