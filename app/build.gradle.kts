@@ -1,7 +1,5 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.compose.reload.ComposeHotRun
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -112,16 +110,12 @@ kotlin {
         }
     }
 
-    jvm("desktop")
-
     room {
         schemaDirectory("$projectDir/schemas")
     }
 
     sourceSets {
-        val desktopMain by getting
-
-        androidMain.dependencies {
+        commonMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.core.splashscreen)
@@ -129,8 +123,6 @@ kotlin {
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
             implementation(libs.androidx.activity.compose)
-        }
-        commonMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.material.icons.core)
@@ -159,10 +151,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-        }
         dependencies {
             annotationProcessor(libs.androidx.room.room.compiler)
             ksp(libs.androidx.room.room.compiler)
@@ -180,18 +168,4 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.shub39.rush.MainKt"
-    }
-}
-
-composeCompiler {
-    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
-}
-
-tasks.register<ComposeHotRun>("runHot") {
-    mainClass.set("com.shub39.rush.MainKt")
 }
