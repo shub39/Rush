@@ -44,7 +44,8 @@ fun ChatCard(
         modifier = modifier,
         shape = cardCorners,
         colors = CardDefaults.cardColors(
-            containerColor = cardColors.containerColor.darken(2f)
+            containerColor = cardColors.containerColor.darken(2f),
+            contentColor = cardColors.contentColor
         )
     ) {
         ListItem(
@@ -101,7 +102,9 @@ fun ChatCard(
                     item {
                         Card(
                             shape = MaterialTheme.shapes.small,
-                            colors = cardColors
+                            colors = cardColors.copy(
+                                containerColor = cardColors.containerColor
+                            )
                         ) {
                             Text(
                                 text = it.value,
@@ -114,12 +117,10 @@ fun ChatCard(
                     }
                 }
 
-
                 item {
                     Text(
                         text = getFormattedTime(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = cardColors.contentColor.copy(alpha = 0.5f),
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }

@@ -51,7 +51,7 @@ fun LoadingCard(
                 tint = colors.first
             )
 
-            Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = Modifier.padding(16.dp))
 
             LinearProgressIndicator(
                 color = colors.first,
@@ -87,7 +87,7 @@ fun LoadingCard(
                 tint = colors.first
             )
 
-            Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = Modifier.padding(16.dp))
 
             LinearProgressIndicator(
                 color = colors.first,

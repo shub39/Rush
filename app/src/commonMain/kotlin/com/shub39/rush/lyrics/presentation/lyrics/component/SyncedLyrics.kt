@@ -60,7 +60,7 @@ fun SyncedLyrics(
                 getCurrentLyricIndex(
                     state.playingSong.position,
                     state.song?.syncedLyrics!!
-                ) - 2
+                )
             lazyListState.animateScrollToItem(currentIndex.coerceAtLeast(0))
         }
     }

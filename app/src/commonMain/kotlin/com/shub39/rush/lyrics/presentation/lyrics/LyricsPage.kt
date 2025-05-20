@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -106,7 +108,9 @@ fun LyricsPage(
     }
 
     // Content Start
-    Box {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Card(
             modifier = Modifier
                 .let {
@@ -165,7 +169,6 @@ fun LyricsPage(
                     Empty(suggestion = false)
 
                 } else {
-
                     // Updating colors (requires context)
                     LaunchedEffect(state.song) {
                         action(
@@ -173,124 +176,208 @@ fun LyricsPage(
                         )
                     }
 
-                    Box(
+                    BoxWithConstraints(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        // Plain lyrics
-                        if (!state.sync) {
-                            PlainLyrics(
-                                state = state,
-                                lazyListState = lazyListState,
-                                cardContent = cardContent,
-                                action = action,
-                                coroutineScope = coroutineScope,
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .widthIn(max = 500.dp)
-                                    .fillMaxHeight(lyricsHeight)
-                                    .fillMaxWidth()
-                                    .fadeTopToBottom()
-                            )
-                        } else if (state.song.syncedLyrics != null) {
-                            SyncedLyrics(
-                                state = state,
-                                coroutineScope = coroutineScope,
-                                lazyListState = lazyListState,
-                                cardContent = cardContent,
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .widthIn(max = 500.dp)
-                                    .fillMaxHeight(lyricsHeight)
-                                    .fillMaxWidth()
-                                    .fadeTopToBottom()
-                            )
-                        }
+                        val landscape by remember { mutableStateOf(this.maxHeight < this.maxWidth) }
 
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .fillMaxWidth()
-                                .fillMaxHeight(infoHeight),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                modifier = Modifier.align(Alignment.TopCenter)
+                        // Plain lyrics
+                        if (!landscape) {
+                            if (!state.sync) {
+                                PlainLyrics(
+                                    state = state,
+                                    lazyListState = lazyListState,
+                                    cardContent = cardContent,
+                                    action = action,
+                                    coroutineScope = coroutineScope,
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .widthIn(max = 500.dp)
+                                        .fillMaxHeight(lyricsHeight)
+                                        .fillMaxWidth()
+                                        .fadeTopToBottom()
+                                )
+                            } else if (state.song.syncedLyrics != null) {
+                                SyncedLyrics(
+                                    state = state,
+                                    coroutineScope = coroutineScope,
+                                    lazyListState = lazyListState,
+                                    cardContent = cardContent,
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .widthIn(max = 500.dp)
+                                        .fillMaxHeight(lyricsHeight)
+                                        .fillMaxWidth()
+                                        .fadeTopToBottom()
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(infoHeight),
+                                contentAlignment = Alignment.Center
                             ) {
-                                AnimatedVisibility(
-                                    visible = top > 2
+                                Column(
+                                    modifier = Modifier.align(Alignment.TopCenter)
                                 ) {
-                                    ArtFromUrl(
-                                        imageUrl = state.song.artUrl!!,
-                                        highlightColor = cardContent,
-                                        baseColor = Color.Transparent,
+                                    AnimatedVisibility(
+                                        visible = top > 2
+                                    ) {
+                                        ArtFromUrl(
+                                            imageUrl = state.song.artUrl!!,
+                                            highlightColor = cardContent,
+                                            baseColor = Color.Transparent,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.5f)
+                                                .fadeBottomToTop()
+                                        )
+                                    }
+                                }
+
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = when (state.textAlign) {
+                                        TextAlign.Center -> Alignment.CenterHorizontally
+                                        TextAlign.End -> Alignment.End
+                                        else -> Alignment.Start
+                                    }
+                                ) {
+                                    Spacer(modifier = Modifier.height(40.dp))
+
+                                    AnimatedVisibility(
+                                        visible = top <= 2
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                                vertical = 8.dp
+                                            )
+                                        ) {
+                                            ArtFromUrl(
+                                                imageUrl = state.song.artUrl!!,
+                                                highlightColor = cardContent,
+                                                baseColor = Color.Transparent,
+                                                contentScale = ContentScale.Fit,
+                                                modifier = Modifier
+                                                    .size(80.dp)
+                                                    .clip(MaterialTheme.shapes.small)
+                                            )
+                                        }
+                                    }
+
+                                    Text(
+                                        text = state.song.title,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight(0.5f)
-                                            .fadeBottomToTop()
+                                            .padding(horizontal = 16.dp)
+                                            .basicMarquee()
+                                    )
+
+                                    Text(
+                                        text = state.song.artists,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .basicMarquee()
+                                    )
+
+                                    // Actions Row
+                                    ActionsRow(
+                                        state = state,
+                                        action = action,
+                                        notificationAccess = notificationAccess,
+                                        cardBackground = cardBackground,
+                                        cardContent = cardContent,
+                                        onShare = onShare,
+                                        onEdit = onEdit,
+                                        modifier = Modifier.padding(16.dp)
                                     )
                                 }
                             }
+                        } else {
+                            // landscape UI
 
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = when (state.textAlign) {
-                                    TextAlign.Center -> Alignment.CenterHorizontally
-                                    TextAlign.End -> Alignment.End
-                                    else -> Alignment.Start
-                                }
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 40.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Spacer(modifier = Modifier.height(40.dp))
-
-                                AnimatedVisibility(
-                                    visible = top <= 2
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(0.3f)
                                 ) {
-                                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                                    Row(
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        )
+                                    ) {
                                         ArtFromUrl(
                                             imageUrl = state.song.artUrl!!,
                                             highlightColor = cardContent,
                                             baseColor = Color.Transparent,
                                             contentScale = ContentScale.Fit,
                                             modifier = Modifier
-                                                .size(80.dp)
+                                                .size(100.dp)
                                                 .clip(MaterialTheme.shapes.small)
                                         )
                                     }
+
+                                    Text(
+                                        text = state.song.title,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .basicMarquee()
+                                    )
+
+                                    Text(
+                                        text = state.song.artists,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .basicMarquee()
+                                    )
                                 }
 
-                                Text(
-                                    text = state.song.title,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .basicMarquee()
-                                )
-
-                                Text(
-                                    text = state.song.artists,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .basicMarquee()
-                                )
-
-                                // Actions Row
-                                ActionsRow(
-                                    state = state,
-                                    action = action,
-                                    notificationAccess = notificationAccess,
-                                    cardBackground = cardBackground,
-                                    cardContent = cardContent,
-                                    onShare = onShare,
-                                    onEdit = onEdit,
-                                    modifier = Modifier.padding(16.dp)
-                                )
+                                if (!state.sync) {
+                                    PlainLyrics(
+                                        state = state,
+                                        lazyListState = lazyListState,
+                                        cardContent = cardContent,
+                                        action = action,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fadeTopToBottom()
+                                    )
+                                } else if (state.song.syncedLyrics != null) {
+                                    SyncedLyrics(
+                                        state = state,
+                                        coroutineScope = coroutineScope,
+                                        lazyListState = lazyListState,
+                                        cardContent = cardContent,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fadeTopToBottom()
+                                    )
+                                }
                             }
                         }
                     }
