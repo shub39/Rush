@@ -2,7 +2,6 @@ package com.shub39.rush.lyrics.presentation.lyrics.component
 
 import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -50,7 +49,7 @@ fun ActionsRow(
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
-    FlowRow(
+    Row(
         modifier = modifier
     ) {
         IconButton(
