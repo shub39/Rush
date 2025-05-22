@@ -1,6 +1,6 @@
 Rush, en sevdiğiniz şarkıların sözlerini aramak, görüntülemek, kaydetmek ve paylaşmak için basit bir Android uygulamasıdır.
 
-Özellikler:
+Özellikler 
 
 - Şarkı sözlerini arama, görüntüleme ve kaydetme
 - Şarkı sözlerini özelleştirilebilir bir kart olarak arkadaşlarınızla paylaşma!
