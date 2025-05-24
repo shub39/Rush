@@ -14,7 +14,7 @@
     <string name="batch_download_info">Загрузите слова для ваших локально сохраненных песен.</string>
     <string name="rush_mode_desc">Искать ваши уведомления для текущей песни и получать текст для нее. Меняйте текст автоматически с вашим музыкальным плейером.</string>
     <string name="default_">Обычный</string>
-    <string name="loading_genius">Загружаю Тексты Genius</string>
+    <string name="loading_genius">Загружаю текст из Genius</string>
     <string name="rounded">Скругленный</string>
     <string name="seed_color_desc">Выберите цвет из которого сгенерируется палитра</string>
     <string name="exported">Экспортировано</string>
@@ -109,7 +109,7 @@
     <string name="fullscreen_desc">Спрятать системные панели на странице с текстом</string>
     <string name="customisations">Внешний вид текста</string>
     <string name="text_alignment">Положение</string>
-    <string name="center">Центер</string>
+    <string name="center">Центр</string>
     <string name="end">Справа</string>
     <string name="start">Слева</string>
     <string name="font_size">Размер шрифта</string>
@@ -120,4 +120,5 @@
     <string name="couplet">Куплет</string>
     <string name="quote">Цитата</string>
     <string name="vertical">Вертикально</string>
+    <string name="chat">Чат</string>
 </resources>

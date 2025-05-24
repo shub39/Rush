@@ -119,4 +119,7 @@
     <string name="couplet">Couplet</string>
     <string name="quote">Citation</string>
     <string name="vertical">Vertical</string>
+    <string name="card_font">Police d\'écriture</string>
+    <string name="messy">Désorganisé</string>
+    <string name="chat">Conversation</string>
 </resources>
