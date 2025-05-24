@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.room)
-    alias(libs.plugins.hotreload)
 }
 
 val appName = "Rush"
@@ -149,9 +148,11 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
+            implementation(compose.ui)
             implementation(compose.components.uiToolingPreview)
         }
         dependencies {
+            debugImplementation(compose.uiTooling)
             annotationProcessor(libs.androidx.room.room.compiler)
             ksp(libs.androidx.room.room.compiler)
             testImplementation(libs.junit)

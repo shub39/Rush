@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.materialkolor.DynamicMaterialTheme
-import com.shub39.rush.core.domain.AppTheme
-import com.shub39.rush.core.domain.Theme
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
 
 @Composable
 fun RushTheme(

@@ -24,8 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.darken
-import com.shub39.rush.core.domain.CardFit
-import com.shub39.rush.core.domain.SongDetails
+import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.lyrics.presentation.share.getFormattedTime
 import kotlin.time.ExperimentalTime

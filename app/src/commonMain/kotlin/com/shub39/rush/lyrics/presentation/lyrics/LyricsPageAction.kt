@@ -2,8 +2,8 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
-import com.shub39.rush.core.domain.SongDetails
-import com.shub39.rush.core.domain.Sources
+import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.Sources
 
 sealed interface LyricsPageAction {
     data class OnMaxLinesChange(val lines: Int): LyricsPageAction

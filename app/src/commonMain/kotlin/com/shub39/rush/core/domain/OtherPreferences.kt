@@ -1,6 +1,9 @@
 package com.shub39.rush.core.domain
 
 import com.materialkolor.PaletteStyle
+import com.shub39.rush.core.domain.enums.AppTheme
+import com.shub39.rush.core.domain.enums.Fonts
+import com.shub39.rush.core.domain.enums.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 interface OtherPreferences {

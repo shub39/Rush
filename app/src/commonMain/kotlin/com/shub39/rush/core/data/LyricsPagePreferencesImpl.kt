@@ -10,8 +10,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.enums.CardColors
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

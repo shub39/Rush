@@ -1,4 +1,4 @@
-package com.shub39.rush.core.domain
+package com.shub39.rush.core.domain.enums
 
 import org.jetbrains.compose.resources.FontResource
 import rush.app.generated.resources.Res

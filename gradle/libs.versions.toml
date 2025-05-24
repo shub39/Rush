@@ -24,9 +24,7 @@ datetime = "0.6.2"
 composeIcons = "1.1.1"
 junit = "4.13.2"
 zoomable = "2.6.0"
-compose-multiplatform = "1.8.0"
-kotlinx-coroutines = "1.10.2"
-hotreload = "1.0.0-alpha09"
+compose-multiplatform = "1.8.1"
 materialIconsCore = "1.7.3"
 
 [libraries]
@@ -64,7 +62,6 @@ aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", vers
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -76,7 +73,6 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hotreload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotreload" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

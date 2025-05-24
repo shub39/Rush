@@ -13,8 +13,8 @@ import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.core.domain.CardFit
-import com.shub39.rush.core.domain.SongDetails
+import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.generateGradientColors
 
 @Composable
