@@ -1,4 +1,4 @@
-package com.shub39.rush.core.data
+package com.shub39.rush.core.domain
 
 data class SongDetails(
     val title: String = "",

@@ -1,10 +1,8 @@
-package com.shub39.rush.core.data
+package com.shub39.rush.core.domain
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.materialkolor.PaletteStyle
-import com.shub39.rush.core.domain.AppTheme
-import com.shub39.rush.core.domain.Fonts
 
 data class Theme(
     val seedColor: Int = Color.White.toArgb(),

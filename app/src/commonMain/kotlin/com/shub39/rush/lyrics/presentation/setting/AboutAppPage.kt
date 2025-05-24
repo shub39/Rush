@@ -30,8 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.data.Theme
-import com.shub39.rush.core.domain.Route
+import com.shub39.rush.core.domain.Theme
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import compose.icons.FontAwesomeIcons
@@ -52,8 +51,8 @@ import rush.app.generated.resources.rush_transparent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun About(
-    navigator: (Route) -> Unit
+fun AboutAppPage(
+    onNavigateToLibraries: () -> Unit
 ) = PageFill {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -197,7 +196,7 @@ fun About(
                     headlineContent = { Text(text = stringResource(Res.string.about_libraries)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(Route.AboutLibrariesPage) }
+                            onClick = { onNavigateToLibraries() }
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -218,6 +217,6 @@ private fun Preview() {
     RushTheme(
         state = Theme()
     ) {
-        About { }
+        AboutAppPage { }
     }
 }

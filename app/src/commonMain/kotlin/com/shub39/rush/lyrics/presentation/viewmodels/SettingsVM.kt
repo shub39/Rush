@@ -52,7 +52,7 @@ class SettingsVM(
             _state.value
         )
 
-    fun onSettingsPageAction(action: SettingsPageAction) {
+    fun onAction(action: SettingsPageAction) {
         viewModelScope.launch {
             when (action) {
                 is SettingsPageAction.OnBatchDownload -> batchDownload()

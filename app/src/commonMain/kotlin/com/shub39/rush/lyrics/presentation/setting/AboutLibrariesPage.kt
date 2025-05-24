@@ -21,7 +21,7 @@ import rush.app.generated.resources.about_libraries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutLibraries() = PageFill {
+fun AboutLibrariesPage() = PageFill {
     Scaffold(
         modifier = Modifier.widthIn(max = 500.dp),
         topBar = {

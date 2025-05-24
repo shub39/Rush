@@ -34,10 +34,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.lyrics.presentation.SettingsRoutes
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowRight
@@ -59,10 +59,10 @@ import rush.app.generated.resources.settings
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingPage(
+fun SettingRootPage(
     notificationAccess: Boolean,
     action: (SettingsPageAction) -> Unit,
-    navigator: (Route) -> Unit,
+    navigator: (SettingsRoutes) -> Unit
 ) = PageFill {
     val context = LocalContext.current
 
@@ -91,7 +91,7 @@ fun SettingPage(
                     supportingContent = { Text(text = stringResource(Res.string.look_and_feel_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(Route.LookAndFeelPage) },
+                            onClick = { navigator(SettingsRoutes.LookAndFeelPage) },
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -128,7 +128,7 @@ fun SettingPage(
                     supportingContent = { Text(text = stringResource(Res.string.batch_download_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(Route.BatchDownloaderPage) },
+                            onClick = { navigator(SettingsRoutes.BatchDownloaderPage) },
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -147,7 +147,7 @@ fun SettingPage(
                     supportingContent = { Text(text = stringResource(Res.string.backup_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(Route.BackupPage) }
+                            onClick = { navigator(SettingsRoutes.BackupPage) }
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -187,7 +187,7 @@ fun SettingPage(
                     headlineContent = { Text(stringResource(Res.string.about)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(Route.AboutPage) }
+                            onClick = { navigator(SettingsRoutes.AboutPage) }
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -256,7 +256,7 @@ fun SettingPage(
 @Composable
 private fun Preview() {
     RushTheme {
-        SettingPage(
+        SettingRootPage(
             notificationAccess = false,
             action = {},
             navigator = {}

@@ -2,7 +2,7 @@ package com.shub39.rush.lyrics.presentation.lyrics
 
 import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
-import com.shub39.rush.core.data.SongDetails
+import com.shub39.rush.core.domain.SongDetails
 import com.shub39.rush.core.domain.Sources
 
 sealed interface LyricsPageAction {

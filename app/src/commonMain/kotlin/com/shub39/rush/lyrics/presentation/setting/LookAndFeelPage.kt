@@ -68,9 +68,9 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.from
 import com.materialkolor.palettes.TonalPalette
 import com.materialkolor.rememberDynamicColorScheme
-import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.AppTheme
 import com.shub39.rush.core.domain.Fonts
+import com.shub39.rush.core.domain.Theme
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
@@ -94,7 +94,7 @@ import rush.app.generated.resources.select_app_theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LookAndFeel(
+fun LookAndFeelPage(
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit
 ) = PageFill {
@@ -483,6 +483,6 @@ private fun Preview() {
     RushTheme(
         state = Theme()
     ) {
-        LookAndFeel(SettingsPageState()) {}
+        LookAndFeelPage(SettingsPageState()) {}
     }
 }

@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.data.Theme
+import com.shub39.rush.core.domain.Theme
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.domain.backup.ExportState
@@ -51,7 +51,7 @@ import rush.app.generated.resources.restore_info
 // backup page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Backup(
+fun BackupPage(
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit
 ) = PageFill {
@@ -179,7 +179,7 @@ private fun Preview() {
     RushTheme(
         state = Theme()
     ) {
-        Backup(
+        BackupPage(
             SettingsPageState()
         ) { }
     }

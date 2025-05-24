@@ -47,9 +47,9 @@ import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.core.data.Theme
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Fonts
+import com.shub39.rush.core.domain.Theme
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme

@@ -4,9 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
-import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
 import com.shub39.rush.core.domain.Error
+import com.shub39.rush.core.domain.ExtractedColors
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
 import com.shub39.rush.lyrics.domain.Lyric

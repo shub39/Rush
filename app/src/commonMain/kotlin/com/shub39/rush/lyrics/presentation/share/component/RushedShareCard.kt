@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.data.SongDetails
+import com.shub39.rush.core.domain.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
 
 @Composable

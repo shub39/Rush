@@ -11,8 +11,8 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.allowHardware
 import coil3.toBitmap
-import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.domain.ExtractedColors
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.presentation.errorStringRes

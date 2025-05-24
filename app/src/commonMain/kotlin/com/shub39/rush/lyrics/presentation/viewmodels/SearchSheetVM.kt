@@ -3,7 +3,7 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.ExtractedColors
+import com.shub39.rush.core.domain.ExtractedColors
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.Sources
 import com.shub39.rush.core.presentation.errorStringRes
