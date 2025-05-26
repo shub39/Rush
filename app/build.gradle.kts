@@ -1,6 +1,5 @@
-@file:OptIn(ExperimentalWasmDsl::class)
-
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.compose.reload.ComposeHotRun
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -12,6 +11,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.room)
+    alias(libs.plugins.hotreload)
 }
 
 val appName = "Rush"
@@ -103,6 +103,8 @@ kotlin {
         }
     }
 
+    jvm("desktop")
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -114,16 +116,19 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
+        val desktopMain by getting
+
+        androidMain.dependencies {
             implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.palette)
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
+        }
+        commonMain.dependencies {
             implementation(libs.material.icons.core)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -151,6 +156,10 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.uiToolingPreview)
         }
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+        }
         dependencies {
             debugImplementation(compose.uiTooling)
             annotationProcessor(libs.androidx.room.room.compiler)
@@ -169,4 +178,18 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.shub39.rush.MainKt"
+    }
+}
+
+composeCompiler {
+    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
+}
+
+tasks.register<ComposeHotRun>("runHot") {
+    mainClass.set("com.shub39.rush.MainKt")
 }
