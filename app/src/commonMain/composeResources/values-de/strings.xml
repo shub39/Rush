@@ -105,4 +105,21 @@
     <string name="hypnotic">Hypnotisch</string>
     <string name="amoled">AMOLED-Palette</string>
     <string name="hypnotic_canvas_desc">(Experimentell) Hypnotischer Canvas für die Liedtext-Seite. Funktioniert nur auf Android-Versionen 13 und höher. Ersetzt durch einen statischen Farbverlauf auf niedrigeren Android-Versionen. Könnte die Leistung beeinträchtigen</string>
+    <string name="text_alignment">Ausrichtung</string>
+    <string name="center">Mittig</string>
+    <string name="start">Anfang</string>
+    <string name="font_size">Schriftgröße</string>
+    <string name="font_weight">Schriftstärke</string>
+    <string name="line_height">Zeilenhöhe</string>
+    <string name="letter_spacing">Buchstabenabstände</string>
+    <string name="vertical">Vertikal</string>
+    <string name="quote">Zitat</string>
+    <string name="card_font">Kartenschriftart</string>
+    <string name="couplet">Couplet</string>
+    <string name="chat">Chat</string>
+    <string name="fullscreen">Vollbildansicht</string>
+    <string name="customisations">Liedtext-Anpassungen</string>
+    <string name="fullscreen_desc">Systemleisten auf der Liedtextseite ausblenden</string>
+    <string name="end">Ende</string>
+    <string name="messy">Chaotisch</string>
 </resources>
