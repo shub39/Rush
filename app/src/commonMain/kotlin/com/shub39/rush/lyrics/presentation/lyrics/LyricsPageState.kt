@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
@@ -9,10 +8,9 @@ import com.shub39.rush.core.domain.data_classes.ExtractedColors
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.lyrics.domain.LrcLibSong
-import com.shub39.rush.lyrics.domain.Lyric
+import com.shub39.rush.lyrics.domain.SongUi
 import org.jetbrains.compose.resources.StringResource
 
-@Immutable
 data class LyricsPageState(
     val song: SongUi? = null,
     val fetching: Pair<Boolean, String> = Pair(false, ""),
@@ -42,19 +40,6 @@ data class LyricsPageState(
     val fullscreen: Boolean = false
 )
 
-@Immutable
-data class SongUi(
-    val id: Long = 0,
-    val title: String = "",
-    val artists: String = "",
-    val album: String? = null,
-    val sourceUrl: String = "",
-    val artUrl: String? = null,
-    val lyrics: List<Map.Entry<Int, String>> = emptyList(),
-    val syncedLyrics: List<Lyric>? = null,
-    val geniusLyrics: List<Map.Entry<Int, String>>? = null
-)
-
 data class PlayingSong(
     val title: String = "",
     val artist: String? = null,
@@ -62,7 +47,6 @@ data class PlayingSong(
     val speed: Float = 0f
 )
 
-@Immutable
 data class LrcCorrect(
     val searchResults: List<LrcLibSong> = emptyList(),
     val searching: Boolean = false,

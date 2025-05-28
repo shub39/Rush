@@ -39,21 +39,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.Route
-import com.shub39.rush.core.domain.data_classes.Theme
-import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.simpleVerticalScrollbar
-import com.shub39.rush.di.provideImageLoader
-import com.shub39.rush.lyrics.domain.Song
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
-import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
+import com.shub39.rush.lyrics.domain.SongUi
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
@@ -61,9 +55,6 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.rush_transparent
 import rush.app.generated.resources.saved
@@ -315,51 +306,51 @@ fun SavedPage(
     }
 }
 
-@Preview
-@Composable
-private fun Preview() {
-    val context = LocalContext.current
-
-    startKoin {
-        modules(
-            module {
-                single { provideImageLoader(context) }
-            }
-        )
-    }
-
-    val songs = (0..100).map {
-        Song(
-            id = it.toLong(),
-            title = "Song $it",
-            artists = "Artist $it",
-            lyrics = "",
-            album = "Album $it",
-            sourceUrl = "",
-            artUrl = "",
-            geniusLyrics = null,
-            syncedLyrics = null,
-            dateAdded = it.toLong()
-        )
-    }
-
-    var state by remember { mutableStateOf(SavedPageState(
-        songsAsc = songs,
-        songsByTime = songs
-    ))}
-
-    RushTheme(
-        state = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
-        SavedPage(
-            state = state,
-            currentSong = SongUi(title = "Satan in the wait", artists = "Daughters"),
-            autoChange = false,
-            notificationAccess = true,
-            action = {},
-            navigator = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//private fun Preview() {
+//    val context = LocalContext.current
+//
+//    startKoin {
+//        modules(
+//            module {
+//                single { provideImageLoader(context) }
+//            }
+//        )
+//    }
+//
+//    val songs = (0..100).map {
+//        Song(
+//            id = it.toLong(),
+//            title = "Song $it",
+//            artists = "Artist $it",
+//            lyrics = "",
+//            album = "Album $it",
+//            sourceUrl = "",
+//            artUrl = "",
+//            geniusLyrics = null,
+//            syncedLyrics = null,
+//            dateAdded = it.toLong()
+//        )
+//    }
+//
+//    var state by remember { mutableStateOf(SavedPageState(
+//        songsAsc = songs,
+//        songsByTime = songs
+//    ))}
+//
+//    RushTheme(
+//        state = Theme(
+//            appTheme = AppTheme.DARK
+//        )
+//    ) {
+//        SavedPage(
+//            state = state,
+//            currentSong = SongUi(title = "Satan in the wait", artists = "Daughters"),
+//            autoChange = false,
+//            notificationAccess = true,
+//            action = {},
+//            navigator = {}
+//        )
+//    }
+//}

@@ -10,6 +10,8 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 
+expect fun hypnoticAvailable(): Boolean
+
 fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     val sortedEntries = map.entries.toList().sortedBy { it.key }
     val sortedMap = LinkedHashMap<Int, String>()

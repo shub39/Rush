@@ -9,6 +9,7 @@ import com.materialkolor.ktx.lighten
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.lyrics.domain.Lyric
 import com.shub39.rush.lyrics.domain.Song
+import com.shub39.rush.lyrics.domain.SongUi
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()

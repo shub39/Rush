@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.lyrics.component
+package com.shub39.rush.core.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -3,9 +3,12 @@ package com.shub39.rush.core.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+
+actual fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
 fun Context.findActivity(): Activity? {
     var context = this

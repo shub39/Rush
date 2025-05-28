@@ -49,12 +49,12 @@ import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
-import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LrcCorrectDialog

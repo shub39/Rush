@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +54,7 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.core.presentation.hypnoticAvailable
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.center
@@ -233,7 +233,7 @@ fun LyricsCustomisationsPage(
                 )
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (hypnoticAvailable()) {
                 item {
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
                 }
