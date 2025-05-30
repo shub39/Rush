@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics.component
 
-import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -13,12 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.Sources
+import com.shub39.rush.core.presentation.copyToClipboard
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
@@ -65,31 +64,26 @@ fun ActionsRow(
         IconButton(
             onClick = {
                 coroutineScope.launch {
-                    clipboardManager.setClipEntry(
-                        ClipEntry(
-                            ClipData.newPlainText(
-                                "lyrics",
-                                if (state.selectedLines.isEmpty()) {
-                                    buildAnnotatedString {
-                                        append(
-                                            if (state.source == Sources.LrcLib) {
-                                                state.song?.lyrics?.joinToString("\n") { it.value }
-                                                    ?: ""
-                                            } else {
-                                                state.song?.geniusLyrics?.joinToString("\n") { it.value }
-                                                    ?: ""
-                                            }
-                                        )
+                    clipboardManager.copyToClipboard(
+                        if (state.selectedLines.isEmpty()) {
+                            buildAnnotatedString {
+                                append(
+                                    if (state.source == Sources.LrcLib) {
+                                        state.song?.lyrics?.joinToString("\n") { it.value }
+                                            ?: ""
+                                    } else {
+                                        state.song?.geniusLyrics?.joinToString("\n") { it.value }
+                                            ?: ""
                                     }
-                                } else {
-                                    buildAnnotatedString {
-                                        append(
-                                            state.selectedLines.toSortedMap().values.joinToString("\n")
-                                        )
-                                    }
-                                }
-                            )
-                        )
+                                )
+                            }
+                        } else {
+                            buildAnnotatedString {
+                                append(
+                                    state.selectedLines.toSortedMap().values.joinToString("\n")
+                                )
+                            }
+                        }.toString()
                     )
                 }
             }

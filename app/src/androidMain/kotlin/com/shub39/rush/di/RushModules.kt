@@ -5,6 +5,7 @@ import com.shub39.rush.core.data.DatastoreFactory
 import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.core.data.LyricsPagePreferencesImpl
 import com.shub39.rush.core.data.OtherPreferencesImpl
+import com.shub39.rush.core.data.PaletteGenerator
 import com.shub39.rush.core.data.SharePagePreferencesImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.OtherPreferences
@@ -33,6 +34,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val rushModules = module {
+    // Database
     singleOf(::DatabaseFactory)
     single {
         get<DatabaseFactory>()
@@ -44,14 +46,17 @@ val rushModules = module {
     single { get<SongDatabase>().songDao() }
     single { HttpClientFactory.create() }
 
+    // Network Stuff
     singleOf(::GeniusScraper)
     singleOf(::GeniusApi)
     singleOf(::LrcLibApi)
 
+    // Repositories and backup stuff
     singleOf(::RushRepository).bind<SongRepo>()
     singleOf(::ExportImpl).bind<ExportRepo>()
     singleOf(::RestoreImpl).bind<RestoreRepo>()
 
+    // Datastore
     singleOf(::DatastoreFactory)
     single(named("LyricsPage")) { get<DatastoreFactory>().getLyricsPagePreferencesDataStore() }
     single(named("SharePage")) { get<DatastoreFactory>().getSharePagePreferencesDataStore() }
@@ -60,6 +65,7 @@ val rushModules = module {
     single { LyricsPagePreferencesImpl(get(named("LyricsPage"))) }.bind<LyricsPagePreferences>()
     single { SharePagePreferencesImpl(get(named("SharePage"))) }.bind<SharePagePreferences>()
 
+    // ViewModels
     singleOf(::StateLayer)
     viewModelOf(::SearchSheetVM)
     viewModelOf(::ShareVM)
@@ -67,5 +73,7 @@ val rushModules = module {
     viewModelOf(::LyricsVM)
     viewModelOf(::SettingsVM)
 
+    // Misc
+    singleOf(::PaletteGenerator)
     singleOf(::provideImageLoader)
 }

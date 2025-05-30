@@ -1,5 +1,6 @@
 package com.shub39.rush.core.presentation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
@@ -9,8 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.Clipboard
 
 expect fun hypnoticAvailable(): Boolean
+
+expect suspend fun Clipboard.copyToClipboard(text : String)
+
+@Composable
+expect fun KeepScreenOn()
 
 fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     val sortedEntries = map.entries.toList().sortedBy { it.key }

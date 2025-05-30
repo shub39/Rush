@@ -40,18 +40,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
-import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.CardColors
-import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.hypnoticAvailable
@@ -421,46 +417,4 @@ fun LyricsCustomisationsPage(
         )
     }
 
-}
-
-@PreviewLightDark
-@Composable
-private fun Preview () {
-    var state by remember { mutableStateOf(LyricsPageState()) }
-
-    RushTheme(
-        state = Theme(
-            fonts = Fonts.MANROPE
-        )
-    ) {
-        LyricsCustomisationsPage(
-            state = state,
-            action = {
-                when (it) {
-                    is LyricsPageAction.OnAlignmentChange -> {
-                        state = state.copy(textAlign = it.alignment)
-                    }
-                    is LyricsPageAction.OnFontSizeChange -> {
-                        state = state.copy(fontSize = it.size)
-                    }
-                    is LyricsPageAction.OnLetterSpacingChange -> {
-                        state = state.copy(letterSpacing = it.spacing)
-                    }
-                    is LyricsPageAction.OnLineHeightChange -> {
-                        state = state.copy(lineHeight = it.height)
-                    }
-                    is LyricsPageAction.OnMaxLinesChange -> {
-                        state = state.copy(maxLines = it.lines)
-                    }
-                    is LyricsPageAction.OnFullscreenChange -> {
-                        state = state.copy(fullscreen = it.pref)
-                    }
-                    is LyricsPageAction.OnMeshSpeedChange -> {
-                        state = state.copy(meshSpeed = it.speed)
-                    }
-                    else -> {}
-                }
-            }
-        )
-    }
 }

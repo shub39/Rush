@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -103,14 +102,4 @@ fun LoadingCard(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoadingPreview() {
-    LoadingCard(
-        fetching = Pair(true, "Digital Bath - Deftones"),
-        searching = Pair(false, "Digital Bath - Deftones"),
-        colors = Pair(Color.Blue, Color.White)
-    )
 }

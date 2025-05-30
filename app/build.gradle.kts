@@ -124,11 +124,12 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
-            implementation(libs.palette)
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
+            implementation(libs.androidx.documentfile)
         }
         commonMain.dependencies {
+            implementation(libs.kmpalette.core)
             implementation(libs.material.icons.core)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

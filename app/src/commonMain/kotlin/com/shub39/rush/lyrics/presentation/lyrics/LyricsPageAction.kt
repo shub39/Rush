@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.Sources
@@ -29,7 +28,7 @@ sealed interface LyricsPageAction {
     data class OnUpdateShareLines(val songDetails: SongDetails) :
         LyricsPageAction
     data object OnToggleSearchSheet: LyricsPageAction
-    data class UpdateExtractedColors(val context: Context) : LyricsPageAction
+    data class UpdateExtractedColors(val url: String) : LyricsPageAction
     data class OnLrcSearch(val track: String, val artist: String) : LyricsPageAction
     data class OnUpdateSongLyrics(val id: Long, val plainLyrics: String, val syncedLyrics: String?) :
         LyricsPageAction

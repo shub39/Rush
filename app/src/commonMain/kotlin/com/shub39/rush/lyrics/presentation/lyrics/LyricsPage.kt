@@ -1,7 +1,5 @@
 package com.shub39.rush.lyrics.presentation.lyrics
 
-import android.view.WindowManager
-import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.basicMarquee
@@ -28,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,6 +46,7 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
+import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
@@ -74,17 +71,11 @@ fun LyricsPage(
     state: LyricsPageState,
     notificationAccess: Boolean
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
     // keeping the screen on
-    DisposableEffect(Unit) {
-        (context as? ComponentActivity)?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        onDispose {
-            (context as? ComponentActivity)?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-    }
+    KeepScreenOn()
 
     val (cardBackground, cardContent) = getCardColors(state)
 
@@ -169,11 +160,11 @@ fun LyricsPage(
                     Empty(suggestion = false)
 
                 } else {
-                    // Updating colors (requires context)
-                    LaunchedEffect(state.song) {
-                        action(
-                            LyricsPageAction.UpdateExtractedColors(context)
-                        )
+                    // Updating colors
+                    LaunchedEffect(state.song.artUrl) {
+                        state.song.artUrl?.let {
+                            action(LyricsPageAction.UpdateExtractedColors(it))
+                        }
                     }
 
                     BoxWithConstraints(
