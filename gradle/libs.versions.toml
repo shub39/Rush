@@ -12,9 +12,8 @@ ksp = "2.1.20-2.0.0"
 kotlinGradlePlugin = "2.0.0"
 landscapist = "2.4.2"
 activityCompose = "1.10.1"
-androidx-lifecycle = "2.8.4"
 navigation = "2.8.0-alpha10"
-palette = "1.0.0"
+kmpalette = "3.1.0"
 room = "2.7.1"
 sqlite = "2.5.1"
 serialization = "1.8.1"
@@ -24,23 +23,23 @@ datetime = "0.6.2"
 composeIcons = "1.1.1"
 junit = "4.13.2"
 zoomable = "2.6.0"
-compose-multiplatform = "1.8.0"
+compose-multiplatform = "1.8.1"
+materialIconsCore = "1.7.3"
 kotlinx-coroutines = "1.10.2"
 hotreload = "1.0.0-alpha09"
-materialIconsCore = "1.7.3"
+documentfile = "1.1.0"
 
 [libraries]
 # Android
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 
 # Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -50,7 +49,7 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
 # Others
-palette = { module = "androidx.palette:palette", version.ref = "palette" }
+kmpalette-core = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }

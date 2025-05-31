@@ -1,14 +1,13 @@
 package com.shub39.rush.lyrics.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.ExtractedColors
 import com.shub39.rush.core.domain.Result
-import com.shub39.rush.core.domain.Sources
+import com.shub39.rush.core.domain.data_classes.ExtractedColors
+import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.getMainTitle
-import com.shub39.rush.lyrics.data.listener.MediaListener
+import com.shub39.rush.lyrics.domain.MediaInterface
 import com.shub39.rush.lyrics.domain.SearchResult
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
@@ -31,6 +30,7 @@ import kotlinx.coroutines.launch
 class SearchSheetVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
+    private val mediaListener: MediaInterface
 ) : ViewModel() {
 
     private val _state = stateLayer.searchSheetState
@@ -49,7 +49,7 @@ class SearchSheetVM(
 
     private fun observeSongInfo() {
         viewModelScope.launch {
-            MediaListener.songInfoFlow.collect { songInfo ->
+            mediaListener.songInfoFlow.collect { songInfo ->
                 stateLayer.lyricsState.update {
                     it.copy(
                         playingSong = it.playingSong.copy(
@@ -58,8 +58,6 @@ class SearchSheetVM(
                         )
                     )
                 }
-
-                Log.d("SearchSheetVM", "Song Info: $songInfo")
 
                 if (stateLayer.lyricsState.value.autoChange) {
                     searchSong("${songInfo.first} ${songInfo.second}".trim())

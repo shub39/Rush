@@ -1,23 +1,14 @@
 package com.shub39.rush.lyrics.presentation.viewmodels
 
-import android.content.Context
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.palette.graphics.Palette
-import coil3.ImageLoader
-import coil3.request.ImageRequest
-import coil3.request.SuccessResult
-import coil3.request.allowHardware
-import coil3.toBitmap
-import com.shub39.rush.core.data.ExtractedColors
-import com.shub39.rush.core.domain.CardColors
+import com.shub39.rush.core.data.PaletteGenerator
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
-import com.shub39.rush.lyrics.data.listener.MediaListener
+import com.shub39.rush.lyrics.domain.MediaInterface
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
@@ -42,7 +33,8 @@ class LyricsVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
     private val lyricsPrefs: LyricsPagePreferences,
-    private val imageLoader: ImageLoader
+    private val paletteGenerator: PaletteGenerator,
+    private val mediaListener: MediaInterface
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -56,7 +48,7 @@ class LyricsVM(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             LyricsPageState()
         )
 
@@ -130,7 +122,15 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.UpdateExtractedColors -> viewModelScope.launch(Dispatchers.Default) {
-                    updateExtractedColors(action.context)
+                    val colors = paletteGenerator.generatePaletteFromUrl(action.url)
+
+                    _state.update {
+                        it.copy(extractedColors = colors)
+                    }
+
+                    stateLayer.sharePageState.update {
+                        it.copy(extractedColors = colors)
+                    }
                 }
 
                 is LyricsPageAction.OnSourceChange -> {
@@ -234,6 +234,10 @@ class LyricsVM(
                 is LyricsPageAction.OnFullscreenChange -> lyricsPrefs.setFullScreen(action.pref)
 
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
+
+                LyricsPageAction.OnPauseOrResume -> mediaListener.pauseOrResume(_state.value.playingSong.speed == 0f)
+
+                is LyricsPageAction.OnSeek -> mediaListener.seek(action.position)
             }
         }
     }
@@ -357,8 +361,8 @@ class LyricsVM(
     private fun observePlayback() {
         viewModelScope.launch(Dispatchers.Default) {
             combine(
-                MediaListener.songPositionFlow,
-                MediaListener.playbackSpeedFlow,
+                mediaListener.songPositionFlow,
+                mediaListener.playbackSpeedFlow,
                 ::Pair
             ).collectLatest { (position, speed) ->
                 val start = System.currentTimeMillis()
@@ -381,61 +385,9 @@ class LyricsVM(
         }
     }
 
-    // extract colors using palette api
-    private suspend fun updateExtractedColors(context: Context) {
-        val request = ImageRequest.Builder(context)
-            .data(_state.value.song?.artUrl)
-            .allowHardware(false)
-            .build()
-        val result = (imageLoader.execute(request) as? SuccessResult)?.image
+    override fun onCleared() {
+        super.onCleared()
 
-        result.let { drawable ->
-            if (drawable != null) {
-                Palette.from(drawable.toBitmap()).generate { palette ->
-                    palette?.let { colors ->
-                        val extractedColors = ExtractedColors(
-                            cardBackgroundDominant =
-                                Color(
-                                    colors.vibrantSwatch?.rgb ?: colors.lightVibrantSwatch?.rgb
-                                    ?: colors.darkVibrantSwatch?.rgb ?: colors.dominantSwatch?.rgb
-                                    ?: Color.DarkGray.toArgb()
-                                ),
-                            cardContentDominant =
-                                Color(
-                                    colors.vibrantSwatch?.bodyTextColor
-                                        ?: colors.lightVibrantSwatch?.bodyTextColor
-                                        ?: colors.darkVibrantSwatch?.bodyTextColor
-                                        ?: colors.dominantSwatch?.bodyTextColor
-                                        ?: Color.White.toArgb()
-                                ),
-                            cardBackgroundMuted =
-                                Color(
-                                    colors.mutedSwatch?.rgb ?: colors.darkMutedSwatch?.rgb
-                                    ?: colors.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                                ),
-                            cardContentMuted =
-                                Color(
-                                    colors.mutedSwatch?.bodyTextColor
-                                        ?: colors.darkMutedSwatch?.bodyTextColor
-                                        ?: colors.lightMutedSwatch?.bodyTextColor
-                                        ?: Color.White.toArgb()
-                                )
-                        )
-
-                        _state.update { lyricsPageState ->
-                            lyricsPageState.copy(
-                                extractedColors = extractedColors
-                            )
-                        }
-
-                        stateLayer.sharePageState.update {
-                            it.copy(
-                                extractedColors = extractedColors
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        mediaListener.destroy()
     }
 }

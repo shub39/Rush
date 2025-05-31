@@ -9,10 +9,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.materialkolor.PaletteStyle
-import com.shub39.rush.core.domain.AppTheme
-import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.core.domain.SortOrder
+import com.shub39.rush.core.domain.enums.AppTheme
+import com.shub39.rush.core.domain.enums.Fonts
+import com.shub39.rush.core.domain.enums.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

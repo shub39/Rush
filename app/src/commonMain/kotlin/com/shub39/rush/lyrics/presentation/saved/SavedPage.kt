@@ -42,12 +42,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.Route
-import com.shub39.rush.core.domain.SortOrder
+import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.simpleVerticalScrollbar
-import com.shub39.rush.lyrics.presentation.lyrics.SongUi
-import com.shub39.rush.lyrics.presentation.lyrics.component.Empty
+import com.shub39.rush.lyrics.domain.SongUi
 import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
@@ -113,6 +113,7 @@ fun SavedPage(
                                     ArtFromUrl(
                                         imageUrl = it.artUrl,
                                         modifier = Modifier
+                                            .size(48.dp)
                                             .clip(MaterialTheme.shapes.extraSmall)
                                     )
 

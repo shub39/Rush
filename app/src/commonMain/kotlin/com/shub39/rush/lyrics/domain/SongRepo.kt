@@ -13,7 +13,7 @@ interface SongRepo {
 
     // database input/ output
     suspend fun insertSong(song: Song)
-    fun getSongs(): Flow<List<Song>>
+    suspend fun getSongs(): Flow<List<Song>>
     suspend fun getAllSongs(): List<Song>
     suspend fun getSong(id: Long): Song
     suspend fun getSong(query: String): List<Song>

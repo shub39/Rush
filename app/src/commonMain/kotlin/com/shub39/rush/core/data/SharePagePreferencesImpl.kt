@@ -7,12 +7,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.core.domain.CardColors
-import com.shub39.rush.core.domain.CardFit
-import com.shub39.rush.core.domain.CardTheme
-import com.shub39.rush.core.domain.CornerRadius
-import com.shub39.rush.core.domain.Fonts
 import com.shub39.rush.core.domain.SharePagePreferences
+import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.CardFit
+import com.shub39.rush.core.domain.enums.CardTheme
+import com.shub39.rush.core.domain.enums.CornerRadius
+import com.shub39.rush.core.domain.enums.Fonts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -1,6 +1,7 @@
 package com.shub39.rush.core.domain
 
 import androidx.compose.ui.text.style.TextAlign
+import com.shub39.rush.core.domain.enums.CardColors
 import kotlinx.coroutines.flow.Flow
 
 interface LyricsPagePreferences {

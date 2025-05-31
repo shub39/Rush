@@ -1,7 +1,7 @@
 package com.shub39.rush.lyrics.presentation.saved
 
 import androidx.compose.runtime.Immutable
-import com.shub39.rush.core.domain.SortOrder
+import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.lyrics.domain.Song
 
 @Immutable
@@ -11,6 +11,6 @@ data class SavedPageState(
     val songsDesc: List<Song> = emptyList(),
     val groupedAlbum: List<Map.Entry<String, List<Song>>> = emptyList(),
     val groupedArtist: List<Map.Entry<String, List<Song>>> = emptyList(),
-    val sortOrder: SortOrder = SortOrder.ALBUM_ASC,
+    val sortOrder: SortOrder = SortOrder.DATE_ADDED,
     val onboarding: Boolean = true
 )
