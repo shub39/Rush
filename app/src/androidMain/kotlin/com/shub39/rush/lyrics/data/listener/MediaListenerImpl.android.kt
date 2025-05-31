@@ -12,52 +12,51 @@ import android.util.Log
 import androidx.core.content.getSystemService
 import com.shub39.rush.core.presentation.getMainArtist
 import com.shub39.rush.core.presentation.getMainTitle
+import com.shub39.rush.lyrics.domain.MediaInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
-object MediaListener {
-
-    private const val TAG = "MediaListener"
-
+actual class MediaListenerImpl(
+    context: Context
+): MediaInterface {
     private var msm: MediaSessionManager? = null
     private var nls: ComponentName? = null
     private var activeMediaController: MediaController? = null
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
-    val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
-    val songPositionFlow = MutableSharedFlow<Long>()
-    val playbackSpeedFlow = MutableSharedFlow<Float>()
-
     private var initialised = false
-
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    fun init(context: Context) {
-        if (!NotificationListener.canAccessNotifications(context) || initialised) return
+    override val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow<Float>()
+    override val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow<Pair<String, String>>()
+    override val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow<Long>()
 
-        initialised = true
+    init {
+        if (NotificationListener.canAccessNotifications(context) || !initialised) {
 
-        msm = context.getSystemService<MediaSessionManager>()
-        nls = ComponentName(context, NotificationListener::class.java)
+            initialised = true
 
-        msm?.let { manager ->
-            manager.addOnActiveSessionsChangedListener(
-                { onActiveSessionsChanged(it) },
-                nls
-            )
+            msm = context.getSystemService<MediaSessionManager>()
+            nls = ComponentName(context, NotificationListener::class.java)
 
-            val activeSessions = manager.getActiveSessions(nls!!)
-            val activeSession = activeSessions.find { isActive(it.playbackState) }
-            activeMediaController = activeSession ?: activeSessions.firstOrNull()
-            onActiveSessionsChanged(activeSessions)
-            Log.d(TAG, "init $manager")
-        } ?: Log.e(TAG, "MediaSessionManager is null")
+            msm?.let { manager ->
+                manager.addOnActiveSessionsChangedListener(
+                    { onActiveSessionsChanged(it) }, nls
+                )
+
+                val activeSessions = manager.getActiveSessions(nls!!)
+                val activeSession = activeSessions.find { isActive(it.playbackState) }
+                activeMediaController = activeSession ?: activeSessions.firstOrNull()
+                onActiveSessionsChanged(activeSessions)
+                Log.d("MediaListener", "init $manager")
+            } ?: Log.e("MediaListener", "MediaSessionManager is null")
+        }
     }
 
-    fun destroy() {
-        if (!initialised) return
+    override fun destroy() {
+        if (initialised) return
         internalCallbacks.forEach { (_, callback) ->
             activeMediaController?.unregisterCallback(callback)
         }
@@ -65,11 +64,27 @@ object MediaListener {
         initialised = false
     }
 
+    override fun seek(timestamp: Long) {
+        activeMediaController?.transportControls?.seekTo(timestamp)
+        activeMediaController?.transportControls?.play()
+        coroutineScope.launch {
+            songPositionFlow.emit(timestamp)
+        }
+    }
+
+    override fun pauseOrResume(resume: Boolean) {
+        if (resume) {
+            activeMediaController?.transportControls?.play()
+        } else {
+            activeMediaController?.transportControls?.pause()
+        }
+    }
+
     private fun onActiveSessionsChanged(controllers: List<MediaController?>?) {
         val newCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
 
         controllers?.filterNotNull()?.forEach { controller ->
-            Log.d(TAG, "Session: $controller (${controller.sessionToken})")
+            Log.d("MediaListener", "Session: $controller (${controller.sessionToken})")
 
             // Workaround for spotify, dunno if this is the most elegant solution but works :)
             if (controller.packageName.contains("spotify")) {
@@ -80,7 +95,8 @@ object MediaListener {
             }
 
             if (internalCallbacks.containsKey(controller.sessionToken)) {
-                newCallbacks[controller.sessionToken] = internalCallbacks[controller.sessionToken]!!
+                newCallbacks[controller.sessionToken] =
+                    internalCallbacks[controller.sessionToken]!!
             } else {
                 val callback = object : MediaController.Callback() {
                     override fun onPlaybackStateChanged(state: PlaybackState?) {
@@ -150,24 +166,6 @@ object MediaListener {
                 playbackSpeedFlow.emit(controller.playbackState?.playbackSpeed ?: 1f)
                 controller.playbackState?.position?.let { songPositionFlow.emit(it) }
             }
-        }
-
-    }
-
-    // 🙏
-    fun seek(timestamp: Long) {
-        activeMediaController?.transportControls?.seekTo(timestamp)
-        activeMediaController?.transportControls?.play()
-        coroutineScope.launch {
-            songPositionFlow.emit(timestamp)
-        }
-    }
-
-    fun pauseOrResume(resume: Boolean) {
-        if (resume) {
-            activeMediaController?.transportControls?.play()
-        } else {
-            activeMediaController?.transportControls?.pause()
         }
     }
 }

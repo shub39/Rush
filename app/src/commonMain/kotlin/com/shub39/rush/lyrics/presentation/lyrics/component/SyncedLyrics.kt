@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
-import com.shub39.rush.lyrics.data.listener.MediaListener
+import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.getCurrentLyricIndex
 import compose.icons.FontAwesomeIcons
@@ -49,6 +49,7 @@ fun SyncedLyrics(
     coroutineScope: CoroutineScope,
     lazyListState: LazyListState,
     cardContent: Color,
+    action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -107,7 +108,7 @@ fun SyncedLyrics(
                 Box(
                     modifier = Modifier
                         .clickable {
-                            MediaListener.seek(lyric.time)
+                            action(LyricsPageAction.OnSeek(lyric.time))
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         },
                     contentAlignment = Alignment.Center

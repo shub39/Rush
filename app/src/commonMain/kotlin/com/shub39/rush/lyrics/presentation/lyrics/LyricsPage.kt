@@ -50,7 +50,6 @@ import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.lyrics.data.listener.MediaListener
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
@@ -195,6 +194,7 @@ fun LyricsPage(
                                     coroutineScope = coroutineScope,
                                     lazyListState = lazyListState,
                                     cardContent = cardContent,
+                                    action = action,
                                     modifier = Modifier
                                         .align(Alignment.BottomCenter)
                                         .widthIn(max = 500.dp)
@@ -364,6 +364,7 @@ fun LyricsPage(
                                         coroutineScope = coroutineScope,
                                         lazyListState = lazyListState,
                                         cardContent = cardContent,
+                                        action = action,
                                         modifier = Modifier
                                             .weight(1f)
                                             .fadeTopToBottom()
@@ -387,7 +388,7 @@ fun LyricsPage(
                 containerColor = cardContent,
                 elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
                 shape = CircleShape,
-                onClick = { MediaListener.pauseOrResume(state.playingSong.speed == 0f) },
+                onClick = { action(LyricsPageAction.OnPauseOrResume) },
             ) {
                 Icon(
                     imageVector = if (state.playingSong.speed == 0f) {

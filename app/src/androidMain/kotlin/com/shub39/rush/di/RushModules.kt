@@ -14,10 +14,12 @@ import com.shub39.rush.lyrics.data.backup.ExportImpl
 import com.shub39.rush.lyrics.data.backup.RestoreImpl
 import com.shub39.rush.lyrics.data.database.DatabaseFactory
 import com.shub39.rush.lyrics.data.database.SongDatabase
+import com.shub39.rush.lyrics.data.listener.MediaListenerImpl
 import com.shub39.rush.lyrics.data.network.GeniusApi
 import com.shub39.rush.lyrics.data.network.GeniusScraper
 import com.shub39.rush.lyrics.data.network.LrcLibApi
 import com.shub39.rush.lyrics.data.repository.RushRepository
+import com.shub39.rush.lyrics.domain.MediaInterface
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
@@ -75,5 +77,6 @@ val rushModules = module {
 
     // Misc
     singleOf(::PaletteGenerator)
+    singleOf(::MediaListenerImpl).bind<MediaInterface>()
     singleOf(::provideImageLoader)
 }

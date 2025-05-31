@@ -25,6 +25,8 @@ sealed interface LyricsPageAction {
     data class OnSync(val sync: Boolean) : LyricsPageAction
     data class OnSourceChange(val source: Sources): LyricsPageAction
     data object OnToggleAutoChange: LyricsPageAction
+    data object OnPauseOrResume: LyricsPageAction
+    data class OnSeek(val position: Long): LyricsPageAction
     data class OnUpdateShareLines(val songDetails: SongDetails) :
         LyricsPageAction
     data object OnToggleSearchSheet: LyricsPageAction

@@ -8,7 +8,7 @@ import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
-import com.shub39.rush.lyrics.data.listener.MediaListener
+import com.shub39.rush.lyrics.domain.MediaInterface
 import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
@@ -33,7 +33,8 @@ class LyricsVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
     private val lyricsPrefs: LyricsPagePreferences,
-    private val paletteGenerator: PaletteGenerator
+    private val paletteGenerator: PaletteGenerator,
+    private val mediaListener: MediaInterface
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -233,6 +234,10 @@ class LyricsVM(
                 is LyricsPageAction.OnFullscreenChange -> lyricsPrefs.setFullScreen(action.pref)
 
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
+
+                LyricsPageAction.OnPauseOrResume -> mediaListener.pauseOrResume(_state.value.playingSong.speed == 0f)
+
+                is LyricsPageAction.OnSeek -> mediaListener.seek(action.position)
             }
         }
     }
@@ -356,8 +361,8 @@ class LyricsVM(
     private fun observePlayback() {
         viewModelScope.launch(Dispatchers.Default) {
             combine(
-                MediaListener.songPositionFlow,
-                MediaListener.playbackSpeedFlow,
+                mediaListener.songPositionFlow,
+                mediaListener.playbackSpeedFlow,
                 ::Pair
             ).collectLatest { (position, speed) ->
                 val start = System.currentTimeMillis()
@@ -378,5 +383,11 @@ class LyricsVM(
 
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        mediaListener.destroy()
     }
 }
