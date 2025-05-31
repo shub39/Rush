@@ -66,7 +66,7 @@ fun SpotifyShareCard(
                         text = song.title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = with(LocalDensity.current) { 40.toSp() },
+                        fontSize = with(LocalDensity.current) { 35.toSp() },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -75,7 +75,7 @@ fun SpotifyShareCard(
                         text = song.artist,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        fontSize = with(LocalDensity.current) { 35.toSp() },
+                        fontSize = with(LocalDensity.current) { 30.toSp() },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -91,7 +91,7 @@ fun SpotifyShareCard(
                             text = it.value,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
-                            fontSize = with(LocalDensity.current) { 40.toSp() },
+                            fontSize = with(LocalDensity.current) { 45.toSp() },
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
                     }

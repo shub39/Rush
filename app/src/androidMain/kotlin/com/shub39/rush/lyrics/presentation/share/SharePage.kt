@@ -33,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +48,9 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.CardColors
@@ -162,81 +165,85 @@ fun SharePage(
             contentAlignment = Alignment.Center
         ) {
 
-            RushTheme(
-                state = Theme(fonts = state.cardFont)
+            CompositionLocalProvider(
+                LocalDensity provides Density(2.5f, 1f)
             ) {
-                when (state.cardTheme) {
-                    CardTheme.SPOTIFY -> SpotifyShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                RushTheme(
+                    state = Theme(fonts = state.cardFont)
+                ) {
+                    when (state.cardTheme) {
+                        CardTheme.SPOTIFY -> SpotifyShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.RUSHED -> RushedShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        selectedUri = selectedUri
-                    )
+                        CardTheme.RUSHED -> RushedShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            selectedUri = selectedUri
+                        )
 
-                    CardTheme.HYPNOTIC -> HypnoticShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.HYPNOTIC -> HypnoticShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.VERTICAL -> VerticalShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.VERTICAL -> VerticalShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.QUOTE -> QuoteShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.QUOTE -> QuoteShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.COUPLET -> CoupletShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.COUPLET -> CoupletShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.MESSY -> MessyCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.MESSY -> MessyCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
 
-                    CardTheme.CHAT -> ChatCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit
-                    )
+                        CardTheme.CHAT -> ChatCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
+                    }
                 }
             }
 
