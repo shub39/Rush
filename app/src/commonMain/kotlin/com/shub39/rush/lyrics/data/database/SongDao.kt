@@ -12,9 +12,6 @@ interface SongDao {
     @Query("SELECT * FROM songs")
     fun getAllSongs(): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM songs")
-    fun getSongs(): List<SongEntity>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSong(songEntity: SongEntity)
 

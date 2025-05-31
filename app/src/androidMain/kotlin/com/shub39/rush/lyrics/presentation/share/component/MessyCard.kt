@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
@@ -82,7 +81,7 @@ fun MessyCard(
                         modifier = Modifier.rotate(word.rotate.toFloat()),
                         text = word.text,
                         fontWeight = word.fontWeight,
-                        fontSize = with(LocalDensity.current) { word.fontSize.sp }
+                        fontSize = with(LocalDensity.current) { word.fontSize.toSp() }
                     )
                 }
             }

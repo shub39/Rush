@@ -16,6 +16,7 @@ import com.shub39.rush.lyrics.domain.Song
 import com.shub39.rush.lyrics.domain.SongRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -156,7 +157,7 @@ class RushRepository(
         localDao.insertSong(song.toSongEntity())
     }
 
-    override fun getSongs(): Flow<List<Song>> {
+    override suspend fun getSongs(): Flow<List<Song>> {
         return localDao
             .getAllSongs().map { entities ->
                 entities.map { it.toSong() }
@@ -164,7 +165,7 @@ class RushRepository(
     }
 
     override suspend fun getAllSongs(): List<Song> {
-        return localDao.getSongs().map { it.toSong() }
+        return localDao.getAllSongs().first().map { it.toSong() }
     }
 
     override suspend fun getSong(id: Long): Song {

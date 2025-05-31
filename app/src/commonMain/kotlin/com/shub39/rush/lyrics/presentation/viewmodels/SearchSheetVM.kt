@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.Result
@@ -59,8 +58,6 @@ class SearchSheetVM(
                         )
                     )
                 }
-
-                Log.d("SearchSheetVM", "Song Info: $songInfo")
 
                 if (stateLayer.lyricsState.value.autoChange) {
                     searchSong("${songInfo.first} ${songInfo.second}".trim())
