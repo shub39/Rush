@@ -51,6 +51,7 @@ fun LyricsGraph(
 
         composable<LyricsRoutes.LyricsCustomisations> {
             LyricsCustomisationsPage(
+                onNavigateBack = { navController.navigateUp() },
                 state = lyricsState,
                 action = lyricsAction
             )

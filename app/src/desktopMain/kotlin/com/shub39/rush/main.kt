@@ -10,7 +10,8 @@ fun main() {
 
     singleWindowApplication(
         title = "Rush",
-        state = WindowState(width = 800.dp, height = 800.dp),
+        state = WindowState(width = 1200.dp, height = 900.dp),
+        resizable = false,
         alwaysOnTop = true
     ) {
         RushApp()

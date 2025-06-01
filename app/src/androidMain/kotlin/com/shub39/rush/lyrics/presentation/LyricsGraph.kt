@@ -95,6 +95,7 @@ fun LyricsGraph(
 
             LyricsCustomisationsPage(
                 state = lyricsState,
+                onNavigateBack = { navController.navigateUp() },
                 action = lyricsAction
             )
         }

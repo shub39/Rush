@@ -60,7 +60,7 @@ fun SearchSheet(
     val focusRequester = remember { FocusRequester() }
 
     ModalBottomSheet(
-        modifier = Modifier.widthIn(max = 500.dp),
+        modifier = Modifier.widthIn(max = 800.dp),
         onDismissRequest = {
             action(SearchSheetAction.OnToggleSearchSheet)
         }

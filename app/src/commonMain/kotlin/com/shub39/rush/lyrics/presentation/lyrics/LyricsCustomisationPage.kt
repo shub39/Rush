@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +52,9 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.hypnoticAvailable
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ArrowLeft
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.center
@@ -74,6 +78,7 @@ import rush.app.generated.resources.vibrant_colors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsCustomisationsPage(
+    onNavigateBack: () -> Unit,
     state: LyricsPageState,
     action: (LyricsPageAction) -> Unit
 ) = PageFill {
@@ -91,6 +96,17 @@ fun LyricsCustomisationsPage(
                 title = {
                     Text(stringResource(Res.string.customisations))
                 },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onNavigateBack
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            contentDescription = "Navigate Back",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                },
                 actions = {
                     IconButton(
                         onClick = {
@@ -105,7 +121,7 @@ fun LyricsCustomisationsPage(
                 }
             )
         },
-        modifier = Modifier.widthIn(max = 500.dp)
+        modifier = Modifier.widthIn(max = 1000.dp)
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

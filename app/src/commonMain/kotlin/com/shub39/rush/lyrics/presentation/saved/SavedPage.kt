@@ -66,13 +66,14 @@ fun SavedPage(
     currentSong: SongUi?,
     autoChange: Boolean,
     notificationAccess: Boolean,
+    showCurrent: Boolean = true,
     action: (SavedPageAction) -> Unit,
     navigator: (Route) -> Unit
 ) = PageFill {
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 500.dp),
+        modifier = Modifier.widthIn(max = 1000.dp),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.saved)) },
@@ -89,90 +90,92 @@ fun SavedPage(
             )
         },
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.clip(
-                    RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
+            if (showCurrent) {
+                BottomAppBar(
+                    modifier = Modifier.clip(
+                        RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                    )
                 ) {
-                    AnimatedContent(
-                        targetState = currentSong
+                    Row(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
                     ) {
-                        when (it) {
-                            null -> {}
-                            else -> {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.75f)
-                                        .clickable { navigator(Route.LyricsGraph) }
-                                ) {
-                                    ArtFromUrl(
-                                        imageUrl = it.artUrl,
+                        AnimatedContent(
+                            targetState = currentSong
+                        ) {
+                            when (it) {
+                                null -> {}
+                                else -> {
+                                    Row(
                                         modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                    )
-
-                                    Spacer(modifier = Modifier.width(16.dp))
-
-                                    Column {
-                                        Text(
-                                            text = it.title,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            overflow = TextOverflow.Ellipsis
+                                            .fillMaxWidth(0.75f)
+                                            .clickable { navigator(Route.LyricsGraph) }
+                                    ) {
+                                        ArtFromUrl(
+                                            imageUrl = it.artUrl,
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                                .clip(MaterialTheme.shapes.extraSmall)
                                         )
 
-                                        Text(
-                                            text = it.artists,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        Column {
+                                            Text(
+                                                text = it.title,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+
+                                            Text(
+                                                text = it.artists,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.weight(1f))
 
-                    if (notificationAccess) {
-                        IconButton(
-                            onClick = {
-                                action(SavedPageAction.OnToggleAutoChange)
-                                if (!autoChange) {
-                                    navigator(Route.LyricsGraph)
+                        if (notificationAccess) {
+                            IconButton(
+                                onClick = {
+                                    action(SavedPageAction.OnToggleAutoChange)
+                                    if (!autoChange) {
+                                        navigator(Route.LyricsGraph)
+                                    }
+                                },
+                                colors = if (autoChange) {
+                                    IconButtonDefaults.filledIconButtonColors()
+                                } else {
+                                    IconButtonDefaults.iconButtonColors()
                                 }
-                            },
-                            colors = if (autoChange) {
-                                IconButtonDefaults.filledIconButtonColors()
-                            } else {
-                                IconButtonDefaults.iconButtonColors()
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.rush_transparent),
+                                    contentDescription = "App Icon",
+                                    modifier = Modifier.size(28.dp)
+                                )
                             }
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        IconButton(
+                            onClick = { action(SavedPageAction.OnToggleSearchSheet) }
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.rush_transparent),
-                                contentDescription = "App Icon",
-                                modifier = Modifier.size(28.dp)
+                                imageVector = FontAwesomeIcons.Solid.Search,
+                                contentDescription = "Search",
+                                modifier = Modifier.size(20.dp)
                             )
                         }
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    IconButton(
-                        onClick = { action(SavedPageAction.OnToggleSearchSheet) }
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Solid.Search,
-                            contentDescription = "Search",
-                            modifier = Modifier.size(20.dp)
-                        )
                     }
                 }
             }
@@ -180,7 +183,7 @@ fun SavedPage(
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .widthIn(max = 500.dp)
+                .widthIn(max = 1000.dp)
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {

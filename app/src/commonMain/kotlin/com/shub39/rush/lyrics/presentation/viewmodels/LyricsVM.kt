@@ -369,6 +369,7 @@ class LyricsVM(
 
                 while (isActive) {
                     val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
+
                     _state.update { lyricsPageState ->
                         lyricsPageState.copy(
                             playingSong = lyricsPageState.playingSong.copy(
@@ -379,6 +380,8 @@ class LyricsVM(
                     }
 
                     delay(500)
+
+                    println(position + elapsed)
                 }
 
             }

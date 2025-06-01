@@ -11,4 +11,8 @@ sealed interface Route {
 
     @Serializable
     data object SettingsGraph: Route
+
+    companion object {
+        val allRoutes = listOf(SavedPage, LyricsGraph, SettingsGraph)
+    }
 }
