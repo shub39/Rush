@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.presentation.lyrics.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -96,6 +99,16 @@ fun SyncedLyrics(
                     animationSpec = tween(500, easing = LinearEasing)
                 )
 
+                val padding by animateDpAsState(
+                    targetValue = if (isCurrent) 64.dp else 0.dp,
+                    animationSpec = tween(300)
+                )
+
+                val blur by animateDpAsState(
+                    targetValue = if (isCurrent) 0.dp else 2.dp,
+                    animationSpec = tween(100)
+                )
+
                 val textColor by animateColorAsState(
                     targetValue = when {
                         lyric.time <= state.playingSong.position -> cardContent
@@ -107,6 +120,9 @@ fun SyncedLyrics(
 
                 Box(
                     modifier = Modifier
+                        .blur(radius = blur)
+                        .padding(vertical = padding)
+                        .clip(MaterialTheme.shapes.medium)
                         .clickable {
                             action(LyricsPageAction.OnSeek(lyric.time))
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)

@@ -151,6 +151,7 @@ fun RushApp(
                                 launchSingleTop = true
                             }
                         },
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 

@@ -156,7 +156,7 @@ fun SharePage(
     BackHandler { onDismiss() }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 500.dp)
+        modifier = Modifier.widthIn(max = 700.dp)
     ) { paddingValues ->
         Box(
             modifier = Modifier

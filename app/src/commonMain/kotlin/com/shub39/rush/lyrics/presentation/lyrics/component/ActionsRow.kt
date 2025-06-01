@@ -43,7 +43,8 @@ fun ActionsRow(
     cardContent: Color,
     onShare: () -> Unit,
     onEdit: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shareable: Boolean = true
 ) {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -194,7 +195,7 @@ fun ActionsRow(
             }
         }
 
-        AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
+        AnimatedVisibility(visible = state.selectedLines.isNotEmpty() && shareable) {
             Row {
                 IconButton(onClick = {
                     action(

@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsCustomisationsPage
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import kotlinx.serialization.Serializable
@@ -42,10 +41,8 @@ fun LyricsGraph(
                         launchSingleTop = true
                     }
                 },
-                onShare = {},
                 action = lyricsAction,
-                state = lyricsState,
-                notificationAccess = true
+                state = lyricsState
             )
         }
 

@@ -4,12 +4,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -75,6 +77,7 @@ fun RushApp(
                     notificationAccess = NotificationListener.canAccessNotifications(context),
                     action = savedVM::onAction,
                     autoChange = lyricsState.autoChange,
+                    modifier = Modifier.widthIn(max = 700.dp),
                     navigator = {
                         navController.navigate(it) {
                             launchSingleTop = true

@@ -5,7 +5,6 @@ import com.shub39.rush.lyrics.domain.MediaInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -25,7 +24,6 @@ actual class MediaListenerImpl: MediaInterface {
         pollingJob = coroutineScope.launch {
             while (isActive) {
                 updateMediaInfo()
-                delay(500)
             }
         }
     }

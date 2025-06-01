@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -80,7 +79,8 @@ import rush.app.generated.resources.vibrant_colors
 fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
-    action: (LyricsPageAction) -> Unit
+    action: (LyricsPageAction) -> Unit,
+    modifier: Modifier = Modifier
 ) = PageFill {
 
     val (cardBackground, cardContent) = getCardColors(state)
@@ -121,7 +121,7 @@ fun LyricsCustomisationsPage(
                 }
             )
         },
-        modifier = Modifier.widthIn(max = 1000.dp)
+        modifier = modifier
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

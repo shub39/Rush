@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -68,12 +67,13 @@ fun SavedPage(
     notificationAccess: Boolean,
     showCurrent: Boolean = true,
     action: (SavedPageAction) -> Unit,
-    navigator: (Route) -> Unit
+    navigator: (Route) -> Unit,
+    modifier: Modifier = Modifier
 ) = PageFill {
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
     Scaffold(
-        modifier = Modifier.widthIn(max = 1000.dp),
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.saved)) },
@@ -183,7 +183,6 @@ fun SavedPage(
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .widthIn(max = 1000.dp)
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
