@@ -44,6 +44,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
+import com.shub39.rush.lyrics.presentation.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.component.SyncedLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.getCardColors
@@ -161,7 +162,7 @@ fun LyricsPage(
                                     baseColor = Color.Transparent,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .size(200.dp)
+                                        .size(250.dp)
                                         .clip(MaterialTheme.shapes.small)
                                 )
                             }
@@ -219,6 +220,7 @@ fun LyricsPage(
                                 lazyListState = lazyListState,
                                 cardContent = cardContent,
                                 action = action,
+                                textAnimatedPadding = 64.dp,
                                 modifier = Modifier
                                     .weight(1f)
                                     .fadeTopToBottom()
@@ -253,5 +255,12 @@ fun LyricsPage(
                 )
             }
         }
+    }
+
+    if (state.lyricsCorrect) {
+        LrcCorrectDialog(
+            action = action,
+            state = state
+        )
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.materialkolor.ktx.lighten
@@ -53,7 +54,8 @@ fun SyncedLyrics(
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    textAnimatedPadding: Dp = 0.dp
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -74,6 +76,7 @@ fun SyncedLyrics(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
+        userScrollEnabled = state.playingSong.speed == 0f,
         state = lazyListState
     ) {
         item {
@@ -100,7 +103,7 @@ fun SyncedLyrics(
                 )
 
                 val padding by animateDpAsState(
-                    targetValue = if (isCurrent) 64.dp else 0.dp,
+                    targetValue = if (isCurrent) textAnimatedPadding else 0.dp,
                     animationSpec = tween(300)
                 )
 
@@ -120,7 +123,10 @@ fun SyncedLyrics(
 
                 Box(
                     modifier = Modifier
-                        .blur(radius = blur)
+                        .blur(
+                            radius = blur,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
                         .padding(vertical = padding)
                         .clip(MaterialTheme.shapes.medium)
                         .clickable {
@@ -141,7 +147,7 @@ fun SyncedLyrics(
                             modifier = Modifier
                                 .padding(6.dp)
                                 .blur(
-                                    radius = 10.dp,
+                                    radius = 5.dp,
                                     edgeTreatment = BlurredEdgeTreatment.Unbounded
                                 )
                         )
@@ -165,7 +171,7 @@ fun SyncedLyrics(
                                 .padding(6.dp)
                                 .size(state.fontSize.dp)
                                 .blur(
-                                    radius = 10.dp,
+                                    radius = 5.dp,
                                     edgeTreatment = BlurredEdgeTreatment.Unbounded
                                 )
                         )

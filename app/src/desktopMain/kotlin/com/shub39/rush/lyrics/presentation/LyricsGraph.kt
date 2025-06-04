@@ -2,7 +2,11 @@ package com.shub39.rush.lyrics.presentation
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -50,7 +54,8 @@ fun LyricsGraph(
             LyricsCustomisationsPage(
                 onNavigateBack = { navController.navigateUp() },
                 state = lyricsState,
-                action = lyricsAction
+                action = lyricsAction,
+                modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize()
             )
         }
     }

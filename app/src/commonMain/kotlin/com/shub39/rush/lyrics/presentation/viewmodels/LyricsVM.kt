@@ -380,10 +380,7 @@ class LyricsVM(
                     }
 
                     delay(500)
-
-                    println(position + elapsed)
                 }
-
             }
         }
     }

@@ -1,13 +1,19 @@
 package com.shub39.rush
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -19,7 +25,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -44,13 +55,14 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Home
 import compose.icons.fontawesomeicons.solid.Music
 import compose.icons.fontawesomeicons.solid.Search
-import compose.icons.fontawesomeicons.solid.Wrench
+import compose.icons.fontawesomeicons.solid.WindowClose
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.rush_transparent
 
 // Not Completed yet
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RushApp(
     lyricsVM: LyricsVM = koinViewModel(),
@@ -64,123 +76,167 @@ fun RushApp(
     val navController = rememberNavController()
     var currentRoute: Route by remember { mutableStateOf(Route.SavedPage) }
 
+    var fullscreen by remember { mutableStateOf(true) }
+    var isHovered by remember { mutableStateOf(false) }
+
     RushTheme(
         state = Theme(
             appTheme = AppTheme.DARK,
             fonts = Fonts.MANROPE
         )
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            NavigationRail(
-                windowInsets = WindowInsets(top = 16.dp),
-                header = {
-                    FloatingActionButton(
-                        onClick = { searchSheetVM.onAction(SearchSheetAction.OnToggleSearchSheet) }
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Solid.Search,
-                            contentDescription = "Search",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+        Box {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                AnimatedVisibility(
+                    visible = fullscreen
+                ) {
+                    NavigationRail(
+                        windowInsets = WindowInsets(top = 16.dp),
+                        header = {
+                            FloatingActionButton(
+                                onClick = { searchSheetVM.onAction(SearchSheetAction.OnToggleSearchSheet) }
+                            ) {
+                                Icon(
+                                    imageVector = FontAwesomeIcons.Solid.Search,
+                                    contentDescription = "Search",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
 
-                    FloatingActionButton(
-                        onClick = { savedVM.onAction(SavedPageAction.OnToggleAutoChange) },
-                        containerColor = if (!lyricsState.autoChange) {
-                            FloatingActionButtonDefaults.containerColor
-                        } else {
-                            MaterialTheme.colorScheme.primary
+                            FloatingActionButton(
+                                onClick = { savedVM.onAction(SavedPageAction.OnToggleAutoChange) },
+                                containerColor = if (!lyricsState.autoChange) {
+                                    FloatingActionButtonDefaults.containerColor
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.rush_transparent),
+                                    contentDescription = "App Icon",
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                         }
                     ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.rush_transparent),
-                            contentDescription = "App Icon",
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                }
-            ) {
-                Route.allRoutes.forEach {
-                    NavigationRailItem(
-                        selected = currentRoute == it,
-                        onClick = {
-                            if (currentRoute != it) {
-                                navController.navigate(it) { launchSingleTop = true }
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = when (it) {
-                                    Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
-                                    Route.SavedPage -> FontAwesomeIcons.Solid.Home
-                                    Route.SettingsGraph -> FontAwesomeIcons.Solid.Wrench
+                        listOf(
+                            Route.LyricsGraph,
+                            Route.SavedPage
+                        ).forEach {
+                            NavigationRailItem(
+                                selected = currentRoute == it,
+                                onClick = {
+                                    if (currentRoute != it) {
+                                        navController.navigate(it) { launchSingleTop = true }
+                                    }
                                 },
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Navigate"
+                                icon = {
+                                    Icon(
+                                        imageVector = when (it) {
+                                            Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
+                                            Route.SavedPage -> FontAwesomeIcons.Solid.Home
+                                            Route.SettingsGraph -> Icons.Default.Settings
+                                        },
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription = "Navigate"
+                                    )
+                                }
                             )
                         }
-                    )
+                    }
+
                 }
-            }
 
-            NavHost(
-                enterTransition = { fadeIn() },
-                exitTransition = { fadeOut() },
-                popEnterTransition = { fadeIn() },
-                popExitTransition = { fadeOut() },
-                navController = navController,
-                startDestination = Route.SavedPage,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .fillMaxSize()
-            ) {
-                composable<Route.SavedPage> {
-                    currentRoute = Route.SavedPage
+                NavHost(
+                    enterTransition = { fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { fadeOut() },
+                    navController = navController,
+                    startDestination = Route.SavedPage,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                ) {
+                    composable<Route.SavedPage> {
+                        currentRoute = Route.SavedPage
 
-                    SavedPage(
-                        state = savedState,
-                        action = savedVM::onAction,
-                        currentSong = lyricsState.song,
-                        autoChange = lyricsState.autoChange,
-                        showCurrent = false,
-                        notificationAccess = true,
-                        navigator = {
-                            navController.navigate(it) {
+                        SavedPage(
+                            state = savedState,
+                            action = savedVM::onAction,
+                            currentSong = lyricsState.song,
+                            autoChange = lyricsState.autoChange,
+                            showCurrent = false,
+                            notificationAccess = true,
+                            navigator = {
+                                navController.navigate(it) {
+                                    launchSingleTop = true
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                    composable<Route.LyricsGraph> {
+                        currentRoute = Route.LyricsGraph
+
+                        LyricsGraph(
+                            lyricsState = lyricsState,
+                            lyricsAction = lyricsVM::onAction,
+                        )
+                    }
+
+                    composable<Route.SettingsGraph> {
+                        currentRoute = Route.SettingsGraph
+
+                        SettingsGraph { navController.navigateUp() }
+                    }
+                }
+
+                if (searchState.visible) {
+                    SearchSheet(
+                        state = searchState,
+                        action = searchSheetVM::onAction,
+                        onClick = {
+                            navController.navigate(Route.LyricsGraph) {
                                 launchSingleTop = true
                             }
-                        },
-                        modifier = Modifier.fillMaxSize()
+                        }
                     )
-                }
-
-                composable<Route.LyricsGraph> {
-                    currentRoute = Route.LyricsGraph
-
-                    LyricsGraph(
-                        lyricsState = lyricsState,
-                        lyricsAction = lyricsVM::onAction,
-                    )
-                }
-
-                composable<Route.SettingsGraph> {
-                    currentRoute = Route.SettingsGraph
-
-                    SettingsGraph { navController.navigateUp() }
                 }
             }
 
-            if (searchState.visible) {
-                SearchSheet(
-                    state = searchState,
-                    action = searchSheetVM::onAction,
-                    onClick = {
-                        navController.navigate(Route.LyricsGraph) {
-                            launchSingleTop = true
-                        }
-                    }
-                )
+            FloatingActionButton(
+                onClick = { fullscreen = !fullscreen },
+                modifier = Modifier
+                    .onPointerEvent(eventType = PointerEventType.Exit) { isHovered = false }
+                    .onPointerEvent(eventType = PointerEventType.Enter) { isHovered = true }
+                    .padding(12.dp)
+                    .align(Alignment.BottomStart),
+                containerColor = if (fullscreen) {
+                    MaterialTheme.colorScheme.background
+                } else Color.Transparent,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp)
+            ) {
+                if (isHovered) {
+                    Icon(
+                        imageVector = if (fullscreen) {
+                            FontAwesomeIcons.Solid.WindowClose
+                        } else {
+                            Icons.Default.Menu
+                        },
+                        contentDescription = "Open Sidebar",
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else if (fullscreen) {
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.WindowClose,
+                        contentDescription = "Close Sidebar",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ on:
   workflow_dispatch: { }
 
 jobs:
-  build:
+  android:
     name: Build Beta APK
     runs-on: ubuntu-latest
 
