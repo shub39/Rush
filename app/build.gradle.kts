@@ -1,3 +1,4 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -15,6 +16,8 @@ plugins {
 }
 
 val appName = "Rush"
+val appVersionName = "3.3.0"
+val appVersionCode = 3300
 
 android {
     namespace = "com.shub39.rush"
@@ -24,8 +27,8 @@ android {
         applicationId = "com.shub39.rush"
         minSdk = 29
         targetSdk = 35
-        versionCode = 3210
-        versionName = "3.2.1"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -184,6 +187,29 @@ java {
 compose.desktop {
     application {
         mainClass = "com.shub39.rush.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Rpm, TargetFormat.Deb, TargetFormat.AppImage)
+            packageName = appName
+            packageVersion = appVersionName
+            licenseFile.set(project.file("../LICENSE"))
+
+            linux {
+                rpmLicenseType = "GPLv3"
+                shortcut = true
+
+                iconFile.set(project.file("../fastlane/metadata/android/en-US/images/icon.png"))
+            }
+
+            jvmArgs("-Dcompose.application.configure.swing.globals=false")
+
+            buildTypes.release.proguard {
+                isEnabled.set(false)
+                obfuscate.set(false)
+                optimize.set(true)
+                configurationFiles.from("proguard-rules.pro")
+            }
+        }
     }
 }
 

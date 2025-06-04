@@ -51,7 +51,7 @@ fun MessyCard(
             Word(
                 text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
                 fontWeight = if (Random.nextBoolean()) FontWeight.Bold else FontWeight.ExtraBold,
-                fontSize = Random.nextInt(30, 60),
+                fontSize = Random.nextInt(70, 150),
                 rotate = Random.nextInt(-10..10)
             )
         }

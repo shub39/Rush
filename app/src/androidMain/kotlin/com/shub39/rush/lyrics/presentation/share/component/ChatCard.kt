@@ -120,7 +120,6 @@ fun ChatCard(
                 item {
                     Text(
                         text = getFormattedTime(),
-                        style = MaterialTheme.typography.bodySmall,
                         fontSize = with(LocalDensity.current) { 20.toSp() }
                     )
                 }
