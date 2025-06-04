@@ -5,7 +5,7 @@
     <string name="unknown_album">אלבום לא ידוע</string>
     <string name="delete_all">מחק את כל המילים</string>
     <string name="suggestion">רואה את סמל החיפוש למטה?</string>
-    <string name="delete_confirmation">האם אתה בטוח שברצונך למחוק את כל המילים השמורות?</string>
+    <string name="delete_confirmation">האם אתה בטוח שברצונך למחוק את כל המילים שנשמרו?</string>
     <string name="notification">שירות האזנה להתראות</string>
     <string name="settings">הגדרות</string>
     <string name="downloaded">מילים שנשמרו</string>
@@ -120,4 +120,6 @@
     <string name="dark">כהה</string>
     <string name="loading_genius">טעינת מילות השיר גאוניות</string>
     <string name="fullscreen_desc">הסתר סרגלי מערכת בדף מילות השיר</string>
+    <string name="messy">מבולגן</string>
+    <string name="chat">צ\'אט</string>
 </resources>
