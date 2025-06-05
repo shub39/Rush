@@ -19,17 +19,19 @@ actual class MediaListenerImpl: MediaInterface {
     override val songInfoFlow = MutableSharedFlow<Pair<String, String>>()
     override val songPositionFlow = MutableSharedFlow<Long>()
 
-    init {
+    init { startListening() }
+
+    override fun destroy() {
+        pollingJob?.cancel()
+    }
+
+    override fun startListening() {
         pollingJob?.cancel()
         pollingJob = coroutineScope.launch {
             while (isActive) {
                 updateMediaInfo()
             }
         }
-    }
-
-    override fun destroy() {
-        pollingJob?.cancel()
     }
 
     override fun seek(timestamp: Long) {

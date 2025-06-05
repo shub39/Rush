@@ -8,6 +8,7 @@ interface MediaInterface {
     val playbackSpeedFlow: MutableSharedFlow<Float>
 
     fun destroy()
+    fun startListening()
     fun seek(timestamp: Long)
     fun pauseOrResume(resume: Boolean)
 }

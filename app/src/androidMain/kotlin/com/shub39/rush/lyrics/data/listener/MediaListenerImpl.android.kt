@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 actual class MediaListenerImpl(
-    context: Context
+    private val context: Context
 ): MediaInterface {
     private var msm: MediaSessionManager? = null
     private var nls: ComponentName? = null
@@ -29,12 +29,14 @@ actual class MediaListenerImpl(
     private var initialised = false
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    override val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow<Float>()
-    override val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow<Pair<String, String>>()
-    override val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow<Long>()
+    override val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
+    override val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    override val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
-    init {
-        if (NotificationListener.canAccessNotifications(context) || !initialised) {
+    init { startListening() }
+
+    override fun startListening() {
+        if (NotificationListener.canAccessNotifications(context) && !initialised) {
 
             initialised = true
 

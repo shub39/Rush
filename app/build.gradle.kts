@@ -16,17 +16,17 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "3.3.0"
-val appVersionCode = 3300
+val appVersionName = "3.3.1"
+val appVersionCode = 3310
 
 android {
     namespace = "com.shub39.rush"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.shub39.rush"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersionName
 

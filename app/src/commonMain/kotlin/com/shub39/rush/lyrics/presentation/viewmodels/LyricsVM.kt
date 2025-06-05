@@ -45,6 +45,7 @@ class LyricsVM(
         .onStart {
             observePlayback()
             observeDatastore()
+            mediaListener.startListening()
         }
         .stateIn(
             viewModelScope,
@@ -387,7 +388,6 @@ class LyricsVM(
 
     override fun onCleared() {
         super.onCleared()
-
         mediaListener.destroy()
     }
 }
