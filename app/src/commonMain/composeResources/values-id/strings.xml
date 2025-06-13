@@ -120,4 +120,6 @@
     <string name="quote">Kutipan</string>
     <string name="card_font">Font Kartu</string>
     <string name="couplet">Kuplet</string>
+    <string name="messy">Berantakan</string>
+    <string name="chat">Obrolan</string>
 </resources>
