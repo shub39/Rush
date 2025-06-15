@@ -53,6 +53,7 @@ fun LyricsGraph(
         composable<LyricsRoutes.LyricsCustomisations> {
             LyricsCustomisationsPage(
                 onNavigateBack = { navController.navigateUp() },
+                showFullscreenAndLines = false,
                 state = lyricsState,
                 action = lyricsAction,
                 modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize()

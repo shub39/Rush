@@ -37,6 +37,7 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
+import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
@@ -143,7 +144,7 @@ fun LyricsPage(
 
                     Row(
                         modifier = Modifier
-                            .padding(start = 40.dp)
+                            .padding(horizontal = 40.dp, vertical = 120.dp)
                             .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -212,6 +213,7 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fadeTopToBottom()
+                                    .fadeBottomToTop(0.1f)
                             )
                         } else if (state.song.syncedLyrics != null) {
                             SyncedLyrics(
@@ -224,6 +226,7 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fadeTopToBottom()
+                                    .fadeBottomToTop(0.1f)
                             )
                         }
                     }

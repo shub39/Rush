@@ -24,7 +24,7 @@ class GeniusScraper(
 
         when (response) {
             is Result.Success -> {
-                val lyricsElements = Ksoup.parse(response.data.body()).select("div[data-lyrics-container='true']")
+                val lyricsElements = Ksoup.parse(response.data.body<String>()).select("div[data-lyrics-container='true']")
 
                 return buildString {
                     lyricsElements.forEach { element ->
@@ -37,7 +37,7 @@ class GeniusScraper(
 
                             if (text.isBlank()) return@forEachIndexed
 
-                            // skips contributor info and all that
+                            // TODO: Doesn't work properly
                             if (text.matches(Regex("^\\d+ Contributors.*"))) return@forEachIndexed
                             if (text.matches(Regex("^\\d+ Contributor.*"))) return@forEachIndexed
 

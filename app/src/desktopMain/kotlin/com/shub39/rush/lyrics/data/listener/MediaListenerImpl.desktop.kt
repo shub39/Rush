@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.data.listener
 
-import com.fleeksoft.io.BufferedReader
 import com.shub39.rush.lyrics.domain.MediaInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
 import java.io.InputStreamReader
 
 actual class MediaListenerImpl: MediaInterface {

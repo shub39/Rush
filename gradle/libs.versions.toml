@@ -1,33 +1,35 @@
 [versions]
-agp = "8.10.0"
+agp = "8.10.1"
 colorpicker = "1.1.2"
+filekitCore = "0.10.0-beta04"
 materialKolor = "2.1.1"
 splashScreen = "1.0.1"
 datastore = "1.2.0-alpha02"
-koin = "4.0.1"
-ksoup = "0.2.1"
+koin = "4.1.0"
+ksoup = "0.2.4"
 ktor = "3.0.3"
-kotlin = "2.1.20"
-ksp = "2.1.20-2.0.0"
-kotlinGradlePlugin = "2.0.0"
-landscapist = "2.4.2"
+kotlin = "2.1.21"
+ksp = "2.1.21-2.0.1"
+landscapist = "2.5.0"
 activityCompose = "1.10.1"
-navigation = "2.8.0-alpha10"
+navigation = "2.9.0-beta02"
 kmpalette = "3.1.0"
 room = "2.7.1"
 sqlite = "2.5.1"
 serialization = "1.8.1"
-hypnoticcanvas = "0.4.0"
-aboutLibraries = '12.1.0'
+hypnoticcanvas = "0.4.1"
+aboutLibraries = '12.2.2'
 datetime = "0.6.2"
 composeIcons = "1.1.1"
 junit = "4.13.2"
-zoomable = "2.6.0"
+androidx-lifecycle = "2.9.0"
+zoomable = "2.8.0"
 compose-multiplatform = "1.8.1"
 materialIconsCore = "1.7.3"
 kotlinx-coroutines = "1.10.2"
-hotreload = "1.0.0-alpha09"
+hotreload = "1.0.0-alpha11"
 documentfile = "1.1.0"
+buildKonfig = "0.17.1"
 
 [libraries]
 # Android
@@ -36,7 +38,9 @@ androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
@@ -49,6 +53,8 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
 # Others
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekitCore" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekitCore" }
 kmpalette-core = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
@@ -60,6 +66,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
+aboutLibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
@@ -74,6 +81,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hotreload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotreload" }
 android-application = { id = "com.android.application", version.ref = "agp" }

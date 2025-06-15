@@ -80,7 +80,8 @@ fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     action: (LyricsPageAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showFullscreenAndLines: Boolean = true,
 ) = PageFill {
 
     val (cardBackground, cardContent) = getCardColors(state)
@@ -193,13 +194,15 @@ fun LyricsCustomisationsPage(
                         else -> 0f
                     },
                     onValueChange = {
-                        action(LyricsPageAction.OnAlignmentChange(
-                            when (it) {
-                                1f -> TextAlign.Center
-                                2f -> TextAlign.End
-                                else -> TextAlign.Start
-                            }
-                        ))
+                        action(
+                            LyricsPageAction.OnAlignmentChange(
+                                when (it) {
+                                    1f -> TextAlign.Center
+                                    2f -> TextAlign.End
+                                    else -> TextAlign.Start
+                                }
+                            )
+                        )
                     },
                     valueToShow = when (state.textAlign) {
                         TextAlign.Center -> stringResource(Res.string.center)
@@ -372,43 +375,45 @@ fun LyricsCustomisationsPage(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
             }
 
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.fullscreen)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(Res.string.fullscreen_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.fullscreen,
-                            onCheckedChange = {
-                                action(LyricsPageAction.OnFullscreenChange(it))
-                            }
-                        )
-                    }
-                )
+            if (showFullscreenAndLines) {
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(Res.string.fullscreen)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(Res.string.fullscreen_desc)
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = state.fullscreen,
+                                onCheckedChange = {
+                                    action(LyricsPageAction.OnFullscreenChange(it))
+                                }
+                            )
+                        }
+                    )
 
-                SettingSlider(
-                    title = stringResource(Res.string.max_lines),
-                    value = state.maxLines.toFloat(),
-                    onValueChange = {
-                        action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
-                    },
-                    valueToShow = state.maxLines.toString(),
-                    steps = 13,
-                    valueRange = 2f..16f,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+                    SettingSlider(
+                        title = stringResource(Res.string.max_lines),
+                        value = state.maxLines.toFloat(),
+                        onValueChange = {
+                            action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
+                        },
+                        valueToShow = state.maxLines.toString(),
+                        steps = 13,
+                        valueRange = 2f..16f,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
 
-            item {
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
+                item {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
+                }
             }
 
             item {
