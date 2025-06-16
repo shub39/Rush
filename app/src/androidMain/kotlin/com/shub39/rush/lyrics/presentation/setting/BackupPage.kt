@@ -1,8 +1,5 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +36,9 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Check
 import compose.icons.fontawesomeicons.solid.Play
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.backup
@@ -55,10 +55,10 @@ fun BackupPage(
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit
 ) = PageFill {
-    var uri by remember { mutableStateOf<Uri?>(null) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri = it }
+    var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
+    val launcher = rememberFilePickerLauncher(
+        type = FileKitType.File(extensions = listOf("json"))
+    ) { file -> restoreFile = file }
 
     LaunchedEffect(Unit) {
         action(SettingsPageAction.ResetBackup)
@@ -120,17 +120,17 @@ fun BackupPage(
                 supportingContent = { Text(stringResource(Res.string.restore_info)) },
                 trailingContent = {
                     Row {
-                        if (uri == null) {
+                        if (restoreFile == null) {
                             TextButton(
-                                onClick = { launcher.launch(arrayOf("application/json")) }
+                                onClick = { launcher.launch() }
                             ) {
                                 Text(text = stringResource(Res.string.choose_file))
                             }
                         }
 
-                        if (uri != null) {
+                        if (restoreFile != null) {
                             FilledTonalIconButton(
-                                onClick = { action(SettingsPageAction.OnRestoreSongs(uri!!.toString())) }
+                                onClick = { action(SettingsPageAction.OnRestoreSongs(restoreFile!!.toString())) }
                             ) {
                                 when (state.restoreState) {
                                     RestoreState.IDLE -> {

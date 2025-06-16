@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.lyrics.presentation.setting.AboutAppPage
 import com.shub39.rush.lyrics.presentation.setting.AboutLibrariesPage
 import com.shub39.rush.lyrics.presentation.setting.BackupPage
 import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
@@ -27,9 +26,6 @@ sealed interface SettingsRoutes {
 
     @Serializable
     data object BackupPage : SettingsRoutes
-
-    @Serializable
-    data object AboutPage : SettingsRoutes
 
     @Serializable
     data object LookAndFeelPage : SettingsRoutes
@@ -81,16 +77,6 @@ fun SettingsGraph(
             BackupPage(
                 state = state,
                 action = action
-            )
-        }
-
-        composable<SettingsRoutes.AboutPage> {
-            AboutAppPage(
-                onNavigateToLibraries = {
-                    navController.navigate(SettingsRoutes.AboutLibrariesPage) {
-                        launchSingleTop = true
-                    }
-                }
             )
         }
 

@@ -43,7 +43,7 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowRight
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
-import rush.app.generated.resources.about
+import rush.app.generated.resources.about_libraries
 import rush.app.generated.resources.backup
 import rush.app.generated.resources.backup_info
 import rush.app.generated.resources.batch_download
@@ -184,10 +184,10 @@ fun SettingRootPage(
             // navigate to about app
             item {
                 ListItem(
-                    headlineContent = { Text(stringResource(Res.string.about)) },
+                    headlineContent = { Text(stringResource(Res.string.about_libraries)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(SettingsRoutes.AboutPage) }
+                            onClick = { navigator(SettingsRoutes.AboutLibrariesPage) }
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,

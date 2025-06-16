@@ -2,7 +2,6 @@ package com.shub39.rush.lyrics.presentation.viewmodels
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -93,7 +92,7 @@ class SettingsVM(
                         )
                     }
 
-                    when (restoreRepo.restoreSongs(action.path.toString())) {
+                    when (restoreRepo.restoreSongs(action.path)) {
                         is RestoreResult.Failure -> {
                             _state.update {
                                 it.copy(
@@ -245,7 +244,7 @@ class SettingsVM(
 
                     retriever.release()
                 } catch (e: Exception) {
-                    Log.d("BatchDownloader", "Can't set data source $e")
+                    e.printStackTrace()
                 }
             }
         }
