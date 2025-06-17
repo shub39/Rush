@@ -74,8 +74,8 @@ actual class MediaListenerImpl: MediaInterface {
                 }
             )
 
-            val title = metadataTitle?.substringAfter("xesam:title ")?.trim() ?: ""
-            val artist = metadataArtist?.substringAfter("xesam:artist ")?.trim() ?: ""
+            val title = cleanOutput(metadataTitle)?.substringAfter("xesam:title ")?.trim() ?: ""
+            val artist = cleanOutput(metadataArtist)?.substringAfter("xesam:artist ")?.trim() ?: ""
             songInfoFlow.emit(Pair(title, artist))
 
             val positionLong = position?.trim()?.toFloatOrNull()?.toLong() ?: 0L
@@ -100,6 +100,16 @@ actual class MediaListenerImpl: MediaInterface {
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    private fun cleanOutput(output: String?): String? {
+        return output?.let {
+            when (output) {
+                "No players found" -> null
+                "No player could handle this command" -> null
+                else -> output
+            }
         }
     }
 }
