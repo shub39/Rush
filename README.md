@@ -35,7 +35,6 @@
 >- [x] Customisations
 >- [x] Auto-fill current playing song in search 
 >- [x] Synced Lyrics
->- [x] Batch download lyrics
 >- [x] Import and Export saved lyrics
 
 Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)

@@ -1,7 +1,5 @@
 package com.shub39.rush.lyrics.presentation.setting
 
-import android.content.Context
-import android.net.Uri
 import com.materialkolor.PaletteStyle
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.Fonts
@@ -12,10 +10,8 @@ sealed interface SettingsPageAction {
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
     data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction
     data class OnMaterialThemeToggle(val pref: Boolean): SettingsPageAction
-    data class OnProcessAudioFiles(val context: Context, val uri: Uri): SettingsPageAction
     data class OnFontChange(val fonts: Fonts): SettingsPageAction
     data object OnClearIndexes: SettingsPageAction
-    data object OnBatchDownload: SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
     data object ResetBackup: SettingsPageAction
     data class OnRestoreSongs(val path: String): SettingsPageAction

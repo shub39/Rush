@@ -1,16 +1,9 @@
 package com.shub39.rush.lyrics.presentation.viewmodels
 
-import android.content.Context
-import android.media.MediaMetadataRetriever
-import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.core.domain.Result
-import com.shub39.rush.core.presentation.getMainArtist
-import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.data.repository.RushRepository
-import com.shub39.rush.lyrics.domain.AudioFile
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
@@ -19,7 +12,6 @@ import com.shub39.rush.lyrics.domain.backup.RestoreState
 import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,15 +39,13 @@ class SettingsVM(
         .onStart { observeJob() }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             _state.value
         )
 
     fun onAction(action: SettingsPageAction) {
         viewModelScope.launch {
             when (action) {
-                is SettingsPageAction.OnBatchDownload -> batchDownload()
-
                 SettingsPageAction.OnClearIndexes -> {
                     _state.update {
                         it.copy(
@@ -131,32 +121,6 @@ class SettingsVM(
                 is SettingsPageAction.OnMaterialThemeToggle -> datastore.updateMaterialTheme(action.pref)
 
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
-
-                is SettingsPageAction.OnProcessAudioFiles -> {
-                    launch(Dispatchers.IO) {
-                        _state.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    isLoadingFiles = true
-                                )
-                            )
-                        }
-
-                        val documentFile = DocumentFile.fromTreeUri(action.context, action.uri)
-
-                        documentFile?.let {
-                            processFiles(action.context, documentFile)
-                        }
-
-                        _state.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    isLoadingFiles = false
-                                )
-                            )
-                        }
-                    }
-                }
             }
         }
     }
@@ -210,115 +174,6 @@ class SettingsVM(
                     )
                 )
             }
-        }
-    }
-
-    private fun processFiles(
-        context: Context,
-        directory: DocumentFile
-    ) {
-        for (file in directory.listFiles()) {
-            if (file.isDirectory) {
-                processFiles(context, file)
-            } else if (file.isFile && file.type?.startsWith("audio/") == true) {
-                val retriever = MediaMetadataRetriever()
-                try {
-                    retriever.setDataSource(context, file.uri)
-
-                    val title =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                    val artist =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-
-                    if (title != null && artist != null) {
-                        _state.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    audioFiles = it.batchDownload.audioFiles.plus(
-                                        AudioFile(getMainTitle(title), getMainArtist(artist))
-                                    )
-                                )
-                            )
-                        }
-                    }
-
-                    retriever.release()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-    private suspend fun batchDownload(
-        list: List<AudioFile> = _state.value.batchDownload.audioFiles,
-    ) {
-        _state.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = true
-                )
-            )
-        }
-
-        list.forEachIndexed { index, audioFile ->
-            when (val result = repo.searchGenius("${audioFile.title} ${audioFile.artist}")) {
-                is Result.Error -> {
-                    _state.update {
-                        it.copy(
-                            batchDownload = it.batchDownload.copy(
-                                indexes = it.batchDownload.indexes.plus(index to false)
-                            )
-                        )
-                    }
-                }
-
-                is Result.Success -> {
-                    val id = result.data.firstOrNull()?.id
-
-                    if (id == null) {
-                        _state.update {
-                            it.copy(
-                                batchDownload = it.batchDownload.copy(
-                                    indexes = it.batchDownload.indexes + (index to false)
-                                )
-                            )
-                        }
-
-                        return@forEachIndexed
-                    } else {
-                        when (repo.fetchSong(id)) {
-                            is Result.Error -> {
-                                _state.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to false)
-                                        )
-                                    )
-                                }
-                            }
-
-                            is Result.Success -> {
-                                _state.update {
-                                    it.copy(
-                                        batchDownload = it.batchDownload.copy(
-                                            indexes = it.batchDownload.indexes + (index to true),
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        _state.update {
-            it.copy(
-                batchDownload = it.batchDownload.copy(
-                    isDownloading = false
-                )
-            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation
+package com.shub39.rush.lyrics
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,35 +10,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.lyrics.presentation.setting.AboutLibrariesPage
 import com.shub39.rush.lyrics.presentation.setting.BackupPage
-import com.shub39.rush.lyrics.presentation.setting.BatchDownloader
 import com.shub39.rush.lyrics.presentation.setting.LookAndFeelPage
 import com.shub39.rush.lyrics.presentation.setting.SettingRootPage
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import kotlinx.serialization.Serializable
-
-sealed interface SettingsRoutes {
-    @Serializable
-    data object SettingRootPage : SettingsRoutes
-
-    @Serializable
-    data object BatchDownloaderPage : SettingsRoutes
-
-    @Serializable
-    data object BackupPage : SettingsRoutes
-
-    @Serializable
-    data object LookAndFeelPage : SettingsRoutes
-
-    @Serializable
-    data object AboutLibrariesPage : SettingsRoutes
-}
+import com.shub39.rush.lyrics.presentation.setting.SettingsRoutes
 
 @Composable
 fun SettingsGraph(
     notificationAccess: Boolean,
     state: SettingsPageState,
-    action: (SettingsPageAction) -> Unit
+    action: (SettingsPageAction) -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -62,33 +45,31 @@ fun SettingsGraph(
             SettingRootPage(
                 notificationAccess = notificationAccess,
                 action = action,
-                navigator = { navController.navigate(it) { launchSingleTop = true } }
-            )
-        }
-
-        composable<SettingsRoutes.BatchDownloaderPage> {
-            BatchDownloader(
-                state = state,
-                action = action
+                navigator = { navController.navigate(it) { launchSingleTop = true } },
+                onNavigateBack = onNavigateBack
             )
         }
 
         composable<SettingsRoutes.BackupPage> {
             BackupPage(
                 state = state,
-                action = action
+                action = action,
+                onNavigateBack = { navController.navigateUp() }
             )
         }
 
         composable<SettingsRoutes.LookAndFeelPage> {
             LookAndFeelPage(
                 state = state,
-                action = action
+                action = action,
+                onNavigateBack = { navController.navigateUp() }
             )
         }
 
         composable<SettingsRoutes.AboutLibrariesPage> {
-            AboutLibrariesPage()
+            AboutLibrariesPage(
+                onNavigateBack = { navController.navigateUp() }
+            )
         }
     }
 }

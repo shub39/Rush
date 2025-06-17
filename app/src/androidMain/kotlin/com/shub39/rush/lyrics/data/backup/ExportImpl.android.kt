@@ -23,7 +23,7 @@ actual class ExportImpl(
             withContext(Dispatchers.IO) {
                 songRepo.getAllSongs().map { it.toSongSchema() }
             }
-        }
+        }.await()
         val exportFolder = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
             "Rush"
@@ -36,13 +36,11 @@ actual class ExportImpl(
                 .replace(" ", "")
         val file = File(exportFolder, "Rush-Export-$time.json")
 
-        val songs = songsData.await()
-
         file.writeText(
             Json.Default.encodeToString(
                 ExportSchema(
                     schemaVersion = 3,
-                    songs = songs
+                    songs = songsData
                 )
             )
         )

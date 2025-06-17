@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -37,12 +36,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.domain.Route
-import com.shub39.rush.core.domain.data_classes.Theme
-import com.shub39.rush.core.domain.enums.AppTheme
-import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.lyrics.SettingsGraph
 import com.shub39.rush.lyrics.presentation.LyricsGraph
-import com.shub39.rush.lyrics.presentation.SettingsGraph
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
@@ -50,9 +46,10 @@ import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
 import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Home
+import compose.icons.fontawesomeicons.solid.Download
 import compose.icons.fontawesomeicons.solid.Music
 import compose.icons.fontawesomeicons.solid.Search
 import compose.icons.fontawesomeicons.solid.WindowClose
@@ -67,10 +64,12 @@ import rush.app.generated.resources.rush_transparent
 fun RushApp(
     lyricsVM: LyricsVM = koinViewModel(),
     searchSheetVM: SearchSheetVM = koinViewModel(),
-    savedVM: SavedVM = koinViewModel()
+    savedVM: SavedVM = koinViewModel(),
+    settingsVM: SettingsVM = koinViewModel()
 ) {
     val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
+    val settingsState by settingsVM.state.collectAsStateWithLifecycle()
     val savedState by savedVM.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
@@ -80,10 +79,7 @@ fun RushApp(
     var isHovered by remember { mutableStateOf(false) }
 
     RushTheme(
-        state = Theme(
-            appTheme = AppTheme.DARK,
-            fonts = Fonts.MANROPE
-        )
+        state = settingsState.theme
     ) {
         Box {
             Row(
@@ -136,8 +132,7 @@ fun RushApp(
                                     Icon(
                                         imageVector = when (it) {
                                             Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
-                                            Route.SavedPage -> FontAwesomeIcons.Solid.Home
-                                            Route.SettingsGraph -> Icons.Default.Settings
+                                            else -> FontAwesomeIcons.Solid.Download
                                         },
                                         modifier = Modifier.size(24.dp),
                                         contentDescription = "Navigate"
@@ -191,7 +186,12 @@ fun RushApp(
                     composable<Route.SettingsGraph> {
                         currentRoute = Route.SettingsGraph
 
-                        SettingsGraph { navController.navigateUp() }
+                        SettingsGraph(
+                            notificationAccess = true,
+                            state = settingsState,
+                            action = settingsVM::onAction,
+                            onNavigateBack = { navController.navigateUp() }
+                        )
                     }
                 }
 
