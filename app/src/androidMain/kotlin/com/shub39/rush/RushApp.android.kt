@@ -18,9 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
-import com.shub39.rush.lyrics.SettingsGraph
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.LyricsGraph
+import com.shub39.rush.lyrics.presentation.SettingsGraph
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM

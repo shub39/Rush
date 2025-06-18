@@ -9,9 +9,7 @@ import com.shub39.rush.lyrics.data.listener.MediaListenerImpl
 import com.shub39.rush.lyrics.domain.MediaInterface
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
-import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -24,6 +22,5 @@ actual val platformModule = module {
     singleOf(::MediaListenerImpl).bind<MediaInterface>()
 
     // android specific
-    viewModelOf(::ShareVM)
     singleOf(::provideImageLoader)
 }

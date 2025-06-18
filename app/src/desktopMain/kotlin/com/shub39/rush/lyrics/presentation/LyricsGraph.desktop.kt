@@ -10,16 +10,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.LyricsRoutes
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsCustomisationsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.presentation.share.SharePage
+import com.shub39.rush.lyrics.presentation.share.SharePageAction
+import com.shub39.rush.lyrics.presentation.share.SharePageState
 
 @Composable
-fun LyricsGraph(
+actual fun LyricsGraph(
+    notificationAccess: Boolean,
     lyricsState: LyricsPageState,
-    lyricsAction: (LyricsPageAction) -> Unit
+    shareState: SharePageState,
+    lyricsAction: (LyricsPageAction) -> Unit,
+    shareAction: (SharePageAction) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -39,17 +44,32 @@ fun LyricsGraph(
                     }
                 },
                 action = lyricsAction,
-                state = lyricsState
+                state = lyricsState,
+                onShare = {
+                    navController.navigate(LyricsRoutes.SharePage) {
+                        launchSingleTop = true
+                    }
+                },
+                notificationAccess = notificationAccess
             )
         }
 
         composable<LyricsRoutes.LyricsCustomisations> {
             LyricsCustomisationsPage(
                 onNavigateBack = { navController.navigateUp() },
-                showFullscreenAndLines = false,
+                showFullscreen = false,
                 state = lyricsState,
                 action = lyricsAction,
                 modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize()
+            )
+        }
+
+        composable<LyricsRoutes.SharePage> {
+            SharePage(
+                onDismiss = { navController.navigateUp() },
+                state = shareState,
+                action = shareAction,
+                share = false
             )
         }
     }

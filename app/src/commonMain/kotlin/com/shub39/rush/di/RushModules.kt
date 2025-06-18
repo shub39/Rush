@@ -20,6 +20,7 @@ import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
 import com.shub39.rush.lyrics.presentation.viewmodels.StateLayer
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -64,4 +65,5 @@ val rushModule = module {
     viewModelOf(::SavedVM)
     viewModelOf(::LyricsVM)
     viewModelOf(::SettingsVM)
+    viewModelOf(::ShareVM)
 }

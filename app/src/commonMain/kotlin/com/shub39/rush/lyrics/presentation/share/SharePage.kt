@@ -1,10 +1,5 @@
 package com.shub39.rush.lyrics.presentation.share
 
-import android.net.Uri
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -20,18 +15,17 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -43,11 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Density
@@ -60,7 +53,6 @@ import com.shub39.rush.core.domain.enums.CornerRadius
 import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
-import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.presentation.share.component.ChatCard
 import com.shub39.rush.lyrics.presentation.share.component.CoupletShareCard
@@ -73,10 +65,18 @@ import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
 import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.Download
 import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Image
-import compose.icons.fontawesomeicons.solid.Share
+import io.github.vinceglb.filekit.ImageFormat
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
+import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
+import io.github.vinceglb.filekit.write
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -88,7 +88,6 @@ import rush.app.generated.resources.card_corners
 import rush.app.generated.resources.card_font
 import rush.app.generated.resources.card_size
 import rush.app.generated.resources.card_theme
-import rush.app.generated.resources.save
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,20 +95,30 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
+    share: Boolean
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
     val zoomState = rememberZoomState()
-    val context = LocalContext.current
 
-    var namePicker by remember { mutableStateOf(false) }
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
-    var selectedUri: Uri? by remember { mutableStateOf(null) }
+    var selectedImage: PlatformFile? by remember { mutableStateOf(null) }
+    var saveImage: ImageBitmap? by remember { mutableStateOf(null) }
 
-    val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-        selectedUri = uri
+    val imagePicker = rememberFilePickerLauncher(
+        type = FileKitType.Image
+    ) { image -> selectedImage = image }
+
+    val imageSaver = rememberFileSaverLauncher { file ->
+        if (saveImage != null) {
+            coroutineScope.launch(Dispatchers.IO) {
+                file?.write(saveImage!!.encodeToByteArray(
+                    format = ImageFormat.PNG
+                ))
+            }
+        }
     }
 
     val modifier = Modifier
@@ -153,10 +162,24 @@ fun SharePage(
     )
     val cardCorners = RoundedCornerShape(cornerRadius)
 
-    BackHandler { onDismiss() }
-
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp)
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = onDismiss
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            contentDescription = "Navigate Back",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            )
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -187,7 +210,7 @@ fun SharePage(
                             sortedLines = state.selectedLines,
                             cardColors = cardColor,
                             cardCorners = cardCorners,
-                            selectedUri = selectedUri
+                            selectedImage = selectedImage
                         )
 
                         CardTheme.HYPNOTIC -> HypnoticShareCard(
@@ -287,7 +310,15 @@ fun SharePage(
                 Spacer(modifier = Modifier.padding(4.dp))
 
                 FloatingActionButton(
-                    onClick = { namePicker = true },
+                    onClick = {
+                        coroutineScope.launch {
+                            saveImage = cardGraphicsLayer.toImageBitmap()
+                            imageSaver.launch(
+                                suggestedName = "${state.songDetails.artist}-${state.songDetails.title}",
+                                extension = "png"
+                            )
+                        }
+                    },
                     containerColor = MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.extraLarge
                 ) {
@@ -300,29 +331,9 @@ fun SharePage(
 
                 Spacer(modifier = Modifier.padding(4.dp))
 
-                FloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-
-                            shareImage(
-                                context,
-                                bitmap,
-                                "${state.songDetails.artist}-${state.songDetails.title}.png"
-                            )
-                        }
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        imageVector = FontAwesomeIcons.Solid.Share,
-                        contentDescription = "Share",
-                        modifier = Modifier.size(24.dp)
-                    )
+                if (share) {
+                    ShareButton(coroutineScope, cardGraphicsLayer)
                 }
-
-                Spacer(modifier = Modifier.padding(4.dp))
 
                 FloatingActionButton(
                     onClick = { editSheet = true },
@@ -343,11 +354,7 @@ fun SharePage(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            launcher.launch(
-                                PickVisualMediaRequest(
-                                    PickVisualMedia.ImageOnly
-                                )
-                            )
+                            imagePicker.launch()
                         },
                         shape = MaterialTheme.shapes.extraLarge,
                         containerColor = MaterialTheme.colorScheme.primary
@@ -359,38 +366,6 @@ fun SharePage(
                         )
                     }
                 }
-            }
-        }
-    }
-
-    if (namePicker) {
-        RushDialog(
-            onDismissRequest = { namePicker = false }
-        ) {
-            var name by remember { mutableStateOf("${state.songDetails.artist}-${state.songDetails.title}.png") }
-
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                singleLine = true,
-                modifier = Modifier.padding(16.dp),
-                shape = RoundedCornerShape(32.dp)
-            )
-
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        namePicker = false
-                        val bitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
-                        shareImage(context, bitmap, name, true)
-                    }
-                },
-                enabled = isValidFilename(name),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(text = stringResource(Res.string.save))
             }
         }
     }

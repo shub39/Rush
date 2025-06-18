@@ -81,7 +81,7 @@ fun LyricsCustomisationsPage(
     state: LyricsPageState,
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
-    showFullscreenAndLines: Boolean = true,
+    showFullscreen: Boolean = true,
 ) = PageFill {
 
     val (cardBackground, cardContent) = getCardColors(state)
@@ -375,8 +375,8 @@ fun LyricsCustomisationsPage(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
             }
 
-            if (showFullscreenAndLines) {
-                item {
+            item {
+                if (showFullscreen) {
                     ListItem(
                         headlineContent = {
                             Text(
@@ -397,23 +397,23 @@ fun LyricsCustomisationsPage(
                             )
                         }
                     )
-
-                    SettingSlider(
-                        title = stringResource(Res.string.max_lines),
-                        value = state.maxLines.toFloat(),
-                        onValueChange = {
-                            action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
-                        },
-                        valueToShow = state.maxLines.toString(),
-                        steps = 13,
-                        valueRange = 2f..16f,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
                 }
 
-                item {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
-                }
+                SettingSlider(
+                    title = stringResource(Res.string.max_lines),
+                    value = state.maxLines.toFloat(),
+                    onValueChange = {
+                        action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
+                    },
+                    valueToShow = state.maxLines.toString(),
+                    steps = 13,
+                    valueRange = 2f..16f,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+
+            item {
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
             }
 
             item {

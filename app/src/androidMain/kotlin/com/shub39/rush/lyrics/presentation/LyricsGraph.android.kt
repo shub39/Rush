@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.LyricsRoutes
 import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsCustomisationsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
@@ -22,7 +21,7 @@ import com.shub39.rush.lyrics.presentation.share.SharePageAction
 import com.shub39.rush.lyrics.presentation.share.SharePageState
 
 @Composable
-fun LyricsGraph(
+actual fun LyricsGraph(
     notificationAccess: Boolean,
     lyricsState: LyricsPageState,
     shareState: SharePageState,
@@ -74,7 +73,8 @@ fun LyricsGraph(
             SharePage(
                 onDismiss = { navController.navigateUp() },
                 state = shareState,
-                action = shareAction
+                action = shareAction,
+                share = true
             )
         }
 

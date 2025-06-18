@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics
+package com.shub39.rush.lyrics.presentation
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut

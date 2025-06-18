@@ -53,10 +53,12 @@ import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
 
 @Composable
-fun LyricsPage(
-    state: LyricsPageState,
+actual fun LyricsPage(
+    onEdit: () -> Unit,
+    onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
-    onEdit: () -> Unit
+    state: LyricsPageState,
+    notificationAccess: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -192,8 +194,7 @@ fun LyricsPage(
                                 notificationAccess = true,
                                 cardBackground = cardBackground,
                                 cardContent = cardContent,
-                                shareable = false,
-                                onShare = {},
+                                onShare = onShare,
                                 onEdit = onEdit,
                                 modifier = Modifier.padding(vertical = 16.dp)
                             )

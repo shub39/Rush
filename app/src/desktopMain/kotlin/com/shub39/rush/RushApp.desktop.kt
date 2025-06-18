@@ -36,8 +36,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.lyrics.SettingsGraph
 import com.shub39.rush.lyrics.presentation.LyricsGraph
+import com.shub39.rush.lyrics.presentation.SettingsGraph
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
@@ -46,6 +46,7 @@ import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Download
@@ -65,11 +66,13 @@ actual fun RushApp() {
     val searchSheetVM: SearchSheetVM = koinViewModel()
     val savedVM: SavedVM = koinViewModel()
     val settingsVM: SettingsVM = koinViewModel()
+    val shareVM: ShareVM = koinViewModel()
 
     val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
     val settingsState by settingsVM.state.collectAsStateWithLifecycle()
     val savedState by savedVM.state.collectAsStateWithLifecycle()
+    val shareState by shareVM.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     var currentRoute: Route by remember { mutableStateOf(Route.SavedPage) }
@@ -176,6 +179,9 @@ actual fun RushApp() {
                         LyricsGraph(
                             lyricsState = lyricsState,
                             lyricsAction = lyricsVM::onAction,
+                            notificationAccess = true,
+                            shareState = shareState,
+                            shareAction = shareVM::onAction,
                         )
                     }
 
