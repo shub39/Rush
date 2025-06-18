@@ -23,6 +23,7 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberShareFileLauncher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -36,21 +37,25 @@ actual fun ShareButton(
 
     FloatingActionButton(
         onClick = {
-            coroutineScope.launch(Dispatchers.IO) {
-                val imageBitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+            coroutineScope.launch {
+                val imageBitmap = withContext(Dispatchers.Main) {
+                    cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                }
 
-                val cachePath = File(context.cacheDir, "images")
-                cachePath.mkdirs()
-                val file = File(cachePath, "image.png")
+                withContext(Dispatchers.IO) {
+                    val cachePath = File(context.cacheDir, "images")
+                    cachePath.mkdirs()
+                    val file = File(cachePath, "image.png")
 
-                val stream = FileOutputStream(file)
-                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                stream.close()
+                    val stream = FileOutputStream(file)
+                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    stream.close()
 
-                val contentUri: Uri =
-                    FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                    val contentUri: Uri =
+                        FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
-                launcher.launch(PlatformFile(contentUri))
+                    launcher.launch(PlatformFile(contentUri))
+                }
             }
         },
         shape = MaterialTheme.shapes.extraLarge,

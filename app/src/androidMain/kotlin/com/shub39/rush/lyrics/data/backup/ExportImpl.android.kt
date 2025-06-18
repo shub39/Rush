@@ -6,8 +6,6 @@ import com.shub39.rush.lyrics.domain.SongRepo
 import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.ExportSchema
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -18,12 +16,8 @@ import java.io.File
 actual class ExportImpl(
     private val songRepo: SongRepo
 ): ExportRepo {
-    override suspend fun exportToJson() = coroutineScope {
-        val songsData = async {
-            withContext(Dispatchers.IO) {
-                songRepo.getAllSongs().map { it.toSongSchema() }
-            }
-        }.await()
+    override suspend fun exportToJson() = withContext(Dispatchers.IO) {
+        val songsData = songRepo.getAllSongs().map { it.toSongSchema() }
         val exportFolder = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
             "Rush"

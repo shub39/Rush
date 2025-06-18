@@ -69,7 +69,8 @@ actual fun LyricsGraph(
                 onDismiss = { navController.navigateUp() },
                 state = shareState,
                 action = shareAction,
-                share = false
+                share = false,
+                zoomEnabled = false
             )
         }
     }

@@ -14,7 +14,22 @@ import com.shub39.rush.lyrics.presentation.setting.LookAndFeelPage
 import com.shub39.rush.lyrics.presentation.setting.SettingRootPage
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
-import com.shub39.rush.lyrics.presentation.setting.SettingsRoutes
+import kotlinx.serialization.Serializable
+
+@Serializable
+private sealed interface SettingsRoutes {
+    @Serializable
+    data object SettingRootPage : SettingsRoutes
+
+    @Serializable
+    data object BackupPage : SettingsRoutes
+
+    @Serializable
+    data object LookAndFeelPage : SettingsRoutes
+
+    @Serializable
+    data object AboutLibrariesPage : SettingsRoutes
+}
 
 @Composable
 fun SettingsGraph(
@@ -45,8 +60,11 @@ fun SettingsGraph(
             SettingRootPage(
                 notificationAccess = notificationAccess,
                 action = action,
-                navigator = { navController.navigate(it) { launchSingleTop = true } },
-                onNavigateBack = onNavigateBack
+                onNavigateBack = onNavigateBack,
+                onNavigateToLookAndFeel = { navController.navigate(SettingsRoutes.LookAndFeelPage) },
+                onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },
+                onNavigateToAboutLibraries = { navController.navigate(SettingsRoutes.AboutLibrariesPage) },
+                state = state,
             )
         }
 

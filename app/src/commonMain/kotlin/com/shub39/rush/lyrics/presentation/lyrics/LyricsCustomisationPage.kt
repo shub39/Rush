@@ -73,6 +73,7 @@ import rush.app.generated.resources.start
 import rush.app.generated.resources.text_alignment
 import rush.app.generated.resources.use_extracted_colors
 import rush.app.generated.resources.vibrant_colors
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,9 +197,9 @@ fun LyricsCustomisationsPage(
                     onValueChange = {
                         action(
                             LyricsPageAction.OnAlignmentChange(
-                                when (it) {
-                                    1f -> TextAlign.Center
-                                    2f -> TextAlign.End
+                                when (it.roundToInt()) {
+                                    1 -> TextAlign.Center
+                                    2 -> TextAlign.End
                                     else -> TextAlign.Start
                                 }
                             )

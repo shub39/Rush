@@ -6,5 +6,6 @@ import com.shub39.rush.core.domain.data_classes.Theme
 @Composable
 expect fun RushTheme(
     state: Theme = Theme(),
+    fontScale: Float = 1f,
     content: @Composable () -> Unit
 )

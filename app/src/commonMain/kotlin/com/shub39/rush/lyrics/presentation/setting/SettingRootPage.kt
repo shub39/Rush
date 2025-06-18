@@ -53,11 +53,13 @@ import rush.app.generated.resources.settings
 @Composable
 fun SettingRootPage(
     notificationAccess: Boolean,
+    state: SettingsPageState,
     action: (SettingsPageAction) -> Unit,
-    navigator: (SettingsRoutes) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToLookAndFeel: () -> Unit,
+    onNavigateToBackup: () -> Unit,
+    onNavigateToAboutLibraries: () -> Unit
 ) = PageFill {
-    var deleteButtonStatus by remember { mutableStateOf(true) }
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -93,7 +95,7 @@ fun SettingRootPage(
                     supportingContent = { Text(text = stringResource(Res.string.look_and_feel_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(SettingsRoutes.LookAndFeelPage) },
+                            onClick = onNavigateToLookAndFeel,
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -112,7 +114,7 @@ fun SettingRootPage(
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { deleteConfirmationDialog = true },
-                            enabled = deleteButtonStatus
+                            enabled = state.deleteButtonEnabled
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -130,7 +132,7 @@ fun SettingRootPage(
                     supportingContent = { Text(text = stringResource(Res.string.backup_info)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(SettingsRoutes.BackupPage) }
+                            onClick = onNavigateToBackup
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -151,7 +153,7 @@ fun SettingRootPage(
                     headlineContent = { Text(stringResource(Res.string.about_libraries)) },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { navigator(SettingsRoutes.AboutLibrariesPage) }
+                            onClick = onNavigateToAboutLibraries
                         ) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.ArrowRight,
@@ -204,7 +206,6 @@ fun SettingRootPage(
                     onClick = {
                         action(SettingsPageAction.OnDeleteSongs)
                         deleteConfirmationDialog = false
-                        deleteButtonStatus = false
                     },
                     shape = MaterialTheme.shapes.extraLarge,
                     modifier = Modifier.fillMaxWidth()

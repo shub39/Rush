@@ -9,12 +9,9 @@ import com.shub39.rush.lyrics.domain.backup.ExportState
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
 import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.setting.BatchDownload
 import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,6 +23,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsVM(
+    stateLayer: StateLayer,
     private val repo: RushRepository,
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
@@ -34,7 +32,7 @@ class SettingsVM(
 
     private var observeJob: Job? = null
 
-    private val _state = MutableStateFlow(SettingsPageState())
+    private val _state = stateLayer.settingsState
     val state = _state.asStateFlow()
         .onStart { observeJob() }
         .stateIn(
@@ -46,17 +44,6 @@ class SettingsVM(
     fun onAction(action: SettingsPageAction) {
         viewModelScope.launch {
             when (action) {
-                SettingsPageAction.OnClearIndexes -> {
-                    _state.update {
-                        it.copy(
-                            batchDownload = BatchDownload(
-                                indexes = emptyMap(),
-                                audioFiles = emptyList()
-                            )
-                        )
-                    }
-                }
-
                 SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
 
                 SettingsPageAction.OnExportSongs -> {

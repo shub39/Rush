@@ -95,7 +95,9 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
-    share: Boolean
+    share: Boolean,
+    zoomEnabled: Boolean = true,
+    density: Density = Density(2.5f, 1f)
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
@@ -123,7 +125,10 @@ fun SharePage(
 
     val modifier = Modifier
         .width(360.dp)
-        .zoomable(zoomState)
+        .zoomable(
+            zoomState = zoomState,
+            zoomEnabled = zoomEnabled
+        )
         .drawWithContent {
             cardGraphicsLayer.record {
                 this@drawWithContent.drawContent()
@@ -187,12 +192,12 @@ fun SharePage(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-
             CompositionLocalProvider(
-                LocalDensity provides Density(2.5f, 1f)
+                LocalDensity provides density
             ) {
                 RushTheme(
-                    state = Theme(fonts = state.cardFont)
+                    state = Theme(fonts = state.cardFont),
+                    fontScale = density.fontScale
                 ) {
                     when (state.cardTheme) {
                         CardTheme.SPOTIFY -> SpotifyShareCard(

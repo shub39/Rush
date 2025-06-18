@@ -72,6 +72,13 @@ class SavedVM(
         savedJob = launch {
             repo.getSongs()
                 .onEach { songs ->
+                    if (songs.isEmpty()) {
+                        _state.update { SavedPageState() }
+                        stateLayer.settingsState.update { it.copy(deleteButtonEnabled = false) }
+
+                        return@onEach
+                    }
+
                     _state.update { state ->
                         state.copy(
                             songsByTime = songs.sortedByDescending { it.dateAdded },
@@ -80,6 +87,10 @@ class SavedVM(
                             groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),
                             groupedArtist = songs.groupBy { it.artists }.entries.toList()
                         )
+                    }
+
+                    stateLayer.settingsState.update {
+                        it.copy(deleteButtonEnabled = true)
                     }
                 }
                 .launchIn(this)

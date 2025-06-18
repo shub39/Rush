@@ -7,8 +7,6 @@ import com.shub39.rush.lyrics.domain.backup.RestoreFailedException
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -25,20 +23,17 @@ actual class RestoreImpl(
 
             val file = File(path)
 
-            val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readText())
-
-            withContext(Dispatchers.IO) {
-                awaitAll(
-                    async {
-                        val songs = jsonDeserialized.songs.map { it.toSong() }
-
-                        songs.forEach {
-                            songRepo.insertSong(it)
-                        }
-                    }
-                )
+            val jsonDeserialized = withContext(Dispatchers.IO) {
+                json.decodeFromString<ExportSchema>(file.readText())
             }
 
+            withContext(Dispatchers.IO) {
+                jsonDeserialized.songs
+                    .map { it.toSong() }
+                    .forEach {
+                        songRepo.insertSong(it)
+                    }
+            }
             RestoreResult.Success
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()

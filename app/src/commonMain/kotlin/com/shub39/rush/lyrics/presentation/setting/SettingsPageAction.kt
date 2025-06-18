@@ -11,7 +11,6 @@ sealed interface SettingsPageAction {
     data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction
     data class OnMaterialThemeToggle(val pref: Boolean): SettingsPageAction
     data class OnFontChange(val fonts: Fonts): SettingsPageAction
-    data object OnClearIndexes: SettingsPageAction
     data object OnDeleteSongs: SettingsPageAction
     data object ResetBackup: SettingsPageAction
     data class OnRestoreSongs(val path: String): SettingsPageAction

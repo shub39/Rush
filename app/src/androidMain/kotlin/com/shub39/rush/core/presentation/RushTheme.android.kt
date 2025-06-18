@@ -12,6 +12,7 @@ import com.shub39.rush.core.domain.enums.AppTheme
 @Composable
 actual fun RushTheme(
     state: Theme,
+    fontScale: Float,
     content: @Composable () -> Unit
 ) {
     DynamicMaterialTheme(
@@ -28,7 +29,8 @@ actual fun RushTheme(
         withAmoled = state.withAmoled,
         style = state.style,
         typography = provideTypography(
-            font = state.fonts.font
+            font = state.fonts.font,
+            scale = fontScale
         ),
         content = content
     )

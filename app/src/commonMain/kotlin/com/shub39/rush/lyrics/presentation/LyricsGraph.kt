@@ -7,6 +7,7 @@ import com.shub39.rush.lyrics.presentation.share.SharePageAction
 import com.shub39.rush.lyrics.presentation.share.SharePageState
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface LyricsRoutes {
     @Serializable
     data object LyricsPage : LyricsRoutes

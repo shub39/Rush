@@ -36,13 +36,15 @@ actual class ExportImpl(
                 .replace(" ", "")
         val file = File(exportFolder, "Rush-Export-$time.json")
 
-        file.writeText(
-            Json.Default.encodeToString(
-                ExportSchema(
-                    schemaVersion = 3,
-                    songs = songsData
+        withContext(Dispatchers.IO) {
+            file.writeText(
+                Json.Default.encodeToString(
+                    ExportSchema(
+                        schemaVersion = 3,
+                        songs = songsData
+                    )
                 )
             )
-        )
+        }
     }
 }

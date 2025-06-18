@@ -167,8 +167,8 @@ actual fun RushApp() {
                             autoChange = lyricsState.autoChange,
                             showCurrent = false,
                             notificationAccess = true,
-                            onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
-                            onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
+                            onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) { launchSingleTop = true } },
+                            onNavigateToSettings = { navController.navigate(Route.SettingsGraph) { launchSingleTop = true } },
                             modifier = Modifier.fillMaxSize()
                         )
                     }

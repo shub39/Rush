@@ -3,13 +3,13 @@ package com.shub39.rush.lyrics.presentation.setting
 import android.R.color.system_accent1_200
 import android.content.Intent
 import android.os.Build
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.FilledTonalIconButton
@@ -17,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -73,55 +72,52 @@ actual fun LazyListScope.paletteStyles(
     action: (SettingsPageAction) -> Unit
 ) {
     item {
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = stringResource(Res.string.palette_style)
-                )
-            },
-            supportingContent = {
-                val scrollState = rememberScrollState()
+        Column {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.palette_style)
+                    )
+                }
+            )
 
-                Row(
-                    modifier = Modifier
-                        .horizontalScroll(scrollState)
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    PaletteStyle.entries.toList().forEach { style ->
-                        val scheme = rememberDynamicColorScheme(
-                            primary = if (state.theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-                                colorResource(system_accent1_200)
-                            } else {
-                                Color(state.theme.seedColor)
-                            },
-                            isDark = when (state.theme.appTheme) {
-                                AppTheme.SYSTEM -> isSystemInDarkTheme()
-                                AppTheme.LIGHT -> false
-                                AppTheme.DARK -> true
-                            },
-                            isAmoled = state.theme.withAmoled,
-                            style = style
-                        )
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(PaletteStyle.entries.toList(), key = { it.name }) { style ->
+                    val scheme = rememberDynamicColorScheme(
+                        primary = if (state.theme.materialTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            colorResource(system_accent1_200)
+                        } else {
+                            Color(state.theme.seedColor)
+                        },
+                        isDark = when (state.theme.appTheme) {
+                            AppTheme.SYSTEM -> isSystemInDarkTheme()
+                            AppTheme.LIGHT -> false
+                            AppTheme.DARK -> true
+                        },
+                        isAmoled = state.theme.withAmoled,
+                        style = style
+                    )
 
-                        SelectableMiniPalette(
-                            selected = state.theme.style == style,
-                            onClick = {
-                                action(
-                                    SettingsPageAction.OnPaletteChange(style = style)
-                                )
-                            },
-                            contentDescription = { style.name },
-                            accents = listOf(
-                                TonalPalette.from(scheme.primary),
-                                TonalPalette.from(scheme.tertiary),
-                                TonalPalette.from(scheme.secondary)
+                    SelectableMiniPalette(
+                        selected = state.theme.style == style,
+                        onClick = {
+                            action(
+                                SettingsPageAction.OnPaletteChange(style = style)
                             )
+                        },
+                        contentDescription = { style.name },
+                        accents = listOf(
+                            TonalPalette.from(scheme.primary),
+                            TonalPalette.from(scheme.tertiary),
+                            TonalPalette.from(scheme.secondary)
                         )
-                    }
+                    )
                 }
             }
-        )
+        }
     }
 }
 
