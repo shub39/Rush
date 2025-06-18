@@ -63,7 +63,7 @@ import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
 
 @Composable
-fun LyricsPage(
+actual fun LyricsPage(
     onEdit: () -> Unit,
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,

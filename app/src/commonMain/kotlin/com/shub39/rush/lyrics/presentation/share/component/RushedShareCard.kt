@@ -1,6 +1,5 @@
 package com.shub39.rush.lyrics.presentation.share.component
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.presentation.ArtFromUrl
+import io.github.vinceglb.filekit.PlatformFile
 
 @Composable
 fun RushedShareCard(
@@ -37,11 +37,11 @@ fun RushedShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    selectedUri: Uri?
+    selectedImage: PlatformFile?
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         ArtFromUrl(
-            imageUrl = selectedUri ?: song.artUrl,
+            imageUrl = selectedImage?.toString() ?: song.artUrl,
             modifier = Modifier.matchParentSize()
         )
 

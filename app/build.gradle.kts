@@ -1,3 +1,4 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
@@ -13,11 +14,23 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.room)
     alias(libs.plugins.hotreload)
+    alias(libs.plugins.buildKonfig)
 }
 
 val appName = "Rush"
 val appVersionName = "3.3.1"
 val appVersionCode = 3310
+
+buildkonfig {
+    packageName = "com.shub39.rush"
+    objectName = "BuildKonfig"
+    exposeObjectWithName = "BuildKonfig"
+
+    defaultConfigs {
+        buildConfigField(STRING, "versionName", appVersionName)
+        buildConfigField(STRING, "versionCode", appVersionCode.toString())
+    }
+}
 
 android {
     namespace = "com.shub39.rush"
@@ -83,9 +96,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -129,7 +139,6 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
-            implementation(libs.androidx.documentfile)
         }
         commonMain.dependencies {
             implementation(libs.kmpalette.core)
@@ -147,18 +156,24 @@ kotlin {
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.materialKolor)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.landscapist.coil)
             implementation(libs.landscapist.placeholder)
             implementation(libs.colorpicker.compose)
             implementation(libs.ksoup)
             implementation(libs.hypnoticcanvas)
             implementation(libs.aboutLibraries)
+            implementation(libs.aboutLibraries.compose.m3)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.ui)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.dialogs.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -217,6 +232,6 @@ composeCompiler {
     featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
 
-tasks.register<ComposeHotRun>("runHot") {
+tasks.withType<ComposeHotRun>().configureEach {
     mainClass.set("com.shub39.rush.MainKt")
 }

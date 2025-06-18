@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -36,10 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.core.domain.Route
-import com.shub39.rush.core.domain.data_classes.Theme
-import com.shub39.rush.core.domain.enums.AppTheme
-import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.presentation.LyricsGraph
 import com.shub39.rush.lyrics.presentation.SettingsGraph
@@ -50,9 +45,11 @@ import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
 import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
+import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
+import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Home
+import compose.icons.fontawesomeicons.solid.Download
 import compose.icons.fontawesomeicons.solid.Music
 import compose.icons.fontawesomeicons.solid.Search
 import compose.icons.fontawesomeicons.solid.WindowClose
@@ -64,14 +61,18 @@ import rush.app.generated.resources.rush_transparent
 // Not Completed yet
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RushApp(
-    lyricsVM: LyricsVM = koinViewModel(),
-    searchSheetVM: SearchSheetVM = koinViewModel(),
-    savedVM: SavedVM = koinViewModel()
-) {
+actual fun RushApp() {
+    val lyricsVM: LyricsVM = koinViewModel()
+    val searchSheetVM: SearchSheetVM = koinViewModel()
+    val savedVM: SavedVM = koinViewModel()
+    val settingsVM: SettingsVM = koinViewModel()
+    val shareVM: ShareVM = koinViewModel()
+
     val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
+    val settingsState by settingsVM.state.collectAsStateWithLifecycle()
     val savedState by savedVM.state.collectAsStateWithLifecycle()
+    val shareState by shareVM.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     var currentRoute: Route by remember { mutableStateOf(Route.SavedPage) }
@@ -80,10 +81,7 @@ fun RushApp(
     var isHovered by remember { mutableStateOf(false) }
 
     RushTheme(
-        state = Theme(
-            appTheme = AppTheme.DARK,
-            fonts = Fonts.MANROPE
-        )
+        state = settingsState.theme
     ) {
         Box {
             Row(
@@ -136,8 +134,7 @@ fun RushApp(
                                     Icon(
                                         imageVector = when (it) {
                                             Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
-                                            Route.SavedPage -> FontAwesomeIcons.Solid.Home
-                                            Route.SettingsGraph -> Icons.Default.Settings
+                                            else -> FontAwesomeIcons.Solid.Download
                                         },
                                         modifier = Modifier.size(24.dp),
                                         contentDescription = "Navigate"
@@ -170,11 +167,8 @@ fun RushApp(
                             autoChange = lyricsState.autoChange,
                             showCurrent = false,
                             notificationAccess = true,
-                            navigator = {
-                                navController.navigate(it) {
-                                    launchSingleTop = true
-                                }
-                            },
+                            onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) { launchSingleTop = true } },
+                            onNavigateToSettings = { navController.navigate(Route.SettingsGraph) { launchSingleTop = true } },
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -185,13 +179,21 @@ fun RushApp(
                         LyricsGraph(
                             lyricsState = lyricsState,
                             lyricsAction = lyricsVM::onAction,
+                            notificationAccess = true,
+                            shareState = shareState,
+                            shareAction = shareVM::onAction,
                         )
                     }
 
                     composable<Route.SettingsGraph> {
                         currentRoute = Route.SettingsGraph
 
-                        SettingsGraph { navController.navigateUp() }
+                        SettingsGraph(
+                            notificationAccess = true,
+                            state = settingsState,
+                            action = settingsVM::onAction,
+                            onNavigateBack = { navController.navigateUp() }
+                        )
                     }
                 }
 

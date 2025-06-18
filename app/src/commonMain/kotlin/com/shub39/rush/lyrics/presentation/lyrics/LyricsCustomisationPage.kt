@@ -73,6 +73,7 @@ import rush.app.generated.resources.start
 import rush.app.generated.resources.text_alignment
 import rush.app.generated.resources.use_extracted_colors
 import rush.app.generated.resources.vibrant_colors
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,7 +81,8 @@ fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     action: (LyricsPageAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showFullscreen: Boolean = true,
 ) = PageFill {
 
     val (cardBackground, cardContent) = getCardColors(state)
@@ -193,13 +195,15 @@ fun LyricsCustomisationsPage(
                         else -> 0f
                     },
                     onValueChange = {
-                        action(LyricsPageAction.OnAlignmentChange(
-                            when (it) {
-                                1f -> TextAlign.Center
-                                2f -> TextAlign.End
-                                else -> TextAlign.Start
-                            }
-                        ))
+                        action(
+                            LyricsPageAction.OnAlignmentChange(
+                                when (it.roundToInt()) {
+                                    1 -> TextAlign.Center
+                                    2 -> TextAlign.End
+                                    else -> TextAlign.Start
+                                }
+                            )
+                        )
                     },
                     valueToShow = when (state.textAlign) {
                         TextAlign.Center -> stringResource(Res.string.center)
@@ -373,26 +377,28 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.fullscreen)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(Res.string.fullscreen_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.fullscreen,
-                            onCheckedChange = {
-                                action(LyricsPageAction.OnFullscreenChange(it))
-                            }
-                        )
-                    }
-                )
+                if (showFullscreen) {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(Res.string.fullscreen)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(Res.string.fullscreen_desc)
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = state.fullscreen,
+                                onCheckedChange = {
+                                    action(LyricsPageAction.OnFullscreenChange(it))
+                                }
+                            )
+                        }
+                    )
+                }
 
                 SettingSlider(
                     title = stringResource(Res.string.max_lines),

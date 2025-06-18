@@ -19,21 +19,9 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.share.SharePage
 import com.shub39.rush.lyrics.presentation.share.SharePageAction
 import com.shub39.rush.lyrics.presentation.share.SharePageState
-import kotlinx.serialization.Serializable
-
-private sealed interface LyricsRoutes {
-    @Serializable
-    data object LyricsPage : LyricsRoutes
-
-    @Serializable
-    data object LyricsCustomisations : LyricsRoutes
-
-    @Serializable
-    data object SharePage : LyricsRoutes
-}
 
 @Composable
-fun LyricsGraph(
+actual fun LyricsGraph(
     notificationAccess: Boolean,
     lyricsState: LyricsPageState,
     shareState: SharePageState,
@@ -85,7 +73,8 @@ fun LyricsGraph(
             SharePage(
                 onDismiss = { navController.navigateUp() },
                 state = shareState,
-                action = shareAction
+                action = shareAction,
+                share = true
             )
         }
 

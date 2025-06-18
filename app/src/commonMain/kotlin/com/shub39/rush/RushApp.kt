@@ -1,5 +1,6 @@
-package com.shub39.rush.core.domain
+package com.shub39.rush
 
+import androidx.compose.runtime.Composable
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -16,3 +17,6 @@ sealed interface Route {
         val allRoutes = listOf(SavedPage, LyricsGraph, SettingsGraph)
     }
 }
+
+@Composable
+expect fun RushApp()

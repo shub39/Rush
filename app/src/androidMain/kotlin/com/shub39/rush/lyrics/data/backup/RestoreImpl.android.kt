@@ -9,45 +9,42 @@ import com.shub39.rush.lyrics.domain.backup.RestoreFailedException
 import com.shub39.rush.lyrics.domain.backup.RestoreRepo
 import com.shub39.rush.lyrics.domain.backup.RestoreResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlin.io.path.createTempFile
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 
 actual class RestoreImpl(
     private val songRepo: SongRepo,
     private val context: Context
-): RestoreRepo {
+) : RestoreRepo {
     override suspend fun restoreSongs(path: String): RestoreResult {
         return try {
-            val file = createTempFile()
-
-            context.contentResolver.openInputStream(path.toUri()).use { input ->
-                file.outputStream().use { output ->
-                    input?.copyTo(output)
-                }
-            }
-
-            val json = Json {
-                ignoreUnknownKeys = true
-            }
-
-            val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readText())
-
             withContext(Dispatchers.IO) {
-                awaitAll(
-                    async {
-                        val songs = jsonDeserialized.songs.map { it.toSong() }
+                val file = createTempFile()
 
-                        songs.forEach {
-                            songRepo.insertSong(it)
+                try {
+                    context.contentResolver.openInputStream(path.toUri()).use { input ->
+                        file.outputStream().use { output ->
+                            input?.copyTo(output)
                         }
                     }
-                )
+
+                    val json = Json {
+                        ignoreUnknownKeys = true
+                    }
+
+                    val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readText())
+
+                    jsonDeserialized.songs
+                        .map { it.toSong() }
+                        .forEach { songRepo.insertSong(it) }
+                } finally {
+                    file.deleteIfExists()
+                }
             }
 
             RestoreResult.Success

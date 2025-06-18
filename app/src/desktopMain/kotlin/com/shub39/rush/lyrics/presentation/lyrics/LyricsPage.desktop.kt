@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation
+package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,18 +37,15 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
+import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.component.SyncedLyrics
-import com.shub39.rush.lyrics.presentation.lyrics.getCardColors
-import com.shub39.rush.lyrics.presentation.lyrics.getHypnoticColors
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Pause
@@ -56,10 +53,12 @@ import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
 
 @Composable
-fun LyricsPage(
-    state: LyricsPageState,
+actual fun LyricsPage(
+    onEdit: () -> Unit,
+    onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
-    onEdit: () -> Unit
+    state: LyricsPageState,
+    notificationAccess: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -143,7 +142,7 @@ fun LyricsPage(
 
                     Row(
                         modifier = Modifier
-                            .padding(start = 40.dp)
+                            .padding(horizontal = 40.dp, vertical = 120.dp)
                             .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -195,8 +194,7 @@ fun LyricsPage(
                                 notificationAccess = true,
                                 cardBackground = cardBackground,
                                 cardContent = cardContent,
-                                shareable = false,
-                                onShare = {},
+                                onShare = onShare,
                                 onEdit = onEdit,
                                 modifier = Modifier.padding(vertical = 16.dp)
                             )
@@ -212,6 +210,7 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fadeTopToBottom()
+                                    .fadeBottomToTop(0.1f)
                             )
                         } else if (state.song.syncedLyrics != null) {
                             SyncedLyrics(
@@ -224,6 +223,7 @@ fun LyricsPage(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fadeTopToBottom()
+                                    .fadeBottomToTop(0.1f)
                             )
                         }
                     }

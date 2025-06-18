@@ -28,7 +28,7 @@ class ShareVM(
         .onStart { observeDatastore() }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             SharePageState()
         )
 
