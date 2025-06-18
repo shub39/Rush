@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation
+package com.shub39.rush.lyrics.presentation.lyrics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -40,16 +40,12 @@ import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.presentation.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.component.SyncedLyrics
-import com.shub39.rush.lyrics.presentation.lyrics.getCardColors
-import com.shub39.rush.lyrics.presentation.lyrics.getHypnoticColors
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Pause

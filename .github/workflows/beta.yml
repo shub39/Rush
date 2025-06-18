@@ -3,7 +3,7 @@ name: beta
 on:
   push:
     branches:
-      - master
+      - master, dev
   workflow_dispatch: { }
 
 jobs:

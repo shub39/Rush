@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
@@ -65,10 +64,11 @@ fun SavedPage(
     currentSong: SongUi?,
     autoChange: Boolean,
     notificationAccess: Boolean,
-    showCurrent: Boolean = true,
     action: (SavedPageAction) -> Unit,
-    navigator: (Route) -> Unit,
-    modifier: Modifier = Modifier
+    onNavigateToLyrics: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    modifier: Modifier = Modifier,
+    showCurrent: Boolean = true
 ) = PageFill {
     val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
 
@@ -79,7 +79,7 @@ fun SavedPage(
                 title = { Text(stringResource(Res.string.saved)) },
                 actions = {
                     IconButton(
-                        onClick = { navigator(Route.SettingsGraph) }
+                        onClick = onNavigateToSettings
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -110,7 +110,7 @@ fun SavedPage(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(0.75f)
-                                            .clickable { navigator(Route.LyricsGraph) }
+                                            .clickable { onNavigateToLyrics() }
                                     ) {
                                         ArtFromUrl(
                                             imageUrl = it.artUrl,
@@ -148,7 +148,7 @@ fun SavedPage(
                                 onClick = {
                                     action(SavedPageAction.OnToggleAutoChange)
                                     if (!autoChange) {
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     }
                                 },
                                 colors = if (autoChange) {
@@ -236,7 +236,7 @@ fun SavedPage(
                                     },
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     }
                                 )
                             }
@@ -249,7 +249,7 @@ fun SavedPage(
                                     },
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     }
                                 )
                             }
@@ -262,18 +262,20 @@ fun SavedPage(
                                     },
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     }
                                 )
                             }
 
-                            SortOrder.ARTISTS_ASC -> items(state.groupedArtist, key = { it.key }) { map ->
+                            SortOrder.ARTISTS_ASC -> items(
+                                state.groupedArtist,
+                                key = { it.key }) { map ->
                                 GroupedCard(
                                     map = map,
                                     isExpanded = expandedCardId == map.key,
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     },
                                     onCardClick = {
                                         expandedCardId =
@@ -282,13 +284,15 @@ fun SavedPage(
                                 )
                             }
 
-                            SortOrder.ALBUM_ASC -> items(state.groupedAlbum, key = { it.key }) { map ->
+                            SortOrder.ALBUM_ASC -> items(
+                                state.groupedAlbum,
+                                key = { it.key }) { map ->
                                 GroupedCard(
                                     map = map,
                                     isExpanded = expandedCardId == map.key,
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        navigator(Route.LyricsGraph)
+                                        onNavigateToLyrics()
                                     },
                                     onCardClick = {
                                         expandedCardId =

@@ -139,7 +139,6 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
-            implementation(libs.androidx.documentfile)
         }
         commonMain.dependencies {
             implementation(libs.kmpalette.core)

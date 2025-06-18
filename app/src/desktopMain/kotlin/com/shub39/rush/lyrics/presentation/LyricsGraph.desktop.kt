@@ -10,18 +10,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.LyricsRoutes
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsCustomisationsPage
+import com.shub39.rush.lyrics.presentation.lyrics.LyricsPage
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
-import kotlinx.serialization.Serializable
-
-private sealed interface LyricsRoutes {
-    @Serializable
-    data object LyricsPage : LyricsRoutes
-
-    @Serializable
-    data object LyricsCustomisations : LyricsRoutes
-}
 
 @Composable
 fun LyricsGraph(

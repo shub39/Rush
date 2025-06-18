@@ -16,7 +16,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.shub39.rush.core.domain.Route
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.SettingsGraph
@@ -33,13 +32,13 @@ import com.shub39.rush.onboarding.OnboardingDialog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RushApp(
-    settingsVM: SettingsVM = koinViewModel(),
-    lyricsVM: LyricsVM = koinViewModel(),
-    shareVM: ShareVM = koinViewModel(),
-    searchSheetVM: SearchSheetVM = koinViewModel(),
-    savedVM: SavedVM = koinViewModel()
-) {
+actual fun RushApp() {
+    val settingsVM: SettingsVM = koinViewModel()
+    val lyricsVM: LyricsVM = koinViewModel()
+    val shareVM: ShareVM = koinViewModel()
+    val searchSheetVM: SearchSheetVM = koinViewModel()
+    val savedVM: SavedVM = koinViewModel()
+
     val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val settingsState by settingsVM.state.collectAsStateWithLifecycle()
     val shareState by shareVM.state.collectAsStateWithLifecycle()
@@ -77,12 +76,9 @@ fun RushApp(
                     notificationAccess = NotificationListener.canAccessNotifications(context),
                     action = savedVM::onAction,
                     autoChange = lyricsState.autoChange,
+                    onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
+                    onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
                     modifier = Modifier.widthIn(max = 700.dp),
-                    navigator = {
-                        navController.navigate(it) {
-                            launchSingleTop = true
-                        }
-                    }
                 )
             }
 
