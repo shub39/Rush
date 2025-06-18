@@ -1,2 +1,2 @@
 -dontobfuscate
--keep class com.shub39.rush.* { *; }
+-keep class com.shub39.rush.** { *; }
