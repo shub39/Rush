@@ -18,8 +18,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "3.3.1"
-val appVersionCode = 3310
+val appVersionName = "4.0.0"
+val appVersionCode = 4000
 
 buildkonfig {
     packageName = "com.shub39.rush"
