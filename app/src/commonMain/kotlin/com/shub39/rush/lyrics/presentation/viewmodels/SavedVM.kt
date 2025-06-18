@@ -23,7 +23,7 @@ class SavedVM(
     private val stateLayer: StateLayer,
     private val repo: SongRepo,
     private val datastore: OtherPreferences
-): ViewModel() {
+) : ViewModel() {
 
     private var savedJob: Job? = null
 
@@ -73,7 +73,15 @@ class SavedVM(
             repo.getSongs()
                 .onEach { songs ->
                     if (songs.isEmpty()) {
-                        _state.update { SavedPageState() }
+                        _state.update {
+                            it.copy(
+                                songsByTime = emptyList(),
+                                songsAsc = emptyList(),
+                                songsDesc = emptyList(),
+                                groupedAlbum = emptyList(),
+                                groupedArtist = emptyList()
+                            )
+                        }
                         stateLayer.settingsState.update { it.copy(deleteButtonEnabled = false) }
 
                         return@onEach
@@ -127,7 +135,8 @@ class SavedVM(
                 song = result,
                 source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                 syncedAvailable = result.syncedLyrics != null,
-                sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase()),
+                sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
+                    .lowercase() == getMainTitle(result.title).trim().lowercase()),
                 selectedLines = emptyMap(),
                 error = null
             )

@@ -30,7 +30,7 @@ class SettingsVM(
     private val restoreRepo: RestoreRepo
 ) : ViewModel() {
 
-    private var observeJob: Job? = null
+    private var observeFlowsJob: Job? = null
 
     private val _state = stateLayer.settingsState
     val state = _state.asStateFlow()
@@ -113,8 +113,8 @@ class SettingsVM(
     }
 
     private fun observeJob() = viewModelScope.launch {
-        observeJob?.cancel()
-        observeJob = launch {
+        observeFlowsJob?.cancel()
+        observeFlowsJob = launch {
             observeTheme().launchIn(this)
 
             datastore.getFontFlow()

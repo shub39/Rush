@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlin.io.path.createTempFile
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
 import kotlin.io.path.readText
 
@@ -25,23 +26,25 @@ actual class RestoreImpl(
             withContext(Dispatchers.IO) {
                 val file = createTempFile()
 
-                context.contentResolver.openInputStream(path.toUri()).use { input ->
-                    file.outputStream().use { output ->
-                        input?.copyTo(output)
+                try {
+                    context.contentResolver.openInputStream(path.toUri()).use { input ->
+                        file.outputStream().use { output ->
+                            input?.copyTo(output)
+                        }
                     }
-                }
 
-                val json = Json {
-                    ignoreUnknownKeys = true
-                }
-
-                val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readText())
-
-                jsonDeserialized.songs
-                    .map { it.toSong() }
-                    .forEach {
-                        songRepo.insertSong(it)
+                    val json = Json {
+                        ignoreUnknownKeys = true
                     }
+
+                    val jsonDeserialized = json.decodeFromString<ExportSchema>(file.readText())
+
+                    jsonDeserialized.songs
+                        .map { it.toSong() }
+                        .forEach { songRepo.insertSong(it) }
+                } finally {
+                    file.deleteIfExists()
+                }
             }
 
             RestoreResult.Success
