@@ -51,6 +51,9 @@
     <string name="batch_download_info">Download lyrics for your locally saved songs in one go.</string>
     <string name="sort_date_added">Last added</string>
     <string name="rush_branding">Rush</string>
+    <string name="bmc">Buy me a Coffee</string>
+    <string name="translate">Translate</string>
+    <string name="rate_on_play">Rate on Google Play</string>
     <string name="exporting">Exporting</string>
     <string name="exported">Exported</string>
     <string name="restoring">Restoring songs</string>
