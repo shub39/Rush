@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,11 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -67,7 +71,6 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.Download
-import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Image
 import io.github.vinceglb.filekit.ImageFormat
 import io.github.vinceglb.filekit.PlatformFile
@@ -89,7 +92,7 @@ import rush.app.generated.resources.card_font
 import rush.app.generated.resources.card_size
 import rush.app.generated.resources.card_theme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharePage(
     onDismiss: () -> Unit,
@@ -179,7 +182,7 @@ fun SharePage(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.ArrowLeft,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -275,7 +278,20 @@ fun SharePage(
                 }
             }
 
-            Row(
+            HorizontalFloatingToolbar(
+                expanded = true,
+                trailingContent = {
+                    FloatingActionButton(
+                        onClick = { editSheet = true },
+                        shape = MaterialTheme.shapes.extraLarge,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Create,
+                            contentDescription = "Edit"
+                        )
+                    }
+                },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp)
@@ -284,37 +300,37 @@ fun SharePage(
                     visible = state.cardColors == CardColors.CUSTOM
                 ) {
                     Row {
-                        FloatingActionButton(
+                        IconButton(
                             onClick = {
                                 coroutineScope.launch {
                                     editTarget = "content"
                                     colorPicker = true
                                 }
                             },
-                            containerColor = Color(state.cardContent),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color(state.cardContent)
+                            ),
                             shape = MaterialTheme.shapes.extraLarge,
                             content = {}
                         )
 
-                        Spacer(modifier = Modifier.padding(4.dp))
-
-                        FloatingActionButton(
+                        IconButton(
                             onClick = {
                                 coroutineScope.launch {
                                     editTarget = "background"
                                     colorPicker = true
                                 }
                             },
-                            containerColor = Color(state.cardBackground),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color(state.cardBackground)
+                            ),
                             shape = MaterialTheme.shapes.extraLarge,
                             content = {}
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.padding(4.dp))
-
-                FloatingActionButton(
+                IconButton(
                     onClick = {
                         coroutineScope.launch {
                             saveImage = cardGraphicsLayer.toImageBitmap()
@@ -323,9 +339,7 @@ fun SharePage(
                                 extension = "png"
                             )
                         }
-                    },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.extraLarge
+                    }
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Solid.Download,
@@ -334,35 +348,15 @@ fun SharePage(
                     )
                 }
 
-                Spacer(modifier = Modifier.padding(4.dp))
-
                 if (share) {
                     ShareButton(coroutineScope, cardGraphicsLayer)
                 }
 
-                FloatingActionButton(
-                    onClick = { editSheet = true },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        imageVector = FontAwesomeIcons.Solid.Edit,
-                        contentDescription = "Edit",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.padding(4.dp))
-
                 AnimatedVisibility(
                     visible = state.cardTheme == CardTheme.RUSHED
                 ) {
-                    FloatingActionButton(
-                        onClick = {
-                            imagePicker.launch()
-                        },
-                        shape = MaterialTheme.shapes.extraLarge,
-                        containerColor = MaterialTheme.colorScheme.primary
+                    IconButton(
+                        onClick = { imagePicker.launch() }
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Image,

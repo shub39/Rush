@@ -5,14 +5,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.InputChip
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T> ListSelect(
     title: String,
@@ -28,18 +33,21 @@ fun <T> ListSelect(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
 
         FlowRow(
             horizontalArrangement = Arrangement.Center
         ) {
             options.forEach { option ->
-                InputChip(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    selected = option == selected,
-                    onClick = { onSelectedChange(option) },
-                    label = { labelProvider(option) }
+                ToggleButton(
+                    checked = option == selected,
+                    onCheckedChange = { onSelectedChange(option) },
+                    content = { labelProvider(option) },
+                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
         }

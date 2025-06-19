@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Save
 import compose.icons.fontawesomeicons.solid.Search
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingCard(
     fetching: Pair<Boolean, String>,
@@ -52,7 +54,7 @@ fun LoadingCard(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            LinearProgressIndicator(
+            LinearWavyProgressIndicator(
                 color = colors.first,
                 trackColor = Color.Transparent
             )
@@ -88,7 +90,7 @@ fun LoadingCard(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            LinearProgressIndicator(
+            LinearWavyProgressIndicator(
                 color = colors.first,
                 trackColor = Color.Transparent
             )

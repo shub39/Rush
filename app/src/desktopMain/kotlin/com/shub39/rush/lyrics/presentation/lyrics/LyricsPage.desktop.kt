@@ -48,6 +48,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.presentation.lyrics.component.SyncedLyrics
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Music
 import compose.icons.fontawesomeicons.solid.Pause
 import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
@@ -130,7 +131,11 @@ actual fun LyricsPage(
 
                 } else if (state.song == null) {
 
-                    Empty(suggestion = false)
+                    Empty(
+                        suggestion = false,
+                        color = cardContent,
+                        imageVector = FontAwesomeIcons.Solid.Music
+                    )
 
                 } else {
                     // Updating colors

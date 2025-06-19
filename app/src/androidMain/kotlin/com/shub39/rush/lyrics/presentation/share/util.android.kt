@@ -5,9 +5,10 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -15,9 +16,6 @@ import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Share
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.compose.rememberShareFileLauncher
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +33,7 @@ actual fun ShareButton(
     val context = LocalContext.current
     val launcher = rememberShareFileLauncher()
 
-    FloatingActionButton(
+    IconButton(
         onClick = {
             coroutineScope.launch {
                 val imageBitmap = withContext(Dispatchers.Main) {
@@ -57,12 +55,10 @@ actual fun ShareButton(
                     launcher.launch(PlatformFile(contentUri))
                 }
             }
-        },
-        shape = MaterialTheme.shapes.extraLarge,
-        containerColor = MaterialTheme.colorScheme.primary
+        }
     ) {
         Icon(
-            imageVector = FontAwesomeIcons.Solid.Share,
+            imageVector = Icons.Default.Share,
             contentDescription = "Share",
             modifier = Modifier.size(24.dp)
         )
