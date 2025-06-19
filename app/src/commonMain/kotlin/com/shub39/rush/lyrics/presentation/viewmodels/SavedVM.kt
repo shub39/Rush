@@ -78,8 +78,6 @@ class SavedVM(
                                 songsByTime = emptyList(),
                                 songsAsc = emptyList(),
                                 songsDesc = emptyList(),
-                                groupedAlbum = emptyList(),
-                                groupedArtist = emptyList()
                             )
                         }
                         stateLayer.settingsState.update { it.copy(deleteButtonEnabled = false) }
@@ -92,8 +90,6 @@ class SavedVM(
                             songsByTime = songs.sortedByDescending { it.dateAdded },
                             songsAsc = songs.sortedBy { it.title },
                             songsDesc = songs.sortedByDescending { it.title },
-                            groupedAlbum = songs.groupBy { it.album ?: "???" }.entries.toList(),
-                            groupedArtist = songs.groupBy { it.artists }.entries.toList()
                         )
                     }
 

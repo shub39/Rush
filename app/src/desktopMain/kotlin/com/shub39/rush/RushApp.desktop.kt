@@ -58,7 +58,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.rush_transparent
 
-// Not Completed yet
+// TODO: Not Completed yet
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun RushApp() {
@@ -143,7 +143,6 @@ actual fun RushApp() {
                             )
                         }
                     }
-
                 }
 
                 NavHost(
@@ -162,6 +161,7 @@ actual fun RushApp() {
 
                         SavedPage(
                             state = savedState,
+                            extractedColors = lyricsState.extractedColors,
                             action = savedVM::onAction,
                             currentSong = lyricsState.song,
                             autoChange = lyricsState.autoChange,

@@ -2,8 +2,7 @@ name: beta
 
 on:
   push:
-    branches:
-      - master
+    branches: [ "**" ]
   workflow_dispatch: { }
 
 jobs:
