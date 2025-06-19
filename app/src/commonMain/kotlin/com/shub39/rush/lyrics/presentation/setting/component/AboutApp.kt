@@ -71,7 +71,7 @@ fun AboutApp() {
 
             Row {
                 IconButton(
-                    onClick = { uriHandler.openUri("https://discord.gg/https://discord.gg/nxA2hgtEKf") }
+                    onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Discord,

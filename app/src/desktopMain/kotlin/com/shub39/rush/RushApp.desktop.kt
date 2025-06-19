@@ -8,17 +8,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,7 @@ import rush.app.generated.resources.Res
 import rush.app.generated.resources.rush_transparent
 
 // TODO: Not Completed yet
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun RushApp() {
     val lyricsVM: LyricsVM = koinViewModel()
@@ -83,10 +84,8 @@ actual fun RushApp() {
     RushTheme(
         state = settingsState.theme
     ) {
-        Box {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.fillMaxSize()) {
                 AnimatedVisibility(
                     visible = fullscreen
                 ) {
@@ -122,25 +121,25 @@ actual fun RushApp() {
                         listOf(
                             Route.LyricsGraph,
                             Route.SavedPage
-                        ).forEach {
-                            NavigationRailItem(
-                                selected = currentRoute == it,
-                                onClick = {
-                                    if (currentRoute != it) {
-                                        navController.navigate(it) { launchSingleTop = true }
+                        ).forEach { route ->
+                            ToggleButton(
+                                checked = currentRoute == route,
+                                colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                                onCheckedChange = {
+                                    if (currentRoute != route) {
+                                        navController.navigate(route) { launchSingleTop = true }
                                     }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = when (it) {
-                                            Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
-                                            else -> FontAwesomeIcons.Solid.Download
-                                        },
-                                        modifier = Modifier.size(24.dp),
-                                        contentDescription = "Navigate"
-                                    )
                                 }
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = when (route) {
+                                        Route.LyricsGraph -> FontAwesomeIcons.Solid.Music
+                                        else -> FontAwesomeIcons.Solid.Download
+                                    },
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Navigate"
+                                )
+                            }
                         }
                     }
                 }
