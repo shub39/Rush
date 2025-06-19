@@ -1,9 +1,12 @@
 package com.shub39.rush.lyrics.presentation.search_sheet
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +23,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -48,7 +51,7 @@ import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.search
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchSheet(
     state: SearchSheetState,
@@ -71,8 +74,7 @@ fun SearchSheet(
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -91,17 +93,6 @@ fun SearchSheet(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(2.dp)
                     ) {
-                        AnimatedVisibility(
-                            visible = state.isSearching,
-                            enter = fadeIn(animationSpec = tween(200)),
-                            exit = fadeOut(animationSpec = tween(200))
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                strokeCap = StrokeCap.Round
-                            )
-                        }
-
                         AnimatedVisibility(
                             visible = state.searchQuery.isNotBlank(),
                             enter = fadeIn(animationSpec = tween(200)),
@@ -126,7 +117,7 @@ fun SearchSheet(
                 },
                 onValueChange = { action(SearchSheetAction.OnQueryChange(it)) },
                 shape = MaterialTheme.shapes.extraLarge,
-                label = { Text(stringResource(Res.string.search)) },
+                placeholder = { Text(stringResource(Res.string.search)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -142,13 +133,27 @@ fun SearchSheet(
             )
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .animateContentSize()
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = LazyListState(0)
             ) {
+                item {
+                    AnimatedVisibility(
+                        visible = state.isSearching,
+                        enter = slideInVertically(tween(300)) { -it/2 },
+                        exit = slideOutVertically(tween(300)) { -it/2 },
+                        modifier = Modifier.padding(32.dp)
+                    ) {
+                        ContainedLoadingIndicator()
+                    }
+                }
+
                 items(
                     state.localSearchResults,
-                    key = { it.title.hashCode() + it.artist.hashCode() }) {
+                    key = { it.title.hashCode() + it.artist.hashCode() }
+                ) {
                     SearchResultCard(
                         result = it,
                         onClick = {
@@ -165,7 +170,7 @@ fun SearchSheet(
                         onClick = {
                             action(SearchSheetAction.OnCardClicked(it.id))
                             onClick()
-                        },
+                        }
                     )
                 }
 
