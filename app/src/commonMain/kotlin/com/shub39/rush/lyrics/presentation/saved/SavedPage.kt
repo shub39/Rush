@@ -1,7 +1,11 @@
 package com.shub39.rush.lyrics.presentation.saved
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,41 +16,44 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
+import androidx.compose.material3.MaterialShapes.Companion.Sunny
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.core.domain.data_classes.ExtractedColors
 import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.simpleVerticalScrollbar
 import com.shub39.rush.lyrics.domain.SongUi
-import com.shub39.rush.lyrics.presentation.saved.component.GroupedCard
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -54,10 +61,11 @@ import compose.icons.fontawesomeicons.solid.Search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
+import rush.app.generated.resources.rush_branding
 import rush.app.generated.resources.rush_transparent
 import rush.app.generated.resources.saved
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SavedPage(
     state: SavedPageState,
@@ -68,18 +76,22 @@ fun SavedPage(
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    extractedColors: ExtractedColors = ExtractedColors(),
     showCurrent: Boolean = true
 ) = PageFill {
-    val sortOrderChips = remember { SortOrder.entries.toTypedArray() }
-
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.saved)) },
+                title = { Text(stringResource(Res.string.rush_branding)) },
+                subtitle = { Text(text = "${state.songsAsc.size} " + stringResource(Res.string.saved)) },
                 actions = {
-                    IconButton(
-                        onClick = onNavigateToSettings
+                    FilledTonalIconButton(
+                        onClick = onNavigateToSettings,
+                        shapes = IconButtonShapes(
+                            shape = CircleShape,
+                            pressedShape = RoundedCornerShape(10.dp)
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -90,92 +102,84 @@ fun SavedPage(
             )
         },
         bottomBar = {
-            if (showCurrent) {
-                BottomAppBar(
-                    modifier = Modifier.clip(
-                        RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
+            AnimatedVisibility(
+                visible = currentSong != null && showCurrent,
+                enter = slideInVertically { it/2 },
+                exit = slideOutVertically { it/2 }
+            ) {
+                if (currentSong != null && showCurrent) {
+                    BottomAppBar(
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+                        modifier = Modifier.clickable { onNavigateToLyrics() },
+                        contentColor = extractedColors.cardContentMuted,
+                        containerColor = extractedColors.cardBackgroundMuted
                     ) {
-                        AnimatedContent(
-                            targetState = currentSong
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            when (it) {
-                                null -> {}
-                                else -> {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.75f)
-                                            .clickable { onNavigateToLyrics() }
-                                    ) {
-                                        ArtFromUrl(
-                                            imageUrl = it.artUrl,
-                                            modifier = Modifier
-                                                .size(48.dp)
-                                                .clip(MaterialTheme.shapes.extraSmall)
-                                        )
+                            ArtFromUrl(
+                                imageUrl = currentSong.artUrl,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(MaterialTheme.shapes.small)
+                            )
 
-                                        Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(
+                                    text = currentSong.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
 
-                                        Column {
-                                            Text(
-                                                text = it.title,
-                                                maxLines = 1,
-                                                style = MaterialTheme.typography.titleMedium,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-
-                                            Text(
-                                                text = it.artists,
-                                                maxLines = 1,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (notificationAccess) {
-                            IconButton(
-                                onClick = {
-                                    action(SavedPageAction.OnToggleAutoChange)
-                                    if (!autoChange) {
-                                        onNavigateToLyrics()
-                                    }
-                                },
-                                colors = if (autoChange) {
-                                    IconButtonDefaults.filledIconButtonColors()
-                                } else {
-                                    IconButtonDefaults.iconButtonColors()
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.rush_transparent),
-                                    contentDescription = "App Icon",
-                                    modifier = Modifier.size(28.dp)
+                                Text(
+                                    text = currentSong.artists,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        IconButton(
-                            onClick = { action(SavedPageAction.OnToggleSearchSheet) }
+                    }
+                }
+            }
+        },
+        floatingActionButton = {
+            if (showCurrent) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (notificationAccess) {
+                        FloatingActionButton(
+                            onClick = {
+                                action(SavedPageAction.OnToggleAutoChange)
+                                if (!autoChange) {
+                                    onNavigateToLyrics()
+                                }
+                            },
+                            shape = Sunny.toShape(),
+                            containerColor = if (autoChange) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary,
+                            contentColor = if (autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary
                         ) {
                             Icon(
-                                imageVector = FontAwesomeIcons.Solid.Search,
-                                contentDescription = "Search",
-                                modifier = Modifier.size(20.dp)
+                                painter = painterResource(Res.drawable.rush_transparent),
+                                contentDescription = "App Icon",
+                                modifier = Modifier.size(30.dp)
                             )
                         }
+                    }
+
+                    MediumFloatingActionButton(
+                        onClick = { action(SavedPageAction.OnToggleSearchSheet) }
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Search,
+                            contentDescription = "Search",
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
                 }
             }
@@ -197,12 +201,17 @@ fun SavedPage(
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(sortOrderChips, key = { it.stringRes.key }) {
+                    items(SortOrder.entries.toList(), key = { it.stringRes.key }) {
+                        val chipRoundness by animateDpAsState(
+                            targetValue = if (it == state.sortOrder) 16.dp else 8.dp
+                        )
+
                         FilterChip(
                             selected = it == state.sortOrder,
                             onClick = {
                                 action(SavedPageAction.UpdateSortOrder(it))
                             },
+                            shape = RoundedCornerShape(chipRoundness),
                             label = {
                                 Text(
                                     text = stringResource(it.stringRes)
@@ -215,9 +224,6 @@ fun SavedPage(
                 AnimatedContent(
                     targetState = state.sortOrder
                 ) { sortOrder ->
-                    var expandedCardId by rememberSaveable {
-                        mutableStateOf<String?>(null)
-                    }
                     val listState = rememberLazyListState()
 
                     LazyColumn(
@@ -263,40 +269,6 @@ fun SavedPage(
                                     onClick = {
                                         action(SavedPageAction.ChangeCurrentSong(it.id))
                                         onNavigateToLyrics()
-                                    }
-                                )
-                            }
-
-                            SortOrder.ARTISTS_ASC -> items(
-                                state.groupedArtist,
-                                key = { it.key }) { map ->
-                                GroupedCard(
-                                    map = map,
-                                    isExpanded = expandedCardId == map.key,
-                                    onClick = {
-                                        action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    },
-                                    onCardClick = {
-                                        expandedCardId =
-                                            if (expandedCardId == map.key) null else map.key
-                                    }
-                                )
-                            }
-
-                            SortOrder.ALBUM_ASC -> items(
-                                state.groupedAlbum,
-                                key = { it.key }) { map ->
-                                GroupedCard(
-                                    map = map,
-                                    isExpanded = expandedCardId == map.key,
-                                    onClick = {
-                                        action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    },
-                                    onCardClick = {
-                                        expandedCardId =
-                                            if (expandedCardId == map.key) null else map.key
                                     }
                                 )
                             }

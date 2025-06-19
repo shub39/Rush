@@ -1,21 +1,27 @@
 package com.shub39.rush.lyrics.presentation.setting
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,10 +39,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.lyrics.presentation.setting.component.AboutApp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
-import compose.icons.fontawesomeicons.solid.ArrowRight
+import compose.icons.fontawesomeicons.solid.InfoCircle
+import compose.icons.fontawesomeicons.solid.Palette
+import compose.icons.fontawesomeicons.solid.Upload
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.about_libraries
@@ -49,7 +58,7 @@ import rush.app.generated.resources.look_and_feel_info
 import rush.app.generated.resources.settings
 
 // topmost settings page
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingRootPage(
     notificationAccess: Boolean,
@@ -76,7 +85,7 @@ fun SettingRootPage(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.ArrowLeft,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -88,24 +97,61 @@ fun SettingRootPage(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            // about app
+            item { AboutApp() }
+
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
             // navigate to look and feel
             item {
                 ListItem(
+                    modifier = Modifier.clickable { onNavigateToLookAndFeel() },
                     headlineContent = { Text(text = stringResource(Res.string.look_and_feel)) },
                     supportingContent = { Text(text = stringResource(Res.string.look_and_feel_info)) },
-                    trailingContent = {
-                        FilledTonalIconButton(
-                            onClick = onNavigateToLookAndFeel,
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                                contentDescription = "Navigate",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                    leadingContent = {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Palette,
+                            contentDescription = "Navigate",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 )
             }
+
+            // navigate to backup
+            item {
+                ListItem(
+                    modifier = Modifier.clickable { onNavigateToBackup() },
+                    headlineContent = { Text(text = stringResource(Res.string.backup)) },
+                    supportingContent = { Text(text = stringResource(Res.string.backup_info)) },
+                    leadingContent = {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Upload,
+                            contentDescription = "Backup",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                )
+            }
+
+            // navigate to about app
+            item {
+                ListItem(
+                    modifier = Modifier.clickable { onNavigateToAboutLibraries() },
+                    headlineContent = { Text(stringResource(Res.string.about_libraries)) },
+                    supportingContent = { Text(text = stringResource(Res.string.about_libraries)) },
+                    leadingContent = {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.InfoCircle,
+                            contentDescription = "About Libraries",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                )
+            }
+
+            // navigate to notification access permission page
+            notificationAccessReminder(notificationAccess)
 
             // nuke everything
             item {
@@ -114,51 +160,15 @@ fun SettingRootPage(
                     trailingContent = {
                         FilledTonalIconButton(
                             onClick = { deleteConfirmationDialog = true },
-                            enabled = state.deleteButtonEnabled
+                            enabled = state.deleteButtonEnabled,
+                            shapes = IconButtonShapes(
+                                shape = CircleShape,
+                                pressedShape = RoundedCornerShape(10.dp)
+                            )
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = null
-                            )
-                        }
-                    }
-                )
-            }
-
-            // navigate to backup
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(Res.string.backup)) },
-                    supportingContent = { Text(text = stringResource(Res.string.backup_info)) },
-                    trailingContent = {
-                        FilledTonalIconButton(
-                            onClick = onNavigateToBackup
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                                contentDescription = "Navigate",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                )
-            }
-
-            // navigate to notification access permission page
-            notificationAccessReminder(notificationAccess)
-
-            // navigate to about app
-            item {
-                ListItem(
-                    headlineContent = { Text(stringResource(Res.string.about_libraries)) },
-                    trailingContent = {
-                        FilledTonalIconButton(
-                            onClick = onNavigateToAboutLibraries
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Solid.ArrowRight,
-                                contentDescription = "Navigate",
-                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
@@ -182,7 +192,7 @@ fun SettingRootPage(
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = "Warning",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(24.dp)
                 )
 
                 Spacer(modifier = Modifier.padding(8.dp))

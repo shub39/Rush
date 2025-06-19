@@ -58,9 +58,7 @@ class LyricsPagePreferencesImpl(
     }
 
     override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data
-        .map { prefs ->
-            prefs[fullscreen] != false
-        }
+        .map { prefs -> prefs[fullscreen] == true }
     override suspend fun setFullScreen(pref: Boolean) {
         dataStore.edit { prefs ->
             prefs[fullscreen] = pref

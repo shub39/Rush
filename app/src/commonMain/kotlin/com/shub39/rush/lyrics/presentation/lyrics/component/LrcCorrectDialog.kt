@@ -74,7 +74,8 @@ fun LrcCorrectDialog(
                     onValueChange = { track = it },
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
-                    label = { Text(text = stringResource(Res.string.track)) }
+                    label = { Text(text = stringResource(Res.string.track)) },
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedTextField(
@@ -82,6 +83,7 @@ fun LrcCorrectDialog(
                     onValueChange = { artist = it },
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
+                    modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = stringResource(Res.string.artist)) }
                 )
             }

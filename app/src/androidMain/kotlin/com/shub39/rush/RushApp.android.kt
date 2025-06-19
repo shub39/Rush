@@ -72,6 +72,7 @@ actual fun RushApp() {
 
                 SavedPage(
                     state = savedState,
+                    extractedColors = lyricsState.extractedColors,
                     currentSong = lyricsState.song,
                     notificationAccess = NotificationListener.canAccessNotifications(context),
                     action = savedVM::onAction,

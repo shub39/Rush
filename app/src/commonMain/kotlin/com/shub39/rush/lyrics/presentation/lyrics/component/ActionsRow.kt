@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,11 +24,9 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Copy
-import compose.icons.fontawesomeicons.solid.Edit
+import compose.icons.fontawesomeicons.solid.Clipboard
 import compose.icons.fontawesomeicons.solid.Palette
 import compose.icons.fontawesomeicons.solid.QuoteLeft
-import compose.icons.fontawesomeicons.solid.Share
 import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -89,7 +89,7 @@ fun ActionsRow(
             }
         ) {
             Icon(
-                imageVector = FontAwesomeIcons.Solid.Copy,
+                imageVector = FontAwesomeIcons.Solid.Clipboard,
                 contentDescription = "Copy",
                 modifier = Modifier.size(20.dp)
             )
@@ -139,9 +139,8 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    imageVector = FontAwesomeIcons.Solid.Edit,
-                    contentDescription = "Correct Lyrics",
-                    modifier = Modifier.size(20.dp)
+                    imageVector = Icons.Default.Create,
+                    contentDescription = "Correct Lyrics"
                 )
             }
         }
@@ -211,9 +210,8 @@ fun ActionsRow(
                     onShare()
                 }) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Share,
-                        contentDescription = "Share",
-                        modifier = Modifier.size(20.dp)
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share"
                     )
                 }
 

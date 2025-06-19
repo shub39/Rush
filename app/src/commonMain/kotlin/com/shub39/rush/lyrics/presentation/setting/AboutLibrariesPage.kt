@@ -46,7 +46,7 @@ fun AboutLibrariesPage(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.ArrowLeft,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

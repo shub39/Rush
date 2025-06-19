@@ -14,6 +14,6 @@ fun main() {
         resizable = false,
         alwaysOnTop = true
     ) {
-        RushApp()
+        RushApp() // Broke for some reason, maybe because of cmp beta??
     }
 }
