@@ -1,12 +1,11 @@
 package com.shub39.rush.lyrics.presentation.search_sheet
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,11 +22,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -132,50 +131,50 @@ fun SearchSheet(
                 )
             )
 
-            LazyColumn(
-                modifier = Modifier
-                    .animateContentSize()
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                state = LazyListState(0)
-            ) {
-                item {
-                    AnimatedVisibility(
-                        visible = state.isSearching,
-                        enter = slideInVertically(tween(300)) { -it/2 },
-                        exit = slideOutVertically(tween(300)) { -it/2 },
-                        modifier = Modifier.padding(32.dp)
+            AnimatedContent(
+                targetState = state.isSearching,
+                modifier = Modifier.fillMaxSize()
+            ) { searching ->
+                if (searching) {
+                    LoadingIndicator(
+                        modifier = Modifier.size(60.dp)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .animateContentSize()
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        state = LazyListState(0)
                     ) {
-                        ContainedLoadingIndicator()
-                    }
-                }
-
-                items(
-                    state.localSearchResults,
-                    key = { it.title.hashCode() + it.artist.hashCode() }
-                ) {
-                    SearchResultCard(
-                        result = it,
-                        onClick = {
-                            action(SearchSheetAction.OnCardClicked(it.id))
-                            onClick()
-                        },
-                        downloaded = true
-                    )
-                }
-
-                items(state.searchResults, key = { it.id }) {
-                    SearchResultCard(
-                        result = it,
-                        onClick = {
-                            action(SearchSheetAction.OnCardClicked(it.id))
-                            onClick()
+                        items(
+                            state.localSearchResults,
+                            key = { it.title.hashCode() + it.artist.hashCode() }
+                        ) {
+                            SearchResultCard(
+                                result = it,
+                                onClick = {
+                                    action(SearchSheetAction.OnCardClicked(it.id))
+                                    onClick()
+                                },
+                                downloaded = true
+                            )
                         }
-                    )
-                }
 
-                item {
-                    Spacer(modifier = Modifier.padding(60.dp))
+                        items(state.searchResults, key = { it.id }) {
+                            SearchResultCard(
+                                result = it,
+                                onClick = {
+                                    action(SearchSheetAction.OnCardClicked(it.id))
+                                    onClick()
+                                }
+                            )
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
+                        }
+                    }
                 }
             }
         }
