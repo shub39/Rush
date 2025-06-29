@@ -79,4 +79,6 @@
     <string name="palette_style">Stile Palette</string>
     <string name="seed_color_desc">Seleziona il colore da cui generare la palette</string>
     <string name="hypnotic_canvas">Hypnotic Canvas</string>
+    <string name="hypnotic_canvas_desc">(Funzione sperimentale) Immagini \"ipnotiche\" per la pagina dei testi. Potrebbe impattare sulle perfomance</string>
+    <string name="extract_colors">Estrai colori</string>
 </resources>
