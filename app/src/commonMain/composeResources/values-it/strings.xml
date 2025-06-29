@@ -68,5 +68,15 @@
     <string name="restore_info">Ripristina dal file export selezionato</string>
     <string name="choose_file">Seleziona un file</string>
     <string name="rush_mode">Modalità Rush</string>
-    <string name="rush_mode_desc">Usa le notifiche riguardanti la canzone in riproduzione e cerca i testi per essa. I testi cambiano automaticamente insieme al tuo player musicale</string>
+    <string name="rush_mode_desc">Usa le notifiche riguardanti la canzone in riproduzione e cerca i testi per essa. I testi cambiano automaticamente insieme al tuo player musicale.</string>
+    <string name="look_and_feel">Aspetto e Personalità</string>
+    <string name="look_and_feel_info">Personalizza l\'app in vari modi</string>
+    <string name="use_system_theme">Usa il tema di sistema</string>
+    <string name="dark_theme">Usa tema scuro</string>
+    <string name="amoled">Palette AMOLED</string>
+    <string name="use_system_theme_desc">Usa lo stesso tema del sistema</string>
+    <string name="amoled_desc">Esperienza migliore su schermi AMOLED</string>
+    <string name="palette_style">Stile Palette</string>
+    <string name="seed_color_desc">Seleziona il colore da cui generare la palette</string>
+    <string name="hypnotic_canvas">Hypnotic Canvas</string>
 </resources>
