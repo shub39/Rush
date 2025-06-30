@@ -7,7 +7,6 @@
     <string name="save">Salva le modifiche</string>
     <string name="delete_confirmation">Sei sicuro di voler eliminare tutti i testi salvati?</string>
     <string name="no_lyrics">Non è stato possibile recuperare il testo da LRCLIB</string>
-    <string name="suggestion"></string>
     <string name="downloaded">Testi salvati</string>
     <string name="delete_all">Rimuovi tutti i testi</string>
     <string name="notification">Servizio di ascolto delle notifiche</string>
