@@ -86,7 +86,7 @@
     <string name="done">הושלם</string>
     <string name="fetching">טוען מילים עבור</string>
     <string name="error">משהו השתבש…</string>
-    <string name="rush_branding">מיתוג Rush</string>
+    <string name="rush_branding">Rush</string>
     <string name="no_internet">אין חיבור אינטרנט!</string>
     <string name="card_corners">קצוות כרטיס</string>
     <string name="no_audio_files">לא נמצאו קבצים שמע</string>
@@ -122,4 +122,7 @@
     <string name="fullscreen_desc">הסתר סרגלי מערכת בדף מילות השיר</string>
     <string name="messy">מבולגן</string>
     <string name="chat">צ\'אט</string>
+    <string name="translate">תרגם</string>
+    <string name="rate_on_play">דרג בחנות של גוגל</string>
+    <string name="bmc">קנה לי קפה</string>
 </resources>

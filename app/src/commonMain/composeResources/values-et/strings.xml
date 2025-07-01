@@ -8,4 +8,14 @@
     <string name="vibrant_colors">Kasuta elavaid värvide</string>
     <string name="save">Salvesta muudatused</string>
     <string name="delete_confirmation">Kas sa oled kindel, et soovid kõik salvestatud laulusõnad kustutada?</string>
+    <string name="unknown_album">Tundmatu album</string>
+    <string name="track">lugu</string>
+    <string name="io_error">Võrguühenduse viga</string>
+    <string name="unknown_error">Tekkis viga</string>
+    <string name="artist">esitaja</string>
+    <string name="rounded_corners">Ümarad nurgad</string>
+    <string name="colors">Sinu valitud värvid</string>
+    <string name="grant_permission">Luba teavitused</string>
+    <string name="width">Laius</string>
+    <string name="notification_permission">Laulusõnade automaatseks laadimiseks on vajalik ligipääs teavitustele.</string>
 </resources>
