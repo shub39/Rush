@@ -7,15 +7,17 @@ import com.shub39.rush.lyrics.domain.backup.ExportRepo
 import com.shub39.rush.lyrics.domain.backup.ExportSchema
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 actual class ExportImpl(
     private val songRepo: SongRepo
 ): ExportRepo {
+    @OptIn(ExperimentalTime::class)
     override suspend fun exportToJson() = withContext(Dispatchers.IO) {
         val songsData = songRepo.getAllSongs().map { it.toSongSchema() }
         val exportFolder = File(
