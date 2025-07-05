@@ -8,15 +8,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 actual class ExportImpl(
     private val songRepo: SongRepo
 ): ExportRepo {
+    @OptIn(ExperimentalTime::class)
     override suspend fun exportToJson() = coroutineScope {
         val songsData = async {
             withContext(Dispatchers.IO) {

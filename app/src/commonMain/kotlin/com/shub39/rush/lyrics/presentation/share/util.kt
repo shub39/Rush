@@ -3,10 +3,12 @@ package com.shub39.rush.lyrics.presentation.share
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 fun getFormattedTime(): String {
     val now = Clock.System.now()
     val localTime = now.toLocalDateTime(TimeZone.currentSystemDefault()).time
