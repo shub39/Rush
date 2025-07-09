@@ -1,5 +1,6 @@
 package com.shub39.rush.di
 
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.request.CachePolicy
@@ -20,6 +21,11 @@ import org.koin.dsl.module
 actual val platformModule = module {
     singleOf(::DatabaseFactory)
     singleOf(::DatastoreFactory)
+    single {
+        get<DatabaseFactory>().create()
+            .setDriver(BundledSQLiteDriver())
+            .build()
+    }
     singleOf(::ExportImpl).bind<ExportRepo>()
     singleOf(::RestoreImpl).bind<RestoreRepo>()
     singleOf(::PaletteGenerator)

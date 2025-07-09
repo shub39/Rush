@@ -19,7 +19,7 @@ import compose.icons.fontawesomeicons.solid.Music
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import rush.app.generated.resources.Res
-import rush.app.generated.resources.rush_transparent
+import rush.app.generated.resources.genius
 
 // General Image Composable
 @Composable
@@ -47,7 +47,7 @@ fun ArtFromUrl(
             alignment = Alignment.Center,
             contentScale = contentScale
         ),
-        previewPlaceholder = painterResource(Res.drawable.rush_transparent),
+        previewPlaceholder = painterResource(Res.drawable.genius),
         failure = {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Music,

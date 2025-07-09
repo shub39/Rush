@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Rush.Splash" parent="Theme.SplashScreen" >
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/rush_splash</item>
         <item name="windowSplashScreenBackground">#EBDBB2</item>
         <item name="postSplashScreenTheme">@style/Theme.Rush</item>
     </style>
