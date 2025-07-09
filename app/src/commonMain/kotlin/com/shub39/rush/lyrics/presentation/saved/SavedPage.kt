@@ -167,7 +167,7 @@ fun SavedPage(
                             Icon(
                                 painter = painterResource(Res.drawable.rush_transparent),
                                 contentDescription = "App Icon",
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier.size(64.dp)
                             )
                         }
                     }

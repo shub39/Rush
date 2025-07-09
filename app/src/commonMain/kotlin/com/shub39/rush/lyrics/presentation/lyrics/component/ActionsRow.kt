@@ -25,6 +25,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Clipboard
+import compose.icons.fontawesomeicons.solid.Music
 import compose.icons.fontawesomeicons.solid.Palette
 import compose.icons.fontawesomeicons.solid.QuoteLeft
 import compose.icons.fontawesomeicons.solid.SyncAlt
@@ -32,7 +33,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.genius
-import rush.app.generated.resources.rush_transparent
 
 @Composable
 fun ActionsRow(
@@ -186,9 +186,9 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.rush_transparent),
+                    imageVector = FontAwesomeIcons.Solid.Music,
                     contentDescription = "Rush Mode",
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
