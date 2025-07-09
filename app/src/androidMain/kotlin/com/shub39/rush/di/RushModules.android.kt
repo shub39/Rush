@@ -16,6 +16,7 @@ import org.koin.dsl.module
 actual val platformModule = module {
     singleOf(::DatabaseFactory)
     singleOf(::DatastoreFactory)
+    single { get<DatabaseFactory>().create().build() }
     singleOf(::ExportImpl).bind<ExportRepo>()
     singleOf(::RestoreImpl).bind<RestoreRepo>()
     singleOf(::PaletteGenerator)

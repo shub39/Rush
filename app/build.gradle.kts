@@ -149,7 +149,6 @@ kotlin {
             implementation(libs.composeIcons.fontAwesome)
             implementation(libs.zoomable)
             implementation(libs.androidx.datastore.preferences.core)
-            implementation(libs.sqlite.bundled)
             implementation(libs.datetime)
             implementation(libs.bundles.ktor)
             implementation(libs.jetbrains.compose.navigation)
@@ -175,6 +174,7 @@ kotlin {
             implementation(libs.filekit.dialogs.compose)
         }
         desktopMain.dependencies {
+            implementation(libs.sqlite.bundled)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
