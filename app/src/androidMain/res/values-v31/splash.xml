@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Rush.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/rush_splash</item>
         <item name="windowSplashScreenBackground">@android:color/system_accent1_100</item>
         <item name="postSplashScreenTheme">@style/Theme.Rush</item>
     </style>
