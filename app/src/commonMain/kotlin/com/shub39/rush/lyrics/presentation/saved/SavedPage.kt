@@ -57,12 +57,11 @@ import com.shub39.rush.lyrics.domain.SongUi
 import com.shub39.rush.lyrics.presentation.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Meteor
 import compose.icons.fontawesomeicons.solid.Search
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.app.generated.resources.Res
 import rush.app.generated.resources.rush_branding
-import rush.app.generated.resources.rush_transparent
 import rush.app.generated.resources.saved
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -165,9 +164,9 @@ fun SavedPage(
                             contentColor = if (autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.rush_transparent),
-                                contentDescription = "App Icon",
-                                modifier = Modifier.size(64.dp)
+                                imageVector = FontAwesomeIcons.Solid.Meteor,
+                                contentDescription = "Rush Mode",
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }

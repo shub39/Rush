@@ -42,13 +42,11 @@ import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.lyrics.data.listener.NotificationListener
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Meteor
 import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import rush.app.generated.resources.Res
-import rush.app.generated.resources.rush_transparent
 
 @Composable
 fun OnboardingDialog(
@@ -88,12 +86,6 @@ fun OnboardingDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.rush_transparent),
-                            contentDescription = "Rush Icon",
-                            modifier = Modifier.size(120.dp),
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
 
                         Text(
                             text = "Welcome to Rush!",
@@ -170,8 +162,8 @@ fun OnboardingDialog(
                                 },
                                 leadingContent = {
                                     Icon(
-                                        painter = painterResource(Res.drawable.rush_transparent),
-                                        contentDescription = "Rush Icon",
+                                        imageVector = FontAwesomeIcons.Solid.Meteor,
+                                        contentDescription = "Rush Mode",
                                         modifier = Modifier.size(48.dp),
                                         tint = MaterialTheme.colorScheme.secondary
                                     )

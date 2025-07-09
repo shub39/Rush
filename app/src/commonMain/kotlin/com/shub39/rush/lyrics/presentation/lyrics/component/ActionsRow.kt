@@ -25,7 +25,7 @@ import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Clipboard
-import compose.icons.fontawesomeicons.solid.Music
+import compose.icons.fontawesomeicons.solid.Meteor
 import compose.icons.fontawesomeicons.solid.Palette
 import compose.icons.fontawesomeicons.solid.QuoteLeft
 import compose.icons.fontawesomeicons.solid.SyncAlt
@@ -186,7 +186,7 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    imageVector = FontAwesomeIcons.Solid.Music,
+                    imageVector = FontAwesomeIcons.Solid.Meteor,
                     contentDescription = "Rush Mode",
                     modifier = Modifier.size(20.dp)
                 )
