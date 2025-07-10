@@ -63,6 +63,8 @@ class SavedVM(
                 }
 
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
+
+                is SavedPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }

@@ -108,6 +108,8 @@ class SettingsVM(
                 is SettingsPageAction.OnMaterialThemeToggle -> datastore.updateMaterialTheme(action.pref)
 
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
+
+                is SettingsPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }
@@ -116,6 +118,16 @@ class SettingsVM(
         observeFlowsJob?.cancel()
         observeFlowsJob = launch {
             observeTheme().launchIn(this)
+
+            datastore.getOnboardingDoneFlow()
+                .onEach { onBoardingDone ->
+                    _state.update {
+                        it.copy(
+                            onBoardingDone = onBoardingDone
+                        )
+                    }
+                }
+                .launchIn(this)
 
             datastore.getFontFlow()
                 .onEach { pref ->

@@ -9,5 +9,5 @@ data class SavedPageState(
     val songsByTime: List<Song> = emptyList(),
     val songsAsc: List<Song> = emptyList(),
     val songsDesc: List<Song> = emptyList(),
-    val sortOrder: SortOrder = SortOrder.DATE_ADDED
+    val sortOrder: SortOrder = SortOrder.DATE_ADDED,
 )

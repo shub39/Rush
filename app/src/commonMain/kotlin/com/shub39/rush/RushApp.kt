@@ -15,7 +15,7 @@ sealed interface Route {
     data object SettingsGraph: Route
 
     @Serializable
-    data object OnboardingGraph: Route
+    data object Onboarding: Route
 }
 
 @Composable

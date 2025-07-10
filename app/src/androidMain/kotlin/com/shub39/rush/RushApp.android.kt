@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -22,12 +23,14 @@ import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.lyrics.presentation.LyricsGraph
 import com.shub39.rush.lyrics.presentation.SettingsGraph
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
+import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
 import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
+import com.shub39.rush.onboarding.Onboarding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -47,6 +50,12 @@ actual fun RushApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
+    LaunchedEffect(settingsState.onBoardingDone) {
+        if (!settingsState.onBoardingDone) {
+            navController.navigate(Route.Onboarding)
+        }
+    }
+
     RushTheme(
         state = settingsState.theme
     ) {
@@ -61,7 +70,6 @@ actual fun RushApp() {
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
         ) {
-
             composable<Route.SavedPage> {
                 SideEffect {
                     if (lyricsState.fullscreen) {
@@ -98,6 +106,15 @@ actual fun RushApp() {
                     state = settingsState,
                     action = settingsVM::onAction,
                     onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
+            composable<Route.Onboarding> {
+                Onboarding(
+                    onDone = {
+                        savedVM.onAction(SavedPageAction.OnUpdateOnBoardingDone(true))
+                        navController.navigateUp()
+                    }
                 )
             }
         }

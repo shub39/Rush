@@ -5,6 +5,7 @@ import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.Fonts
 
 sealed interface SettingsPageAction {
+    data class OnUpdateOnBoardingDone(val done: Boolean): SettingsPageAction
     data class OnSeedColorChange(val color: Int): SettingsPageAction
     data class OnThemeSwitch(val appTheme: AppTheme): SettingsPageAction
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction

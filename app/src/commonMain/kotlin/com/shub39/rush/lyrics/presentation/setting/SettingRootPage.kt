@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -168,6 +169,27 @@ fun SettingRootPage(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+
+            //restart onboarding
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Onboarding") },
+                    trailingContent = {
+                        FilledTonalIconButton(
+                            onClick = { action(SettingsPageAction.OnUpdateOnBoardingDone(false)) },
+                            shapes = IconButtonShapes(
+                                shape = CircleShape,
+                                pressedShape = RoundedCornerShape(10.dp)
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = null
                             )
                         }
