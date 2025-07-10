@@ -91,7 +91,7 @@ class SharePagePreferencesImpl(
     }
 
     override fun getCardFontFlow(): Flow<Fonts> = dataStore.data.map { prefs ->
-        val font = prefs[cardFont] ?: Fonts.POPPINS.name
+        val font = prefs[cardFont] ?: Fonts.FIGTREE.name
         Fonts.valueOf(font)
     }
     override suspend fun updateCardFont(newCardFont: Fonts) {
