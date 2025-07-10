@@ -28,7 +28,6 @@ import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
 import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
 import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
-import com.shub39.rush.onboarding.OnboardingDialog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -113,10 +112,6 @@ actual fun RushApp() {
                     }
                 }
             )
-        }
-
-        if (!savedState.onboarding) {
-            OnboardingDialog()
         }
     }
 }

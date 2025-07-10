@@ -99,16 +99,6 @@ class SavedVM(
                 }
                 .launchIn(this)
 
-            datastore.getOnboardingDoneFlow()
-                .onEach { done ->
-                    _state.update {
-                        it.copy(
-                            onboarding = done
-                        )
-                    }
-                }
-                .launchIn(this)
-
             datastore.getSortOrderFlow()
                 .onEach { sortOrder ->
                     _state.update {
