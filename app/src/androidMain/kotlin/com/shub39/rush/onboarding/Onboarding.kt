@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonShapes
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -31,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -150,6 +152,7 @@ fun Onboarding(
                     1 -> {
                         // Share cards demo
                         var cardStyle by remember { mutableStateOf(CardTheme.entries.random()) }
+                        var newCardProgress by remember { mutableFloatStateOf(0f) }
                         var containerColor by remember {
                             mutableStateOf(
                                 Color(
@@ -160,20 +163,40 @@ fun Onboarding(
                             )
                         }
 
+                        LaunchedEffect(Unit) {
+                            while (true) {
+                                delay(1000)
+                                newCardProgress = newCardProgress + 0.33f
+
+                                if (newCardProgress >= 1f) {
+                                    newCardProgress = 0f
+                                    var newStyle = CardTheme.entries.random()
+                                    while (newStyle == cardStyle) newStyle =
+                                        CardTheme.entries.random()
+                                    cardStyle = newStyle
+                                    containerColor = Color(
+                                        Random.nextInt(256),
+                                        Random.nextInt(256),
+                                        Random.nextInt(256)
+                                    )
+                                }
+                            }
+                        }
+
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "So many Card styles!",
+                                text = "Share the most notable lines",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
 
                             Text(
-                                text = "Tap to randomize style",
+                                text = "So many Card Styles!",
                                 textAlign = TextAlign.Center
                             )
 
@@ -194,18 +217,17 @@ fun Onboarding(
                                             ) Color.Black else Color.White,
                                             0.9f
                                         )
-                                        .fixIfDisliked(),
-                                    onClick = {
-                                        var newStyle = CardTheme.entries.random()
-                                        while (newStyle == cardStyle) newStyle =
-                                            CardTheme.entries.random()
-                                        cardStyle = newStyle
-                                        containerColor = Color(
-                                            Random.nextInt(256),
-                                            Random.nextInt(256),
-                                            Random.nextInt(256)
-                                        )
-                                    }
+                                        .fixIfDisliked()
+                                )
+                            }
+
+                            Box(contentAlignment = Alignment.Center) {
+                                CircularWavyProgressIndicator(
+                                    progress = { newCardProgress }
+                                )
+
+                                Text(
+                                    ((1f - newCardProgress).times(3) + 1).toInt().toString()
                                 )
                             }
 

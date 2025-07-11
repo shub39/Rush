@@ -2,7 +2,6 @@ package com.shub39.rush.onboarding.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -27,8 +26,7 @@ import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
 fun AnimatedShareCardsDemo(
     cardStyle: CardTheme,
     contentColor: Color,
-    containerColor: Color,
-    onClick: () -> Unit
+    containerColor: Color
 ) {
     val animatedContentColor by animateColorAsState(
         targetValue = contentColor
@@ -56,9 +54,7 @@ fun AnimatedShareCardsDemo(
     )
     val cardCorners = RoundedCornerShape(20.dp)
     val fit = CardFit.FIT
-    val modifier = Modifier
-        .clickable { onClick() }
-        .width(360.dp)
+    val modifier = Modifier.width(360.dp)
 
     AnimatedContent(
         targetState = cardStyle
