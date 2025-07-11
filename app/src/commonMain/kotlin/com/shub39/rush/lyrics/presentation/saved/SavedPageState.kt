@@ -10,5 +10,4 @@ data class SavedPageState(
     val songsAsc: List<Song> = emptyList(),
     val songsDesc: List<Song> = emptyList(),
     val sortOrder: SortOrder = SortOrder.DATE_ADDED,
-    val onboarding: Boolean = true
 )

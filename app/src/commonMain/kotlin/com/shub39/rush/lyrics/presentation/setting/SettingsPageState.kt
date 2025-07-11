@@ -8,5 +8,6 @@ data class SettingsPageState(
     val theme: Theme = Theme(),
     val deleteButtonEnabled: Boolean = true,
     val exportState: ExportState = ExportState.IDLE,
-    val restoreState: RestoreState = RestoreState.IDLE
+    val restoreState: RestoreState = RestoreState.IDLE,
+    val onBoardingDone: Boolean = true
 )

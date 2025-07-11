@@ -63,6 +63,8 @@ class SavedVM(
                 }
 
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
+
+                is SavedPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }
@@ -95,16 +97,6 @@ class SavedVM(
 
                     stateLayer.settingsState.update {
                         it.copy(deleteButtonEnabled = true)
-                    }
-                }
-                .launchIn(this)
-
-            datastore.getOnboardingDoneFlow()
-                .onEach { done ->
-                    _state.update {
-                        it.copy(
-                            onboarding = done
-                        )
                     }
                 }
                 .launchIn(this)

@@ -104,7 +104,7 @@ class OtherPreferencesImpl(
 
     override fun getFontFlow(): Flow<Fonts> = dataStore.data
         .map { prefs ->
-            val font = prefs[selectedFont] ?: Fonts.POPPINS.name
+            val font = prefs[selectedFont] ?: Fonts.FIGTREE.name
             Fonts.valueOf(font)
         }
 
