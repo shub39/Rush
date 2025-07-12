@@ -169,7 +169,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.ui)
             implementation(compose.components.uiToolingPreview)
-
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs.compose)
         }
