@@ -135,32 +135,28 @@ fun SearchSheet(
                 targetState = state.isSearching,
                 modifier = Modifier.fillMaxSize()
             ) { searching ->
-                if (searching) {
-                    LoadingIndicator(
-                        modifier = Modifier.size(60.dp)
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .animateContentSize()
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        state = LazyListState(0)
+                LazyColumn(
+                    modifier = Modifier
+                        .animateContentSize()
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    state = LazyListState(0)
+                ) {
+                    items(
+                        state.localSearchResults,
+                        key = { it.title.hashCode() + it.artist.hashCode() }
                     ) {
-                        items(
-                            state.localSearchResults,
-                            key = { it.title.hashCode() + it.artist.hashCode() }
-                        ) {
-                            SearchResultCard(
-                                result = it,
-                                onClick = {
-                                    action(SearchSheetAction.OnCardClicked(it.id))
-                                    onClick()
-                                },
-                                downloaded = true
-                            )
-                        }
+                        SearchResultCard(
+                            result = it,
+                            onClick = {
+                                action(SearchSheetAction.OnCardClicked(it.id))
+                                onClick()
+                            },
+                            downloaded = true
+                        )
+                    }
 
+                    if (!searching) {
                         items(state.searchResults, key = { it.id }) {
                             SearchResultCard(
                                 result = it,
@@ -170,10 +166,16 @@ fun SearchSheet(
                                 }
                             )
                         }
-
+                    } else {
                         item {
-                            Spacer(modifier = Modifier.padding(60.dp))
+                            LoadingIndicator(
+                                modifier = Modifier.size(60.dp)
+                            )
                         }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }

@@ -17,8 +17,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "3.5.0"
-val appVersionCode = 3500
+val appVersionName = "3.6.0"
+val appVersionCode = 3600
 
 buildkonfig {
     packageName = "com.shub39.rush"
@@ -169,7 +169,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.ui)
             implementation(compose.components.uiToolingPreview)
-
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs.compose)
         }
