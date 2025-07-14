@@ -1,6 +1,4 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -12,7 +10,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.room)
-    alias(libs.plugins.hotreload)
     alias(libs.plugins.buildKonfig)
 }
 
@@ -115,8 +112,6 @@ kotlin {
         }
     }
 
-    jvm("desktop")
-
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -128,8 +123,6 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -172,11 +165,6 @@ kotlin {
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs.compose)
         }
-        desktopMain.dependencies {
-            implementation(libs.sqlite.bundled)
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-        }
         dependencies {
             debugImplementation(compose.uiTooling)
             annotationProcessor(libs.androidx.room.room.compiler)
@@ -187,7 +175,6 @@ kotlin {
 }
 
 aboutLibraries {
-    // Remove the "generated" timestamp to allow for reproducible builds; from kaajjo/LibreSudoku
     export.excludeFields.add("generated")
 }
 
@@ -195,37 +182,4 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.shub39.rush.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Rpm, TargetFormat.Deb, TargetFormat.AppImage)
-            packageName = appName
-            packageVersion = appVersionName
-            licenseFile.set(project.file("../LICENSE"))
-
-            linux {
-                rpmLicenseType = "GPLv3"
-                shortcut = true
-
-                iconFile.set(project.file("../fastlane/metadata/android/en-US/images/icon.png"))
-            }
-
-            jvmArgs("-Dcompose.application.configure.swing.globals=false")
-
-            buildTypes.release.proguard {
-                isEnabled.set(false)
-                obfuscate.set(false)
-                optimize.set(true)
-                configurationFiles.from("proguard-rules.pro")
-            }
-        }
-    }
-}
-
-tasks.withType<ComposeHotRun>().configureEach {
-    mainClass.set("com.shub39.rush.MainKt")
 }
