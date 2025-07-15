@@ -15,7 +15,6 @@ activityCompose = "1.10.1"
 navigation = "2.9.0-beta03"
 kmpalette = "3.1.0"
 room = "2.7.2"
-sqlite = "2.5.2"
 serialization = "1.9.0"
 hypnoticcanvas = "0.4.1"
 aboutLibraries = '12.2.4'
@@ -24,10 +23,8 @@ composeIcons = "1.1.1"
 junit = "4.13.2"
 androidx-lifecycle = "2.9.1"
 zoomable = "2.8.1"
-compose-multiplatform = "1.9.0-alpha02" # facing room crashes in alpha03
+compose-multiplatform = "1.9.0-alpha03"
 materialIconsCore = "1.7.3"
-kotlinx-coroutines = "1.10.2"
-hotreload = "1.0.0-beta03"
 buildKonfig = "0.17.1"
 
 [libraries]
@@ -35,7 +32,6 @@ buildKonfig = "0.17.1"
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
@@ -68,7 +64,6 @@ aboutLibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3",
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -81,7 +76,6 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 [plugins]
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hotreload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotreload" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
