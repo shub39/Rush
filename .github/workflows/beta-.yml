@@ -48,12 +48,11 @@ jobs:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
 
-      - name: Upload to Release
-        uses: Shopify/upload-to-release@v2.0.0
+      - name: Create GitHub prerelease
+        uses: ncipollo/release-action@v1
         with:
-          name: beta-apk
-          path: app/build/outputs/apk/beta/app-beta.apk
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag: beta-${{ github.run_number }}
+          name: "Beta ${{ github.run_number }}"
           prerelease: true
 
       - name: Upload APK to Discord
