@@ -1,4 +1,4 @@
-name: beta w/ release
+name: beta
 
 on:
   push:
@@ -55,3 +55,13 @@ jobs:
           path: app/build/outputs/apk/beta/app-beta.apk
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
+
+      - name: Upload APK to Discord
+        shell: bash
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          VERSION: $( echo ${{ github.event.head_commit.id }} | cut -c1-7 )
+          COMMIT: $( sed -E "s/(.*) <.*@.*>/\\1/g;t" <<< "${{ github.event.head_commit.message }}" | jq -Rsa . | tail -c +2 | head -c -2 )
+        run: |
+          message=$(echo "**${{ env.VERSION }}**\n${{ env.COMMIT }}\n[Download APK from GitHub Actions](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})") 
+          curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"$message\"}" ${{ env.WEBHOOK }}
