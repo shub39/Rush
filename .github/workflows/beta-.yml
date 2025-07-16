@@ -48,12 +48,15 @@ jobs:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
 
-      - name: Create GitHub prerelease
-        uses: ncipollo/release-action@v1
+      - name: Upload APK to prerelease
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: beta-${{ github.run_number }}
-          name: "Beta ${{ github.run_number }}"
-          prerelease: true
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/beta/app-beta.apk
+          asset_name: app-beta.apk
+          asset_content_type: application/vnd.android.package-archive
 
       - name: Upload APK to Discord
         shell: bash
