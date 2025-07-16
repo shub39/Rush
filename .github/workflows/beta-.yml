@@ -48,6 +48,17 @@ jobs:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
 
+      - name: Create prerelease
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: beta-${{ github.run_id }}
+          release_name: Beta ${{ github.run_id }}
+          draft: false
+          prerelease: true
+
       - name: Upload APK to prerelease
         uses: actions/upload-release-asset@v1
         env:
