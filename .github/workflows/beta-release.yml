@@ -1,4 +1,4 @@
-name: beta
+name: beta w/ release
 
 on:
   push:
@@ -42,6 +42,7 @@ jobs:
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=key0 \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+          --info
 
       - name: Upload Beta APK
         uses: actions/upload-artifact@v4
