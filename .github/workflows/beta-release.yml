@@ -27,10 +27,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Decode Keystore
-        env:
-          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
-        run: echo "$KEYSTORE_FILE" | base64 --decode > $GITHUB_WORKSPACE/keystore.jks
+     # - name: Decode Keystore
+     #   env:
+     #     KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+     #   run: echo "$KEYSTORE_FILE" | base64 --decode > $GITHUB_WORKSPACE/keystore.jks
 
       - name: Grant execute permissions to Gradle wrapper
         run: chmod +x gradlew
