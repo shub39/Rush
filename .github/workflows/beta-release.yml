@@ -55,3 +55,4 @@ jobs:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
