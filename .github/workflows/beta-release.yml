@@ -32,6 +32,11 @@ jobs:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
         run: echo "$KEYSTORE_FILE" | base64 --decode > $GITHUB_WORKSPACE/keystore.jks
 
+      - name: Decode GitHub Token
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GITHUB_TOKEN" | base64 --decode > $GITHUB_WORKSPACE/ # a
+
       - name: Grant execute permissions to Gradle wrapper
         run: chmod +x gradlew
 
@@ -48,3 +53,14 @@ jobs:
         with:
           name: beta-apk
           path: app/build/outputs/apk/beta/app-beta.apk
+
+      - name: Upload to Release Action
+  # You may pin to the exact commit or the version.
+  # uses: Shopify/upload-to-release@c77c9b3e5d288adaef98a7007bf92340ec6ce03b
+  uses: Shopify/upload-to-release@v2.0.0
+  with:
+    name: beta-apk
+    path: app/build/outputs/apk/beta/app-beta.apk
+    content-type:
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
