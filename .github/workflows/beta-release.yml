@@ -37,12 +37,11 @@ jobs:
 
       - name: Build Beta APK
         run: |
-          ./gradlew assembleBeta \
+          ./gradlew assembleBeta --stacktrace \
           -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/keystore.jks \
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=key0 \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
-          --info
 
       - name: Upload Beta APK
         uses: actions/upload-artifact@v4
