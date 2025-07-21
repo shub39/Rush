@@ -25,11 +25,11 @@ import com.shub39.rush.lyrics.presentation.SettingsGraph
 import com.shub39.rush.lyrics.presentation.saved.SavedPage
 import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
 import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheet
-import com.shub39.rush.lyrics.presentation.viewmodels.LyricsVM
-import com.shub39.rush.lyrics.presentation.viewmodels.SavedVM
-import com.shub39.rush.lyrics.presentation.viewmodels.SearchSheetVM
-import com.shub39.rush.lyrics.presentation.viewmodels.SettingsVM
-import com.shub39.rush.lyrics.presentation.viewmodels.ShareVM
+import com.shub39.rush.viewmodels.LyricsVM
+import com.shub39.rush.viewmodels.SavedVM
+import com.shub39.rush.viewmodels.SearchSheetVM
+import com.shub39.rush.viewmodels.SettingsVM
+import com.shub39.rush.viewmodels.ShareVM
 import com.shub39.rush.onboarding.Onboarding
 import org.koin.androidx.compose.koinViewModel
 

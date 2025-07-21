@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.viewmodels
+package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

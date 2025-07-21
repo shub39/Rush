@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.presentation.viewmodels
+package com.shub39.rush.viewmodels
 
 import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.presentation.saved.SavedPageState
