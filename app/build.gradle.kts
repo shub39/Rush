@@ -1,32 +1,15 @@
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.room)
-    alias(libs.plugins.buildKonfig)
 }
 
 val appName = "Rush"
-val appVersionName = "3.6.0"
-val appVersionCode = 3600
-
-buildkonfig {
-    packageName = "com.shub39.rush"
-    objectName = "BuildKonfig"
-    exposeObjectWithName = "BuildKonfig"
-
-    defaultConfigs {
-        buildConfigField(STRING, "versionName", appVersionName)
-        buildConfigField(STRING, "versionCode", appVersionCode.toString())
-    }
-}
+val appVersionName = "3.7.0"
+val appVersionCode = 3700
 
 android {
     namespace = "com.shub39.rush"
@@ -42,6 +25,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+    kotlin {
+        compilerOptions {
+            jvmToolchain(17)
         }
     }
     buildTypes {
@@ -91,6 +79,11 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     packaging {
         resources {
@@ -103,75 +96,47 @@ android {
     }
 }
 
-kotlin {
-    targets.all {
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
-    }
+dependencies {
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.android)
 
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
-            implementation(libs.koin.androidx.compose)
-            implementation(libs.koin.android)
-        }
-        commonMain.dependencies {
-            implementation(libs.kmpalette.core)
-            implementation(libs.material.icons.core)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.composeIcons.fontAwesome)
-            implementation(libs.zoomable)
-            implementation(libs.androidx.datastore.preferences.core)
-            implementation(libs.datetime)
-            implementation(libs.bundles.ktor)
-            implementation(libs.jetbrains.compose.navigation)
-            implementation(libs.materialKolor)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.landscapist.coil)
-            implementation(libs.landscapist.placeholder)
-            implementation(libs.colorpicker.compose)
-            implementation(libs.ksoup)
-            implementation(libs.hypnoticcanvas)
-            implementation(libs.aboutLibraries)
-            implementation(libs.aboutLibraries.compose.m3)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.ui)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.filekit.core)
-            implementation(libs.filekit.dialogs.compose)
-        }
-        dependencies {
-            debugImplementation(compose.uiTooling)
-            annotationProcessor(libs.androidx.room.room.compiler)
-            ksp(libs.androidx.room.room.compiler)
-            testImplementation(libs.junit)
-        }
-    }
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.kmpalette.core)
+    implementation(libs.material.icons.core)
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.composeIcons.fontAwesome)
+    implementation(libs.zoomable)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.datetime)
+    implementation(libs.bundles.ktor)
+    implementation(libs.jetbrains.compose.navigation)
+    implementation(libs.materialKolor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.landscapist.coil)
+    implementation(libs.landscapist.placeholder)
+    implementation(libs.colorpicker.compose)
+    implementation(libs.ksoup)
+    implementation(libs.hypnoticcanvas)
+    implementation(libs.aboutLibraries)
+    implementation(libs.aboutLibraries.compose.m3)
+    implementation(libs.filekit.core)
+    implementation(libs.filekit.dialogs.compose)
 }
 
 aboutLibraries {
