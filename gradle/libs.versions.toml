@@ -7,12 +7,12 @@ splashScreen = "1.0.1"
 datastore = "1.2.0-alpha02"
 koin = "4.1.0"
 ksoup = "0.2.4"
-ktor = "3.2.1"
+ktor = "3.2.2"
 kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 landscapist = "2.5.1"
 activityCompose = "1.10.1"
-navigation = "2.9.0-beta03"
+navigation = "2.9.0-beta04"
 kmpalette = "3.1.0"
 room = "2.7.2"
 serialization = "1.9.0"
@@ -20,24 +20,26 @@ hypnoticcanvas = "0.4.1"
 aboutLibraries = '12.2.4'
 datetime = "0.7.1"
 composeIcons = "1.1.1"
-junit = "4.13.2"
 androidx-lifecycle = "2.9.1"
 zoomable = "2.8.1"
-compose-multiplatform = "1.9.0-alpha03"
+compose = "1.8.3"
+material3 = "1.4.0-alpha18"
 materialIconsCore = "1.7.3"
-buildKonfig = "0.17.1"
 
 [libraries]
 # Android
+androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "compose" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
-androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -74,15 +76,12 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
-buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-room = { id = "androidx.room", version.ref = "room" }
 
 [bundles]
 ktor = [
