@@ -243,6 +243,9 @@ class SearchSheetVM(
                     )
                 }
 
+                stateLayer.savedPageState.update {
+                    it.copy(currentSong = result)
+                }
             } else {
                 when (val result = repo.fetchSong(songId)) {
                     is Result.Error -> {
@@ -267,6 +270,10 @@ class SearchSheetVM(
                                 selectedLines = emptyMap(),
                                 error = null
                             )
+                        }
+
+                        stateLayer.savedPageState.update {
+                            it.copy(currentSong = retrievedSong)
                         }
                     }
                 }

@@ -129,7 +129,7 @@ fun RushApp() {
                         SharePage(
                             onDismiss = { navController.navigateUp() },
                             state = shareState,
-                            action = shareVM::onAction
+                            onAction = shareVM::onAction
                         )
                     }
 

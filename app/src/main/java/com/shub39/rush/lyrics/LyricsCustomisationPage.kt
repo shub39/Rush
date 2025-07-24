@@ -63,9 +63,8 @@ import kotlin.math.roundToInt
 fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
-    action: (LyricsPageAction) -> Unit,
+    onAction: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
-    showFullscreen: Boolean = true,
 ) = PageFill {
 
     val (cardBackground, cardContent) = getCardColors(state)
@@ -95,7 +94,7 @@ fun LyricsCustomisationsPage(
                 actions = {
                     IconButton(
                         onClick = {
-                            action(LyricsPageAction.OnCustomisationReset)
+                            onAction(LyricsPageAction.OnCustomisationReset)
                         }
                     ) {
                         Icon(
@@ -178,7 +177,7 @@ fun LyricsCustomisationsPage(
                         else -> 0f
                     },
                     onValueChange = {
-                        action(
+                        onAction(
                             LyricsPageAction.OnAlignmentChange(
                                 when (it.roundToInt()) {
                                     1 -> TextAlign.Center
@@ -204,7 +203,7 @@ fun LyricsCustomisationsPage(
                     steps = 33,
                     valueRange = 16f..50f,
                     onValueChange = {
-                        action(LyricsPageAction.OnFontSizeChange(it))
+                        onAction(LyricsPageAction.OnFontSizeChange(it))
                     },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
@@ -213,7 +212,7 @@ fun LyricsCustomisationsPage(
                     title = stringResource(R.string.line_height),
                     value = state.lineHeight,
                     onValueChange = {
-                        action(LyricsPageAction.OnLineHeightChange(it))
+                        onAction(LyricsPageAction.OnLineHeightChange(it))
                     },
                     modifier = Modifier.padding(horizontal = 16.dp),
                     steps = 33,
@@ -224,7 +223,7 @@ fun LyricsCustomisationsPage(
                     title = stringResource(R.string.letter_spacing),
                     value = state.letterSpacing,
                     onValueChange = {
-                        action(LyricsPageAction.OnLetterSpacingChange(it))
+                        onAction(LyricsPageAction.OnLetterSpacingChange(it))
                     },
                     modifier = Modifier.padding(horizontal = 16.dp),
                     steps = 3,
@@ -253,7 +252,7 @@ fun LyricsCustomisationsPage(
                         trailingContent = {
                             Switch(
                                 checked = state.hypnoticCanvas,
-                                onCheckedChange = { action(LyricsPageAction.OnHypnoticToggle(it)) }
+                                onCheckedChange = { onAction(LyricsPageAction.OnHypnoticToggle(it)) }
                             )
                         }
                     )
@@ -268,7 +267,7 @@ fun LyricsCustomisationsPage(
                             else -> state.meshSpeed.toInt().toString()
                         },
                         onValueChange = {
-                            action(LyricsPageAction.OnMeshSpeedChange(it))
+                            onAction(LyricsPageAction.OnMeshSpeedChange(it))
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
@@ -289,7 +288,7 @@ fun LyricsCustomisationsPage(
                     trailingContent = {
                         Switch(
                             checked = state.useExtractedColors,
-                            onCheckedChange = { action(LyricsPageAction.OnToggleColorPref(it)) }
+                            onCheckedChange = { onAction(LyricsPageAction.OnToggleColorPref(it)) }
                         )
                     }
                 )
@@ -303,7 +302,7 @@ fun LyricsCustomisationsPage(
                     trailingContent = {
                         Switch(
                             checked = state.cardColors == CardColors.VIBRANT,
-                            onCheckedChange = { action(LyricsPageAction.OnVibrantToggle(it)) },
+                            onCheckedChange = { onAction(LyricsPageAction.OnVibrantToggle(it)) },
                             enabled = state.useExtractedColors
                         )
                     }
@@ -360,34 +359,32 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                if (showFullscreen) {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.fullscreen)
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = stringResource(R.string.fullscreen_desc)
-                            )
-                        },
-                        trailingContent = {
-                            Switch(
-                                checked = state.fullscreen,
-                                onCheckedChange = {
-                                    action(LyricsPageAction.OnFullscreenChange(it))
-                                }
-                            )
-                        }
-                    )
-                }
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(R.string.fullscreen_desc)
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.fullscreen,
+                            onCheckedChange = {
+                                onAction(LyricsPageAction.OnFullscreenChange(it))
+                            }
+                        )
+                    }
+                )
 
                 SettingSlider(
                     title = stringResource(R.string.max_lines),
                     value = state.maxLines.toFloat(),
                     onValueChange = {
-                        action(LyricsPageAction.OnMaxLinesChange(it.toInt()))
+                        onAction(LyricsPageAction.OnMaxLinesChange(it.toInt()))
                     },
                     valueToShow = state.maxLines.toString(),
                     steps = 13,
@@ -413,9 +410,9 @@ fun LyricsCustomisationsPage(
             } else Color(state.mCardBackground),
             onSelect = {
                 if (editTarget == "content") {
-                    action(LyricsPageAction.OnUpdatemContent(it.toArgb()))
+                    onAction(LyricsPageAction.OnUpdatemContent(it.toArgb()))
                 } else {
-                    action(LyricsPageAction.OnUpdatemBackground(it.toArgb()))
+                    onAction(LyricsPageAction.OnUpdatemBackground(it.toArgb()))
                 }
             },
             onDismiss = { colorPickerDialog = false }

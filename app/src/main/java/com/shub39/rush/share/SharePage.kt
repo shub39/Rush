@@ -59,12 +59,13 @@ import com.shub39.rush.core.domain.enums.CardTheme
 import com.shub39.rush.core.domain.enums.CornerRadius
 import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
+import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.component.ChatCard
 import com.shub39.rush.share.component.CoupletShareCard
+import com.shub39.rush.share.component.ExpressiveShareCard
 import com.shub39.rush.share.component.HypnoticShareCard
-import com.shub39.rush.share.component.ListSelect
 import com.shub39.rush.share.component.MessyCard
 import com.shub39.rush.share.component.QuoteShareCard
 import com.shub39.rush.share.component.RushedShareCard
@@ -92,7 +93,7 @@ import net.engawapg.lib.zoomable.zoomable
 fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
-    action: (SharePageAction) -> Unit,
+    onAction: (SharePageAction) -> Unit,
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
@@ -264,6 +265,15 @@ fun SharePage(
                             cardCorners = cardCorners,
                             fit = state.cardFit
                         )
+
+                        CardTheme.EXPRESSIVE -> ExpressiveShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit
+                        )
                     }
                 }
             }
@@ -338,7 +348,12 @@ fun SharePage(
                     )
                 }
 
-                ShareButton(coroutineScope, cardGraphicsLayer)
+                ShareButton(
+                    canShare = state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme),
+                    onShowPaywall = { onAction(SharePageAction.OnShowPaywall) },
+                    coroutineScope = coroutineScope,
+                    cardGraphicsLayer = cardGraphicsLayer
+                )
 
                 AnimatedVisibility(
                     visible = state.cardTheme == CardTheme.RUSHED
@@ -373,7 +388,7 @@ fun SharePage(
                     options = CardTheme.entries.toList(),
                     selected = state.cardTheme,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardTheme(it))
+                        onAction(SharePageAction.OnUpdateCardTheme(it))
                     },
                     labelProvider = {
                         Text(
@@ -387,7 +402,7 @@ fun SharePage(
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardColor(it))
+                        onAction(SharePageAction.OnUpdateCardColor(it))
                     },
                     labelProvider = {
                         Text(
@@ -401,7 +416,7 @@ fun SharePage(
                     options = CardFit.entries.toList(),
                     selected = state.cardFit,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardFit(it))
+                        onAction(SharePageAction.OnUpdateCardFit(it))
                     },
                     labelProvider = {
                         Text(
@@ -415,7 +430,7 @@ fun SharePage(
                     options = CornerRadius.entries.toList(),
                     selected = state.cardRoundness,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardRoundness(it))
+                        onAction(SharePageAction.OnUpdateCardRoundness(it))
                     },
                     labelProvider = {
                         Text(
@@ -429,7 +444,7 @@ fun SharePage(
                     options = Fonts.entries.toList(),
                     selected = state.cardFont,
                     onSelectedChange = {
-                        action(SharePageAction.OnUpdateCardFont(it))
+                        onAction(SharePageAction.OnUpdateCardFont(it))
                     },
                     labelProvider = {
                         Text(
@@ -447,9 +462,9 @@ fun SharePage(
             initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
             onSelect = {
                 if (editTarget == "content") {
-                    action(SharePageAction.OnUpdateCardContent(it.toArgb()))
+                    onAction(SharePageAction.OnUpdateCardContent(it.toArgb()))
                 } else {
-                    action(SharePageAction.OnUpdateCardBackground(it.toArgb()))
+                    onAction(SharePageAction.OnUpdateCardBackground(it.toArgb()))
                 }
             },
             onDismiss = {

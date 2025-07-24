@@ -78,8 +78,8 @@ fun LyricsGraph(
             LyricsCustomisationsPage(
                 state = lyricsState,
                 onNavigateBack = { navController.navigateUp() },
-                action = lyricsAction,
-                modifier = Modifier.widthIn(max = 700.dp)
+                onAction = lyricsAction,
+                modifier = Modifier.widthIn(max = 700.dp),
             )
         }
     }

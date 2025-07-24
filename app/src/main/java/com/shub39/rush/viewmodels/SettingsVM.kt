@@ -1,6 +1,5 @@
 package com.shub39.rush.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.billing.BillingHandler
@@ -26,7 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsVM(
-    stateLayer: StateLayer,
+    private val stateLayer: StateLayer,
     private val repo: RushRepository,
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
@@ -131,12 +130,11 @@ class SettingsVM(
     private suspend fun checkSubscription() {
         val isSubscribed = billingHandler.userResult()
 
-        Log.d("Settings VM", "${isSubscribed is SubscriptionResult.Subscribed}")
-
         when (isSubscribed) {
             SubscriptionResult.NotSubscribed -> datastore.resetAppTheme()
             SubscriptionResult.Subscribed -> {
                 _state.update { it.copy(isProUser = true) }
+                stateLayer.sharePageState.update { it.copy(isProUser = true) }
             }
             else -> {}
         }

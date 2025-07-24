@@ -7,6 +7,7 @@ import com.shub39.rush.core.domain.enums.CornerRadius
 import com.shub39.rush.core.domain.enums.Fonts
 
 sealed interface SharePageAction {
+    data object OnShowPaywall : SharePageAction
     data class OnUpdateCardTheme(val theme: CardTheme) : SharePageAction
     data class OnUpdateCardColor(val color: CardColors) : SharePageAction
     data class OnUpdateCardFit(val fit: CardFit) : SharePageAction

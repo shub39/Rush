@@ -131,6 +131,8 @@ fun AnimatedShareCardsDemo(
                 cardCorners = cardCorners,
                 fit = fit
             )
+
+            CardTheme.EXPRESSIVE -> {}
         }
     }
 }

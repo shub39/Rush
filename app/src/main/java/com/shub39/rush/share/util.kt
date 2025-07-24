@@ -31,6 +31,8 @@ import kotlin.time.ExperimentalTime
 
 @Composable
 fun ShareButton(
+    canShare: Boolean,
+    onShowPaywall: () -> Unit,
     coroutineScope: CoroutineScope,
     cardGraphicsLayer: GraphicsLayer
 ) {
@@ -39,25 +41,33 @@ fun ShareButton(
 
     IconButton(
         onClick = {
-            coroutineScope.launch {
-                val imageBitmap = withContext(Dispatchers.Main) {
-                    cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+            if (canShare) {
+                coroutineScope.launch {
+                    val imageBitmap = withContext(Dispatchers.Main) {
+                        cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+                    }
+
+                    withContext(Dispatchers.IO) {
+                        val cachePath = File(context.cacheDir, "images")
+                        cachePath.mkdirs()
+                        val file = File(cachePath, "image.png")
+
+                        val stream = FileOutputStream(file)
+                        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        stream.close()
+
+                        val contentUri: Uri =
+                            FileProvider.getUriForFile(
+                                context,
+                                "${context.packageName}.provider",
+                                file
+                            )
+
+                        launcher.launch(PlatformFile(contentUri))
+                    }
                 }
-
-                withContext(Dispatchers.IO) {
-                    val cachePath = File(context.cacheDir, "images")
-                    cachePath.mkdirs()
-                    val file = File(cachePath, "image.png")
-
-                    val stream = FileOutputStream(file)
-                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                    stream.close()
-
-                    val contentUri: Uri =
-                        FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-
-                    launcher.launch(PlatformFile(contentUri))
-                }
+            } else {
+                onShowPaywall()
             }
         }
     ) {

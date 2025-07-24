@@ -4,15 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,19 +47,23 @@ fun LoadingCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = FontAwesomeIcons.Solid.Search,
-                contentDescription = null,
-                modifier = Modifier.size(120.dp),
-                tint = colors.first
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingIndicator(
+                    modifier = Modifier.size(200.dp),
+                    color = colors.first
+                )
 
-            Spacer(modifier = Modifier.padding(16.dp))
-
-            LinearWavyProgressIndicator(
-                color = colors.first,
-                trackColor = Color.Transparent
-            )
+                Icon(
+                    imageVector = FontAwesomeIcons.Solid.Search,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = colors.second
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -81,19 +87,23 @@ fun LoadingCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = FontAwesomeIcons.Solid.Save,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp),
-                tint = colors.first
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingIndicator(
+                    modifier = Modifier.size(200.dp),
+                    color = colors.first
+                )
 
-            Spacer(modifier = Modifier.padding(16.dp))
-
-            LinearWavyProgressIndicator(
-                color = colors.first,
-                trackColor = Color.Transparent
-            )
+                Icon(
+                    imageVector = FontAwesomeIcons.Solid.Save,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = colors.second
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 

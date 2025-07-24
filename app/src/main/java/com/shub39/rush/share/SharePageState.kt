@@ -21,5 +21,7 @@ data class SharePageState(
     val cardContent: Int = Color.White.toArgb(),
     val cardFit: CardFit = CardFit.FIT,
     val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
-    val cardTheme: CardTheme = CardTheme.SPOTIFY
+    val cardTheme: CardTheme = CardTheme.SPOTIFY,
+
+    val isProUser: Boolean = true
 )
