@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -31,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -54,7 +57,7 @@ import compose.icons.fontawesomeicons.solid.Font
 @Composable
 fun LookAndFeelPage(
     state: SettingsPageState,
-    action: (SettingsPageAction) -> Unit,
+    onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
@@ -85,34 +88,11 @@ fun LookAndFeelPage(
         }
     ) { paddingValues ->
         LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            // Font Picker
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(R.string.font))
-                    },
-                    supportingContent = {
-                        Text(text = state.theme.fonts.fullName)
-                    },
-                    trailingContent = {
-                        FilledTonalIconButton(
-                            onClick = { fontPickerDialog = true }
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Solid.Font,
-                                contentDescription = "Pick Font",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-
-                    }
-                )
-            }
-
             // App theme switch
             item {
                 ListItem(
@@ -139,68 +119,104 @@ fun LookAndFeelPage(
                 )
             }
 
-            // Amoled variant toggle
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.amoled)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.amoled_desc)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.theme.withAmoled,
-                            onCheckedChange = {
-                                action(
-                                    SettingsPageAction.OnAmoledSwitch(it)
+            if (state.isProUser) {// Font Picker
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text(text = stringResource(R.string.font))
+                        },
+                        supportingContent = {
+                            Text(text = state.theme.fonts.fullName)
+                        },
+                        trailingContent = {
+                            FilledTonalIconButton(
+                                onClick = { fontPickerDialog = true }
+                            ) {
+                                Icon(
+                                    imageVector = FontAwesomeIcons.Solid.Font,
+                                    contentDescription = "Pick Font",
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
-                        )
-                    }
-                )
-            }
 
-            // Material you toggle
-            materialYouToggle(state, action)
+                        }
+                    )
+                }
 
-            // Seed color picker
-            item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.seed_color)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.seed_color_desc)
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = { colorPickerDialog = true },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.theme.seedColor),
-                                contentColor = contentColorFor(Color(state.theme.seedColor))
-                            ),
-                            enabled = !state.theme.materialTheme
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Create,
-                                contentDescription = "Select Color"
+                // Amoled variant toggle
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.amoled)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.amoled_desc)
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = state.theme.withAmoled,
+                                onCheckedChange = {
+                                    onAction(
+                                        SettingsPageAction.OnAmoledSwitch(it)
+                                    )
+                                }
                             )
                         }
-                    }
-                )
-            }
+                    )
+                }
 
-            // palette styles
-            paletteStyles(state, action)
+                // Material you toggle
+                materialYouToggle(state, onAction)
+
+                // Seed color picker
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.seed_color)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.seed_color_desc)
+                            )
+                        },
+                        trailingContent = {
+                            IconButton(
+                                onClick = { colorPickerDialog = true },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.theme.seedColor),
+                                    contentColor = contentColorFor(Color(state.theme.seedColor))
+                                ),
+                                enabled = !state.theme.materialTheme
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Create,
+                                    contentDescription = "Select Color"
+                                )
+                            }
+                        }
+                    )
+                }
+
+                // palette styles
+                paletteStyles(state, onAction)
+            } else {
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { onAction(SettingsPageAction.OnShowPaywall) }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.unlock_more_pro)
+                        )
+                    }
+                }
+            }
 
             item {
                 Spacer(modifier = Modifier.padding(60.dp))
@@ -212,7 +228,7 @@ fun LookAndFeelPage(
     if (colorPickerDialog) {
         ColorPickerDialog(
             initialColor = Color(state.theme.seedColor),
-            onSelect = { action(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
+            onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
             onDismiss = { colorPickerDialog = false },
         )
     }
@@ -247,7 +263,7 @@ fun LookAndFeelPage(
                         ToggleButton(
                             checked = state.theme.appTheme == appTheme,
                             onCheckedChange = {
-                                action(SettingsPageAction.OnThemeSwitch(appTheme))
+                                onAction(SettingsPageAction.OnThemeSwitch(appTheme))
                                 themePickerDialog = false
                             }
                         ) {
@@ -289,7 +305,7 @@ fun LookAndFeelPage(
                         ToggleButton(
                             checked = state.theme.fonts == font,
                             onCheckedChange = {
-                                action(SettingsPageAction.OnFontChange(font))
+                                onAction(SettingsPageAction.OnFontChange(font))
                                 fontPickerDialog = false
                             }
                         ) {

@@ -73,7 +73,7 @@ fun SettingsGraph(
         composable<SettingsRoutes.LookAndFeelPage> {
             LookAndFeelPage(
                 state = state,
-                action = action,
+                onAction = action,
                 onNavigateBack = { navController.navigateUp() }
             )
         }
