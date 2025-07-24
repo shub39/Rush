@@ -14,13 +14,12 @@ enum class CardTheme(
     QUOTE(R.string.quote),
     MESSY(R.string.messy),
     CHAT(R.string.chat),
-    EXPRESSIVE(R.string.expressive)
 
     ;
 
     companion object {
         val premiumCards = listOf(
-            EXPRESSIVE, HYPNOTIC, MESSY, QUOTE, CHAT
+            HYPNOTIC, MESSY, QUOTE, CHAT
         )
     }
 }

@@ -23,5 +23,5 @@ data class SharePageState(
     val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
     val cardTheme: CardTheme = CardTheme.SPOTIFY,
 
-    val isProUser: Boolean = true
+    val isProUser: Boolean = false
 )

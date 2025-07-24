@@ -64,7 +64,6 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.component.ChatCard
 import com.shub39.rush.share.component.CoupletShareCard
-import com.shub39.rush.share.component.ExpressiveShareCard
 import com.shub39.rush.share.component.HypnoticShareCard
 import com.shub39.rush.share.component.MessyCard
 import com.shub39.rush.share.component.QuoteShareCard
@@ -265,15 +264,6 @@ fun SharePage(
                             cardCorners = cardCorners,
                             fit = state.cardFit
                         )
-
-                        CardTheme.EXPRESSIVE -> ExpressiveShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
                     }
                 }
             }
@@ -332,12 +322,16 @@ fun SharePage(
 
                 IconButton(
                     onClick = {
-                        coroutineScope.launch {
-                            saveImage = cardGraphicsLayer.toImageBitmap()
-                            imageSaver.launch(
-                                suggestedName = "${state.songDetails.artist}-${state.songDetails.title}",
-                                extension = "png"
-                            )
+                        if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
+                            coroutineScope.launch {
+                                saveImage = cardGraphicsLayer.toImageBitmap()
+                                imageSaver.launch(
+                                    suggestedName = "${state.songDetails.artist}-${state.songDetails.title}",
+                                    extension = "png"
+                                )
+                            }
+                        } else {
+                            onAction(SharePageAction.OnShowPaywall)
                         }
                     }
                 ) {
