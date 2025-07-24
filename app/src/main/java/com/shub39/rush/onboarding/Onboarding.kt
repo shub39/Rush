@@ -49,8 +49,8 @@ import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.fixIfDisliked
 import com.materialkolor.ktx.isLight
 import com.materialkolor.ktx.lighten
+import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.domain.enums.CardTheme
-import com.shub39.rush.lyrics.data.listener.NotificationListener
 import com.shub39.rush.onboarding.component.AnimatedAppIcon
 import com.shub39.rush.onboarding.component.AnimatedShareCardsDemo
 import compose.icons.FontAwesomeIcons

@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.data.PaletteGenerator
 import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
-import com.shub39.rush.lyrics.domain.MediaInterface
-import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.lyrics.presentation.lyrics.LyricsPageState
-import com.shub39.rush.lyrics.presentation.lyrics.breakLyrics
-import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
+import com.shub39.rush.lyrics.LyricsPageAction
+import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.breakLyrics
+import com.shub39.rush.lyrics.toSongUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -85,9 +85,17 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnToggleAutoChange -> {
+                    val newPref = !_state.value.autoChange
+
                     _state.update {
                         it.copy(
-                            autoChange = !it.autoChange
+                            autoChange = newPref
+                        )
+                    }
+
+                    stateLayer.savedPageState.update {
+                        it.copy(
+                            autoChange = newPref
                         )
                     }
                 }
@@ -122,7 +130,7 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.UpdateExtractedColors -> viewModelScope.launch(Dispatchers.Default) {
+                is LyricsPageAction.UpdateExtractedColors -> launch(Dispatchers.Default) {
                     val colors = paletteGenerator.generatePaletteFromUrl(action.url)
 
                     _state.update {
@@ -130,6 +138,10 @@ class LyricsVM(
                     }
 
                     stateLayer.sharePageState.update {
+                        it.copy(extractedColors = colors)
+                    }
+
+                    stateLayer.savedPageState.update {
                         it.copy(extractedColors = colors)
                     }
                 }

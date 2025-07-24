@@ -2,17 +2,17 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.domain.Result
+import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.data_classes.ExtractedColors
+import com.shub39.rush.core.domain.data_classes.SearchResult
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.getMainTitle
-import com.shub39.rush.lyrics.domain.MediaInterface
-import com.shub39.rush.lyrics.domain.SearchResult
-import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetAction
-import com.shub39.rush.lyrics.presentation.search_sheet.SearchSheetState
+import com.shub39.rush.lyrics.toSongUi
+import com.shub39.rush.search_sheet.SearchSheetAction
+import com.shub39.rush.search_sheet.SearchSheetState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -243,6 +243,9 @@ class SearchSheetVM(
                     )
                 }
 
+                stateLayer.savedPageState.update {
+                    it.copy(currentSong = result)
+                }
             } else {
                 when (val result = repo.fetchSong(songId)) {
                     is Result.Error -> {
@@ -267,6 +270,10 @@ class SearchSheetVM(
                                 selectedLines = emptyMap(),
                                 error = null
                             )
+                        }
+
+                        stateLayer.savedPageState.update {
+                            it.copy(currentSong = retrievedSong)
                         }
                     }
                 }

@@ -1,27 +1,29 @@
 package com.shub39.rush.di
 
+import com.shub39.rush.billing.BillingHandler
+import com.shub39.rush.billing.BillingHandlerImpl
 import com.shub39.rush.core.data.DatastoreFactory
 import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.core.data.LyricsPagePreferencesImpl
 import com.shub39.rush.core.data.OtherPreferencesImpl
 import com.shub39.rush.core.data.PaletteGenerator
 import com.shub39.rush.core.data.SharePagePreferencesImpl
+import com.shub39.rush.core.data.backup.ExportImpl
+import com.shub39.rush.core.data.backup.RestoreImpl
+import com.shub39.rush.core.data.database.DatabaseFactory
+import com.shub39.rush.core.data.database.SongDatabase
+import com.shub39.rush.core.data.listener.MediaListenerImpl
+import com.shub39.rush.core.data.network.GeniusApi
+import com.shub39.rush.core.data.network.GeniusScraper
+import com.shub39.rush.core.data.network.LrcLibApi
+import com.shub39.rush.core.data.repository.RushRepository
 import com.shub39.rush.core.domain.LyricsPagePreferences
+import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.SharePagePreferences
-import com.shub39.rush.lyrics.data.backup.ExportImpl
-import com.shub39.rush.lyrics.data.backup.RestoreImpl
-import com.shub39.rush.lyrics.data.database.DatabaseFactory
-import com.shub39.rush.lyrics.data.database.SongDatabase
-import com.shub39.rush.lyrics.data.listener.MediaListenerImpl
-import com.shub39.rush.lyrics.data.network.GeniusApi
-import com.shub39.rush.lyrics.data.network.GeniusScraper
-import com.shub39.rush.lyrics.data.network.LrcLibApi
-import com.shub39.rush.lyrics.data.repository.RushRepository
-import com.shub39.rush.lyrics.domain.MediaInterface
-import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
+import com.shub39.rush.core.domain.SongRepo
+import com.shub39.rush.core.domain.backup.ExportRepo
+import com.shub39.rush.core.domain.backup.RestoreRepo
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
@@ -35,7 +37,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val rushModules = module {
-    // factories and stuff
+    // billing
+    singleOf(::BillingHandlerImpl).bind<BillingHandler>()
+
+    // factories, listeners, generators and backup stuff
     singleOf(::DatabaseFactory)
     singleOf(::DatastoreFactory)
     single { get<DatabaseFactory>().create().build() }
@@ -44,7 +49,7 @@ val rushModules = module {
     singleOf(::PaletteGenerator)
     singleOf(::MediaListenerImpl).bind<MediaInterface>()
 
-    // android specific
+    // android specific imageloader with cache
     singleOf(::provideImageLoader)
 
     // Database

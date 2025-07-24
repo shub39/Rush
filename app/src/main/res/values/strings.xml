@@ -89,7 +89,7 @@
     <string name="custom">Custom</string>
     <string name="fit">Fit</string>
     <string name="standard">Standard</string>
-    <string name="spotify">Spotify</string>
+    <string name="spotify">Generic</string>
     <string name="rushed">Rushed</string>
     <string name="image">Image</string>
     <string name="hypnotic">Hypnotic</string>
@@ -124,4 +124,10 @@
     <string name="couplet">Couplet</string>
     <string name="messy">Messy</string>
     <string name="chat">Chat</string>
+    <string name="foss">You are using the FOSS variant</string>
+    <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases. If this app added value to your life, Support me by donating on</string>
+    <string name="rush_pro">Rush Pro</string>
+    <string name="unlock_more_pro">Unlock more with Pro</string>
+    <string name="expressive">Expressive</string>
+    <string name="synced_style">Synced Style</string>
 </resources>

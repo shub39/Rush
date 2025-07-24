@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -27,13 +29,14 @@ android {
             useSupportLibrary = true
         }
     }
+
     kotlin {
         compilerOptions {
             jvmToolchain(17)
         }
     }
+
     buildTypes {
-        // Fdroid, github and IzzyOnDroid
         release {
             resValue("string", "app_name", appName)
             isMinifyEnabled = true
@@ -44,43 +47,37 @@ android {
             )
         }
 
-        // Testing
         debug {
             resValue("string", "app_name", "$appName Debug")
-            applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
         }
+    }
 
-        // Beta
-        create("beta"){
-            resValue("string", "app_name", "$appName Beta")
-            applicationIdSuffix = ".beta"
-            isMinifyEnabled = true
-            isShrinkResources = true
-            versionNameSuffix = "-beta"
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+    flavorDimensions += "version"
 
-        // Playstore
+    productFlavors {
         create("play") {
-            resValue("string", "app_name", appName)
+            dimension = "version"
             applicationIdSuffix = ".play"
-            isMinifyEnabled = true
-            isShrinkResources = true
-            versionNameSuffix = "-playstore"
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            versionNameSuffix = "-play"
+        }
+        create("foss") {
+            dimension = "version"
         }
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val apkOutput = this as ApkVariantOutputImpl
+            apkOutput.outputFileName = "app-release.apk"
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -90,6 +87,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -97,6 +95,9 @@ android {
 }
 
 dependencies {
+    "playImplementation"(libs.purchases.ui)
+    "playImplementation"(libs.purchases)
+
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.ui.tooling)

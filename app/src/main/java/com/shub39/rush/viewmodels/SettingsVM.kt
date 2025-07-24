@@ -2,14 +2,16 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.billing.BillingHandler
+import com.shub39.rush.billing.SubscriptionResult
+import com.shub39.rush.core.data.repository.RushRepository
 import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.lyrics.data.repository.RushRepository
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.ExportState
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
-import com.shub39.rush.lyrics.domain.backup.RestoreResult
-import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
+import com.shub39.rush.core.domain.backup.ExportRepo
+import com.shub39.rush.core.domain.backup.ExportState
+import com.shub39.rush.core.domain.backup.RestoreRepo
+import com.shub39.rush.core.domain.backup.RestoreResult
+import com.shub39.rush.core.domain.backup.RestoreState
+import com.shub39.rush.setting.SettingsPageAction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,18 +25,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsVM(
-    stateLayer: StateLayer,
+    private val stateLayer: StateLayer,
     private val repo: RushRepository,
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
-    private val restoreRepo: RestoreRepo
+    private val restoreRepo: RestoreRepo,
+    private val billingHandler: BillingHandler
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
 
     private val _state = stateLayer.settingsState
     val state = _state.asStateFlow()
-        .onStart { observeJob() }
+        .onStart {
+            checkSubscription()
+            observeJob()
+        }
         .stateIn(
             viewModelScope,
             SharingStarted.Companion.WhileSubscribed(5000),
@@ -110,7 +116,27 @@ class SettingsVM(
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
 
                 is SettingsPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
+
+                SettingsPageAction.OnDismissPaywall -> {
+                    _state.update { it.copy(showPaywall = false) }
+                    checkSubscription()
+                }
+
+                SettingsPageAction.OnShowPaywall -> _state.update { it.copy(showPaywall = true) }
             }
+        }
+    }
+
+    private suspend fun checkSubscription() {
+        val isSubscribed = billingHandler.userResult()
+
+        when (isSubscribed) {
+            SubscriptionResult.NotSubscribed -> datastore.resetAppTheme()
+            SubscriptionResult.Subscribed -> {
+                _state.update { it.copy(isProUser = true) }
+                stateLayer.sharePageState.update { it.copy(isProUser = true) }
+            }
+            else -> {}
         }
     }
 

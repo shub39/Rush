@@ -3,12 +3,12 @@ package com.shub39.rush.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.OtherPreferences
+import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.getMainTitle
-import com.shub39.rush.lyrics.domain.SongRepo
-import com.shub39.rush.lyrics.presentation.lyrics.toSongUi
-import com.shub39.rush.lyrics.presentation.saved.SavedPageAction
-import com.shub39.rush.lyrics.presentation.saved.SavedPageState
+import com.shub39.rush.lyrics.toSongUi
+import com.shub39.rush.saved.SavedPageAction
+import com.shub39.rush.saved.SavedPageState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,10 +47,16 @@ class SavedVM(
                 is SavedPageAction.OnDeleteSong -> repo.deleteSong(action.song.id)
 
                 SavedPageAction.OnToggleAutoChange -> {
+                    val newPref = !_state.value.autoChange
+
                     stateLayer.lyricsState.update {
                         it.copy(
-                            autoChange = !it.autoChange
+                            autoChange = newPref
                         )
+                    }
+
+                    _state.update {
+                        it.copy(autoChange = newPref)
                     }
                 }
 
@@ -63,8 +69,6 @@ class SavedVM(
                 }
 
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
-
-                is SavedPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }
@@ -128,6 +132,10 @@ class SavedVM(
                 selectedLines = emptyMap(),
                 error = null
             )
+        }
+
+        _state.update {
+            it.copy(currentSong = result)
         }
     }
 }

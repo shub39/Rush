@@ -20,6 +20,16 @@ class OtherPreferencesImpl(
     private val dataStore: DataStore<Preferences>
 ) : OtherPreferences {
 
+    override suspend fun resetAppTheme() {
+        dataStore.edit { preferences ->
+            preferences[seedColor] = Color.White.toArgb()
+            preferences[amoledPref] = false
+            preferences[paletteStyle] = PaletteStyle.TonalSpot.name
+            preferences[materialTheme] = false
+            preferences[selectedFont] = Fonts.FIGTREE.name
+        }
+    }
+
     companion object {
         private val seedColor = intPreferencesKey("seed_color")
         private val appTheme = stringPreferencesKey("app_theme")

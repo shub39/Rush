@@ -3,8 +3,8 @@ package com.shub39.rush.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.domain.SharePagePreferences
-import com.shub39.rush.lyrics.presentation.share.SharePageAction
-import com.shub39.rush.lyrics.presentation.share.SharePageState
+import com.shub39.rush.share.SharePageAction
+import com.shub39.rush.share.SharePageState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ShareVM(
-    stateLayer: StateLayer,
+    private val stateLayer: StateLayer,
     private val datastore: SharePagePreferences
 ): ViewModel() {
 
@@ -111,6 +111,7 @@ class ShareVM(
                 is SharePageAction.OnUpdateCardRoundness -> datastore.updateCardRoundness(action.roundness)
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
                 is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
+                SharePageAction.OnShowPaywall -> stateLayer.settingsState.update { it.copy(showPaywall = true) }
             }
         }
     }

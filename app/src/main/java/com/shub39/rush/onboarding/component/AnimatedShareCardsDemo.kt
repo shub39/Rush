@@ -13,14 +13,14 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
-import com.shub39.rush.lyrics.presentation.share.component.ChatCard
-import com.shub39.rush.lyrics.presentation.share.component.CoupletShareCard
-import com.shub39.rush.lyrics.presentation.share.component.HypnoticShareCard
-import com.shub39.rush.lyrics.presentation.share.component.MessyCard
-import com.shub39.rush.lyrics.presentation.share.component.QuoteShareCard
-import com.shub39.rush.lyrics.presentation.share.component.RushedShareCard
-import com.shub39.rush.lyrics.presentation.share.component.SpotifyShareCard
-import com.shub39.rush.lyrics.presentation.share.component.VerticalShareCard
+import com.shub39.rush.share.component.ChatCard
+import com.shub39.rush.share.component.CoupletShareCard
+import com.shub39.rush.share.component.HypnoticShareCard
+import com.shub39.rush.share.component.MessyCard
+import com.shub39.rush.share.component.QuoteShareCard
+import com.shub39.rush.share.component.RushedShareCard
+import com.shub39.rush.share.component.SpotifyShareCard
+import com.shub39.rush.share.component.VerticalShareCard
 
 @Composable
 fun AnimatedShareCardsDemo(

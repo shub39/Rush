@@ -7,10 +7,19 @@ enum class CardTheme(
 ) {
     SPOTIFY(R.string.spotify),
     RUSHED(R.string.rushed),
-    HYPNOTIC(R.string.hypnotic),
     VERTICAL(R.string.vertical),
-    QUOTE(R.string.quote),
     COUPLET(R.string.couplet),
+
+    HYPNOTIC(R.string.hypnotic),
+    QUOTE(R.string.quote),
     MESSY(R.string.messy),
-    CHAT(R.string.chat)
+    CHAT(R.string.chat),
+
+    ;
+
+    companion object {
+        val premiumCards = listOf(
+            HYPNOTIC, MESSY, QUOTE, CHAT
+        )
+    }
 }
