@@ -110,6 +110,10 @@ class SettingsVM(
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
 
                 is SettingsPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
+
+                SettingsPageAction.OnDismissPaywall -> _state.update { it.copy(showPaywall = false) }
+
+                SettingsPageAction.OnShowPaywall -> _state.update { it.copy(showPaywall = true) }
             }
         }
     }

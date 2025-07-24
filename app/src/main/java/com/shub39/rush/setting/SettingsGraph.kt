@@ -53,7 +53,7 @@ fun SettingsGraph(
         composable<SettingsRoutes.SettingRootPage> {
             SettingRootPage(
                 notificationAccess = notificationAccess,
-                action = action,
+                onAction = action,
                 onNavigateBack = onNavigateBack,
                 onNavigateToLookAndFeel = { navController.navigate(SettingsRoutes.LookAndFeelPage) },
                 onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },

@@ -10,7 +10,7 @@ import com.shub39.rush.core.domain.enums.SortOrder
 data class SavedPageState(
     val extractedColors: ExtractedColors = ExtractedColors(),
     val currentSong: SongUi? = null,
-    val autoChange: Boolean = true,
+    val autoChange: Boolean = false,
     val songsByTime: List<Song> = emptyList(),
     val songsAsc: List<Song> = emptyList(),
     val songsDesc: List<Song> = emptyList(),

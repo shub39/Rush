@@ -12,7 +12,7 @@ import com.revenuecat.purchases.ui.revenuecatui.customercenter.CustomerCenter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaywallPage(
-    isPlusUser: Boolean,
+    isProUser: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -23,7 +23,7 @@ fun PaywallPage(
     }
 
     Box(modifier = modifier) {
-        if (!isPlusUser) {
+        if (!isProUser) {
             Paywall(paywallOptions)
         } else {
             CustomerCenter(onDismiss = onDismissRequest)

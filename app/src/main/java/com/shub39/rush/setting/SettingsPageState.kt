@@ -9,5 +9,7 @@ data class SettingsPageState(
     val deleteButtonEnabled: Boolean = true,
     val exportState: ExportState = ExportState.IDLE,
     val restoreState: RestoreState = RestoreState.IDLE,
-    val onBoardingDone: Boolean = true
+    val onBoardingDone: Boolean = true,
+    val isProUser: Boolean = false,
+    val showPaywall: Boolean = false
 )

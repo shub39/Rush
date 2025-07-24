@@ -1,5 +1,6 @@
 package com.shub39.rush.app
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.LyricsGraph
@@ -71,88 +73,102 @@ fun RushApp() {
     RushTheme(
         state = settingsState.theme
     ) {
-        NavHost(
-            enterTransition = { fadeIn() },
-            exitTransition = { fadeOut() },
-            popEnterTransition = { fadeIn() },
-            popExitTransition = { fadeOut() },
-            navController = navController,
-            startDestination = Route.SavedPage,
+        AnimatedContent(
+            targetState = settingsState.showPaywall,
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            composable<Route.SavedPage> {
-                val savedVM: SavedVM = koinViewModel()
-                val savedState by savedVM.state.collectAsStateWithLifecycle()
+            if (!it) {
+                NavHost(
+                    enterTransition = { fadeIn() },
+                    exitTransition = { fadeOut() },
+                    popEnterTransition = { fadeIn() },
+                    popExitTransition = { fadeOut() },
+                    navController = navController,
+                    startDestination = Route.SavedPage,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                ) {
+                    composable<Route.SavedPage> {
+                        val savedVM: SavedVM = koinViewModel()
+                        val savedState by savedVM.state.collectAsStateWithLifecycle()
 
-                SavedPage(
-                    state = savedState,
-                    notificationAccess = NotificationListener.canAccessNotifications(context),
-                    action = savedVM::onAction,
-                    onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
-                    onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
-                    modifier = Modifier.widthIn(max = 700.dp)
-                )
-            }
-
-            composable<Route.LyricsGraph> {
-                val lyricsVM: LyricsVM = koinViewModel()
-                val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
-
-                LyricsGraph(
-                    notificationAccess = NotificationListener.canAccessNotifications(context),
-                    lyricsState = lyricsState,
-                    lyricsAction = lyricsVM::onAction,
-                    onDismiss = { navController.navigateUp() },
-                    onShare = {
-                        navController.navigate(Route.SharePage) {
-                            launchSingleTop = true
-                        }
+                        SavedPage(
+                            state = savedState,
+                            notificationAccess = NotificationListener.canAccessNotifications(context),
+                            action = savedVM::onAction,
+                            onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
+                            onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
+                            modifier = Modifier.widthIn(max = 700.dp)
+                        )
                     }
-                )
-            }
 
-            composable<Route.SharePage> {
-                val shareVM: ShareVM = koinViewModel()
-                val shareState by shareVM.state.collectAsStateWithLifecycle()
+                    composable<Route.LyricsGraph> {
+                        val lyricsVM: LyricsVM = koinViewModel()
+                        val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
 
-                SharePage(
-                    onDismiss = { navController.navigateUp() },
-                    state = shareState,
-                    action = shareVM::onAction
-                )
-            }
-
-            composable<Route.SettingsGraph> {
-                SettingsGraph(
-                    notificationAccess = NotificationListener.canAccessNotifications(context),
-                    state = settingsState,
-                    action = settingsVM::onAction,
-                    onNavigateBack = { navController.navigateUp() }
-                )
-            }
-
-            composable<Route.Onboarding> {
-                Onboarding(
-                    onDone = {
-                        settingsVM.onAction(SettingsPageAction.OnUpdateOnBoardingDone(true))
-                        navController.navigateUp()
+                        LyricsGraph(
+                            notificationAccess = NotificationListener.canAccessNotifications(context),
+                            lyricsState = lyricsState,
+                            lyricsAction = lyricsVM::onAction,
+                            onDismiss = { navController.navigateUp() },
+                            onShare = {
+                                navController.navigate(Route.SharePage) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     }
-                )
-            }
-        }
 
-        if (searchState.visible) {
-            SearchSheet(
-                state = searchState,
-                action = searchSheetVM::onAction,
-                onClick = {
-                    navController.navigate(Route.LyricsGraph) {
-                        launchSingleTop = true
+                    composable<Route.SharePage> {
+                        val shareVM: ShareVM = koinViewModel()
+                        val shareState by shareVM.state.collectAsStateWithLifecycle()
+
+                        SharePage(
+                            onDismiss = { navController.navigateUp() },
+                            state = shareState,
+                            action = shareVM::onAction
+                        )
+                    }
+
+                    composable<Route.SettingsGraph> {
+                        SettingsGraph(
+                            notificationAccess = NotificationListener.canAccessNotifications(context),
+                            state = settingsState,
+                            action = settingsVM::onAction,
+                            onNavigateBack = { navController.navigateUp() }
+                        )
+                    }
+
+                    composable<Route.Onboarding> {
+                        Onboarding(
+                            onDone = {
+                                settingsVM.onAction(SettingsPageAction.OnUpdateOnBoardingDone(true))
+                                navController.navigateUp()
+                            }
+                        )
                     }
                 }
-            )
+
+                if (searchState.visible) {
+                    SearchSheet(
+                        state = searchState,
+                        action = searchSheetVM::onAction,
+                        onClick = {
+                            navController.navigate(Route.LyricsGraph) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+            } else {
+                PaywallPage(
+                    isProUser = settingsState.isProUser,
+                    onDismissRequest = { settingsVM.onAction(SettingsPageAction.OnDismissPaywall) }
+                )
+            }
         }
     }
 }

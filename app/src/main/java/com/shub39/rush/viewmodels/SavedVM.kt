@@ -47,10 +47,16 @@ class SavedVM(
                 is SavedPageAction.OnDeleteSong -> repo.deleteSong(action.song.id)
 
                 SavedPageAction.OnToggleAutoChange -> {
+                    val newPref = !_state.value.autoChange
+
                     stateLayer.lyricsState.update {
                         it.copy(
-                            autoChange = !it.autoChange
+                            autoChange = newPref
                         )
+                    }
+
+                    _state.update {
+                        it.copy(autoChange = newPref)
                     }
                 }
 

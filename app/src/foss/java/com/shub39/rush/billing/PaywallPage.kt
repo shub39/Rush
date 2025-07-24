@@ -33,7 +33,7 @@ import compose.icons.fontawesomeicons.solid.Coffee
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaywallPage(
-    isPlusUser: Boolean,
+    isProUser: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {

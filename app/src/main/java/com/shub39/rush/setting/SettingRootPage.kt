@@ -2,21 +2,26 @@ package com.shub39.rush.setting
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -48,6 +53,7 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.Palette
+import compose.icons.fontawesomeicons.solid.PlusCircle
 import compose.icons.fontawesomeicons.solid.Upload
 
 // topmost settings page
@@ -56,7 +62,7 @@ import compose.icons.fontawesomeicons.solid.Upload
 fun SettingRootPage(
     notificationAccess: Boolean,
     state: SettingsPageState,
-    action: (SettingsPageAction) -> Unit,
+    onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
@@ -90,6 +96,46 @@ fun SettingRootPage(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            item {
+                Card(
+                    onClick = { onAction(SettingsPageAction.OnShowPaywall) },
+                    modifier = Modifier.padding(16.dp),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.PlusCircle,
+                            contentDescription = "Grit Plus",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = stringResource(R.string.rush_pro),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Grit Plus"
+                        )
+                    }
+                }
+            }
+
             // about app
             item { AboutApp() }
 
@@ -174,7 +220,7 @@ fun SettingRootPage(
                     headlineContent = { Text(text = "Onboarding") },
                     trailingContent = {
                         FilledTonalIconButton(
-                            onClick = { action(SettingsPageAction.OnUpdateOnBoardingDone(false)) },
+                            onClick = { onAction(SettingsPageAction.OnUpdateOnBoardingDone(false)) },
                             shapes = IconButtonShapes(
                                 shape = CircleShape,
                                 pressedShape = RoundedCornerShape(10.dp)
@@ -228,7 +274,7 @@ fun SettingRootPage(
 
                 Button(
                     onClick = {
-                        action(SettingsPageAction.OnDeleteSongs)
+                        onAction(SettingsPageAction.OnDeleteSongs)
                         deleteConfirmationDialog = false
                     },
                     shape = MaterialTheme.shapes.extraLarge,
