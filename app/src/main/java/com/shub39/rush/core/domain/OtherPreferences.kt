@@ -7,6 +7,8 @@ import com.shub39.rush.core.domain.enums.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 interface OtherPreferences {
+    suspend fun resetAppTheme()
+
     fun getAppThemePrefFlow(): Flow<AppTheme>
     suspend fun updateAppThemePref(pref: AppTheme)
 

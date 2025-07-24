@@ -2,6 +2,8 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.billing.BillingHandler
+import com.shub39.rush.billing.SubscriptionResult
 import com.shub39.rush.core.data.repository.RushRepository
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.backup.ExportRepo
@@ -27,14 +29,18 @@ class SettingsVM(
     private val repo: RushRepository,
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
-    private val restoreRepo: RestoreRepo
+    private val restoreRepo: RestoreRepo,
+    private val billingHandler: BillingHandler
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
 
     private val _state = stateLayer.settingsState
     val state = _state.asStateFlow()
-        .onStart { observeJob() }
+        .onStart {
+            observeJob()
+            checkSubscription()
+        }
         .stateIn(
             viewModelScope,
             SharingStarted.Companion.WhileSubscribed(5000),
@@ -115,6 +121,18 @@ class SettingsVM(
 
                 SettingsPageAction.OnShowPaywall -> _state.update { it.copy(showPaywall = true) }
             }
+        }
+    }
+
+    private suspend fun checkSubscription() {
+        val isSubscribed = billingHandler.userResult()
+
+        when (isSubscribed) {
+            SubscriptionResult.NotSubscribed -> datastore.resetAppTheme()
+            SubscriptionResult.Subscribed -> {
+                _state.update { it.copy(isProUser = true) }
+            }
+            else -> {}
         }
     }
 
