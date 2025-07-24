@@ -25,9 +25,12 @@ zoomable = "2.8.1"
 compose = "1.8.3"
 material3 = "1.4.0-alpha18"
 materialIconsCore = "1.7.3"
+purchases = "9.1.2"
 
 [libraries]
 # Android
+purchases = { module = "com.revenuecat.purchases:purchases", version.ref = "purchases" }
+purchases-ui = { module = "com.revenuecat.purchases:purchases-ui", version.ref = "purchases" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "compose" }
