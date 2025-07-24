@@ -2,14 +2,14 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.core.data.repository.RushRepository
 import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.lyrics.data.repository.RushRepository
-import com.shub39.rush.lyrics.domain.backup.ExportRepo
-import com.shub39.rush.lyrics.domain.backup.ExportState
-import com.shub39.rush.lyrics.domain.backup.RestoreRepo
-import com.shub39.rush.lyrics.domain.backup.RestoreResult
-import com.shub39.rush.lyrics.domain.backup.RestoreState
-import com.shub39.rush.lyrics.presentation.setting.SettingsPageAction
+import com.shub39.rush.core.domain.backup.ExportRepo
+import com.shub39.rush.core.domain.backup.ExportState
+import com.shub39.rush.core.domain.backup.RestoreRepo
+import com.shub39.rush.core.domain.backup.RestoreResult
+import com.shub39.rush.core.domain.backup.RestoreState
+import com.shub39.rush.setting.SettingsPageAction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
