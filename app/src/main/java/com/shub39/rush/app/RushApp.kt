@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,13 +18,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.LyricsGraph
 import com.shub39.rush.onboarding.Onboarding
 import com.shub39.rush.saved.SavedPage
-import com.shub39.rush.saved.SavedPageAction
 import com.shub39.rush.search_sheet.SearchSheet
 import com.shub39.rush.setting.SettingsGraph
+import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.share.SharePage
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
@@ -47,21 +46,18 @@ sealed interface Route {
 
     @Serializable
     data object Onboarding: Route
+
+    @Serializable
+    data object SharePage: Route
 }
 
 @Composable
 fun RushApp() {
     val settingsVM: SettingsVM = koinViewModel()
-    val lyricsVM: LyricsVM = koinViewModel()
-    val shareVM: ShareVM = koinViewModel()
     val searchSheetVM: SearchSheetVM = koinViewModel()
-    val savedVM: SavedVM = koinViewModel()
 
-    val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val settingsState by settingsVM.state.collectAsStateWithLifecycle()
-    val shareState by shareVM.state.collectAsStateWithLifecycle()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
-    val savedState by savedVM.state.collectAsStateWithLifecycle()
 
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -87,32 +83,44 @@ fun RushApp() {
                 .fillMaxSize()
         ) {
             composable<Route.SavedPage> {
-                SideEffect {
-                    if (lyricsState.fullscreen) {
-                        updateSystemBars(context, true)
-                    }
-                }
+                val savedVM: SavedVM = koinViewModel()
+                val savedState by savedVM.state.collectAsStateWithLifecycle()
 
                 SavedPage(
                     state = savedState,
-                    extractedColors = lyricsState.extractedColors,
-                    currentSong = lyricsState.song,
                     notificationAccess = NotificationListener.canAccessNotifications(context),
                     action = savedVM::onAction,
-                    autoChange = lyricsState.autoChange,
                     onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
                     onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
-                    modifier = Modifier.widthIn(max = 700.dp),
+                    modifier = Modifier.widthIn(max = 700.dp)
                 )
             }
 
             composable<Route.LyricsGraph> {
+                val lyricsVM: LyricsVM = koinViewModel()
+                val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
+
                 LyricsGraph(
                     notificationAccess = NotificationListener.canAccessNotifications(context),
                     lyricsState = lyricsState,
-                    shareState = shareState,
                     lyricsAction = lyricsVM::onAction,
-                    shareAction = shareVM::onAction
+                    onDismiss = { navController.navigateUp() },
+                    onShare = {
+                        navController.navigate(Route.SharePage) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+
+            composable<Route.SharePage> {
+                val shareVM: ShareVM = koinViewModel()
+                val shareState by shareVM.state.collectAsStateWithLifecycle()
+
+                SharePage(
+                    onDismiss = { navController.navigateUp() },
+                    state = shareState,
+                    action = shareVM::onAction
                 )
             }
 
@@ -128,7 +136,7 @@ fun RushApp() {
             composable<Route.Onboarding> {
                 Onboarding(
                     onDone = {
-                        savedVM.onAction(SavedPageAction.OnUpdateOnBoardingDone(true))
+                        settingsVM.onAction(SettingsPageAction.OnUpdateOnBoardingDone(true))
                         navController.navigateUp()
                     }
                 )

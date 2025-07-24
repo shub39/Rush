@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
@@ -12,9 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.presentation.updateSystemBars
-import com.shub39.rush.share.SharePage
-import com.shub39.rush.share.SharePageAction
-import com.shub39.rush.share.SharePageState
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,21 +22,23 @@ sealed interface LyricsRoutes {
 
     @Serializable
     data object LyricsCustomisations : LyricsRoutes
-
-    @Serializable
-    data object SharePage : LyricsRoutes
 }
 
 @Composable
 fun LyricsGraph(
     notificationAccess: Boolean,
     lyricsState: LyricsPageState,
-    shareState: SharePageState,
     lyricsAction: (LyricsPageAction) -> Unit,
-    shareAction: (SharePageAction) -> Unit
+    onDismiss : () -> Unit,
+    onShare: () -> Unit
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
+
+    BackHandler {
+        updateSystemBars(context, true)
+        onDismiss()
+    }
 
     NavHost(
         navController = navController,
@@ -61,29 +61,10 @@ fun LyricsGraph(
                         launchSingleTop = true
                     }
                 },
-                onShare = {
-                    navController.navigate(LyricsRoutes.SharePage) {
-                        launchSingleTop = true
-                    }
-                },
+                onShare = onShare,
                 action = lyricsAction,
                 state = lyricsState,
                 notificationAccess = notificationAccess
-            )
-        }
-
-        composable<LyricsRoutes.SharePage> {
-            SideEffect {
-                if (lyricsState.fullscreen) {
-                    updateSystemBars(context, true)
-                }
-            }
-
-            SharePage(
-                onDismiss = { navController.navigateUp() },
-                state = shareState,
-                action = shareAction,
-                share = true
             )
         }
 

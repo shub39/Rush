@@ -93,9 +93,6 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     action: (SharePageAction) -> Unit,
-    share: Boolean,
-    zoomEnabled: Boolean = true,
-    density: Density = Density(2.5f, 1f)
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
@@ -114,19 +111,18 @@ fun SharePage(
     val imageSaver = rememberFileSaverLauncher { file ->
         if (saveImage != null) {
             coroutineScope.launch(Dispatchers.IO) {
-                file?.write(saveImage!!.encodeToByteArray(
-                    format = ImageFormat.PNG
-                ))
+                file?.write(
+                    saveImage!!.encodeToByteArray(
+                        format = ImageFormat.PNG
+                    )
+                )
             }
         }
     }
 
     val modifier = Modifier
         .width(360.dp)
-        .zoomable(
-            zoomState = zoomState,
-            zoomEnabled = zoomEnabled
-        )
+        .zoomable(zoomState = zoomState)
         .drawWithContent {
             cardGraphicsLayer.record {
                 this@drawWithContent.drawContent()
@@ -191,11 +187,10 @@ fun SharePage(
             contentAlignment = Alignment.Center
         ) {
             CompositionLocalProvider(
-                LocalDensity provides density
+                LocalDensity provides Density(2.5f, 1f)
             ) {
                 RushTheme(
-                    state = Theme(fonts = state.cardFont),
-                    fontScale = density.fontScale
+                    state = Theme(fonts = state.cardFont)
                 ) {
                     when (state.cardTheme) {
                         CardTheme.SPOTIFY -> SpotifyShareCard(
@@ -343,9 +338,7 @@ fun SharePage(
                     )
                 }
 
-                if (share) {
-                    ShareButton(coroutineScope, cardGraphicsLayer)
-                }
+                ShareButton(coroutineScope, cardGraphicsLayer)
 
                 AnimatedVisibility(
                     visible = state.cardTheme == CardTheme.RUSHED

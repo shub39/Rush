@@ -63,8 +63,6 @@ class SavedVM(
                 }
 
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
-
-                is SavedPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }
@@ -128,6 +126,10 @@ class SavedVM(
                 selectedLines = emptyMap(),
                 error = null
             )
+        }
+
+        _state.update {
+            it.copy(currentSong = result)
         }
     }
 }

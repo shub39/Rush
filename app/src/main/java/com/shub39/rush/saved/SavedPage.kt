@@ -49,8 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.core.domain.data_classes.ExtractedColors
-import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
@@ -66,15 +64,11 @@ import compose.icons.fontawesomeicons.solid.Search
 @Composable
 fun SavedPage(
     state: SavedPageState,
-    currentSong: SongUi?,
-    autoChange: Boolean,
     notificationAccess: Boolean,
     action: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    modifier: Modifier = Modifier,
-    extractedColors: ExtractedColors = ExtractedColors(),
-    showCurrent: Boolean = true
+    modifier: Modifier = Modifier
 ) = PageFill {
     Scaffold(
         modifier = modifier,
@@ -100,23 +94,23 @@ fun SavedPage(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = currentSong != null && showCurrent,
-                enter = slideInVertically { it/2 },
-                exit = slideOutVertically { it/2 }
+                visible = state.currentSong != null,
+                enter = slideInVertically { it / 2 },
+                exit = slideOutVertically { it / 2 }
             ) {
-                if (currentSong != null && showCurrent) {
+                if (state.currentSong != null) {
                     BottomAppBar(
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
                         modifier = Modifier.clickable { onNavigateToLyrics() },
-                        contentColor = extractedColors.cardContentMuted,
-                        containerColor = extractedColors.cardBackgroundMuted
+                        contentColor = state.extractedColors.cardContentMuted,
+                        containerColor = state.extractedColors.cardBackgroundMuted
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             ArtFromUrl(
-                                imageUrl = currentSong.artUrl,
+                                imageUrl = state.currentSong.artUrl,
                                 modifier = Modifier
                                     .size(50.dp)
                                     .clip(MaterialTheme.shapes.small)
@@ -124,7 +118,7 @@ fun SavedPage(
 
                             Column {
                                 Text(
-                                    text = currentSong.title,
+                                    text = state.currentSong.title,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 1,
@@ -132,7 +126,7 @@ fun SavedPage(
                                 )
 
                                 Text(
-                                    text = currentSong.artists,
+                                    text = state.currentSong.artists,
                                     style = MaterialTheme.typography.bodyMedium,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
@@ -144,40 +138,38 @@ fun SavedPage(
             }
         },
         floatingActionButton = {
-            if (showCurrent) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    if (notificationAccess) {
-                        FloatingActionButton(
-                            onClick = {
-                                action(SavedPageAction.OnToggleAutoChange)
-                                if (!autoChange) {
-                                    onNavigateToLyrics()
-                                }
-                            },
-                            shape = Sunny.toShape(),
-                            containerColor = if (autoChange) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary,
-                            contentColor = if (autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary
-                        ) {
-                            Icon(
-                                imageVector = FontAwesomeIcons.Solid.Meteor,
-                                contentDescription = "Rush Mode",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-
-                    MediumFloatingActionButton(
-                        onClick = { action(SavedPageAction.OnToggleSearchSheet) }
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (notificationAccess) {
+                    FloatingActionButton(
+                        onClick = {
+                            action(SavedPageAction.OnToggleAutoChange)
+                            if (!state.autoChange) {
+                                onNavigateToLyrics()
+                            }
+                        },
+                        shape = Sunny.toShape(),
+                        containerColor = if (state.autoChange) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary,
+                        contentColor = if (state.autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.Search,
-                            contentDescription = "Search",
-                            modifier = Modifier.size(30.dp)
+                            imageVector = FontAwesomeIcons.Solid.Meteor,
+                            contentDescription = "Rush Mode",
+                            modifier = Modifier.size(24.dp)
                         )
                     }
+                }
+
+                MediumFloatingActionButton(
+                    onClick = { action(SavedPageAction.OnToggleSearchSheet) }
+                ) {
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(30.dp)
+                    )
                 }
             }
         }

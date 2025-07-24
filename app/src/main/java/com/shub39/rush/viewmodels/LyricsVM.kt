@@ -85,9 +85,17 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnToggleAutoChange -> {
+                    val newPref = !_state.value.autoChange
+
                     _state.update {
                         it.copy(
-                            autoChange = !it.autoChange
+                            autoChange = newPref
+                        )
+                    }
+
+                    stateLayer.savedPageState.update {
+                        it.copy(
+                            autoChange = newPref
                         )
                     }
                 }
@@ -122,7 +130,7 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.UpdateExtractedColors -> viewModelScope.launch(Dispatchers.Default) {
+                is LyricsPageAction.UpdateExtractedColors -> launch(Dispatchers.Default) {
                     val colors = paletteGenerator.generatePaletteFromUrl(action.url)
 
                     _state.update {
@@ -130,6 +138,10 @@ class LyricsVM(
                     }
 
                     stateLayer.sharePageState.update {
+                        it.copy(extractedColors = colors)
+                    }
+
+                    stateLayer.savedPageState.update {
                         it.copy(extractedColors = colors)
                     }
                 }
