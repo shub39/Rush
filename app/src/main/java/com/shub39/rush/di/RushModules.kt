@@ -1,5 +1,7 @@
 package com.shub39.rush.di
 
+import com.shub39.rush.billing.BillingHandler
+import com.shub39.rush.billing.BillingHandlerImpl
 import com.shub39.rush.core.data.DatastoreFactory
 import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.core.data.LyricsPagePreferencesImpl
@@ -35,7 +37,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val rushModules = module {
-    // factories and stuff
+    // billing
+    singleOf(::BillingHandlerImpl).bind<BillingHandler>()
+
+    // factories, listeners, generators and backup stuff
     singleOf(::DatabaseFactory)
     singleOf(::DatastoreFactory)
     single { get<DatabaseFactory>().create().build() }
@@ -44,7 +49,7 @@ val rushModules = module {
     singleOf(::PaletteGenerator)
     singleOf(::MediaListenerImpl).bind<MediaInterface>()
 
-    // android specific
+    // android specific imageloader with cache
     singleOf(::provideImageLoader)
 
     // Database
