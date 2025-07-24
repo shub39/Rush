@@ -31,6 +31,6 @@ class BillingHandlerImpl: BillingHandler {
     }
 
     companion object {
-        private const val ENTITLEMENT_PRO = "Pro"
+        private const val ENTITLEMENT_PRO = "pro"
     }
 }

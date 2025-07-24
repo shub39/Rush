@@ -1,5 +1,6 @@
 package com.shub39.rush.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.billing.BillingHandler
@@ -38,8 +39,8 @@ class SettingsVM(
     private val _state = stateLayer.settingsState
     val state = _state.asStateFlow()
         .onStart {
-            observeJob()
             checkSubscription()
+            observeJob()
         }
         .stateIn(
             viewModelScope,
@@ -117,7 +118,10 @@ class SettingsVM(
 
                 is SettingsPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
 
-                SettingsPageAction.OnDismissPaywall -> _state.update { it.copy(showPaywall = false) }
+                SettingsPageAction.OnDismissPaywall -> {
+                    _state.update { it.copy(showPaywall = false) }
+                    checkSubscription()
+                }
 
                 SettingsPageAction.OnShowPaywall -> _state.update { it.copy(showPaywall = true) }
             }
@@ -126,6 +130,8 @@ class SettingsVM(
 
     private suspend fun checkSubscription() {
         val isSubscribed = billingHandler.userResult()
+
+        Log.d("Settings VM", "${isSubscribed is SubscriptionResult.Subscribed}")
 
         when (isSubscribed) {
             SubscriptionResult.NotSubscribed -> datastore.resetAppTheme()
