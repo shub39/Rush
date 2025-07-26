@@ -86,11 +86,11 @@ fun LyricsPage(
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     val infoHeight by animateFloatAsState(
-        targetValue = if (top <= 2) 0.3f else 0.2f
+        targetValue = if (top <= 2 && !state.sync) 0.3f else 0.2f
     )
 
     val lyricsHeight by animateFloatAsState(
-        targetValue = if (top <= 2) 0.7f else 0.8f
+        targetValue = if (top <= 2 && !state.sync) 0.7f else 0.8f
     )
 
     LaunchedEffect(state.song) {
@@ -220,7 +220,7 @@ fun LyricsPage(
                                     modifier = Modifier.align(Alignment.TopCenter)
                                 ) {
                                     AnimatedVisibility(
-                                        visible = top > 2
+                                        visible = top > 2 || state.sync
                                     ) {
                                         ArtFromUrl(
                                             imageUrl = state.song.artUrl!!,
@@ -245,7 +245,7 @@ fun LyricsPage(
                                     Spacer(modifier = Modifier.height(40.dp))
 
                                     AnimatedVisibility(
-                                        visible = top <= 2
+                                        visible = top <= 2 && !state.sync
                                     ) {
                                         Row(
                                             modifier = Modifier.padding(
