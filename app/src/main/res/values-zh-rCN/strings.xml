@@ -8,7 +8,7 @@
     <string name="vibrant_colors">使用鲜艳的颜色</string>
     <string name="save">保存更改</string>
     <string name="delete_confirmation">确定要删除所有已保存的歌词吗？</string>
-    <string name="no_lyrics">无法获取歌词</string>
+    <string name="no_lyrics">翻遍了LRCLIB也没有找到歌词哦</string>
     <string name="suggestion">要不要搜索一下？</string>
     <string name="downloaded">保存的歌词</string>
     <string name="delete_all">删除所有歌词</string>
@@ -59,7 +59,7 @@
     <string name="seed_color">选择种子颜色</string>
     <string name="rounded">圆角</string>
     <string name="material_theme">Material主题</string>
-    <string name="mesh_speed">网格速度</string>
+    <string name="mesh_speed">交织速度</string>
     <string name="retry">重试</string>
     <string name="system">跟随系统</string>
     <string name="light">明亮</string>
@@ -74,8 +74,8 @@
     <string name="choose_file">选择文件</string>
     <string name="rush_mode">Rush模式</string>
     <string name="look_and_feel">外观与风格</string>
-    <string name="hypnotic_canvas">催眠画布</string>
-    <string name="hypnotic_canvas_desc">（实验功能）为歌词页面启用催眠画布，可能会影响性能</string>
+    <string name="hypnotic_canvas">背景涟漪</string>
+    <string name="hypnotic_canvas_desc">（实验功能）为歌词背景加入动态涟漪效果，可能会影响性能</string>
     <string name="extract_colors">提取颜色</string>
     <string name="source">来源</string>
     <string name="use_extracted_colors">使用提取的颜色</string>
@@ -93,10 +93,10 @@
     <string name="custom">自定义</string>
     <string name="fit">适应</string>
     <string name="standard">标准</string>
-    <string name="spotify">Spotify</string>
+    <string name="spotify">默认</string>
     <string name="rushed">快速</string>
     <string name="image">图片</string>
-    <string name="hypnotic">催眠</string>
+    <string name="hypnotic">涟漪</string>
     <string name="letter_spacing">字距</string>
     <string name="look_and_feel_info">以各种方式自定义应用程序</string>
     <string name="default_">默认</string>
@@ -120,4 +120,15 @@
     <string name="rush_mode_desc">搜索通知中的当前播放歌曲并获取相应歌词。使歌词随音乐播放器同步更改。</string>
     <string name="font">选择应用程序字体</string>
     <string name="card_font">卡片字体</string>
+    <string name="bmc">请作者喝杯咖啡</string>
+    <string name="translate">帮忙翻译一下</string>
+    <string name="rate_on_play">去Play商店打星</string>
+    <string name="foss">你正在使用FOSS版本的软件</string>
+    <string name="foss_desc">如果这个软件帮助到了您，请考虑赞助一下作者哦！不必担心，应用功能已全部解锁，FOSS版无内购功能</string>
+    <string name="rush_pro">Rush标志 Pro</string>
+    <string name="unlock_more_pro">在Pro中发现更多</string>
+    <string name="messy">洒脱</string>
+    <string name="chat">对话框</string>
+    <string name="expressive">Expressive风格</string>
+    <string name="synced_style">同步风格</string>
 </resources>
