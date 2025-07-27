@@ -64,6 +64,10 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
     }
 }
 
+fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
+    return lyrics.getOrNull(index + 1)?.time
+}
+
 @Composable
 fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by animateColorAsState(
@@ -117,7 +121,7 @@ fun getCardColors(
         },
         label = "cardContent"
     )
-    return Pair(cardBackground, cardContent)
+    return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
 }
 
 fun Song.toSongUi(): SongUi {

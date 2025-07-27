@@ -10,8 +10,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "4.0.0"
-val appVersionCode = 4000
+val appVersionName = "4.1.0"
+val appVersionCode = 4100
 
 android {
     namespace = "com.shub39.rush"
@@ -48,6 +48,7 @@ android {
         }
 
         debug {
+            applicationIdSuffix = ".debug"
             resValue("string", "app_name", "$appName Debug")
             versionNameSuffix = "-debug"
         }
