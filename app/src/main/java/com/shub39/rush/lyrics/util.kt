@@ -65,10 +65,7 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
 }
 
 fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
-    for (i in index + 1 until lyrics.size) {
-        return lyrics[i].time
-    }
-    return null
+    return lyrics.getOrNull(index + 1)?.time
 }
 
 @Composable
