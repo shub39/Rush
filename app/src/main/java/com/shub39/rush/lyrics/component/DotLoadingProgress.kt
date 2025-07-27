@@ -53,7 +53,7 @@ fun DotLoadingProgress(
 
             Box(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(8.dp)
                     .graphicsLayer {
                         scaleX = animatedScale
                         scaleY = animatedScale

@@ -124,7 +124,7 @@ fun getCardColors(
         },
         label = "cardContent"
     )
-    return Pair(cardBackground, cardContent)
+    return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
 }
 
 fun Song.toSongUi(): SongUi {

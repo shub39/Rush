@@ -109,7 +109,7 @@ fun SyncedLyrics(
 
                 val progress = nextTime?.let {
                     ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
-                } ?: 0f
+                } ?: 1f
 
                 val animatedProgress by animateFloatAsState(
                     targetValue = progress,
