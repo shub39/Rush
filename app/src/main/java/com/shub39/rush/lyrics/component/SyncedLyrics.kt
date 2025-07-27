@@ -3,6 +3,7 @@ package com.shub39.rush.lyrics.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -17,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -38,11 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.materialkolor.ktx.lighten
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.getCurrentLyricIndex
-import com.shub39.rush.lyrics.getNextNonEmptyLyricTime
+import com.shub39.rush.lyrics.getNextLyricTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -84,7 +85,7 @@ fun SyncedLyrics(
     // Synced Lyrics
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 60.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         userScrollEnabled = state.playingSong.speed == 0f,
         state = lazyListState
@@ -103,13 +104,28 @@ fun SyncedLyrics(
                     else -> Arrangement.Start
                 }
             ) {
+                val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
+                val currentTime = state.playingSong.position
+
+                val progress = nextTime?.let {
+                    ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
+                } ?: 0f
+
+                val animatedProgress by animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
+
                 val isCurrent = lyric.time <= state.playingSong.position &&
                         state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
                     state.playingSong.position, state.song.syncedLyrics
                 )
 
                 val glowAlpha by animateFloatAsState(
-                    targetValue = if (isCurrent) 1f else 0f,
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
                     animationSpec = tween(500, easing = LinearEasing)
                 )
 
@@ -147,17 +163,13 @@ fun SyncedLyrics(
                         Text(
                             text = lyric.text,
                             fontWeight = FontWeight.Bold,
-                            color = cardContent.lighten(2f).copy(alpha = glowAlpha),
+                            color = cardContent.copy(alpha = glowAlpha),
                             fontSize = state.fontSize.sp,
                             letterSpacing = state.letterSpacing.sp,
                             lineHeight = state.lineHeight.sp,
                             textAlign = state.textAlign,
                             modifier = Modifier
                                 .padding(6.dp)
-                                .blur(
-                                    radius = 5.dp,
-                                    edgeTreatment = BlurredEdgeTreatment.Unbounded
-                                )
                         )
 
                         Text(
@@ -168,37 +180,23 @@ fun SyncedLyrics(
                             letterSpacing = state.letterSpacing.sp,
                             lineHeight = state.lineHeight.sp,
                             textAlign = state.textAlign,
-                            modifier = Modifier.padding(6.dp)
+                            modifier = Modifier
+                                .padding(6.dp)
+                                .drawWithContent {
+                                    val height = size.height * animatedProgress
+                                    clipRect(
+                                        top = 0f,
+                                        bottom = height
+                                    ) {
+                                        this@drawWithContent.drawContent()
+                                    }
+                                }
                         )
                     } else {
-                        val nextTime = getNextNonEmptyLyricTime(index, state.song.syncedLyrics)
-                        val currentTime = state.playingSong.position
-
-                        val progress = nextTime?.let {
-                            ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
-                        } ?: 0f
-
-                        val animatedProgress by animateFloatAsState(
-                            targetValue = progress
-                        )
-
-                        LinearWavyProgressIndicator(
-                            progress = { animatedProgress },
-                            trackColor = cardContent.copy(0.1f),
-                            color = cardContent,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .blur(6.dp)
-                                .padding(12.dp)
-                        )
-
-                        LinearWavyProgressIndicator(
-                            progress = { animatedProgress },
-                            trackColor = cardContent.copy(0.1f),
-                            color = cardContent,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp)
+                        DotLoadingProgress(
+                            progress = animatedProgress,
+                            color = textColor,
+                            modifier = Modifier.padding(12.dp)
                         )
                     }
                 }

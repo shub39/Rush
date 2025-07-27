@@ -64,11 +64,9 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
     }
 }
 
-fun getNextNonEmptyLyricTime(index: Int, lyrics: List<Lyric>): Long? {
+fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
     for (i in index + 1 until lyrics.size) {
-        if (lyrics[i].text.isNotEmpty()) {
-            return lyrics[i].time
-        }
+        return lyrics[i].time
     }
     return null
 }
