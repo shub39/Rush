@@ -8,6 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.setting.component.AboutLibrariesPage
+import com.shub39.rush.setting.component.BackupPage
+import com.shub39.rush.setting.component.LookAndFeelPage
+import com.shub39.rush.setting.component.SettingRootPage
 import kotlinx.serialization.Serializable
 
 @Serializable

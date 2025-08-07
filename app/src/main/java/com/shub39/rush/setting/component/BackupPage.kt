@@ -1,4 +1,4 @@
-package com.shub39.rush.setting
+package com.shub39.rush.setting.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +32,8 @@ import com.shub39.rush.R
 import com.shub39.rush.core.domain.backup.ExportState
 import com.shub39.rush.core.domain.backup.RestoreState
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.setting.SettingsPageState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft

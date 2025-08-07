@@ -1,4 +1,4 @@
-package com.shub39.rush.setting
+package com.shub39.rush.setting.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -47,7 +47,9 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
-import com.shub39.rush.setting.component.AboutApp
+import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.setting.SettingsPageState
+import com.shub39.rush.setting.notificationAccessReminder
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft

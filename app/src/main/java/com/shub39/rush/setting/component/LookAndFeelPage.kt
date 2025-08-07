@@ -1,4 +1,4 @@
-package com.shub39.rush.setting
+package com.shub39.rush.setting.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +47,10 @@ import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.setting.SettingsPageState
+import com.shub39.rush.setting.materialYouToggle
+import com.shub39.rush.setting.paletteStyles
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
