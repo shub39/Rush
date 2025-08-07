@@ -80,7 +80,7 @@ fun RushApp() {
         LocalCoilImageLoader provides imageLoader
     ) {
         RushTheme(
-            state = settingsState.theme
+            theme = settingsState.theme
         ) {
             AnimatedContent(
                 targetState = settingsState.showPaywall,
@@ -109,7 +109,7 @@ fun RushApp() {
                                 notificationAccess = NotificationListener.canAccessNotifications(
                                     context
                                 ),
-                                action = savedVM::onAction,
+                                onAction = savedVM::onAction,
                                 onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
                                 onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
                                 modifier = Modifier.widthIn(max = 700.dp)

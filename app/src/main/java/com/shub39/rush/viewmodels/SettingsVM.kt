@@ -160,7 +160,7 @@ class SettingsVM(
                     _state.update {
                         it.copy(
                             theme = it.theme.copy(
-                                fonts = pref
+                                font = pref
                             )
                         )
                     }

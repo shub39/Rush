@@ -130,7 +130,7 @@ fun LookAndFeelPage(
                             Text(text = stringResource(R.string.font))
                         },
                         supportingContent = {
-                            Text(text = state.theme.fonts.fullName)
+                            Text(text = state.theme.font.fullName)
                         },
                         trailingContent = {
                             FilledTonalIconButton(
@@ -307,7 +307,7 @@ fun LookAndFeelPage(
                 ) {
                     Fonts.entries.forEach { font ->
                         ToggleButton(
-                            checked = state.theme.fonts == font,
+                            checked = state.theme.font == font,
                             onCheckedChange = {
                                 onAction(SettingsPageAction.OnFontChange(font))
                                 fontPickerDialog = false

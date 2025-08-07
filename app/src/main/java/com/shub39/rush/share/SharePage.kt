@@ -190,7 +190,7 @@ fun SharePage(
                 LocalDensity provides Density(2.5f, 1f)
             ) {
                 RushTheme(
-                    state = Theme(fonts = state.cardFont)
+                    theme = Theme(font = state.cardFont)
                 ) {
                     when (state.cardTheme) {
                         CardTheme.SPOTIFY -> SpotifyShareCard(
