@@ -108,17 +108,12 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.android)
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kmpalette.core)
-    implementation(libs.material.icons.core)
-    implementation(libs.koin.core)
-    implementation(libs.koin.compose)
-    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.room.runtime)
     implementation(libs.composeIcons.fontAwesome)
     implementation(libs.zoomable)
@@ -139,6 +134,19 @@ dependencies {
     implementation(libs.aboutLibraries.compose.m3)
     implementation(libs.filekit.core)
     implementation(libs.filekit.dialogs.compose)
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.viewmodel.navigation)
+    ksp(libs.koin.ksp.compiler)
+    api(libs.koin.annotations)
+}
+
+ksp {
+    arg("KOIN_USE_COMPOSE_VIEWMODEL", "true")
+    arg("KOIN_CONFIG_CHECK", "true")
+    arg("KOIN_DEFAULT_MODULE", "true")
 }
 
 aboutLibraries {

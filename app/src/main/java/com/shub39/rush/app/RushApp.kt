@@ -36,8 +36,8 @@ import com.shub39.rush.viewmodels.SettingsVM
 import com.shub39.rush.viewmodels.ShareVM
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import kotlinx.serialization.Serializable
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 sealed interface Route {

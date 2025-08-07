@@ -1,13 +1,14 @@
 [versions]
-agp = "8.11.1"
+agp = "8.12.0"
 colorpicker = "1.1.2"
-filekitCore = "0.10.0-beta04"
-materialKolor = "3.0.0"
+filekitCore = "0.10.0"
+materialKolor = "3.0.1"
 splashScreen = "1.0.1"
 datastore = "1.2.0-alpha02"
-koin = "4.1.0"
-ksoup = "0.2.4"
-ktor = "3.2.2"
+koin-core = "4.1.0"
+koin-annotations = "2.1.0"
+ksoup = "0.2.5"
+ktor = "3.2.3"
 kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 landscapist = "2.5.1"
@@ -23,13 +24,14 @@ composeIcons = "1.1.1"
 androidx-lifecycle = "2.9.1"
 zoomable = "2.8.1"
 compose = "1.8.3"
-material3 = "1.4.0-alpha18"
-materialIconsCore = "1.7.3"
-purchases = "9.1.2"
+material3 = "1.5.0-alpha01"
+materialIconsExtended = "1.7.8"
+purchases = "9.2.0"
 
 [libraries]
 # Android
 purchases = { module = "com.revenuecat.purchases:purchases", version.ref = "purchases" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 purchases-ui = { module = "com.revenuecat.purchases:purchases-ui", version.ref = "purchases" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
@@ -45,11 +47,12 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 
 # Koin
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-core" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-core" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin-core" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 
 # Others
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekitCore" }
@@ -68,7 +71,6 @@ aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", vers
 aboutLibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
