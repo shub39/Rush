@@ -30,18 +30,11 @@ import com.shub39.rush.viewmodels.SearchSheetVM
 import com.shub39.rush.viewmodels.SettingsVM
 import com.shub39.rush.viewmodels.ShareVM
 import com.shub39.rush.viewmodels.StateLayer
-import org.koin.core.annotation.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
-
-@Module
-
-class RushModules {
-
-}
 
 val rushModules = module {
     // billing
