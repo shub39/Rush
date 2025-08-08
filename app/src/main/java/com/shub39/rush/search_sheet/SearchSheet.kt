@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -30,11 +31,17 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -42,143 +49,174 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.search_sheet.component.SearchResultCard
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Search
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchSheet(
     state: SearchSheetState,
-    action: (SearchSheetAction) -> Unit,
-    onClick: () -> Unit,
+    onAction: (SearchSheetAction) -> Unit,
+    onNavigateToLyrics: () -> Unit,
+    sheetState: SheetState = rememberModalBottomSheetState()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
-    ModalBottomSheet(
-        modifier = Modifier.widthIn(max = 800.dp),
-        onDismissRequest = {
-            action(SearchSheetAction.OnToggleSearchSheet)
-        }
-    ) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-            keyboardController?.show()
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+    if (state.visible) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            modifier = Modifier.widthIn(max = 800.dp),
+            onDismissRequest = {
+                onAction(SearchSheetAction.OnToggleSearchSheet)
+            }
         ) {
-            OutlinedTextField(
-                value = state.searchQuery,
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = FontAwesomeIcons.Solid.Search,
-                        contentDescription = "Search",
-                        modifier = Modifier.size(20.dp).padding(2.dp)
-                    )
-                },
-                trailingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(2.dp)
-                    ) {
-                        AnimatedVisibility(
-                            visible = state.searchQuery.isNotBlank(),
-                            enter = fadeIn(animationSpec = tween(200)),
-                            exit = fadeOut(animationSpec = tween(200))
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+                keyboardController?.show()
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                OutlinedTextField(
+                    value = state.searchQuery,
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            modifier = Modifier.padding(2.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(2.dp)
                         ) {
-                            IconButton(
-                                onClick = {
-                                    action(SearchSheetAction.OnQueryChange(""))
-                                    coroutineScope.launch {
-                                        focusRequester.requestFocus()
-                                        keyboardController?.show()
-                                    }
-                                }
+                            AnimatedVisibility(
+                                visible = state.searchQuery.isNotBlank(),
+                                enter = fadeIn(animationSpec = tween(200)),
+                                exit = fadeOut(animationSpec = tween(200))
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete"
-                                )
+                                IconButton(
+                                    onClick = {
+                                        onAction(SearchSheetAction.OnQueryChange(""))
+                                        coroutineScope.launch {
+                                            focusRequester.requestFocus()
+                                            keyboardController?.show()
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete"
+                                    )
+                                }
                             }
                         }
-                    }
-                },
-                onValueChange = { action(SearchSheetAction.OnQueryChange(it)) },
-                shape = MaterialTheme.shapes.extraLarge,
-                placeholder = { Text(stringResource(R.string.search)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .focusRequester(focusRequester),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        keyboardController?.hide()
-                    }
-                )
-            )
-
-            AnimatedContent(
-                targetState = state.isSearching,
-                modifier = Modifier.fillMaxSize()
-            ) { searching ->
-                LazyColumn(
+                    },
+                    onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    placeholder = { Text(stringResource(R.string.search)) },
                     modifier = Modifier
-                        .animateContentSize()
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    state = LazyListState(0)
-                ) {
-                    items(
-                        state.localSearchResults,
-                        key = { it.title.hashCode() + it.artist.hashCode() }
-                    ) {
-                        SearchResultCard(
-                            result = it,
-                            onClick = {
-                                action(SearchSheetAction.OnCardClicked(it.id))
-                                onClick()
-                            },
-                            downloaded = true
-                        )
-                    }
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                        .focusRequester(focusRequester),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            keyboardController?.hide()
+                        }
+                    )
+                )
 
-                    if (!searching) {
-                        items(state.searchResults, key = { it.id }) {
+                AnimatedContent(
+                    targetState = state.isSearching,
+                    modifier = Modifier.fillMaxSize()
+                ) { searching ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .animateContentSize()
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        state = LazyListState(0)
+                    ) {
+                        items(
+                            state.localSearchResults,
+                            key = { it.title.hashCode() + it.artist.hashCode() }
+                        ) {
                             SearchResultCard(
                                 result = it,
                                 onClick = {
-                                    action(SearchSheetAction.OnCardClicked(it.id))
-                                    onClick()
-                                }
+                                    onAction(SearchSheetAction.OnCardClicked(it.id))
+                                    onNavigateToLyrics()
+                                },
+                                downloaded = true
                             )
                         }
-                    } else {
-                        item {
-                            LoadingIndicator(
-                                modifier = Modifier.size(60.dp)
-                            )
-                        }
-                    }
 
-                    item {
-                        Spacer(modifier = Modifier.padding(60.dp))
+                        if (!searching) {
+                            items(state.searchResults, key = { it.id }) {
+                                SearchResultCard(
+                                    result = it,
+                                    onClick = {
+                                        onAction(SearchSheetAction.OnCardClicked(it.id))
+                                        onNavigateToLyrics()
+                                    }
+                                )
+                            }
+                        } else {
+                            item {
+                                LoadingIndicator(
+                                    modifier = Modifier.size(60.dp)
+                                )
+                            }
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.padding(60.dp))
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+private fun Preview() {
+    var state by remember {
+        mutableStateOf(
+            SearchSheetState(
+                visible = true
+            )
+        )
+    }
+
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK
+        )
+    ) {
+        SearchSheet(
+            state = state,
+            onAction = {},
+            onNavigateToLyrics = {},
+            sheetState = rememberStandardBottomSheetState()
+        )
     }
 }

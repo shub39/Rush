@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,6 +58,7 @@ sealed interface Route {
     data object SharePage : Route
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RushApp() {
     val settingsVM: SettingsVM = koinViewModel()
@@ -171,17 +173,15 @@ fun RushApp() {
                         }
                     }
 
-                    if (searchState.visible) {
-                        SearchSheet(
-                            state = searchState,
-                            action = searchSheetVM::onAction,
-                            onClick = {
-                                navController.navigate(Route.LyricsGraph) {
-                                    launchSingleTop = true
-                                }
+                    SearchSheet(
+                        state = searchState,
+                        onAction = searchSheetVM::onAction,
+                        onNavigateToLyrics = {
+                            navController.navigate(Route.LyricsGraph) {
+                                launchSingleTop = true
                             }
-                        )
-                    }
+                        }
+                    )
                 } else {
                     PaywallPage(
                         isProUser = settingsState.isProUser,

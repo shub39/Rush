@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -65,7 +66,6 @@ import com.shub39.rush.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
-import compose.icons.fontawesomeicons.solid.Search
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -175,9 +175,9 @@ fun SavedPage(
                     onClick = { onAction(SavedPageAction.OnToggleSearchSheet) }
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Search,
+                        imageVector = Icons.Rounded.Search,
                         contentDescription = "Search",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
@@ -224,45 +224,23 @@ fun SavedPage(
                             .simpleVerticalScrollbar(listState)
                             .animateContentSize()
                     ) {
-                        when (sortOrder) {
-                            SortOrder.DATE_ADDED -> items(state.songsByTime, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        onAction(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        onAction(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
-
-                            SortOrder.TITLE_ASC -> items(state.songsAsc, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        onAction(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        onAction(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
-
-                            SortOrder.TITLE_DESC -> items(state.songsDesc, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        onAction(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        onAction(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
+                        items(
+                            items = when (sortOrder) {
+                                SortOrder.DATE_ADDED -> state.songsByTime
+                                SortOrder.TITLE_ASC -> state.songsAsc
+                                SortOrder.TITLE_DESC -> state.songsDesc
+                            },
+                            key = { it.id }) {
+                            SongCard(
+                                song = it,
+                                onDelete = {
+                                    onAction(SavedPageAction.OnDeleteSong(it))
+                                },
+                                onClick = {
+                                    onAction(SavedPageAction.ChangeCurrentSong(it.id))
+                                    onNavigateToLyrics()
+                                }
+                            )
                         }
 
                         item {
@@ -316,7 +294,9 @@ private fun Preview() {
             onNavigateToLyrics = {},
             onAction = {
                 when (it) {
-                    is SavedPageAction.UpdateSortOrder -> state = state.copy(sortOrder = it.sortOrder)
+                    is SavedPageAction.UpdateSortOrder -> state =
+                        state.copy(sortOrder = it.sortOrder)
+
                     else -> {}
                 }
             }
