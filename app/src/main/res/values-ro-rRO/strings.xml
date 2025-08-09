@@ -92,4 +92,19 @@
     <string name="hypnotic">Hipnotic</string>
     <string name="rounded">Rotunjit</string>
     <string name="default_">Implicit</string>
+    <string name="bmc">Cumpără-mi o cafea</string>
+    <string name="translate">Traduce</string>
+    <string name="rate_on_play">Evaluează pe Google Play</string>
+    <string name="spotify">Generic</string>
+    <string name="material_theme">Tema Material</string>
+    <string name="font">Selectează fontul aplicației</string>
+    <string name="use_extracted_colors">Folosește culori extrase</string>
+    <string name="about_libraries">Despre librării</string>
+    <string name="loading_genius">Se încarcă versurile Genius</string>
+    <string name="retry">Reîncearcă</string>
+    <string name="system">Sistem</string>
+    <string name="dark">Întunecat</string>
+    <string name="select_app_theme">Selectează tema aplicației</string>
+    <string name="fullscreen">Afișare pe tot ecranul</string>
+    <string name="fullscreen_desc">Ascunde bara de sistem pe ecranul cu versuri</string>
 </resources>
