@@ -12,5 +12,5 @@ data class Theme(
     val withAmoled: Boolean = false,
     val style: PaletteStyle = PaletteStyle.TonalSpot,
     val materialTheme: Boolean = false,
-    val fonts: Fonts = Fonts.FIGTREE
+    val font: Fonts = Fonts.FIGTREE
 )

@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics
+package com.shub39.rush.lyrics.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
@@ -53,9 +53,10 @@ import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.hypnoticAvailable
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowLeft
+import com.shub39.rush.lyrics.LyricsPageAction
+import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.getCardColors
+import com.shub39.rush.lyrics.getHypnoticColors
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +86,8 @@ fun LyricsCustomisationsPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(24.dp)
                         )
                     }
                 },

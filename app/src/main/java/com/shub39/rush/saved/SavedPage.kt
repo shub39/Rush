@@ -3,7 +3,6 @@ package com.shub39.rush.saved
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
@@ -20,76 +19,86 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonShapes
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialShapes.Companion.Sunny
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.materialkolor.PaletteStyle
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.Song
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.SortOrder
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.simpleVerticalScrollbar
 import com.shub39.rush.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
-import compose.icons.fontawesomeicons.solid.Search
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SavedPage(
     state: SavedPageState,
     notificationAccess: Boolean,
-    action: (SavedPageAction) -> Unit,
+    onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) = PageFill {
+    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            MediumFlexibleTopAppBar(
                 title = { Text(stringResource(R.string.rush_branding)) },
                 subtitle = { Text(text = "${state.songsAsc.size} " + stringResource(R.string.saved)) },
                 actions = {
-                    FilledTonalIconButton(
+                    IconButton(
                         onClick = onNavigateToSettings,
-                        shapes = IconButtonShapes(
-                            shape = CircleShape,
-                            pressedShape = RoundedCornerShape(10.dp)
-                        )
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Settings"
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehaviour,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         bottomBar = {
@@ -145,7 +154,7 @@ fun SavedPage(
                 if (notificationAccess) {
                     FloatingActionButton(
                         onClick = {
-                            action(SavedPageAction.OnToggleAutoChange)
+                            onAction(SavedPageAction.OnToggleAutoChange)
                             if (!state.autoChange) {
                                 onNavigateToLyrics()
                             }
@@ -163,12 +172,12 @@ fun SavedPage(
                 }
 
                 MediumFloatingActionButton(
-                    onClick = { action(SavedPageAction.OnToggleSearchSheet) }
+                    onClick = { onAction(SavedPageAction.OnToggleSearchSheet) }
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Search,
+                        imageVector = Icons.Rounded.Search,
                         contentDescription = "Search",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
@@ -187,34 +196,27 @@ fun SavedPage(
 
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(SortOrder.entries.toList(), key = { it.stringRes }) {
-                        val chipRoundness by animateDpAsState(
-                            targetValue = if (it == state.sortOrder) 16.dp else 8.dp
-                        )
-
-                        FilterChip(
-                            selected = it == state.sortOrder,
-                            onClick = {
-                                action(SavedPageAction.UpdateSortOrder(it))
-                            },
-                            shape = RoundedCornerShape(chipRoundness),
-                            label = {
-                                Text(
-                                    text = stringResource(it.stringRes)
-                                )
+                    items(SortOrder.entries.toList(), key = { it.stringRes }) { order ->
+                        ToggleButton(
+                            checked = order == state.sortOrder,
+                            onCheckedChange = {
+                                onAction(SavedPageAction.UpdateSortOrder(order))
                             }
-                        )
+                        ) {
+                            Text(
+                                text = stringResource(order.stringRes)
+                            )
+                        }
                     }
                 }
 
+                val listState = rememberLazyListState()
                 AnimatedContent(
                     targetState = state.sortOrder
                 ) { sortOrder ->
-                    val listState = rememberLazyListState()
-
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
@@ -222,45 +224,23 @@ fun SavedPage(
                             .simpleVerticalScrollbar(listState)
                             .animateContentSize()
                     ) {
-                        when (sortOrder) {
-                            SortOrder.DATE_ADDED -> items(state.songsByTime, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        action(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
-
-                            SortOrder.TITLE_ASC -> items(state.songsAsc, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        action(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
-
-                            SortOrder.TITLE_DESC -> items(state.songsDesc, key = { it.id }) {
-                                SongCard(
-                                    result = it,
-                                    onDelete = {
-                                        action(SavedPageAction.OnDeleteSong(it))
-                                    },
-                                    onClick = {
-                                        action(SavedPageAction.ChangeCurrentSong(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
+                        items(
+                            items = when (sortOrder) {
+                                SortOrder.DATE_ADDED -> state.songsByTime
+                                SortOrder.TITLE_ASC -> state.songsAsc
+                                SortOrder.TITLE_DESC -> state.songsDesc
+                            },
+                            key = { it.id }) {
+                            SongCard(
+                                song = it,
+                                onDelete = {
+                                    onAction(SavedPageAction.OnDeleteSong(it))
+                                },
+                                onClick = {
+                                    onAction(SavedPageAction.ChangeCurrentSong(it.id))
+                                    onNavigateToLyrics()
+                                }
+                            )
                         }
 
                         item {
@@ -270,5 +250,56 @@ fun SavedPage(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    val songs = (0..100).map {
+        Song(
+            id = it.toLong(),
+            title = "Song $it",
+            artists = it.toString(),
+            lyrics = "",
+            album = "",
+            sourceUrl = "",
+            artUrl = "",
+            geniusLyrics = "",
+            syncedLyrics = "",
+            dateAdded = it.toLong()
+        )
+    }
+
+    var state by remember {
+        mutableStateOf(
+            SavedPageState(
+                songsAsc = songs,
+                songsDesc = songs.sortedByDescending { it.title },
+                songsByTime = songs.sortedBy { it.dateAdded }
+            )
+        )
+    }
+
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK,
+            style = PaletteStyle.FruitSalad
+        )
+    ) {
+        SavedPage(
+            state = state,
+            notificationAccess = true,
+            onNavigateToSettings = {},
+            onNavigateToLyrics = {},
+            onAction = {
+                when (it) {
+                    is SavedPageAction.UpdateSortOrder -> state =
+                        state.copy(sortOrder = it.sortOrder)
+
+                    else -> {}
+                }
+            }
+        )
     }
 }

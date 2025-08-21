@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics
+package com.shub39.rush.lyrics.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -50,17 +53,13 @@ import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.lyrics.component.ActionsRow
-import com.shub39.rush.lyrics.component.ErrorCard
-import com.shub39.rush.lyrics.component.LoadingCard
-import com.shub39.rush.lyrics.component.LrcCorrectDialog
-import com.shub39.rush.lyrics.component.PlainLyrics
-import com.shub39.rush.lyrics.component.SyncedLyrics
+import com.shub39.rush.lyrics.LyricsPageAction
+import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.getCardColors
+import com.shub39.rush.lyrics.getHypnoticColors
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Music
-import compose.icons.fontawesomeicons.solid.Pause
-import compose.icons.fontawesomeicons.solid.Play
 import kotlinx.coroutines.delay
 
 @Composable
@@ -385,11 +384,10 @@ fun LyricsPage(
             ) {
                 Icon(
                     imageVector = if (state.playingSong.speed == 0f) {
-                        FontAwesomeIcons.Solid.Play
+                        Icons.Rounded.PlayArrow
                     } else {
-                        FontAwesomeIcons.Solid.Pause
+                        Icons.Rounded.Pause
                     },
-                    modifier = Modifier.size(20.dp),
                     contentDescription = "Pause or Resume"
                 )
             }

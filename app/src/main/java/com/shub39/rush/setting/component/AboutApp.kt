@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Coffee
+import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,13 +29,10 @@ import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
-import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Discord
 import compose.icons.fontawesomeicons.brands.Github
 import compose.icons.fontawesomeicons.brands.GooglePlay
 import compose.icons.fontawesomeicons.brands.Twitter
-import compose.icons.fontawesomeicons.solid.Coffee
-import compose.icons.fontawesomeicons.solid.Language
 
 @Composable
 fun AboutApp() {
@@ -111,7 +111,7 @@ fun AboutApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Coffee,
+                        imageVector = Icons.Rounded.Coffee,
                         contentDescription = "Buy me a coffee",
                         modifier = Modifier.size(24.dp)
                     )
@@ -128,7 +128,7 @@ fun AboutApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Language,
+                        imageVector = Icons.Rounded.Language,
                         contentDescription = "Translate",
                         modifier = Modifier.size(24.dp)
                     )
@@ -147,7 +147,7 @@ fun AboutApp() {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.GooglePlay,
                         contentDescription = "Rate On Google Play",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
 
                     Text(text = stringResource(R.string.rate_on_play))

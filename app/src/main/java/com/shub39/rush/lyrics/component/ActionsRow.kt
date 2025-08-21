@@ -7,6 +7,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.CopyAll
+import androidx.compose.material.icons.rounded.FormatQuote
+import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -26,11 +30,7 @@ import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Clipboard
 import compose.icons.fontawesomeicons.solid.Meteor
-import compose.icons.fontawesomeicons.solid.Palette
-import compose.icons.fontawesomeicons.solid.QuoteLeft
-import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,9 +54,8 @@ fun ActionsRow(
             onClick = onEdit
         ) {
             Icon(
-                imageVector = FontAwesomeIcons.Solid.Palette,
+                imageVector = Icons.Rounded.Palette,
                 contentDescription = "Edit",
-                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -88,9 +87,8 @@ fun ActionsRow(
             }
         ) {
             Icon(
-                imageVector = FontAwesomeIcons.Solid.Clipboard,
+                imageVector = Icons.Rounded.CopyAll,
                 contentDescription = "Copy",
-                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -108,9 +106,8 @@ fun ActionsRow(
             }) {
                 if (state.source == Sources.Genius) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.QuoteLeft,
+                        imageVector = Icons.Rounded.FormatQuote,
                         contentDescription = "LrcLib",
-                        modifier = Modifier.size(20.dp)
                     )
                 } else {
                     Icon(
@@ -164,7 +161,7 @@ fun ActionsRow(
                     }
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                        imageVector = Icons.Rounded.Sync,
                         contentDescription = "Synced Lyrics",
                         modifier = Modifier.size(20.dp)
                     )

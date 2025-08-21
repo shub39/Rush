@@ -1,4 +1,4 @@
-package com.shub39.rush.search_sheet
+package com.shub39.rush.search_sheet.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size

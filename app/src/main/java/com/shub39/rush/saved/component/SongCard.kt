@@ -20,7 +20,7 @@ import com.shub39.rush.core.presentation.ArtFromUrl
 
 @Composable
 fun SongCard(
-    result: Song,
+    song: Song,
     onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -28,7 +28,7 @@ fun SongCard(
         modifier = Modifier.clickable { onClick() },
         leadingContent = {
             ArtFromUrl(
-                imageUrl = result.artUrl,
+                imageUrl = song.artUrl,
                 modifier = Modifier
                     .size(70.dp)
                     .clip(MaterialTheme.shapes.small),
@@ -36,7 +36,7 @@ fun SongCard(
         },
         headlineContent = {
             Text(
-                text = result.title,
+                text = song.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
@@ -45,7 +45,7 @@ fun SongCard(
         },
         supportingContent = {
             Text(
-                text = result.artists,
+                text = song.artists,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

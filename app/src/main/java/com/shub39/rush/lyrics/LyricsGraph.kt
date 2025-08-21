@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.presentation.updateSystemBars
+import com.shub39.rush.lyrics.component.LyricsCustomisationsPage
+import com.shub39.rush.lyrics.component.LyricsPage
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -45,10 +47,6 @@ import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.updateSelectedLines
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowUp
-import compose.icons.fontawesomeicons.solid.Search
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -233,9 +231,8 @@ fun PlainLyrics(
                     enabled = if (state.source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.ArrowUp,
+                        imageVector = Icons.Rounded.ArrowUpward,
                         contentDescription = "Move To Top",
-                        modifier = Modifier.size(20.dp),
                     )
                 }
 
@@ -257,9 +254,8 @@ fun PlainLyrics(
                     onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Search,
+                        imageVector = Icons.Rounded.Search,
                         contentDescription = "Search",
-                        modifier = Modifier.size(20.dp),
                     )
                 }
             }

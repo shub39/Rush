@@ -13,25 +13,25 @@ import com.shub39.rush.core.domain.enums.AppTheme
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RushTheme(
-    state: Theme,
+    theme: Theme,
     fontScale: Float = 1f,
     content: @Composable () -> Unit
 ) {
     DynamicMaterialExpressiveTheme(
-        seedColor = if (state.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+        seedColor = if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
             colorResource(android.R.color.system_accent1_200)
         } else {
-            Color(state.seedColor)
+            Color(theme.seedColor)
         },
-        isDark = when (state.appTheme) {
+        isDark = when (theme.appTheme) {
             AppTheme.SYSTEM -> isSystemInDarkTheme()
             AppTheme.LIGHT -> false
             AppTheme.DARK -> true
         },
-        isAmoled = state.withAmoled,
-        style = state.style,
+        isAmoled = theme.withAmoled,
+        style = theme.style,
         typography = provideTypography(
-            font = state.fonts.font,
+            font = theme.font.font,
             scale = fontScale
         ),
         content = content
