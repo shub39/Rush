@@ -163,9 +163,7 @@ fun RushApp() {
                             Onboarding(
                                 onDone = {
                                     settingsVM.onAction(
-                                        SettingsPageAction.OnUpdateOnBoardingDone(
-                                            true
-                                        )
+                                        SettingsPageAction.OnUpdateOnBoardingDone(true)
                                     )
                                     navController.navigateUp()
                                 }
