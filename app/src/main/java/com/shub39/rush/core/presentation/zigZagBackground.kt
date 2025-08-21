@@ -13,8 +13,9 @@ fun Modifier.zigZagBackground(
     strokeWidth: Float = 4f
 ): Modifier = this.then(
     Modifier.drawBehind {
-        val stepWidth = size.width / steps
-        val midY = size.height / 2
+        if (steps <= 0) return@drawBehind
+        val stepWidth = size.width / steps.toFloat()
+        val midY = size.height / 2f
 
         val path = Path().apply {
             moveTo(0f, midY)

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,7 +32,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,7 +62,7 @@ fun SearchSheet(
     state: SearchSheetState,
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState()
+    sheetState: SheetState
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -150,8 +148,7 @@ fun SearchSheet(
                         modifier = Modifier
                             .animateContentSize()
                             .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        state = LazyListState(0)
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(
                             state.localSearchResults,

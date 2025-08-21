@@ -133,21 +133,23 @@ fun LookAndFeelPage(
                 )
             }
 
-            item {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .zigZagBackground()
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = { onAction(SettingsPageAction.OnShowPaywall) }
+            if (!state.isProUser) {
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .zigZagBackground()
                     ) {
-                        Text(
-                            text = stringResource(R.string.unlock_more_pro)
-                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { onAction(SettingsPageAction.OnShowPaywall) }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.unlock_more_pro)
+                            )
+                        }
                     }
                 }
             }
