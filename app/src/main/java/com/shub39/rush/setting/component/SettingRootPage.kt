@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
@@ -30,9 +31,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,16 +44,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushDialog
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.setting.SettingsPageAction
 import com.shub39.rush.setting.SettingsPageState
 import com.shub39.rush.setting.notificationAccessReminder
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.Palette
 import compose.icons.fontawesomeicons.solid.PlusCircle
@@ -75,7 +79,7 @@ fun SettingRootPage(
     Scaffold(
         modifier = Modifier.widthIn(max = 1000.dp),
         topBar = {
-            TopAppBar(
+            MediumFlexibleTopAppBar(
                 title = {
                     Text(stringResource(R.string.settings))
                 },
@@ -84,9 +88,8 @@ fun SettingRootPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -286,5 +289,25 @@ fun SettingRootPage(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK
+        )
+    ) {
+        SettingRootPage(
+            notificationAccess = true,
+            state = SettingsPageState(),
+            onAction = {  },
+            onNavigateBack = {  },
+            onNavigateToLookAndFeel = {  },
+            onNavigateToBackup = {  },
+            onNavigateToAboutLibraries = {  }
+        )
     }
 }

@@ -5,9 +5,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.setting.component.AboutLibrariesPage
 import com.shub39.rush.setting.component.BackupPage
 import com.shub39.rush.setting.component.LookAndFeelPage
@@ -87,5 +91,22 @@ fun SettingsGraph(
                 onNavigateBack = { navController.navigateUp() }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK
+        )
+    ) {
+        SettingsGraph(
+            notificationAccess = true,
+            state = SettingsPageState(),
+            action = {},
+            onNavigateBack = {}
+        )
     }
 }

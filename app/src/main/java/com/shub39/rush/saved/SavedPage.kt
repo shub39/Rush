@@ -283,7 +283,7 @@ private fun Preview() {
 
     RushTheme(
         theme = Theme(
-            appTheme = AppTheme.LIGHT,
+            appTheme = AppTheme.DARK,
             style = PaletteStyle.FruitSalad
         )
     ) {
