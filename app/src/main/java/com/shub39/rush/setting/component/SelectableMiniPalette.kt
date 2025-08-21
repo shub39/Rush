@@ -42,6 +42,7 @@ import com.materialkolor.palettes.TonalPalette
 fun SelectableMiniPalette(
     modifier: Modifier = Modifier,
     selected: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit,
     contentDescription: () -> String,
     accents: List<TonalPalette>,
@@ -64,7 +65,7 @@ fun SelectableMiniPalette(
         ) {
             Surface(
                 modifier = Modifier
-                    .clickable(onClick = onClick)
+                    .clickable(onClick = onClick, enabled = enabled)
                     .padding(12.dp)
                     .size(50.dp),
                 shape = CircleShape,

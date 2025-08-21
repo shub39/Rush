@@ -1,5 +1,6 @@
 package com.shub39.rush.setting.component
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
@@ -29,6 +31,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonShapes
@@ -46,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +63,6 @@ import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.setting.SettingsPageAction
 import com.shub39.rush.setting.SettingsPageState
-import com.shub39.rush.setting.notificationAccessReminder
 
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -73,10 +76,9 @@ fun SettingRootPage(
     onNavigateToBackup: () -> Unit,
     onNavigateToAboutLibraries: () -> Unit
 ) = PageFill {
-    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
+    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehaviour.nestedScrollConnection)
@@ -237,7 +239,27 @@ fun SettingRootPage(
             }
 
             // navigate to notification access permission page
-            notificationAccessReminder(notificationAccess)
+            if (!notificationAccess) {
+                item {
+                    val context = LocalContext.current
+                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.grant_permission)) },
+                        supportingContent = { Text(text = stringResource(R.string.notification_permission)) },
+                        trailingContent = {
+                            FilledTonalIconButton(
+                                onClick = { context.startActivity(intent) }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+                }
+            }
 
             // nuke everything
             item {
