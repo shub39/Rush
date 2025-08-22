@@ -61,7 +61,6 @@
     <string name="card_size">Размер карточки</string>
     <string name="vibrant_colors_info">Использовать более яркие цвета для страницы с текстом</string>
     <string name="backup">Сохранение и восстановление</string>
-    <string name="rush_branding"></string>
     <string name="exporting">Экспортировать</string>
     <string name="restored">Песни восстановленные</string>
     <string name="restore_failed">Неудалось восстановить</string>
@@ -90,8 +89,6 @@
     <string name="custom">Собственный</string>
     <string name="fit">Соответствие</string>
     <string name="standard">Стандартный</string>
-    <string name="spotify"></string>
-    <string name="rushed"></string>
     <string name="image">Изображение</string>
     <string name="hypnotic">Гипнотический</string>
     <string name="material_theme">Тема Material</string>
@@ -121,7 +118,6 @@
     <string name="quote">Цитата</string>
     <string name="vertical">Вертикально</string>
     <string name="chat">Чат</string>
-    <string name="bmc"></string>
     <string name="translate">Перевести</string>
     <string name="rate_on_play">Оценить в Google Play</string>
     <string name="foss">Вы используете FOSS-версию</string>
