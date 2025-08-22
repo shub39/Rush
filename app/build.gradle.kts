@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.shub39.rush"
-        minSdk = 29
+        minSdk = 24
         targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersionName
