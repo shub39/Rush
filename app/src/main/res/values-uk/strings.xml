@@ -95,4 +95,18 @@
     <string name="default_">За замовчуванням</string>
     <string name="material_theme">Тема Material</string>
     <string name="material_theme_desc">Тема, заснована на встановленій шпалері</string>
+    <string name="bmc">Купи мені каву</string>
+    <string name="translate">Перекласти</string>
+    <string name="rate_on_play">Оцініть у Google Play</string>
+    <string name="font">Виберіть шрифт додатку</string>
+    <string name="about_libraries">Про бібліотеки</string>
+    <string name="retry">Повторити ще</string>
+    <string name="system">Система</string>
+    <string name="dark">Темна</string>
+    <string name="light">Світла</string>
+    <string name="mesh_speed">Швидкість сітки</string>
+    <string name="use_extracted_colors">Використовувати витягнуті кольори</string>
+    <string name="loading_genius">Завантаження текстів Genius</string>
+    <string name="select_app_theme">Оберіть тему додатку</string>
+    <string name="fullscreen">Повноекранний режим</string>
 </resources>
