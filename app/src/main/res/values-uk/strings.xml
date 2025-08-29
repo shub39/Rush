@@ -87,7 +87,7 @@
     <string name="custom">Користувацький</string>
     <string name="fit">Вписати</string>
     <string name="standard">Стандартний</string>
-    <string name="spotify">Spotify</string>
+    <string name="spotify">Загальний</string>
     <string name="rushed">Rushed</string>
     <string name="image">Зображення</string>
     <string name="hypnotic">Гіпнотичний</string>
@@ -109,4 +109,24 @@
     <string name="loading_genius">Завантаження текстів Genius</string>
     <string name="select_app_theme">Оберіть тему додатку</string>
     <string name="fullscreen">Повноекранний режим</string>
+    <string name="fullscreen_desc">Приховати системні панелі на сторінці текстів пісень</string>
+    <string name="customisations">Налаштування текстів пісень</string>
+    <string name="text_alignment">Вирівнювання</string>
+    <string name="center">Центр</string>
+    <string name="end">Кінець</string>
+    <string name="start">Початок</string>
+    <string name="font_size">Розмір шрифту</string>
+    <string name="font_weight">Товщина шрифту</string>
+    <string name="line_height">Висота рядка</string>
+    <string name="letter_spacing">Відстань між літерами</string>
+    <string name="vertical">Вертикальний</string>
+    <string name="quote">Цитата</string>
+    <string name="card_font">Шрифт картки</string>
+    <string name="couplet">Куплет</string>
+    <string name="messy">Брудний</string>
+    <string name="chat">Чат</string>
+    <string name="foss">Ви використовуєте варіант FOSS</string>
+    <string name="foss_desc">Всі функції розблоковані. Ця версія програми не підтримує внутрішньопрограмні покупки. Якщо ця програма додала цінності у ваше життя, підтримайте мене, зробивши пожертву на</string>
+    <string name="rush_pro">Rush Pro</string>
+    <string name="unlock_more_pro">Розблокуйте більше можливостей з Pro</string>
 </resources>
