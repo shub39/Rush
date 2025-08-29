@@ -124,4 +124,6 @@
     <string name="foss_desc">Все функции разблокированы. Эта версия приложения не поддерживает встроенные покупки. Если приложение сделало вашу жизнь лучше, поддержите меня донатом на</string>
     <string name="rush_pro">Премиум</string>
     <string name="unlock_more_pro">Разблокировать Pro-функции</string>
+    <string name="rush_branding">Rush</string>
+    <string name="bmc">Купи мне кофе</string>
 </resources>
