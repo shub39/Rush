@@ -10,7 +10,6 @@ import android.media.session.PlaybackState
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
-import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.presentation.getMainArtist
 import com.shub39.rush.core.presentation.getMainTitle
 import kotlinx.coroutines.CoroutineScope
@@ -19,9 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
-class MediaListenerImpl(
-    private val context: Context
-): MediaInterface {
+object MediaListenerImpl {
     private var msm: MediaSessionManager? = null
     private var nls: ComponentName? = null
     private var activeMediaController: MediaController? = null
@@ -29,13 +26,11 @@ class MediaListenerImpl(
     private var initialised = false
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    override val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
-    override val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
-    override val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
+    val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
+    val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
-    init { startListening() }
-
-    override fun startListening() {
+    fun startListening(context: Context) {
         if (NotificationListener.canAccessNotifications(context) && !initialised) {
 
             initialised = true
@@ -57,16 +52,15 @@ class MediaListenerImpl(
         }
     }
 
-    override fun destroy() {
-        if (initialised) return
-        internalCallbacks.forEach { (_, callback) ->
-            activeMediaController?.unregisterCallback(callback)
+    fun onSeekEagerly() {
+        if (!initialised) return
+
+        activeMediaController?.let {
+            updateMetadata(it, it.metadata)
         }
-        internalCallbacks.clear()
-        initialised = false
     }
 
-    override fun seek(timestamp: Long) {
+    fun seek(timestamp: Long) {
         activeMediaController?.transportControls?.seekTo(timestamp)
         activeMediaController?.transportControls?.play()
         coroutineScope.launch {
@@ -74,7 +68,7 @@ class MediaListenerImpl(
         }
     }
 
-    override fun pauseOrResume(resume: Boolean) {
+    fun pauseOrResume(resume: Boolean) {
         if (resume) {
             activeMediaController?.transportControls?.play()
         } else {

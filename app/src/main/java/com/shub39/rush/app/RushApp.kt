@@ -64,11 +64,13 @@ sealed interface Route {
 fun RushApp() {
     val settingsVM: SettingsVM = koinViewModel()
     val searchSheetVM: SearchSheetVM = koinViewModel()
+    val lyricsVM: LyricsVM = koinViewModel()
 
-    val imageLoader: ImageLoader = koinInject()
-
+    val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
     val settingsState by settingsVM.state.collectAsStateWithLifecycle()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
+
+    val imageLoader: ImageLoader = koinInject()
 
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -120,9 +122,6 @@ fun RushApp() {
                         }
 
                         composable<Route.LyricsGraph> {
-                            val lyricsVM: LyricsVM = koinViewModel()
-                            val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
-
                             LyricsGraph(
                                 notificationAccess = NotificationListener.canAccessNotifications(
                                     context

@@ -12,13 +12,11 @@ import com.shub39.rush.core.data.backup.ExportImpl
 import com.shub39.rush.core.data.backup.RestoreImpl
 import com.shub39.rush.core.data.database.DatabaseFactory
 import com.shub39.rush.core.data.database.SongDatabase
-import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.data.network.GeniusApi
 import com.shub39.rush.core.data.network.GeniusScraper
 import com.shub39.rush.core.data.network.LrcLibApi
 import com.shub39.rush.core.data.repository.RushRepository
 import com.shub39.rush.core.domain.LyricsPagePreferences
-import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.SharePagePreferences
 import com.shub39.rush.core.domain.SongRepo
@@ -47,7 +45,6 @@ val rushModules = module {
     singleOf(::ExportImpl).bind<ExportRepo>()
     singleOf(::RestoreImpl).bind<RestoreRepo>()
     singleOf(::PaletteGenerator)
-    singleOf(::MediaListenerImpl).bind<MediaInterface>()
 
     // android specific imageloader with cache
     singleOf(::provideImageLoader)

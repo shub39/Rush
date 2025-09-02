@@ -3,8 +3,8 @@ package com.shub39.rush.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.core.data.PaletteGenerator
+import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
-import com.shub39.rush.core.domain.MediaInterface
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.CardColors
@@ -34,7 +34,6 @@ class LyricsVM(
     private val repo: SongRepo,
     private val lyricsPrefs: LyricsPagePreferences,
     private val paletteGenerator: PaletteGenerator,
-    private val mediaListener: MediaInterface
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -45,7 +44,6 @@ class LyricsVM(
         .onStart {
             observePlayback()
             observeDatastore()
-            mediaListener.startListening()
         }
         .stateIn(
             viewModelScope,
@@ -98,6 +96,8 @@ class LyricsVM(
                             autoChange = newPref
                         )
                     }
+
+                    if (newPref) MediaListenerImpl.onSeekEagerly()
                 }
 
                 is LyricsPageAction.OnToggleSearchSheet -> {
@@ -248,9 +248,9 @@ class LyricsVM(
 
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
 
-                LyricsPageAction.OnPauseOrResume -> mediaListener.pauseOrResume(_state.value.playingSong.speed == 0f)
+                LyricsPageAction.OnPauseOrResume -> MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
 
-                is LyricsPageAction.OnSeek -> mediaListener.seek(action.position)
+                is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
             }
         }
     }
@@ -374,8 +374,8 @@ class LyricsVM(
     private fun observePlayback() {
         viewModelScope.launch(Dispatchers.Default) {
             combine(
-                mediaListener.songPositionFlow,
-                mediaListener.playbackSpeedFlow,
+                MediaListenerImpl.songPositionFlow,
+                MediaListenerImpl.playbackSpeedFlow,
                 ::Pair
             ).collectLatest { (position, speed) ->
                 val start = System.currentTimeMillis()
@@ -396,10 +396,5 @@ class LyricsVM(
                 }
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        mediaListener.destroy()
     }
 }

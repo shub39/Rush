@@ -2,7 +2,7 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.domain.MediaInterface
+import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.data_classes.ExtractedColors
@@ -29,8 +29,7 @@ import kotlinx.coroutines.launch
 
 class SearchSheetVM(
     private val stateLayer: StateLayer,
-    private val repo: SongRepo,
-    private val mediaListener: MediaInterface
+    private val repo: SongRepo
 ) : ViewModel() {
 
     private val _state = stateLayer.searchSheetState
@@ -49,7 +48,7 @@ class SearchSheetVM(
 
     private fun observeSongInfo() {
         viewModelScope.launch {
-            mediaListener.songInfoFlow.collect { songInfo ->
+            MediaListenerImpl.songInfoFlow.collect { songInfo ->
                 stateLayer.lyricsState.update {
                     it.copy(
                         playingSong = it.playingSong.copy(
