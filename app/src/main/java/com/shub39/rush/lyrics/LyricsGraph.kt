@@ -6,12 +6,21 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shub39.rush.core.domain.data_classes.SongUi
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.component.LyricsCustomisationsPage
 import com.shub39.rush.lyrics.component.LyricsPage
@@ -84,5 +93,36 @@ fun LyricsGraph(
                 modifier = Modifier.widthIn(max = 700.dp),
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    var state by remember {
+        mutableStateOf(
+            LyricsPageState(
+                song = SongUi(
+                    id = 0,
+                    title = "Random Song",
+                    artists = "shub39",
+                    artUrl = "",
+                    lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
+                ),
+                textAlign = TextAlign.Start
+            )
+        )
+    }
+
+    RushTheme(
+        theme = Theme()
+    ) { 
+        LyricsGraph(
+            notificationAccess = true,
+            lyricsState = state,
+            lyricsAction = {},
+            onDismiss = {},
+            onShare = {}
+        )
     }
 }

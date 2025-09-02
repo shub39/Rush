@@ -10,8 +10,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "4.2.0"
-val appVersionCode = 4200
+val appVersionName = "4.2.1"
+val appVersionCode = 4210
 
 android {
     namespace = "com.shub39.rush"
