@@ -68,7 +68,6 @@
     <string name="no_audio_files">Нет аудио файлов</string>
     <string name="export_info">Сохранить тексты в папку Загрузки/Rush</string>
     <string name="restore">Восстановить</string>
-    <string name="restore_info"></string>
     <string name="choose_file">Выбрать файл</string>
     <string name="rush_mode">Режим Rush</string>
     <string name="look_and_feel">Внешний вид</string>
