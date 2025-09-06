@@ -14,6 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import io.github.vinceglb.filekit.PlatformFile
@@ -79,6 +84,33 @@ fun ShareButton(
     }
 
     Spacer(modifier = Modifier.padding(4.dp))
+}
+
+@Composable
+fun pxToSp(px: Int): TextUnit {
+    val density = LocalDensity.current
+    return with(density) { px.toSp() }
+}
+
+@Composable
+fun pxToDp(px: Int): Dp {
+    val density = LocalDensity.current
+    return with(density) { px.toDp() }
+}
+
+@Composable
+fun TextStyle.fromPx(
+    fontSize: Int,
+    letterSpacing: Int,
+    lineHeight: Int,
+    fontWeight: FontWeight = FontWeight.Normal
+): TextStyle {
+    return copy(
+        fontSize = pxToSp(fontSize),
+        letterSpacing = pxToSp(letterSpacing),
+        lineHeight = pxToSp(lineHeight),
+        fontWeight = fontWeight
+    )
 }
 
 @OptIn(ExperimentalTime::class)

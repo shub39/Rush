@@ -34,7 +34,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +47,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.Theme
@@ -94,7 +91,7 @@ fun SharePage(
 ) = PageFill {
     val coroutineScope = rememberCoroutineScope()
     val cardGraphicsLayer = rememberGraphicsLayer()
-    val zoomState = rememberZoomState()
+    val zoomState = rememberZoomState(initialScale = 1.5f)
 
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
@@ -119,7 +116,7 @@ fun SharePage(
     }
 
     val modifier = Modifier
-        .width(360.dp)
+        .width(pxToDp(720))
         .zoomable(zoomState = zoomState)
         .drawWithContent {
             cardGraphicsLayer.record {
@@ -127,16 +124,17 @@ fun SharePage(
             }
             drawLayer(cardGraphicsLayer)
         }
+        .padding(pxToDp(32))
         .let {
             if (state.cardFit == CardFit.FIT) {
-                it.heightIn(max = 960.dp)
-            } else it.height(640.dp)
+                it.heightIn(max = pxToDp(1920))
+            } else it.height(pxToDp(1280))
         }
 
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {
-            CornerRadius.DEFAULT -> 0.dp
-            CornerRadius.ROUNDED -> 16.dp
+            CornerRadius.DEFAULT -> pxToDp(0)
+            CornerRadius.ROUNDED -> pxToDp(48)
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
@@ -183,85 +181,81 @@ fun SharePage(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CompositionLocalProvider(
-                LocalDensity provides Density(2.5f, 1f)
+            RushTheme(
+                theme = Theme(font = state.cardFont)
             ) {
-                RushTheme(
-                    theme = Theme(font = state.cardFont)
-                ) {
-                    when (state.cardTheme) {
-                        CardTheme.SPOTIFY -> SpotifyShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                when (state.cardTheme) {
+                    CardTheme.SPOTIFY -> SpotifyShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.RUSHED -> RushedShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            selectedImage = selectedImage
-                        )
+                    CardTheme.RUSHED -> RushedShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        selectedImage = selectedImage
+                    )
 
-                        CardTheme.HYPNOTIC -> HypnoticShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                    CardTheme.HYPNOTIC -> HypnoticShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.VERTICAL -> VerticalShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                    CardTheme.VERTICAL -> VerticalShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.QUOTE -> QuoteShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                    CardTheme.QUOTE -> QuoteShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.COUPLET -> CoupletShareCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                    CardTheme.COUPLET -> CoupletShareCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.MESSY -> MessyCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
+                    CardTheme.MESSY -> MessyCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
 
-                        CardTheme.CHAT -> ChatCard(
-                            modifier = modifier,
-                            song = state.songDetails,
-                            sortedLines = state.selectedLines,
-                            cardColors = cardColor,
-                            cardCorners = cardCorners,
-                            fit = state.cardFit
-                        )
-                    }
+                    CardTheme.CHAT -> ChatCard(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        sortedLines = state.selectedLines,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit
+                    )
                 }
             }
 
