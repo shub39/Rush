@@ -5,12 +5,9 @@ import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -32,9 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,13 +48,9 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
@@ -67,9 +58,7 @@ import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
 import com.shub39.rush.core.domain.enums.CornerRadius
-import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
-import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.component.ChatCard
 import com.shub39.rush.share.component.CoupletShareCard
@@ -77,6 +66,7 @@ import com.shub39.rush.share.component.HypnoticShareCard
 import com.shub39.rush.share.component.MessyCard
 import com.shub39.rush.share.component.QuoteShareCard
 import com.shub39.rush.share.component.RushedShareCard
+import com.shub39.rush.share.component.SharePageSheet
 import com.shub39.rush.share.component.SpotifyShareCard
 import com.shub39.rush.share.component.VerticalShareCard
 import io.github.vinceglb.filekit.ImageFormat
@@ -428,88 +418,11 @@ private fun SharePageContent(
     }
 
     if (editSheet) {
-        ModalBottomSheet(
+        SharePageSheet(
+            state = state,
+            onAction = onAction,
             onDismissRequest = { editSheet = false }
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ListSelect(
-                    title = stringResource(R.string.card_theme),
-                    options = CardTheme.entries.toList(),
-                    selected = state.cardTheme,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardTheme(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.stringRes)
-                        )
-                    }
-                )
-
-                ListSelect(
-                    title = stringResource(R.string.card_color),
-                    options = CardColors.entries.toList(),
-                    selected = state.cardColors,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardColor(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.stringRes)
-                        )
-                    }
-                )
-
-                ListSelect(
-                    title = stringResource(R.string.card_size),
-                    options = CardFit.entries.toList(),
-                    selected = state.cardFit,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardFit(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.stringRes)
-                        )
-                    }
-                )
-
-                ListSelect(
-                    title = stringResource(R.string.card_corners),
-                    options = CornerRadius.entries.toList(),
-                    selected = state.cardRoundness,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardRoundness(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.stringRes)
-                        )
-                    }
-                )
-
-                ListSelect(
-                    title = stringResource(R.string.card_font),
-                    options = Fonts.entries.toList(),
-                    selected = state.cardFont,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardFont(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = it.fullName,
-                            fontFamily = FontFamily(Font(it.font))
-                        )
-                    }
-                )
-            }
-        }
+        )
     }
 
     if (colorPicker) {

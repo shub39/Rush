@@ -1,4 +1,4 @@
-package com.shub39.rush.lyrics.component
+package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement

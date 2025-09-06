@@ -12,10 +12,10 @@ import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.setting.component.AboutLibrariesPage
-import com.shub39.rush.setting.component.BackupPage
-import com.shub39.rush.setting.component.LookAndFeelPage
-import com.shub39.rush.setting.component.SettingRootPage
+import com.shub39.rush.setting.section.AboutLibrariesPage
+import com.shub39.rush.setting.section.BackupPage
+import com.shub39.rush.setting.section.LookAndFeelPage
+import com.shub39.rush.setting.section.SettingRootPage
 import kotlinx.serialization.Serializable
 
 @Serializable

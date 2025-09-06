@@ -1,4 +1,4 @@
-package com.shub39.rush.setting.component
+package com.shub39.rush.setting.section
 
 import android.R.color.system_accent1_200
 import android.os.Build
@@ -64,6 +64,7 @@ import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.zigZagBackground
 import com.shub39.rush.setting.SettingsPageAction
 import com.shub39.rush.setting.SettingsPageState
+import com.shub39.rush.setting.component.SelectableMiniPalette
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.CloudSun

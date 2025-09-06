@@ -22,8 +22,8 @@ import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
-import com.shub39.rush.lyrics.component.LyricsCustomisationsPage
-import com.shub39.rush.lyrics.component.LyricsPage
+import com.shub39.rush.lyrics.section.LyricsCustomisationsPage
+import com.shub39.rush.lyrics.section.LyricsPage
 import kotlinx.serialization.Serializable
 
 @Serializable
