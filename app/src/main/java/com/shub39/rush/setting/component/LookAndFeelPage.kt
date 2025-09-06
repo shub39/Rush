@@ -2,6 +2,7 @@ package com.shub39.rush.setting.component
 
 import android.R.color.system_accent1_200
 import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -237,33 +238,38 @@ fun LookAndFeelPage(
 
             // Seed color picker
             item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.seed_color)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text = stringResource(R.string.seed_color_desc)
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = { colorPickerDialog = true },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.theme.seedColor),
-                                contentColor = contentColorFor(Color(state.theme.seedColor))
-                            ),
-                            enabled = !state.theme.materialTheme && state.isProUser
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Create,
-                                contentDescription = "Select Color"
+                AnimatedVisibility(
+                    visible = !state.theme.materialTheme,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.seed_color)
                             )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.seed_color_desc)
+                            )
+                        },
+                        trailingContent = {
+                            IconButton(
+                                onClick = { colorPickerDialog = true },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.theme.seedColor),
+                                    contentColor = contentColorFor(Color(state.theme.seedColor))
+                                ),
+                                enabled = !state.theme.materialTheme && state.isProUser
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Create,
+                                    contentDescription = "Select Color"
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
 
             // palette styles
