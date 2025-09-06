@@ -88,7 +88,7 @@ fun QuoteShareCard(
                     imageUrl = song.artUrl,
                     modifier = Modifier
                         .size(pxToDp(100))
-                        .clip(RoundedCornerShape(pxToDp(32)))
+                        .clip(RoundedCornerShape(pxToDp(16)))
                 )
 
                 Column(

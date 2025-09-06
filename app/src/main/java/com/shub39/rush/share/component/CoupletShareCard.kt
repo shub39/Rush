@@ -52,7 +52,6 @@ fun CoupletShareCard(
             modifier = Modifier
                 .matchParentSize()
                 .blur(pxToDp(12))
-                .clip(RoundedCornerShape(pxToDp(32)))
         )
 
         Box(
@@ -105,7 +104,7 @@ fun CoupletShareCard(
                             imageUrl = song.artUrl,
                             modifier = Modifier
                                 .size(pxToDp(100))
-                                .clip(RoundedCornerShape(pxToDp(32)))
+                                .clip(RoundedCornerShape(pxToDp(16)))
                         )
 
                         Column(

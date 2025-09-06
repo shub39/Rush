@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -78,7 +79,7 @@ fun ChatCard(
                             imageUrl = song.artUrl,
                             modifier = Modifier
                                 .size(pxToDp(100))
-                                .clip(RoundedCornerShape(pxToDp(32)))
+                                .clip(CircleShape)
                         )
 
                         Column(
@@ -113,7 +114,7 @@ fun ChatCard(
                 sortedLines.forEach {
                     item {
                         Card(
-                            shape = MaterialTheme.shapes.small,
+                            shape = RoundedCornerShape(pxToDp(16)),
                             colors = cardColors.copy(
                                 containerColor = cardColors.contentColor,
                                 contentColor = cardColors.containerColor
@@ -127,7 +128,7 @@ fun ChatCard(
                                     letterSpacing = 0,
                                     lineHeight = 32,
                                 ),
-                                modifier = Modifier.padding(pxToDp(16)),
+                                modifier = Modifier.padding(horizontal = pxToDp(12), vertical = pxToDp(8)),
                             )
                         }
                     }

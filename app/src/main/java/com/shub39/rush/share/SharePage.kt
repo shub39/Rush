@@ -1,5 +1,7 @@
 package com.shub39.rush.share
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.CardDefaults
@@ -44,15 +47,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
@@ -60,7 +70,6 @@ import com.shub39.rush.core.domain.enums.CornerRadius
 import com.shub39.rush.core.domain.enums.Fonts
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
-import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.component.ChatCard
 import com.shub39.rush.share.component.CoupletShareCard
@@ -75,12 +84,16 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
+import io.github.vinceglb.filekit.dialogs.compose.rememberShareFileLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import io.github.vinceglb.filekit.write
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import java.io.File
+import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -88,14 +101,11 @@ fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     onAction: (SharePageAction) -> Unit,
-) = PageFill {
+) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val cardGraphicsLayer = rememberGraphicsLayer()
-    val zoomState = rememberZoomState(initialScale = 1.5f)
 
-    var editSheet by remember { mutableStateOf(false) }
-    var colorPicker by remember { mutableStateOf(false) }
-    var editTarget by remember { mutableStateOf("content") }
     var selectedImage: PlatformFile? by remember { mutableStateOf(null) }
     var saveImage: ImageBitmap? by remember { mutableStateOf(null) }
 
@@ -114,6 +124,66 @@ fun SharePage(
             }
         }
     }
+
+    val shareLauncher = rememberShareFileLauncher()
+
+    SharePageContent(
+        state = state,
+        onDismiss = onDismiss,
+        selectedImage = selectedImage,
+        onAction = onAction,
+        coroutineScope = coroutineScope,
+        cardGraphicsLayer = cardGraphicsLayer,
+        onSaveImage = {
+            saveImage = it
+            imageSaver.launch(
+                suggestedName = "${state.songDetails.title} - ${state.songDetails.artist}",
+                extension = "png"
+            )
+        },
+        onLaunchImagePicker = { imagePicker.launch() },
+        onShareImage = {
+            coroutineScope.launch(Dispatchers.Default) {
+                val imageBitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
+
+                val cachePath = File(context.cacheDir, "images")
+                cachePath.mkdirs()
+                val file = File(cachePath, "image.png")
+
+                val stream = FileOutputStream(file)
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                stream.close()
+
+                val contentUri: Uri =
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",
+                        file
+                    )
+
+                shareLauncher.launch(PlatformFile(contentUri))
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun SharePageContent(
+    state: SharePageState,
+    onDismiss: () -> Unit,
+    cardGraphicsLayer: GraphicsLayer,
+    selectedImage: PlatformFile?,
+    onAction: (SharePageAction) -> Unit,
+    coroutineScope: CoroutineScope,
+    onSaveImage: (ImageBitmap) -> Unit,
+    onLaunchImagePicker: () -> Unit,
+    onShareImage: () -> Unit
+) {
+    val zoomState = rememberZoomState(initialScale = 1.5f)
+    var editSheet by remember { mutableStateOf(false) }
+    var colorPicker by remember { mutableStateOf(false) }
+    var editTarget by remember { mutableStateOf("content") }
 
     val modifier = Modifier
         .width(pxToDp(720))
@@ -134,7 +204,7 @@ fun SharePage(
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {
             CornerRadius.DEFAULT -> pxToDp(0)
-            CornerRadius.ROUNDED -> pxToDp(48)
+            CornerRadius.ROUNDED -> pxToDp(32)
         }, label = "corners"
     )
     val containerColor by animateColorAsState(
@@ -283,10 +353,8 @@ fun SharePage(
                     Row {
                         IconButton(
                             onClick = {
-                                coroutineScope.launch {
-                                    editTarget = "content"
-                                    colorPicker = true
-                                }
+                                editTarget = "content"
+                                colorPicker = true
                             },
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = Color(state.cardContent)
@@ -297,10 +365,8 @@ fun SharePage(
 
                         IconButton(
                             onClick = {
-                                coroutineScope.launch {
-                                    editTarget = "background"
-                                    colorPicker = true
-                                }
+                                editTarget = "background"
+                                colorPicker = true
                             },
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = Color(state.cardBackground)
@@ -315,11 +381,7 @@ fun SharePage(
                     onClick = {
                         if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
                             coroutineScope.launch {
-                                saveImage = cardGraphicsLayer.toImageBitmap()
-                                imageSaver.launch(
-                                    suggestedName = "${state.songDetails.artist}-${state.songDetails.title}",
-                                    extension = "png"
-                                )
+                                onSaveImage(cardGraphicsLayer.toImageBitmap())
                             }
                         } else {
                             onAction(SharePageAction.OnShowPaywall)
@@ -332,18 +394,27 @@ fun SharePage(
                     )
                 }
 
-                ShareButton(
-                    canShare = state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme),
-                    onShowPaywall = { onAction(SharePageAction.OnShowPaywall) },
-                    coroutineScope = coroutineScope,
-                    cardGraphicsLayer = cardGraphicsLayer
-                )
+                IconButton(
+                    onClick = {
+                        if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
+                            onShareImage()
+                        } else {
+                            onAction(SharePageAction.OnShowPaywall)
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
                 AnimatedVisibility(
                     visible = state.cardTheme == CardTheme.RUSHED
                 ) {
                     IconButton(
-                        onClick = { imagePicker.launch() }
+                        onClick = onLaunchImagePicker
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Image,
@@ -454,6 +525,43 @@ fun SharePage(
             onDismiss = {
                 colorPicker = false
             }
+        )
+    }
+}
+
+@Preview(device = "spec:width=1080px,height=2340px,dpi=480", showSystemUi = false,
+    showBackground = false
+)
+@Composable
+private fun Preview() {
+    var state by remember { mutableStateOf(
+        SharePageState(
+            cardTheme = CardTheme.CHAT,
+            songDetails = SongDetails(
+                title = "Satan in the wait",
+                artist = "Daughters"
+            ),
+            selectedLines = (1..5).associateWith {
+                "This is line no $it"
+            }
+        )
+    ) }
+
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK,
+        )
+    ) {
+        SharePageContent(
+            state = state,
+            onDismiss = { },
+            selectedImage = null,
+            onAction = {},
+            coroutineScope = rememberCoroutineScope(),
+            onSaveImage = { },
+            onLaunchImagePicker = {  },
+            onShareImage = {  },
+            cardGraphicsLayer = rememberGraphicsLayer()
         )
     }
 }

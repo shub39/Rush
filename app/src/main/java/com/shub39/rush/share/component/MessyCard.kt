@@ -60,7 +60,7 @@ fun MessyCard(
             Word(
                 text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
                 fontWeight = if (Random.nextBoolean()) FontWeight.Bold else FontWeight.ExtraBold,
-                fontSize = Random.nextInt(50, 150),
+                fontSize = Random.nextInt(50, 100),
                 rotate = Random.nextInt(-10..10)
             )
         }
@@ -138,7 +138,7 @@ fun MessyCard(
                     imageUrl = song.artUrl,
                     modifier = Modifier
                         .size(pxToDp(100))
-                        .clip(RoundedCornerShape(pxToDp(32)))
+                        .clip(RoundedCornerShape(pxToDp(16)))
                 )
             }
         }

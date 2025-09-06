@@ -77,18 +77,17 @@ fun RushedShareCard(
                 items(sortedLines.values.toList()) {
                     Card(
                         colors = cardColors,
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(pxToDp(16))
                     ) {
                         Text(
                             text = it,
                             color = cardColors.contentColor,
                             style = MaterialTheme.typography.bodyMedium.fromPx(
-                                fontSize = 40,
+                                fontSize = 36,
                                 letterSpacing = 0,
-                                lineHeight = 40,
-                                fontWeight = FontWeight.Bold
+                                lineHeight = 36
                             ),
-                            modifier = Modifier.padding(pxToDp(12))
+                            modifier = Modifier.padding(vertical = pxToDp(8), horizontal = pxToDp(12))
                         )
                     }
                 }
