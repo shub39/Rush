@@ -37,7 +37,6 @@ data class LyricsPageState(
     val cardColors: CardColors = CardColors.MUTED,
     val lyricsBackground: LyricsBackground = LyricsBackground.SOLID_COLOR,
     val maxLines: Int = 6,
-    val useExtractedColors: Boolean = true,
     val mCardBackground: Int = Color.DarkGray.toArgb(),
     val mCardContent: Int = Color.White.toArgb(),
     val fullscreen: Boolean = false

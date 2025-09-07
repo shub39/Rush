@@ -7,7 +7,6 @@ import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.LyricsPageAction
@@ -197,17 +196,13 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnVibrantToggle -> lyricsPrefs.updateLyricsColor(
-                    if (action.pref) CardColors.VIBRANT else CardColors.MUTED
-                )
+                is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
                 is LyricsPageAction.OnToggleColorPref -> lyricsPrefs.updateUseExtractedFlow(action.pref)
 
                 is LyricsPageAction.OnUpdatemBackground -> lyricsPrefs.updateCardBackground(action.color)
 
-                is LyricsPageAction.OnUpdatemContent -> {
-                    lyricsPrefs.updateCardContent(action.color)
-                }
+                is LyricsPageAction.OnUpdatemContent -> lyricsPrefs.updateCardContent(action.color)
 
                 is LyricsPageAction.OnScrapeGeniusLyrics -> {
                     _state.update { it.copy(scraping = Pair(true, null)) }
@@ -293,16 +288,6 @@ class LyricsVM(
                     _state.update {
                         it.copy(
                             letterSpacing = pref
-                        )
-                    }
-                }
-                .launchIn(this)
-
-            lyricsPrefs.getUseExtractedFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            useExtractedColors = pref
                         )
                     }
                 }

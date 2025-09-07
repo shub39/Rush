@@ -127,6 +127,7 @@ fun LyricsPage(
                                 }
                             )
                         }
+                        LyricsBackground.ALBUM_ART -> it.background(cardBackground)
                         else -> it
                     }
                 }
@@ -178,13 +179,21 @@ fun LyricsPage(
                     ) {
                         val landscape by remember { mutableStateOf(this.maxHeight < this.maxWidth) }
 
+                        // album art blurred
                         if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
                             ArtFromUrl(
                                 imageUrl = state.song.artUrl,
                                 modifier = Modifier
-                                    .blur(100.dp)
-                                    .background(cardBackground.copy(alpha = 0.9f))
+                                    .blur(80.dp)
                                     .fillMaxSize()
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        color = cardBackground.copy(alpha = 0.5f)
+                                    )
                             )
                         }
 
@@ -199,7 +208,7 @@ fun LyricsPage(
                                         modifier = Modifier.align(Alignment.TopCenter)
                                     ) {
                                         AnimatedVisibility(
-                                            visible = top > 2 || state.sync
+                                            visible = (top > 2 || state.sync) && state.lyricsBackground != LyricsBackground.ALBUM_ART
                                         ) {
                                             ArtFromUrl(
                                                 imageUrl = state.song.artUrl!!,

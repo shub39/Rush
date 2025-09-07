@@ -62,10 +62,7 @@ class LyricsPagePreferencesImpl(
 
     override fun getLyricsColorFlow(): Flow<CardColors> = dataStore.data
         .map { preferences ->
-            when (preferences[lyricsColor]) {
-                CardColors.MUTED.name -> CardColors.MUTED
-                else -> CardColors.VIBRANT
-            }
+            CardColors.valueOf(preferences[lyricsColor] ?: CardColors.MUTED.name)
         }
     override suspend fun updateLyricsColor(new: CardColors) {
         dataStore.edit { settings ->

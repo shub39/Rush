@@ -91,6 +91,48 @@ fun SyncedLyrics(
         state = lazyListState
     ) {
         itemsIndexed(state.song?.syncedLyrics!!) { index, lyric ->
+            val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
+            val currentTime = state.playingSong.position
+
+            val progress = nextTime?.let {
+                ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
+            } ?: 1f
+
+            val animatedProgress by animateFloatAsState(
+                targetValue = progress,
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+
+            val isCurrent = lyric.time <= state.playingSong.position &&
+                    state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
+                state.playingSong.position, state.song.syncedLyrics
+            )
+
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (isCurrent) 0.5f else 0.2f,
+                animationSpec = tween(500, easing = LinearEasing)
+            )
+
+            val blur by animateDpAsState(
+                targetValue = if (isCurrent) 0.dp else 2.dp,
+                animationSpec = tween(100)
+            )
+
+            val textColor by animateColorAsState(
+                targetValue = when {
+                    lyric.time <= state.playingSong.position -> cardContent
+                    else -> cardContent.copy(0.3f)
+                },
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                ),
+                label = "textColor"
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,48 +146,6 @@ fun SyncedLyrics(
                     else -> Arrangement.Start
                 }
             ) {
-                val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
-                val currentTime = state.playingSong.position
-
-                val progress = nextTime?.let {
-                    ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
-                } ?: 1f
-
-                val animatedProgress by animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = tween(
-                        durationMillis = 500,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
-
-                val isCurrent = lyric.time <= state.playingSong.position &&
-                        state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
-                    state.playingSong.position, state.song.syncedLyrics
-                )
-
-                val glowAlpha by animateFloatAsState(
-                    targetValue = if (isCurrent) 0.5f else 0.2f,
-                    animationSpec = tween(500, easing = LinearEasing)
-                )
-
-                val blur by animateDpAsState(
-                    targetValue = if (isCurrent) 0.dp else 2.dp,
-                    animationSpec = tween(100)
-                )
-
-                val textColor by animateColorAsState(
-                    targetValue = when {
-                        lyric.time <= state.playingSong.position -> cardContent
-                        else -> cardContent.copy(0.3f)
-                    },
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        easing = FastOutSlowInEasing
-                    ),
-                    label = "textColor"
-                )
-
                 Box(
                     modifier = Modifier
                         .blur(

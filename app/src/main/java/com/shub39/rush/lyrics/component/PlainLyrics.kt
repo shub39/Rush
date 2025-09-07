@@ -68,14 +68,10 @@ fun PlainLyrics(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = lazyListState
     ) {
-        item {
-            Spacer(modifier = Modifier.padding(32.dp))
-        }
-
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
             items(
@@ -259,8 +255,6 @@ fun PlainLyrics(
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.padding(10.dp))
         }
     }
 }

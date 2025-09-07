@@ -1,6 +1,8 @@
 package com.shub39.rush.lyrics.section
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +34,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -42,12 +46,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
+import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.PageFill
@@ -108,16 +112,34 @@ fun LyricsCustomisationsPage(
         modifier = modifier
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = paddingValues,
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
+            stickyHeader {
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(16.dp))
                 ) {
+                    if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
+                        ArtFromUrl(
+                            imageUrl = state.song?.artUrl,
+                            modifier = Modifier
+                                .blur(80.dp)
+                                .matchParentSize()
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(
+                                    color = cardBackground.copy(alpha = 0.5f)
+                                )
+                        )
+                    }
+
                     Card(
                         modifier = Modifier
                             .let {
@@ -143,6 +165,7 @@ fun LyricsCustomisationsPage(
                                             }
                                         )
                                     }
+
                                     else -> it
                                 }
                             },
@@ -167,6 +190,16 @@ fun LyricsCustomisationsPage(
                         }
                     }
                 }
+            }
+
+            item {
+                ListSelect(
+                    title = stringResource(R.string.lyrics_background),
+                    options = LyricsBackground.allBackgrounds,
+                    selected = state.lyricsBackground,
+                    onSelectedChange = { onAction(LyricsPageAction.OnChangeLyricsBackground(it)) },
+                    labelProvider = { Text(text = stringResource(it.stringRes)) },
+                )
             }
 
             item {
@@ -233,93 +266,64 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                ListSelect(
-                    title = stringResource(R.string.lyrics_background),
-                    options = LyricsBackground.allBackgrounds,
-                    selected = state.lyricsBackground,
-                    onSelectedChange = { onAction(LyricsPageAction.OnChangeLyricsBackground(it)) },
-                    labelProvider = { Text(text = stringResource(it.stringRes)) },
-                )
-            }
-
-            item {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
             }
 
             item {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.use_extracted_colors)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.useExtractedColors,
-                            onCheckedChange = { onAction(LyricsPageAction.OnToggleColorPref(it)) }
-                        )
-                    }
+                ListSelect(
+                    title = stringResource(R.string.colors),
+                    options = CardColors.entries.toList(),
+                    selected = state.cardColors,
+                    onSelectedChange = { onAction(LyricsPageAction.OnUpdateColorType(it)) },
+                    labelProvider = { Text(text = stringResource(it.stringRes)) },
                 )
 
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.vibrant_colors)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = state.cardColors == CardColors.VIBRANT,
-                            onCheckedChange = { onAction(LyricsPageAction.OnVibrantToggle(it)) },
-                            enabled = state.useExtractedColors
-                        )
-                    }
-                )
+                AnimatedVisibility(
+                    visible = state.cardColors == CardColors.CUSTOM,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                editTarget = "content"
+                                colorPickerDialog = true
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color(state.mCardContent),
+                                contentColor = Color(state.mCardBackground)
+                            ),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Create,
+                                contentDescription = "Select Color",
+                            )
+                        }
 
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.colors)
-                        )
-                    },
-                    trailingContent = {
-                        Row {
-                            IconButton(
-                                onClick = {
-                                    editTarget = "content"
-                                    colorPickerDialog = true
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = Color(state.mCardContent),
-                                    contentColor = Color(state.mCardContent).lighten(2f)
-                                ),
-                                enabled = !state.useExtractedColors
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Create,
-                                    contentDescription = "Select Color",
-                                )
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    editTarget = "background"
-                                    colorPickerDialog = true
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = Color(state.mCardBackground),
-                                    contentColor = Color(state.mCardBackground).lighten(2f)
-                                ),
-                                enabled = !state.useExtractedColors
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Create,
-                                    contentDescription = "Select Color"
-                                )
-                            }
+                        IconButton(
+                            onClick = {
+                                editTarget = "background"
+                                colorPickerDialog = true
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color(state.mCardBackground),
+                                contentColor = Color(state.mCardContent)
+                            ),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Create,
+                                contentDescription = "Select Color"
+                            )
                         }
                     }
-                )
+                }
             }
 
             item {
