@@ -63,7 +63,7 @@ fun RushedShareCard(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        0.5f to cardColors.containerColor.copy(0.3f),
+                        0.75f to cardColors.containerColor.copy(0.3f),
                         1f to cardColors.containerColor
                     )
                 )
