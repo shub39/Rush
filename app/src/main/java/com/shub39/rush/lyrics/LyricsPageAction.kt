@@ -2,9 +2,11 @@ package com.shub39.rush.lyrics
 
 import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.domain.enums.Sources
 
 sealed interface LyricsPageAction {
+    data class OnChangeLyricsBackground(val background: LyricsBackground): LyricsPageAction
     data class OnMaxLinesChange(val lines: Int): LyricsPageAction
     data class OnFullscreenChange(val pref: Boolean): LyricsPageAction
     data object OnCustomisationReset: LyricsPageAction
@@ -19,7 +21,6 @@ sealed interface LyricsPageAction {
     data class OnToggleColorPref(val pref: Boolean): LyricsPageAction
     data class OnUpdatemBackground(val color: Int): LyricsPageAction
     data class OnUpdatemContent(val color: Int): LyricsPageAction
-    data class OnHypnoticToggle(val pref: Boolean): LyricsPageAction
     data class OnVibrantToggle(val pref: Boolean): LyricsPageAction
     data class OnMeshSpeedChange(val speed: Float): LyricsPageAction
     data class OnSync(val sync: Boolean) : LyricsPageAction

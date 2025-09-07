@@ -23,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -48,11 +47,12 @@ import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ColorPickerDialog
+import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
-import com.shub39.rush.core.presentation.hypnoticAvailable
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.getCardColors
@@ -121,32 +121,33 @@ fun LyricsCustomisationsPage(
                     Card(
                         modifier = Modifier
                             .let {
-                                if (state.hypnoticCanvas) {
-                                    it.shaderBackground(
-                                        shader = MeshGradient(
-                                            colors = generateGradientColors(
-                                                color1 = hypnoticColor1,
-                                                color2 = hypnoticColor2,
-                                                steps = 6
-                                            ).toTypedArray()
-                                        ),
-                                        speed = hypnoticSpeed,
-                                        fallback = {
-                                            Brush.horizontalGradient(
-                                                generateGradientColors(
+                                when (state.lyricsBackground) {
+                                    LyricsBackground.HYPNOTIC -> {
+                                        it.shaderBackground(
+                                            shader = MeshGradient(
+                                                colors = generateGradientColors(
                                                     color1 = hypnoticColor1,
                                                     color2 = hypnoticColor2,
                                                     steps = 6
+                                                ).toTypedArray()
+                                            ),
+                                            speed = hypnoticSpeed,
+                                            fallback = {
+                                                Brush.horizontalGradient(
+                                                    generateGradientColors(
+                                                        color1 = hypnoticColor1,
+                                                        color2 = hypnoticColor2,
+                                                        steps = 6
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    )
-                                } else {
-                                    it
+                                            }
+                                        )
+                                    }
+                                    else -> it
                                 }
                             },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (state.hypnoticCanvas) Color.Transparent else cardBackground,
+                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                             contentColor = cardContent
                         )
                     ) {
@@ -231,47 +232,14 @@ fun LyricsCustomisationsPage(
                 )
             }
 
-            if (hypnoticAvailable()) {
-                item {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
-                }
-
-                item {
-                    ListItem(
-                        modifier = Modifier.clip(MaterialTheme.shapes.large),
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.hypnotic_canvas)
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = stringResource(R.string.hypnotic_canvas_desc)
-                            )
-                        },
-                        trailingContent = {
-                            Switch(
-                                checked = state.hypnoticCanvas,
-                                onCheckedChange = { onAction(LyricsPageAction.OnHypnoticToggle(it)) }
-                            )
-                        }
-                    )
-
-                    SettingSlider(
-                        title = stringResource(R.string.mesh_speed),
-                        value = state.meshSpeed,
-                        valueRange = 0.5f..3f,
-                        enabled = state.hypnoticCanvas,
-                        valueToShow = when (state.meshSpeed) {
-                            in 0f..1f -> "<1"
-                            else -> state.meshSpeed.toInt().toString()
-                        },
-                        onValueChange = {
-                            onAction(LyricsPageAction.OnMeshSpeedChange(it))
-                        },
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
+            item {
+                ListSelect(
+                    title = stringResource(R.string.lyrics_background),
+                    options = LyricsBackground.allBackgrounds,
+                    selected = state.lyricsBackground,
+                    onSelectedChange = { onAction(LyricsPageAction.OnChangeLyricsBackground(it)) },
+                    labelProvider = { Text(text = stringResource(it.stringRes)) },
+                )
             }
 
             item {

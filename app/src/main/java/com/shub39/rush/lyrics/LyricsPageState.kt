@@ -8,19 +8,17 @@ import com.shub39.rush.core.domain.data_classes.ExtractedColors
 import com.shub39.rush.core.domain.data_classes.LrcLibSong
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.domain.enums.Sources
 
 data class LyricsPageState(
+    // non-datastore
     val song: SongUi? = null,
     val fetching: Pair<Boolean, String> = Pair(false, ""),
     val searching: Pair<Boolean, String> = Pair(false, ""),
     val scraping: Pair<Boolean, Error?> = Pair(false, null),
     val error: Int? = null,
     val autoChange: Boolean = false,
-    val textAlign: TextAlign = TextAlign.Center,
-    val fontSize: Float = 28f,
-    val lineHeight: Float = 32f,
-    val letterSpacing: Float = 0f,
     val playingSong: PlayingSong = PlayingSong(),
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),
@@ -29,10 +27,16 @@ data class LyricsPageState(
     val lyricsCorrect: Boolean = false,
     val source: Sources = Sources.LrcLib,
     val selectedLines: Map<Int, String> = emptyMap(),
-    val cardColors: CardColors = CardColors.MUTED,
-    val hypnoticCanvas: Boolean = false,
-    val maxLines: Int = 6,
     val meshSpeed: Float = 1f,
+
+    // datastore
+    val textAlign: TextAlign = TextAlign.Center,
+    val fontSize: Float = 28f,
+    val lineHeight: Float = 32f,
+    val letterSpacing: Float = 0f,
+    val cardColors: CardColors = CardColors.MUTED,
+    val lyricsBackground: LyricsBackground = LyricsBackground.SOLID_COLOR,
+    val maxLines: Int = 6,
     val useExtractedColors: Boolean = true,
     val mCardBackground: Int = Color.DarkGray.toArgb(),
     val mCardContent: Int = Color.White.toArgb(),

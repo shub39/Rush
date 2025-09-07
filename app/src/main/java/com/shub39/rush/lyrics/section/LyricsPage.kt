@@ -2,6 +2,7 @@ package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.KeepScreenOn
@@ -102,33 +105,34 @@ fun LyricsPage(
         Card(
             modifier = Modifier
                 .let {
-                    if (state.hypnoticCanvas) {
-                        it.shaderBackground(
-                            shader = MeshGradient(
-                                colors = generateGradientColors(
-                                    color1 = hypnoticColor1,
-                                    color2 = hypnoticColor2,
-                                    steps = 6
-                                ).toTypedArray()
-                            ),
-                            speed = hypnoticSpeed,
-                            fallback = {
-                                Brush.horizontalGradient(
-                                    generateGradientColors(
+                    when (state.lyricsBackground) {
+                        LyricsBackground.HYPNOTIC -> {
+                            it.shaderBackground(
+                                shader = MeshGradient(
+                                    colors = generateGradientColors(
                                         color1 = hypnoticColor1,
                                         color2 = hypnoticColor2,
                                         steps = 6
+                                    ).toTypedArray()
+                                ),
+                                speed = hypnoticSpeed,
+                                fallback = {
+                                    Brush.horizontalGradient(
+                                        generateGradientColors(
+                                            color1 = hypnoticColor1,
+                                            color2 = hypnoticColor2,
+                                            steps = 6
+                                        )
                                     )
-                                )
-                            }
-                        )
-                    } else {
-                        it
+                                }
+                            )
+                        }
+                        else -> it
                     }
                 }
                 .fillMaxSize(),
             colors = CardDefaults.cardColors(
-                containerColor = if (state.hypnoticCanvas) Color.Transparent else cardBackground,
+                containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                 contentColor = cardContent
             ),
             shape = RoundedCornerShape(0.dp)
@@ -173,6 +177,16 @@ fun LyricsPage(
                         contentAlignment = Alignment.Center
                     ) {
                         val landscape by remember { mutableStateOf(this.maxHeight < this.maxWidth) }
+
+                        if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
+                            ArtFromUrl(
+                                imageUrl = state.song.artUrl,
+                                modifier = Modifier
+                                    .blur(100.dp)
+                                    .background(cardBackground.copy(alpha = 0.9f))
+                                    .fillMaxSize()
+                            )
+                        }
 
                         Column {
                             // Plain lyrics

@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,7 +21,6 @@ class LyricsPagePreferencesImpl(
 ): LyricsPagePreferences {
 
     companion object {
-        private val hypnoticCanvas = booleanPreferencesKey("hypnotic_canvas")
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
         private val lyricsColor = stringPreferencesKey("lyrics_color")
@@ -31,6 +31,7 @@ class LyricsPagePreferencesImpl(
         private val letterSpacing = floatPreferencesKey("letter_spacing")
         private val maxLines = intPreferencesKey("max_lines")
         private val fullscreen = booleanPreferencesKey("fullscreen")
+        private val lyricsBackground = stringPreferencesKey("lyrics_background")
     }
 
     override suspend fun reset() {
@@ -45,19 +46,17 @@ class LyricsPagePreferencesImpl(
         }
     }
 
+    override fun getLyricsBackgroundFlow(): Flow<LyricsBackground> = dataStore.data
+        .map { LyricsBackground.valueOf(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name) }
+    override suspend fun updateLyricsBackround(background: LyricsBackground) {
+        dataStore.edit { it[lyricsBackground] = background.name }
+    }
+
     override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data
         .map { prefs -> prefs[fullscreen] == true }
     override suspend fun setFullScreen(pref: Boolean) {
         dataStore.edit { prefs ->
             prefs[fullscreen] = pref
-        }
-    }
-
-    override fun getHypnoticCanvasFlow(): Flow<Boolean> = dataStore.data
-        .map { preferences -> preferences[hypnoticCanvas] == true }
-    override suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean) {
-        dataStore.edit { settings ->
-            settings[hypnoticCanvas] = newHypnoticCanvas
         }
     }
 

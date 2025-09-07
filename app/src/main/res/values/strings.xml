@@ -130,4 +130,7 @@
     <string name="unlock_more_pro">Unlock more with Pro</string>
     <string name="album_art">Only Art</string>
     <string name="album_art_shape">Album art shape</string>
+    <string name="blurred_art">Blurred Art</string>
+    <string name="solid_color">Solid</string>
+    <string name="lyrics_background">Lyrics Background</string>
 </resources>

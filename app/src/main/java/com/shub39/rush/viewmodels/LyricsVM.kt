@@ -187,7 +187,7 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnHypnoticToggle -> lyricsPrefs.updateHypnoticCanvas(action.pref)
+                is LyricsPageAction.OnChangeLyricsBackground -> lyricsPrefs.updateLyricsBackround(action.background)
 
                 is LyricsPageAction.OnMeshSpeedChange -> {
                     _state.update {
@@ -358,11 +358,11 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            lyricsPrefs.getHypnoticCanvasFlow()
+            lyricsPrefs.getLyricsBackgroundFlow()
                 .onEach { hyp ->
                     _state.update {
                         it.copy(
-                            hypnoticCanvas = hyp
+                            lyricsBackground = hyp
                         )
                     }
                 }
