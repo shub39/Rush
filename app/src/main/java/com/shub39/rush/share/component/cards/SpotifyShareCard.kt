@@ -1,4 +1,4 @@
-package com.shub39.rush.share.component
+package com.shub39.rush.share.component.cards
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +44,8 @@ fun SpotifyShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit
+    fit: CardFit,
+    albumArtShape: Shape = CircleShape
 ) {
     Card(
         modifier = modifier,
@@ -66,7 +69,7 @@ fun SpotifyShareCard(
                     imageUrl = song.artUrl,
                     modifier = Modifier
                         .size(pxToDp(100))
-                        .clip(RoundedCornerShape(pxToDp(18)))
+                        .clip(albumArtShape)
                 )
 
                 Column(

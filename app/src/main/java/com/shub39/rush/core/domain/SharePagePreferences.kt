@@ -1,5 +1,6 @@
 package com.shub39.rush.core.domain
 
+import com.shub39.rush.core.domain.enums.AlbumArtShape
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
@@ -28,4 +29,7 @@ interface SharePagePreferences {
 
     fun getCardFontFlow(): Flow<Fonts>
     suspend fun updateCardFont(newCardFont: Fonts)
+
+    fun getAlbumArtShapeFlow(): Flow<AlbumArtShape>
+    suspend fun updateAlbumArtShape(shape: AlbumArtShape)
 }

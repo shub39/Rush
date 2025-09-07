@@ -34,19 +34,7 @@ class LyricsPagePreferencesImpl(
     }
 
     override suspend fun reset() {
-        dataStore.edit { settings ->
-            settings[hypnoticCanvas] = false
-            settings[cardBackground] = Color.Black.toArgb()
-            settings[cardContent] = Color.White.toArgb()
-            settings[lyricsColor] = CardColors.MUTED.name
-            settings[useExtracted] = true
-            settings[lyricAlignment] = TextAlign.Start.toString()
-            settings[fontSize] = 28f
-            settings[lineHeight] = 32f
-            settings[letterSpacing] = 0f
-            settings[maxLines] = 6
-            settings[fullscreen] = false
-        }
+        dataStore.edit { it.clear() }
     }
 
     override fun getMaxLinesFlow(): Flow<Int> = dataStore.data

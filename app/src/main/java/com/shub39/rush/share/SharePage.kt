@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AlbumArtShape.Companion.toShape
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
@@ -60,15 +61,16 @@ import com.shub39.rush.core.domain.enums.CardTheme
 import com.shub39.rush.core.domain.enums.CornerRadius
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.share.component.ChatCard
-import com.shub39.rush.share.component.CoupletShareCard
-import com.shub39.rush.share.component.HypnoticShareCard
-import com.shub39.rush.share.component.MessyCard
-import com.shub39.rush.share.component.QuoteShareCard
-import com.shub39.rush.share.component.RushedShareCard
 import com.shub39.rush.share.component.SharePageSheet
-import com.shub39.rush.share.component.SpotifyShareCard
-import com.shub39.rush.share.component.VerticalShareCard
+import com.shub39.rush.share.component.cards.AlbumArt
+import com.shub39.rush.share.component.cards.ChatCard
+import com.shub39.rush.share.component.cards.CoupletShareCard
+import com.shub39.rush.share.component.cards.HypnoticShareCard
+import com.shub39.rush.share.component.cards.MessyCard
+import com.shub39.rush.share.component.cards.QuoteShareCard
+import com.shub39.rush.share.component.cards.RushedShareCard
+import com.shub39.rush.share.component.cards.SpotifyShareCard
+import com.shub39.rush.share.component.cards.VerticalShareCard
 import io.github.vinceglb.filekit.ImageFormat
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
@@ -251,7 +253,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.RUSHED -> RushedShareCard(
@@ -260,7 +263,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        selectedImage = selectedImage
+                        selectedImage = selectedImage,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.HYPNOTIC -> HypnoticShareCard(
@@ -269,7 +273,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.VERTICAL -> VerticalShareCard(
@@ -278,7 +283,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.QUOTE -> QuoteShareCard(
@@ -287,7 +293,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.COUPLET -> CoupletShareCard(
@@ -296,7 +303,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.MESSY -> MessyCard(
@@ -305,7 +313,8 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
 
                     CardTheme.CHAT -> ChatCard(
@@ -314,7 +323,18 @@ private fun SharePageContent(
                         sortedLines = state.selectedLines,
                         cardColors = cardColor,
                         cardCorners = cardCorners,
-                        fit = state.cardFit
+                        fit = state.cardFit,
+                        albumArtShape = state.albumArtShape.toShape()
+                    )
+
+                    CardTheme.ALBUM_ART -> AlbumArt(
+                        modifier = modifier,
+                        song = state.songDetails,
+                        cardColors = cardColor,
+                        cardCorners = cardCorners,
+                        fit = state.cardFit,
+                        selectedImage = selectedImage,
+                        albumArtShape = state.albumArtShape.toShape()
                     )
                 }
             }
@@ -401,7 +421,7 @@ private fun SharePageContent(
                 }
 
                 AnimatedVisibility(
-                    visible = state.cardTheme == CardTheme.RUSHED
+                    visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART)
                 ) {
                     IconButton(
                         onClick = onLaunchImagePicker
@@ -449,7 +469,7 @@ private fun SharePageContent(
 private fun Preview() {
     var state by remember { mutableStateOf(
         SharePageState(
-            cardTheme = CardTheme.CHAT,
+            cardTheme = CardTheme.RUSHED,
             songDetails = SongDetails(
                 title = "Satan in the wait",
                 artist = "Daughters"

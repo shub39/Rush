@@ -1,11 +1,15 @@
 package com.shub39.rush.share.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -21,6 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AlbumArtShape
+import com.shub39.rush.core.domain.enums.AlbumArtShape.Companion.toShape
+import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
@@ -119,6 +126,27 @@ fun SharePageSheet(
 
             item {
                 ListSelect(
+                    title = stringResource(R.string.album_art_shape),
+                    options = AlbumArtShape.entries.toList(),
+                    selected = state.albumArtShape,
+                    onSelectedChange = {
+                        onAction(SharePageAction.OnUpdateAlbumArtShape(it))
+                    },
+                    labelProvider = {
+                        Box(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    shape = it.toShape()
+                                )
+                        )
+                    }
+                )
+            }
+
+            item {
+                ListSelect(
                     title = stringResource(R.string.card_font),
                     options = Fonts.entries.toList(),
                     selected = state.cardFont,
@@ -142,7 +170,9 @@ fun SharePageSheet(
 @Composable
 private fun Preview() {
     RushTheme(
-        theme = Theme()
+        theme = Theme(
+            appTheme = AppTheme.DARK
+        )
     ) {
         SharePageSheet(
             state = SharePageState(),

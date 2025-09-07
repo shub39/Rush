@@ -1,7 +1,8 @@
-package com.shub39.rush.share.component
+package com.shub39.rush.share.component.cards
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardColors
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.mikepenz.hypnoticcanvas.shaderBackground
@@ -24,7 +26,8 @@ fun HypnoticShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit
+    fit: CardFit,
+    albumArtShape: Shape = CircleShape
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         SpotifyShareCard(
@@ -50,6 +53,7 @@ fun HypnoticShareCard(
             sortedLines = sortedLines,
             cardColors = cardColors.copy(containerColor = Color.Transparent),
             cardCorners = cardCorners,
+            albumArtShape = albumArtShape,
             fit = fit
         )
     }

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.rush.core.domain.SharePagePreferences
+import com.shub39.rush.core.domain.enums.AlbumArtShape
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
@@ -28,6 +29,17 @@ class SharePagePreferencesImpl(
         private val cardContent = intPreferencesKey("card_content")
         private val cardFit = stringPreferencesKey("card_fit")
         private val cardFont = stringPreferencesKey("card_font")
+        private val albumArtShapeKey = stringPreferencesKey("album_art_shape")
+    }
+
+    override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> = dataStore.data
+        .map { preferences ->
+            AlbumArtShape.valueOf(preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name)
+        }
+    override suspend fun updateAlbumArtShape(shape: AlbumArtShape) {
+        dataStore.edit { preferences ->
+            preferences[albumArtShapeKey] = shape.name
+        }
     }
 
     override fun getCardFitFlow(): Flow<CardFit> = dataStore.data

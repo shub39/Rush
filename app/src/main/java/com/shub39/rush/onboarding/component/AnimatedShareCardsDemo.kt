@@ -13,14 +13,15 @@ import androidx.compose.ui.graphics.Color
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
-import com.shub39.rush.share.component.ChatCard
-import com.shub39.rush.share.component.CoupletShareCard
-import com.shub39.rush.share.component.HypnoticShareCard
-import com.shub39.rush.share.component.MessyCard
-import com.shub39.rush.share.component.QuoteShareCard
-import com.shub39.rush.share.component.RushedShareCard
-import com.shub39.rush.share.component.SpotifyShareCard
-import com.shub39.rush.share.component.VerticalShareCard
+import com.shub39.rush.share.component.cards.AlbumArt
+import com.shub39.rush.share.component.cards.ChatCard
+import com.shub39.rush.share.component.cards.CoupletShareCard
+import com.shub39.rush.share.component.cards.HypnoticShareCard
+import com.shub39.rush.share.component.cards.MessyCard
+import com.shub39.rush.share.component.cards.QuoteShareCard
+import com.shub39.rush.share.component.cards.RushedShareCard
+import com.shub39.rush.share.component.cards.SpotifyShareCard
+import com.shub39.rush.share.component.cards.VerticalShareCard
 import com.shub39.rush.share.pxToDp
 
 @Composable
@@ -130,6 +131,14 @@ fun AnimatedShareCardsDemo(
                 song = song,
                 modifier = modifier,
                 sortedLines = sortedLines,
+                cardColors = cardColors,
+                cardCorners = cardCorners,
+                fit = fit
+            )
+
+            CardTheme.ALBUM_ART -> AlbumArt(
+                song = song,
+                modifier = modifier,
                 cardColors = cardColors,
                 cardCorners = cardCorners,
                 fit = fit
