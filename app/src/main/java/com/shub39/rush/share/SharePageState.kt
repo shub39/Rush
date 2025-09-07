@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.core.domain.data_classes.ExtractedColors
 import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.AlbumArtShape
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
@@ -22,6 +23,7 @@ data class SharePageState(
     val cardFit: CardFit = CardFit.FIT,
     val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
     val cardTheme: CardTheme = CardTheme.SPOTIFY,
+    val albumArtShape: AlbumArtShape = AlbumArtShape.COOKIE_12,
 
     val isProUser: Boolean = false
 )

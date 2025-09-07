@@ -1,4 +1,4 @@
-package com.shub39.rush.setting.component
+package com.shub39.rush.setting.section
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Column
@@ -63,6 +63,7 @@ import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.setting.SettingsPageAction
 import com.shub39.rush.setting.SettingsPageState
+import com.shub39.rush.setting.component.AboutApp
 
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

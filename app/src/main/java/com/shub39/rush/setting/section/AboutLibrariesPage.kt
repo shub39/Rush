@@ -1,4 +1,4 @@
-package com.shub39.rush.setting.component
+package com.shub39.rush.setting.section
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

@@ -2,6 +2,7 @@ package com.shub39.rush.onboarding.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -9,18 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.domain.enums.CardTheme
-import com.shub39.rush.share.component.ChatCard
-import com.shub39.rush.share.component.CoupletShareCard
-import com.shub39.rush.share.component.HypnoticShareCard
-import com.shub39.rush.share.component.MessyCard
-import com.shub39.rush.share.component.QuoteShareCard
-import com.shub39.rush.share.component.RushedShareCard
-import com.shub39.rush.share.component.SpotifyShareCard
-import com.shub39.rush.share.component.VerticalShareCard
+import com.shub39.rush.share.component.cards.AlbumArt
+import com.shub39.rush.share.component.cards.ChatCard
+import com.shub39.rush.share.component.cards.CoupletShareCard
+import com.shub39.rush.share.component.cards.HypnoticShareCard
+import com.shub39.rush.share.component.cards.MessyCard
+import com.shub39.rush.share.component.cards.QuoteShareCard
+import com.shub39.rush.share.component.cards.RushedShareCard
+import com.shub39.rush.share.component.cards.SpotifyShareCard
+import com.shub39.rush.share.component.cards.VerticalShareCard
+import com.shub39.rush.share.pxToDp
 
 @Composable
 fun AnimatedShareCardsDemo(
@@ -52,9 +54,11 @@ fun AnimatedShareCardsDemo(
         2  to "Share cards with Rush",
         3 to "Exactly the way you want"
     )
-    val cardCorners = RoundedCornerShape(20.dp)
+    val cardCorners = RoundedCornerShape(pxToDp(16))
     val fit = CardFit.FIT
-    val modifier = Modifier.width(360.dp)
+    val modifier = Modifier
+        .width(pxToDp(720))
+        .padding(pxToDp(32))
 
     AnimatedContent(
         targetState = cardStyle
@@ -127,6 +131,14 @@ fun AnimatedShareCardsDemo(
                 song = song,
                 modifier = modifier,
                 sortedLines = sortedLines,
+                cardColors = cardColors,
+                cardCorners = cardCorners,
+                fit = fit
+            )
+
+            CardTheme.ALBUM_ART -> AlbumArt(
+                song = song,
+                modifier = modifier,
                 cardColors = cardColors,
                 cardCorners = cardCorners,
                 fit = fit
