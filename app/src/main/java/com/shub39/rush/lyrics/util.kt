@@ -24,23 +24,25 @@ fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
 fun parseLyrics(lyricsString: String): List<Lyric> {
     val seenTimes = mutableSetOf<Long>()
 
-    return lyricsString.lines().mapNotNull { line ->
-        val parts = line.split("] ")
-        if (parts.size == 2) {
-            val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
-                minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
-            }
-            if (time in seenTimes) {
-                null
+    return listOf(Lyric(0, "")).plus(
+        lyricsString.lines().mapNotNull { line ->
+            val parts = line.split("] ")
+            if (parts.size == 2) {
+                val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
+                    minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
+                }
+                if (time in seenTimes) {
+                    null
+                } else {
+                    seenTimes.add(time)
+                    val text = parts[1]
+                    Lyric(time, text)
+                }
             } else {
-                seenTimes.add(time)
-                val text = parts[1]
-                Lyric(time, text)
+                null
             }
-        } else {
-            null
         }
-    }
+    )
 }
 
 fun updateSelectedLines(
@@ -71,24 +73,18 @@ fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
 @Composable
 fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by animateColorAsState(
-        targetValue = if (state.useExtractedColors) {
-            when (state.cardColors) {
-                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.lighten(2f)
-                else -> state.extractedColors.cardBackgroundDominant.lighten(2f)
-            }
-        } else {
-            Color(state.mCardBackground).lighten(2f)
+        targetValue = when (state.cardColors) {
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.lighten(2f)
+            CardColors.CUSTOM -> Color(state.mCardBackground).lighten(2f)
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.lighten(2f)
         },
         label = "hypnotic color 1"
     )
     val hypnoticColor2 by animateColorAsState(
-        targetValue = if (state.useExtractedColors) {
-            when (state.cardColors) {
-                CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.darken(2f)
-                else -> state.extractedColors.cardBackgroundDominant.darken(2f)
-            }
-        } else {
-            Color(state.mCardBackground).darken(2f)
+        targetValue = when (state.cardColors) {
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.darken(2f)
+            CardColors.CUSTOM -> Color(state.mCardBackground).darken(2f)
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.darken(2f)
         },
         label = "hypnotic color 2"
     )
@@ -100,25 +96,21 @@ fun getCardColors(
     state: LyricsPageState
 ): Pair<Color, Color> {
     val cardBackground by animateColorAsState(
-        targetValue = if (state.useExtractedColors) {
+        targetValue =
             when (state.cardColors) {
                 CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
-                else -> state.extractedColors.cardBackgroundDominant
-            }
-        } else {
-            Color(state.mCardBackground)
-        },
+                CardColors.CUSTOM -> Color(state.mCardBackground)
+                CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant
+            },
         label = "cardBackground"
     )
     val cardContent by animateColorAsState(
-        targetValue = if (state.useExtractedColors) {
+        targetValue =
             when (state.cardColors) {
                 CardColors.MUTED -> state.extractedColors.cardContentMuted
-                else -> state.extractedColors.cardContentDominant
-            }
-        } else {
-            Color(state.mCardContent)
-        },
+                CardColors.CUSTOM -> Color(state.mCardContent)
+                CardColors.VIBRANT -> state.extractedColors.cardContentDominant
+            },
         label = "cardContent"
     )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))

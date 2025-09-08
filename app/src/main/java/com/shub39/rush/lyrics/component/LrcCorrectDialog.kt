@@ -128,7 +128,7 @@ fun LrcCorrectDialog(
                         colors = when (it.syncedLyrics) {
                             null -> CardDefaults.elevatedCardColors()
                             else -> CardDefaults.elevatedCardColors(
-                                contentColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 containerColor = MaterialTheme.colorScheme.primaryContainer
                             )
                         },

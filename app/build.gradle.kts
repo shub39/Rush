@@ -10,8 +10,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "4.1.0"
-val appVersionCode = 4100
+val appVersionName = "5.0.0"
+val appVersionCode = 5000
 
 android {
     namespace = "com.shub39.rush"
@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.shub39.rush"
-        minSdk = 29
+        minSdk = 24
         targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersionName
@@ -48,7 +48,7 @@ android {
         }
 
         debug {
-            applicationIdSuffix = ".debug"
+//            applicationIdSuffix = ".debug"
             resValue("string", "app_name", "$appName Debug")
             versionNameSuffix = "-debug"
         }
@@ -108,17 +108,11 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.android)
 
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kmpalette.core)
-    implementation(libs.material.icons.core)
-    implementation(libs.koin.core)
-    implementation(libs.koin.compose)
-    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.room.runtime)
     implementation(libs.composeIcons.fontAwesome)
     implementation(libs.zoomable)
@@ -139,6 +133,11 @@ dependencies {
     implementation(libs.aboutLibraries.compose.m3)
     implementation(libs.filekit.core)
     implementation(libs.filekit.dialogs.compose)
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.viewmodel.navigation)
 }
 
 aboutLibraries {

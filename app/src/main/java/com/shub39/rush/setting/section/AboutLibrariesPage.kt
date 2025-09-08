@@ -1,9 +1,10 @@
-package com.shub39.rush.setting
+package com.shub39.rush.setting.section
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,9 +21,6 @@ import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowLeft
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +39,8 @@ fun AboutLibrariesPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

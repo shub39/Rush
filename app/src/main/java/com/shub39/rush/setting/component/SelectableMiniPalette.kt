@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -41,6 +42,7 @@ import com.materialkolor.palettes.TonalPalette
 fun SelectableMiniPalette(
     modifier: Modifier = Modifier,
     selected: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit,
     contentDescription: () -> String,
     accents: List<TonalPalette>,
@@ -51,7 +53,9 @@ fun SelectableMiniPalette(
     ) {
         TooltipBox(
             modifier = modifier,
-            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
+            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                positioning = TooltipAnchorPosition.End
+            ),
             tooltip = {
                 PlainTooltip {
                     Text(contentDescription())
@@ -61,7 +65,7 @@ fun SelectableMiniPalette(
         ) {
             Surface(
                 modifier = Modifier
-                    .clickable(onClick = onClick)
+                    .clickable(onClick = onClick, enabled = enabled)
                     .padding(12.dp)
                     .size(50.dp),
                 shape = CircleShape,

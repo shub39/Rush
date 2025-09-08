@@ -2,6 +2,7 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.Sources
@@ -58,6 +59,8 @@ class SavedVM(
                     _state.update {
                         it.copy(autoChange = newPref)
                     }
+
+                    if (newPref) MediaListenerImpl.onSeekEagerly()
                 }
 
                 SavedPageAction.OnToggleSearchSheet -> {

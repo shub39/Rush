@@ -2,13 +2,11 @@ package com.shub39.rush.core.domain
 
 import androidx.compose.ui.text.style.TextAlign
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import kotlinx.coroutines.flow.Flow
 
 interface LyricsPagePreferences {
     suspend fun reset()
-
-    fun getHypnoticCanvasFlow(): Flow<Boolean>
-    suspend fun updateHypnoticCanvas(newHypnoticCanvas: Boolean)
 
     fun getLyricsColorFlow(): Flow<CardColors>
     suspend fun updateLyricsColor(new: CardColors)
@@ -39,4 +37,10 @@ interface LyricsPagePreferences {
 
     fun getMaxLinesFlow(): Flow<Int>
     suspend fun updateMaxLines(newMaxLines: Int)
+
+    fun getLyricsBackgroundFlow(): Flow<LyricsBackground>
+    suspend fun updateLyricsBackround(background: LyricsBackground)
+
+    fun getBlurSynced(): Flow<Boolean>
+    suspend fun updateBlurSynced(pref: Boolean)
 }

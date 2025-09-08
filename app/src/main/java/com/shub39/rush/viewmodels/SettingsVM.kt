@@ -115,8 +115,6 @@ class SettingsVM(
 
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
 
-                is SettingsPageAction.OnUpdateOnBoardingDone -> datastore.updateOnboardingDone(action.done)
-
                 SettingsPageAction.OnDismissPaywall -> {
                     _state.update { it.copy(showPaywall = false) }
                     checkSubscription()
@@ -140,27 +138,17 @@ class SettingsVM(
         }
     }
 
-    private fun observeJob() = viewModelScope.launch {
+    private fun observeJob() {
         observeFlowsJob?.cancel()
-        observeFlowsJob = launch {
+        observeFlowsJob = viewModelScope.launch {
             observeTheme().launchIn(this)
-
-            datastore.getOnboardingDoneFlow()
-                .onEach { onBoardingDone ->
-                    _state.update {
-                        it.copy(
-                            onBoardingDone = onBoardingDone
-                        )
-                    }
-                }
-                .launchIn(this)
 
             datastore.getFontFlow()
                 .onEach { pref ->
                     _state.update {
                         it.copy(
                             theme = it.theme.copy(
-                                fonts = pref
+                                font = pref
                             )
                         )
                     }

@@ -128,4 +128,12 @@
     <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases. If this app added value to your life, Support me by donating on</string>
     <string name="rush_pro">Rush Pro</string>
     <string name="unlock_more_pro">Unlock more with Pro</string>
+    <string name="album_art">Only Art</string>
+    <string name="album_art_shape">Album art shape</string>
+    <string name="blurred_art">Blurred Art</string>
+    <string name="solid_color">Solid</string>
+    <string name="lyrics_background">Lyrics Background</string>
+    <string name="plain_lyrics">Plain</string>
+    <string name="synced_lyrics">Synced</string>
+    <string name="blur_synced">Blur Synced Lyrics</string>
 </resources>

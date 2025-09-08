@@ -1,4 +1,4 @@
-package com.shub39.rush.setting
+package com.shub39.rush.setting.section
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -32,11 +35,8 @@ import com.shub39.rush.R
 import com.shub39.rush.core.domain.backup.ExportState
 import com.shub39.rush.core.domain.backup.RestoreState
 import com.shub39.rush.core.presentation.PageFill
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.ArrowLeft
-import compose.icons.fontawesomeicons.solid.Check
-import compose.icons.fontawesomeicons.solid.Play
+import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.setting.SettingsPageState
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
@@ -70,9 +70,8 @@ fun BackupPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Navigate Back",
-                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -95,9 +94,8 @@ fun BackupPage(
                         when (state.exportState) {
                             ExportState.IDLE -> {
                                 Icon(
-                                    imageVector = FontAwesomeIcons.Solid.Play,
+                                    imageVector = Icons.Rounded.PlayArrow,
                                     contentDescription = "Start Export",
-                                    modifier = Modifier.size(20.dp)
                                 )
                             }
 
@@ -109,9 +107,8 @@ fun BackupPage(
 
                             ExportState.EXPORTED -> {
                                 Icon(
-                                    imageVector = FontAwesomeIcons.Solid.Check,
+                                    imageVector = Icons.Rounded.Check,
                                     contentDescription = "Done",
-                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -139,7 +136,7 @@ fun BackupPage(
                                 when (state.restoreState) {
                                     RestoreState.IDLE -> {
                                         Icon(
-                                            imageVector = FontAwesomeIcons.Solid.Play,
+                                            imageVector = Icons.Rounded.PlayArrow,
                                             contentDescription = "Start Restore",
                                             modifier = Modifier.size(20.dp)
                                         )
@@ -153,7 +150,7 @@ fun BackupPage(
 
                                     RestoreState.RESTORED -> {
                                         Icon(
-                                            imageVector = FontAwesomeIcons.Solid.Check,
+                                            imageVector = Icons.Rounded.Check,
                                             contentDescription = "Restored",
                                             modifier = Modifier.size(20.dp)
                                         )
@@ -161,7 +158,7 @@ fun BackupPage(
 
                                     RestoreState.FAILURE -> {
                                         Icon(
-                                            imageVector = Icons.Default.Warning,
+                                            imageVector = Icons.Rounded.Warning,
                                             contentDescription = "Error",
                                             modifier = Modifier.size(20.dp)
                                         )

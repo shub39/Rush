@@ -33,15 +33,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.TextPrefs
 import com.shub39.rush.lyrics.getCurrentLyricIndex
 import com.shub39.rush.lyrics.getNextLyricTime
 import kotlinx.coroutines.CoroutineScope
@@ -91,115 +95,140 @@ fun SyncedLyrics(
         state = lazyListState
     ) {
         itemsIndexed(state.song?.syncedLyrics!!) { index, lyric ->
-            Row(
+            val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
+            val currentTime = state.playingSong.position
+
+            val progress = nextTime?.let { nt ->
+                val denom = (nt - lyric.time).toFloat()
+                if (denom <= 0f) 1f
+                else ((currentTime - lyric.time).toFloat() / denom).coerceIn(0f, 1f)
+            } ?: 1f
+
+            val animatedProgress by animateFloatAsState(
+                targetValue = progress,
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+
+            val isCurrent = lyric.time <= state.playingSong.position &&
+                    state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
+                state.playingSong.position, state.song.syncedLyrics
+            )
+
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (isCurrent) 0.5f else 0.2f,
+                animationSpec = tween(500, easing = LinearEasing)
+            )
+
+            val blur by animateDpAsState(
+                targetValue = if (isCurrent || !state.blurSyncedLyrics) 0.dp else 2.dp,
+                animationSpec = tween(100)
+            )
+
+            val textColor by animateColorAsState(
+                targetValue = when {
+                    lyric.time <= state.playingSong.position -> cardContent
+                    else -> cardContent.copy(0.3f)
+                },
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                ),
+                label = "textColor"
+            )
+
+            SyncedLyric(
+                textPrefs = state.textPrefs,
+                blur = blur,
+                action = action,
+                lyric = lyric,
+                hapticFeedback = hapticFeedback,
+                glowAlpha = glowAlpha,
+                textColor = textColor,
+                animatedProgress = animatedProgress,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .onGloballyPositioned { layoutCoordinates ->
                         val height = layoutCoordinates.size.height
                         itemHeights[index] = height
-                    },
-                horizontalArrangement = when (state.textAlign) {
-                    TextAlign.Center -> Arrangement.Center
-                    TextAlign.End -> Arrangement.End
-                    else -> Arrangement.Start
-                }
-            ) {
-                val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
-                val currentTime = state.playingSong.position
-
-                val progress = nextTime?.let {
-                    ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
-                } ?: 1f
-
-                val animatedProgress by animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = tween(
-                        durationMillis = 500,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
-
-                val isCurrent = lyric.time <= state.playingSong.position &&
-                        state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
-                    state.playingSong.position, state.song.syncedLyrics
-                )
-
-                val glowAlpha by animateFloatAsState(
-                    targetValue = if (isCurrent) 0.5f else 0.2f,
-                    animationSpec = tween(500, easing = LinearEasing)
-                )
-
-                val blur by animateDpAsState(
-                    targetValue = if (isCurrent) 0.dp else 2.dp,
-                    animationSpec = tween(100)
-                )
-
-                val textColor by animateColorAsState(
-                    targetValue = when {
-                        lyric.time <= state.playingSong.position -> cardContent
-                        else -> cardContent.copy(0.3f)
-                    },
-                    animationSpec = tween(
-                        durationMillis = 300,
-                        easing = FastOutSlowInEasing
-                    ),
-                    label = "textColor"
-                )
-
-                Box(
-                    modifier = Modifier
-                        .blur(
-                            radius = blur,
-                            edgeTreatment = BlurredEdgeTreatment.Unbounded
-                        )
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable {
-                            action(LyricsPageAction.OnSeek(lyric.time))
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (lyric.text.isNotEmpty()) {
-                        Text(
-                            text = lyric.text,
-                            fontWeight = FontWeight.Bold,
-                            color = cardContent.copy(alpha = glowAlpha),
-                            fontSize = state.fontSize.sp,
-                            letterSpacing = state.letterSpacing.sp,
-                            lineHeight = state.lineHeight.sp,
-                            textAlign = state.textAlign,
-                            modifier = Modifier
-                                .padding(6.dp)
-                        )
-
-                        Text(
-                            text = lyric.text,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            fontSize = state.fontSize.sp,
-                            letterSpacing = state.letterSpacing.sp,
-                            lineHeight = state.lineHeight.sp,
-                            textAlign = state.textAlign,
-                            modifier = Modifier
-                                .padding(6.dp)
-                                .drawWithContent {
-                                    val height = size.height * animatedProgress
-                                    clipRect(
-                                        top = 0f,
-                                        bottom = height
-                                    ) {
-                                        this@drawWithContent.drawContent()
-                                    }
-                                }
-                        )
-                    } else {
-                        DotLoadingProgress(
-                            progress = animatedProgress,
-                            color = textColor,
-                            modifier = Modifier.padding(12.dp)
-                        )
                     }
-                }
+            )
+        }
+    }
+}
+
+@Composable
+fun SyncedLyric(
+    textPrefs: TextPrefs,
+    blur: Dp,
+    action: (LyricsPageAction) -> Unit,
+    lyric: Lyric,
+    hapticFeedback: HapticFeedback?,
+    glowAlpha: Float,
+    textColor: Color,
+    animatedProgress: Float,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = when (textPrefs.textAlign) {
+            TextAlign.Center -> Arrangement.Center
+            TextAlign.End -> Arrangement.End
+            else -> Arrangement.Start
+        }
+    ) {
+        Box(
+            modifier = Modifier
+                .blur(
+                    radius = blur,
+                    edgeTreatment = BlurredEdgeTreatment.Unbounded
+                )
+                .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    action(LyricsPageAction.OnSeek(lyric.time))
+                    hapticFeedback?.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            if (lyric.text.isNotEmpty()) {
+                Text(
+                    text = lyric.text,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor.copy(alpha = glowAlpha),
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.textAlign,
+                    modifier = Modifier.padding(6.dp)
+                )
+
+                Text(
+                    text = lyric.text,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor,
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.textAlign,
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .drawWithContent {
+                            val height = size.height * animatedProgress
+                            clipRect(
+                                top = 0f,
+                                bottom = height
+                            ) {
+                                this@drawWithContent.drawContent()
+                            }
+                        }
+                )
+            } else {
+                DotLoadingProgress(
+                    progress = animatedProgress,
+                    color = textColor,
+                    modifier = Modifier.padding(12.dp)
+                )
             }
         }
     }

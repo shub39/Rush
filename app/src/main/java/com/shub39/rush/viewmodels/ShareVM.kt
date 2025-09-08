@@ -35,6 +35,16 @@ class ShareVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            datastore.getAlbumArtShapeFlow()
+                .onEach { shape ->
+                    _state.update {
+                        it.copy(
+                            albumArtShape = shape
+                        )
+                    }
+                }
+                .launchIn(this)
+
             datastore.getCardBackgroundFlow()
                 .onEach { color ->
                     _state.update {
@@ -112,6 +122,7 @@ class ShareVM(
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
                 is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
                 SharePageAction.OnShowPaywall -> stateLayer.settingsState.update { it.copy(showPaywall = true) }
+                is SharePageAction.OnUpdateAlbumArtShape -> datastore.updateAlbumArtShape(action.shape)
             }
         }
     }
