@@ -106,7 +106,6 @@ fun PlainLyrics(
                                 )
                             )
 
-                            isSelected != isSelected
                             if (!isSelected) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }

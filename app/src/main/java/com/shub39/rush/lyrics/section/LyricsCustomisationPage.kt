@@ -269,7 +269,7 @@ fun LyricsCustomisationsPage(
                                             hapticFeedback = null,
                                             glowAlpha = 0.5f,
                                             textColor = cardContent,
-                                            animatedProgress =0.5f
+                                            animatedProgress = 0.5f
                                         )
                                     } else {
                                         PlainLyric(

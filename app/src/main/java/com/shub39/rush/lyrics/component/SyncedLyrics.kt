@@ -98,8 +98,10 @@ fun SyncedLyrics(
             val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
             val currentTime = state.playingSong.position
 
-            val progress = nextTime?.let {
-                ((currentTime - lyric.time).toFloat() / (it - lyric.time).toFloat()).coerceIn(0f, 1f)
+            val progress = nextTime?.let { nt ->
+                val denom = (nt - lyric.time).toFloat()
+                if (denom <= 0f) 1f
+                else ((currentTime - lyric.time).toFloat() / denom).coerceIn(0f, 1f)
             } ?: 1f
 
             val animatedProgress by animateFloatAsState(

@@ -43,7 +43,7 @@ data class TextPrefs(
     val fontSize: Float = 28f,
     val lineHeight: Float = 32f,
     val letterSpacing: Float = 0f,
-    val textAlign: TextAlign = TextAlign.Center
+    val textAlign: TextAlign = TextAlign.Start
 )
 
 data class PlayingSong(
