@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -91,6 +90,7 @@ fun LyricsGraph(
                 onNavigateBack = { navController.navigateUp() },
                 onAction = lyricsAction,
                 modifier = Modifier.widthIn(max = 700.dp),
+                notificationAccess = notificationAccess
             )
         }
     }
@@ -109,7 +109,6 @@ private fun Preview() {
                     artUrl = "",
                     lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
                 ),
-                textAlign = TextAlign.Start
             )
         )
     }

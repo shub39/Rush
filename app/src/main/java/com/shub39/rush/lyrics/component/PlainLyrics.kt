@@ -46,6 +46,7 @@ import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.TextPrefs
 import com.shub39.rush.lyrics.updateSelectedLines
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -68,14 +69,10 @@ fun PlainLyrics(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         state = lazyListState
     ) {
-        item {
-            Spacer(modifier = Modifier.padding(32.dp))
-        }
-
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
             items(
@@ -92,49 +89,28 @@ fun PlainLyrics(
                         label = "container"
                     )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = when (state.textAlign) {
-                            TextAlign.Center -> Arrangement.Center
-                            TextAlign.End -> Arrangement.End
-                            else -> Arrangement.Start
-                        }
-                    ) {
-                        Card(
-                            onClick = {
-                                action(
-                                    LyricsPageAction.OnChangeSelectedLines(
-                                        updateSelectedLines(
-                                            state.selectedLines,
-                                            it.key,
-                                            it.value,
-                                            state.maxLines
-                                        )
+                    PlainLyric(
+                        entry = it.toPair(),
+                        containerColor = containerColor,
+                        textPrefs = state.textPrefs,
+                        cardContent = cardContent,
+                        onClick = {
+                            action(
+                                LyricsPageAction.OnChangeSelectedLines(
+                                    updateSelectedLines(
+                                        state.selectedLines,
+                                        it.key,
+                                        it.value,
+                                        state.maxLines
                                     )
                                 )
+                            )
 
-                                isSelected != isSelected
-                                if (!isSelected) {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
-                            },
-                            shape = MaterialTheme.shapes.small,
-                            colors = CardDefaults.cardColors(
-                                containerColor = containerColor,
-                                contentColor = cardContent
-                            )
-                        ) {
-                            Text(
-                                text = it.value,
-                                fontSize = state.fontSize.sp,
-                                letterSpacing = state.letterSpacing.sp,
-                                lineHeight = state.lineHeight.sp,
-                                textAlign = state.textAlign,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(6.dp)
-                            )
+                            if (!isSelected) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            }
                         }
-                    }
+                    )
                 }
             }
         } else {
@@ -259,8 +235,43 @@ fun PlainLyrics(
                     )
                 }
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.padding(10.dp))
+@Composable
+fun PlainLyric(
+    textPrefs: TextPrefs,
+    entry: Pair<Int, String>,
+    onClick: () -> Unit,
+    containerColor: Color,
+    cardContent: Color
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = when (textPrefs.textAlign) {
+            TextAlign.Center -> Arrangement.Center
+            TextAlign.End -> Arrangement.End
+            else -> Arrangement.Start
+        }
+    ) {
+        Card(
+            onClick = onClick,
+            shape = MaterialTheme.shapes.small,
+            colors = CardDefaults.cardColors(
+                containerColor = containerColor,
+                contentColor = cardContent
+            )
+        ) {
+            Text(
+                text = entry.second,
+                fontSize = textPrefs.fontSize.sp,
+                letterSpacing = textPrefs.letterSpacing.sp,
+                lineHeight = textPrefs.lineHeight.sp,
+                textAlign = textPrefs.textAlign,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(6.dp)
+            )
         }
     }
 }

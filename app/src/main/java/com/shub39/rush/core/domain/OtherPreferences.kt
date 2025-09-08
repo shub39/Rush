@@ -24,9 +24,6 @@ interface OtherPreferences {
     fun getSortOrderFlow(): Flow<SortOrder>
     suspend fun updateSortOrder(newSortOrder: SortOrder)
 
-    fun getOnboardingDoneFlow(): Flow<Boolean>
-    suspend fun updateOnboardingDone(done: Boolean)
-
     fun getMaterialYouFlow(): Flow<Boolean>
     suspend fun updateMaterialTheme(pref: Boolean)
 

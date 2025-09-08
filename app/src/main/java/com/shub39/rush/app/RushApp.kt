@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +24,6 @@ import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.LyricsGraph
-import com.shub39.rush.onboarding.Onboarding
 import com.shub39.rush.saved.SavedPage
 import com.shub39.rush.search_sheet.SearchSheet
 import com.shub39.rush.setting.SettingsGraph
@@ -53,9 +51,6 @@ sealed interface Route {
     data object SettingsGraph : Route
 
     @Serializable
-    data object Onboarding : Route
-
-    @Serializable
     data object SharePage : Route
 }
 
@@ -74,12 +69,6 @@ fun RushApp() {
 
     val navController = rememberNavController()
     val context = LocalContext.current
-
-    LaunchedEffect(settingsState.onBoardingDone) {
-        if (!settingsState.onBoardingDone) {
-            navController.navigate(Route.Onboarding)
-        }
-    }
 
     CompositionLocalProvider(
         LocalCoilImageLoader provides imageLoader
@@ -111,9 +100,7 @@ fun RushApp() {
 
                             SavedPage(
                                 state = savedState,
-                                notificationAccess = NotificationListener.canAccessNotifications(
-                                    context
-                                ),
+                                notificationAccess = NotificationListener.canAccessNotifications(context),
                                 onAction = savedVM::onAction,
                                 onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
                                 onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
@@ -123,9 +110,7 @@ fun RushApp() {
 
                         composable<Route.LyricsGraph> {
                             LyricsGraph(
-                                notificationAccess = NotificationListener.canAccessNotifications(
-                                    context
-                                ),
+                                notificationAccess = NotificationListener.canAccessNotifications(context),
                                 lyricsState = lyricsState,
                                 lyricsAction = lyricsVM::onAction,
                                 onDismiss = { navController.navigateUp() },
@@ -150,23 +135,10 @@ fun RushApp() {
 
                         composable<Route.SettingsGraph> {
                             SettingsGraph(
-                                notificationAccess = NotificationListener.canAccessNotifications(
-                                    context
-                                ),
+                                notificationAccess = NotificationListener.canAccessNotifications(context),
                                 state = settingsState,
                                 action = settingsVM::onAction,
                                 onNavigateBack = { navController.navigateUp() }
-                            )
-                        }
-
-                        composable<Route.Onboarding> {
-                            Onboarding(
-                                onDone = {
-                                    settingsVM.onAction(
-                                        SettingsPageAction.OnUpdateOnBoardingDone(true)
-                                    )
-                                    navController.navigateUp()
-                                }
                             )
                         }
                     }

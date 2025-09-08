@@ -7,7 +7,6 @@ import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.LyricsPageAction
@@ -187,27 +186,15 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnHypnoticToggle -> lyricsPrefs.updateHypnoticCanvas(action.pref)
+                is LyricsPageAction.OnChangeLyricsBackground -> lyricsPrefs.updateLyricsBackround(action.background)
 
-                is LyricsPageAction.OnMeshSpeedChange -> {
-                    _state.update {
-                        it.copy(
-                            meshSpeed = action.speed
-                        )
-                    }
-                }
-
-                is LyricsPageAction.OnVibrantToggle -> lyricsPrefs.updateLyricsColor(
-                    if (action.pref) CardColors.VIBRANT else CardColors.MUTED
-                )
+                is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
                 is LyricsPageAction.OnToggleColorPref -> lyricsPrefs.updateUseExtractedFlow(action.pref)
 
                 is LyricsPageAction.OnUpdatemBackground -> lyricsPrefs.updateCardBackground(action.color)
 
-                is LyricsPageAction.OnUpdatemContent -> {
-                    lyricsPrefs.updateCardContent(action.color)
-                }
+                is LyricsPageAction.OnUpdatemContent -> lyricsPrefs.updateCardContent(action.color)
 
                 is LyricsPageAction.OnScrapeGeniusLyrics -> {
                     _state.update { it.copy(scraping = Pair(true, null)) }
@@ -251,18 +238,30 @@ class LyricsVM(
                 LyricsPageAction.OnPauseOrResume -> MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
 
                 is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
+
+                is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
             }
         }
     }
 
-    private fun observeDatastore() = viewModelScope.launch {
+    private fun observeDatastore() {
         observeJob?.cancel()
-        observeJob = launch {
+        observeJob = viewModelScope.launch {
+            lyricsPrefs.getBlurSynced()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            blurSyncedLyrics = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
             lyricsPrefs.getLyricAlignmentFlow()
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            textAlign = pref
+                            textPrefs = it.textPrefs.copy(textAlign = pref)
                         )
                     }
                 }
@@ -272,7 +271,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            fontSize = pref
+                            textPrefs = it.textPrefs.copy(fontSize = pref)
                         )
                     }
                 }
@@ -282,7 +281,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            lineHeight = pref
+                            textPrefs = it.textPrefs.copy(lineHeight = pref)
                         )
                     }
                 }
@@ -292,17 +291,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            letterSpacing = pref
-                        )
-                    }
-                }
-                .launchIn(this)
-
-            lyricsPrefs.getUseExtractedFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            useExtractedColors = pref
+                            textPrefs = it.textPrefs.copy(letterSpacing = pref)
                         )
                     }
                 }
@@ -358,11 +347,11 @@ class LyricsVM(
                 }
                 .launchIn(this)
 
-            lyricsPrefs.getHypnoticCanvasFlow()
+            lyricsPrefs.getLyricsBackgroundFlow()
                 .onEach { hyp ->
                     _state.update {
                         it.copy(
-                            hypnoticCanvas = hyp
+                            lyricsBackground = hyp
                         )
                     }
                 }
