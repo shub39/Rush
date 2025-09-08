@@ -27,20 +27,23 @@ data class LyricsPageState(
     val lyricsCorrect: Boolean = false,
     val source: Sources = Sources.LrcLib,
     val selectedLines: Map<Int, String> = emptyMap(),
-    val meshSpeed: Float = 1f,
 
     // datastore
-    val textAlign: TextAlign = TextAlign.Center,
     val blurSyncedLyrics: Boolean = true,
-    val fontSize: Float = 28f,
-    val lineHeight: Float = 32f,
-    val letterSpacing: Float = 0f,
+    val textPrefs: TextPrefs = TextPrefs(),
     val cardColors: CardColors = CardColors.MUTED,
     val lyricsBackground: LyricsBackground = LyricsBackground.SOLID_COLOR,
     val maxLines: Int = 6,
     val mCardBackground: Int = Color.DarkGray.toArgb(),
     val mCardContent: Int = Color.White.toArgb(),
     val fullscreen: Boolean = false
+)
+
+data class TextPrefs(
+    val fontSize: Float = 28f,
+    val lineHeight: Float = 32f,
+    val letterSpacing: Float = 0f,
+    val textAlign: TextAlign = TextAlign.Center
 )
 
 data class PlayingSong(

@@ -1,7 +1,6 @@
 package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -89,8 +88,6 @@ fun LyricsPage(
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
 
-    val hypnoticSpeed by animateFloatAsState(targetValue = state.meshSpeed)
-
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     LaunchedEffect(state.song) {
@@ -115,7 +112,6 @@ fun LyricsPage(
                                         steps = 6
                                     ).toTypedArray()
                                 ),
-                                speed = hypnoticSpeed,
                                 fallback = {
                                     Brush.horizontalGradient(
                                         generateGradientColors(
@@ -224,7 +220,7 @@ fun LyricsPage(
 
                                     Column(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = when (state.textAlign) {
+                                        horizontalAlignment = when (state.textPrefs.textAlign) {
                                             TextAlign.Center -> Alignment.CenterHorizontally
                                             TextAlign.End -> Alignment.End
                                             else -> Alignment.Start

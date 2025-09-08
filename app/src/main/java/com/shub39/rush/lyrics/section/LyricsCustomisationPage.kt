@@ -2,7 +2,6 @@ package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -85,7 +84,6 @@ fun LyricsCustomisationsPage(
 ) {
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
-    val hypnoticSpeed by animateFloatAsState(targetValue = state.meshSpeed)
 
     var colorPickerDialog by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
@@ -208,7 +206,6 @@ fun LyricsCustomisationsPage(
                                                         steps = 6
                                                     ).toTypedArray()
                                                 ),
-                                                speed = hypnoticSpeed,
                                                 fallback = {
                                                     Brush.horizontalGradient(
                                                         generateGradientColors(
@@ -245,7 +242,7 @@ fun LyricsCustomisationsPage(
                                         }
 
                                         SyncedLyric(
-                                            state = state,
+                                            textPrefs = state.textPrefs,
                                             blur = if (state.blurSyncedLyrics) 2.dp else 0.dp,
                                             action = {},
                                             lyric = Lyric(1L, lines.first()),
@@ -255,7 +252,7 @@ fun LyricsCustomisationsPage(
                                             animatedProgress = 1f
                                         )
                                         SyncedLyric(
-                                            state = state,
+                                            textPrefs = state.textPrefs,
                                             blur = 0.dp,
                                             action = {},
                                             lyric = Lyric(1L, lines.last()),
@@ -265,7 +262,7 @@ fun LyricsCustomisationsPage(
                                             animatedProgress = 0.5f
                                         )
                                         SyncedLyric(
-                                            state = state,
+                                            textPrefs = state.textPrefs,
                                             blur = 0.dp,
                                             action = {},
                                             lyric = Lyric(1L, ""),
@@ -276,11 +273,9 @@ fun LyricsCustomisationsPage(
                                         )
                                     } else {
                                         PlainLyric(
-                                            state = state,
-                                            action = { },
                                             entry = 1 to "This is a very very long text depicting how lyrics should appear based on these settings",
-                                            isSelected = false,
-                                            hapticFeedback = null,
+                                            textPrefs = state.textPrefs,
+                                            onClick = {  },
                                             containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                                             cardContent = cardContent,
                                         )
@@ -329,7 +324,7 @@ fun LyricsCustomisationsPage(
             item {
                 SettingSlider(
                     title = stringResource(R.string.text_alignment),
-                    value = when (state.textAlign) {
+                    value = when (state.textPrefs.textAlign) {
                         TextAlign.Center -> 1f
                         TextAlign.End -> 2f
                         else -> 0f
@@ -345,7 +340,7 @@ fun LyricsCustomisationsPage(
                             )
                         )
                     },
-                    valueToShow = when (state.textAlign) {
+                    valueToShow = when (state.textPrefs.textAlign) {
                         TextAlign.Center -> stringResource(R.string.center)
                         TextAlign.End -> stringResource(R.string.end)
                         else -> stringResource(R.string.start)
@@ -357,7 +352,7 @@ fun LyricsCustomisationsPage(
 
                 SettingSlider(
                     title = stringResource(R.string.font_size),
-                    value = state.fontSize,
+                    value = state.textPrefs.fontSize,
                     steps = 33,
                     valueRange = 16f..50f,
                     onValueChange = {
@@ -368,7 +363,7 @@ fun LyricsCustomisationsPage(
 
                 SettingSlider(
                     title = stringResource(R.string.line_height),
-                    value = state.lineHeight,
+                    value = state.textPrefs.lineHeight,
                     onValueChange = {
                         onAction(LyricsPageAction.OnLineHeightChange(it))
                     },
@@ -379,7 +374,7 @@ fun LyricsCustomisationsPage(
 
                 SettingSlider(
                     title = stringResource(R.string.letter_spacing),
-                    value = state.letterSpacing,
+                    value = state.textPrefs.letterSpacing,
                     onValueChange = {
                         onAction(LyricsPageAction.OnLetterSpacingChange(it))
                     },
@@ -527,8 +522,7 @@ private fun Preview() {
                     lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
                 ),
                 sync = true,
-                lyricsBackground = LyricsBackground.ALBUM_ART,
-                textAlign = TextAlign.Start
+                lyricsBackground = LyricsBackground.ALBUM_ART
             )
         )
     }

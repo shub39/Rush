@@ -188,14 +188,6 @@ class LyricsVM(
 
                 is LyricsPageAction.OnChangeLyricsBackground -> lyricsPrefs.updateLyricsBackround(action.background)
 
-                is LyricsPageAction.OnMeshSpeedChange -> {
-                    _state.update {
-                        it.copy(
-                            meshSpeed = action.speed
-                        )
-                    }
-                }
-
                 is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
                 is LyricsPageAction.OnToggleColorPref -> lyricsPrefs.updateUseExtractedFlow(action.pref)
@@ -269,7 +261,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            textAlign = pref
+                            textPrefs = it.textPrefs.copy(textAlign = pref)
                         )
                     }
                 }
@@ -279,7 +271,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            fontSize = pref
+                            textPrefs = it.textPrefs.copy(fontSize = pref)
                         )
                     }
                 }
@@ -289,7 +281,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            lineHeight = pref
+                            textPrefs = it.textPrefs.copy(lineHeight = pref)
                         )
                     }
                 }
@@ -299,7 +291,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            letterSpacing = pref
+                            textPrefs = it.textPrefs.copy(letterSpacing = pref)
                         )
                     }
                 }

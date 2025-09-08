@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.TextPrefs
 import com.shub39.rush.lyrics.getCurrentLyricIndex
 import com.shub39.rush.lyrics.getNextLyricTime
 import kotlinx.coroutines.CoroutineScope
@@ -137,7 +138,7 @@ fun SyncedLyrics(
             )
 
             SyncedLyric(
-                state = state,
+                textPrefs = state.textPrefs,
                 blur = blur,
                 action = action,
                 lyric = lyric,
@@ -157,7 +158,7 @@ fun SyncedLyrics(
 
 @Composable
 fun SyncedLyric(
-    state: LyricsPageState,
+    textPrefs: TextPrefs,
     blur: Dp,
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
@@ -169,7 +170,7 @@ fun SyncedLyric(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = when (state.textAlign) {
+        horizontalArrangement = when (textPrefs.textAlign) {
             TextAlign.Center -> Arrangement.Center
             TextAlign.End -> Arrangement.End
             else -> Arrangement.Start
@@ -193,22 +194,21 @@ fun SyncedLyric(
                     text = lyric.text,
                     fontWeight = FontWeight.Bold,
                     color = textColor.copy(alpha = glowAlpha),
-                    fontSize = state.fontSize.sp,
-                    letterSpacing = state.letterSpacing.sp,
-                    lineHeight = state.lineHeight.sp,
-                    textAlign = state.textAlign,
-                    modifier = Modifier
-                        .padding(6.dp)
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.textAlign,
+                    modifier = Modifier.padding(6.dp)
                 )
 
                 Text(
                     text = lyric.text,
                     fontWeight = FontWeight.Bold,
                     color = textColor,
-                    fontSize = state.fontSize.sp,
-                    letterSpacing = state.letterSpacing.sp,
-                    lineHeight = state.lineHeight.sp,
-                    textAlign = state.textAlign,
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.textAlign,
                     modifier = Modifier
                         .padding(6.dp)
                         .drawWithContent {
