@@ -32,6 +32,7 @@ class LyricsPagePreferencesImpl(
         private val maxLines = intPreferencesKey("max_lines")
         private val fullscreen = booleanPreferencesKey("fullscreen")
         private val lyricsBackground = stringPreferencesKey("lyrics_background")
+        private val blurSynced = booleanPreferencesKey("blur_synced")
     }
 
     override suspend fun reset() {
@@ -50,6 +51,14 @@ class LyricsPagePreferencesImpl(
         .map { LyricsBackground.valueOf(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name) }
     override suspend fun updateLyricsBackround(background: LyricsBackground) {
         dataStore.edit { it[lyricsBackground] = background.name }
+    }
+
+    override fun getBlurSynced(): Flow<Boolean> = dataStore.data
+        .map { it[blurSynced] ?: true }
+    override suspend fun updateBlurSynced(pref: Boolean) {
+        dataStore.edit {
+            it[blurSynced] = pref
+        }
     }
 
     override fun getFullScreenFlow(): Flow<Boolean> = dataStore.data

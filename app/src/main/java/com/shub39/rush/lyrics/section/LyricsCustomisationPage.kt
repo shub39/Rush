@@ -33,6 +33,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
@@ -67,6 +69,7 @@ import com.shub39.rush.core.presentation.getRandomLine
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.PlainLyric
+import com.shub39.rush.lyrics.component.SyncedLyric
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import kotlin.math.roundToInt
@@ -80,7 +83,6 @@ fun LyricsCustomisationsPage(
     notificationAccess: Boolean,
     modifier: Modifier = Modifier,
 ) {
-
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
     val hypnoticSpeed by animateFloatAsState(targetValue = state.meshSpeed)
@@ -95,6 +97,9 @@ fun LyricsCustomisationsPage(
                 title = {
                     Text(stringResource(R.string.customisations))
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ),
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack
@@ -129,7 +134,16 @@ fun LyricsCustomisationsPage(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             stickyHeader {
-                Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                Column(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                            shape = RoundedCornerShape(
+                                bottomStart = 32.dp,
+                                bottomEnd = 32.dp
+                            )
+                        )
+                ) {
                     if (notificationAccess) {
                         Row(
                             modifier = Modifier
@@ -161,7 +175,7 @@ fun LyricsCustomisationsPage(
 
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                             .clip(RoundedCornerShape(16.dp))
                     ) {
                         if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
@@ -227,12 +241,39 @@ fun LyricsCustomisationsPage(
                                 ) {
                                     if (it) {
                                         val lines by remember {
-                                            mutableStateOf(
-                                                (0..2).map { getRandomLine() }
-                                            )
+                                            mutableStateOf((1..2).map { getRandomLine() })
                                         }
 
-
+                                        SyncedLyric(
+                                            state = state,
+                                            blur = if (state.blurSyncedLyrics) 2.dp else 0.dp,
+                                            action = {},
+                                            lyric = Lyric(1L, lines.first()),
+                                            hapticFeedback = null,
+                                            glowAlpha = 0.2f,
+                                            textColor = cardContent,
+                                            animatedProgress = 1f
+                                        )
+                                        SyncedLyric(
+                                            state = state,
+                                            blur = 0.dp,
+                                            action = {},
+                                            lyric = Lyric(1L, lines.last()),
+                                            hapticFeedback = null,
+                                            glowAlpha = 0.5f,
+                                            textColor = cardContent,
+                                            animatedProgress = 0.5f
+                                        )
+                                        SyncedLyric(
+                                            state = state,
+                                            blur = 0.dp,
+                                            action = {},
+                                            lyric = Lyric(1L, ""),
+                                            hapticFeedback = null,
+                                            glowAlpha = 0.5f,
+                                            textColor = cardContent,
+                                            animatedProgress =0.5f
+                                        )
                                     } else {
                                         PlainLyric(
                                             state = state,
@@ -259,6 +300,30 @@ fun LyricsCustomisationsPage(
                     onSelectedChange = { onAction(LyricsPageAction.OnChangeLyricsBackground(it)) },
                     labelProvider = { Text(text = stringResource(it.stringRes)) },
                 )
+            }
+
+            item {
+                AnimatedVisibility(
+                    visible = isShowingSynced,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.blur_synced),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = state.blurSyncedLyrics,
+                                onCheckedChange = {
+                                    onAction(LyricsPageAction.OnBlurSyncedChange(it))
+                                }
+                            )
+                        }
+                    )
+                }
             }
 
             item {

@@ -246,6 +246,8 @@ class LyricsVM(
                 LyricsPageAction.OnPauseOrResume -> MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
 
                 is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
+
+                is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
             }
         }
     }
@@ -253,6 +255,16 @@ class LyricsVM(
     private fun observeDatastore() = viewModelScope.launch {
         observeJob?.cancel()
         observeJob = launch {
+            lyricsPrefs.getBlurSynced()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            blurSyncedLyrics = pref
+                        )
+                    }
+                }
+                .launchIn(this)
+
             lyricsPrefs.getLyricAlignmentFlow()
                 .onEach { pref ->
                     _state.update {

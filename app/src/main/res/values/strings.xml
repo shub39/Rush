@@ -134,5 +134,6 @@
     <string name="solid_color">Solid</string>
     <string name="lyrics_background">Lyrics Background</string>
     <string name="plain_lyrics">Plain</string>
-    <string name="synced_lyrics">Synced Lyrics</string>
+    <string name="synced_lyrics">Synced</string>
+    <string name="blur_synced">Blur Synced Lyrics</string>
 </resources>

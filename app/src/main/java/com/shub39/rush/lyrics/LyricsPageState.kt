@@ -31,6 +31,7 @@ data class LyricsPageState(
 
     // datastore
     val textAlign: TextAlign = TextAlign.Center,
+    val blurSyncedLyrics: Boolean = true,
     val fontSize: Float = 28f,
     val lineHeight: Float = 32f,
     val letterSpacing: Float = 0f,
