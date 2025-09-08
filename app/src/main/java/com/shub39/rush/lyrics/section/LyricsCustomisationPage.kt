@@ -1,13 +1,14 @@
 package com.shub39.rush.lyrics.section
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,14 +21,17 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,35 +46,40 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.data_classes.SongUi
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
-import com.shub39.rush.core.presentation.PageFill
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.core.presentation.getRandomLine
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.component.PlainLyric
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
+    notificationAccess: Boolean,
     modifier: Modifier = Modifier,
-) = PageFill {
+) {
 
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -78,6 +87,7 @@ fun LyricsCustomisationsPage(
 
     var colorPickerDialog by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
+    var isShowingSynced by remember { mutableStateOf(state.sync) }
 
     Scaffold(
         topBar = {
@@ -115,78 +125,127 @@ fun LyricsCustomisationsPage(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 60.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                ) {
-                    if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
-                        ArtFromUrl(
-                            imageUrl = state.song?.artUrl,
+                Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                    if (notificationAccess) {
+                        Row(
                             modifier = Modifier
-                                .blur(80.dp)
-                                .matchParentSize()
-                        )
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            ToggleButton(
+                                checked = !isShowingSynced,
+                                onCheckedChange = { isShowingSynced = false },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                Text(text = stringResource(R.string.plain_lyrics))
+                            }
 
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .background(
-                                    color = cardBackground.copy(alpha = 0.5f)
-                                )
-                        )
+                            ToggleButton(
+                                checked = isShowingSynced,
+                                onCheckedChange = { isShowingSynced = true },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 8.dp)
+                            ) {
+                                Text(text = stringResource(R.string.synced_lyrics))
+                            }
+                        }
                     }
 
-                    Card(
+                    Box(
                         modifier = Modifier
-                            .let {
-                                when (state.lyricsBackground) {
-                                    LyricsBackground.HYPNOTIC -> {
-                                        it.shaderBackground(
-                                            shader = MeshGradient(
-                                                colors = generateGradientColors(
-                                                    color1 = hypnoticColor1,
-                                                    color2 = hypnoticColor2,
-                                                    steps = 6
-                                                ).toTypedArray()
-                                            ),
-                                            speed = hypnoticSpeed,
-                                            fallback = {
-                                                Brush.horizontalGradient(
-                                                    generateGradientColors(
+                            .padding(horizontal = 16.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                    ) {
+                        if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
+                            ArtFromUrl(
+                                imageUrl = state.song?.artUrl,
+                                modifier = Modifier
+                                    .blur(80.dp)
+                                    .matchParentSize()
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        color = cardBackground.copy(alpha = 0.5f)
+                                    )
+                            )
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .let {
+                                    when (state.lyricsBackground) {
+                                        LyricsBackground.HYPNOTIC -> {
+                                            it.shaderBackground(
+                                                shader = MeshGradient(
+                                                    colors = generateGradientColors(
                                                         color1 = hypnoticColor1,
                                                         color2 = hypnoticColor2,
                                                         steps = 6
+                                                    ).toTypedArray()
+                                                ),
+                                                speed = hypnoticSpeed,
+                                                fallback = {
+                                                    Brush.horizontalGradient(
+                                                        generateGradientColors(
+                                                            color1 = hypnoticColor1,
+                                                            color2 = hypnoticColor2,
+                                                            steps = 6
+                                                        )
                                                     )
-                                                )
-                                            }
+                                                }
+                                            )
+                                        }
+
+                                        else -> it
+                                    }
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
+                                contentColor = cardContent
+                            )
+                        ) {
+                            AnimatedContent(
+                                targetState = isShowingSynced,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    if (it) {
+                                        val lines by remember {
+                                            mutableStateOf(
+                                                (0..2).map { getRandomLine() }
+                                            )
+                                        }
+
+
+                                    } else {
+                                        PlainLyric(
+                                            state = state,
+                                            action = { },
+                                            entry = 1 to "This is a very very long text depicting how lyrics should appear based on these settings",
+                                            isSelected = false,
+                                            hapticFeedback = null,
+                                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
+                                            cardContent = cardContent,
                                         )
                                     }
-
-                                    else -> it
                                 }
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
-                            contentColor = cardContent
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = "This is a very very long text depicting how lyrics should appear based on these settings",
-                                textAlign = state.textAlign,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = state.fontSize.sp,
-                                lineHeight = state.lineHeight.sp,
-                                letterSpacing = state.letterSpacing.sp
-                            )
+                            }
                         }
                     }
                 }
@@ -266,12 +325,12 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
+                HorizontalDivider()
             }
 
             item {
                 ListSelect(
-                    title = stringResource(R.string.colors),
+                    title = stringResource(R.string.card_color),
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
                     onSelectedChange = { onAction(LyricsPageAction.OnUpdateColorType(it)) },
@@ -327,7 +386,7 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
+                HorizontalDivider()
             }
 
             item {
@@ -366,11 +425,7 @@ fun LyricsCustomisationsPage(
             }
 
             item {
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
-            }
-
-            item {
-                Spacer(modifier = Modifier.padding(bottom = 60.dp))
+                HorizontalDivider()
             }
         }
     }
@@ -391,4 +446,39 @@ fun LyricsCustomisationsPage(
         )
     }
 
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    var state by remember {
+        mutableStateOf(
+            LyricsPageState(
+                song = SongUi(
+                    id = 0,
+                    title = "Random Song",
+                    artists = "shub39",
+                    artUrl = "",
+                    lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
+                ),
+                sync = true,
+                lyricsBackground = LyricsBackground.ALBUM_ART,
+                textAlign = TextAlign.Start
+            )
+        )
+    }
+
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK,
+            seedColor = Color.Red.toArgb()
+        )
+    ) {
+        LyricsCustomisationsPage(
+            onNavigateBack = { },
+            state = state,
+            onAction = { },
+            notificationAccess = true
+        )
+    }
 }

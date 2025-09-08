@@ -91,6 +91,7 @@ fun LyricsGraph(
                 onNavigateBack = { navController.navigateUp() },
                 onAction = lyricsAction,
                 modifier = Modifier.widthIn(max = 700.dp),
+                notificationAccess = notificationAccess
             )
         }
     }

@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
@@ -88,49 +89,15 @@ fun PlainLyrics(
                         label = "container"
                     )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = when (state.textAlign) {
-                            TextAlign.Center -> Arrangement.Center
-                            TextAlign.End -> Arrangement.End
-                            else -> Arrangement.Start
-                        }
-                    ) {
-                        Card(
-                            onClick = {
-                                action(
-                                    LyricsPageAction.OnChangeSelectedLines(
-                                        updateSelectedLines(
-                                            state.selectedLines,
-                                            it.key,
-                                            it.value,
-                                            state.maxLines
-                                        )
-                                    )
-                                )
-
-                                isSelected != isSelected
-                                if (!isSelected) {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
-                            },
-                            shape = MaterialTheme.shapes.small,
-                            colors = CardDefaults.cardColors(
-                                containerColor = containerColor,
-                                contentColor = cardContent
-                            )
-                        ) {
-                            Text(
-                                text = it.value,
-                                fontSize = state.fontSize.sp,
-                                letterSpacing = state.letterSpacing.sp,
-                                lineHeight = state.lineHeight.sp,
-                                textAlign = state.textAlign,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(6.dp)
-                            )
-                        }
-                    }
+                    PlainLyric(
+                        state = state,
+                        action = action,
+                        entry = it.toPair(),
+                        isSelected = isSelected,
+                        hapticFeedback = hapticFeedback,
+                        containerColor = containerColor,
+                        cardContent = cardContent
+                    )
                 }
             }
         } else {
@@ -255,6 +222,61 @@ fun PlainLyrics(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PlainLyric(
+    state: LyricsPageState,
+    action: (LyricsPageAction) -> Unit,
+    entry: Pair<Int, String>,
+    isSelected: Boolean,
+    hapticFeedback: HapticFeedback? = null,
+    containerColor: Color,
+    cardContent: Color
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = when (state.textAlign) {
+            TextAlign.Center -> Arrangement.Center
+            TextAlign.End -> Arrangement.End
+            else -> Arrangement.Start
+        }
+    ) {
+        Card(
+            onClick = {
+                action(
+                    LyricsPageAction.OnChangeSelectedLines(
+                        updateSelectedLines(
+                            state.selectedLines,
+                            entry.first,
+                            entry.second,
+                            state.maxLines
+                        )
+                    )
+                )
+
+                isSelected != isSelected
+                if (!isSelected) {
+                    hapticFeedback?.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+            },
+            shape = MaterialTheme.shapes.small,
+            colors = CardDefaults.cardColors(
+                containerColor = containerColor,
+                contentColor = cardContent
+            )
+        ) {
+            Text(
+                text = entry.second,
+                fontSize = state.fontSize.sp,
+                letterSpacing = state.letterSpacing.sp,
+                lineHeight = state.lineHeight.sp,
+                textAlign = state.textAlign,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(6.dp)
+            )
         }
     }
 }

@@ -135,7 +135,7 @@ fun SharePageSheet(
                     labelProvider = {
                         Box(
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(20.dp)
                                 .background(
                                     color = MaterialTheme.colorScheme.onSurface,
                                     shape = it.toShape()
