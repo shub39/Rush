@@ -4,7 +4,7 @@
     <string name="saved">Сохраненные</string>
     <string name="settings">Настройки</string>
     <string name="max_lines">Максимум линий чтобы поделиться</string>
-    <string name="restoring">Восстановить песни</string>
+    <string name="restoring">Восстановить тексты песен</string>
     <string name="export">Экспорт</string>
     <string name="no_results">Нет результатов</string>
     <string name="card_corners">Углы карточки</string>
@@ -16,7 +16,7 @@
     <string name="default_">Обычный</string>
     <string name="loading_genius">Загружаю текст из Genius</string>
     <string name="rounded">Скругленный</string>
-    <string name="seed_color_desc">Выберите цвет из которого сгенерируется палитра</string>
+    <string name="seed_color_desc">Выбрать цвет для создания палитры</string>
     <string name="exported">Экспортировано</string>
     <string name="search">Поиск</string>
     <string name="unknown_album">Неизвестный альбом</string>
@@ -28,7 +28,7 @@
     <string name="share">Поделиться</string>
     <string name="vibrant_colors">Использовать яркие цвета</string>
     <string name="save">Сохранить</string>
-    <string name="delete_confirmation">Вы уверены что хотите удалить все сохраненные тексты песен?</string>
+    <string name="delete_confirmation">Вы уверены что хотите удалить сохраненные тексты песен?</string>
     <string name="no_lyrics">Не могу загрузить слова из LRCLIB</string>
     <string name="delete_all">Удалить все тексты песен</string>
     <string name="notification">Сервис отслеживания уведомлений</string>
@@ -62,17 +62,16 @@
     <string name="vibrant_colors_info">Использовать более яркие цвета для страницы с текстом</string>
     <string name="backup">Сохранение и восстановление</string>
     <string name="exporting">Экспортировать</string>
-    <string name="restored">Песни восстановленные</string>
-    <string name="restore_failed">Неудалось восстановить</string>
+    <string name="restored">Восстановленные песни</string>
+    <string name="restore_failed">Восстановление не удалось</string>
     <string name="about">О приложении</string>
     <string name="no_audio_files">Нет аудио файлов</string>
-    <string name="export_info">Экспортировать песни в Загрузки/Rush</string>
+    <string name="export_info">Сохранить тексты в папку Загрузки/Rush</string>
     <string name="restore">Восстановить</string>
-    <string name="restore_info">Восстановить из файла</string>
     <string name="choose_file">Выбрать файл</string>
     <string name="rush_mode">Режим Rush</string>
     <string name="look_and_feel">Внешний вид</string>
-    <string name="look_and_feel_info">Изменяйте приложение по-разному</string>
+    <string name="look_and_feel_info">Настройте приложение под себя</string>
     <string name="use_system_theme">Использовать системную тему</string>
     <string name="dark_theme">Использовать темную тему</string>
     <string name="amoled">Цвета Amoled</string>
@@ -81,7 +80,7 @@
     <string name="palette_style">Стиль палитры</string>
     <string name="seed_color">Выбрать цвет для основы</string>
     <string name="hypnotic_canvas">Гипнотический фон</string>
-    <string name="extract_colors">Извлекать цвета из обложки</string>
+    <string name="extract_colors">Извлечь цвета</string>
     <string name="extract_colors_desc">Выберите, чтобы сгенерировать цвета интерфейса по обложке песни</string>
     <string name="source">Источник</string>
     <string name="muted">Заглушенный</string>
