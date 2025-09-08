@@ -5,6 +5,7 @@ import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.Fonts
 
 sealed interface SettingsPageAction {
+    data class OnUpdateOnboardingDone(val done: Boolean) : SettingsPageAction
     data object OnShowPaywall : SettingsPageAction
     data object OnDismissPaywall : SettingsPageAction
     data class OnSeedColorChange(val color: Int): SettingsPageAction

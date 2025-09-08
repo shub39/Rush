@@ -121,6 +121,8 @@ class SettingsVM(
                 }
 
                 SettingsPageAction.OnShowPaywall -> _state.update { it.copy(showPaywall = true) }
+
+                is SettingsPageAction.OnUpdateOnboardingDone -> datastore.updateOnboardingDone(action.done)
             }
         }
     }
@@ -142,6 +144,16 @@ class SettingsVM(
         observeFlowsJob?.cancel()
         observeFlowsJob = viewModelScope.launch {
             observeTheme().launchIn(this)
+
+            datastore.getOnboardingDoneFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            onBoardingDone = pref
+                        )
+                    }
+                }
+                .launchIn(this)
 
             datastore.getFontFlow()
                 .onEach { pref ->

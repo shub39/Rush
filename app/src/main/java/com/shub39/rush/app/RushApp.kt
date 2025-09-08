@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +25,7 @@ import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.lyrics.LyricsGraph
+import com.shub39.rush.onboarding.Onboarding
 import com.shub39.rush.saved.SavedPage
 import com.shub39.rush.search_sheet.SearchSheet
 import com.shub39.rush.setting.SettingsGraph
@@ -52,6 +54,9 @@ sealed interface Route {
 
     @Serializable
     data object SharePage : Route
+
+    @Serializable
+    data object OnboardingPage : Route
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,6 +74,12 @@ fun RushApp() {
 
     val navController = rememberNavController()
     val context = LocalContext.current
+
+    LaunchedEffect(settingsState.onBoardingDone) {
+        if (!settingsState.onBoardingDone) {
+            navController.navigate(Route.OnboardingPage)
+        }
+    }
 
     CompositionLocalProvider(
         LocalCoilImageLoader provides imageLoader
@@ -139,6 +150,17 @@ fun RushApp() {
                                 state = settingsState,
                                 action = settingsVM::onAction,
                                 onNavigateBack = { navController.navigateUp() }
+                            )
+                        }
+
+                        composable<Route.OnboardingPage> {
+                            Onboarding(
+                                onDone = {
+                                    settingsVM.onAction(
+                                        SettingsPageAction.OnUpdateOnboardingDone(true)
+                                    )
+                                    navController.navigateUp()
+                                }
                             )
                         }
                     }

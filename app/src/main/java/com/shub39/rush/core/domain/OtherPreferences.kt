@@ -29,4 +29,7 @@ interface OtherPreferences {
 
     fun getFontFlow(): Flow<Fonts>
     suspend fun updateFonts(font: Fonts)
+
+    fun getOnboardingDoneFlow(): Flow<Boolean>
+    suspend fun updateOnboardingDone(done: Boolean)
 }

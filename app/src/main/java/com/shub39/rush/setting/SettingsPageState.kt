@@ -10,5 +10,6 @@ data class SettingsPageState(
     val exportState: ExportState = ExportState.IDLE,
     val restoreState: RestoreState = RestoreState.IDLE,
     val isProUser: Boolean = false,
+    val onBoardingDone: Boolean = true,
     val showPaywall: Boolean = false
 )

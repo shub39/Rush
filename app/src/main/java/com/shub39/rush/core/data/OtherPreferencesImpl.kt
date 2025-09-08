@@ -37,6 +37,7 @@ class OtherPreferencesImpl(
         private val paletteStyle = stringPreferencesKey("palette_style")
         private val materialTheme = booleanPreferencesKey("material_theme")
         private val sortOrder = stringPreferencesKey("sort_order")
+        private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
     }
 
@@ -111,6 +112,15 @@ class OtherPreferencesImpl(
     override suspend fun updateFonts(font: Fonts) {
         dataStore.edit { settings ->
             settings[selectedFont] = font.name
+        }
+    }
+
+    override fun getOnboardingDoneFlow(): Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[onboardingDone] == true }
+
+    override suspend fun updateOnboardingDone(done: Boolean) {
+        dataStore.edit { settings ->
+            settings[onboardingDone] = done
         }
     }
 
