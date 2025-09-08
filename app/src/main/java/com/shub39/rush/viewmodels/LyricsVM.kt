@@ -244,9 +244,9 @@ class LyricsVM(
         }
     }
 
-    private fun observeDatastore() = viewModelScope.launch {
+    private fun observeDatastore() {
         observeJob?.cancel()
-        observeJob = launch {
+        observeJob = viewModelScope.launch {
             lyricsPrefs.getBlurSynced()
                 .onEach { pref ->
                     _state.update {

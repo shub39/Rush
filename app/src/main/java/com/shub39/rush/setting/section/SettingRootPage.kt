@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Palette
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
@@ -276,33 +275,6 @@ fun SettingRootPage(
                         IconButton(
                             onClick = { deleteConfirmationDialog = true },
                             enabled = state.deleteButtonEnabled,
-                            shapes = IconButtonShapes(
-                                shape = CircleShape,
-                                pressedShape = RoundedCornerShape(10.dp)
-                            )
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                )
-            }
-
-            //restart onboarding
-            item {
-                ListItem(
-                    headlineContent = { Text(text = "Onboarding") },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Rounded.Star,
-                            contentDescription = "Onboarding"
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = { onAction(SettingsPageAction.OnUpdateOnBoardingDone(false)) },
                             shapes = IconButtonShapes(
                                 shape = CircleShape,
                                 pressedShape = RoundedCornerShape(10.dp)
