@@ -127,6 +127,14 @@
     <string name="foss_desc">如果这个软件帮助到了您，请考虑赞助一下作者哦！不必担心，应用功能已全部解锁，FOSS版无内购功能</string>
     <string name="rush_pro">Rush标志 Pro</string>
     <string name="unlock_more_pro">在Pro中发现更多</string>
-    <string name="messy">洒脱</string>
+    <string name="messy">嘈杂</string>
     <string name="chat">对话</string>
+    <string name="album_art">仅封面</string>
+    <string name="album_art_shape">专辑封面样式</string>
+    <string name="solid_color">封面颜色</string>
+    <string name="blurred_art">封面模糊</string>
+    <string name="lyrics_background">歌词背景</string>
+    <string name="plain_lyrics">仅歌词</string>
+    <string name="synced_lyrics">歌词滚动</string>
+    <string name="blur_synced">已播放歌词模糊</string>
 </resources>
