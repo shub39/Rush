@@ -73,7 +73,7 @@
     <string name="source">Source</string>
     <string name="muted">En sourdine</string>
     <string name="fit">Ajuster</string>
-    <string name="spotify">Spotify</string>
+    <string name="spotify">Générique</string>
     <string name="vibrant">Vif</string>
     <string name="custom">Personnalisé</string>
     <string name="rushed">Rushed</string>
@@ -122,4 +122,8 @@
     <string name="card_font">Police d\'écriture</string>
     <string name="messy">Désorganisé</string>
     <string name="chat">Conversation</string>
+    <string name="bmc">Buy me a Coffee</string>
+    <string name="translate">Traduire</string>
+    <string name="rate_on_play">Noter sur Google Play</string>
+    <string name="foss">Vous utilisez la variante FOSS</string>
 </resources>
