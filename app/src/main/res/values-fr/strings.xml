@@ -36,7 +36,7 @@
     <string name="error">Une erreur est survenue…</string>
     <string name="try_again">Réessayer ?</string>
     <string name="correct_lyrics">Corriger les paroles</string>
-    <string name="no_internet">Pas d\'accès à Internet.</string>
+    <string name="no_internet">Pas d\'accès à Internet!</string>
     <string name="request_failed">La requête a échoué</string>
     <string name="no_results">Aucun résultat</string>
     <string name="parse_error">Erreur d\'importation</string>
@@ -126,4 +126,15 @@
     <string name="translate">Traduire</string>
     <string name="rate_on_play">Noter sur Google Play</string>
     <string name="foss">Vous utilisez la variante FOSS</string>
+    <string name="foss_desc">Toutes les fonctionnalités sont débloquées. Cette variante de l\'application ne supporte pas les achats intégrés. Si cette application vous est utile, soutenez moi en faisant un don sur</string>
+    <string name="rush_pro">Rush Pro</string>
+    <string name="unlock_more_pro">Débloquez plus de fonctionnalités avec Pro</string>
+    <string name="album_art">Art seul</string>
+    <string name="album_art_shape">Forme de l\'art</string>
+    <string name="blurred_art">Art flouté</string>
+    <string name="solid_color">Solide</string>
+    <string name="lyrics_background">Arrière plan des paroles</string>
+    <string name="plain_lyrics">Basique</string>
+    <string name="synced_lyrics">Synchronisé</string>
+    <string name="blur_synced">Flouter les paroles synchronisées</string>
 </resources>
