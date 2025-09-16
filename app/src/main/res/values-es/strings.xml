@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="search">Buscar letras</string>
+    <string name="search">Buscar letra</string>
     <string name="saved">Guardado</string>
     <string name="settings">Configuración</string>
-    <string name="empty">Está vacio acá</string>
+    <string name="empty">No hay nada aquí</string>
     <string name="share">Compartir</string>
-    <string name="vibrant_colors">Usar colores vibrantes</string>
+    <string name="vibrant_colors">Usar colores brillantes</string>
     <string name="save">Guardar cambios</string>
-    <string name="delete_confirmation">¿Confirma que quiere eliminar todas las letras guardadas?</string>
-    <string name="no_lyrics">No se pudo obtener la letra de LRCLIB</string>
+    <string name="delete_confirmation">¿ Estás seguro que quieres eliminar todas las letras guardadas?</string>
+    <string name="no_lyrics">No se pudo obtener la letra desde LRCLIB</string>
     <string name="suggestion">¿Ves el icono de búsqueda a continuación?</string>
     <string name="downloaded">Letras guardadas</string>
     <string name="delete_all">Eliminar todas las letras</string>
@@ -16,10 +16,10 @@
     <string name="unknown_album">Álbum desconocido</string>
     <string name="track">pista</string>
     <string name="artist">artista</string>
-    <string name="width">Anchura</string>
-    <string name="colors">Colores</string>
+    <string name="width">Ancho</string>
+    <string name="colors">Colores personalizados</string>
     <string name="grant_permission">Permitir acceso a notificaciones</string>
-    <string name="notification_permission">Se requiere acceso a notificaciones para obtener las letras automáticamente.</string>
+    <string name="notification_permission">Se requiere el acceso a las notificaciones para obtener las letras automáticamente.</string>
     <string name="rounded_corners">Esquinas redondeadas</string>
     <string name="max_lines">Máximo de líneas para compartir</string>
     <string name="theme">Tema de la aplicación</string>
@@ -36,17 +36,17 @@
     <string name="error">Algo salió mal…</string>
     <string name="try_again">¿Intentar otra vez?</string>
     <string name="correct_lyrics">Letra correcta</string>
-    <string name="no_internet">¡Sin internet!</string>
+    <string name="no_internet">¡No hay conexión a internet!</string>
     <string name="request_failed">Solicitud fallida</string>
     <string name="no_results">No hay resultados</string>
     <string name="parse_error">Error de análisis</string>
     <string name="io_error">Error de red</string>
     <string name="unknown_error">Ocurrió un error</string>
-    <string name="card_theme">Estilo de Carta</string>
-    <string name="card_color">Color de Carta</string>
-    <string name="card_size">Tamaño de Carta</string>
-    <string name="card_corners">Esquinas de Carta</string>
-    <string name="vibrant_colors_info">Usar colores más vibrantes para la página de letras</string>
+    <string name="card_theme">Estilo de postal</string>
+    <string name="card_color">Color de postal</string>
+    <string name="card_size">Tamaño de postal</string>
+    <string name="card_corners">Esquinas de postal</string>
+    <string name="vibrant_colors_info">Usar colores más brillantes para la página de letras</string>
     <string name="backup">Copia de seguridad</string>
     <string name="backup_info">Importar o exportar la base de datos de letras guardadas</string>
     <string name="batch_download_info">Descarga las letras de tus canciones guardadas localmente de una sola vez.</string>
@@ -104,4 +104,7 @@
     <string name="use_extracted_colors">Usar colores extraídos</string>
     <string name="loading_genius">Cargando letra de Genius</string>
     <string name="material_theme_desc">Tema basado en la imagen de fondo</string>
+    <string name="bmc">Invítame un café</string>
+    <string name="translate">Traducir</string>
+    <string name="rate_on_play">Calificar en Google Play</string>
 </resources>
