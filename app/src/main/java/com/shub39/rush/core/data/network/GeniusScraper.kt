@@ -24,7 +24,8 @@ class GeniusScraper(
 
         when (response) {
             is Result.Success -> {
-                val lyricsElements = Ksoup.parse(response.data.body<String>()).select("div[data-lyrics-container='true']")
+                val lyricsElements = Ksoup.parse(response.data.body<String>())
+                    .select("div[data-lyrics-container='true']")
 
                 return buildString {
                     lyricsElements.forEach { element ->
