@@ -14,6 +14,15 @@ import io.ktor.client.statement.HttpResponse
 class GeniusScraper(
     private val client: HttpClient
 ) {
+    companion object {
+        val dumbInstances = listOf(
+            "dumb.ducks.party/",
+            "dumb.lunar.icu/",
+            "dumb.bloat.cat/",
+            "dumb.jeikobu.net/"
+        )
+    }
+
     suspend fun geniusScrape(songUrl: String): String? {
         val response = safeCall<HttpResponse> {
             client.get(
@@ -52,16 +61,23 @@ class GeniusScraper(
                 }
             }
 
-            is Result.Error -> return dumbScrape(songUrl)
+            is Result.Error -> {
+                dumbInstances.forEach { instance ->
+                    when (val result = dumbScrape(songUrl.replace("genius.com/", instance))) {
+                        is String -> return result
+                        else -> {}
+                    }
+                }
+
+                return null
+            }
         }
     }
 
     suspend fun dumbScrape(songUrl: String): String? {
-        val dumbUrl = songUrl.replace("https://genius.com/", "https://dumb.ducks.party/")
-
         val response = safeCall<HttpResponse> {
             client.get(
-                urlString = dumbUrl
+                urlString = songUrl
             )
         }
 
