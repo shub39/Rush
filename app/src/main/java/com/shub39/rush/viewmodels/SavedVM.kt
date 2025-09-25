@@ -10,6 +10,7 @@ import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.saved.SavedPageAction
 import com.shub39.rush.saved.SavedPageState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -76,7 +77,7 @@ class SavedVM(
         }
     }
 
-    private fun observeData() = viewModelScope.launch {
+    private fun observeData() = viewModelScope.launch(Dispatchers.Default) {
         savedJob?.cancel()
         savedJob = launch {
             repo.getSongs()

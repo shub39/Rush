@@ -46,7 +46,7 @@ class RushRepository(
                 }
                 val geniusLyrics = if (lrcLibLyrics == null) {
                     withContext(Dispatchers.IO) {
-                        geniusScraper.scrapeLyrics(song.url)
+                        geniusScraper.geniusScrape(song.url)
                     }
                 } else {
                     null
@@ -79,7 +79,7 @@ class RushRepository(
 
     override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
         val geniusLyrics = withContext(Dispatchers.IO) {
-            geniusScraper.scrapeLyrics(url)
+            geniusScraper.geniusScrape(url)
         }
 
         return if (geniusLyrics != null) {

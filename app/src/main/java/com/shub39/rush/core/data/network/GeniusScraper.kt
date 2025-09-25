@@ -10,12 +10,11 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 
-// thanks to https://github.com/imjyotiraditya/genius-lyrics-cli
+// thanks to https://github.com/imjyotiraditya/genius-lyrics-cli and https://github.com/rramiachraf/dumb
 class GeniusScraper(
     private val client: HttpClient
 ) {
-    suspend fun scrapeLyrics(songUrl: String): String? {
-
+    suspend fun geniusScrape(songUrl: String): String? {
         val response = safeCall<HttpResponse> {
             client.get(
                 urlString = songUrl
@@ -51,6 +50,44 @@ class GeniusScraper(
                         }
                     }
                 }
+            }
+
+            is Result.Error -> return dumbScrape(songUrl)
+        }
+    }
+
+    suspend fun dumbScrape(songUrl: String): String? {
+        val dumbUrl = songUrl.replace("https://genius.com/", "https://dumb.ducks.party/")
+
+        val response = safeCall<HttpResponse> {
+            client.get(
+                urlString = dumbUrl
+            )
+        }
+
+        when (response) {
+            is Result.Success -> {
+                val lyricsElements = Ksoup.parse(response.data.body<String>()).select("#lyrics")
+
+                return buildString {
+                    lyricsElements.forEach { element ->
+                        element.childNodes().forEach { node ->
+                            val text = when (node) {
+                                is TextNode -> node.text()
+                                is Element -> if (node.tagName() == "br") "\n" else node.wholeText()
+                                else -> ""
+                            }.trimEnd()
+
+                            if (text.isNotEmpty()) {
+                                if (text.startsWith("[") && text.endsWith("]")) {
+                                    append("\n")
+                                }
+                                append(text)
+                                if (!text.endsWith("\n")) append("\n")
+                            }
+                        }
+                    }
+                }.trim()
             }
 
             is Result.Error -> return null

@@ -8,6 +8,10 @@ class ScraperTest {
 
     @Test
     fun testScrape() = runBlocking {
-        println(scraper.scrapeLyrics("https://genius.com/Daughters-the-flammable-man-lyrics"))
+        val lyrics = scraper.geniusScrape("https://genius.com/Daughters-satan-in-the-wait-lyrics")
+
+        assert(lyrics != null)
+
+        println(lyrics)
     }
 }
