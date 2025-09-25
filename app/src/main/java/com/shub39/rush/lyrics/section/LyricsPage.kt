@@ -1,6 +1,7 @@
 package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -63,12 +64,20 @@ import com.shub39.rush.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.component.SyncedLyrics
+import com.shub39.rush.lyrics.component.WaveVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
+import com.shub39.rush.lyrics.getWaveColors
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Music
+import io.gitlab.bpavuk.viz.VisualizerData
+import io.gitlab.bpavuk.viz.VisualizerState
+import io.gitlab.bpavuk.viz.midBucket
+import io.gitlab.bpavuk.viz.rememberVisualizerState
+import io.gitlab.bpavuk.viz.trebleBucket
 import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @Composable
 fun LyricsPage(
@@ -76,7 +85,8 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
-    notificationAccess: Boolean
+    waveData: VisualizerData?,
+    notificationAccess: Boolean,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -87,6 +97,8 @@ fun LyricsPage(
     val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+
+    val waveColors = getWaveColors(state)
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
@@ -123,7 +135,7 @@ fun LyricsPage(
                                 }
                             )
                         }
-                        LyricsBackground.ALBUM_ART -> it.background(cardBackground)
+                        LyricsBackground.ALBUM_ART, LyricsBackground.WAVE -> it.background(cardBackground)
                         else -> it
                     }
                 }
@@ -190,6 +202,14 @@ fun LyricsPage(
                                     .background(
                                         color = cardBackground.copy(alpha = 0.5f)
                                     )
+                            )
+                        }
+
+                        if (state.lyricsBackground == LyricsBackground.WAVE) {
+                            WaveVisualizer(
+                                waveData = waveData,
+                                colors = waveColors,
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
 

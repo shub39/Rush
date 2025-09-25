@@ -135,6 +135,7 @@ dependencies {
     implementation(libs.aboutLibraries.compose.m3)
     implementation(libs.filekit.core)
     implementation(libs.filekit.dialogs.compose)
+    implementation(libs.accompanist.permissions)
     implementation(projects.visualizerHelper)
 
     implementation(libs.koin.core)

@@ -63,14 +63,20 @@ import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
+import com.shub39.rush.core.presentation.WaveColors
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.getRandomLine
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.PlainLyric
 import com.shub39.rush.lyrics.component.SyncedLyric
+import com.shub39.rush.lyrics.component.WaveVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
+import com.shub39.rush.lyrics.getWaveColors
+import io.gitlab.bpavuk.viz.VisualizerData
+import io.gitlab.bpavuk.viz.VisualizerState
+import io.gitlab.bpavuk.viz.rememberVisualizerState
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -80,6 +86,9 @@ fun LyricsCustomisationsPage(
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
     notificationAccess: Boolean,
+    microphonePermission: Boolean,
+    requestMicrophonePermission: () -> Unit,
+    waveData: VisualizerData?,
     modifier: Modifier = Modifier,
 ) {
     val (cardBackground, cardContent) = getCardColors(state)
@@ -193,6 +202,14 @@ fun LyricsCustomisationsPage(
                             )
                         }
 
+                        if (state.lyricsBackground == LyricsBackground.WAVE) {
+                            WaveVisualizer(
+                                waveData,
+                                colors = getWaveColors(state),
+                                modifier = Modifier.matchParentSize()
+                            )
+                        }
+
                         Card(
                             modifier = Modifier
                                 .let {
@@ -275,7 +292,7 @@ fun LyricsCustomisationsPage(
                                         PlainLyric(
                                             entry = 1 to "This is a very very long text depicting how lyrics should appear based on these settings",
                                             textPrefs = state.textPrefs,
-                                            onClick = {  },
+                                            onClick = { },
                                             containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                                             cardContent = cardContent,
                                         )
@@ -292,7 +309,15 @@ fun LyricsCustomisationsPage(
                     title = stringResource(R.string.lyrics_background),
                     options = LyricsBackground.allBackgrounds,
                     selected = state.lyricsBackground,
-                    onSelectedChange = { onAction(LyricsPageAction.OnChangeLyricsBackground(it)) },
+                    onSelectedChange = {
+                        onAction(
+                            LyricsPageAction.OnChangeLyricsBackground(
+                                background = it,
+                                audioPermissionGranted = microphonePermission,
+                                requestAudioPermission = requestMicrophonePermission
+                            )
+                        )
+                    },
                     labelProvider = { Text(text = stringResource(it.stringRes)) },
                 )
             }
@@ -527,6 +552,10 @@ private fun Preview() {
         )
     }
 
+    val waveData = rememberVisualizerState().let {
+        if (it is VisualizerState.Ready) it.fft else null
+    }
+
     RushTheme(
         theme = Theme(
             appTheme = AppTheme.DARK,
@@ -537,7 +566,10 @@ private fun Preview() {
             onNavigateBack = { },
             state = state,
             onAction = { },
-            notificationAccess = true
+            notificationAccess = true,
+            microphonePermission = true,
+            requestMicrophonePermission = { },
+            waveData = waveData
         )
     }
 }

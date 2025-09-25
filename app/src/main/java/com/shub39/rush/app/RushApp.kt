@@ -1,5 +1,6 @@
 package com.shub39.rush.app
 
+import android.Manifest.permission.RECORD_AUDIO
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +22,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.core.presentation.RushTheme
@@ -59,7 +62,7 @@ sealed interface Route {
     data object OnboardingPage : Route
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun RushApp() {
     val settingsVM: SettingsVM = koinViewModel()
@@ -74,6 +77,10 @@ fun RushApp() {
 
     val navController = rememberNavController()
     val context = LocalContext.current
+
+    val microphonePermission = rememberPermissionState(RECORD_AUDIO)
+
+
 
     LaunchedEffect(settingsState.onBoardingDone) {
         if (!settingsState.onBoardingDone) {

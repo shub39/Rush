@@ -10,6 +10,7 @@ import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.Song
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.presentation.WaveColors
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
@@ -114,6 +115,28 @@ fun getCardColors(
         label = "cardContent"
     )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
+}
+
+@Composable
+fun getWaveColors(
+    state: LyricsPageState
+): WaveColors {
+    val cardBackground by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundMuted
+    )
+    val cardContent by animateColorAsState(
+        targetValue = state.extractedColors.cardContentMuted
+    )
+    val cardWaveBackground by animateColorAsState(
+        targetValue = state.extractedColors.cardBackgroundDominant
+    )
+    val cardWaveContent by animateColorAsState(
+        targetValue = state.extractedColors.cardContentDominant
+    )
+
+    return WaveColors(
+        cardBackground, cardContent, cardWaveBackground, cardWaveContent
+    )
 }
 
 fun Song.toSongUi(): SongUi {

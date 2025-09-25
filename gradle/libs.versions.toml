@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.0"
+accompanist = "0.37.3"
 colorpicker = "1.1.2"
 filekitCore = "0.11.0"
 materialKolor = "3.0.1"
@@ -73,6 +74,7 @@ aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", vers
 aboutLibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

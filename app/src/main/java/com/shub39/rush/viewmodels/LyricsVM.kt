@@ -7,6 +7,7 @@ import com.shub39.rush.core.data.listener.MediaListenerImpl
 import com.shub39.rush.core.domain.LyricsPagePreferences
 import com.shub39.rush.core.domain.Result
 import com.shub39.rush.core.domain.SongRepo
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.LyricsPageAction
@@ -186,7 +187,13 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnChangeLyricsBackground -> lyricsPrefs.updateLyricsBackround(action.background)
+                is LyricsPageAction.OnChangeLyricsBackground -> {
+                    if (action.background == LyricsBackground.WAVE && !action.audioPermissionGranted) {
+                        action.requestAudioPermission()
+                    } else {
+                        lyricsPrefs.updateLyricsBackround(action.background)
+                    }
+                }
 
                 is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
