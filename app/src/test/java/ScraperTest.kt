@@ -1,5 +1,6 @@
 import com.shub39.rush.core.data.HttpClientFactory
 import com.shub39.rush.core.data.network.GeniusScraper
+import com.shub39.rush.lyrics.breakLyrics
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -8,10 +9,11 @@ class ScraperTest {
 
     @Test
     fun testScrape() = runBlocking {
-        val lyrics = scraper.geniusScrape("https://genius.com/Daughters-satan-in-the-wait-lyrics")
+        val lyrics = scraper.geniusScrape("https://genius.com/Haddaway-what-is-love-lyrics")
 
         assert(lyrics != null)
 
         println(lyrics)
+        println(breakLyrics(lyrics ?: ""))
     }
 }

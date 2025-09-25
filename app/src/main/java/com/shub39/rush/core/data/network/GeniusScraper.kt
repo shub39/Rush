@@ -21,6 +21,14 @@ class GeniusScraper(
             "dumb.bloat.cat/",
             "dumb.jeikobu.net/"
         )
+
+        val nonLyricsRegex = listOf(
+            Regex("^\\d+ Contributors.*"),
+            Regex("^\\d+ Contributor.*"),
+            Regex("(?i)^Translations.*"),
+            Regex("(?i)^Read More.*"),
+            Regex("(?i)^.*Lyrics$")
+        )
     }
 
     suspend fun geniusScrape(songUrl: String): String? {
@@ -37,18 +45,16 @@ class GeniusScraper(
 
                 return buildString {
                     lyricsElements.forEach { element ->
-                        element.childNodes().forEachIndexed { _, node ->
+                        element.childNodes().forEach { node ->
                             val text = when (node) {
                                 is TextNode -> node.text()
                                 is Element -> node.wholeText()
-                                else -> return@forEachIndexed
+                                else -> return@forEach
                             }.trim()
 
-                            if (text.isBlank()) return@forEachIndexed
+                            if (text.isBlank()) return@forEach
 
-                            // TODO: Doesn't work properly
-                            if (text.matches(Regex("^\\d+ Contributors.*"))) return@forEachIndexed
-                            if (text.matches(Regex("^\\d+ Contributor.*"))) return@forEachIndexed
+                            if (nonLyricsRegex.any { it.matches(text) }) return@forEach
 
                             if (text.isNotEmpty()) {
                                 if (text.startsWith("[") || text.endsWith("]")) {
@@ -91,15 +97,15 @@ class GeniusScraper(
                             val text = when (node) {
                                 is TextNode -> node.text()
                                 is Element -> if (node.tagName() == "br") "\n" else node.wholeText()
-                                else -> ""
+                                else -> return@forEach
                             }.trimEnd()
 
                             if (text.isNotEmpty()) {
+                                if (text.trim() in listOf("(", ")")) return@forEach
                                 if (text.startsWith("[") && text.endsWith("]")) {
                                     append("\n")
                                 }
-                                append(text)
-                                if (!text.endsWith("\n")) append("\n")
+                                append("\n$text")
                             }
                         }
                     }
