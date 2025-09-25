@@ -56,6 +56,7 @@ import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.core.presentation.glowBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.ActionsRow
@@ -99,6 +100,8 @@ fun LyricsPage(
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
 
     val waveColors = getWaveColors(state)
+
+    val glowMultiplier by animateFloatAsState(calculateGlowMultiplier(waveData))
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
@@ -301,6 +304,7 @@ fun LyricsPage(
                                             cardContent = cardContent,
                                             onShare = onShare,
                                             onEdit = onEdit,
+                                            glowMultiplier = glowMultiplier,
                                             modifier = Modifier.padding(16.dp)
                                         )
                                     }
@@ -426,6 +430,7 @@ fun LyricsPage(
                 elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
+                modifier = Modifier.glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
             ) {
                 Icon(
                     imageVector = if (state.playingSong.speed == 0f) {
@@ -446,4 +451,12 @@ fun LyricsPage(
             state = state
         )
     }
+}
+
+fun calculateGlowMultiplier(waveData: VisualizerData?): Float {
+    if (waveData == null) return 0f
+
+    val mid = waveData.midBucket().max()
+    val treble = waveData.trebleBucket().max()
+    return (mid + treble).toFloat().absoluteValue / 128f
 }
