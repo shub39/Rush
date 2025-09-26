@@ -24,11 +24,11 @@
     <string name="sort_album_asc">Raggruppati per Album</string>
     <string name="track">traccia</string>
     <string name="artist">artista</string>
-    <string name="select_folder">Seleziona una cartella</string>
+    <string name="select_folder">Seleziona cartella</string>
     <string name="sort_date_added">Ultimi aggiunti</string>
     <string name="batch_download">Scarica più testi contemporaneamente</string>
     <string name="backup_info">Importa o esporta il database dei testi salvati</string>
-    <string name="done">Finito</string>
+    <string name="done">Fatto</string>
     <string name="batch_download_info">Scarica i testi delle tue canzoni salvate in locale in una sola volta.</string>
     <string name="fetching">Caricamento testi per</string>
     <string name="share">Condividi</string>
@@ -80,4 +80,6 @@
     <string name="hypnotic_canvas">Hypnotic Canvas</string>
     <string name="hypnotic_canvas_desc">(Funzione sperimentale) Immagini \"ipnotiche\" per la pagina dei testi. Potrebbe impattare sulle perfomance</string>
     <string name="extract_colors">Estrai colori</string>
+    <string name="suggestion">Vedi l\'icona CERCA sotto?</string>
+    <string name="card_corners">Angoli card</string>
 </resources>
