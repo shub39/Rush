@@ -32,7 +32,6 @@ import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Discord
 import compose.icons.fontawesomeicons.brands.Github
 import compose.icons.fontawesomeicons.brands.GooglePlay
-import compose.icons.fontawesomeicons.brands.Twitter
 
 @Composable
 fun AboutApp() {
@@ -83,16 +82,6 @@ fun AboutApp() {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Github,
                         contentDescription = "Github",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                IconButton(
-                    onClick = { uriHandler.openUri("https://x.com/RushedLyrics") }
-                ) {
-                    Icon(
-                        imageVector = FontAwesomeIcons.Brands.Twitter,
-                        contentDescription = "Twitter",
                         modifier = Modifier.size(24.dp)
                     )
                 }

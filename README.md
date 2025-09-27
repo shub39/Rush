@@ -11,7 +11,6 @@
 > [<img src="https://m3-markdown-badges.vercel.app/stars/1/3/shub39/Rush">]()
 > [<img src="https://m3-markdown-badges.vercel.app/issues/1/2/shub39/Rush">]()
 > [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Twitter/twitter1.svg">](https://x.com/RushedLyrics)
 
 > ### Get On
 > | [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play) | [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.shub39.rush/) | [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/packages/com.shub39.rush/latest) |
