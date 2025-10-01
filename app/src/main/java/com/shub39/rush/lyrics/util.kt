@@ -131,9 +131,9 @@ fun getWaveColors(
     )
     val cardWaveBackground by animateColorAsState(
         targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant)
-            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted)
-            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent))
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant, 1f)
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted, 1f)
+            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 1f)
         }
     )
 

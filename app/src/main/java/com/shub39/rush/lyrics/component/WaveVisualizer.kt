@@ -7,7 +7,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import com.shub39.rush.core.presentation.WaveColors
 import io.gitlab.bpavuk.viz.VisualizerData
@@ -39,15 +38,15 @@ fun WaveVisualizer(
     val trebleBucket = waveData.trebleBucket().map { it.toInt().absoluteValue }
     val bassMax by animateFloatAsState(
         targetValue = bassBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
     )
     val midMax by animateFloatAsState(
         targetValue = midBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
     )
     val trebleMax by animateFloatAsState(
         targetValue = trebleBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
     )
 
     Canvas(modifier) {
@@ -71,11 +70,9 @@ fun WaveVisualizer(
             close()
         }
 
-        val brush = Brush.verticalGradient(
-            0f to colors.cardBackground,
-            0.5f to colors.cardWaveBackground.copy(alpha = 0.5f),
-            1f to colors.cardWaveBackground,
+        drawPath(
+            path = path,
+            color = colors.cardWaveBackground
         )
-        drawPath(path = path, brush = brush)
     }
 }
