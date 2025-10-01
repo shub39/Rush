@@ -73,9 +73,7 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Music
 import io.gitlab.bpavuk.viz.VisualizerData
-import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.midBucket
-import io.gitlab.bpavuk.viz.rememberVisualizerState
 import io.gitlab.bpavuk.viz.trebleBucket
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
@@ -227,7 +225,7 @@ fun LyricsPage(
                                         modifier = Modifier.align(Alignment.TopCenter)
                                     ) {
                                         AnimatedVisibility(
-                                            visible = (top > 2 || state.sync) && state.lyricsBackground != LyricsBackground.ALBUM_ART
+                                            visible = !state.sync && top > 2 && state.lyricsBackground != LyricsBackground.ALBUM_ART
                                         ) {
                                             ArtFromUrl(
                                                 imageUrl = state.song.artUrl!!,
@@ -430,7 +428,13 @@ fun LyricsPage(
                 elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
-                modifier = Modifier.glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
+                modifier = Modifier.run {
+                    if (state.lyricsBackground == LyricsBackground.WAVE) {
+                        glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
+                    } else {
+                        this
+                    }
+                }
             ) {
                 Icon(
                     imageVector = if (state.playingSong.speed == 0f) {

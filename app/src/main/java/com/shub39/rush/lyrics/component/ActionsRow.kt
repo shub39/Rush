@@ -24,6 +24,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.copyToClipboard
 import com.shub39.rush.core.presentation.glowBackground
@@ -162,7 +163,7 @@ fun ActionsRow(
                         IconButtonDefaults.iconButtonColors()
                     },
                     modifier = Modifier.run {
-                        if (state.sync) {
+                        if (state.sync && state.lyricsBackground == LyricsBackground.WAVE) {
                             glowBackground(
                                 (12 * glowMultiplier).dp,
                                 IconButtonDefaults.standardShape,
@@ -194,7 +195,7 @@ fun ActionsRow(
                     IconButtonDefaults.iconButtonColors()
                 },
                 modifier = Modifier.run {
-                    if (state.autoChange) {
+                    if (state.autoChange && state.lyricsBackground == LyricsBackground.WAVE) {
                         glowBackground(
                             (12 * glowMultiplier).dp,
                             IconButtonDefaults.standardShape,

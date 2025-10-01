@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics
 
+import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -51,7 +52,7 @@ fun LyricsGraph(
     val context = LocalContext.current
     val navController = rememberNavController()
 
-    val microphonePermission = rememberPermissionState(android.Manifest.permission.RECORD_AUDIO)
+    val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData = rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
         if (state !is VisualizerState.Ready) return@let null
 
