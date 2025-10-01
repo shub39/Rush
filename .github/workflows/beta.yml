@@ -8,15 +8,12 @@ on:
 
 jobs:
   build:
+    if: endsWith(github.event.head_commit.message, '[ci]')
     runs-on: ubuntu-latest
     env:
       VERSION: $( echo ${{ github.event.head_commit.id }} | cut -c1-7 )
       COMMIT: $( sed -E "s/(.*) <.*@.*>/\\1/g;t" <<< "${{ github.event.head_commit.message }}" | jq -Rsa . | tail -c +2 | head -c -2 )
     steps:
-      - name: check
-        if: ${{ !endsWith(github.event.head_commit.message, '--ci') }}
-        run: exit 0
-
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
