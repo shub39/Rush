@@ -39,7 +39,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          path: app/foss/beta/app-release.apk
+          path: app/build/outputs/apk/fossBeta/app-release.apk
 
       - name: Upload APK to Discord
         shell: bash
@@ -48,5 +48,5 @@ jobs:
         run: |
           message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}")
           curl -F "payload_json={\"content\":\"${message}\"}" \
-          -F "rush_beta=@app/foss/beta/app-release.apk" \
+          -F "rush_beta=@app/build/outputs/apk/fossBeta/app-release.apk" \
           ${{ env.WEBHOOK }}
