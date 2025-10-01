@@ -66,6 +66,8 @@ import com.shub39.rush.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
+import io.gitlab.bpavuk.viz.VisualizerState
+import io.gitlab.bpavuk.viz.rememberVisualizerState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -78,6 +80,7 @@ fun SavedPage(
     modifier: Modifier = Modifier
 ) = PageFill {
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
@@ -161,12 +164,13 @@ fun SavedPage(
                         },
                         shape = Sunny.toShape(),
                         containerColor = if (state.autoChange) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary,
-                        contentColor = if (state.autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary
+                        contentColor = if (state.autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary,
                     ) {
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Meteor,
                             contentDescription = "Rush Mode",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier
+                                .size(24.dp)
                         )
                     }
                 }
@@ -290,8 +294,6 @@ private fun Preview() {
         SavedPage(
             state = state,
             notificationAccess = true,
-            onNavigateToSettings = {},
-            onNavigateToLyrics = {},
             onAction = {
                 when (it) {
                     is SavedPageAction.UpdateSortOrder -> state =
@@ -299,7 +301,9 @@ private fun Preview() {
 
                     else -> {}
                 }
-            }
+            },
+            onNavigateToLyrics = {},
+            onNavigateToSettings = {}
         )
     }
 }

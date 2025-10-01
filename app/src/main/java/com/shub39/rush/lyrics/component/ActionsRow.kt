@@ -24,8 +24,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.SongDetails
+import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.copyToClipboard
+import com.shub39.rush.core.presentation.glowBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import compose.icons.FontAwesomeIcons
@@ -43,6 +45,7 @@ fun ActionsRow(
     onShare: () -> Unit,
     onEdit: () -> Unit,
     modifier: Modifier = Modifier,
+    glowMultiplier: Float = 0f,
 ) {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -158,6 +161,17 @@ fun ActionsRow(
                         )
                     } else {
                         IconButtonDefaults.iconButtonColors()
+                    },
+                    modifier = Modifier.run {
+                        if (state.sync && state.lyricsBackground == LyricsBackground.WAVE) {
+                            glowBackground(
+                                (12 * glowMultiplier).dp,
+                                IconButtonDefaults.standardShape,
+                                cardContent
+                            )
+                        } else {
+                            this
+                        }
                     }
                 ) {
                     Icon(
@@ -179,6 +193,17 @@ fun ActionsRow(
                     )
                 } else {
                     IconButtonDefaults.iconButtonColors()
+                },
+                modifier = Modifier.run {
+                    if (state.autoChange && state.lyricsBackground == LyricsBackground.WAVE) {
+                        glowBackground(
+                            (12 * glowMultiplier).dp,
+                            IconButtonDefaults.standardShape,
+                            cardContent
+                        )
+                    } else {
+                        this
+                    }
                 }
             ) {
                 Icon(

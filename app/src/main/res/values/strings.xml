@@ -136,4 +136,5 @@
     <string name="plain_lyrics">Plain</string>
     <string name="synced_lyrics">Synced</string>
     <string name="blur_synced">Blur Synced Lyrics</string>
+    <string name="wave">Wave</string>
 </resources>

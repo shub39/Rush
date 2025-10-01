@@ -4,12 +4,14 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import com.materialkolor.ktx.blend
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.Song
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.presentation.WaveColors
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
@@ -114,6 +116,30 @@ fun getCardColors(
         label = "cardContent"
     )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
+}
+
+@Composable
+fun getWaveColors(
+    state: LyricsPageState
+): WaveColors {
+    val cardBackground by animateColorAsState(
+        targetValue = when (state.cardColors) {
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant
+            CardColors.CUSTOM -> Color(state.mCardBackground)
+        }
+    )
+    val cardWaveBackground by animateColorAsState(
+        targetValue = when (state.cardColors) {
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant)
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted)
+            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent))
+        }
+    )
+
+    return WaveColors(
+        cardBackground, cardWaveBackground
+    )
 }
 
 fun Song.toSongUi(): SongUi {

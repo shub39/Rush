@@ -6,13 +6,14 @@ import com.shub39.rush.core.presentation.hypnoticAvailable
 enum class LyricsBackground(val stringRes: Int) {
     HYPNOTIC(R.string.hypnotic),
     ALBUM_ART(R.string.blurred_art),
-    SOLID_COLOR(R.string.solid_color);
+    SOLID_COLOR(R.string.solid_color),
+    WAVE(R.string.wave);
 
     companion object {
         val allBackgrounds = if (hypnoticAvailable()) {
-            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC)
+            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE)
         } else {
-            listOf(SOLID_COLOR, ALBUM_ART)
+            listOf(SOLID_COLOR, ALBUM_ART, WAVE)
         }
     }
 }

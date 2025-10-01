@@ -1,6 +1,7 @@
 package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -55,6 +56,7 @@ import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.core.presentation.glowBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.ActionsRow
@@ -63,12 +65,18 @@ import com.shub39.rush.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.component.SyncedLyrics
+import com.shub39.rush.lyrics.component.WaveVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
+import com.shub39.rush.lyrics.getWaveColors
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Music
+import io.gitlab.bpavuk.viz.VisualizerData
+import io.gitlab.bpavuk.viz.midBucket
+import io.gitlab.bpavuk.viz.trebleBucket
 import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @Composable
 fun LyricsPage(
@@ -76,7 +84,8 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
-    notificationAccess: Boolean
+    waveData: VisualizerData?,
+    notificationAccess: Boolean,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -87,6 +96,10 @@ fun LyricsPage(
     val (cardBackground, cardContent) = getCardColors(state)
 
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+
+    val waveColors = getWaveColors(state)
+
+    val glowMultiplier by animateFloatAsState(calculateGlowMultiplier(waveData))
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
@@ -123,7 +136,7 @@ fun LyricsPage(
                                 }
                             )
                         }
-                        LyricsBackground.ALBUM_ART -> it.background(cardBackground)
+                        LyricsBackground.ALBUM_ART, LyricsBackground.WAVE -> it.background(cardBackground)
                         else -> it
                     }
                 }
@@ -193,6 +206,14 @@ fun LyricsPage(
                             )
                         }
 
+                        if (state.lyricsBackground == LyricsBackground.WAVE) {
+                            WaveVisualizer(
+                                waveData = waveData,
+                                colors = waveColors,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+
                         Column {
                             // Plain lyrics
                             if (!landscape) {
@@ -204,7 +225,7 @@ fun LyricsPage(
                                         modifier = Modifier.align(Alignment.TopCenter)
                                     ) {
                                         AnimatedVisibility(
-                                            visible = (top > 2 || state.sync) && state.lyricsBackground != LyricsBackground.ALBUM_ART
+                                            visible = !state.sync && top > 2 && state.lyricsBackground != LyricsBackground.ALBUM_ART
                                         ) {
                                             ArtFromUrl(
                                                 imageUrl = state.song.artUrl!!,
@@ -281,6 +302,7 @@ fun LyricsPage(
                                             cardContent = cardContent,
                                             onShare = onShare,
                                             onEdit = onEdit,
+                                            glowMultiplier = glowMultiplier,
                                             modifier = Modifier.padding(16.dp)
                                         )
                                     }
@@ -406,6 +428,13 @@ fun LyricsPage(
                 elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
+                modifier = Modifier.run {
+                    if (state.lyricsBackground == LyricsBackground.WAVE) {
+                        glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
+                    } else {
+                        this
+                    }
+                }
             ) {
                 Icon(
                     imageVector = if (state.playingSong.speed == 0f) {
@@ -426,4 +455,12 @@ fun LyricsPage(
             state = state
         )
     }
+}
+
+fun calculateGlowMultiplier(waveData: VisualizerData?): Float {
+    if (waveData == null) return 0f
+
+    val mid = waveData.midBucket().max()
+    val treble = waveData.trebleBucket().max()
+    return (mid + treble).toFloat().absoluteValue / 128f
 }

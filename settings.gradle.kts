@@ -22,4 +22,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Rush"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS") // TODO: remove once library is published separately
 include(":app")
+include(":visualizer-helper")

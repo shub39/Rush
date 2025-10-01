@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics
 
+import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,12 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
 import com.shub39.rush.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.lyrics.section.LyricsPage
+import io.gitlab.bpavuk.viz.VisualizerState
+import io.gitlab.bpavuk.viz.rememberVisualizerState
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,16 +40,24 @@ sealed interface LyricsRoutes {
     data object LyricsCustomisations : LyricsRoutes
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LyricsGraph(
     notificationAccess: Boolean,
     lyricsState: LyricsPageState,
     lyricsAction: (LyricsPageAction) -> Unit,
-    onDismiss : () -> Unit,
+    onDismiss: () -> Unit,
     onShare: () -> Unit
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
+
+    val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
+    val waveData = rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
+        if (state !is VisualizerState.Ready) return@let null
+
+        state.fft
+    }
 
     BackHandler {
         updateSystemBars(context, true)
@@ -74,7 +88,8 @@ fun LyricsGraph(
                 onShare = onShare,
                 action = lyricsAction,
                 state = lyricsState,
-                notificationAccess = notificationAccess
+                notificationAccess = notificationAccess,
+                waveData = waveData
             )
         }
 
@@ -90,7 +105,10 @@ fun LyricsGraph(
                 onNavigateBack = { navController.navigateUp() },
                 onAction = lyricsAction,
                 modifier = Modifier.widthIn(max = 700.dp),
-                notificationAccess = notificationAccess
+                notificationAccess = notificationAccess,
+                microphonePermission = microphonePermission.status.isGranted,
+                requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
+                waveData = waveData
             )
         }
     }
@@ -111,6 +129,10 @@ private fun Preview() {
                 ),
             )
         )
+    }
+
+    val waveData = rememberVisualizerState().let {
+        if (it is VisualizerState.Ready) it.fft else null
     }
 
     RushTheme(
