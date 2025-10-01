@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: check
         if: ${{ !endsWith(github.event.head_commit.message, '--ci') }}
-        run: exit 1
+        run: exit 0
 
       - name: Checkout repo
         uses: actions/checkout@v4
