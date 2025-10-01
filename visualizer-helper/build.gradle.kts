@@ -20,6 +20,9 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        create("beta") {
+            initWith(getByName("release"))
+        }
     }
     buildFeatures {
         compose = true
