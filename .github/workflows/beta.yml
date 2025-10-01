@@ -39,13 +39,21 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          path: app/build/outputs/apk/fossBeta/app-release.apk
+          name: foss-beta.apk
+          path: app/build/outputs/**/*.apk
 
       - name: Upload APK to Discord
         shell: bash
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
+          APK_PATH=$(find app/build/outputs -name "*.apk" -print -quit)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "Error: No APK file found in the build outputs directory."
+            exit 1
+          fi
+          
           message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}")
           curl -F "payload_json={\"content\":\"${message}\"}" \
           -F "rush_beta=@app/build/outputs/apk/fossBeta/app-release.apk" \
