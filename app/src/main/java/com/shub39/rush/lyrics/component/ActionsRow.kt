@@ -163,7 +163,10 @@ fun ActionsRow(
                         IconButtonDefaults.iconButtonColors()
                     },
                     modifier = Modifier.run {
-                        if (state.sync && state.lyricsBackground == LyricsBackground.WAVE) {
+                        if (state.sync &&
+                            (state.lyricsBackground == LyricsBackground.WAVE
+                                    || state.lyricsBackground == LyricsBackground.GRADIENT)
+                        ) {
                             glowBackground(
                                 (12 * glowMultiplier).dp,
                                 IconButtonDefaults.standardShape,
@@ -195,7 +198,10 @@ fun ActionsRow(
                     IconButtonDefaults.iconButtonColors()
                 },
                 modifier = Modifier.run {
-                    if (state.autoChange && state.lyricsBackground == LyricsBackground.WAVE) {
+                    if (state.autoChange &&
+                        (state.lyricsBackground == LyricsBackground.WAVE ||
+                                state.lyricsBackground == LyricsBackground.GRADIENT)
+                    ) {
                         glowBackground(
                             (12 * glowMultiplier).dp,
                             IconButtonDefaults.standardShape,

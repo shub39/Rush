@@ -70,6 +70,7 @@ import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.PlainLyric
 import com.shub39.rush.lyrics.component.SyncedLyric
 import com.shub39.rush.lyrics.component.WaveVisualizer
+import com.shub39.rush.lyrics.component.GradientVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import com.shub39.rush.lyrics.getWaveColors
@@ -201,6 +202,8 @@ fun LyricsCustomisationsPage(
                             )
                         }
 
+                        val waveColors = getWaveColors(state)
+
                         if (state.lyricsBackground == LyricsBackground.WAVE) {
                             Box(
                                 modifier = Modifier
@@ -212,7 +215,23 @@ fun LyricsCustomisationsPage(
 
                             WaveVisualizer(
                                 waveData,
-                                colors = getWaveColors(state),
+                                colors = waveColors,
+                                modifier = Modifier.matchParentSize()
+                            )
+                        }
+
+                        if (state.lyricsBackground == LyricsBackground.GRADIENT) {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        color = cardBackground
+                                    )
+                            )
+
+                            GradientVisualizer(
+                                waveData = waveData,
+                                colors = waveColors,
                                 modifier = Modifier.matchParentSize()
                             )
                         }

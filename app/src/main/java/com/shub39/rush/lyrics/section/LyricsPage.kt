@@ -66,6 +66,7 @@ import com.shub39.rush.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.component.SyncedLyrics
 import com.shub39.rush.lyrics.component.WaveVisualizer
+import com.shub39.rush.lyrics.component.GradientVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import com.shub39.rush.lyrics.getWaveColors
@@ -136,7 +137,7 @@ fun LyricsPage(
                                 }
                             )
                         }
-                        LyricsBackground.ALBUM_ART, LyricsBackground.WAVE -> it.background(cardBackground)
+                        LyricsBackground.ALBUM_ART, LyricsBackground.WAVE, LyricsBackground.GRADIENT -> it.background(cardBackground)
                         else -> it
                     }
                 }
@@ -211,6 +212,14 @@ fun LyricsPage(
                                 waveData = waveData,
                                 colors = waveColors,
                                 modifier = Modifier.fillMaxSize()
+                            )
+                        }
+
+                        if (state.lyricsBackground == LyricsBackground.GRADIENT) {
+                            GradientVisualizer(
+                                waveData = waveData,
+                                colors = waveColors,
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
 
@@ -429,7 +438,7 @@ fun LyricsPage(
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
                 modifier = Modifier.run {
-                    if (state.lyricsBackground == LyricsBackground.WAVE) {
+                    if (state.lyricsBackground == LyricsBackground.WAVE || state.lyricsBackground == LyricsBackground.GRADIENT) {
                         glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
                     } else {
                         this
