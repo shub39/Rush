@@ -2,7 +2,6 @@ package com.shub39.rush.lyrics.section
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,25 +37,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.mikepenz.hypnoticcanvas.shaderBackground
-import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
 import com.shub39.rush.core.presentation.KeepScreenOn
 import com.shub39.rush.core.presentation.fadeBottomToTop
 import com.shub39.rush.core.presentation.fadeTopToBottom
-import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.glowBackground
+import com.shub39.rush.lyrics.ApplyLyricsBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.ActionsRow
@@ -65,8 +60,6 @@ import com.shub39.rush.lyrics.component.LoadingCard
 import com.shub39.rush.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.component.SyncedLyrics
-import com.shub39.rush.lyrics.component.WaveVisualizer
-import com.shub39.rush.lyrics.component.GradientVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import com.shub39.rush.lyrics.getWaveColors
@@ -114,36 +107,9 @@ fun LyricsPage(
         modifier = Modifier.fillMaxSize()
     ) {
         Card(
-            modifier = Modifier
-                .let {
-                    when (state.lyricsBackground) {
-                        LyricsBackground.HYPNOTIC -> {
-                            it.shaderBackground(
-                                shader = MeshGradient(
-                                    colors = generateGradientColors(
-                                        color1 = hypnoticColor1,
-                                        color2 = hypnoticColor2,
-                                        steps = 6
-                                    ).toTypedArray()
-                                ),
-                                fallback = {
-                                    Brush.horizontalGradient(
-                                        generateGradientColors(
-                                            color1 = hypnoticColor1,
-                                            color2 = hypnoticColor2,
-                                            steps = 6
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                        LyricsBackground.ALBUM_ART, LyricsBackground.WAVE, LyricsBackground.GRADIENT -> it.background(cardBackground)
-                        else -> it
-                    }
-                }
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             colors = CardDefaults.cardColors(
-                containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
+                containerColor = cardBackground,
                 contentColor = cardContent
             ),
             shape = RoundedCornerShape(0.dp)
@@ -189,42 +155,17 @@ fun LyricsPage(
                     ) {
                         val landscape by remember { mutableStateOf(this.maxHeight < this.maxWidth) }
 
-                        // album art blurred
-                        if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
-                            ArtFromUrl(
-                                imageUrl = state.song.artUrl,
-                                modifier = Modifier
-                                    .blur(80.dp)
-                                    .fillMaxSize()
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .background(
-                                        color = cardBackground.copy(alpha = 0.5f)
-                                    )
-                            )
-                        }
-
-                        if (state.lyricsBackground == LyricsBackground.WAVE) {
-                            WaveVisualizer(
-                                waveData = waveData,
-                                colors = waveColors,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-
-                        if (state.lyricsBackground == LyricsBackground.GRADIENT) {
-                            GradientVisualizer(
-                                waveData = waveData,
-                                colors = waveColors,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                        ApplyLyricsBackground(
+                            background = state.lyricsBackground,
+                            artUrl = state.song.artUrl,
+                            cardBackground = cardBackground,
+                            waveData = waveData,
+                            waveColors = waveColors,
+                            hypnoticColor1 = hypnoticColor1,
+                            hypnoticColor2 = hypnoticColor2
+                        )
 
                         Column {
-                            // Plain lyrics
                             if (!landscape) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth(),
@@ -438,7 +379,7 @@ fun LyricsPage(
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
                 modifier = Modifier.run {
-                    if (state.lyricsBackground == LyricsBackground.WAVE || state.lyricsBackground == LyricsBackground.GRADIENT) {
+                    if (state.lyricsBackground in LyricsBackground.audioDependentBackrounds) {
                         glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
                     } else {
                         this

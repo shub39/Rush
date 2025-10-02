@@ -16,5 +16,7 @@ enum class LyricsBackground(val stringRes: Int) {
         } else {
             listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT)
         }
+
+        val audioDependentBackrounds = listOf(WAVE, GRADIENT)
     }
 }

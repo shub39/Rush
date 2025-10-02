@@ -198,9 +198,9 @@ fun ActionsRow(
                     IconButtonDefaults.iconButtonColors()
                 },
                 modifier = Modifier.run {
-                    if (state.autoChange &&
-                        (state.lyricsBackground == LyricsBackground.WAVE ||
-                                state.lyricsBackground == LyricsBackground.GRADIENT)
+                    if (
+                        state.autoChange &&
+                        (state.lyricsBackground in LyricsBackground.audioDependentBackrounds)
                     ) {
                         glowBackground(
                             (12 * glowMultiplier).dp,

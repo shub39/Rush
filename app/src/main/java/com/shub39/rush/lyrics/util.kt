@@ -1,17 +1,32 @@
 package com.shub39.rush.lyrics
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
+import com.mikepenz.hypnoticcanvas.shaderBackground
+import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.Song
 import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.enums.CardColors
+import com.shub39.rush.core.domain.enums.LyricsBackground
+import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.WaveColors
+import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.lyrics.component.GradientVisualizer
+import com.shub39.rush.lyrics.component.WaveVisualizer
+import io.gitlab.bpavuk.viz.VisualizerData
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
@@ -140,6 +155,85 @@ fun getWaveColors(
     return WaveColors(
         cardBackground, cardWaveBackground
     )
+}
+
+@Composable
+fun BoxWithConstraintsScope.ApplyLyricsBackground(
+    background: LyricsBackground,
+    artUrl: String?,
+    cardBackground: Color,
+    waveData: VisualizerData?,
+    waveColors: WaveColors,
+    hypnoticColor1: Color,
+    hypnoticColor2: Color
+) {
+    when (background) {
+        LyricsBackground.ALBUM_ART -> {
+            ArtFromUrl(
+                imageUrl = artUrl,
+                modifier = Modifier
+                    .blur(80.dp)
+                    .matchParentSize()
+            )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        color = cardBackground.copy(alpha = 0.5f)
+                    )
+            )
+        }
+
+        LyricsBackground.WAVE -> {
+            WaveVisualizer(
+                waveData = waveData,
+                colors = waveColors,
+                modifier = Modifier.matchParentSize()
+            )
+        }
+
+        LyricsBackground.GRADIENT -> {
+            GradientVisualizer(
+                waveData = waveData,
+                colors = waveColors,
+                modifier = Modifier.matchParentSize()
+            )
+        }
+
+        LyricsBackground.HYPNOTIC -> {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .shaderBackground(
+                        shader = MeshGradient(
+                            colors = generateGradientColors(
+                                color1 = hypnoticColor1,
+                                color2 = hypnoticColor2,
+                                steps = 6
+                            ).toTypedArray()
+                        ),
+                        fallback = {
+                            Brush.horizontalGradient(
+                                generateGradientColors(
+                                    color1 = hypnoticColor1,
+                                    color2 = hypnoticColor2,
+                                    steps = 6
+                                )
+                            )
+                        }
+                    )
+            )
+        }
+
+        LyricsBackground.SOLID_COLOR -> {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(cardBackground)
+            )
+        }
+    }
 }
 
 fun Song.toSongUi(): SongUi {
