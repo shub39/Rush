@@ -57,6 +57,7 @@ import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
+import com.shub39.rush.core.presentation.blurAvailable
 import com.shub39.rush.core.presentation.getRandomLine
 import com.shub39.rush.lyrics.ApplyLyricsBackground
 import com.shub39.rush.lyrics.LyricsPageAction
@@ -273,7 +274,7 @@ fun LyricsCustomisationsPage(
 
             item {
                 AnimatedVisibility(
-                    visible = isShowingSynced,
+                    visible = isShowingSynced && blurAvailable(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     ListItem(

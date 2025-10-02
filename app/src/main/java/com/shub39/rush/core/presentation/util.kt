@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import kotlin.random.Random
 
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+fun blurAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
 @Composable
 fun KeepScreenOn() {
