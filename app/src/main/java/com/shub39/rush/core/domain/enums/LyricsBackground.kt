@@ -7,13 +7,16 @@ enum class LyricsBackground(val stringRes: Int) {
     HYPNOTIC(R.string.hypnotic),
     ALBUM_ART(R.string.blurred_art),
     SOLID_COLOR(R.string.solid_color),
-    WAVE(R.string.wave);
+    WAVE(R.string.wave),
+    GRADIENT(R.string.gradient);
 
     companion object {
         val allBackgrounds = if (hypnoticAvailable()) {
-            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE)
+            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE, GRADIENT)
         } else {
-            listOf(SOLID_COLOR, ALBUM_ART, WAVE)
+            listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT)
         }
+
+        val audioDependentBackrounds = listOf(WAVE, GRADIENT)
     }
 }

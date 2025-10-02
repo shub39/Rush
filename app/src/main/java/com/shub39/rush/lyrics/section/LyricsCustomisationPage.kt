@@ -4,7 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,17 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mikepenz.hypnoticcanvas.shaderBackground
-import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.SongUi
@@ -58,18 +53,16 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
-import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
-import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.core.presentation.getRandomLine
+import com.shub39.rush.lyrics.ApplyLyricsBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.PlainLyric
 import com.shub39.rush.lyrics.component.SyncedLyric
-import com.shub39.rush.lyrics.component.WaveVisualizer
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
 import com.shub39.rush.lyrics.getWaveColors
@@ -92,6 +85,7 @@ fun LyricsCustomisationsPage(
 ) {
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+    val waveColors = getWaveColors(state)
 
     var colorPickerDialog by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
@@ -179,77 +173,25 @@ fun LyricsCustomisationsPage(
                         }
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                    Card(
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = cardBackground,
+                            contentColor = cardContent
+                        ),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        if (state.lyricsBackground == LyricsBackground.ALBUM_ART) {
-                            ArtFromUrl(
-                                imageUrl = state.song?.artUrl,
-                                modifier = Modifier
-                                    .blur(80.dp)
-                                    .matchParentSize()
+                        BoxWithConstraints {
+                            ApplyLyricsBackground(
+                                background = state.lyricsBackground,
+                                artUrl = state.song?.artUrl,
+                                cardBackground = cardBackground,
+                                waveData = waveData,
+                                waveColors = waveColors,
+                                hypnoticColor1 = hypnoticColor1,
+                                hypnoticColor2 = hypnoticColor2
                             )
 
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .background(
-                                        color = cardBackground.copy(alpha = 0.5f)
-                                    )
-                            )
-                        }
-
-                        if (state.lyricsBackground == LyricsBackground.WAVE) {
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .background(
-                                        color = cardBackground
-                                    )
-                            )
-
-                            WaveVisualizer(
-                                waveData,
-                                colors = getWaveColors(state),
-                                modifier = Modifier.matchParentSize()
-                            )
-                        }
-
-                        Card(
-                            modifier = Modifier
-                                .let {
-                                    when (state.lyricsBackground) {
-                                        LyricsBackground.HYPNOTIC -> {
-                                            it.shaderBackground(
-                                                shader = MeshGradient(
-                                                    colors = generateGradientColors(
-                                                        color1 = hypnoticColor1,
-                                                        color2 = hypnoticColor2,
-                                                        steps = 6
-                                                    ).toTypedArray()
-                                                ),
-                                                fallback = {
-                                                    Brush.horizontalGradient(
-                                                        generateGradientColors(
-                                                            color1 = hypnoticColor1,
-                                                            color2 = hypnoticColor2,
-                                                            steps = 6
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                        }
-
-                                        else -> it
-                                    }
-                                },
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
-                                contentColor = cardContent
-                            )
-                        ) {
                             AnimatedContent(
                                 targetState = isShowingSynced,
                                 modifier = Modifier.fillMaxWidth()
