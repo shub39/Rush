@@ -125,4 +125,16 @@
     <string name="unlock_more_pro">Разблокировать Pro-функции</string>
     <string name="rush_branding">Rush</string>
     <string name="bmc">Купи мне кофе</string>
+    <string name="restore_info">Восстановить из выбранного экспортированного файла</string>
+    <string name="spotify">Обычный</string>
+    <string name="rushed">Стиль \"Rush\"</string>
+    <string name="messy">Разбросанный</string>
+    <string name="album_art">Только Обложка</string>
+    <string name="album_art_shape">Форма обложки альбома</string>
+    <string name="blurred_art">Размытая Обложка</string>
+    <string name="solid_color">Сплошной</string>
+    <string name="lyrics_background">Фон Текста</string>
+    <string name="plain_lyrics">Простой</string>
+    <string name="synced_lyrics">Синхронизированный</string>
+    <string name="blur_synced">Размыть Синхронизированный Текст</string>
 </resources>
