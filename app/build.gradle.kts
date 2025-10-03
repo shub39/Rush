@@ -144,7 +144,6 @@ dependencies {
     implementation(libs.landscapist.placeholder)
     implementation(libs.colorpicker.compose)
     implementation(libs.ksoup)
-    implementation(libs.hypnoticcanvas)
     implementation(libs.aboutLibraries)
     implementation(libs.aboutLibraries.compose.m3)
     implementation(libs.filekit.core)

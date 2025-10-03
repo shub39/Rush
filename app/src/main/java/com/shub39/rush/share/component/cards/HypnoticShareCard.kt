@@ -8,15 +8,13 @@ import androidx.compose.material3.CardColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
-import com.mikepenz.hypnoticcanvas.shaderBackground
-import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.shub39.rush.core.domain.data_classes.SongDetails
 import com.shub39.rush.core.domain.enums.CardFit
+import com.shub39.rush.core.presentation.HypnoticVisualizer
 import com.shub39.rush.core.presentation.generateGradientColors
 
 @Composable
@@ -30,25 +28,14 @@ fun HypnoticShareCard(
     albumArtShape: Shape = CircleShape
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
+        HypnoticVisualizer(
+            waveData = null,
+            modifier = Modifier.matchParentSize(),
+            colors = generateGradientColors(cardColors.containerColor.lighten(2f), cardColors.containerColor.darken(1f)),
+        )
+
         SpotifyShareCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shaderBackground(
-                    MeshGradient(
-                        colors = generateGradientColors(
-                            cardColors.containerColor.lighten(2f),
-                            cardColors.containerColor.darken(2f)
-                        ).toTypedArray()
-                    ),
-                    fallback = {
-                        Brush.horizontalGradient(
-                            generateGradientColors(
-                                cardColors.containerColor.lighten(2f),
-                                cardColors.containerColor.darken(2f)
-                            )
-                        )
-                    }
-                ),
+            modifier = Modifier.fillMaxWidth(),
             song = song,
             sortedLines = sortedLines,
             cardColors = cardColors.copy(containerColor = Color.Transparent),
