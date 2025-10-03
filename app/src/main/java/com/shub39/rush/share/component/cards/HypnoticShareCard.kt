@@ -29,7 +29,6 @@ fun HypnoticShareCard(
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         HypnoticVisualizer(
-            waveData = null,
             modifier = Modifier.matchParentSize(),
             colors = generateGradientColors(cardColors.containerColor.lighten(2f), cardColors.containerColor.darken(1f)),
         )

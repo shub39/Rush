@@ -201,7 +201,6 @@ fun BoxWithConstraintsScope.ApplyLyricsBackground(
 
         LyricsBackground.HYPNOTIC -> {
             HypnoticVisualizer(
-                waveData = waveData,
                 modifier = Modifier.matchParentSize(),
                 colors = generateGradientColors(hypnoticColor1, hypnoticColor2)
             )

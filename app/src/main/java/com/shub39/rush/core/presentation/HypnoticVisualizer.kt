@@ -1,9 +1,6 @@
 package com.shub39.rush.core.presentation
 
 import android.graphics.RuntimeShader
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -16,14 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
-import io.gitlab.bpavuk.viz.VisualizerData
-import io.gitlab.bpavuk.viz.bassBucket
-import io.gitlab.bpavuk.viz.midBucket
-import kotlin.math.absoluteValue
 
 @Composable
 fun HypnoticVisualizer(
-    waveData: VisualizerData?,
     modifier: Modifier = Modifier,
     colors: List<Color>
 ) {
@@ -34,16 +26,6 @@ fun HypnoticVisualizer(
             )
         )
     } else {
-        val bassBucket = waveData?.bassBucket()?.map { it.toInt().absoluteValue }
-        val midBucket = waveData?.midBucket()?.map { it.toInt().absoluteValue }
-        val bassMax by animateFloatAsState(
-            targetValue = bassBucket?.max()?.toFloat() ?: 1f,
-            animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioHighBouncy)
-        )
-        val midMax by animateFloatAsState(
-            targetValue = midBucket?.max()?.toFloat() ?: 1f,
-            animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioHighBouncy)
-        )
         var startMillis = remember(colors) { -1L }
         val time by produceState(0f) {
             while (true) {
@@ -72,8 +54,6 @@ fun HypnoticVisualizer(
             )
             colorShader.setFloatUniform("uTime", time)
             colorShader.setFloatUniform("uColor", colorUniforms)
-            colorShader.setFloatUniform("uBass", bassMax)
-            colorShader.setFloatUniform("uMid", midMax)
 
             drawRect(brush = shaderBrush)
         }
@@ -86,8 +66,6 @@ private fun getSksl(
     speed: Float = 1f
 ): String = """
     uniform float uTime;
-    uniform float uBass;
-    uniform float uMid;
     uniform vec3 uResolution;
 
     vec3 vColor;
@@ -224,13 +202,13 @@ private fun getSksl(
                     vec3(
                         base.x * frequency.x + uTime * 0.005 * flow, 
                         base.y * frequency.y, 
-                        uTime * 0.005 * speed * (1.0 + uBass * 0.001) + seed
+                        uTime * 0.005 * speed + seed
                     )
                 )
             );
 
             // Mix the color with the base color based on our noise
-            vColor = mix(vColor, uColor[i], noise * (1.0 + uMid * 0.001));
+            vColor = mix(vColor, uColor[i], noise);
         }
 
         // Set the new uV and position of the vertex
