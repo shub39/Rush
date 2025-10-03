@@ -7,10 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Color
 import com.shub39.rush.core.presentation.WaveColors
-import com.shub39.rush.core.presentation.generateGradientColors
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.bassBucket
 import kotlin.math.absoluteValue

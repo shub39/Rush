@@ -17,7 +17,6 @@ navigation = "2.9.0"
 kmpalette = "3.1.0"
 room = "2.8.1"
 serialization = "1.9.0"
-hypnoticcanvas = "0.4.1"
 aboutLibraries = '12.2.4'
 datetime = "0.7.1"
 composeIcons = "1.1.1"
@@ -69,7 +68,6 @@ landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholde
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigation"}
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 aboutLibraries = { group = "com.mikepenz", name = "aboutlibraries-compose", version.ref = "aboutLibraries" }
 aboutLibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
