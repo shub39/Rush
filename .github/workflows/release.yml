@@ -6,6 +6,9 @@ on:
       - master
   workflow_dispatch: { }
 
+permissions:
+  contents: write
+
 jobs:
   build:
     if: startsWith(github.event.head_commit.message, '[release]')
