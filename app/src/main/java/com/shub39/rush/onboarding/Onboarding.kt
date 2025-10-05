@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.data.listener.NotificationListener
 import com.shub39.rush.onboarding.component.AnimatedAppIcon
@@ -167,7 +169,7 @@ fun Onboarding(
                                 textAlign = TextAlign.Center
                             )
 
-                            Column {
+                            Column(modifier = Modifier.widthIn(max = 350.dp)) {
                                 ListItem(
                                     headlineContent = {
                                         Text(text = "Rush Mode")
@@ -243,4 +245,10 @@ fun Onboarding(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+    Onboarding {  }
 }

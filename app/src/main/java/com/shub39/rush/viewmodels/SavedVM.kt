@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -77,9 +78,9 @@ class SavedVM(
         }
     }
 
-    private fun observeData() = viewModelScope.launch(Dispatchers.Default) {
+    private fun observeData() {
         savedJob?.cancel()
-        savedJob = launch {
+        savedJob = viewModelScope.launch {
             repo.getSongs()
                 .onEach { songs ->
                     if (songs.isEmpty()) {
@@ -107,6 +108,7 @@ class SavedVM(
                         it.copy(deleteButtonEnabled = true)
                     }
                 }
+                .flowOn(Dispatchers.Default)
                 .launchIn(this)
 
             datastore.getSortOrderFlow()

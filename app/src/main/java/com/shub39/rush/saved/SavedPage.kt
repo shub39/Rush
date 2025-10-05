@@ -66,8 +66,6 @@ import com.shub39.rush.saved.component.SongCard
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
-import io.gitlab.bpavuk.viz.VisualizerState
-import io.gitlab.bpavuk.viz.rememberVisualizerState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -80,7 +78,6 @@ fun SavedPage(
     modifier: Modifier = Modifier
 ) = PageFill {
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
@@ -221,6 +218,14 @@ fun SavedPage(
                 AnimatedContent(
                     targetState = state.sortOrder
                 ) { sortOrder ->
+                    val songs = remember(sortOrder, state) {
+                        when (sortOrder) {
+                            SortOrder.DATE_ADDED -> state.songsByTime
+                            SortOrder.TITLE_ASC -> state.songsAsc
+                            SortOrder.TITLE_DESC -> state.songsDesc
+                        }
+                    }
+
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
@@ -229,11 +234,7 @@ fun SavedPage(
                             .animateContentSize()
                     ) {
                         items(
-                            items = when (sortOrder) {
-                                SortOrder.DATE_ADDED -> state.songsByTime
-                                SortOrder.TITLE_ASC -> state.songsAsc
-                                SortOrder.TITLE_DESC -> state.songsDesc
-                            },
+                            items = songs,
                             key = { it.id }) {
                             SongCard(
                                 song = it,

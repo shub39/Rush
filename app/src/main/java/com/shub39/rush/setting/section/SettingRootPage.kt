@@ -18,10 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material.icons.rounded.Warning
@@ -30,7 +30,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonShapes
@@ -247,12 +246,18 @@ fun SettingRootPage(
                     ListItem(
                         headlineContent = { Text(text = stringResource(R.string.grant_permission)) },
                         supportingContent = { Text(text = stringResource(R.string.notification_permission)) },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Rounded.Notifications,
+                                contentDescription = null
+                            )
+                        },
                         trailingContent = {
-                            FilledTonalIconButton(
+                            IconButton(
                                 onClick = { context.startActivity(intent) }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Info,
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                                     contentDescription = null
                                 )
                             }
@@ -350,7 +355,7 @@ private fun Preview() {
         )
     ) {
         SettingRootPage(
-            notificationAccess = true,
+            notificationAccess = false,
             state = SettingsPageState(),
             onAction = {  },
             onNavigateBack = {  },
