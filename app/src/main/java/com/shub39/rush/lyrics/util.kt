@@ -146,8 +146,8 @@ fun getWaveColors(
         targetValue = when (state.cardColors) {
             CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant, 1f)
             CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted, 1f)
-            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 1f)
-        }
+            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 0.5f)
+        }.darken(1.5f)
     )
 
     return WaveColors(
