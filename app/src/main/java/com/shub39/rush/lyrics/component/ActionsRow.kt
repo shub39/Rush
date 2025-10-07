@@ -164,8 +164,7 @@ fun ActionsRow(
                     },
                     modifier = Modifier.run {
                         if (state.sync &&
-                            (state.lyricsBackground == LyricsBackground.WAVE
-                                    || state.lyricsBackground == LyricsBackground.GRADIENT)
+                            (state.lyricsBackground in LyricsBackground.audioDependentBackrounds)
                         ) {
                             glowBackground(
                                 (12 * glowMultiplier).dp,
