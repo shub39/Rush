@@ -36,25 +36,26 @@ fun WaveVisualizer(
     val bassBucket = waveData.bassBucket().map { it.toInt().absoluteValue }
     val midBucket = waveData.midBucket().map { it.toInt().absoluteValue }
     val trebleBucket = waveData.trebleBucket().map { it.toInt().absoluteValue }
+
     val bassMax by animateFloatAsState(
-        targetValue = bassBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        targetValue = bassBucket.maxOrNull()?.toFloat() ?: 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
     )
     val midMax by animateFloatAsState(
-        targetValue = midBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        targetValue = midBucket.maxOrNull()?.toFloat() ?: 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
     )
     val trebleMax by animateFloatAsState(
-        targetValue = trebleBucket.max().toFloat(),
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy)
+        targetValue = trebleBucket.maxOrNull()?.toFloat() ?: 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
     )
 
     Canvas(modifier) {
         val width = size.width
-        val height = size.height
+        val height = size.height / 2
 
         val path = Path().apply {
-            moveTo(0f, height)
+            moveTo(0f, size.height)
             lineTo(0f, height * (1 - midMax / 128f))
             cubicTo(
                 width / 4, height * (1 - midMax / 128f),
@@ -66,7 +67,7 @@ fun WaveVisualizer(
                 width * 3 / 4, height * (1 - trebleMax / 128f),
                 width, height * (1 - trebleMax / 128f)
             )
-            lineTo(width, height)
+            lineTo(width, size.height)
             close()
         }
 

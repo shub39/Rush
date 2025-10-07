@@ -187,7 +187,8 @@ fun BoxWithConstraintsScope.ApplyLyricsBackground(
             WaveVisualizer(
                 waveData = waveData,
                 colors = waveColors,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier
+                    .matchParentSize()
             )
         }
 
