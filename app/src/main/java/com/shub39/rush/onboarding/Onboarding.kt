@@ -2,13 +2,17 @@ package com.shub39.rush.onboarding
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
@@ -21,20 +25,19 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonShapes
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialShapes.Companion.VerySunny
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,13 +45,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.core.data.listener.NotificationListener
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.domain.enums.AppTheme
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.onboarding.component.AnimatedAppIcon
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
 import compose.icons.fontawesomeicons.solid.SyncAlt
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -71,12 +75,14 @@ private sealed interface OnboardingRoutes {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Onboarding(
-    onDone: () -> Unit
+    onDone: () -> Unit,
+    notificationAccess: Boolean,
+    onUpdateNotificationAccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val pagerState = rememberPagerState { OnboardingRoutes.routes.size }
+    val pagerState = rememberPagerState(0) { OnboardingRoutes.routes.size }
 
     BackHandler {}
 
@@ -136,29 +142,34 @@ fun Onboarding(
                     }
 
                     1 -> {
+                        // notification access screen
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            var notificationAccess by remember {
-                                mutableStateOf(NotificationListener.canAccessNotifications(context))
-                            }
-
                             LaunchedEffect(Unit) {
                                 while (!notificationAccess) {
-                                    delay(500)
-                                    notificationAccess =
-                                        NotificationListener.canAccessNotifications(context)
+                                    onUpdateNotificationAccess()
                                 }
                             }
 
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = "Notification",
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(80.dp)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        shape = VerySunny.toShape()
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = "Notification",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.size(60.dp)
+                                )
+                            }
 
                             Spacer(Modifier.height(16.dp))
 
@@ -169,40 +180,59 @@ fun Onboarding(
                                 textAlign = TextAlign.Center
                             )
 
-                            Column(modifier = Modifier.widthIn(max = 350.dp)) {
-                                ListItem(
-                                    headlineContent = {
-                                        Text(text = "Rush Mode")
-                                    },
-                                    supportingContent = {
-                                        Text(text = "Fetches songs automatically with your music player")
-                                    },
-                                    leadingContent = {
-                                        Icon(
-                                            imageVector = FontAwesomeIcons.Solid.Meteor,
-                                            contentDescription = "Rush Mode",
-                                            modifier = Modifier.size(48.dp),
-                                            tint = MaterialTheme.colorScheme.secondary
-                                        )
-                                    }
-                                )
+                            Spacer(Modifier.height(16.dp))
 
-                                ListItem(
-                                    headlineContent = {
-                                        Text(text = "Synced Lyrics")
-                                    },
-                                    supportingContent = {
-                                        Text(text = "Syncs with your music player if timed lyrics is available")
-                                    },
-                                    leadingContent = {
-                                        Icon(
-                                            imageVector = FontAwesomeIcons.Solid.SyncAlt,
-                                            contentDescription = "Synced",
-                                            modifier = Modifier.size(48.dp),
-                                            tint = MaterialTheme.colorScheme.secondary
+                            Column(
+                                modifier = Modifier.widthIn(max = 350.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                listOf(
+                                    Triple(
+                                        first = FontAwesomeIcons.Solid.Meteor,
+                                        second = "Rush Mode",
+                                        third = "Fetches songs automatically with your music player"
+                                    ),
+                                    Triple(
+                                        first = FontAwesomeIcons.Solid.SyncAlt,
+                                        second = "Synced Lyrics",
+                                        third = "Syncs with your music player if timed lyrics is available"
+                                    )
+                                ).forEach { feature ->
+                                    Card(
+                                        shape = MaterialTheme.shapes.extraLarge,
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                                .fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                imageVector = feature.first,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(42.dp)
+                                            )
+
+                                            Column {
+                                                Text(
+                                                    text = feature.second,
+                                                    style = MaterialTheme.typography.titleLarge.copy(
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                )
+                                                Text(
+                                                    text = feature.third,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
+                                        }
                                     }
-                                )
+                                }
                             }
 
                             Spacer(Modifier.height(16.dp))
@@ -210,25 +240,20 @@ fun Onboarding(
                             Button(
                                 onClick = {
                                     if (!notificationAccess) {
-                                        val intent =
-                                            Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                        val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
                                         context.startActivity(intent)
                                     } else {
                                         onDone()
                                     }
                                 },
-                                contentPadding = ButtonDefaults.MediumContentPadding,
-                                shapes = ButtonShapes(
-                                    shape = CircleShape,
-                                    pressedShape = RoundedCornerShape(10.dp)
-                                )
+                                contentPadding = ButtonDefaults.MediumContentPadding
                             ) {
                                 Text(
                                     text = if (!notificationAccess) "Grant Access" else "Done"
                                 )
                             }
 
-                            Spacer(Modifier.height(16.dp))
+                            Spacer(Modifier.height(6.dp))
 
                             if (!notificationAccess) {
                                 TextButton(
@@ -250,5 +275,15 @@ fun Onboarding(
 @Composable
 @Preview
 private fun Preview() {
-    Onboarding {  }
+    RushTheme(
+        theme = Theme(
+            appTheme = AppTheme.DARK
+        )
+    ) {
+        Onboarding(
+            onDone = { },
+            notificationAccess = false,
+            onUpdateNotificationAccess = { }
+        )
+    }
 }

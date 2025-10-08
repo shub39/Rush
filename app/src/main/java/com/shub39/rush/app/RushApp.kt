@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -75,6 +78,10 @@ fun RushApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
+    var notificationAccess by remember {
+        mutableStateOf(NotificationListener.canAccessNotifications(context))
+    }
+
     LaunchedEffect(settingsState.onBoardingDone) {
         if (!settingsState.onBoardingDone) {
             navController.navigate(Route.OnboardingPage)
@@ -111,7 +118,7 @@ fun RushApp() {
 
                             SavedPage(
                                 state = savedState,
-                                notificationAccess = NotificationListener.canAccessNotifications(context),
+                                notificationAccess = notificationAccess,
                                 onAction = savedVM::onAction,
                                 onNavigateToLyrics = { navController.navigate(Route.LyricsGraph) },
                                 onNavigateToSettings = { navController.navigate(Route.SettingsGraph) },
@@ -121,7 +128,7 @@ fun RushApp() {
 
                         composable<Route.LyricsGraph> {
                             LyricsGraph(
-                                notificationAccess = NotificationListener.canAccessNotifications(context),
+                                notificationAccess = notificationAccess,
                                 lyricsState = lyricsState,
                                 lyricsAction = lyricsVM::onAction,
                                 onDismiss = { navController.navigateUp() },
@@ -146,7 +153,7 @@ fun RushApp() {
 
                         composable<Route.SettingsGraph> {
                             SettingsGraph(
-                                notificationAccess = NotificationListener.canAccessNotifications(context),
+                                notificationAccess = notificationAccess,
                                 state = settingsState,
                                 action = settingsVM::onAction,
                                 onNavigateBack = { navController.navigateUp() }
@@ -160,6 +167,10 @@ fun RushApp() {
                                         SettingsPageAction.OnUpdateOnboardingDone(true)
                                     )
                                     navController.navigateUp()
+                                },
+                                notificationAccess = notificationAccess,
+                                onUpdateNotificationAccess = {
+                                    notificationAccess = NotificationListener.canAccessNotifications(context)
                                 }
                             )
                         }
