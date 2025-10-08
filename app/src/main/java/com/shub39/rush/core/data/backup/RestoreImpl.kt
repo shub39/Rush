@@ -1,6 +1,7 @@
 package com.shub39.rush.core.data.backup
 
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.shub39.rush.core.data.mappers.toSong
 import com.shub39.rush.core.domain.SongRepo
@@ -21,6 +22,11 @@ class RestoreImpl(
     private val songRepo: SongRepo,
     private val context: Context
 ) : RestoreRepo {
+
+    companion object {
+        private const val TAG = "RestoreImpl"
+    }
+
     override suspend fun restoreSongs(path: String): RestoreResult {
         return try {
             withContext(Dispatchers.IO) {
@@ -49,10 +55,12 @@ class RestoreImpl(
 
             RestoreResult.Success
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            Log.wtf(TAG, e)
+
             RestoreResult.Failure(RestoreFailedException.InvalidFile)
         } catch (e: SerializationException) {
-            e.printStackTrace()
+            Log.wtf(TAG, e)
+
             RestoreResult.Failure(RestoreFailedException.OldSchema)
         }
     }

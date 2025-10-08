@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -109,6 +110,13 @@ fun BackupPage(
                                 Icon(
                                     imageVector = Icons.Rounded.Check,
                                     contentDescription = "Done",
+                                )
+                            }
+
+                            ExportState.ERROR -> {
+                                Icon(
+                                    imageVector = Icons.Rounded.Error,
+                                    contentDescription = "Error"
                                 )
                             }
                         }

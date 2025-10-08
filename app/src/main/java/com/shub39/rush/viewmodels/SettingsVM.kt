@@ -59,11 +59,11 @@ class SettingsVM(
                         )
                     }
 
-                    exportRepo.exportToJson()
+                    val exportStatus = exportRepo.exportToJson()
 
                     _state.update {
                         it.copy(
-                            exportState = ExportState.EXPORTED
+                            exportState = if (exportStatus) ExportState.EXPORTED else ExportState.ERROR
                         )
                     }
                 }
