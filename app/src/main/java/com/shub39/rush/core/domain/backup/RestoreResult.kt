@@ -5,11 +5,11 @@ sealed class RestoreResult {
     data class Failure(val exceptionType: RestoreFailedException) : RestoreResult()
 }
 
-enum class RestoreState {
-    IDLE,
-    RESTORING,
-    RESTORED,
-    FAILURE
+sealed interface RestoreState {
+    data object Idle : RestoreState
+    data object Restoring : RestoreState
+    data object Restored : RestoreState
+    data class Failure(val exception: RestoreFailedException) : RestoreState
 }
 
 sealed interface RestoreFailedException {

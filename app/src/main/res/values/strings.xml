@@ -63,7 +63,7 @@
     <string name="no_audio_files">No audio Files</string>
     <string name="no_folder_selected">No folder selected</string>
     <string name="export">Export</string>
-    <string name="export_info">Export songs to Downloads/Rush</string>
+    <string name="export_info">Export songs to Selected Folder</string>
     <string name="restore">Restore</string>
     <string name="restore_info">Restore from selected export file</string>
     <string name="choose_file">Choose file</string>

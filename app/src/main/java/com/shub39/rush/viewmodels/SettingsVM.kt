@@ -55,15 +55,15 @@ class SettingsVM(
                 SettingsPageAction.OnExportSongs -> {
                     _state.update {
                         it.copy(
-                            exportState = ExportState.EXPORTING
+                            exportState = ExportState.Exporting
                         )
                     }
 
-                    val exportStatus = exportRepo.exportToJson()
+                    val exportString = exportRepo.exportToJson()
 
                     _state.update {
                         it.copy(
-                            exportState = if (exportStatus) ExportState.EXPORTED else ExportState.ERROR
+                            exportState = if (exportString != null) ExportState.ExportReady(exportString) else ExportState.Error
                         )
                     }
                 }
@@ -71,15 +71,15 @@ class SettingsVM(
                 is SettingsPageAction.OnRestoreSongs -> {
                     _state.update {
                         it.copy(
-                            restoreState = RestoreState.RESTORING
+                            restoreState = RestoreState.Restoring
                         )
                     }
 
-                    when (restoreRepo.restoreSongs(action.path)) {
+                    when (val result = restoreRepo.restoreSongs(action.path)) {
                         is RestoreResult.Failure -> {
                             _state.update {
                                 it.copy(
-                                    restoreState = RestoreState.FAILURE
+                                    restoreState = RestoreState.Failure(exception = result.exceptionType)
                                 )
                             }
                         }
@@ -87,7 +87,7 @@ class SettingsVM(
                         RestoreResult.Success -> {
                             _state.update {
                                 it.copy(
-                                    restoreState = RestoreState.RESTORED
+                                    restoreState = RestoreState.Restored
                                 )
                             }
                         }
@@ -97,8 +97,8 @@ class SettingsVM(
                 SettingsPageAction.ResetBackup -> {
                     _state.update {
                         it.copy(
-                            restoreState = RestoreState.IDLE,
-                            exportState = ExportState.IDLE
+                            restoreState = RestoreState.Idle,
+                            exportState = ExportState.Exporting
                         )
                     }
                 }
