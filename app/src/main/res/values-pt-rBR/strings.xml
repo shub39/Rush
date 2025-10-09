@@ -3,7 +3,7 @@
     <string name="search">Pesquisar letras</string>
     <string name="saved">Salvos</string>
     <string name="settings">Configurações</string>
-    <string name="empty">Está vazio aqui</string>
+    <string name="empty">Não há nada aqui</string>
     <string name="share">Compartilhar</string>
     <string name="vibrant_colors">Usar Cores Vibrantes</string>
     <string name="save">Salvar mudanças</string>
@@ -129,4 +129,14 @@
     <string name="foss_desc">Todas as funções estão desbloqueadas. Essa versão do aplicativo não suporta compras no app. Se este app agregou valor em sua vida, me apoie com uma doação</string>
     <string name="rush_pro">Funções Rush Pro</string>
     <string name="unlock_more_pro">Desbloqueie mais com o Rush Pro</string>
+    <string name="album_art">Apenas capa</string>
+    <string name="album_art_shape">Formato da capa do álbum</string>
+    <string name="blurred_art">Capa borrada</string>
+    <string name="solid_color">Sólida</string>
+    <string name="lyrics_background">Fundo das letras</string>
+    <string name="plain_lyrics">Simples</string>
+    <string name="synced_lyrics">Sincronizado</string>
+    <string name="blur_synced">Letras borradas e sincronizadas</string>
+    <string name="wave">Onda</string>
+    <string name="gradient">Gradiente</string>
 </resources>
