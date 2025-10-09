@@ -6,7 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,7 +73,7 @@ fun LyricsGraph(
         popExitTransition = { fadeOut() }
     ) {
         composable<LyricsRoutes.LyricsPage> {
-            SideEffect {
+            LaunchedEffect(Unit) {
                 if (lyricsState.fullscreen) {
                     updateSystemBars(context, false)
                 }
@@ -94,7 +94,7 @@ fun LyricsGraph(
         }
 
         composable<LyricsRoutes.LyricsCustomisations> {
-            SideEffect {
+            LaunchedEffect(Unit) {
                 if (lyricsState.fullscreen) {
                     updateSystemBars(context, true)
                 }

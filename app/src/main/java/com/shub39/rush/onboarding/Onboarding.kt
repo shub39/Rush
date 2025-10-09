@@ -53,6 +53,7 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
 import compose.icons.fontawesomeicons.solid.SyncAlt
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -82,7 +83,14 @@ fun Onboarding(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val pagerState = rememberPagerState(0) { OnboardingRoutes.routes.size }
+    val pagerState = rememberPagerState { OnboardingRoutes.routes.size }
+
+    LaunchedEffect(Unit) {
+        while (!notificationAccess) {
+            onUpdateNotificationAccess()
+            delay(1000)
+        }
+    }
 
     BackHandler {}
 
@@ -148,12 +156,6 @@ fun Onboarding(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            LaunchedEffect(Unit) {
-                                while (!notificationAccess) {
-                                    onUpdateNotificationAccess()
-                                }
-                            }
-
                             Box(
                                 modifier = Modifier
                                     .size(100.dp)

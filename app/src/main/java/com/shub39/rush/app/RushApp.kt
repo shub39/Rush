@@ -131,7 +131,9 @@ fun RushApp() {
                                 notificationAccess = notificationAccess,
                                 lyricsState = lyricsState,
                                 lyricsAction = lyricsVM::onAction,
-                                onDismiss = { navController.navigateUp() },
+                                onDismiss = {
+                                    navController.navigateUp()
+                                },
                                 onShare = {
                                     navController.navigate(Route.SharePage) {
                                         launchSingleTop = true
@@ -170,7 +172,8 @@ fun RushApp() {
                                 },
                                 notificationAccess = notificationAccess,
                                 onUpdateNotificationAccess = {
-                                    notificationAccess = NotificationListener.canAccessNotifications(context)
+                                    notificationAccess =
+                                        NotificationListener.canAccessNotifications(context)
                                 }
                             )
                         }
