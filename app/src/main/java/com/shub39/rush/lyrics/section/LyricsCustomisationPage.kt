@@ -42,10 +42,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.SongUi
@@ -201,7 +203,7 @@ fun LyricsCustomisationsPage(
                                     modifier = Modifier
                                         .padding(10.dp)
                                         .fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                    verticalArrangement = Arrangement.spacedBy(with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 })
                                 ) {
                                     if (it) {
                                         val lines by remember {
@@ -241,6 +243,14 @@ fun LyricsCustomisationsPage(
                                     } else {
                                         PlainLyric(
                                             entry = 1 to "This is a very very long text depicting how lyrics should appear based on these settings",
+                                            textPrefs = state.textPrefs,
+                                            onClick = { },
+                                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
+                                            cardContent = cardContent,
+                                        )
+
+                                        PlainLyric(
+                                            entry = 2 to "This is another line",
                                             textPrefs = state.textPrefs,
                                             onClick = { },
                                             containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,

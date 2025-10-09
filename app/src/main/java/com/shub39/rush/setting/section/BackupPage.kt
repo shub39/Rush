@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -165,7 +166,7 @@ private fun BackupPageContent(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        IconButton(
+                        FilledTonalIconButton(
                             onClick = onSaveFile,
                             enabled = state.exportState is ExportState.ExportReady
                         ) {
