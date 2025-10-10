@@ -47,15 +47,15 @@ fun CurveVisualizer(
 
         val bassMax by animateFloatAsState(
             targetValue = bassBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
+            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
         )
         val midMax by animateFloatAsState(
             targetValue = midBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
+            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
         )
         val trebleMax by animateFloatAsState(
             targetValue = trebleBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessVeryLow, dampingRatio = Spring.DampingRatioNoBouncy)
+            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
         )
 
         var startMillis = remember(colors) { -1L }
