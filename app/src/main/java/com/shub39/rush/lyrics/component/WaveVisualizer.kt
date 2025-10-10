@@ -4,14 +4,21 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.tooling.preview.Preview
+import com.shub39.rush.core.domain.data_classes.Theme
+import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.WaveColors
 import io.gitlab.bpavuk.viz.VisualizerData
+import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.bassBucket
 import io.gitlab.bpavuk.viz.midBucket
+import io.gitlab.bpavuk.viz.rememberVisualizerState
 import io.gitlab.bpavuk.viz.trebleBucket
 import kotlin.math.absoluteValue
 
@@ -74,6 +81,29 @@ fun WaveVisualizer(
         drawPath(
             path = path,
             color = colors.cardWaveBackground
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    val waveData = rememberVisualizerState().let { state ->
+        if (state !is VisualizerState.Ready) return@let null
+
+        state.fft
+    }
+
+    RushTheme(
+        theme = Theme()
+    ) {
+        WaveVisualizer(
+            waveData = waveData,
+            colors = WaveColors(
+                cardBackground = MaterialTheme.colorScheme.background,
+                cardWaveBackground = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

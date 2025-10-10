@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.Audiotrack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +60,7 @@ import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ColorPickerDialog
 import com.shub39.rush.core.presentation.ListSelect
+import com.shub39.rush.core.presentation.RushDialog
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.SettingSlider
 import com.shub39.rush.core.presentation.blurAvailable
@@ -91,6 +95,7 @@ fun LyricsCustomisationsPage(
     val waveColors = getWaveColors(state)
 
     var colorPickerDialog by remember { mutableStateOf(false) }
+    var audioPermissionDialog by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
     var isShowingSynced by remember { mutableStateOf(state.sync) }
 
@@ -270,13 +275,11 @@ fun LyricsCustomisationsPage(
                     options = LyricsBackground.allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
-                        onAction(
-                            LyricsPageAction.OnChangeLyricsBackground(
-                                background = it,
-                                audioPermissionGranted = microphonePermission,
-                                requestAudioPermission = requestMicrophonePermission
-                            )
-                        )
+                        if (it !in LyricsBackground.audioDependentBackrounds || microphonePermission) {
+                            onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
+                        } else {
+                            audioPermissionDialog = true
+                        }
                     },
                     labelProvider = { Text(text = stringResource(it.stringRes)) },
                 )
@@ -475,6 +478,12 @@ fun LyricsCustomisationsPage(
         }
     }
 
+    AudioPermissionDialog(
+        show = audioPermissionDialog,
+        onDismiss = { audioPermissionDialog = false },
+        onLaunchPermission = requestMicrophonePermission
+    )
+
     if (colorPickerDialog) {
         ColorPickerDialog(
             initialColor = if (editTarget == "content") {
@@ -491,6 +500,57 @@ fun LyricsCustomisationsPage(
         )
     }
 
+}
+
+@Preview
+@Composable
+private fun AudioPermissionDialog(
+    show: Boolean = true,
+    onDismiss: () -> Unit = {},
+    onLaunchPermission: () -> Unit = {}
+) {
+    if (show) {
+        RushDialog(
+            onDismissRequest = onDismiss
+        ) {
+            Column(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Audiotrack,
+                    contentDescription = null
+                )
+
+                Text(
+                    text = stringResource(R.string.audio_permission),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Text(
+                    text = stringResource(R.string.audio_permission_info),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Button(
+                    onClick = {
+                        onLaunchPermission()
+                        onDismiss()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.grant_permission)
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Preview

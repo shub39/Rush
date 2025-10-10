@@ -8,11 +8,7 @@ import com.shub39.rush.core.domain.enums.Sources
 
 sealed interface LyricsPageAction {
     data class OnBlurSyncedChange(val pref: Boolean): LyricsPageAction
-    data class OnChangeLyricsBackground(
-        val background: LyricsBackground,
-        val audioPermissionGranted: Boolean,
-        val requestAudioPermission: () -> Unit
-    ): LyricsPageAction
+    data class OnChangeLyricsBackground(val background: LyricsBackground): LyricsPageAction
     data class OnMaxLinesChange(val lines: Int): LyricsPageAction
     data class OnFullscreenChange(val pref: Boolean): LyricsPageAction
     data object OnCustomisationReset: LyricsPageAction

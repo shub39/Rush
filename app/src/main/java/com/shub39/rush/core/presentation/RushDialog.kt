@@ -1,5 +1,6 @@
 package com.shub39.rush.core.presentation
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -12,14 +13,15 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun RushDialog(
     onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable  (ColumnScope.() -> Unit)
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
         Card(
             modifier = Modifier.widthIn(max = 500.dp),
-            shape = MaterialTheme.shapes.extraLarge
-        ) { content() }
+            shape = MaterialTheme.shapes.extraLarge,
+            content = content
+        )
     }
 }

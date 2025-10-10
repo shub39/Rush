@@ -5,6 +5,7 @@ import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -13,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.tooling.preview.Preview
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
 
 @Composable
 fun HypnoticVisualizer(
@@ -89,3 +93,17 @@ private fun getSksl(
         return vec4(finalColor / totalWeight, 1.0);
     }
 """
+
+@Preview
+@Composable
+private fun Preview() {
+    HypnoticVisualizer(
+        colors = listOf(
+            Color.Red,
+            Color.Red.lighten(2f),
+            Color.Yellow.darken(2f),
+            Color.Yellow
+        ),
+        modifier = Modifier.fillMaxSize()
+    )
+}

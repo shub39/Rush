@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalInspectionMode
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "VisualizerState"
 
@@ -30,18 +29,20 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
 
     if (inPreview) {
         LaunchedEffect(*keys) {
-            val zeroWaves = List(128) { 0.toByte() }
-            val negativeWaves = List(128) { Byte.MIN_VALUE }
-            val positiveWaves = List(128) { Byte.MAX_VALUE }
+            val captureSize = 128
+            val waveform = List(captureSize) { 0.toByte() }.toMutableList()
+            val fft = List(captureSize) { 0.toByte() }.toMutableList()
             while (true) {
-                waveData = VisualizerState.Ready(zeroWaves, zeroWaves)
-                delay(1.seconds)
-                waveData = VisualizerState.Ready(negativeWaves, negativeWaves)
-                delay(1.seconds)
-                waveData = VisualizerState.Ready(zeroWaves, zeroWaves)
-                delay(1.seconds)
-                waveData = VisualizerState.Ready(positiveWaves, positiveWaves)
-                delay(1.seconds)
+                for (i in 0 until captureSize) {
+                    waveform[i] = (-128 + (0..255).random()).toByte()
+                    fft[i] = (-128 + (0..255).random()).toByte()
+                }
+                waveData = VisualizerState.Ready(
+                    waveform = waveform.toList(),
+                    fft = fft.toList()
+                )
+                // A realistic capture rate is way faster, but this is enough for a preview
+                delay(100)
             }
         }
     } else {
