@@ -1,5 +1,7 @@
 package com.shub39.rush.lyrics
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
@@ -11,6 +13,8 @@ import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.domain.enums.Sources
 
+@Stable
+@Immutable
 data class LyricsPageState(
     // non-datastore
     val song: SongUi? = null,
@@ -39,6 +43,8 @@ data class LyricsPageState(
     val fullscreen: Boolean = false
 )
 
+@Stable
+@Immutable
 data class TextPrefs(
     val fontSize: Float = 28f,
     val lineHeight: Float = 32f,
@@ -46,6 +52,8 @@ data class TextPrefs(
     val textAlign: TextAlign = TextAlign.Start
 )
 
+@Stable
+@Immutable
 data class PlayingSong(
     val title: String = "",
     val artist: String? = null,
@@ -53,6 +61,8 @@ data class PlayingSong(
     val speed: Float = 0f
 )
 
+@Stable
+@Immutable
 data class LrcCorrect(
     val searchResults: List<LrcLibSong> = emptyList(),
     val searching: Boolean = false,
