@@ -1,12 +1,10 @@
 package com.shub39.rush.share.component.cards
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,7 +15,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -27,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.core.domain.data_classes.SongDetails
@@ -44,7 +42,8 @@ private data class Word(
     val text: String,
     val fontWeight: FontWeight,
     val fontSize: Int,
-    val rotate: Int
+    val rotate: Int,
+    val fontDecoration: TextDecoration
 )
 
 @Composable
@@ -62,9 +61,13 @@ fun MessyCard(
         firstLine.split(" ").map {
             Word(
                 text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
-                fontWeight = if (Random.nextBoolean()) FontWeight.Bold else FontWeight.ExtraBold,
+                fontWeight = if (Random.nextBoolean()) FontWeight.Normal else FontWeight.ExtraBold,
                 fontSize = Random.nextInt(50, 100),
-                rotate = Random.nextInt(-10..10)
+                rotate = Random.nextInt(-10..10),
+                fontDecoration = listOf(
+                    TextDecoration.Underline,
+                    TextDecoration.None
+                ).random()
             )
         }
     }
@@ -92,12 +95,16 @@ fun MessyCard(
                     Text(
                         modifier = Modifier.rotate(word.rotate.toFloat()),
                         text = word.text,
-                        style = MaterialTheme.typography.titleMedium.fromPx(
-                            fontSize = word.fontSize,
-                            letterSpacing = 0,
-                            lineHeight = word.fontSize,
-                            fontWeight = word.fontWeight
-                        ),
+                        style = MaterialTheme.typography.titleMedium
+                            .copy(
+                                textDecoration = word.fontDecoration
+                            )
+                            .fromPx(
+                                fontSize = word.fontSize,
+                                letterSpacing = 0,
+                                lineHeight = word.fontSize,
+                                fontWeight = word.fontWeight,
+                            ),
                     )
                 }
             }
@@ -156,27 +163,25 @@ private fun Preview() {
             appTheme = AppTheme.DARK
         )
     ) {
-        Scaffold { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                MessyCard(
-                    modifier = Modifier
-                        .width(pxToDp(720))
-                        .heightIn(max = pxToDp(1280)),
-                    song = SongDetails(
-                        title = "Test Song",
-                        artist = "Eminem",
-                    ),
-                    sortedLines = (0..5).associateWith { "This is a simple line $it" },
-                    cardColors = CardDefaults.cardColors(),
-                    cardCorners = RoundedCornerShape(pxToDp(48)),
-                    fit = CardFit.FIT
-                )
-            }
-        }
+        MessyCard(
+            modifier = Modifier
+                .width(pxToDp(720))
+                .heightIn(max = pxToDp(1280)),
+            song = SongDetails(
+                title = "Test Song",
+                artist = "Eminem",
+            ),
+            sortedLines = mapOf(
+                0 to "This is a simple line"
+            ).plus(
+                0 to "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
+            ),
+            cardColors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            cardCorners = RoundedCornerShape(pxToDp(48)),
+            fit = CardFit.FIT
+        )
     }
 }

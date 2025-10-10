@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +15,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,6 +31,7 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.RushBranding
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.fromPx
 import com.shub39.rush.share.pxToDp
@@ -77,13 +76,18 @@ fun CoupletShareCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
+                    RushBranding(
+                        color = cardColors.contentColor,
+                        modifier = Modifier.padding(bottom = pxToDp(48))
+                    )
+
                     Text(
                         text = sortedLines.values.firstOrNull() ?: "Woah...",
                         style = MaterialTheme.typography.displayMedium.fromPx(
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 40,
+                            fontSize = 48,
                             letterSpacing = 0,
-                            lineHeight = 40,
+                            lineHeight = 48,
                         ),
                     )
 
@@ -91,8 +95,8 @@ fun CoupletShareCard(
                         text = sortedLines.values.elementAtOrNull(1) ?: "...",
                         style = MaterialTheme.typography.displaySmall.fromPx(
                             letterSpacing = 0,
-                            lineHeight = 30,
-                            fontSize = 30
+                            lineHeight = 38,
+                            fontSize = 36
                         ),
                     )
 
@@ -111,7 +115,7 @@ fun CoupletShareCard(
                         )
 
                         Column(
-                            modifier = Modifier.padding(horizontal = pxToDp(32))
+                            modifier = Modifier.padding(horizontal = pxToDp(16))
                         ) {
                             Text(
                                 text = song.title,
@@ -128,7 +132,7 @@ fun CoupletShareCard(
                             Text(
                                 text = song.artist,
                                 style = MaterialTheme.typography.bodySmall.fromPx(
-                                    fontSize = 26,
+                                    fontSize = 24,
                                     letterSpacing = 0,
                                     lineHeight = 0,
                                 ),
@@ -151,27 +155,25 @@ private fun Preview() {
             appTheme = AppTheme.DARK
         )
     ) {
-        Scaffold { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CoupletShareCard(
-                    modifier = Modifier
-                        .width(pxToDp(720))
-                        .heightIn(max = pxToDp(1280)),
-                    song = SongDetails(
-                        title = "Test Song",
-                        artist = "Eminem",
-                    ),
-                    sortedLines = (0..5).associateWith { "This is a simple line $it" },
-                    cardColors = CardDefaults.cardColors(),
-                    cardCorners = RoundedCornerShape(pxToDp(48)),
-                    fit = CardFit.FIT
-                )
-            }
-        }
+        CoupletShareCard(
+            modifier = Modifier
+                .width(pxToDp(720))
+                .heightIn(max = pxToDp(1280)),
+            song = SongDetails(
+                title = "Test Song",
+                artist = "Eminem",
+            ),
+            sortedLines = mapOf(
+                0 to "This is a simple line"
+            ).plus(
+                2 to "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
+            ),
+            cardColors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            cardCorners = RoundedCornerShape(pxToDp(48)),
+            fit = CardFit.FIT
+        )
     }
 }
