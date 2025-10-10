@@ -267,7 +267,7 @@ fun LyricsCustomisationsPage(
                     options = LyricsBackground.allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
-                        if (it !in LyricsBackground.audioDependentBackrounds || microphonePermission) {
+                        if (it !in LyricsBackground.audioDependentBackgrounds || microphonePermission) {
                             onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
                         } else {
                             audioPermissionDialog = true

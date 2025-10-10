@@ -9,17 +9,20 @@ enum class LyricsBackground(val stringRes: Int) {
     ALBUM_ART(R.string.blurred_art),
     SOLID_COLOR(R.string.solid_color),
     WAVE(R.string.wave),
-    GRADIENT(R.string.gradient);
+    GRADIENT(R.string.gradient),
+    CURVE(R.string.curve)
+
+    ;
 
     companion object {
         val allBackgrounds = if (hypnoticAvailable()) {
-            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE, GRADIENT)
+            listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE, GRADIENT, CURVE)
         } else if (blurAvailable()) {
-            listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT)
+            listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT, CURVE)
         } else {
-            listOf(SOLID_COLOR, WAVE, GRADIENT)
+            listOf(SOLID_COLOR, WAVE, GRADIENT, CURVE)
         }
 
-        val audioDependentBackrounds = listOf(WAVE, GRADIENT)
+        val audioDependentBackgrounds = listOf(WAVE, GRADIENT, CURVE)
     }
 }

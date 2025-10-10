@@ -23,7 +23,7 @@ class GeniusScraper(
         )
 
         val nonLyricsRegex = listOf(
-            Regex("^\\d+ Contributors.*"),
+            Regex("^\\d+Contributors.*"),
             Regex("^\\d+ Contributor.*"),
             Regex("(?i)^Translations.*"),
             Regex("(?i)^Read More.*"),

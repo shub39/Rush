@@ -379,7 +379,7 @@ fun LyricsPage(
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
                 modifier = Modifier.run {
-                    if (state.lyricsBackground in LyricsBackground.audioDependentBackrounds) {
+                    if (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds) {
                         glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
                     } else {
                         this

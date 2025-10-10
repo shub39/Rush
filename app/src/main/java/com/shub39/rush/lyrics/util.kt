@@ -22,6 +22,7 @@ import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.HypnoticVisualizer
 import com.shub39.rush.core.presentation.WaveColors
 import com.shub39.rush.core.presentation.generateGradientColors
+import com.shub39.rush.lyrics.component.CurveVisualizer
 import com.shub39.rush.lyrics.component.GradientVisualizer
 import com.shub39.rush.lyrics.component.WaveVisualizer
 import io.gitlab.bpavuk.viz.VisualizerData
@@ -144,10 +145,10 @@ fun getWaveColors(
     )
     val cardWaveBackground by animateColorAsState(
         targetValue = when (state.cardColors) {
-            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant, 1f)
-            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted, 1f)
-            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 0.5f)
-        }.darken(0.5f)
+            CardColors.MUTED -> state.extractedColors.cardBackgroundMuted.blend(state.extractedColors.cardBackgroundDominant, 0.25f).darken(1.5f)
+            CardColors.VIBRANT -> state.extractedColors.cardBackgroundDominant.blend(state.extractedColors.cardBackgroundMuted, 0.25f).lighten(1.5f)
+            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
+        }
     )
 
     return WaveColors(
@@ -212,6 +213,14 @@ fun BoxWithConstraintsScope.ApplyLyricsBackground(
                 modifier = Modifier
                     .matchParentSize()
                     .background(cardBackground)
+            )
+        }
+
+        LyricsBackground.CURVE -> {
+            CurveVisualizer(
+                modifier = Modifier.matchParentSize(),
+                waveData = waveData,
+                colors = waveColors
             )
         }
     }
