@@ -253,14 +253,6 @@ fun LyricsCustomisationsPage(
                                             containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                                             cardContent = cardContent,
                                         )
-
-                                        PlainLyric(
-                                            entry = 2 to "This is another line",
-                                            textPrefs = state.textPrefs,
-                                            onClick = { },
-                                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
-                                            cardContent = cardContent,
-                                        )
                                     }
                                 }
                             }
