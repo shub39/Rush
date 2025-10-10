@@ -140,4 +140,5 @@
     <string name="gradient">Gradient</string>
     <string name="audio_permission">Record Audio Permission Required</string>
     <string name="audio_permission_info">This background visualizes your current playing song</string>
+    <string name="curve">Curve</string>
 </resources>

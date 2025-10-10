@@ -57,7 +57,7 @@ import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.component.LoadingCard
-import com.shub39.rush.lyrics.component.LrcCorrectDialog
+import com.shub39.rush.lyrics.component.LrcCorrectSheet
 import com.shub39.rush.lyrics.component.PlainLyrics
 import com.shub39.rush.lyrics.component.SyncedLyrics
 import com.shub39.rush.lyrics.getCardColors
@@ -379,7 +379,7 @@ fun LyricsPage(
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
                 modifier = Modifier.run {
-                    if (state.lyricsBackground in LyricsBackground.audioDependentBackrounds) {
+                    if (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds) {
                         glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
                     } else {
                         this
@@ -400,7 +400,7 @@ fun LyricsPage(
 
     // Lyrics Correction from LRCLIB
     if (state.lyricsCorrect) {
-        LrcCorrectDialog(
+        LrcCorrectSheet(
             action = action,
             state = state
         )

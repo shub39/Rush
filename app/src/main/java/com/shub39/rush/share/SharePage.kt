@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -27,7 +26,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
@@ -357,36 +355,6 @@ private fun SharePageContent(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp)
             ) {
-                AnimatedVisibility(
-                    visible = state.cardColors == CardColors.CUSTOM
-                ) {
-                    Row {
-                        IconButton(
-                            onClick = {
-                                editTarget = "content"
-                                colorPicker = true
-                            },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.cardContent)
-                            ),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            content = {}
-                        )
-
-                        IconButton(
-                            onClick = {
-                                editTarget = "background"
-                                colorPicker = true
-                            },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.cardBackground)
-                            ),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            content = {}
-                        )
-                    }
-                }
-
                 IconButton(
                     onClick = {
                         if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
@@ -441,7 +409,11 @@ private fun SharePageContent(
         SharePageSheet(
             state = state,
             onAction = onAction,
-            onDismissRequest = { editSheet = false }
+            onDismissRequest = { editSheet = false },
+            onLaunchColorPicker = {
+                editTarget = it
+                colorPicker = true
+            },
         )
     }
 

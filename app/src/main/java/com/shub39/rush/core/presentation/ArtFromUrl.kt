@@ -60,6 +60,6 @@ private fun getPlaceholder(): Painter {
             1,
             1,
             Bitmap.Config.ARGB_8888
-        ).apply { eraseColor(android.graphics.Color.BLACK) }.asImageBitmap()
+        ).apply { eraseColor(android.graphics.Color.RED) }.asImageBitmap()
     )
 }

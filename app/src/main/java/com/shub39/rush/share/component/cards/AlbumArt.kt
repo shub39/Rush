@@ -1,12 +1,10 @@
 package com.shub39.rush.share.component.cards
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -20,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes.Companion.VerySunny
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -116,27 +113,21 @@ private fun Preview() {
             appTheme = AppTheme.DARK
         )
     ) {
-        Scaffold { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                AlbumArt(
-                    modifier = Modifier
-                        .width(pxToDp(720))
-                        .heightIn(max = pxToDp(1280)),
-                    song = SongDetails(
-                        title = "Test Song",
-                        artist = "Eminem",
-                    ),
-                    cardColors = CardDefaults.cardColors(),
-                    cardCorners = RoundedCornerShape(pxToDp(32)),
-                    fit = CardFit.FIT,
-                    albumArtShape = VerySunny.toShape()
-                )
-            }
-        }
+        AlbumArt(
+            modifier = Modifier
+                .width(pxToDp(720))
+                .heightIn(max = pxToDp(1280)),
+            song = SongDetails(
+                title = "Test Song",
+                artist = "Eminem",
+            ),
+            cardColors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            cardCorners = RoundedCornerShape(pxToDp(32)),
+            fit = CardFit.FIT,
+            albumArtShape = VerySunny.toShape()
+        )
     }
 }

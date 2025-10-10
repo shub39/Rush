@@ -253,14 +253,6 @@ fun LyricsCustomisationsPage(
                                             containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
                                             cardContent = cardContent,
                                         )
-
-                                        PlainLyric(
-                                            entry = 2 to "This is another line",
-                                            textPrefs = state.textPrefs,
-                                            onClick = { },
-                                            containerColor = if (state.lyricsBackground != LyricsBackground.SOLID_COLOR) Color.Transparent else cardBackground,
-                                            cardContent = cardContent,
-                                        )
                                     }
                                 }
                             }
@@ -275,7 +267,7 @@ fun LyricsCustomisationsPage(
                     options = LyricsBackground.allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
-                        if (it !in LyricsBackground.audioDependentBackrounds || microphonePermission) {
+                        if (it !in LyricsBackground.audioDependentBackgrounds || microphonePermission) {
                             onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
                         } else {
                             audioPermissionDialog = true

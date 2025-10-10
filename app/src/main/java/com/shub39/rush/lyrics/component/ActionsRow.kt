@@ -164,7 +164,7 @@ fun ActionsRow(
                     },
                     modifier = Modifier.run {
                         if (state.sync &&
-                            (state.lyricsBackground in LyricsBackground.audioDependentBackrounds)
+                            (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds)
                         ) {
                             glowBackground(
                                 (12 * glowMultiplier).dp,
@@ -199,7 +199,7 @@ fun ActionsRow(
                 modifier = Modifier.run {
                     if (
                         state.autoChange &&
-                        (state.lyricsBackground in LyricsBackground.audioDependentBackrounds)
+                        (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds)
                     ) {
                         glowBackground(
                             (12 * glowMultiplier).dp,
