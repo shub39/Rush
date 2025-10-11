@@ -7,6 +7,7 @@ import com.shub39.rush.core.domain.OtherPreferences
 import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.getMainTitle
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.saved.SavedPageAction
 import com.shub39.rush.saved.SavedPageState
@@ -124,19 +125,18 @@ class SavedVM(
     }
 
     private suspend fun fetchLyrics(id: Long) {
-        if (stateLayer.lyricsState.value.fetching.first) return
+        if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
         val result = repo.getSong(id).toSongUi()
 
         stateLayer.lyricsState.update {
             it.copy(
-                song = result,
+                lyricsState = LyricsState.Loaded(song = result),
                 source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                 syncedAvailable = result.syncedLyrics != null,
                 sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                     .lowercase() == getMainTitle(result.title).trim().lowercase()),
                 selectedLines = emptyMap(),
-                error = null
             )
         }
 

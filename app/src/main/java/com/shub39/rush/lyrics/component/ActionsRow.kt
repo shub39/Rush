@@ -30,6 +30,7 @@ import com.shub39.rush.core.presentation.copyToClipboard
 import com.shub39.rush.core.presentation.glowBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
@@ -64,28 +65,29 @@ fun ActionsRow(
 
         IconButton(
             onClick = {
-                coroutineScope.launch {
-                    clipboardManager.copyToClipboard(
-                        if (state.selectedLines.isEmpty()) {
-                            buildAnnotatedString {
-                                append(
-                                    if (state.source == Sources.LrcLib) {
-                                        state.song?.lyrics?.joinToString("\n") { it.value }
-                                            ?: ""
-                                    } else {
-                                        state.song?.geniusLyrics?.joinToString("\n") { it.value }
-                                            ?: ""
-                                    }
-                                )
-                            }
-                        } else {
-                            buildAnnotatedString {
-                                append(
-                                    state.selectedLines.toSortedMap().values.joinToString("\n")
-                                )
-                            }
-                        }.toString()
-                    )
+                if (state.lyricsState is LyricsState.Loaded) {
+                    coroutineScope.launch {
+                        clipboardManager.copyToClipboard(
+                            if (state.selectedLines.isEmpty()) {
+                                buildAnnotatedString {
+                                    append(
+                                        if (state.source == Sources.LrcLib) {
+                                            state.lyricsState.song.lyrics.joinToString("\n") { it.value }
+                                        } else {
+                                            state.lyricsState.song.geniusLyrics?.joinToString("\n") { it.value }
+                                                ?: ""
+                                        }
+                                    )
+                                }
+                            } else {
+                                buildAnnotatedString {
+                                    append(
+                                        state.selectedLines.toSortedMap().values.joinToString("\n")
+                                    )
+                                }
+                            }.toString()
+                        )
+                    }
                 }
             }
         ) {
@@ -221,20 +223,24 @@ fun ActionsRow(
 
         AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
             Row {
-                IconButton(onClick = {
-                    action(
-                        LyricsPageAction.OnUpdateShareLines(
-                            songDetails = SongDetails(
-                                title = state.song?.title!!,
-                                artist = state.song.artists,
-                                album = state.song.album,
-                                artUrl = state.song.artUrl ?: ""
+                IconButton(
+                    onClick = {
+                        if (state.lyricsState is LyricsState.Loaded) {
+                            action(
+                                LyricsPageAction.OnUpdateShareLines(
+                                    songDetails = SongDetails(
+                                        title = state.lyricsState.song.title,
+                                        artist = state.lyricsState.song.artists,
+                                        album = state.lyricsState.song.album,
+                                        artUrl = state.lyricsState.song.artUrl ?: ""
+                                    )
+                                )
                             )
-                        )
-                    )
 
-                    onShare()
-                }) {
+                            onShare()
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Share"

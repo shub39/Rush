@@ -10,6 +10,7 @@ import com.shub39.rush.core.domain.data_classes.SearchResult
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.getMainTitle
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.search_sheet.SearchSheetAction
 import com.shub39.rush.search_sheet.SearchSheetState
@@ -143,13 +144,13 @@ class SearchSheetVM(
         query: String,
         fetch: Boolean = stateLayer.lyricsState.value.autoChange,
     ) {
-        if (query.isEmpty() || stateLayer.lyricsState.value.searching.first || query == _lastSearched.value) return
+        if (query.isEmpty() || stateLayer.lyricsState.value.lyricsState is LyricsState.Searching || query == _lastSearched.value) return
 
         viewModelScope.launch {
             stateLayer.lyricsState.update {
                 it.copy(
-                    searching = Pair(true, query),
-                    sync = false
+                    sync = false,
+                    lyricsState = LyricsState.Searching(query)
                 )
             }
 
@@ -164,7 +165,10 @@ class SearchSheetVM(
                     is Result.Error -> {
                         stateLayer.lyricsState.update {
                             it.copy(
-                                error = errorStringRes(result.error)
+                                lyricsState = LyricsState.LyricsError(
+                                    errorCode = errorStringRes(result.error),
+                                    error = "No Search Result?"
+                                ),
                             )
                         }
                     }
@@ -179,20 +183,12 @@ class SearchSheetVM(
                         if (fetch) _lastSearched.value = query
 
                         stateLayer.lyricsState.update {
-                            it.copy(
-                                error = null
-                            )
+                            it.copy(lyricsState = LyricsState.Idle)
                         }
                     }
                 }
 
             } finally {
-                stateLayer.lyricsState.update {
-                    it.copy(
-                        searching = Pair(false, "")
-                    )
-                }
-
                 _state.update {
                     it.copy(
                         isSearching = false
@@ -200,7 +196,7 @@ class SearchSheetVM(
                 }
             }
 
-            if (fetch && stateLayer.lyricsState.value.error == null && _state.value.searchResults.isNotEmpty()) {
+            if (fetch && stateLayer.lyricsState.value.lyricsState !is LyricsState.LyricsError && _state.value.searchResults.isNotEmpty()) {
 
                 fetchLyrics(_state.value.searchResults.first().id)
 
@@ -215,74 +211,64 @@ class SearchSheetVM(
     }
 
     private suspend fun fetchLyrics(songId: Long) {
-        if (stateLayer.lyricsState.value.fetching.first) return
+        if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
         val song = _state.value.searchResults.find { it.id == songId }
 
         stateLayer.lyricsState.update {
             it.copy(
-                fetching = Pair(true, "${song?.title} - ${song?.artist}"),
+                lyricsState = LyricsState.Fetching("${song?.title} - ${song?.artist}"),
                 extractedColors = ExtractedColors(),
                 sync = false
             )
         }
 
-        try {
-            if (songId in stateLayer.savedPageState.value.songsAsc.map { it.id }) {
-                val result = repo.getSong(songId).toSongUi()
+        if (songId in stateLayer.savedPageState.value.songsAsc.map { it.id }) {
+            val result = repo.getSong(songId).toSongUi()
 
-                stateLayer.lyricsState.update {
-                    it.copy(
-                        song = result,
-                        source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
-                        syncedAvailable = result.syncedLyrics != null,
-                        sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim().lowercase() == getMainTitle(result.title).trim().lowercase()),
-                        selectedLines = emptyMap(),
-                        error = null
-                    )
-                }
-
-                stateLayer.savedPageState.update {
-                    it.copy(currentSong = result)
-                }
-            } else {
-                when (val result = repo.fetchSong(songId)) {
-                    is Result.Error -> {
-                        stateLayer.lyricsState.update {
-                            it.copy(
-                                error = errorStringRes(result.error)
-                            )
-                        }
-                    }
-
-                    is Result.Success -> {
-                        val retrievedSong = result.data.toSongUi()
-
-                        stateLayer.lyricsState.update {
-                            it.copy(
-                                song = retrievedSong,
-                                source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
-                                syncedAvailable = retrievedSong.syncedLyrics != null,
-                                sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                                    .lowercase() == getMainTitle(retrievedSong.title).trim()
-                                    .lowercase()),
-                                selectedLines = emptyMap(),
-                                error = null
-                            )
-                        }
-
-                        stateLayer.savedPageState.update {
-                            it.copy(currentSong = retrievedSong)
-                        }
-                    }
-                }
-
-            }
-        } finally {
             stateLayer.lyricsState.update {
                 it.copy(
-                    fetching = Pair(false, "")
+                    lyricsState = LyricsState.Loaded(song = result),
+                    source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                    syncedAvailable = result.syncedLyrics != null,
+                    sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
+                        .lowercase() == getMainTitle(result.title).trim().lowercase()),
+                    selectedLines = emptyMap(),
                 )
+            }
+
+            stateLayer.savedPageState.update {
+                it.copy(currentSong = result)
+            }
+        } else {
+            when (val result = repo.fetchSong(songId)) {
+                is Result.Error -> {
+                    stateLayer.lyricsState.update {
+                        it.copy(
+                            lyricsState = LyricsState.LyricsError(errorCode = errorStringRes(result.error))
+                        )
+                    }
+                }
+
+                is Result.Success -> {
+                    val retrievedSong = result.data.toSongUi()
+
+                    stateLayer.lyricsState.update {
+                        it.copy(
+                            lyricsState = LyricsState.Loaded(song = retrievedSong),
+                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                            syncedAvailable = retrievedSong.syncedLyrics != null,
+                            sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
+                                .lowercase() == getMainTitle(retrievedSong.title).trim()
+                                .lowercase()),
+                            selectedLines = emptyMap(),
+                        )
+                    }
+
+                    stateLayer.savedPageState.update {
+                        it.copy(currentSong = retrievedSong)
+                    }
+                }
             }
         }
     }

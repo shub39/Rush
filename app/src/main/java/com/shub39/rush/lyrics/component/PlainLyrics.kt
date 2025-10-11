@@ -44,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.enums.Sources
-import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.TextPrefs
 import com.shub39.rush.lyrics.updateSelectedLines
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +64,7 @@ fun PlainLyrics(
     val hapticFeedback = LocalHapticFeedback.current
     val uriHandler = LocalUriHandler.current
 
-    val song = state.song!!
+    val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
 
     val items = if (state.source == Sources.LrcLib) song.lyrics else song.geniusLyrics
 
@@ -144,7 +144,7 @@ fun PlainLyrics(
                                         modifier = Modifier.size(100.dp)
                                     )
 
-                                    Text(stringResource(errorStringRes(it.second!!)))
+                                    Text(stringResource(it.second!!.errorCode))
 
                                     TextButton(
                                         onClick = {

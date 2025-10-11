@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Search
@@ -133,7 +134,7 @@ fun LrcCorrectSheet(
                         onClick = {
                             action(
                                 LyricsPageAction.OnUpdateSongLyrics(
-                                    state.song?.id!!,
+                                    (state.lyricsState as LyricsState.Loaded).song.id,
                                     it.plainLyrics!!,
                                     it.syncedLyrics
                                 )

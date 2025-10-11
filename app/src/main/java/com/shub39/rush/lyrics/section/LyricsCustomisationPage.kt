@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.data_classes.Lyric
-import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardColors
@@ -68,6 +67,7 @@ import com.shub39.rush.core.presentation.getRandomLine
 import com.shub39.rush.lyrics.ApplyLyricsBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.component.PlainLyric
 import com.shub39.rush.lyrics.component.SyncedLyric
 import com.shub39.rush.lyrics.getCardColors
@@ -192,7 +192,7 @@ fun LyricsCustomisationsPage(
                         BoxWithConstraints {
                             ApplyLyricsBackground(
                                 background = state.lyricsBackground,
-                                artUrl = state.song?.artUrl,
+                                artUrl = (state.lyricsState as LyricsState.Loaded).song.artUrl,
                                 cardBackground = cardBackground,
                                 waveData = waveData,
                                 waveColors = waveColors,
@@ -551,13 +551,6 @@ private fun Preview() {
     var state by remember {
         mutableStateOf(
             LyricsPageState(
-                song = SongUi(
-                    id = 0,
-                    title = "Random Song",
-                    artists = "shub39",
-                    artUrl = "",
-                    lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
-                ),
                 sync = true,
                 lyricsBackground = LyricsBackground.ALBUM_ART
             )

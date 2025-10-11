@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.TextPrefs
 import com.shub39.rush.lyrics.getCurrentLyricIndex
 import com.shub39.rush.lyrics.getNextLyricTime
@@ -65,13 +66,15 @@ fun SyncedLyrics(
     val hapticFeedback = LocalHapticFeedback.current
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
+    val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
+
     // updater for synced lyrics
     LaunchedEffect(state.playingSong.position) {
         coroutineScope.launch {
             val currentIndex =
                 getCurrentLyricIndex(
                     state.playingSong.position,
-                    state.song?.syncedLyrics!!
+                    syncedLyrics
                 ).coerceAtLeast(0)
 
             val viewportHeight = lazyListState.layoutInfo.viewportEndOffset -
@@ -95,8 +98,8 @@ fun SyncedLyrics(
         userScrollEnabled = state.playingSong.speed == 0f,
         state = lazyListState
     ) {
-        itemsIndexed(state.song?.syncedLyrics!!) { index, lyric ->
-            val nextTime = getNextLyricTime(index, state.song.syncedLyrics)
+        itemsIndexed(syncedLyrics) { index, lyric ->
+            val nextTime = getNextLyricTime(index, syncedLyrics)
             val currentTime = state.playingSong.position
 
             val progress = nextTime?.let { nt ->
@@ -114,8 +117,8 @@ fun SyncedLyrics(
             )
 
             val isCurrent = lyric.time <= state.playingSong.position &&
-                    state.song.syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
-                state.playingSong.position, state.song.syncedLyrics
+                    syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
+                state.playingSong.position, syncedLyrics
             )
 
             val glowAlpha by animateFloatAsState(

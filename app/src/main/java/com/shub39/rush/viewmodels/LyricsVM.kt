@@ -11,6 +11,7 @@ import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.sortMapByKeys
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
+import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.breakLyrics
 import com.shub39.rush.lyrics.toSongUi
 import kotlinx.coroutines.Dispatchers
@@ -123,8 +124,8 @@ class LyricsVM(
 
                     _state.update {
                         it.copy(
-                            song = song,
-                            syncedAvailable = song.syncedLyrics != null
+                            syncedAvailable = song.syncedLyrics != null,
+                            lyricsState = LyricsState.Loaded(song = song)
                         )
                     }
                 }
@@ -203,7 +204,10 @@ class LyricsVM(
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
-                                    scraping = Pair(false, result.error)
+                                    scraping = Pair(false, LyricsState.LyricsError(
+                                        errorCode = errorStringRes(result.error),
+                                        error = "Error while scraping"
+                                    ))
                                 )
                             }
                         }
@@ -212,9 +216,11 @@ class LyricsVM(
                             _state.update {
                                 it.copy(
                                     scraping = Pair(false, null),
-                                    song = it.song?.copy(
-                                        geniusLyrics = breakLyrics(result.data)
-                                    )
+                                    lyricsState = (it.lyricsState as? LyricsState.Loaded)?.copy(
+                                        song = it.lyricsState.song.copy(
+                                            geniusLyrics = breakLyrics(result.data)
+                                        )
+                                    ) ?: LyricsState.Idle
                                 )
                             }
                         }

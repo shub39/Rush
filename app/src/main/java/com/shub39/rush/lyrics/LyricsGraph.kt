@@ -21,7 +21,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.shub39.rush.core.domain.data_classes.SongUi
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.updateSystemBars
@@ -119,15 +118,7 @@ fun LyricsGraph(
 private fun Preview() {
     var state by remember {
         mutableStateOf(
-            LyricsPageState(
-                song = SongUi(
-                    id = 0,
-                    title = "Random Song",
-                    artists = "shub39",
-                    artUrl = "",
-                    lyrics = (0..100).associateWith { "Line no $it" }.entries.toList()
-                ),
-            )
+            LyricsPageState()
         )
     }
 
