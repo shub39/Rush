@@ -46,7 +46,7 @@ class RushRepository(
                 }
                 val geniusLyrics = if (lrcLibLyrics == null) {
                     withContext(Dispatchers.IO) {
-                        geniusScraper.geniusScrape(song.url)
+                        (geniusScraper.geniusScrape(song.url) as? Result.Success)?.data
                     }
                 } else {
                     null
@@ -72,25 +72,28 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return Result.Error(result.error)
+                return Result.Error(error = result.error, debugMessage = result.debugMessage)
             }
         }
     }
 
     override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
-        val geniusLyrics = withContext(Dispatchers.IO) {
+        val request = withContext(Dispatchers.IO) {
             geniusScraper.geniusScrape(url)
         }
 
-        return if (geniusLyrics != null) {
-            Result.Success<String, SourceError>(geniusLyrics.ifBlank { "[INSTRUMENTAL]" }).also {
-                localDao.updateGeniusLyrics(
-                    id = id,
-                    lyrics = it.data
-                )
+        return when (request) {
+            is Result.Error -> {
+                Result.Error(error = request.error, debugMessage = request.debugMessage)
             }
-        } else {
-            Result.Error(SourceError.Network.REQUEST_FAILED)
+            is Result.Success -> {
+                Result.Success<String, SourceError>(request.data.ifBlank { "[INSTRUMENTAL]" }).also {
+                    localDao.updateGeniusLyrics(
+                        id = id,
+                        lyrics = it.data
+                    )
+                }
+            }
         }
     }
 
@@ -117,7 +120,7 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return Result.Error(result.error)
+                return Result.Error(error = result.error, debugMessage = result.debugMessage)
             }
         }
     }
@@ -150,7 +153,7 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return Result.Error(result.error)
+                return Result.Error(error = result.error, debugMessage = result.debugMessage)
             }
         }
     }

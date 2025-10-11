@@ -206,7 +206,7 @@ class LyricsVM(
                                 it.copy(
                                     scraping = Pair(false, LyricsState.LyricsError(
                                         errorCode = errorStringRes(result.error),
-                                        error = "Error while scraping"
+                                        debugMessage = result.debugMessage
                                     ))
                                 )
                             }

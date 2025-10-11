@@ -30,10 +30,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.R
 import com.shub39.rush.core.domain.enums.Sources
+import com.shub39.rush.core.presentation.copyToClipboard
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.LyricsState
@@ -63,6 +66,8 @@ fun PlainLyrics(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val uriHandler = LocalUriHandler.current
+    val clipboard = LocalClipboard.current
+    val scope  = rememberCoroutineScope()
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
 
@@ -158,9 +163,25 @@ fun PlainLyrics(
                                         colors = ButtonDefaults.buttonColors(
                                             contentColor = cardContent,
                                             containerColor = Color.Transparent
-                                        )
+                                        ),
+                                        modifier = Modifier.padding(vertical = 4.dp)
                                     ) {
                                         Text(stringResource(R.string.retry))
+                                    }
+
+                                    TextButton(
+                                        onClick = {
+                                           scope.launch {
+                                               clipboard.copyToClipboard(it.second!!.debugMessage ?: "i am dumb")
+                                           }
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = cardContent,
+                                            containerColor = Color.Transparent
+                                        ),
+                                        modifier = Modifier.padding(vertical = 4.dp)
+                                    ) {
+                                        Text(stringResource(R.string.copy_error))
                                     }
                                 }
                             }

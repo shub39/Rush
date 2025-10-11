@@ -49,7 +49,7 @@ sealed interface LyricsState {
     data class Loaded(val song: SongUi) : LyricsState
     data class Fetching(val name: String) : LyricsState
     data class Searching(val name: String) : LyricsState
-    data class LyricsError(val errorCode: Int, val error : String = "") : LyricsState
+    data class LyricsError(val errorCode: Int, val debugMessage : String? = null) : LyricsState
 }
 
 @Stable

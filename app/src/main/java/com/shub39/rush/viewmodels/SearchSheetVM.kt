@@ -167,7 +167,7 @@ class SearchSheetVM(
                             it.copy(
                                 lyricsState = LyricsState.LyricsError(
                                     errorCode = errorStringRes(result.error),
-                                    error = "No Search Result?"
+                                    debugMessage = result.debugMessage
                                 ),
                             )
                         }
@@ -245,7 +245,10 @@ class SearchSheetVM(
                 is Result.Error -> {
                     stateLayer.lyricsState.update {
                         it.copy(
-                            lyricsState = LyricsState.LyricsError(errorCode = errorStringRes(result.error))
+                            lyricsState = LyricsState.LyricsError(
+                                errorCode = errorStringRes(result.error),
+                                debugMessage = result.debugMessage
+                            )
                         )
                     }
                 }

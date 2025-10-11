@@ -148,6 +148,7 @@ fun LyricsPage(
                     is LyricsState.LyricsError -> {
                         ErrorCard(
                             error = lyricsState.errorCode,
+                            debugMessage = lyricsState.debugMessage,
                             colors = Pair(cardContent, cardBackground)
                         )
                     }

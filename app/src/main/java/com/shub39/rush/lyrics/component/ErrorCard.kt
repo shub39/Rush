@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,18 +10,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.R
+import com.shub39.rush.core.presentation.copyToClipboard
+import kotlinx.coroutines.launch
 
 @Composable
 fun ErrorCard(
     error: Int,
+    debugMessage: String?,
     colors: Pair<Color, Color>
 ) {
+    val clipboard = LocalClipboard.current
+    val scope  = rememberCoroutineScope()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,5 +50,18 @@ fun ErrorCard(
             text = stringResource(error),
             color = colors.first
         )
+
+        AnimatedVisibility(
+            visible = debugMessage != null
+        ) {
+            TextButton(
+                onClick = {
+                    scope.launch { clipboard.copyToClipboard(text = debugMessage ?: "i am dumb") }
+                },
+                modifier = Modifier.padding(top = 4.dp)
+            ) {
+                Text(text = stringResource(R.string.copy_error))
+            }
+        }
     }
 }
