@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -58,7 +59,11 @@ fun ErrorCard(
                 onClick = {
                     scope.launch { clipboard.copyToClipboard(text = debugMessage ?: "i am dumb") }
                 },
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = colors.first,
+                    containerColor = colors.second
+                )
             ) {
                 Text(text = stringResource(R.string.copy_error))
             }
