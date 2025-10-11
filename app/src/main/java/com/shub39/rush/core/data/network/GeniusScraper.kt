@@ -71,30 +71,32 @@ class GeniusScraper(
             }
 
             is Result.Error -> {
+                var error = Result.Error<String, SourceError>(error = response.error, debugMessage = response.debugMessage)
+
                 dumbInstances.forEach { instance ->
                     when (val result = dumbScrape(songUrl.replace("genius.com/", instance))) {
-                        is String -> return Result.Success(result)
-                        else -> {}
+                        is Result.Error -> error = result
+                        is Result.Success -> return result
                     }
                 }
 
-                return Result.Error(error = response.error, debugMessage = response.debugMessage)
+                return error
             }
         }
     }
 
-    suspend fun dumbScrape(songUrl: String): String? {
+    suspend fun dumbScrape(songUrl: String): Result<String, SourceError> {
         val response = safeCall<HttpResponse> {
             client.get(
                 urlString = songUrl
             )
         }
 
-        when (response) {
+        return when (response) {
             is Result.Success -> {
                 val lyricsElements = Ksoup.parse(response.data.body<String>()).select("#lyrics")
 
-                return buildString {
+                val data = buildString {
                     lyricsElements.forEach { element ->
                         element.childNodes().forEach { node ->
                             val text = when (node) {
@@ -113,9 +115,11 @@ class GeniusScraper(
                         }
                     }
                 }.trim()
+
+                Result.Success(data)
             }
 
-            is Result.Error -> return null
+            is Result.Error -> Result.Error(error = response.error, debugMessage = response.debugMessage)
         }
     }
 }
