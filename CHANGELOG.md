@@ -1,6 +1,6 @@
 # Changelog
 
-# 5.2.0
+## 5.2.0
 - Optimised share cards
 - Optimised Backup ui and fix crashes
 - made padding between lines scale with lineheight
