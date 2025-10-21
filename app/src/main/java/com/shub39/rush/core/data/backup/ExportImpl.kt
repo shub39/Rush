@@ -15,9 +15,10 @@ class ExportImpl(
 ) : ExportRepo {
     @OptIn(ExperimentalTime::class)
     override suspend fun exportToJson(): String? = withContext(Dispatchers.IO) {
-        try {
+        return@withContext try {
             val songsData = songRepo.getAllSongs().map { it.toSongSchema() }
-            return@withContext Json.Default.encodeToString(
+
+            Json.Default.encodeToString(
                 ExportSchema(
                     schemaVersion = 3,
                     songs = songsData
@@ -26,7 +27,7 @@ class ExportImpl(
         } catch (e: Exception) {
             Log.wtf("ExportImpl", e)
 
-            return@withContext null
+            null
         }
     }
 }

@@ -16,12 +16,7 @@ import com.shub39.rush.core.domain.enums.Sources
 @Immutable
 data class LyricsPageState(
     // non-datastore
-//    val song: SongUi? = null,
-//    val fetching: Pair<Boolean, String> = Pair(false, ""),
-//    val searching: Pair<Boolean, String> = Pair(false, ""),
     val scraping: Pair<Boolean, LyricsState.LyricsError?> = Pair(false, null),
-//    val error: Int? = null,
-
     val lyricsState: LyricsState = LyricsState.Idle,
     val autoChange: Boolean = false,
     val playingSong: PlayingSong = PlayingSong(),

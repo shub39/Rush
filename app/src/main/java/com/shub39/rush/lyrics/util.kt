@@ -1,5 +1,6 @@
 package com.shub39.rush.lyrics
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,28 +38,33 @@ fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     return map.entries.toList()
 }
 
-fun parseLyrics(lyricsString: String): List<Lyric> {
+fun parseLyrics(lyricsString: String): List<Lyric>? {
     val seenTimes = mutableSetOf<Long>()
 
-    return listOf(Lyric(0, "")).plus(
-        lyricsString.lines().mapNotNull { line ->
-            val parts = line.split("] ")
-            if (parts.size == 2) {
-                val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
-                    minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
-                }
-                if (time in seenTimes) {
-                    null
+    return try {
+        listOf(Lyric(0, "")).plus(
+            lyricsString.lines().mapNotNull { line ->
+                val parts = line.split("] ")
+                if (parts.size == 2) {
+                    val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
+                        minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
+                    }
+                    if (time in seenTimes) {
+                        null
+                    } else {
+                        seenTimes.add(time)
+                        val text = parts[1]
+                        Lyric(time, text)
+                    }
                 } else {
-                    seenTimes.add(time)
-                    val text = parts[1]
-                    Lyric(time, text)
+                    null
                 }
-            } else {
-                null
             }
-        }
-    )
+        )
+    } catch (e: Exception) {
+        Log.wtf("LyricsPage", e)
+        null
+    }
 }
 
 fun updateSelectedLines(

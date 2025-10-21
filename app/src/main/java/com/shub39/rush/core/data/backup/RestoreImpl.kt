@@ -27,9 +27,8 @@ class RestoreImpl(
         private const val TAG = "RestoreImpl"
     }
 
-    override suspend fun restoreSongs(path: String): RestoreResult {
-        return try {
-            withContext(Dispatchers.IO) {
+    override suspend fun restoreSongs(path: String): RestoreResult = withContext(Dispatchers.IO) {
+        return@withContext try {
                 val file = createTempFile()
 
                 try {
@@ -51,7 +50,6 @@ class RestoreImpl(
                 } finally {
                     file.deleteIfExists()
                 }
-            }
 
             RestoreResult.Success
         } catch (e: IllegalArgumentException) {

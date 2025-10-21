@@ -192,7 +192,7 @@ fun LyricsCustomisationsPage(
                         BoxWithConstraints {
                             ApplyLyricsBackground(
                                 background = state.lyricsBackground,
-                                artUrl = (state.lyricsState as LyricsState.Loaded).song.artUrl,
+                                artUrl = (state.lyricsState as? LyricsState.Loaded)?.song?.artUrl,
                                 cardBackground = cardBackground,
                                 waveData = waveData,
                                 waveColors = waveColors,
