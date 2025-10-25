@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.shub39.rush.R
 import com.shub39.rush.core.presentation.PageFill
@@ -27,7 +27,7 @@ import com.shub39.rush.core.presentation.PageFill
 fun AboutLibrariesPage(
     onNavigateBack: () -> Unit
 ) = PageFill {
-    val libraries by rememberLibraries()
+    val libraries by produceLibraries()
 
     Scaffold(
         modifier = Modifier.widthIn(max = 1000.dp),

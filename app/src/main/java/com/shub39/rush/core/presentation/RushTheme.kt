@@ -6,7 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import com.materialkolor.DynamicMaterialExpressiveTheme
+import com.materialkolor.DynamicMaterialTheme
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 
@@ -17,7 +17,7 @@ fun RushTheme(
     fontScale: Float = 1f,
     content: @Composable () -> Unit
 ) {
-    DynamicMaterialExpressiveTheme(
+    DynamicMaterialTheme(
         seedColor = if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
             colorResource(android.R.color.system_accent1_200)
         } else {
