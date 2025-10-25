@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.RushBranding
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.fromPx
 import com.shub39.rush.share.pxToDp
@@ -48,7 +50,8 @@ fun AlbumArt(
     fit: CardFit,
     modifier: Modifier = Modifier,
     albumArtShape: Shape = CircleShape,
-    selectedImage: PlatformFile? = null
+    selectedImage: PlatformFile? = null,
+    rushBranding: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -99,6 +102,15 @@ fun AlbumArt(
                 overflow = TextOverflow.Ellipsis
             )
 
+            AnimatedVisibility(
+                visible = rushBranding
+            ) {
+                RushBranding(
+                    color = cardColors.contentColor,
+                    modifier = Modifier.padding(top = pxToDp(48))
+                )
+            }
+
             Spacer(modifier = Modifier.height(pxToDp(28)))
         }
     }
@@ -127,7 +139,8 @@ private fun Preview() {
             ),
             cardCorners = RoundedCornerShape(pxToDp(32)),
             fit = CardFit.FIT,
-            albumArtShape = VerySunny.toShape()
+            albumArtShape = VerySunny.toShape(),
+            rushBranding = true
         )
     }
 }

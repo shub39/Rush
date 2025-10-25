@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -30,6 +31,7 @@ class SharePagePreferencesImpl(
         private val cardFit = stringPreferencesKey("card_fit")
         private val cardFont = stringPreferencesKey("card_font")
         private val albumArtShapeKey = stringPreferencesKey("album_art_shape")
+        private val rushBrandingKey = booleanPreferencesKey("rush_branding")
     }
 
     override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> = dataStore.data
@@ -39,6 +41,16 @@ class SharePagePreferencesImpl(
     override suspend fun updateAlbumArtShape(shape: AlbumArtShape) {
         dataStore.edit { preferences ->
             preferences[albumArtShapeKey] = shape.name
+        }
+    }
+
+    override fun showRushBranding(): Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[rushBrandingKey] ?: true
+        }
+    override suspend fun updateRushBranding(newPref: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[rushBrandingKey] = newPref
         }
     }
 

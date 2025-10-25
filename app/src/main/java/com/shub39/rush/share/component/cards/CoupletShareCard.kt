@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,8 @@ fun CoupletShareCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Box(
         modifier = modifier.clip(cardCorners)
@@ -76,10 +78,14 @@ fun CoupletShareCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    RushBranding(
-                        color = cardColors.contentColor,
-                        modifier = Modifier.padding(bottom = pxToDp(48))
-                    )
+                    AnimatedVisibility(
+                        visible = rushBranding
+                    ) {
+                        RushBranding(
+                            color = cardColors.contentColor,
+                            modifier = Modifier.padding(bottom = pxToDp(48))
+                        )
+                    }
 
                     Text(
                         text = sortedLines.values.firstOrNull() ?: "Woah...",
@@ -173,7 +179,8 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
-            fit = CardFit.FIT
+            fit = CardFit.FIT,
+            rushBranding = false
         )
     }
 }

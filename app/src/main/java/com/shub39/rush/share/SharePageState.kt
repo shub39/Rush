@@ -28,6 +28,7 @@ data class SharePageState(
     val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
     val cardTheme: CardTheme = CardTheme.SPOTIFY,
     val albumArtShape: AlbumArtShape = AlbumArtShape.COOKIE_12,
+    val rushBranding: Boolean = false,
 
     val isProUser: Boolean = false
 )

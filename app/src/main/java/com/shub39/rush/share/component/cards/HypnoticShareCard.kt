@@ -25,7 +25,8 @@ fun HypnoticShareCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         HypnoticVisualizer(
@@ -40,7 +41,8 @@ fun HypnoticShareCard(
             cardColors = cardColors.copy(containerColor = Color.Transparent),
             cardCorners = cardCorners,
             albumArtShape = albumArtShape,
-            fit = fit
+            fit = fit,
+            rushBranding = rushBranding
         )
     }
 }

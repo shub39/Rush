@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +47,8 @@ fun RushedShareCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     selectedImage: PlatformFile?,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         ArtFromUrl(
@@ -67,10 +69,14 @@ fun RushedShareCard(
                 .padding(pxToDp(48))
                 .align(Alignment.BottomStart)
         ) {
-            RushBranding(
-                color = cardColors.contentColor,
-                modifier = Modifier.padding(bottom = pxToDp(42))
-            )
+            AnimatedVisibility(
+                visible = rushBranding
+            ) {
+                RushBranding(
+                    color = cardColors.contentColor,
+                    modifier = Modifier.padding(bottom = pxToDp(42))
+                )
+            }
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 items(sortedLines.values.toList()) {
@@ -164,7 +170,8 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
-            selectedImage = null
+            selectedImage = null,
+            rushBranding = true
         )
     }
 }

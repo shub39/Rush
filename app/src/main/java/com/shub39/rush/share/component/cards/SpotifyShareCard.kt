@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,8 @@ fun SpotifyShareCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -122,10 +124,14 @@ fun SpotifyShareCard(
                 }
             }
 
-            RushBranding(
-                color = cardColors.contentColor,
-                modifier = Modifier.padding(top = pxToDp(56))
-            )
+            AnimatedVisibility(
+                visible = rushBranding
+            ) {
+                RushBranding(
+                    color = cardColors.contentColor,
+                    modifier = Modifier.padding(top = pxToDp(56))
+                )
+            }
         }
     }
 }
@@ -156,7 +162,8 @@ private fun Preview() {
             ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
             fit = CardFit.FIT,
-            albumArtShape = MaterialShapes.Square.toShape()
+            albumArtShape = MaterialShapes.Square.toShape(),
+            rushBranding = false
         )
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
@@ -211,6 +212,32 @@ fun SharePageSheet(
                         )
                     }
                 )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Show Rush Branding",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Switch(
+                        checked = state.rushBranding,
+                        onCheckedChange = {
+                            if (state.isProUser) {
+                                onAction(SharePageAction.OnToggleRushBranding(it))
+                            } else {
+                                onAction(SharePageAction.OnShowPaywall)
+                            }
+                        }
+                    )
+                }
             }
         }
     }

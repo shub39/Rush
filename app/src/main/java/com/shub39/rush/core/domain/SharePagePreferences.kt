@@ -32,4 +32,7 @@ interface SharePagePreferences {
 
     fun getAlbumArtShapeFlow(): Flow<AlbumArtShape>
     suspend fun updateAlbumArtShape(shape: AlbumArtShape)
+
+    fun showRushBranding() : Flow<Boolean>
+    suspend fun updateRushBranding(newPref: Boolean)
 }

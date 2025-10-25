@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -31,6 +33,7 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.RushBranding
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.core.presentation.rotateVertically
 import com.shub39.rush.share.fromPx
@@ -44,7 +47,8 @@ fun VerticalShareCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -109,17 +113,26 @@ fun VerticalShareCard(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(pxToDp(10))
                 ) {
-                    sortedLines.forEach {
-                        item {
-                            Text(
-                                text = it.value,
-                                fontStyle = FontStyle.Italic,
-                                style = MaterialTheme.typography.bodyMedium.fromPx(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 42,
-                                    letterSpacing = 0,
-                                    lineHeight = 44,
-                                ),
+                    items(sortedLines.entries.toList()) {
+                        Text(
+                            text = it.value,
+                            fontStyle = FontStyle.Italic,
+                            style = MaterialTheme.typography.bodyMedium.fromPx(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 42,
+                                letterSpacing = 0,
+                                lineHeight = 44,
+                            ),
+                        )
+                    }
+
+                    item {
+                        AnimatedVisibility(
+                            visible = rushBranding
+                        ) {
+                            RushBranding(
+                                color = cardColors.contentColor,
+                                modifier = Modifier.padding(top = pxToDp(42))
                             )
                         }
                     }
@@ -153,7 +166,8 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
-            fit = CardFit.FIT
+            fit = CardFit.FIT,
+            rushBranding = true
         )
     }
 }

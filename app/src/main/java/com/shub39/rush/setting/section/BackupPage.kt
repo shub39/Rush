@@ -230,7 +230,7 @@ private fun BackupPageContent(
                             Button(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = { action(SettingsPageAction.OnRestoreSongs(restoreFile.toString())) },
-                                enabled = state.restoreState !is RestoreState.Restoring
+                                enabled = state.restoreState is RestoreState.Idle
                             ) {
                                 when (state.restoreState) {
                                     RestoreState.Idle -> {
