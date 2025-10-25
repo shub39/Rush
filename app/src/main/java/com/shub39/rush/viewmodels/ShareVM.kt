@@ -108,6 +108,16 @@ class ShareVM(
                     }
                 }
                 .launchIn(this)
+
+            datastore.showRushBranding()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(
+                            rushBranding = pref
+                        )
+                    }
+                }
+                .launchIn(this)
         }
     }
 
@@ -123,6 +133,7 @@ class ShareVM(
                 is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
                 SharePageAction.OnShowPaywall -> stateLayer.settingsState.update { it.copy(showPaywall = true) }
                 is SharePageAction.OnUpdateAlbumArtShape -> datastore.updateAlbumArtShape(action.shape)
+                is SharePageAction.OnToggleRushBranding -> datastore.updateRushBranding(action.pref)
             }
         }
     }

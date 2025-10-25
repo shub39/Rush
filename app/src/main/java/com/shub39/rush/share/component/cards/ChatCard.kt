@@ -1,5 +1,6 @@
 package com.shub39.rush.share.component.cards
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,13 +31,11 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.domain.enums.CardFit
 import com.shub39.rush.core.presentation.ArtFromUrl
+import com.shub39.rush.core.presentation.RushBranding
 import com.shub39.rush.core.presentation.RushTheme
 import com.shub39.rush.share.fromPx
-import com.shub39.rush.share.getFormattedTime
 import com.shub39.rush.share.pxToDp
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun ChatCard(
     modifier: Modifier,
@@ -45,7 +44,8 @@ fun ChatCard(
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
     fit: CardFit,
-    albumArtShape: Shape = CircleShape
+    albumArtShape: Shape = CircleShape,
+    rushBranding: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -110,10 +110,13 @@ fun ChatCard(
                     }
                 }
 
-                sortedLines.forEach {
+                sortedLines.entries.toList().forEachIndexed { index, it ->
                     item {
                         Card(
-                            shape = RoundedCornerShape(pxToDp(16)),
+                            shape = when (index) {
+                                0 -> RoundedCornerShape(topStart = pxToDp(16), topEnd = pxToDp(16), bottomEnd = pxToDp(16), bottomStart = pxToDp(4))
+                                else -> RoundedCornerShape(topEnd = pxToDp(16), bottomEnd = pxToDp(16), topStart = pxToDp(4), bottomStart = pxToDp(4))
+                            },
                             colors = cardColors.copy(
                                 containerColor = cardColors.contentColor,
                                 contentColor = cardColors.containerColor
@@ -137,15 +140,14 @@ fun ChatCard(
                 }
             }
 
-            Text(
-                text = getFormattedTime(),
-                style = MaterialTheme.typography.labelSmall.fromPx(
-                    fontSize = 24,
-                    letterSpacing = 0,
-                    lineHeight = 0,
-                ),
-                modifier = Modifier.padding(top = pxToDp(16))
-            )
+            AnimatedVisibility(
+                visible = rushBranding
+            ) {
+                RushBranding(
+                    color = cardColors.contentColor,
+                    modifier = Modifier.padding(top = pxToDp(32), bottom = pxToDp(12))
+                )
+            }
         }
     }
 }
@@ -174,7 +176,8 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
-            fit = CardFit.FIT
+            fit = CardFit.FIT,
+            rushBranding = true
         )
     }
 }

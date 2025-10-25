@@ -252,7 +252,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.RUSHED -> RushedShareCard(
@@ -262,7 +263,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         selectedImage = selectedImage,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.HYPNOTIC -> HypnoticShareCard(
@@ -272,7 +274,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.VERTICAL -> VerticalShareCard(
@@ -282,7 +285,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.QUOTE -> QuoteShareCard(
@@ -292,7 +296,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.COUPLET -> CoupletShareCard(
@@ -302,7 +307,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.MESSY -> MessyCard(
@@ -312,7 +318,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.CHAT -> ChatCard(
@@ -322,7 +329,8 @@ private fun SharePageContent(
                         cardColors = cardColor,
                         cardCorners = cardCorners,
                         fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
 
                     CardTheme.ALBUM_ART -> AlbumArt(
@@ -332,7 +340,8 @@ private fun SharePageContent(
                         cardCorners = cardCorners,
                         fit = state.cardFit,
                         selectedImage = selectedImage,
-                        albumArtShape = state.albumArtShape.toShape()
+                        albumArtShape = state.albumArtShape.toShape(),
+                        rushBranding = state.rushBranding
                     )
                 }
             }
