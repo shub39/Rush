@@ -1,8 +1,6 @@
 package com.shub39.rush.search_sheet
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -50,9 +48,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.core.domain.SourceError
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.core.presentation.errorStringRes
+import com.shub39.rush.lyrics.component.ErrorCard
 import com.shub39.rush.search_sheet.component.SearchResultCard
 import kotlinx.coroutines.launch
 
@@ -140,51 +141,58 @@ fun SearchSheet(
                     )
                 )
 
-                AnimatedContent(
-                    targetState = state.isSearching,
-                    modifier = Modifier.fillMaxSize()
-                ) { searching ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .animateContentSize()
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    state.error?.let { error ->
+                        item {
+                            ErrorCard(
+                                error = error,
+                                debugMessage = null,
+                                colors = Pair(
+                                    MaterialTheme.colorScheme.onSurface,
+                                    MaterialTheme.colorScheme.background
+                                )
+                            )
+                        }
+                    }
+
+                    items(
+                        state.localSearchResults,
+                        key = { it.title.hashCode() + it.artist.hashCode() }
                     ) {
-                        items(
-                            state.localSearchResults,
-                            key = { it.title.hashCode() + it.artist.hashCode() }
-                        ) {
+                        SearchResultCard(
+                            result = it,
+                            onClick = {
+                                onAction(SearchSheetAction.OnCardClicked(it.id))
+                                onNavigateToLyrics()
+                            },
+                            downloaded = true
+                        )
+                    }
+
+                    if (!state.isSearching) {
+                        items(state.searchResults, key = { it.id }) {
                             SearchResultCard(
                                 result = it,
                                 onClick = {
                                     onAction(SearchSheetAction.OnCardClicked(it.id))
                                     onNavigateToLyrics()
-                                },
-                                downloaded = true
+                                }
                             )
                         }
-
-                        if (!searching) {
-                            items(state.searchResults, key = { it.id }) {
-                                SearchResultCard(
-                                    result = it,
-                                    onClick = {
-                                        onAction(SearchSheetAction.OnCardClicked(it.id))
-                                        onNavigateToLyrics()
-                                    }
-                                )
-                            }
-                        } else {
-                            item {
-                                LoadingIndicator(
-                                    modifier = Modifier.size(60.dp)
-                                )
-                            }
-                        }
-
+                    } else {
                         item {
-                            Spacer(modifier = Modifier.padding(60.dp))
+                            LoadingIndicator(
+                                modifier = Modifier.size(60.dp)
+                            )
                         }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.padding(60.dp))
                     }
                 }
             }
@@ -199,7 +207,8 @@ private fun Preview() {
     var state by remember {
         mutableStateOf(
             SearchSheetState(
-                visible = true
+                visible = true,
+                error = errorStringRes(SourceError.Data.PARSE_ERROR)
             )
         )
     }

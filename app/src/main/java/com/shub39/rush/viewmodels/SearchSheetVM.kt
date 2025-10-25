@@ -14,12 +14,14 @@ import com.shub39.rush.lyrics.LyricsState
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.search_sheet.SearchSheetAction
 import com.shub39.rush.search_sheet.SearchSheetState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -67,44 +69,38 @@ class SearchSheetVM(
     }
 
     fun onAction(action: SearchSheetAction) {
-        viewModelScope.launch {
-            when (action) {
-                is SearchSheetAction.OnCardClicked -> {
-                    _state.update {
-                        it.copy(
-                            visible = !it.visible
-                        )
-                    }
-
-                    fetchLyrics(action.id)
-
-                    _state.update {
-                        it.copy(
-                            searchQuery = ""
-                        )
-                    }
+        when (action) {
+            is SearchSheetAction.OnCardClicked -> viewModelScope.launch {
+                _state.update {
+                    it.copy(visible = !it.visible)
                 }
 
-                is SearchSheetAction.OnQueryChange -> {
-                    _state.update {
-                        it.copy(
-                            searchQuery = action.query
-                        )
-                    }
+                fetchLyrics(action.id)
+
+                _state.update {
+                    it.copy(searchQuery = "")
+                }
+            }
+
+            is SearchSheetAction.OnQueryChange -> {
+                _state.update {
+                    it.copy(
+                        searchQuery = action.query
+                    )
+                }
+            }
+
+            SearchSheetAction.OnToggleSearchSheet -> {
+                _state.update {
+                    it.copy(
+                        visible = !it.visible
+                    )
                 }
 
-                SearchSheetAction.OnToggleSearchSheet -> {
-                    _state.update {
-                        it.copy(
-                            visible = !it.visible
-                        )
-                    }
-
-                    _state.update {
-                        it.copy(
-                            searchQuery = ""
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        searchQuery = ""
+                    )
                 }
             }
         }
@@ -137,75 +133,57 @@ class SearchSheetVM(
                     }
                 }
             }
+            .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
 
-    private fun searchSong(
+    private suspend fun searchSong(
         query: String,
         fetch: Boolean = stateLayer.lyricsState.value.autoChange,
     ) {
-        if (query.isEmpty() || stateLayer.lyricsState.value.lyricsState is LyricsState.Searching || query == _lastSearched.value) return
+        if (query.isEmpty() || query == _lastSearched.value || _state.value.isSearching) return
 
-        viewModelScope.launch {
-            stateLayer.lyricsState.update {
-                it.copy(
-                    sync = false,
-                    lyricsState = LyricsState.Searching(query)
-                )
+        _state.update {
+            it.copy(
+                isSearching = true
+            )
+        }
+
+        try {
+            when (val result = repo.searchGenius(query)) {
+                is Result.Error -> {
+                    _state.update {
+                        it.copy(
+                            error = errorStringRes(result.error)
+                        )
+                    }
+                }
+
+                is Result.Success -> {
+                    _state.update {
+                        it.copy(
+                            searchResults = result.data,
+                            error = null
+                        )
+                    }
+
+                    if (fetch) _lastSearched.value = query
+                }
             }
 
+        } finally {
             _state.update {
                 it.copy(
-                    isSearching = true
+                    isSearching = false
                 )
             }
+        }
 
-            try {
-                when (val result = repo.searchGenius(query)) {
-                    is Result.Error -> {
-                        stateLayer.lyricsState.update {
-                            it.copy(
-                                lyricsState = LyricsState.LyricsError(
-                                    errorCode = errorStringRes(result.error),
-                                    debugMessage = result.debugMessage
-                                ),
-                            )
-                        }
-                    }
-
-                    is Result.Success -> {
-                        _state.update {
-                            it.copy(
-                                searchResults = result.data,
-                            )
-                        }
-
-                        if (fetch) _lastSearched.value = query
-
-                        stateLayer.lyricsState.update {
-                            it.copy(lyricsState = LyricsState.Idle)
-                        }
-                    }
-                }
-
-            } finally {
-                _state.update {
-                    it.copy(
-                        isSearching = false
-                    )
-                }
-            }
-
-            if (fetch && stateLayer.lyricsState.value.lyricsState !is LyricsState.LyricsError && _state.value.searchResults.isNotEmpty()) {
-
-                fetchLyrics(_state.value.searchResults.first().id)
-
-            } else {
-                stateLayer.lyricsState.update {
-                    it.copy(
-                        autoChange = false
-                    )
-                }
+        if (fetch && _state.value.searchResults.isNotEmpty()) {
+            fetchLyrics(_state.value.searchResults.first().id)
+        } else {
+            stateLayer.lyricsState.update {
+                it.copy(autoChange = false)
             }
         }
     }

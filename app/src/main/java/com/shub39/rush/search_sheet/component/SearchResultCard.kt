@@ -2,6 +2,8 @@ package com.shub39.rush.search_sheet.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -16,9 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.core.domain.data_classes.SearchResult
 import com.shub39.rush.core.presentation.ArtFromUrl
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Download
 
 @Composable
 fun SearchResultCard(
@@ -57,7 +56,7 @@ fun SearchResultCard(
         trailingContent = {
             if (downloaded) {
                 Icon(
-                    imageVector = FontAwesomeIcons.Solid.Download,
+                    imageVector = Icons.Rounded.Download,
                     contentDescription = "Downloaded",
                     modifier = Modifier.size(20.dp)
                 )

@@ -61,7 +61,6 @@ import com.shub39.rush.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.component.FetchingCard
 import com.shub39.rush.lyrics.component.LrcCorrectSheet
 import com.shub39.rush.lyrics.component.PlainLyrics
-import com.shub39.rush.lyrics.component.SearchingCard
 import com.shub39.rush.lyrics.component.SyncedLyrics
 import com.shub39.rush.lyrics.getCardColors
 import com.shub39.rush.lyrics.getHypnoticColors
@@ -134,13 +133,6 @@ fun LyricsPage(
                     is LyricsState.Fetching -> {
                         FetchingCard(
                             fetching = lyricsState.name,
-                            colors = Pair(cardContent, cardBackground)
-                        )
-                    }
-
-                    is LyricsState.Searching -> {
-                        SearchingCard(
-                            searching = lyricsState.name,
                             colors = Pair(cardContent, cardBackground)
                         )
                     }

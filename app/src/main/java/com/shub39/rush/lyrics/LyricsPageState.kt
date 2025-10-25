@@ -43,7 +43,6 @@ sealed interface LyricsState {
     data object Idle : LyricsState
     data class Loaded(val song: SongUi) : LyricsState
     data class Fetching(val name: String) : LyricsState
-    data class Searching(val name: String) : LyricsState
     data class LyricsError(val errorCode: Int, val debugMessage : String? = null) : LyricsState
 }
 

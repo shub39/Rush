@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Save
-import compose.icons.fontawesomeicons.solid.Search
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -60,47 +59,6 @@ fun FetchingCard(
 
         Text(
             text = fetching,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun SearchingCard(
-    searching: String,
-    colors: Pair<Color, Color>
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            LoadingIndicator(
-                modifier = Modifier.size(200.dp),
-                color = colors.first
-            )
-
-            Icon(
-                imageVector = FontAwesomeIcons.Solid.Search,
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                tint = colors.second
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = searching,
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
