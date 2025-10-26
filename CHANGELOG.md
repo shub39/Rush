@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.3.0
+- **Improved autosearch**, a button will be displayed when exact match is not found 
+- Added Rush Logo to cards and a toggle for that
+- misc bug fixes, updated deps, metadata and fixed deprecations
+
 ## 5.2.0
 - Optimised share cards
 - Optimised Backup ui and fix crashes

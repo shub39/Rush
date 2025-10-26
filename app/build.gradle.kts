@@ -1,4 +1,6 @@
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 
 plugins {
     alias(libs.plugins.android.application)
@@ -10,8 +12,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.2.0"
-val appVersionCode = 5200
+val appVersionName = "5.3.0"
+val appVersionCode = 5300
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -159,6 +161,10 @@ dependencies {
 
 aboutLibraries {
     export.excludeFields.add("generated")
+    library {
+        duplicationMode = DuplicateMode.MERGE
+        duplicationRule = DuplicateRule.SIMPLE
+    }
 }
 
 java {

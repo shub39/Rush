@@ -27,7 +27,7 @@ import com.shub39.rush.core.presentation.PageFill
 fun AboutLibrariesPage(
     onNavigateBack: () -> Unit
 ) = PageFill {
-    val libraries by produceLibraries()
+    val libraries by produceLibraries(R.raw.aboutlibraries)
 
     Scaffold(
         modifier = Modifier.widthIn(max = 1000.dp),
