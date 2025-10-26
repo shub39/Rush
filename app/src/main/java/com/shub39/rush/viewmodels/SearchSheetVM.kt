@@ -11,6 +11,7 @@ import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.errorStringRes
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.LyricsState
+import com.shub39.rush.lyrics.SearchState
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.search_sheet.SearchSheetAction
 import com.shub39.rush.search_sheet.SearchSheetState
@@ -78,7 +79,7 @@ class SearchSheetVM(
                 fetchLyrics(action.id)
 
                 _state.update {
-                    it.copy(searchQuery = "")
+                    it.copy(searchQuery = "", error = null)
                 }
             }
 
@@ -93,13 +94,9 @@ class SearchSheetVM(
             SearchSheetAction.OnToggleSearchSheet -> {
                 _state.update {
                     it.copy(
-                        visible = !it.visible
-                    )
-                }
-
-                _state.update {
-                    it.copy(
-                        searchQuery = ""
+                        visible = !it.visible,
+                        searchQuery = "",
+                        error = null
                     )
                 }
             }
@@ -145,7 +142,15 @@ class SearchSheetVM(
 
         _state.update {
             it.copy(
-                isSearching = true
+                isSearching = true,
+                localSearchResults = emptyList(),
+                error = null
+            )
+        }
+
+        stateLayer.lyricsState.update {
+            it.copy(
+                searchState = SearchState.Searching(query)
             )
         }
 
@@ -166,24 +171,36 @@ class SearchSheetVM(
                             error = null
                         )
                     }
-
-                    if (fetch) _lastSearched.value = query
                 }
             }
-
         } finally {
             _state.update {
                 it.copy(
                     isSearching = false
                 )
             }
+
+            stateLayer.lyricsState.update {
+                it.copy(
+                    searchState = SearchState.Idle
+                )
+            }
+
+            _lastSearched.value = query
         }
 
-        if (fetch && _state.value.searchResults.isNotEmpty()) {
+        if (
+            fetch &&
+            _state.value.searchResults.isNotEmpty() &&
+            query.contains(_state.value.searchResults.first().title.trim(), ignoreCase = true)
+        ) {
             fetchLyrics(_state.value.searchResults.first().id)
         } else {
             stateLayer.lyricsState.update {
-                it.copy(autoChange = false)
+                it.copy(
+                    searchState = SearchState.UserPrompt,
+                    sync = false
+                )
             }
         }
     }
@@ -197,6 +214,7 @@ class SearchSheetVM(
             it.copy(
                 lyricsState = LyricsState.Fetching("${song?.title} - ${song?.artist}"),
                 extractedColors = ExtractedColors(),
+                searchState = SearchState.Idle,
                 sync = false
             )
         }

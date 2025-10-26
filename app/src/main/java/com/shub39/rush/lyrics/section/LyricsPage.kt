@@ -3,6 +3,8 @@ package com.shub39.rush.lyrics.section
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -22,11 +25,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,10 +47,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.R
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.Empty
@@ -56,6 +64,7 @@ import com.shub39.rush.lyrics.ApplyLyricsBackground
 import com.shub39.rush.lyrics.LyricsPageAction
 import com.shub39.rush.lyrics.LyricsPageState
 import com.shub39.rush.lyrics.LyricsState
+import com.shub39.rush.lyrics.SearchState
 import com.shub39.rush.lyrics.component.ActionsRow
 import com.shub39.rush.lyrics.component.ErrorCard
 import com.shub39.rush.lyrics.component.FetchingCard
@@ -74,6 +83,7 @@ import io.gitlab.bpavuk.viz.trebleBucket
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LyricsPage(
     onEdit: () -> Unit,
@@ -369,6 +379,83 @@ fun LyricsPage(
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = state.autoChange,
+            modifier = Modifier
+                .widthIn(max = 150.dp)
+                .padding(vertical = 32.dp)
+                .align(Alignment.BottomStart),
+            enter = slideInHorizontally(),
+            exit = fadeOut()
+        ) {
+            AnimatedContent(
+                targetState = state.searchState
+            ) {
+                when (it) {
+                    SearchState.Idle -> {}
+                    is SearchState.Searching -> {
+                        Card(
+                            shape = RoundedCornerShape(
+                                topEnd = 100.dp,
+                                bottomEnd = 100.dp
+                            ),
+                            colors = CardDefaults.cardColors(
+                                contentColor = cardBackground,
+                                containerColor = cardContent
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                LoadingIndicator(
+                                    color = cardBackground,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = it.query,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    SearchState.UserPrompt -> {
+                        Card(
+                            shape = RoundedCornerShape(
+                                topEnd = 100.dp,
+                                bottomEnd = 100.dp
+                            ),
+                            colors = CardDefaults.cardColors(
+                                contentColor = cardBackground,
+                                containerColor = cardContent
+                            ),
+                            onClick = { action(LyricsPageAction.OnToggleSearchSheet) }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.SearchOff,
+                                    contentDescription = "No exact match found"
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = stringResource(R.string.not_found),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }

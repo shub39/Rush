@@ -142,4 +142,5 @@
     <string name="audio_permission_info">This background visualizes your current playing song</string>
     <string name="curve">Curve</string>
     <string name="copy_error">Copy Error</string>
+    <string name="not_found">Not found</string>
 </resources>

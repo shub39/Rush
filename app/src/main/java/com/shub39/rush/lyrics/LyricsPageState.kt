@@ -27,6 +27,7 @@ data class LyricsPageState(
     val lyricsCorrect: Boolean = false,
     val source: Sources = Sources.LrcLib,
     val selectedLines: Map<Int, String> = emptyMap(),
+    val searchState: SearchState = SearchState.Idle,
 
     // datastore
     val blurSyncedLyrics: Boolean = true,
@@ -44,6 +45,12 @@ sealed interface LyricsState {
     data class Loaded(val song: SongUi) : LyricsState
     data class Fetching(val name: String) : LyricsState
     data class LyricsError(val errorCode: Int, val debugMessage : String? = null) : LyricsState
+}
+
+sealed interface SearchState {
+    data object Idle : SearchState
+    data class Searching(val query: String) : SearchState
+    data object UserPrompt : SearchState
 }
 
 @Stable

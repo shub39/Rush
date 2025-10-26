@@ -175,21 +175,7 @@ private fun SharePageContent(
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
 
-    val modifier = Modifier
-        .width(pxToDp(720))
-        .zoomable(zoomState = zoomState)
-        .drawWithContent {
-            cardGraphicsLayer.record {
-                this@drawWithContent.drawContent()
-            }
-            drawLayer(cardGraphicsLayer)
-        }
-        .padding(pxToDp(32))
-        .let {
-            if (state.cardFit == CardFit.FIT) {
-                it.heightIn(max = pxToDp(1920))
-            } else it.height(pxToDp(1280))
-        }
+
 
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {
@@ -216,6 +202,22 @@ private fun SharePageContent(
         contentColor = contentColor
     )
     val cardCorners = RoundedCornerShape(cornerRadius)
+
+    val modifier = Modifier
+        .width(pxToDp(720))
+        .zoomable(zoomState = zoomState)
+        .drawWithContent {
+            cardGraphicsLayer.record {
+                this@drawWithContent.drawContent()
+            }
+            drawLayer(cardGraphicsLayer)
+        }
+        .padding(pxToDp(32))
+        .let {
+            if (state.cardFit == CardFit.FIT) {
+                it.heightIn(max = pxToDp(1920))
+            } else it.height(pxToDp(1280))
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

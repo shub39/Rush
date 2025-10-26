@@ -8,6 +8,7 @@ import com.shub39.rush.core.domain.SongRepo
 import com.shub39.rush.core.domain.enums.Sources
 import com.shub39.rush.core.presentation.getMainTitle
 import com.shub39.rush.lyrics.LyricsState
+import com.shub39.rush.lyrics.SearchState
 import com.shub39.rush.lyrics.toSongUi
 import com.shub39.rush.saved.SavedPageAction
 import com.shub39.rush.saved.SavedPageState
@@ -133,6 +134,7 @@ class SavedVM(
             it.copy(
                 lyricsState = LyricsState.Loaded(song = result),
                 source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null,
                 sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                     .lowercase() == getMainTitle(result.title).trim().lowercase()),
