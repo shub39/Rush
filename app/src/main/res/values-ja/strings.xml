@@ -14,7 +14,7 @@
     <string name="unknown_album">不明なアルバム</string>
     <string name="width">幅</string>
     <string name="colors">カスタムカラー</string>
-    <string name="grant_permission">通知アクセスを許可</string>
+    <string name="grant_permission">権限を許可</string>
     <string name="notification_permission">歌詞を自動取得するには通知アクセス権限が必要です。</string>
     <string name="rounded_corners">角丸</string>
     <string name="max_lines">共有する最大行数</string>
