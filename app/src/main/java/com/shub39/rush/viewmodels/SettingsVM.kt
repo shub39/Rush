@@ -43,7 +43,7 @@ class SettingsVM(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.Companion.WhileSubscribed(5000),
+            SharingStarted.WhileSubscribed(5000),
             _state.value
         )
 

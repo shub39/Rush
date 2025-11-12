@@ -47,7 +47,7 @@ class LyricsVM(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.Companion.WhileSubscribed(5000),
+            SharingStarted.WhileSubscribed(5000),
             LyricsPageState()
         )
 

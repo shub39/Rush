@@ -137,7 +137,7 @@ class SavedVM(
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null,
                 sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                    .lowercase() == getMainTitle(result.title).trim().lowercase()),
+                    .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
                 selectedLines = emptyMap(),
             )
         }

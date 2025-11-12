@@ -20,7 +20,7 @@ enum class LyricsBackground(val stringRes: Int) {
         } else if (blurAvailable()) {
             listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT, CURVE)
         } else {
-            listOf(SOLID_COLOR, WAVE, GRADIENT, CURVE)
+            listOf(SOLID_COLOR, WAVE, GRADIENT)
         }
 
         val audioDependentBackgrounds = listOf(WAVE, GRADIENT, CURVE)
