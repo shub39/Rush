@@ -18,7 +18,7 @@
     <string name="artist">فنان</string>
     <string name="width">العرض</string>
     <string name="colors">الألوان</string>
-    <string name="grant_permission">منح الإذن للإشعارات</string>
+    <string name="grant_permission">منح الإذن</string>
     <string name="notification_permission">يجب الوصول إلى الإشعارات للحصول على كلمات الأغاني تلقائيًا.</string>
     <string name="rounded_corners">زوايا مستديرة</string>
     <string name="max_lines">الحد الأقصى للخطوط للمشاركة</string>
@@ -61,7 +61,7 @@
     <string name="no_audio_files">لا يوجد ملفات صوتية</string>
     <string name="no_folder_selected">لم يتم تحديد أي مجلد</string>
     <string name="export">يصدّر</string>
-    <string name="export_info">تصدير الأغاني إلى التحميلات/Rush</string>
+    <string name="export_info">تصدير الأغاني إلى المجلد المحدد</string>
     <string name="restore">استعادة</string>
     <string name="restore_info">استعادة من ملف التصدير المحدد</string>
     <string name="choose_file">اختر الملف</string>
@@ -129,5 +129,19 @@
     <string name="foss_desc">جميع الميزات متاحة. هذا الإصدار من التطبيق لا يدعم عمليات الشراء داخل التطبيق. إذا كان هذا التطبيق قد أضاف قيمة إلى حياتك، ادعمني بالتبرع على</string>
     <string name="rush_pro">Rush Pro</string>
     <string name="unlock_more_pro">افتح المزيد مع Pro</string>
-    <string name="album_art">Only Art</string>
+    <string name="album_art">فن الألبوم فقط</string>
+    <string name="album_art_shape">شكل فن الألبوم</string>
+    <string name="blurred_art">فن ضبابي</string>
+    <string name="solid_color">حاد</string>
+    <string name="lyrics_background">خلفية كلمات الأغاني</string>
+    <string name="plain_lyrics">كلمات الأغاني فقط</string>
+    <string name="synced_lyrics">كلمات الأغاني متزامنة</string>
+    <string name="blur_synced">كلمات أغاني متزامنة ضبابية</string>
+    <string name="wave">‪‮موجة</string>
+    <string name="gradient">تدرج</string>
+    <string name="audio_permission">مطلوب الإذن بتسجيل الصوت</string>
+    <string name="audio_permission_info">تُظهر هذه الخلفية الأغنية التي تعزفها حاليًا</string>
+    <string name="curve">منحنى</string>
+    <string name="copy_error">خطأ في النسخ</string>
+    <string name="not_found">لا يوجد</string>
 </resources>
