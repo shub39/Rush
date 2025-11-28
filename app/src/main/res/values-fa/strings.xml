@@ -61,9 +61,11 @@
     <string name="no_audio_files">هیچ پرونده صوتی نیست</string>
     <string name="no_folder_selected">هیچ پوشه‌ای انتخاب نشده</string>
     <string name="export">صادر کردن</string>
-    <string name="export_info">صادر کردن ترانه‌ها به پوشه دریافت‌ها/Rush</string>
+    <string name="export_info">صادر کردن ترانه‌ها به پوشه انتخاب شده</string>
     <string name="restore">بازیابی</string>
     <string name="restore_info">بازیابی از پرونده صادرات انتخاب شده</string>
     <string name="choose_file">انتخاب فایل</string>
     <string name="bmc">Buy me a Coffee</string>
+    <string name="translate">ترجمه</string>
+    <string name="rate_on_play">امتیاز‌ دهی در گوگل‌پلی</string>
 </resources>
