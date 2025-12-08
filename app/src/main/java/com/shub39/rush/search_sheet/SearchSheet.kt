@@ -161,7 +161,7 @@ fun SearchSheet(
 
                     items(
                         state.localSearchResults,
-                        key = { it.title.hashCode() + it.artist.hashCode() }
+                        key = { "Saved_${it.id}" }
                     ) {
                         SearchResultCard(
                             result = it,

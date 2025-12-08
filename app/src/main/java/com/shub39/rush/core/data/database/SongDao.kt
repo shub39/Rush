@@ -24,7 +24,7 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun getSongById(id: Long): SongEntity
 
-    @Query("SELECT * FROM songs WHERE title LIKE :query || '%'")
+    @Query("SELECT * FROM songs WHERE title LIKE '%' || :query || '%'")
     suspend fun searchSong(query: String): List<SongEntity>
 
     @Query("UPDATE songs SET lyrics = :lrcAsync, syncedLyrics = :lrcSync WHERE id = :id")
