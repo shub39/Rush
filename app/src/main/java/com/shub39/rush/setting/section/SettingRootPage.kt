@@ -20,7 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Upload
@@ -73,7 +72,6 @@ fun SettingRootPage(
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
-    onNavigateToAboutLibraries: () -> Unit
 ) = PageFill {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
@@ -195,34 +193,6 @@ fun SettingRootPage(
                     trailingContent = {
                         IconButton(
                             onClick = { onNavigateToBackup() },
-                            shapes = IconButtonShapes(
-                                shape = CircleShape,
-                                pressedShape = RoundedCornerShape(10.dp)
-                            )
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                )
-            }
-
-            // navigate to about app
-            item {
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.about_libraries)) },
-                    supportingContent = { Text(text = stringResource(R.string.about_libraries)) },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Rounded.Info,
-                            contentDescription = "About Libraries",
-                        )
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = { onNavigateToAboutLibraries() },
                             shapes = IconButtonShapes(
                                 shape = CircleShape,
                                 pressedShape = RoundedCornerShape(10.dp)
@@ -361,7 +331,6 @@ private fun Preview() {
             onNavigateBack = {  },
             onNavigateToLookAndFeel = {  },
             onNavigateToBackup = {  },
-            onNavigateToAboutLibraries = {  }
         )
     }
 }

@@ -1,13 +1,10 @@
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
-import com.mikepenz.aboutlibraries.plugin.DuplicateMode
-import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.ksp)
 }
 
@@ -132,22 +129,20 @@ dependencies {
     implementation(libs.kmpalette.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.room.runtime)
-    implementation(libs.composeIcons.fontAwesome)
+    implementation(libs.compose.icons.font.awesome)
     implementation(libs.zoomable)
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.datetime)
     implementation(libs.bundles.ktor)
     implementation(libs.jetbrains.compose.navigation)
-    implementation(libs.materialKolor)
+    implementation(libs.materialkolor)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.placeholder)
     implementation(libs.colorpicker.compose)
     implementation(libs.ksoup)
-    implementation(libs.aboutLibraries)
-    implementation(libs.aboutLibraries.compose.m3)
     implementation(libs.filekit.core)
     implementation(libs.filekit.dialogs.compose)
     implementation(libs.accompanist.permissions)
@@ -157,14 +152,6 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
-}
-
-aboutLibraries {
-    export.excludeFields.add("generated")
-    library {
-        duplicationMode = DuplicateMode.MERGE
-        duplicationRule = DuplicateRule.SIMPLE
-    }
 }
 
 java {

@@ -12,7 +12,6 @@ import androidx.navigation.compose.rememberNavController
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.setting.section.AboutLibrariesPage
 import com.shub39.rush.setting.section.BackupPage
 import com.shub39.rush.setting.section.LookAndFeelPage
 import com.shub39.rush.setting.section.SettingRootPage
@@ -28,9 +27,6 @@ private sealed interface SettingsRoutes {
 
     @Serializable
     data object LookAndFeelPage : SettingsRoutes
-
-    @Serializable
-    data object AboutLibrariesPage : SettingsRoutes
 }
 
 @Composable
@@ -65,7 +61,6 @@ fun SettingsGraph(
                 onNavigateBack = onNavigateBack,
                 onNavigateToLookAndFeel = { navController.navigate(SettingsRoutes.LookAndFeelPage) },
                 onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },
-                onNavigateToAboutLibraries = { navController.navigate(SettingsRoutes.AboutLibrariesPage) },
                 state = state,
             )
         }
@@ -82,12 +77,6 @@ fun SettingsGraph(
             LookAndFeelPage(
                 state = state,
                 onAction = action,
-                onNavigateBack = { navController.navigateUp() }
-            )
-        }
-
-        composable<SettingsRoutes.AboutLibrariesPage> {
-            AboutLibrariesPage(
                 onNavigateBack = { navController.navigateUp() }
             )
         }

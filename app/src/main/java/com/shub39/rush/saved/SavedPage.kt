@@ -218,12 +218,10 @@ fun SavedPage(
                 AnimatedContent(
                     targetState = state.sortOrder
                 ) { sortOrder ->
-                    val songs = remember(sortOrder, state) {
-                        when (sortOrder) {
-                            SortOrder.DATE_ADDED -> state.songsByTime
-                            SortOrder.TITLE_ASC -> state.songsAsc
-                            SortOrder.TITLE_DESC -> state.songsDesc
-                        }
+                    val songs = when (sortOrder) {
+                        SortOrder.DATE_ADDED -> state.songsByTime
+                        SortOrder.TITLE_ASC -> state.songsAsc
+                        SortOrder.TITLE_DESC -> state.songsDesc
                     }
 
                     LazyColumn(
@@ -297,8 +295,7 @@ private fun Preview() {
             notificationAccess = true,
             onAction = {
                 when (it) {
-                    is SavedPageAction.UpdateSortOrder -> state =
-                        state.copy(sortOrder = it.sortOrder)
+                    is SavedPageAction.UpdateSortOrder -> state = state.copy(sortOrder = it.sortOrder)
 
                     else -> {}
                 }
