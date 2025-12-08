@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
+import com.shub39.rush.core.domain.WaveColors
 import com.shub39.rush.core.domain.data_classes.Lyric
 import com.shub39.rush.core.domain.data_classes.Song
 import com.shub39.rush.core.domain.data_classes.SongUi
@@ -21,7 +22,6 @@ import com.shub39.rush.core.domain.enums.CardColors
 import com.shub39.rush.core.domain.enums.LyricsBackground
 import com.shub39.rush.core.presentation.ArtFromUrl
 import com.shub39.rush.core.presentation.HypnoticVisualizer
-import com.shub39.rush.core.presentation.WaveColors
 import com.shub39.rush.core.presentation.generateGradientColors
 import com.shub39.rush.lyrics.component.CurveVisualizer
 import com.shub39.rush.lyrics.component.GradientVisualizer

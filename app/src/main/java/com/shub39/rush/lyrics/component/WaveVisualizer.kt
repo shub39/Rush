@@ -11,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
+import com.shub39.rush.core.domain.WaveColors
 import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.presentation.RushTheme
-import com.shub39.rush.core.presentation.WaveColors
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.bassBucket
