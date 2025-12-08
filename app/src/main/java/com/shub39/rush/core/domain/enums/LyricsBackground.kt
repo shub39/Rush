@@ -18,7 +18,7 @@ enum class LyricsBackground(val stringRes: Int) {
         val allBackgrounds = if (hypnoticAvailable()) {
             listOf(SOLID_COLOR, ALBUM_ART, HYPNOTIC, WAVE, GRADIENT, CURVE)
         } else if (blurAvailable()) {
-            listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT, CURVE)
+            listOf(SOLID_COLOR, ALBUM_ART, WAVE, GRADIENT)
         } else {
             listOf(SOLID_COLOR, WAVE, GRADIENT)
         }
