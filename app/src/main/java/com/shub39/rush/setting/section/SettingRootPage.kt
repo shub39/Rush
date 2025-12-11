@@ -102,14 +102,14 @@ fun SettingRootPage(
                             contentDescription = "Navigate Back",
                         )
                     }
-                }
+                },
             )
         }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding(),
+                top = paddingValues.calculateTopPadding() + 16.dp,
                 bottom = paddingValues.calculateBottomPadding() + 60.dp,
                 start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
                 end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp
