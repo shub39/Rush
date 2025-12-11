@@ -25,7 +25,6 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -284,46 +284,29 @@ fun SettingRootPage(
 
     // dialog to confirm nuking
     if (deleteConfirmationDialog) {
-        RushDialog(
-            onDismissRequest = { deleteConfirmationDialog = false }
-        ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 300.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+        RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = "Warning",
+            )
+            Text(
+                text = stringResource(R.string.delete_all),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(R.string.delete_confirmation),
+                textAlign = TextAlign.Center,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Icon(
-                    imageVector = Icons.Default.Warning,
-                    contentDescription = "Warning",
-                    modifier = Modifier.size(24.dp)
-                )
-
-                Spacer(modifier = Modifier.padding(8.dp))
-
-                Text(
-                    text = stringResource(R.string.delete_all),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = stringResource(R.string.delete_confirmation),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Spacer(modifier = Modifier.padding(8.dp))
-
-                Button(
+                TextButton(
                     onClick = {
                         onAction(SettingsPageAction.OnDeleteSongs)
                         deleteConfirmationDialog = false
-                    },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    modifier = Modifier.fillMaxWidth()
+                    }
                 ) {
                     Text(text = stringResource(R.string.delete_all))
                 }
