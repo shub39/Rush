@@ -5,20 +5,20 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Search
@@ -36,6 +36,7 @@ import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -46,7 +47,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -78,29 +78,70 @@ fun SavedPage(
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) = PageFill {
-    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = { Text(stringResource(R.string.rush_branding)) },
-                subtitle = { Text(text = "${state.songsAsc.size} " + stringResource(R.string.saved)) },
-                actions = {
-                    IconButton(
-                        onClick = onNavigateToSettings,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehaviour,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.background
+            Column {
+                MediumFlexibleTopAppBar(
+                    title = { Text(stringResource(R.string.rush_branding)) },
+                    subtitle = { Text(text = "${state.songsAsc.size} " + stringResource(R.string.saved)) },
+                    actions = {
+                        IconButton(
+                            onClick = onNavigateToSettings,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    )
                 )
-            )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceContainer,
+                            shape = RoundedCornerShape(
+                                bottomStart = 32.dp,
+                                bottomEnd = 32.dp
+                            )
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                    ) {
+                        SortOrder.entries.toList().forEach { order ->
+                            ToggleButton(
+                                checked = order == state.sortOrder,
+                                onCheckedChange = {
+                                    onAction(SavedPageAction.UpdateSortOrder(order))
+                                },
+                                colors = ToggleButtonDefaults.toggleButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                ),
+                                modifier = Modifier.weight(1f),
+                                shapes = when (order) {
+                                    SortOrder.DATE_ADDED -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    SortOrder.TITLE_ASC -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                    SortOrder.TITLE_DESC -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                }
+                            ) {
+                                Text(
+                                    text = stringResource(order.stringRes)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         },
         bottomBar = {
             AnimatedVisibility(
@@ -111,7 +152,14 @@ fun SavedPage(
                 if (state.currentSong != null) {
                     BottomAppBar(
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
-                        modifier = Modifier.clickable { onNavigateToLyrics() },
+                        modifier = Modifier
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 32.dp,
+                                    topEnd = 32.dp
+                                )
+                            )
+                            .clickable { onNavigateToLyrics() },
                         contentColor = state.extractedColors.cardContentMuted,
                         containerColor = state.extractedColors.cardBackgroundMuted
                     ) {
@@ -196,25 +244,6 @@ fun SavedPage(
 
             } else {
 
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
-                ) {
-                    items(SortOrder.entries.toList(), key = { it.stringRes }) { order ->
-                        ToggleButton(
-                            checked = order == state.sortOrder,
-                            onCheckedChange = {
-                                onAction(SavedPageAction.UpdateSortOrder(order))
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(order.stringRes)
-                            )
-                        }
-                    }
-                }
-
                 val listState = rememberLazyListState()
                 AnimatedContent(
                     targetState = state.sortOrder
@@ -230,7 +259,11 @@ fun SavedPage(
                         modifier = Modifier
                             .fillMaxSize()
                             .simpleVerticalScrollbar(listState)
-                            .animateContentSize()
+                            .animateContentSize(),
+                        contentPadding = PaddingValues(
+                            top = 16.dp,
+                            bottom = 60.dp
+                        )
                     ) {
                         items(
                             items = songs,
@@ -245,10 +278,6 @@ fun SavedPage(
                                     onNavigateToLyrics()
                                 }
                             )
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.padding(60.dp))
                         }
                     }
                 }
