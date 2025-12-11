@@ -1,7 +1,8 @@
 # Changelog
 
 ## 5.4.0
-- Fixed local search results not appearing
+- Fixed local search results not appearing #201
+- Prefill title and artist in correct dialog #198
 - Prettified settings and saved page ui 
 - fixed misc bugs
 
