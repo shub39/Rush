@@ -86,7 +86,7 @@ fun SettingRootPage(
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehaviour.nestedScrollConnection)
-            .widthIn(max = 1000.dp),
+            .widthIn(max = 700.dp),
         topBar = {
             MediumFlexibleTopAppBar(
                 scrollBehavior = scrollBehaviour,
@@ -103,6 +103,9 @@ fun SettingRootPage(
                         )
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
         }
     ) { paddingValues ->

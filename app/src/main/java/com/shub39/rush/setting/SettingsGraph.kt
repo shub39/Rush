@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,7 +35,8 @@ fun SettingsGraph(
     notificationAccess: Boolean,
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
 
@@ -52,7 +54,8 @@ fun SettingsGraph(
         },
         popExitTransition = {
             slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-        }
+        },
+        modifier = modifier
     ) {
         composable<SettingsRoutes.SettingRootPage> {
             SettingRootPage(
@@ -83,7 +86,7 @@ fun SettingsGraph(
     }
 }
 
-@Preview
+@Preview(device = "spec:width=673dp,height=841dp")
 @Composable
 private fun Preview() {
     RushTheme(

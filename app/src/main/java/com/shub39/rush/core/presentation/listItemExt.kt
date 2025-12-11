@@ -39,4 +39,4 @@ fun endItemShape(): Shape = RoundedCornerShape(
     bottomStart = endCornerRadius.dp
 )
 
-fun detachedItemShape(): Shape = RoundedCornerShape(endCornerRadius.dp)
+fun detachedItemShape(): Shape = RoundedCornerShape(1000.dp)
