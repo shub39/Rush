@@ -243,7 +243,6 @@ fun SavedPage(
 
             } else {
 
-                val listState = rememberLazyListState()
                 AnimatedContent(
                     targetState = state.sortOrder
                 ) { sortOrder ->
@@ -253,6 +252,7 @@ fun SavedPage(
                         SortOrder.TITLE_DESC -> state.songsDesc
                     }
 
+                    val listState = rememberLazyListState()
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
