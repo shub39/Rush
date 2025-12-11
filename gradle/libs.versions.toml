@@ -1,5 +1,8 @@
 [versions]
 agp = "8.13.1"
+minSdk = "24"
+targetSdk = "36"
+compileSdk = "36"
 accompanist = "0.37.3"
 colorpicker = "1.1.3"
 filekit = "0.12.0"

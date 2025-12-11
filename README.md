@@ -1,56 +1,59 @@
-[<img src="fastlane/metadata/android/en-US/images/icon200x200.png" alt="Rush" width="200"/>]()
+![](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
-# Rush
-### Search, save and share lyrics like Spotify! 
+[<img alt="Get it on Google Play" src="badges/playstore.png" width="200px">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
+[<img alt="Get it on github" src="badges/github.png" width="200px">](https://github.com/shub39/Rush/releases)
+[<img alt="Get it on izzyondroid" src="badges/izzyondroid.png" width="200px">](https://apt.izzysoft.de/fdroid/index/apk/com.shub39.rush)
+[<img alt="Get it on fdroid" src="badges/fdroid.png" width="200px">](https://f-droid.org/en/packages/com.shub39.rush/)
 
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/AndroidStudio/androidstudio3.svg">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin1.svg">]()
+## Screenshots
 
-> ### Stats and Socials
-> [<img src="https://m3-markdown-badges.vercel.app/stars/1/3/shub39/Rush">]()
-> [<img src="https://m3-markdown-badges.vercel.app/issues/1/2/shub39/Rush">]()
-> [<img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Discord/discord2.svg">](https://discord.gg/https://discord.gg/nxA2hgtEKf)
-
-> ### Get On
-> [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
-> ### Or Download latest from [Releases](https://github.com/shub39/Rush/releases)
-
-## Screenshots 📱
-
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
+| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) |
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
 | ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
-## Features ✨
->- [x] Search Lyrics
->- [x] Download Lyrics
->- [x] Share Lyrics
->- [x] Customisations
->- [x] Auto-fill current playing song in search 
->- [x] Synced Lyrics
->- [x] Import and Export saved lyrics
+## Features 
+
+- [x] Search Lyrics
+- [x] Download Lyrics
+- [x] Share Lyrics
+- [x] Customisations
+- [x] Auto-fill current playing song in search 
+- [x] Synced Lyrics
+- [x] Import and Export saved lyrics
 
 Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)
 
-## Motivation 💭
+## Motivation 
+
 Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
 So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify,
 all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without 
 dealing with genius's "UI".
 
-## Translations 🔠
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
+
+## Translations 
+
 Translations are done via weblate, you can contribute there!
 [<img src="https://hosted.weblate.org/widget/rush/multi-auto.svg" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
 [<img src="https://hosted.weblate.org/widget/rush/287x66-grey.png" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
 
-## References and Inspiration 💡
+## Inspiration and Tech used
 
->- [Fastlyrics](https://github.com/TecCheck/FastLyrics)
->- [SongSync](https://github.com/Lambada10/SongSync)
->- [LrcLib](https://lrclib.net/) 
->- Spotify Lyrics UI
-
-## Stargazers over time ✨
-[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
+- [Fastlyrics](https://github.com/TecCheck/FastLyrics)
+- [SongSync](https://github.com/Lambada10/SongSync)
+- [LrcLib](https://lrclib.net/) 
+- Spotify Lyrics UI
+- Kotlin and Jetpack Compose 🖤
+- [MaterialKolor](https://github.com/jordond/MaterialKolor)
+- [ColorPicker Compose](https://github.com/skydoves/colorpicker-compose)
+- [Compose Icons](https://github.com/DevSrSouza/compose-icons)
+- [Revenuecat Android SDK](https://github.com/RevenueCat/purchases-android)
+- [FileKit](https://github.com/vinceglb/filekit)
+- [KSoup](https://github.com/fusesource/ksoup)
+- [Landscapist](https://github.com/skydoves/landscapist)
+- [Kmpalette](https://github.com/jordond/kmpalette)
+- [Zoomable](https://github.com/usuiat/Zoomable)

@@ -499,7 +499,9 @@ fun LyricsPage(
     if (state.lyricsCorrect) {
         LrcCorrectSheet(
             action = action,
-            state = state
+            state = state,
+            track = (state.lyricsState as? LyricsState.Loaded)?.song?.title ?: "",
+            artist = (state.lyricsState as? LyricsState.Loaded)?.song?.artists ?: "",
         )
     }
 }

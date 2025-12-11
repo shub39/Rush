@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.4.0
+- Fixed local search results not appearing
+- Prettified settings and saved page ui 
+- fixed misc bugs
+
 ## 5.3.0
 - **Improved autosearch**, a button will be displayed when exact match is not found 
 - Added Rush Logo to cards and a toggle for that

@@ -215,8 +215,7 @@ fun SavedPage(
                         Icon(
                             imageVector = FontAwesomeIcons.Solid.Meteor,
                             contentDescription = "Rush Mode",
-                            modifier = Modifier
-                                .size(24.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }

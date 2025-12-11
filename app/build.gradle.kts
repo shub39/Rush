@@ -9,19 +9,19 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.3.0"
-val appVersionCode = 5300
+val appVersionName = "5.4.0"
+val appVersionCode = 5400
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
 android {
     namespace = "com.shub39.rush"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.shub39.rush"
-        minSdk = 24
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = appVersionCode
         versionName = appVersionName
 
