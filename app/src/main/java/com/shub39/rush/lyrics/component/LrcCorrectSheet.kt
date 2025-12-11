@@ -20,17 +20,13 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,24 +43,18 @@ import compose.icons.fontawesomeicons.solid.SyncAlt
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun LrcCorrectSheet(
+    track: String,
+    artist: String,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-
-    var track by remember { mutableStateOf("") }
-    var artist by remember { mutableStateOf("") }
+    var track by remember { mutableStateOf(track) }
+    var artist by remember { mutableStateOf(artist) }
 
     ModalBottomSheet(
         onDismissRequest = { action(LyricsPageAction.OnLyricsCorrect(false)) },
         modifier = Modifier.heightIn(max = 900.dp)
     ) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-            keyboardController?.show()
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,9 +77,7 @@ fun LrcCorrectSheet(
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(text = stringResource(R.string.track)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedTextField(
@@ -105,8 +93,6 @@ fun LrcCorrectSheet(
             Button(
                 onClick = {
                     action(LyricsPageAction.OnLrcSearch(track, artist))
-                    focusRequester.freeFocus()
-                    keyboardController?.hide()
                 },
                 enabled = track.isNotBlank() && !state.lrcCorrect.searching,
                 shape = MaterialTheme.shapes.extraLarge,

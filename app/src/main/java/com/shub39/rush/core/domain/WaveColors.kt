@@ -1,4 +1,4 @@
-package com.shub39.rush.core.presentation
+package com.shub39.rush.core.domain
 
 import androidx.compose.ui.graphics.Color
 

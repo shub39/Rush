@@ -143,7 +143,6 @@ class SearchSheetVM(
         _state.update {
             it.copy(
                 isSearching = true,
-                localSearchResults = emptyList(),
                 error = null
             )
         }
@@ -228,7 +227,7 @@ class SearchSheetVM(
                     source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                     syncedAvailable = result.syncedLyrics != null,
                     sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                        .lowercase() == getMainTitle(result.title).trim().lowercase()),
+                        .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
                     selectedLines = emptyMap(),
                 )
             }
@@ -258,8 +257,7 @@ class SearchSheetVM(
                             source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
                             syncedAvailable = retrievedSong.syncedLyrics != null,
                             sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                                .lowercase() == getMainTitle(retrievedSong.title).trim()
-                                .lowercase()),
+                                .equals(getMainTitle(retrievedSong.title).trim(), ignoreCase = true)),
                             selectedLines = emptyMap(),
                         )
                     }
@@ -286,7 +284,7 @@ class SearchSheetVM(
                     title = song.title,
                     artist = song.artists,
                     album = song.album,
-                    artUrl = song.artUrl!!,
+                    artUrl = song.artUrl ?: "",
                     url = song.sourceUrl,
                     id = song.id
                 )

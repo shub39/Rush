@@ -17,7 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
-import com.shub39.rush.core.presentation.WaveColors
+import com.shub39.rush.core.domain.WaveColors
 import com.shub39.rush.core.presentation.hypnoticAvailable
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState

@@ -1,13 +1,12 @@
 package com.shub39.rush.setting.section
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,19 +15,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.DriveFolderUpload
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.FileDownload
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -39,8 +38,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +51,9 @@ import com.shub39.rush.core.domain.data_classes.Theme
 import com.shub39.rush.core.domain.enums.AppTheme
 import com.shub39.rush.core.presentation.PageFill
 import com.shub39.rush.core.presentation.RushTheme
+import com.shub39.rush.core.presentation.endItemShape
+import com.shub39.rush.core.presentation.leadingItemShape
+import com.shub39.rush.core.presentation.listItemColors
 import com.shub39.rush.setting.SettingsPageAction
 import com.shub39.rush.setting.SettingsPageState
 import io.github.vinceglb.filekit.PlatformFile
@@ -114,7 +116,7 @@ private fun BackupPageContent(
     action: (SettingsPageAction) -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.widthIn(max = 1000.dp),
+        modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
             TopAppBar(
                 title = {
@@ -144,127 +146,146 @@ private fun BackupPageContent(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Card(
-                    shape = MaterialTheme.shapes.extraLargeIncreased
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = stringResource(R.string.export),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = stringResource(R.string.export_info),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        FilledTonalIconButton(
-                            onClick = onSaveFile,
-                            enabled = state.exportState is ExportState.ExportReady
-                        ) {
-                            when (state.exportState) {
-                                is ExportState.ExportReady -> {
-                                    Icon(
-                                        imageVector = Icons.Rounded.PlayArrow,
-                                        contentDescription = "Start Export",
-                                    )
-                                }
-
-                                ExportState.Exporting -> {
-                                    LoadingIndicator(
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-
-                                ExportState.Error -> {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Error,
-                                        contentDescription = "Error"
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            item {
-                Card(
-                    shape = MaterialTheme.shapes.extraLargeIncreased
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.clip(leadingItemShape())
                     ) {
-                        Column {
-                            Text(
-                                text = stringResource(R.string.restore),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = stringResource(R.string.restore_info),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.export)
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Rounded.DriveFolderUpload,
+                                    contentDescription = null
+                                )
+                            },
+                            colors = listItemColors(),
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(R.string.export_info)
+                                )
+                            }
+                        )
 
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Button(
-                            onClick = onPickFile,
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = state.restoreState !is RestoreState.Restoring
+                        Row(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .background(listItemColors().containerColor)
+                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
                         ) {
-                            Text(text = stringResource(R.string.choose_file))
-                        }
-
-                        if (restoreFile != null) {
                             Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { action(SettingsPageAction.OnRestoreSongs(restoreFile.toString())) },
-                                enabled = state.restoreState is RestoreState.Idle
+                                onClick = onSaveFile,
+                                enabled = state.exportState is ExportState.ExportReady,
+                                modifier = Modifier.weight(1f)
                             ) {
-                                when (state.restoreState) {
-                                    RestoreState.Idle -> {
+                                when (state.exportState) {
+                                    is ExportState.ExportReady -> {
                                         Icon(
                                             imageVector = Icons.Rounded.PlayArrow,
-                                            contentDescription = "Start Restore",
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(ButtonDefaults.MediumIconSpacing))
-                                        Text(
-                                            text = stringResource(R.string.start)
+                                            contentDescription = "Start Export",
                                         )
                                     }
 
-                                    RestoreState.Restoring -> {
+                                    ExportState.Exporting -> {
                                         LoadingIndicator(
                                             modifier = Modifier.size(24.dp)
                                         )
                                     }
 
-                                    RestoreState.Restored -> {
+                                    ExportState.Error -> {
                                         Icon(
-                                            imageVector = Icons.Rounded.Check,
-                                            contentDescription = "Restored",
-                                            modifier = Modifier.size(20.dp)
+                                            imageVector = Icons.Rounded.Error,
+                                            contentDescription = "Error"
                                         )
                                     }
+                                }
+                            }
+                        }
+                    }
 
-                                    is RestoreState.Failure -> {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Warning,
-                                            contentDescription = "Error",
-                                            modifier = Modifier.size(20.dp)
-                                        )
+                    Column(
+                        modifier = Modifier.clip(endItemShape())
+                    ) {
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Rounded.FileDownload,
+                                    contentDescription = null
+                                )
+                            },
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.restore)
+                                )
+                            },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(R.string.restore_info)
+                                )
+                            }
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .background(listItemColors().containerColor)
+                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Button(
+                                onClick = onPickFile,
+                                modifier = Modifier.weight(1f),
+                                enabled = state.restoreState !is RestoreState.Restoring
+                            ) {
+                                Text(text = stringResource(R.string.choose_file))
+                            }
+
+                            if (restoreFile != null) {
+                                Button(
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { action(SettingsPageAction.OnRestoreSongs(restoreFile.toString())) },
+                                    enabled = state.restoreState is RestoreState.Idle
+                                ) {
+                                    when (state.restoreState) {
+                                        RestoreState.Idle -> {
+                                            Icon(
+                                                imageVector = Icons.Rounded.PlayArrow,
+                                                contentDescription = "Start Restore",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(ButtonDefaults.MediumIconSpacing))
+                                            Text(
+                                                text = stringResource(R.string.start)
+                                            )
+                                        }
+
+                                        RestoreState.Restoring -> {
+                                            LoadingIndicator(
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
+
+                                        RestoreState.Restored -> {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Check,
+                                                contentDescription = "Restored",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+
+                                        is RestoreState.Failure -> {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Warning,
+                                                contentDescription = "Error",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
