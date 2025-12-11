@@ -53,7 +53,7 @@ Translations are done via weblate, you can contribute there!
 - [Compose Icons](https://github.com/DevSrSouza/compose-icons)
 - [Revenuecat Android SDK](https://github.com/RevenueCat/purchases-android)
 - [FileKit](https://github.com/vinceglb/filekit)
-- [KSoup](https://github.com/fusesource/ksoup)
+- [KSoup](https://github.com/fleeksoft/ksoup)
 - [Landscapist](https://github.com/skydoves/landscapist)
 - [Kmpalette](https://github.com/jordond/kmpalette)
 - [Zoomable](https://github.com/usuiat/Zoomable)
