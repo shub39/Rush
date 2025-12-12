@@ -23,12 +23,4 @@ class GeniusApiTest {
             is Result.Success -> { println(search.data) }
         }
     }
-
-    @Test
-    fun testFetch() = testIn("Test Fetch") {
-        when (val fetch = geniusApi.geniusSong(3836182)) {
-            is Result.Error -> { println(fetch.debugMessage) }
-            is Result.Success -> { println(fetch.data) }
-        }
-    }
 }

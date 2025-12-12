@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SongRepo {
     // network
-    suspend fun fetchSong(id: Long): Result<Song, SourceError>
+    suspend fun fetchSong(result: SearchResult): Result<Song, SourceError>
     suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError>
     suspend fun searchGenius(query: String): Result<List<SearchResult>, SourceError>
     suspend fun searchLrcLib(track: String, artist: String): Result<List<LrcLibSong>, SourceError>

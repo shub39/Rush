@@ -29,51 +29,43 @@ class RushRepository(
     private val geniusScraper: GeniusScraper
 ) : SongRepo {
     @OptIn(ExperimentalTime::class)
-    override suspend fun fetchSong(id: Long): Result<Song, SourceError> {
-        val result = withContext(Dispatchers.IO) {
-            geniusApi.geniusSong(id)
-        }
-
-        when (result) {
-            is Result.Success -> {
-                val song = result.data.response.song
-
-                val lrcLibLyrics = withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(
-                        trackName = getMainTitle(song.title),
-                        artistName = getMainArtist(song.artistNames)
-                    )
+    override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
+        try {
+            val lrcLibLyrics = withContext(Dispatchers.IO) {
+                lrcLibApi.getLrcLyrics(
+                    trackName = getMainTitle(result.title),
+                    artistName = getMainArtist(result.artist)
+                )
+            }
+            val geniusLyrics = if (lrcLibLyrics == null) {
+                withContext(Dispatchers.IO) {
+                    (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
                 }
-                val geniusLyrics = if (lrcLibLyrics == null) {
-                    withContext(Dispatchers.IO) {
-                        (geniusScraper.geniusScrape(song.url) as? Result.Success)?.data
-                    }
-                } else {
-                    null
-                }
-
-
-                return Result.Success<Song, SourceError>(
-                    Song(
-                        id = song.id,
-                        title = song.title,
-                        artists = song.artistNames,
-                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                        album = song.album?.name,
-                        sourceUrl = song.url,
-                        artUrl = song.songArtImageURL,
-                        geniusLyrics = geniusLyrics,
-                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                        dateAdded = Clock.System.now().epochSeconds,
-                    )
-                ).also {
-                    localDao.insertSong(it.data.toSongEntity())
-                }
+            } else {
+                null
             }
 
-            is Result.Error -> {
-                return Result.Error(error = result.error, debugMessage = result.debugMessage)
+            return Result.Success<Song, SourceError>(
+                Song(
+                    id = result.id,
+                    title = result.title,
+                    artists = result.artist,
+                    lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                    album = result.album,
+                    sourceUrl = result.url,
+                    artUrl = result.artUrl,
+                    geniusLyrics = geniusLyrics,
+                    syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                    dateAdded = Clock.System.now().epochSeconds,
+                )
+            ).also {
+                localDao.insertSong(it.data.toSongEntity())
             }
+        } catch (e: Exception) {
+            return Result.Error(
+                SourceError.Data.UNKNOWN,
+                "Unexpected exception: $e"
+            )
         }
     }
 

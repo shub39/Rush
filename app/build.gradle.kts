@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -9,8 +10,16 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.4.0"
-val appVersionCode = 5400
+val appVersionName = "5.4.2"
+val appVersionCode = 5420
+
+val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
+
+val localProperties = Properties()
+val localFile = rootProject.file("local.properties")
+if (localFile.exists()) {
+    localProperties.load(localFile.inputStream())
+}
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -74,9 +83,16 @@ android {
             dimension = "version"
             applicationIdSuffix = ".play"
             versionNameSuffix = "-play"
+
+            val privateToken = localProperties.getProperty("GENIUS_API_PRIVATE") ?: ""
+            if (privateToken.isEmpty()) {
+                println("WARNING: GENIUS_API_PRIVATE not found in local.properties")
+            }
+            buildConfigField("String", "GENIUS_API_TOKEN", "\"$privateToken\"")
         }
         create("foss") {
             dimension = "version"
+            buildConfigField("String", "GENIUS_API_TOKEN", publicGeniusApiToken)
         }
     }
 

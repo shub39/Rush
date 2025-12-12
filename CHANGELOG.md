@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.4.2
+- Trimmed unneeded network calls
+
 ## 5.4.0
 - Fixed local search results not appearing #201
 - Prefill title and artist in correct dialog #198

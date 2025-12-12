@@ -207,11 +207,11 @@ class SearchSheetVM(
     private suspend fun fetchLyrics(songId: Long) {
         if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
-        val song = _state.value.searchResults.find { it.id == songId }
+        val song = _state.value.searchResults.find { it.id == songId } ?: return
 
         stateLayer.lyricsState.update {
             it.copy(
-                lyricsState = LyricsState.Fetching("${song?.title} - ${song?.artist}"),
+                lyricsState = LyricsState.Fetching("${song.title} - ${song.artist}"),
                 extractedColors = ExtractedColors(),
                 searchState = SearchState.Idle,
                 sync = false
@@ -236,7 +236,7 @@ class SearchSheetVM(
                 it.copy(currentSong = result)
             }
         } else {
-            when (val result = repo.fetchSong(songId)) {
+            when (val result = repo.fetchSong(song)) {
                 is Result.Error -> {
                     stateLayer.lyricsState.update {
                         it.copy(

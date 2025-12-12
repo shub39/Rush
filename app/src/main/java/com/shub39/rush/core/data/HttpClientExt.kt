@@ -8,8 +8,8 @@ import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlin.coroutines.coroutineContext
 
 suspend inline fun <reified T> safeCall(
     execute: () -> HttpResponse
@@ -27,7 +27,7 @@ suspend inline fun <reified T> safeCall(
             "UnresolvedAddressException: ${e.message}"
         )
     } catch (e: Exception) {
-        coroutineContext.ensureActive()
+        currentCoroutineContext().ensureActive()
         return Result.Error(
             SourceError.Data.UNKNOWN,
             "Unexpected exception: ${e::class.simpleName} - ${e.message}\n${
@@ -53,6 +53,11 @@ suspend inline fun <reified T> responseToResult(
                 )
             }
         }
+
+        429 -> Result.Error(
+            SourceError.Network.REQUEST_FAILED,
+            "Too many requests: ${response.request.url}"
+        )
 
         else -> Result.Error(
             SourceError.Data.UNKNOWN,

@@ -1,5 +1,7 @@
 package com.shub39.rush.core.data.network
 
+import com.shub39.rush.BuildConfig
+
 object Tokens {
-    const val GENIUS_API = "qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y"
+    const val GENIUS_API = BuildConfig.GENIUS_API_TOKEN
 }
