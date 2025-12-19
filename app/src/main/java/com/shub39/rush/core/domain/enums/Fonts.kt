@@ -15,5 +15,6 @@ enum class Fonts(
     OPEN_SANS("Open Sans", R.font.open_sans),
     OUTFIT("Outfit", R.font.outfit),
     QUICKSAND("Quicksand", R.font.quicksand),
-    JOSH("Jost", R.font.jost)
+    JOSH("Jost", R.font.jost),
+    GOOGLE_SANS("Google Sans", R.font.google_sans)
 }
