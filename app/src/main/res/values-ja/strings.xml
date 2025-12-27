@@ -66,7 +66,7 @@
     <string name="no_audio_files">音楽ファイルがありません</string>
     <string name="no_folder_selected">フォルダが選択されていません</string>
     <string name="export">エクスポート</string>
-    <string name="export_info">楽曲をDownloads/Rushにエクスポート</string>
+    <string name="export_info">楽曲を選択したフォルダーにエクスポート</string>
     <string name="restore">復元</string>
     <string name="restore_info">選択したエクスポートファイルから復元</string>
     <string name="choose_file">ファイルを選択</string>
@@ -129,4 +129,6 @@
     <string name="foss_desc">すべての機能がアンロックされています。このアプリバージョンはアプリ内購入をサポートしていません。このアプリがあなたの生活に価値を加えた場合は、以下で寄付をしてサポートしてください</string>
     <string name="rush_pro">Rush Pro</string>
     <string name="unlock_more_pro">Proでさらに機能をアンロック</string>
+    <string name="copy_error">コピーエラー</string>
+    <string name="not_found">見つかりません</string>
 </resources>
