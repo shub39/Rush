@@ -18,7 +18,7 @@
     <string name="artist">artiste</string>
     <string name="width">Largeur</string>
     <string name="colors">Couleurs personnalisables</string>
-    <string name="grant_permission">Accorder l\'accès aux notifications</string>
+    <string name="grant_permission">Accorder les permissions</string>
     <string name="notification_permission">L\'accès aux notifications est requis pour obtenir les paroles automatiquement.</string>
     <string name="rounded_corners">Coins arrondis</string>
     <string name="max_lines">Nombre maximum de lignes à partager</string>
@@ -61,7 +61,7 @@
     <string name="no_audio_files">Aucun fichier audio</string>
     <string name="no_folder_selected">Aucun dossier sélectionné</string>
     <string name="export">Exporter</string>
-    <string name="export_info">Exporter les musiques vers Downloads/Rush</string>
+    <string name="export_info">Exporter les musiques vers le dossier selectionné</string>
     <string name="restore">Restaurer</string>
     <string name="restore_info">Restaurer depuis un fichier d\'export sélectionné</string>
     <string name="choose_file">Choisir un fichier</string>
@@ -137,4 +137,11 @@
     <string name="plain_lyrics">Basique</string>
     <string name="synced_lyrics">Synchronisé</string>
     <string name="blur_synced">Flouter les paroles synchronisées</string>
+    <string name="wave">Wave</string>
+    <string name="gradient">Gradient</string>
+    <string name="audio_permission">Permission d\'enregistrement sonore requise</string>
+    <string name="audio_permission_info">Ce background visualise la musique jouée actuellement</string>
+    <string name="curve">Courbe</string>
+    <string name="copy_error">Erreur de copie</string>
+    <string name="not_found">Introuvable</string>
 </resources>
