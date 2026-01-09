@@ -351,6 +351,18 @@ fun LyricsPage(
                                                         .padding(horizontal = 16.dp)
                                                         .basicMarquee()
                                                 )
+
+                                                ActionsRow(
+                                                    state = state,
+                                                    action = action,
+                                                    notificationAccess = notificationAccess,
+                                                    cardBackground = cardBackground,
+                                                    cardContent = cardContent,
+                                                    onShare = onShare,
+                                                    onEdit = onEdit,
+                                                    glowMultiplier = glowMultiplier,
+                                                    modifier = Modifier.padding(16.dp)
+                                                )
                                             }
 
                                             if (!state.sync) {
