@@ -8,7 +8,7 @@
     <string name="vibrant_colors">使用鲜艳的颜色</string>
     <string name="save">保存更改</string>
     <string name="delete_confirmation">确定要删除所有已保存的歌词吗？</string>
-    <string name="no_lyrics">翻遍了LRCLIB也没有找到歌词哦</string>
+    <string name="no_lyrics">无法从LRCLIB获取歌词</string>
     <string name="suggestion">要不要搜索一下？</string>
     <string name="downloaded">保存的歌词</string>
     <string name="delete_all">删除所有歌词</string>
@@ -18,7 +18,7 @@
     <string name="artist">艺术家</string>
     <string name="width">宽度</string>
     <string name="colors">颜色</string>
-    <string name="grant_permission">授予通知访问权限</string>
+    <string name="grant_permission">授予权限</string>
     <string name="notification_permission">需要通知访问权限才能自动获取歌词。请在授予权限后关闭并重新启动应用程序。</string>
     <string name="rounded_corners">圆角</string>
     <string name="max_lines">分享的最大行数</string>
@@ -51,7 +51,7 @@
     <string name="backup_info">导入或导出已保存歌词的数据库</string>
     <string name="batch_download_info">一次性下载本地保存歌曲的歌词。</string>
     <string name="sort_date_added">最近添加</string>
-    <string name="rush_branding">Rush标志</string>
+    <string name="rush_branding">Rush</string>
     <string name="exported">导出完成</string>
     <string name="restore">恢复</string>
     <string name="use_system_theme">使用系统主题</string>
@@ -93,7 +93,7 @@
     <string name="custom">自定义</string>
     <string name="fit">适应</string>
     <string name="standard">标准</string>
-    <string name="spotify">默认</string>
+    <string name="spotify">通用</string>
     <string name="rushed">快速</string>
     <string name="image">图片</string>
     <string name="hypnotic">涟漪</string>
@@ -103,7 +103,7 @@
     <string name="use_system_theme_desc">使用与系统相同的主题</string>
     <string name="fullscreen_desc">在歌词页面隐藏系统栏</string>
     <string name="restored">歌曲已恢复</string>
-    <string name="export_info">将歌曲导出到Downloads/Rush</string>
+    <string name="export_info">将歌曲导出到选择的文件夹</string>
     <string name="restore_info">从选定的导出文件恢复</string>
     <string name="dark_theme">使用暗黑主题</string>
     <string name="amoled">Amoled调色板</string>
@@ -121,13 +121,13 @@
     <string name="font">选择应用程序字体</string>
     <string name="card_font">卡片字体</string>
     <string name="bmc">请作者喝杯咖啡</string>
-    <string name="translate">帮忙翻译一下</string>
-    <string name="rate_on_play">去Play商店打星</string>
-    <string name="foss">你正在使用FOSS版本的软件</string>
-    <string name="foss_desc">如果这个软件帮助到了您，请考虑赞助一下作者哦！不必担心，应用功能已全部解锁，FOSS版无内购功能</string>
-    <string name="rush_pro">Rush标志 Pro</string>
+    <string name="translate">翻译</string>
+    <string name="rate_on_play">前往Google Play评价</string>
+    <string name="foss">你正在使用FOSS版本</string>
+    <string name="foss_desc">全部功能均已解锁。此版本应用无需内购。如果此软件帮助了你，请考虑通过以下途径支持作者：</string>
+    <string name="rush_pro">Rush Pro</string>
     <string name="unlock_more_pro">在Pro中发现更多</string>
-    <string name="messy">嘈杂</string>
+    <string name="messy">杂乱</string>
     <string name="chat">对话</string>
     <string name="album_art">仅封面</string>
     <string name="album_art_shape">专辑封面样式</string>
@@ -137,4 +137,11 @@
     <string name="plain_lyrics">仅歌词</string>
     <string name="synced_lyrics">歌词滚动</string>
     <string name="blur_synced">已播放歌词模糊</string>
+    <string name="not_found">未找到</string>
+    <string name="copy_error">复制错误</string>
+    <string name="audio_permission_info">此背景可视化当前播放的歌曲</string>
+    <string name="audio_permission">需要授予音频权限</string>
+    <string name="wave">波浪</string>
+    <string name="gradient">梯度</string>
+    <string name="curve">曲线</string>
 </resources>
