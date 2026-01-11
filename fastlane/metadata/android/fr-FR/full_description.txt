@@ -1,9 +1,0 @@
-Rush est une application android pour rechercher, visionner, sauvegarder et partager les paroles de vos musiques préférées
-
-Fonctionnalités
-
-- Rechercher, visionner et enregistrer des paroles
-- Partagez les paroles avec une carte personnalisable à vos amis !
-- Recherche automatique de la musique actuellement jouée (requiert la permission Accès aux notifications)
-- Paroles synchronisées
-- Téléchargez les paroles en lot
