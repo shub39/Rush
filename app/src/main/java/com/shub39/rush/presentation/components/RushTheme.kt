@@ -1,4 +1,4 @@
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.components
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,6 +9,8 @@ import androidx.compose.ui.res.colorResource
 import com.materialkolor.DynamicMaterialTheme
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.provideTypography
+import com.shub39.rush.presentation.toMPaletteStyle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

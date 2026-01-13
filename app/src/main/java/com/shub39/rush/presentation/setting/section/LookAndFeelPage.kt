@@ -67,8 +67,8 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
-import com.shub39.rush.presentation.ColorPickerDialog
-import com.shub39.rush.presentation.PageFill
+import com.shub39.rush.presentation.components.ColorPickerDialog
+import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors

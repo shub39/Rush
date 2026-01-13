@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.PageFill
-import com.shub39.rush.presentation.RushDialog
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.PageFill
+import com.shub39.rush.presentation.components.RushDialog
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape

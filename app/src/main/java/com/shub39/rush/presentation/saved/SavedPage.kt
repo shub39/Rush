@@ -59,10 +59,10 @@ import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.domain.enums.SortOrder
-import com.shub39.rush.presentation.ArtFromUrl
-import com.shub39.rush.presentation.Empty
-import com.shub39.rush.presentation.PageFill
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.ArtFromUrl
+import com.shub39.rush.presentation.components.Empty
+import com.shub39.rush.presentation.components.PageFill
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.saved.component.SongCard
 import com.shub39.rush.presentation.simpleVerticalScrollbar
 import compose.icons.FontAwesomeIcons

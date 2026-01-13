@@ -43,8 +43,8 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.domain.enums.Fonts
-import com.shub39.rush.presentation.ListSelect
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.ListSelect
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.share.SharePageAction
 import com.shub39.rush.presentation.share.SharePageState
 

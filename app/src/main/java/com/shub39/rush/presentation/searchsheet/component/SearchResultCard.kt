@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.domain.dataclasses.SearchResult
-import com.shub39.rush.presentation.ArtFromUrl
+import com.shub39.rush.presentation.components.ArtFromUrl
 
 @Composable
 fun SearchResultCard(

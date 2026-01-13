@@ -21,8 +21,8 @@ import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.dataclasses.WaveColors
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsBackground
-import com.shub39.rush.presentation.ArtFromUrl
-import com.shub39.rush.presentation.HypnoticVisualizer
+import com.shub39.rush.presentation.components.ArtFromUrl
+import com.shub39.rush.presentation.components.HypnoticVisualizer
 import com.shub39.rush.presentation.generateGradientColors
 import com.shub39.rush.presentation.lyrics.component.CurveVisualizer
 import com.shub39.rush.presentation.lyrics.component.GradientVisualizer

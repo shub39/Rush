@@ -58,12 +58,12 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
-import com.shub39.rush.presentation.ColorPickerDialog
-import com.shub39.rush.presentation.ListSelect
-import com.shub39.rush.presentation.RushDialog
-import com.shub39.rush.presentation.RushTheme
-import com.shub39.rush.presentation.SettingSlider
 import com.shub39.rush.presentation.blurAvailable
+import com.shub39.rush.presentation.components.ColorPickerDialog
+import com.shub39.rush.presentation.components.ListSelect
+import com.shub39.rush.presentation.components.RushDialog
+import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.components.SettingSlider
 import com.shub39.rush.presentation.getRandomLine
 import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction

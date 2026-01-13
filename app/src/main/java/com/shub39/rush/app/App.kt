@@ -26,8 +26,14 @@ import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.data.listener.NotificationListener
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.lyrics.LyricsGraph
+import com.shub39.rush.presentation.onboarding.Onboarding
+import com.shub39.rush.presentation.saved.SavedPage
+import com.shub39.rush.presentation.searchsheet.SearchSheet
+import com.shub39.rush.presentation.setting.SettingsGraph
 import com.shub39.rush.presentation.setting.SettingsPageAction
+import com.shub39.rush.presentation.share.SharePage
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
@@ -108,7 +114,7 @@ fun App() {
                             val savedVM: SavedVM = koinViewModel()
                             val savedState by savedVM.state.collectAsStateWithLifecycle()
 
-                            _root_ide_package_.com.shub39.rush.presentation.saved.SavedPage(
+                            SavedPage(
                                 state = savedState,
                                 notificationAccess = notificationAccess,
                                 onAction = savedVM::onAction,
@@ -119,7 +125,7 @@ fun App() {
                         }
 
                         composable<Route.LyricsGraph> {
-                            _root_ide_package_.com.shub39.rush.presentation.lyrics.LyricsGraph(
+                            LyricsGraph(
                                 notificationAccess = notificationAccess,
                                 lyricsState = lyricsState,
                                 lyricsAction = lyricsVM::onAction,
@@ -138,7 +144,7 @@ fun App() {
                             val shareVM: ShareVM = koinViewModel()
                             val shareState by shareVM.state.collectAsStateWithLifecycle()
 
-                            _root_ide_package_.com.shub39.rush.presentation.share.SharePage(
+                            SharePage(
                                 onDismiss = { navController.navigateUp() },
                                 state = shareState,
                                 onAction = shareVM::onAction
@@ -146,7 +152,7 @@ fun App() {
                         }
 
                         composable<Route.SettingsGraph> {
-                            _root_ide_package_.com.shub39.rush.presentation.setting.SettingsGraph(
+                            SettingsGraph(
                                 notificationAccess = notificationAccess,
                                 state = settingsState,
                                 action = settingsVM::onAction,
@@ -155,7 +161,7 @@ fun App() {
                         }
 
                         composable<Route.OnboardingPage> {
-                            _root_ide_package_.com.shub39.rush.presentation.onboarding.Onboarding(
+                            Onboarding(
                                 onDone = {
                                     settingsVM.onAction(
                                         SettingsPageAction.OnUpdateOnboardingDone(true)
@@ -171,7 +177,7 @@ fun App() {
                         }
                     }
 
-                    _root_ide_package_.com.shub39.rush.presentation.searchsheet.SearchSheet(
+                    SearchSheet(
                         state = searchState,
                         onAction = searchSheetVM::onAction,
                         onNavigateToLyrics = {

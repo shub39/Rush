@@ -51,7 +51,7 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.errorStringRes
 import com.shub39.rush.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.presentation.searchsheet.component.SearchResultCard

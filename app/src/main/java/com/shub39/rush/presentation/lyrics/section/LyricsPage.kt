@@ -53,9 +53,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.enums.LyricsBackground
-import com.shub39.rush.presentation.ArtFromUrl
-import com.shub39.rush.presentation.Empty
 import com.shub39.rush.presentation.KeepScreenOn
+import com.shub39.rush.presentation.components.ArtFromUrl
+import com.shub39.rush.presentation.components.Empty
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
 import com.shub39.rush.presentation.glowBackground

@@ -1,4 +1,4 @@
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.components
 
 import androidx.annotation.IntRange
 import androidx.compose.foundation.layout.Arrangement

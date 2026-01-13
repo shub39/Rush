@@ -82,7 +82,7 @@ fun Modifier.glowBackground(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun PreviewGlowText() {
+private fun PreviewGlowText() {
     val infiniteTransition = rememberInfiniteTransition(label = "glow")
     val glowRadius by infiniteTransition.animateFloat(
         initialValue = 48f,

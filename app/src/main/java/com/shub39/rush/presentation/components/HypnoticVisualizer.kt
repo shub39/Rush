@@ -1,4 +1,4 @@
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.components
 
 import android.graphics.RuntimeShader
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
+import com.shub39.rush.presentation.hypnoticAvailable
 
 @Composable
 fun HypnoticVisualizer(

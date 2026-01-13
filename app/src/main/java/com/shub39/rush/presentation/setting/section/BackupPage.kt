@@ -49,8 +49,8 @@ import com.shub39.rush.domain.backup.ExportState
 import com.shub39.rush.domain.backup.RestoreState
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.PageFill
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.PageFill
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors

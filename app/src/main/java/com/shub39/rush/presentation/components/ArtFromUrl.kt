@@ -1,4 +1,4 @@
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.components
 
 import android.graphics.Bitmap
 import androidx.compose.material.icons.Icons

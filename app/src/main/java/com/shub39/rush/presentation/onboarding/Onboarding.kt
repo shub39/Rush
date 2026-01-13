@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.onboarding.component.AnimatedAppIcon
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid

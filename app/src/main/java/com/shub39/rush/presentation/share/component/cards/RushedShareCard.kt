@@ -32,9 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.ArtFromUrl
-import com.shub39.rush.presentation.RushBranding
-import com.shub39.rush.presentation.RushTheme
+import com.shub39.rush.presentation.components.ArtFromUrl
+import com.shub39.rush.presentation.components.RushBranding
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 import io.github.vinceglb.filekit.PlatformFile

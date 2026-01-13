@@ -1,4 +1,4 @@
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.R
 import com.shub39.rush.presentation.share.fromPx
+import com.shub39.rush.presentation.share.pxToDp
 
 @Composable
 fun RushBranding(
@@ -31,7 +32,7 @@ fun RushBranding(
             tint = color,
             modifier = Modifier
                 .scale(2.5f)
-                .size(_root_ide_package_.com.shub39.rush.presentation.share.pxToDp(60))
+                .size(pxToDp(60))
         )
 
         Text(
