@@ -2,26 +2,26 @@ package com.shub39.rush.di
 
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.BillingHandlerImpl
-import com.shub39.rush.core.data.DatastoreFactory
-import com.shub39.rush.core.data.HttpClientFactory
-import com.shub39.rush.core.data.LyricsPagePreferencesImpl
-import com.shub39.rush.core.data.OtherPreferencesImpl
-import com.shub39.rush.core.data.PaletteGenerator
-import com.shub39.rush.core.data.SharePagePreferencesImpl
-import com.shub39.rush.core.data.backup.ExportImpl
-import com.shub39.rush.core.data.backup.RestoreImpl
-import com.shub39.rush.core.data.database.DatabaseFactory
-import com.shub39.rush.core.data.database.SongDatabase
-import com.shub39.rush.core.data.network.GeniusApi
-import com.shub39.rush.core.data.network.GeniusScraper
-import com.shub39.rush.core.data.network.LrcLibApi
-import com.shub39.rush.core.data.repository.RushRepository
-import com.shub39.rush.core.domain.LyricsPagePreferences
-import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.core.domain.SharePagePreferences
-import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.domain.backup.ExportRepo
-import com.shub39.rush.core.domain.backup.RestoreRepo
+import com.shub39.rush.data.DatastoreFactory
+import com.shub39.rush.data.HttpClientFactory
+import com.shub39.rush.data.LyricsPagePreferencesImpl
+import com.shub39.rush.data.OtherPreferencesImpl
+import com.shub39.rush.data.PaletteGenerator
+import com.shub39.rush.data.SharePagePreferencesImpl
+import com.shub39.rush.data.backup.ExportImpl
+import com.shub39.rush.data.backup.RestoreImpl
+import com.shub39.rush.data.database.DatabaseFactory
+import com.shub39.rush.data.database.SongDatabase
+import com.shub39.rush.data.network.GeniusApi
+import com.shub39.rush.data.network.GeniusScraper
+import com.shub39.rush.data.network.LrcLibApi
+import com.shub39.rush.data.repository.RushRepository
+import com.shub39.rush.domain.backup.ExportRepo
+import com.shub39.rush.domain.backup.RestoreRepo
+import com.shub39.rush.domain.interfaces.LyricsPagePreferences
+import com.shub39.rush.domain.interfaces.OtherPreferences
+import com.shub39.rush.domain.interfaces.SharePagePreferences
+import com.shub39.rush.domain.interfaces.SongRepository
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
@@ -59,7 +59,7 @@ val rushModules = module {
     singleOf(::LrcLibApi)
 
     // Repositories and backup stuff
-    singleOf(::RushRepository).bind<SongRepo>()
+    singleOf(::RushRepository).bind<SongRepository>()
 
     // Datastore
     single(named("LyricsPage")) { get<DatastoreFactory>().getLyricsPagePreferencesDataStore() }

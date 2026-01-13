@@ -1,6 +1,6 @@
-import com.shub39.rush.core.data.HttpClientFactory
-import com.shub39.rush.core.data.network.GeniusApi
-import com.shub39.rush.core.domain.Result
+import com.shub39.rush.data.HttpClientFactory
+import com.shub39.rush.data.network.GeniusApi
+import com.shub39.rush.domain.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -18,7 +18,7 @@ class GeniusApiTest {
     fun testSearch() = testIn("Test Search") {
         when (val search = geniusApi.geniusSearch("Satan in the wait")) {
             is Result.Error -> {
-                println(search.debugMessage)
+                println(search.message)
             }
             is Result.Success -> { println(search.data) }
         }

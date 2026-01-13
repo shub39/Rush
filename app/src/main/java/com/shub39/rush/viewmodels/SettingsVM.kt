@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
-import com.shub39.rush.core.data.repository.RushRepository
-import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.core.domain.backup.ExportRepo
-import com.shub39.rush.core.domain.backup.ExportState
-import com.shub39.rush.core.domain.backup.RestoreRepo
-import com.shub39.rush.core.domain.backup.RestoreResult
-import com.shub39.rush.core.domain.backup.RestoreState
-import com.shub39.rush.setting.SettingsPageAction
+import com.shub39.rush.data.repository.RushRepository
+import com.shub39.rush.domain.backup.ExportRepo
+import com.shub39.rush.domain.backup.ExportState
+import com.shub39.rush.domain.backup.RestoreRepo
+import com.shub39.rush.domain.backup.RestoreResult
+import com.shub39.rush.domain.backup.RestoreState
+import com.shub39.rush.domain.interfaces.OtherPreferences
+import com.shub39.rush.presentation.setting.SettingsPageAction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,9 +54,7 @@ class SettingsVM(
 
                 SettingsPageAction.OnExportSongs -> {
                     _state.update {
-                        it.copy(
-                            exportState = ExportState.Exporting
-                        )
+                        it.copy(exportState = ExportState.Exporting)
                     }
 
                     val exportString = exportRepo.exportToJson()
@@ -70,9 +68,7 @@ class SettingsVM(
 
                 is SettingsPageAction.OnRestoreSongs -> {
                     _state.update {
-                        it.copy(
-                            restoreState = RestoreState.Restoring
-                        )
+                        it.copy(restoreState = RestoreState.Restoring)
                     }
 
                     when (val result = restoreRepo.restoreSongs(action.path)) {
@@ -86,9 +82,7 @@ class SettingsVM(
 
                         RestoreResult.Success -> {
                             _state.update {
-                                it.copy(
-                                    restoreState = RestoreState.Restored
-                                )
+                                it.copy(restoreState = RestoreState.Restored)
                             }
                         }
                     }

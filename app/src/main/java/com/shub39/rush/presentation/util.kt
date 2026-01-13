@@ -1,0 +1,244 @@
+package com.shub39.rush.presentation
+
+import android.app.Activity
+import android.content.ClipData
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
+import android.view.WindowManager
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.shub39.rush.domain.enums.LyricsAlignment
+import com.shub39.rush.domain.enums.PaletteStyle
+import kotlin.random.Random
+
+fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+fun blurAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+@Composable
+fun KeepScreenOn() {
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        context.findActivity()?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            context.findActivity()?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+}
+
+suspend fun Clipboard.copyToClipboard(text: String) {
+    setClipEntry(
+        ClipEntry(
+            ClipData.newPlainText("lyrics", text)
+        )
+    )
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
+}
+
+fun updateSystemBars(context: Context, show: Boolean) {
+    val window = context.findActivity()?.window ?: return
+    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+    insetsController.apply {
+        if (show) {
+            show(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+        } else {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+}
+
+fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
+    val sortedEntries = map.entries.toList().sortedBy { it.key }
+    val sortedMap = LinkedHashMap<Int, String>()
+    for (entry in sortedEntries) {
+        sortedMap[entry.key] = entry.value
+    }
+    return sortedMap
+}
+
+fun getMainArtist(artists: String): String {
+    val regex = Regex("\\s*\\(.*?\\)\\s*$")
+    return artists.replace(regex, "").split(",")[0].trim()
+}
+
+fun getMainTitle(songTitle: String): String {
+    val regex = Regex("\\s*\\(.*?\\)\\s*$")
+    return songTitle.replace(regex, "").trim()
+}
+
+fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {
+    val colors = buildList {
+        for (i in 0 until steps) {
+            val t = i / (steps - 1).toFloat()
+            val interpolatedColor = lerp(color1, color2, t)
+            add(interpolatedColor)
+        }
+    }
+
+    return colors
+}
+
+fun lerp(color1: Color, color2: Color, t: Float): Color {
+    val r = (color1.red * (1 - t) + color2.red * t).coerceIn(0f, 1f)
+    val g = (color1.green * (1 - t) + color2.green * t).coerceIn(0f, 1f)
+    val b = (color1.blue * (1 - t) + color2.blue * t).coerceIn(0f, 1f)
+    val a = (color1.alpha * (1 - t) + color2.alpha * t).coerceIn(0f, 1f)
+
+    return Color(r, g, b, a)
+}
+
+// fades the top of the composable to the bottom
+fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
+    require(fadeHeightFraction in 0f..1f) {
+        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
+    }
+
+    return this
+        .graphicsLayer { alpha = 0.99f }
+        .drawWithCache {
+            val fadeHeight = size.height * fadeHeightFraction
+            val gradient = Brush.verticalGradient(
+                colors = listOf(
+                    Color.Transparent,
+                    Color.Black
+                ),
+                tileMode = TileMode.Clamp,
+                startY = 0f,
+                endY = fadeHeight
+            )
+            onDrawWithContent {
+                drawContent()
+                drawRect(
+                    brush = gradient,
+                    blendMode = BlendMode.DstIn
+                )
+            }
+        }
+}
+
+// reverse of above
+fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
+    require(fadeHeightFraction in 0f..1f) {
+        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
+    }
+
+    return this
+        .graphicsLayer { alpha = 0.99f }
+        .drawWithCache {
+            val fadeHeight = size.height * fadeHeightFraction
+            val gradient = Brush.verticalGradient(
+                colors = listOf(
+                    Color.Black,
+                    Color.Transparent
+                ),
+                tileMode = TileMode.Clamp,
+                startY = size.height - fadeHeight,
+                endY = size.height
+            )
+            onDrawWithContent {
+                drawContent()
+                drawRect(
+                    brush = gradient,
+                    blendMode = BlendMode.DstIn
+                )
+            }
+        }
+}
+
+fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
+    val rotate = rotate(if (clockwise) 90f else -90f)
+
+    val adjustBounds = layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        layout(placeable.height, placeable.width) {
+            placeable.place(
+                x = -(placeable.width / 2 - placeable.height / 2),
+                y = -(placeable.height / 2 - placeable.width / 2)
+            )
+        }
+    }
+    return rotate then adjustBounds
+}
+
+fun PaletteStyle.toMPaletteStyle(): com.materialkolor.PaletteStyle {
+    return when (this) {
+        PaletteStyle.TONALSPOT -> com.materialkolor.PaletteStyle.TonalSpot
+        PaletteStyle.NEUTRAL -> com.materialkolor.PaletteStyle.Neutral
+        PaletteStyle.VIBRANT -> com.materialkolor.PaletteStyle.Vibrant
+        PaletteStyle.EXPRESSIVE -> com.materialkolor.PaletteStyle.Expressive
+        PaletteStyle.RAINBOW -> com.materialkolor.PaletteStyle.Rainbow
+        PaletteStyle.FRUITSALAD -> com.materialkolor.PaletteStyle.FruitSalad
+        PaletteStyle.MONOCHROME -> com.materialkolor.PaletteStyle.Monochrome
+        PaletteStyle.FIDELITY -> com.materialkolor.PaletteStyle.Fidelity
+        PaletteStyle.CONTENT -> com.materialkolor.PaletteStyle.Content
+    }
+}
+
+fun LyricsAlignment.toArrangement(): Arrangement.Horizontal {
+    return when (this) {
+        LyricsAlignment.CENTER -> Arrangement.Center
+        LyricsAlignment.END -> Arrangement.End
+        LyricsAlignment.START -> Arrangement.Start
+    }
+}
+
+fun LyricsAlignment.toTextAlignment(): TextAlign {
+    return when (this) {
+        LyricsAlignment.CENTER -> TextAlign.Center
+        LyricsAlignment.END -> TextAlign.End
+        LyricsAlignment.START -> TextAlign.Start
+    }
+}
+
+fun LyricsAlignment.toAlignment(): Alignment.Horizontal {
+    return when (this) {
+        LyricsAlignment.CENTER -> Alignment.CenterHorizontally
+        LyricsAlignment.END -> Alignment.End
+        LyricsAlignment.START -> Alignment.Start
+    }
+}
+
+fun getRandomLine(): String {
+    return when(Random.nextInt(0, 10)) {
+        1 -> "Bombardino Crocodilo"
+        2 -> "Brr Brr Patapim"
+        3 -> "Lirili Larila"
+        4 -> "Trippi Troppi"
+        5 -> "Capucino Assassaino"
+        6 -> "Trulimero Trulichina"
+        7 -> "Tung Tung Tung Sahur"
+        8 -> "Chimpanzini Bananini"
+        9 -> "Giraffa Celeste"
+        else -> "Tralalero Tralala"
+    }
+}
