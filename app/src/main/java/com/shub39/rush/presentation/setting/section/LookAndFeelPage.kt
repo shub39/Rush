@@ -75,7 +75,9 @@ import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
+import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toMPaletteStyle
+import com.shub39.rush.presentation.toStringRes
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -170,7 +172,7 @@ fun LookAndFeelPage(
                                         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                                     )
                                 ) {
-                                    Text(text = stringResource(appTheme.stringRes))
+                                    Text(text = stringResource(appTheme.toStringRes()))
                                 }
                             }
                         }
@@ -273,7 +275,7 @@ fun LookAndFeelPage(
                                                     Locale.getDefault()
                                                 ) else it.toString()
                                             }.replace("_", " "),
-                                        fontFamily = FontFamily(Font(font.font))
+                                        fontFamily = FontFamily(Font(font.toFontRes()))
                                     )
                                 }
                             }

@@ -25,7 +25,7 @@ data class LyricsPageState(
     val syncedAvailable: Boolean = false,
     val sync: Boolean = false,
     val lyricsCorrect: Boolean = false,
-    val source: Sources = Sources.LrcLib,
+    val source: Sources = Sources.LRCLIB,
     val selectedLines: Map<Int, String> = emptyMap(),
     val searchState: SearchState = SearchState.Idle,
 

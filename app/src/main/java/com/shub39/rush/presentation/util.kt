@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
 import android.view.WindowManager
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
@@ -22,12 +20,9 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.shub39.rush.domain.enums.LyricsAlignment
-import com.shub39.rush.domain.enums.PaletteStyle
 import kotlin.random.Random
 
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
@@ -190,44 +185,9 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     return rotate then adjustBounds
 }
 
-fun PaletteStyle.toMPaletteStyle(): com.materialkolor.PaletteStyle {
-    return when (this) {
-        PaletteStyle.TONALSPOT -> com.materialkolor.PaletteStyle.TonalSpot
-        PaletteStyle.NEUTRAL -> com.materialkolor.PaletteStyle.Neutral
-        PaletteStyle.VIBRANT -> com.materialkolor.PaletteStyle.Vibrant
-        PaletteStyle.EXPRESSIVE -> com.materialkolor.PaletteStyle.Expressive
-        PaletteStyle.RAINBOW -> com.materialkolor.PaletteStyle.Rainbow
-        PaletteStyle.FRUITSALAD -> com.materialkolor.PaletteStyle.FruitSalad
-        PaletteStyle.MONOCHROME -> com.materialkolor.PaletteStyle.Monochrome
-        PaletteStyle.FIDELITY -> com.materialkolor.PaletteStyle.Fidelity
-        PaletteStyle.CONTENT -> com.materialkolor.PaletteStyle.Content
-    }
-}
 
-fun LyricsAlignment.toArrangement(): Arrangement.Horizontal {
-    return when (this) {
-        LyricsAlignment.CENTER -> Arrangement.Center
-        LyricsAlignment.END -> Arrangement.End
-        LyricsAlignment.START -> Arrangement.Start
-    }
-}
 
-fun LyricsAlignment.toTextAlignment(): TextAlign {
-    return when (this) {
-        LyricsAlignment.CENTER -> TextAlign.Center
-        LyricsAlignment.END -> TextAlign.End
-        LyricsAlignment.START -> TextAlign.Start
-    }
-}
-
-fun LyricsAlignment.toAlignment(): Alignment.Horizontal {
-    return when (this) {
-        LyricsAlignment.CENTER -> Alignment.CenterHorizontally
-        LyricsAlignment.END -> Alignment.End
-        LyricsAlignment.START -> Alignment.Start
-    }
-}
-
+// very important
 fun getRandomLine(): String {
     return when(Random.nextInt(0, 10)) {
         1 -> "Bombardino Crocodilo"

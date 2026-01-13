@@ -72,7 +72,7 @@ fun PlainLyrics(
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
 
-    val items = if (state.source == Sources.LrcLib) song.lyrics else song.geniusLyrics
+    val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
 
     LazyColumn(
         modifier = modifier,
@@ -122,7 +122,7 @@ fun PlainLyrics(
             }
         } else {
             when (state.source) {
-                Sources.Genius -> {
+                Sources.GENIUS -> {
                     item {
                         // start scraping
                         LaunchedEffect(Unit) {
@@ -190,7 +190,7 @@ fun PlainLyrics(
                     }
                 }
 
-                Sources.LrcLib -> {
+                Sources.LRCLIB -> {
                     item {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -227,7 +227,7 @@ fun PlainLyrics(
                             lazyListState.scrollToItem(0)
                         }
                     },
-                    enabled = if (state.source == Sources.LrcLib) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
+                    enabled = if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowUpward,

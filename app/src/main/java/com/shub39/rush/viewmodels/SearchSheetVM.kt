@@ -212,7 +212,7 @@ class SearchSheetVM(
             stateLayer.lyricsState.update {
                 it.copy(
                     lyricsState = LyricsState.Loaded(song = result),
-                    source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                    source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                     syncedAvailable = result.syncedLyrics != null,
                     sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                         .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
@@ -242,7 +242,7 @@ class SearchSheetVM(
                     stateLayer.lyricsState.update {
                         it.copy(
                             lyricsState = LyricsState.Loaded(song = retrievedSong),
-                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                             syncedAvailable = retrievedSong.syncedLyrics != null,
                             sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                                 .equals(

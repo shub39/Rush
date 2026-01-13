@@ -24,8 +24,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
-import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.copyToClipboard
 import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
@@ -71,7 +71,7 @@ fun ActionsRow(
                             if (state.selectedLines.isEmpty()) {
                                 buildAnnotatedString {
                                     append(
-                                        if (state.source == Sources.LrcLib) {
+                                        if (state.source == Sources.LRCLIB) {
                                             state.lyricsState.song.lyrics.joinToString("\n") { it.value }
                                         } else {
                                             state.lyricsState.song.geniusLyrics?.joinToString("\n") { it.value }
@@ -101,7 +101,7 @@ fun ActionsRow(
             IconButton(onClick = {
                 action(
                     LyricsPageAction.OnSourceChange(
-                        if (state.source == Sources.LrcLib) Sources.Genius else Sources.LrcLib
+                        if (state.source == Sources.LRCLIB) Sources.GENIUS else Sources.LRCLIB
                     )
                 )
 
@@ -109,7 +109,7 @@ fun ActionsRow(
                     LyricsPageAction.OnSync(false)
                 )
             }) {
-                if (state.source == Sources.Genius) {
+                if (state.source == Sources.GENIUS) {
                     Icon(
                         imageVector = Icons.Rounded.FormatQuote,
                         contentDescription = "LrcLib",
@@ -124,7 +124,7 @@ fun ActionsRow(
         }
 
         AnimatedVisibility(
-            visible = state.source == Sources.LrcLib && state.selectedLines.isEmpty()
+            visible = state.source == Sources.LRCLIB && state.selectedLines.isEmpty()
         ) {
             IconButton(
                 onClick = {
@@ -147,7 +147,7 @@ fun ActionsRow(
         }
 
         AnimatedVisibility(
-            visible = state.syncedAvailable && state.selectedLines.isEmpty() && state.source == Sources.LrcLib && notificationAccess
+            visible = state.syncedAvailable && state.selectedLines.isEmpty() && state.source == Sources.LRCLIB && notificationAccess
         ) {
             Row {
                 IconButton(
@@ -166,7 +166,7 @@ fun ActionsRow(
                     },
                     modifier = Modifier.run {
                         if (state.sync &&
-                            (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds)
+                            (state.lyricsBackground in audioDependentBackgrounds)
                         ) {
                             glowBackground(
                                 (12 * glowMultiplier).dp,
@@ -201,7 +201,7 @@ fun ActionsRow(
                 modifier = Modifier.run {
                     if (
                         state.autoChange &&
-                        (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds)
+                        (state.lyricsBackground in audioDependentBackgrounds)
                     ) {
                         glowBackground(
                             (12 * glowMultiplier).dp,

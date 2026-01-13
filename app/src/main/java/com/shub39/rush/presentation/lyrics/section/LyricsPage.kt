@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.KeepScreenOn
+import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.Empty
 import com.shub39.rush.presentation.fadeBottomToTop
@@ -470,7 +471,7 @@ fun LyricsPage(
                 shape = CircleShape,
                 onClick = { action(LyricsPageAction.OnPauseOrResume) },
                 modifier = Modifier.run {
-                    if (state.lyricsBackground in LyricsBackground.audioDependentBackgrounds) {
+                    if (state.lyricsBackground in audioDependentBackgrounds) {
                         glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
                     } else {
                         this

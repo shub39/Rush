@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AlbumArtShape
-import com.shub39.rush.domain.enums.AlbumArtShape.Companion.toShape
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
@@ -47,6 +46,10 @@ import com.shub39.rush.presentation.components.ListSelect
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.share.SharePageAction
 import com.shub39.rush.presentation.share.SharePageState
+import com.shub39.rush.presentation.toFontRes
+import com.shub39.rush.presentation.toFullName
+import com.shub39.rush.presentation.toShape
+import com.shub39.rush.presentation.toStringRes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +84,7 @@ fun SharePageSheet(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.stringRes)
+                            text = stringResource(it.toStringRes())
                         )
                     }
                 )
@@ -97,7 +100,7 @@ fun SharePageSheet(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.stringRes)
+                            text = stringResource(it.toStringRes())
                         )
                     }
                 )
@@ -154,7 +157,7 @@ fun SharePageSheet(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.stringRes)
+                            text = stringResource(it.toStringRes())
                         )
                     }
                 )
@@ -170,7 +173,7 @@ fun SharePageSheet(
                     },
                     labelProvider = {
                         Text(
-                            text = stringResource(it.stringRes)
+                            text = stringResource(it.toStringRes())
                         )
                     }
                 )
@@ -207,8 +210,8 @@ fun SharePageSheet(
                     },
                     labelProvider = {
                         Text(
-                            text = it.fullName,
-                            fontFamily = FontFamily(Font(it.font))
+                            text = it.toFullName(),
+                            fontFamily = FontFamily(Font(it.toFontRes()))
                         )
                     }
                 )

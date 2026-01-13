@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AlbumArtShape.Companion.toShape
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
@@ -59,6 +58,7 @@ import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
 import com.shub39.rush.presentation.share.component.cards.AlbumArt
 import com.shub39.rush.presentation.share.component.cards.ChatCard
@@ -69,6 +69,7 @@ import com.shub39.rush.presentation.share.component.cards.QuoteShareCard
 import com.shub39.rush.presentation.share.component.cards.RushedShareCard
 import com.shub39.rush.presentation.share.component.cards.SpotifyShareCard
 import com.shub39.rush.presentation.share.component.cards.VerticalShareCard
+import com.shub39.rush.presentation.toShape
 import io.github.vinceglb.filekit.ImageFormat
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
@@ -368,7 +369,7 @@ private fun SharePageContent(
             ) {
                 IconButton(
                     onClick = {
-                        if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
+                        if (state.isProUser || !premiumCards.contains(state.cardTheme)) {
                             coroutineScope.launch {
                                 onSaveImage(cardGraphicsLayer.toImageBitmap())
                             }
@@ -385,7 +386,7 @@ private fun SharePageContent(
 
                 IconButton(
                     onClick = {
-                        if (state.isProUser || !CardTheme.premiumCards.contains(state.cardTheme)) {
+                        if (state.isProUser || !premiumCards.contains(state.cardTheme)) {
                             onShareImage()
                         } else {
                             onAction(SharePageAction.OnShowPaywall)

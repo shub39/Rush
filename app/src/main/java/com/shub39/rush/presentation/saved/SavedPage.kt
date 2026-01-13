@@ -65,6 +65,7 @@ import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.saved.component.SongCard
 import com.shub39.rush.presentation.simpleVerticalScrollbar
+import com.shub39.rush.presentation.toStringRes
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Meteor
@@ -136,7 +137,7 @@ fun SavedPage(
                                 }
                             ) {
                                 Text(
-                                    text = stringResource(order.stringRes)
+                                    text = stringResource(order.toStringRes())
                                 )
                             }
                         }

@@ -10,6 +10,7 @@ import com.materialkolor.DynamicMaterialTheme
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.provideTypography
+import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toMPaletteStyle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -33,7 +34,7 @@ fun RushTheme(
         isAmoled = theme.withAmoled,
         style = theme.style.toMPaletteStyle(),
         typography = provideTypography(
-            font = theme.font.font,
+            font = theme.font.toFontRes(),
             scale = fontScale
         ),
         content = content

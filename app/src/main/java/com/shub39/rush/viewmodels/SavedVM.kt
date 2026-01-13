@@ -133,7 +133,7 @@ class SavedVM(
         stateLayer.lyricsState.update {
             it.copy(
                 lyricsState = LyricsState.Loaded(song = result),
-                source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null,
                 sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()

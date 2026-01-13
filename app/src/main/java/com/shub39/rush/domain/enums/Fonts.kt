@@ -1,20 +1,15 @@
 package com.shub39.rush.domain.enums
 
-import com.shub39.rush.R
-
-enum class Fonts(
-    val fullName: String,
-    val font: Int
-) {
-    POPPINS("Poppins", R.font.poppins_regular),
-    DM_SANS("DM Sans", R.font.dm_sans),
-    FIGTREE("Figtree", R.font.figtree),
-    INTER("Inter", R.font.inter),
-    MANROPE("Manrope", R.font.manrope),
-    MONTSERRAT("Montserrat", R.font.montserrat),
-    OPEN_SANS("Open Sans", R.font.open_sans),
-    OUTFIT("Outfit", R.font.outfit),
-    QUICKSAND("Quicksand", R.font.quicksand),
-    JOSH("Jost", R.font.jost),
-    GOOGLE_SANS("Google Sans", R.font.google_sans)
+enum class Fonts {
+    POPPINS,
+    DM_SANS,
+    FIGTREE,
+    INTER,
+    MANROPE,
+    MONTSERRAT,
+    OPEN_SANS,
+    OUTFIT,
+    QUICKSAND,
+    JOSH,  // Josh is very important to us. He lives, you live
+    GOOGLE_SANS
 }

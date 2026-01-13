@@ -58,6 +58,8 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
+import com.shub39.rush.presentation.allBackgrounds
+import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.blurAvailable
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.ListSelect
@@ -74,6 +76,7 @@ import com.shub39.rush.presentation.lyrics.component.SyncedLyric
 import com.shub39.rush.presentation.lyrics.getCardColors
 import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
+import com.shub39.rush.presentation.toStringRes
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
@@ -265,16 +268,16 @@ fun LyricsCustomisationsPage(
             item {
                 ListSelect(
                     title = stringResource(R.string.lyrics_background),
-                    options = LyricsBackground.allBackgrounds,
+                    options = allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
-                        if (it !in LyricsBackground.audioDependentBackgrounds || microphonePermission) {
+                        if (it !in audioDependentBackgrounds || microphonePermission) {
                             onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
                         } else {
                             audioPermissionDialog = true
                         }
                     },
-                    labelProvider = { Text(text = stringResource(it.stringRes)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
             }
 
@@ -375,7 +378,7 @@ fun LyricsCustomisationsPage(
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
                     onSelectedChange = { onAction(LyricsPageAction.OnUpdateColorType(it)) },
-                    labelProvider = { Text(text = stringResource(it.stringRes)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
 
                 AnimatedVisibility(
