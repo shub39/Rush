@@ -10,6 +10,9 @@ import android.media.session.PlaybackState
 import android.os.Build
 import android.util.Log
 import androidx.core.content.getSystemService
+import com.shub39.rush.data.listener.MediaListenerImpl.playbackSpeedFlow
+import com.shub39.rush.data.listener.MediaListenerImpl.songInfoFlow
+import com.shub39.rush.data.listener.MediaListenerImpl.songPositionFlow
 import com.shub39.rush.presentation.getMainArtist
 import com.shub39.rush.presentation.getMainTitle
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +21,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Singleton object responsible for listening to and interacting with system-wide media sessions.
+ *
+ * This object uses [MediaSessionManager] and a [NotificationListener] service to detect
+ * active media sessions from various applications (e.g., Spotify, YouTube Music). It monitors
+ * changes in playback state (play/pause), metadata (song title, artist), and playback position.
+ *
+ * It exposes the retrieved media information through Kotlin Flows, allowing other parts of the
+ * application to reactively observe media updates. It also provides methods to control the
+ * active media session, such as seeking to a specific timestamp or toggling play/pause.
+ *
+ * To function correctly, the application must have Notification Access permission granted by the user.
+ *
+ * @property playbackSpeedFlow A [MutableSharedFlow] that emits the current playback speed of the active media session. Emits 0f when paused.
+ * @property songInfoFlow A [MutableSharedFlow] that emits a [Pair] containing the current song's title and artist.
+ * @property songPositionFlow A [MutableSharedFlow] that emits the current playback position in milliseconds.
+ */
 object MediaListenerImpl {
     private var msm: MediaSessionManager? = null
     private var nls: ComponentName? = null
