@@ -566,7 +566,7 @@ private fun Preview() {
     RushTheme(
         theme = Theme(
             appTheme = AppTheme.DARK,
-            seedColor = Color.Red.toArgb().toLong()
+            seedColor = Color.Red.toArgb()
         )
     ) {
         LyricsCustomisationsPage(

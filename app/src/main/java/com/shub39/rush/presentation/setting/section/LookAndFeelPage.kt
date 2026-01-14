@@ -415,7 +415,7 @@ fun LookAndFeelPage(
     if (colorPickerDialog) {
         ColorPickerDialog(
             initialColor = Color(state.theme.seedColor),
-            onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb().toLong())) },
+            onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
             onDismiss = { colorPickerDialog = false }
         )
     }

@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.Fonts
@@ -21,7 +21,7 @@ class OtherPreferencesImpl(
 
     override suspend fun resetAppTheme() {
         dataStore.edit { preferences ->
-            preferences[seedColor] = 0xFFFFFFFF
+            preferences[seedColor] = 0xFFFFFF
             preferences[amoledPref] = false
             preferences[paletteStyle] = PaletteStyle.TONALSPOT.name
             preferences[materialTheme] = false
@@ -30,7 +30,7 @@ class OtherPreferencesImpl(
     }
 
     companion object {
-        private val seedColor = longPreferencesKey("seed_color")
+        private val seedColor = intPreferencesKey("seed_color")
         private val appTheme = stringPreferencesKey("app_theme")
         private val amoledPref = booleanPreferencesKey("with_amoled")
         private val paletteStyle = stringPreferencesKey("palette_style")
@@ -52,10 +52,10 @@ class OtherPreferencesImpl(
         }
     }
 
-    override fun getSeedColorFlow(): Flow<Long> = dataStore.data
-        .map { preferences -> preferences[seedColor] ?: 0xFFFFFFFF }
+    override fun getSeedColorFlow(): Flow<Int> = dataStore.data
+        .map { preferences -> preferences[seedColor] ?: 0xFFFFFF }
 
-    override suspend fun updateSeedColor(newCardContent: Long) {
+    override suspend fun updateSeedColor(newCardContent: Int) {
         dataStore.edit { settings ->
             settings[seedColor] = newCardContent
         }

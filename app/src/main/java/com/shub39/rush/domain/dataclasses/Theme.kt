@@ -15,7 +15,7 @@ import com.shub39.rush.domain.enums.PaletteStyle
  * @property font The selected [Fonts] enum for the application's typography.
  */
 data class Theme(
-    val seedColor: Long = 0xFFFFFFFF,
+    val seedColor: Int = 0xFFFFFF,
     val appTheme: AppTheme = AppTheme.SYSTEM,
     val withAmoled: Boolean = false,
     val style: PaletteStyle = PaletteStyle.TONALSPOT,

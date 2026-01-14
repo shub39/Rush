@@ -5,7 +5,7 @@ import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
 
 sealed interface SettingsPageAction {
-    data class OnSeedColorChange(val color: Long): SettingsPageAction
+    data class OnSeedColorChange(val color: Int): SettingsPageAction
     data class OnThemeSwitch(val appTheme: AppTheme): SettingsPageAction
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction
     data class OnPaletteChange(val style: PaletteStyle): SettingsPageAction

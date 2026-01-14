@@ -12,8 +12,8 @@ interface OtherPreferences {
     fun getAppThemePrefFlow(): Flow<AppTheme>
     suspend fun updateAppThemePref(pref: AppTheme)
 
-    fun getSeedColorFlow(): Flow<Long>
-    suspend fun updateSeedColor(newCardContent: Long)
+    fun getSeedColorFlow(): Flow<Int>
+    suspend fun updateSeedColor(newCardContent: Int)
 
     fun getAmoledPrefFlow(): Flow<Boolean>
     suspend fun updateAmoledPref(amoled: Boolean)
