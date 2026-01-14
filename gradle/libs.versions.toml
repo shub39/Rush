@@ -10,6 +10,7 @@ materialkolor = "4.0.5"
 splashscreen = "1.2.0"
 datastore = "1.2.0"
 koin = "4.1.1"
+koin-annotations = "2.3.1"
 ksoup = "0.2.5"
 ktor = "3.3.3"
 kotlin = "2.3.0"
@@ -30,7 +31,6 @@ material-icons-extended = "1.7.8"
 purchases = "9.19.0"
 junit = "4.13.2"
 junit-version = "1.3.0"
-compose-multiplatform = "1.9.3"
 
 [libraries]
 # Android
@@ -57,6 +57,8 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 
 # Others
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
@@ -90,9 +92,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
 [bundles]
 ktor = [

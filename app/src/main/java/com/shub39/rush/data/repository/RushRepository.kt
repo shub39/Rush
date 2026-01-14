@@ -19,9 +19,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Single
 class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,

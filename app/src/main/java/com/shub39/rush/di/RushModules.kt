@@ -1,81 +1,81 @@
 package com.shub39.rush.di
 
-import com.shub39.rush.billing.BillingHandler
-import com.shub39.rush.billing.BillingHandlerImpl
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import coil3.ImageLoader
+import coil3.disk.DiskCache
+import coil3.request.CachePolicy
+import coil3.request.crossfade
 import com.shub39.rush.data.DatastoreFactory
 import com.shub39.rush.data.HttpClientFactory
 import com.shub39.rush.data.LyricsPagePreferencesImpl
 import com.shub39.rush.data.OtherPreferencesImpl
-import com.shub39.rush.data.PaletteGenerator
 import com.shub39.rush.data.SharePagePreferencesImpl
-import com.shub39.rush.data.backup.ExportImpl
-import com.shub39.rush.data.backup.RestoreImpl
 import com.shub39.rush.data.database.DatabaseFactory
+import com.shub39.rush.data.database.SongDao
 import com.shub39.rush.data.database.SongDatabase
-import com.shub39.rush.data.network.GeniusApi
-import com.shub39.rush.data.network.GeniusScraper
-import com.shub39.rush.data.network.LrcLibApi
-import com.shub39.rush.data.repository.RushRepository
-import com.shub39.rush.domain.backup.ExportRepo
-import com.shub39.rush.domain.backup.RestoreRepo
 import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SharePagePreferences
-import com.shub39.rush.domain.interfaces.SongRepository
-import com.shub39.rush.viewmodels.GlobalVM
-import com.shub39.rush.viewmodels.LyricsVM
-import com.shub39.rush.viewmodels.SavedVM
-import com.shub39.rush.viewmodels.SearchSheetVM
-import com.shub39.rush.viewmodels.SettingsVM
-import com.shub39.rush.viewmodels.ShareVM
-import com.shub39.rush.viewmodels.SharedStates
-import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.core.qualifier.named
-import org.koin.dsl.bind
-import org.koin.dsl.module
+import io.ktor.client.HttpClient
+import okio.Path.Companion.toOkioPath
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
-val rushModules = module {
-    // billing
-    singleOf(::BillingHandlerImpl).bind<BillingHandler>()
+@Module
+@ComponentScan("com.shub39.rush")
+class RushModules {
+    @Single
+    fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
 
-    // factories, listeners, generators and backup stuff
-    singleOf(::DatabaseFactory)
-    singleOf(::DatastoreFactory)
-    single { get<DatabaseFactory>().create().build() }
-    singleOf(::ExportImpl).bind<ExportRepo>()
-    singleOf(::RestoreImpl).bind<RestoreRepo>()
-    singleOf(::PaletteGenerator)
+    @Single
+    fun provideSongDao(db: SongDatabase): SongDao = db.songDao()
 
-    // android specific imageloader with cache
-    singleOf(::provideImageLoader)
+    @Single
+    fun provideHttpClient(): HttpClient = HttpClientFactory.create()
 
-    // Database
-    single { get<SongDatabase>().songDao() }
-    single { HttpClientFactory.create() }
+    @Single
+    fun provideImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache").toOkioPath())
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .build()
+    }
 
-    // Network Stuff
-    singleOf(::GeniusScraper)
-    singleOf(::GeniusApi)
-    singleOf(::LrcLibApi)
+    @Single
+    @Named("LyricsPage")
+    fun provideLyricsPagePreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
+        datastoreFactory.getLyricsPagePreferencesDataStore()
 
-    // Repositories and backup stuff
-    singleOf(::RushRepository).bind<SongRepository>()
+    @Single
+    @Named("SharePage")
+    fun provideSharePagePreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
+        datastoreFactory.getSharePagePreferencesDataStore()
 
-    // Datastore
-    single(named("LyricsPage")) { get<DatastoreFactory>().getLyricsPagePreferencesDataStore() }
-    single(named("SharePage")) { get<DatastoreFactory>().getSharePagePreferencesDataStore() }
-    single(named("Other")) { get<DatastoreFactory>().getOtherPreferencesDataStore() }
-    single { OtherPreferencesImpl(get(named("Other"))) }.bind<OtherPreferences>()
-    single { LyricsPagePreferencesImpl(get(named("LyricsPage"))) }.bind<LyricsPagePreferences>()
-    single { SharePagePreferencesImpl(get(named("SharePage"))) }.bind<SharePagePreferences>()
+    @Single
+    @Named("Other")
+    fun provideOtherPreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
+        datastoreFactory.getOtherPreferencesDataStore()
 
-    // ViewModels
-    singleOf(::SharedStates)
-    viewModelOf(::GlobalVM)
-    viewModelOf(::SearchSheetVM)
-    viewModelOf(::SavedVM)
-    viewModelOf(::LyricsVM)
-    viewModelOf(::SettingsVM)
-    viewModelOf(::ShareVM)
+    @Single
+    fun provideOtherPreferencesImpl(@Named("Other") dataStore: DataStore<Preferences>): OtherPreferences =
+        OtherPreferencesImpl(dataStore)
+
+    @Single
+    fun provideSharePagePreferencesImpl(@Named("SharePage") dataStore: DataStore<Preferences>): SharePagePreferences =
+        SharePagePreferencesImpl(dataStore)
+
+    @Single
+    fun provideLyricsPagePreferencesImpl(@Named("LyricsPage") dataStore: DataStore<Preferences>): LyricsPagePreferences =
+        LyricsPagePreferencesImpl(dataStore)
 }
