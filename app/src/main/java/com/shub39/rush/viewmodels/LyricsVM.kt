@@ -30,7 +30,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class LyricsVM(
-    private val stateLayer: StateLayer,
+    private val stateLayer: SharedStates,
     private val repo: SongRepository,
     private val lyricsPrefs: LyricsPagePreferences,
     private val paletteGenerator: PaletteGenerator,

@@ -5,9 +5,6 @@ import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
 
 sealed interface SettingsPageAction {
-    data class OnUpdateOnboardingDone(val done: Boolean) : SettingsPageAction
-    data object OnShowPaywall : SettingsPageAction
-    data object OnDismissPaywall : SettingsPageAction
     data class OnSeedColorChange(val color: Long): SettingsPageAction
     data class OnThemeSwitch(val appTheme: AppTheme): SettingsPageAction
     data class OnAmoledSwitch(val amoled: Boolean): SettingsPageAction

@@ -13,7 +13,4 @@ data class SettingsPageState(
     val deleteButtonEnabled: Boolean = true,
     val exportState: ExportState = ExportState.Exporting,
     val restoreState: RestoreState = RestoreState.Idle,
-    val isProUser: Boolean = false,
-    val onBoardingDone: Boolean = true,
-    val showPaywall: Boolean = false
 )

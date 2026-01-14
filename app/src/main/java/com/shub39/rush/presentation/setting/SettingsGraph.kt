@@ -34,8 +34,10 @@ private sealed interface SettingsRoutes {
 fun SettingsGraph(
     notificationAccess: Boolean,
     state: SettingsPageState,
+    isProUser: Boolean,
     action: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
+    onShowPaywall: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -65,6 +67,7 @@ fun SettingsGraph(
                 onNavigateToLookAndFeel = { navController.navigate(SettingsRoutes.LookAndFeelPage) },
                 onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },
                 state = state,
+                onShowPaywall = onShowPaywall,
             )
         }
 
@@ -80,7 +83,9 @@ fun SettingsGraph(
             LookAndFeelPage(
                 state = state,
                 onAction = action,
-                onNavigateBack = { navController.navigateUp() }
+                onNavigateBack = { navController.navigateUp() },
+                onShowPaywall = onShowPaywall,
+                isProUser = isProUser
             )
         }
     }
@@ -98,7 +103,9 @@ private fun Preview() {
             notificationAccess = true,
             state = SettingsPageState(),
             action = {},
-            onNavigateBack = {}
+            onNavigateBack = {},
+            isProUser = true,
+            onShowPaywall = {  },
         )
     }
 }

@@ -75,6 +75,7 @@ import com.shub39.rush.presentation.setting.component.AboutApp
 fun SettingRootPage(
     notificationAccess: Boolean,
     state: SettingsPageState,
+    onShowPaywall: () -> Unit,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
@@ -125,7 +126,7 @@ fun SettingRootPage(
             // Pro
             item {
                 Card(
-                    onClick = { onAction(SettingsPageAction.OnShowPaywall) },
+                    onClick = onShowPaywall,
                     shape = MaterialTheme.shapes.extraLarge,
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
@@ -333,6 +334,7 @@ private fun Preview() {
             onNavigateBack = { },
             onNavigateToLookAndFeel = { },
             onNavigateToBackup = { },
+            onShowPaywall = {}
         )
     }
 }

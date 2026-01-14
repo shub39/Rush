@@ -22,12 +22,13 @@ import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SharePagePreferences
 import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.viewmodels.GlobalVM
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
 import com.shub39.rush.viewmodels.SettingsVM
 import com.shub39.rush.viewmodels.ShareVM
-import com.shub39.rush.viewmodels.StateLayer
+import com.shub39.rush.viewmodels.SharedStates
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
@@ -70,7 +71,8 @@ val rushModules = module {
     single { SharePagePreferencesImpl(get(named("SharePage"))) }.bind<SharePagePreferences>()
 
     // ViewModels
-    singleOf(::StateLayer)
+    singleOf(::SharedStates)
+    viewModelOf(::GlobalVM)
     viewModelOf(::SearchSheetVM)
     viewModelOf(::SavedVM)
     viewModelOf(::LyricsVM)

@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchSheetVM(
-    private val stateLayer: StateLayer,
+    private val stateLayer: SharedStates,
     private val repo: SongRepository
 ) : ViewModel() {
 

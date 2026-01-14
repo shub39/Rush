@@ -78,7 +78,6 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberShareFileLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import io.github.vinceglb.filekit.write
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
@@ -91,6 +90,8 @@ import java.io.FileOutputStream
 fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
+    isProUser: Boolean,
+    onShowPaywall: () -> Unit,
     onAction: (SharePageAction) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -123,7 +124,6 @@ fun SharePage(
         onDismiss = onDismiss,
         selectedImage = selectedImage,
         onAction = onAction,
-        coroutineScope = coroutineScope,
         cardGraphicsLayer = cardGraphicsLayer,
         onSaveImage = {
             saveImage = it
@@ -133,6 +133,8 @@ fun SharePage(
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },
+        isProUser = isProUser,
+        onShowPaywall = onShowPaywall,
         onShareImage = {
             coroutineScope.launch(Dispatchers.IO) {
                 val imageBitmap = cardGraphicsLayer.toImageBitmap().asAndroidBitmap()
@@ -166,17 +168,17 @@ private fun SharePageContent(
     cardGraphicsLayer: GraphicsLayer,
     selectedImage: PlatformFile?,
     onAction: (SharePageAction) -> Unit,
-    coroutineScope: CoroutineScope,
     onSaveImage: (ImageBitmap) -> Unit,
     onLaunchImagePicker: () -> Unit,
+    isProUser: Boolean,
+    onShowPaywall: () -> Unit,
     onShareImage: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val zoomState = rememberZoomState(initialScale = 1.5f)
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
-
-
 
     val cornerRadius by animateDpAsState(
         targetValue = when (state.cardRoundness) {
@@ -369,12 +371,12 @@ private fun SharePageContent(
             ) {
                 IconButton(
                     onClick = {
-                        if (state.isProUser || !premiumCards.contains(state.cardTheme)) {
-                            coroutineScope.launch {
+                        if (isProUser || !premiumCards.contains(state.cardTheme)) {
+                            scope.launch {
                                 onSaveImage(cardGraphicsLayer.toImageBitmap())
                             }
                         } else {
-                            onAction(SharePageAction.OnShowPaywall)
+                            onShowPaywall()
                         }
                     }
                 ) {
@@ -386,10 +388,10 @@ private fun SharePageContent(
 
                 IconButton(
                     onClick = {
-                        if (state.isProUser || !premiumCards.contains(state.cardTheme)) {
+                        if (isProUser || !premiumCards.contains(state.cardTheme)) {
                             onShareImage()
                         } else {
-                            onAction(SharePageAction.OnShowPaywall)
+                            onShowPaywall()
                         }
                     }
                 ) {
@@ -426,6 +428,8 @@ private fun SharePageContent(
                 editTarget = it
                 colorPicker = true
             },
+            isProUser = isProUser,
+            onShowPaywall = onShowPaywall
         )
     }
 
@@ -475,11 +479,12 @@ private fun Preview() {
             onDismiss = { },
             selectedImage = null,
             onAction = {},
-            coroutineScope = rememberCoroutineScope(),
             onSaveImage = { },
-            onLaunchImagePicker = {  },
-            onShareImage = {  },
-            cardGraphicsLayer = rememberGraphicsLayer()
+            onLaunchImagePicker = { },
+            onShareImage = { },
+            cardGraphicsLayer = rememberGraphicsLayer(),
+            isProUser = true,
+            onShowPaywall = {  },
         )
     }
 }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ShareVM(
-    private val stateLayer: StateLayer,
+    stateLayer: SharedStates,
     private val datastore: SharePagePreferences
 ): ViewModel() {
 
@@ -131,7 +131,6 @@ class ShareVM(
                 is SharePageAction.OnUpdateCardRoundness -> datastore.updateCardRoundness(action.roundness)
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
                 is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
-                SharePageAction.OnShowPaywall -> stateLayer.settingsState.update { it.copy(showPaywall = true) }
                 is SharePageAction.OnUpdateAlbumArtShape -> datastore.updateAlbumArtShape(action.shape)
                 is SharePageAction.OnToggleRushBranding -> datastore.updateRushBranding(action.pref)
             }

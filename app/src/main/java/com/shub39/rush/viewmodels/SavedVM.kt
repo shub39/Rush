@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SavedVM(
-    private val stateLayer: StateLayer,
+    private val stateLayer: SharedStates,
     private val repo: SongRepository,
     private val datastore: OtherPreferences
 ) : ViewModel() {
@@ -93,7 +93,6 @@ class SavedVM(
                                 songsDesc = emptyList(),
                             )
                         }
-                        stateLayer.settingsState.update { it.copy(deleteButtonEnabled = false) }
 
                         return@onEach
                     }
@@ -104,10 +103,6 @@ class SavedVM(
                             songsAsc = songs.sortedBy { it.title },
                             songsDesc = songs.sortedByDescending { it.title },
                         )
-                    }
-
-                    stateLayer.settingsState.update {
-                        it.copy(deleteButtonEnabled = true)
                     }
                 }
                 .flowOn(Dispatchers.Default)

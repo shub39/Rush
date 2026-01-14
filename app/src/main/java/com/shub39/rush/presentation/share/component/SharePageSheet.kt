@@ -59,6 +59,8 @@ fun SharePageSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     onLaunchColorPicker: (String) -> Unit,
+    isProUser: Boolean,
+    onShowPaywall: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 ) {
     ModalBottomSheet(
@@ -233,10 +235,10 @@ fun SharePageSheet(
                     Switch(
                         checked = state.rushBranding,
                         onCheckedChange = {
-                            if (state.isProUser) {
+                            if (isProUser) {
                                 onAction(SharePageAction.OnToggleRushBranding(it))
                             } else {
-                                onAction(SharePageAction.OnShowPaywall)
+                                onShowPaywall()
                             }
                         }
                     )
@@ -262,7 +264,9 @@ private fun Preview() {
             onAction = { },
             onDismissRequest = { },
             sheetState = rememberStandardBottomSheetState(),
-            onLaunchColorPicker = {}
+            onLaunchColorPicker = {},
+            isProUser = true,
+            onShowPaywall = {},
         )
     }
 }

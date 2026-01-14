@@ -84,7 +84,9 @@ import java.util.Locale
 @Composable
 fun LookAndFeelPage(
     state: SettingsPageState,
+    isProUser: Boolean,
     onAction: (SettingsPageAction) -> Unit,
+    onShowPaywall: () -> Unit,
     onNavigateBack: () -> Unit
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
@@ -202,13 +204,13 @@ fun LookAndFeelPage(
                             },
                             colors = listItemColors(),
                             modifier = Modifier.clip(
-                                if (state.isProUser) middleItemShape() else endItemShape()
+                                if (isProUser) middleItemShape() else endItemShape()
                             )
                         )
                     }
 
                     // plus redirect
-                    if (!state.isProUser) {
+                    if (!isProUser) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -221,7 +223,7 @@ fun LookAndFeelPage(
                             )
 
                             Button(
-                                onClick = { onAction(SettingsPageAction.OnShowPaywall) }
+                                onClick = onShowPaywall
                             ) {
                                 Text(
                                     text = stringResource(R.string.unlock_more_pro)
@@ -233,7 +235,7 @@ fun LookAndFeelPage(
                     // font picker
                     Column(
                         modifier = Modifier.clip(
-                            if (state.isProUser) middleItemShape() else leadingItemShape()
+                            if (isProUser) middleItemShape() else leadingItemShape()
                         )
                     ) {
                         ListItem(
@@ -296,7 +298,7 @@ fun LookAndFeelPage(
                         trailingContent = {
                             Switch(
                                 checked = state.theme.withAmoled,
-                                enabled = state.isProUser,
+                                enabled = isProUser,
                                 onCheckedChange = {
                                     onAction(SettingsPageAction.OnAmoledSwitch(it))
                                 }
@@ -327,7 +329,7 @@ fun LookAndFeelPage(
                                         containerColor = Color(state.theme.seedColor),
                                         contentColor = contentColorFor(Color(state.theme.seedColor))
                                     ),
-                                    enabled = state.isProUser
+                                    enabled = isProUser
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Create,
