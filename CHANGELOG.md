@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.5.0
+- translation updates
+
 ## 5.4.2
 - Trimmed unneeded network calls
 
