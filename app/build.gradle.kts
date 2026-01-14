@@ -135,11 +135,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
-    implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kmpalette.core)
     implementation(libs.androidx.material.icons.extended)
@@ -166,6 +163,8 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
+    ksp(libs.koin.ksp.compiler)
+    api(libs.koin.annotations)
 }
 
 fun execute(vararg command: String): String = providers.exec {

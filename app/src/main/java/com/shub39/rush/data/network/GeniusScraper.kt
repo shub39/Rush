@@ -10,8 +10,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import org.koin.core.annotation.Single
 
 // thanks to https://github.com/imjyotiraditya/genius-lyrics-cli and https://github.com/rramiachraf/dumb
+@Single
 class GeniusScraper(
     private val client: HttpClient
 ) {

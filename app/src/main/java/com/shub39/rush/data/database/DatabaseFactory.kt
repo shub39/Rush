@@ -3,7 +3,9 @@ package com.shub39.rush.data.database
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import org.koin.core.annotation.Single
 
+@Single
 class DatabaseFactory(
     private val context: Context
 ) {

@@ -8,7 +8,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
+import org.koin.core.annotation.Single
 
+@Single
 class GeniusApi(
     private val client: HttpClient
 ) {

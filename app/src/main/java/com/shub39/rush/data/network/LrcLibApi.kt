@@ -7,7 +7,9 @@ import com.shub39.rush.domain.SourceError
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Single
 
+@Single
 class LrcLibApi(
     private val client: HttpClient
 ) {

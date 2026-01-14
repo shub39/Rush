@@ -53,7 +53,14 @@ class OtherPreferencesImpl(
     }
 
     override fun getSeedColorFlow(): Flow<Int> = dataStore.data
-        .map { preferences -> preferences[seedColor] ?: 0xFFFFFF }
+        .map { preferences ->
+            try {
+                preferences[seedColor] ?: 0xFFFFFF
+            } catch (e: Exception) {
+                Log.wtf("OtherPreferencesImpl", "Error getting seed color: ${e.message}")
+                0xFFFFFF
+            }
+        }
 
     override suspend fun updateSeedColor(newCardContent: Int) {
         dataStore.edit { settings ->
