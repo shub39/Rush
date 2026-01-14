@@ -18,11 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Save
+import com.shub39.rush.R
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -48,7 +47,7 @@ fun FetchingCard(
             )
 
             Icon(
-                imageVector = FontAwesomeIcons.Solid.Save,
+                painter = painterResource(R.drawable.save),
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
                 tint = colors.second

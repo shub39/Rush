@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,10 +36,6 @@ import com.shub39.rush.R
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Search
-import compose.icons.fontawesomeicons.solid.SyncAlt
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,7 +97,7 @@ fun LrcCorrectSheet(
             ) {
                 if (!state.lrcCorrect.searching) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Solid.Search,
+                        painter = painterResource(R.drawable.search),
                         contentDescription = "Search",
                         modifier = Modifier.size(20.dp)
                     )
@@ -164,7 +161,7 @@ fun LrcCorrectSheet(
 
                             if (it.syncedLyrics != null) {
                                 Icon(
-                                    imageVector = FontAwesomeIcons.Solid.SyncAlt,
+                                    painter = painterResource(R.drawable.sync),
                                     contentDescription = "Synced",
                                     modifier = Modifier.size(20.dp)
                                 )

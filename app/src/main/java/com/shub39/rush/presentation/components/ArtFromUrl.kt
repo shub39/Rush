@@ -1,8 +1,6 @@
 package com.shub39.rush.presentation.components
 
 import android.graphics.Bitmap
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,7 +11,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.core.graphics.createBitmap
+import com.shub39.rush.R
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
@@ -47,7 +47,7 @@ fun ArtFromUrl(
         previewPlaceholder = getPlaceholder(),
         failure = {
             Icon(
-                imageVector = Icons.Rounded.LibraryMusic,
+                painter = painterResource(R.drawable.library_music),
                 contentDescription = "Placeholder"
             )
         }

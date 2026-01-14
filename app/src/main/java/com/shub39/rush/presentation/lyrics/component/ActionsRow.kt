@@ -3,14 +3,6 @@ package com.shub39.rush.presentation.lyrics.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.CopyAll
-import androidx.compose.material.icons.rounded.FormatQuote
-import androidx.compose.material.icons.rounded.Palette
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -31,9 +23,6 @@ import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Meteor
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,8 +47,8 @@ fun ActionsRow(
             onClick = onEdit
         ) {
             Icon(
-                imageVector = Icons.Rounded.Palette,
-                contentDescription = "Edit",
+                painter = painterResource(R.drawable.palette),
+                contentDescription = "Open Palette",
             )
         }
 
@@ -92,7 +81,7 @@ fun ActionsRow(
             }
         ) {
             Icon(
-                imageVector = Icons.Rounded.CopyAll,
+                painter = painterResource(R.drawable.copy),
                 contentDescription = "Copy",
             )
         }
@@ -111,7 +100,7 @@ fun ActionsRow(
             }) {
                 if (state.source == Sources.GENIUS) {
                     Icon(
-                        imageVector = Icons.Rounded.FormatQuote,
+                        painter = painterResource(R.drawable.quote),
                         contentDescription = "LrcLib",
                     )
                 } else {
@@ -140,7 +129,7 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Create,
+                    painter = painterResource(R.drawable.edit),
                     contentDescription = "Correct Lyrics"
                 )
             }
@@ -179,7 +168,7 @@ fun ActionsRow(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Sync,
+                        painter = painterResource(R.drawable.sync),
                         contentDescription = "Synced Lyrics",
                         modifier = Modifier.size(20.dp)
                     )
@@ -214,7 +203,7 @@ fun ActionsRow(
                 }
             ) {
                 Icon(
-                    imageVector = FontAwesomeIcons.Solid.Meteor,
+                    painter = painterResource(R.drawable.meteor),
                     contentDescription = "Rush Mode",
                     modifier = Modifier.size(20.dp)
                 )
@@ -242,7 +231,7 @@ fun ActionsRow(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Share,
+                        painter = painterResource(R.drawable.share),
                         contentDescription = "Share"
                     )
                 }
@@ -251,7 +240,7 @@ fun ActionsRow(
                     onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Clear,
+                        painter = painterResource(R.drawable.close),
                         contentDescription = null
                     )
                 }
