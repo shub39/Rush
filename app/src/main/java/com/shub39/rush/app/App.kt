@@ -173,7 +173,10 @@ fun App() {
                 composable<Route.PaywallPage> {
                     PaywallPage(
                         isProUser = globalState.isProUser,
-                        onDismissRequest = { globalVM.onAction(GlobalAction.OnTogglePaywall) }
+                        onDismissRequest = {
+                            navController.navigateUp()
+                            globalVM.onAction(GlobalAction.OnTogglePaywall)
+                        }
                     )
                 }
             }

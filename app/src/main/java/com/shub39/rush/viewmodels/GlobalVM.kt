@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -68,7 +69,37 @@ class GlobalVM(
     private fun startSync() {
         syncJob?.cancel()
         syncJob = viewModelScope.launch {
-            otherPreferences.getOnboardingDoneFlow()
+            combine(
+                otherPreferences.getFontFlow(),
+                otherPreferences.getPaletteStyle(),
+                otherPreferences.getSeedColorFlow(),
+                otherPreferences.getAmoledPrefFlow(),
+                otherPreferences.getAppThemePrefFlow(),
+            ) { font, style, seedColor, withAmoled, theme ->
+                _state.update {
+                    it.copy(
+                        theme = it.theme.copy(
+                            appTheme = theme,
+                            font = font,
+                            style = style,
+                            seedColor = seedColor,
+                            withAmoled = withAmoled,
+                        )
+                    )
+                }
+            }.launchIn(this)
+
+            otherPreferences
+                .getSeedColorFlow()
+                .onEach { pref ->
+                    _state.update {
+                        it.copy(theme = it.theme.copy(seedColor = pref))
+                    }
+                }
+                .launchIn(this)
+
+            otherPreferences
+                .getOnboardingDoneFlow()
                 .onEach { pref ->
                     _state.update {
                         it.copy(onBoardingDone = pref)
