@@ -2,18 +2,18 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.PaletteGenerator
-import com.shub39.rush.core.data.listener.MediaListenerImpl
-import com.shub39.rush.core.domain.LyricsPagePreferences
-import com.shub39.rush.core.domain.Result
-import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.presentation.errorStringRes
-import com.shub39.rush.core.presentation.sortMapByKeys
-import com.shub39.rush.lyrics.LyricsPageAction
-import com.shub39.rush.lyrics.LyricsPageState
-import com.shub39.rush.lyrics.LyricsState
-import com.shub39.rush.lyrics.breakLyrics
-import com.shub39.rush.lyrics.toSongUi
+import com.shub39.rush.data.PaletteGenerator
+import com.shub39.rush.data.listener.MediaListenerImpl
+import com.shub39.rush.domain.Result
+import com.shub39.rush.domain.interfaces.LyricsPagePreferences
+import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.presentation.errorStringRes
+import com.shub39.rush.presentation.lyrics.LyricsPageAction
+import com.shub39.rush.presentation.lyrics.LyricsPageState
+import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.breakLyrics
+import com.shub39.rush.presentation.lyrics.toSongUi
+import com.shub39.rush.presentation.sortMapByKeys
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,8 +30,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class LyricsVM(
-    private val stateLayer: StateLayer,
-    private val repo: SongRepo,
+    private val stateLayer: SharedStates,
+    private val repo: SongRepository,
     private val lyricsPrefs: LyricsPagePreferences,
     private val paletteGenerator: PaletteGenerator,
 ) : ViewModel() {
@@ -206,7 +206,7 @@ class LyricsVM(
                                 it.copy(
                                     scraping = Pair(false, LyricsState.LyricsError(
                                         errorCode = errorStringRes(result.error),
-                                        debugMessage = result.debugMessage
+                                        debugMessage = result.message
                                     ))
                                 )
                             }
@@ -267,7 +267,7 @@ class LyricsVM(
                 .onEach { pref ->
                     _state.update {
                         it.copy(
-                            textPrefs = it.textPrefs.copy(textAlign = pref)
+                            textPrefs = it.textPrefs.copy(lyricsAlignment = pref)
                         )
                     }
                 }

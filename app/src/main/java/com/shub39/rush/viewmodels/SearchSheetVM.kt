@@ -2,19 +2,19 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.listener.MediaListenerImpl
-import com.shub39.rush.core.domain.Result
-import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.domain.data_classes.ExtractedColors
-import com.shub39.rush.core.domain.data_classes.SearchResult
-import com.shub39.rush.core.domain.enums.Sources
-import com.shub39.rush.core.presentation.errorStringRes
-import com.shub39.rush.core.presentation.getMainTitle
-import com.shub39.rush.lyrics.LyricsState
-import com.shub39.rush.lyrics.SearchState
-import com.shub39.rush.lyrics.toSongUi
-import com.shub39.rush.search_sheet.SearchSheetAction
-import com.shub39.rush.search_sheet.SearchSheetState
+import com.shub39.rush.data.listener.MediaListenerImpl
+import com.shub39.rush.domain.Result
+import com.shub39.rush.domain.dataclasses.ExtractedColors
+import com.shub39.rush.domain.dataclasses.SearchResult
+import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.presentation.errorStringRes
+import com.shub39.rush.presentation.getMainTitle
+import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.SearchState
+import com.shub39.rush.presentation.lyrics.toSongUi
+import com.shub39.rush.presentation.searchsheet.SearchSheetAction
+import com.shub39.rush.presentation.searchsheet.SearchSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchSheetVM(
-    private val stateLayer: StateLayer,
-    private val repo: SongRepo
+    private val stateLayer: SharedStates,
+    private val repo: SongRepository
 ) : ViewModel() {
 
     private val _state = stateLayer.searchSheetState
@@ -157,9 +157,7 @@ class SearchSheetVM(
             when (val result = repo.searchGenius(query)) {
                 is Result.Error -> {
                     _state.update {
-                        it.copy(
-                            error = errorStringRes(result.error)
-                        )
+                        it.copy(error = errorStringRes(result.error))
                     }
                 }
 
@@ -173,19 +171,9 @@ class SearchSheetVM(
                 }
             }
         } finally {
-            _state.update {
-                it.copy(
-                    isSearching = false
-                )
-            }
-
-            stateLayer.lyricsState.update {
-                it.copy(
-                    searchState = SearchState.Idle
-                )
-            }
-
-            _lastSearched.value = query
+            _state.update { it.copy(isSearching = false) }
+            stateLayer.lyricsState.update { it.copy(searchState = SearchState.Idle) }
+            _lastSearched.update { query }
         }
 
         if (
@@ -224,7 +212,7 @@ class SearchSheetVM(
             stateLayer.lyricsState.update {
                 it.copy(
                     lyricsState = LyricsState.Loaded(song = result),
-                    source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                    source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                     syncedAvailable = result.syncedLyrics != null,
                     sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
                         .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
@@ -242,7 +230,7 @@ class SearchSheetVM(
                         it.copy(
                             lyricsState = LyricsState.LyricsError(
                                 errorCode = errorStringRes(result.error),
-                                debugMessage = result.debugMessage
+                                debugMessage = result.message
                             )
                         )
                     }
@@ -254,10 +242,13 @@ class SearchSheetVM(
                     stateLayer.lyricsState.update {
                         it.copy(
                             lyricsState = LyricsState.Loaded(song = retrievedSong),
-                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                             syncedAvailable = retrievedSong.syncedLyrics != null,
                             sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                                .equals(getMainTitle(retrievedSong.title).trim(), ignoreCase = true)),
+                                .equals(
+                                    getMainTitle(retrievedSong.title).trim(),
+                                    ignoreCase = true
+                                )),
                             selectedLines = emptyMap(),
                         )
                     }
@@ -271,9 +262,7 @@ class SearchSheetVM(
     }
 
     private suspend fun localSearch(query: String): List<SearchResult> {
-        if (query.isEmpty()) {
-            return emptyList()
-        }
+        if (query.isEmpty()) return emptyList()
 
         val songs = repo.getSong(query)
         val searchResults = mutableListOf<SearchResult>()

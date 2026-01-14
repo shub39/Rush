@@ -139,7 +139,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
-
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kmpalette.core)
@@ -163,17 +162,10 @@ dependencies {
     implementation(libs.filekit.dialogs.compose)
     implementation(libs.accompanist.permissions)
     implementation(projects.visualizerHelper)
-
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 fun execute(vararg command: String): String = providers.exec {

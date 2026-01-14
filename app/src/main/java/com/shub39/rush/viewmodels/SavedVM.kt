@@ -2,16 +2,16 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.core.data.listener.MediaListenerImpl
-import com.shub39.rush.core.domain.OtherPreferences
-import com.shub39.rush.core.domain.SongRepo
-import com.shub39.rush.core.domain.enums.Sources
-import com.shub39.rush.core.presentation.getMainTitle
-import com.shub39.rush.lyrics.LyricsState
-import com.shub39.rush.lyrics.SearchState
-import com.shub39.rush.lyrics.toSongUi
-import com.shub39.rush.saved.SavedPageAction
-import com.shub39.rush.saved.SavedPageState
+import com.shub39.rush.data.listener.MediaListenerImpl
+import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.interfaces.OtherPreferences
+import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.presentation.getMainTitle
+import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.SearchState
+import com.shub39.rush.presentation.lyrics.toSongUi
+import com.shub39.rush.presentation.saved.SavedPageAction
+import com.shub39.rush.presentation.saved.SavedPageState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SavedVM(
-    private val stateLayer: StateLayer,
-    private val repo: SongRepo,
+    private val stateLayer: SharedStates,
+    private val repo: SongRepository,
     private val datastore: OtherPreferences
 ) : ViewModel() {
 
@@ -93,7 +93,6 @@ class SavedVM(
                                 songsDesc = emptyList(),
                             )
                         }
-                        stateLayer.settingsState.update { it.copy(deleteButtonEnabled = false) }
 
                         return@onEach
                     }
@@ -104,10 +103,6 @@ class SavedVM(
                             songsAsc = songs.sortedBy { it.title },
                             songsDesc = songs.sortedByDescending { it.title },
                         )
-                    }
-
-                    stateLayer.settingsState.update {
-                        it.copy(deleteButtonEnabled = true)
                     }
                 }
                 .flowOn(Dispatchers.Default)
@@ -133,7 +128,7 @@ class SavedVM(
         stateLayer.lyricsState.update {
             it.copy(
                 lyricsState = LyricsState.Loaded(song = result),
-                source = if (result.lyrics.isNotEmpty()) Sources.LrcLib else Sources.Genius,
+                source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null,
                 sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()

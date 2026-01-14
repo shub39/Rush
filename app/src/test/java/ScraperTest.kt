@@ -1,6 +1,6 @@
-import com.shub39.rush.core.data.HttpClientFactory
-import com.shub39.rush.core.data.network.GeniusScraper
-import com.shub39.rush.core.domain.Result
+import com.shub39.rush.data.HttpClientFactory
+import com.shub39.rush.data.network.GeniusScraper
+import com.shub39.rush.domain.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -21,7 +21,7 @@ class ScraperTest {
         println(lyrics)
 
         when (lyrics) {
-            is Result.Error -> { println(lyrics.debugMessage) }
+            is Result.Error -> { println(lyrics.message) }
             is Result.Success -> { println(lyrics.data) }
         }
     }
