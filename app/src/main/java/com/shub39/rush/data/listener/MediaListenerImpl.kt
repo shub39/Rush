@@ -31,24 +31,28 @@ object MediaListenerImpl {
     val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
     fun startListening(context: Context) {
-        if (NotificationListener.canAccessNotifications(context) && !initialised) {
+        try {
+            if (NotificationListener.canAccessNotifications(context) && !initialised) {
 
-            initialised = true
+                initialised = true
 
-            msm = context.getSystemService<MediaSessionManager>()
-            nls = ComponentName(context, NotificationListener::class.java)
+                msm = context.getSystemService<MediaSessionManager>()
+                nls = ComponentName(context, NotificationListener::class.java)
 
-            msm?.let { manager ->
-                manager.addOnActiveSessionsChangedListener(
-                    { onActiveSessionsChanged(it) }, nls
-                )
+                msm?.let { manager ->
+                    manager.addOnActiveSessionsChangedListener(
+                        { onActiveSessionsChanged(it) }, nls
+                    )
 
-                val activeSessions = manager.getActiveSessions(nls!!)
-                val activeSession = activeSessions.find { isActive(it.playbackState) }
-                activeMediaController = activeSession ?: activeSessions.firstOrNull()
-                onActiveSessionsChanged(activeSessions)
-                Log.d("MediaListener", "init $manager")
-            } ?: Log.e("MediaListener", "MediaSessionManager is null")
+                    val activeSessions = manager.getActiveSessions(nls!!)
+                    val activeSession = activeSessions.find { isActive(it.playbackState) }
+                    activeMediaController = activeSession ?: activeSessions.firstOrNull()
+                    onActiveSessionsChanged(activeSessions)
+                    Log.d("MediaListener", "init $manager")
+                } ?: Log.e("MediaListener", "MediaSessionManager is null")
+            }
+        } catch (e: Exception) {
+            Log.wtf("MediaListener", "Exception $e")
         }
     }
 
