@@ -53,6 +53,7 @@ import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -117,18 +118,25 @@ fun SyncedLyrics(
                 )
             )
 
-            val isCurrent = lyric.time <= state.playingSong.position &&
-                    syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
-                state.playingSong.position, syncedLyrics
-            )
+            val lyricIndex = syncedLyrics.indexOf(lyric)
+            val currentPlayingIndex = getCurrentLyricIndex(state.playingSong.position, syncedLyrics)
 
-            val glowAlpha by animateFloatAsState(
-                targetValue = if (isCurrent) 0.5f else 0.2f,
+            val underTextAlpha by animateFloatAsState(
+                targetValue = if (lyricIndex == currentPlayingIndex) 0.5f else 0.2f,
                 animationSpec = tween(500, easing = LinearEasing)
             )
 
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (!state.blurSyncedLyrics || lyricIndex != currentPlayingIndex) {
+                    0f
+                } else {
+                    2f
+                },
+                animationSpec = tween(500)
+            )
+
             val blur by animateDpAsState(
-                targetValue = if (isCurrent || !state.blurSyncedLyrics) 0.dp else 2.dp,
+                targetValue = if (!state.blurSyncedLyrics) 0.dp else (abs(lyricIndex - currentPlayingIndex) * 2).dp,
                 animationSpec = tween(100)
             )
 
@@ -150,8 +158,9 @@ fun SyncedLyrics(
                 action = action,
                 lyric = lyric,
                 hapticFeedback = hapticFeedback,
-                glowAlpha = glowAlpha,
+                underTextAlpha = underTextAlpha,
                 textColor = textColor,
+                glowAlpha = glowAlpha,
                 animatedProgress = animatedProgress,
                 modifier = Modifier
                     .onGloballyPositioned { layoutCoordinates ->
@@ -170,6 +179,7 @@ fun SyncedLyric(
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
     hapticFeedback: HapticFeedback?,
+    underTextAlpha: Float,
     glowAlpha: Float,
     textColor: Color,
     animatedProgress: Float,
@@ -196,12 +206,17 @@ fun SyncedLyric(
                 Text(
                     text = lyric.text,
                     fontWeight = FontWeight.Bold,
-                    color = textColor.copy(alpha = glowAlpha),
+                    color = textColor.copy(alpha = underTextAlpha),
                     fontSize = textPrefs.fontSize.sp,
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier.padding(6.dp)
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .blur(
+                            radius = glowAlpha.dp,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
                 )
 
                 Text(

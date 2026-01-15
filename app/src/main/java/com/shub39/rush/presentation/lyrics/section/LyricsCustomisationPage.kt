@@ -221,9 +221,10 @@ fun LyricsCustomisationsPage(
                                             action = {},
                                             lyric = Lyric(1L, lines.first()),
                                             hapticFeedback = null,
-                                            glowAlpha = 0.2f,
+                                            underTextAlpha = 0.2f,
                                             textColor = cardContent,
-                                            animatedProgress = 1f
+                                            animatedProgress = 1f,
+                                            glowAlpha = 0f
                                         )
                                         SyncedLyric(
                                             textPrefs = state.textPrefs,
@@ -231,9 +232,10 @@ fun LyricsCustomisationsPage(
                                             action = {},
                                             lyric = Lyric(1L, lines.last()),
                                             hapticFeedback = null,
-                                            glowAlpha = 0.5f,
+                                            underTextAlpha = 0.5f,
                                             textColor = cardContent,
-                                            animatedProgress = 0.5f
+                                            animatedProgress = 0.5f,
+                                            glowAlpha = if (state.blurSyncedLyrics) 2f else 0f
                                         )
                                         SyncedLyric(
                                             textPrefs = state.textPrefs,
@@ -241,9 +243,10 @@ fun LyricsCustomisationsPage(
                                             action = {},
                                             lyric = Lyric(1L, ""),
                                             hapticFeedback = null,
-                                            glowAlpha = 0.5f,
+                                            underTextAlpha = 0.5f,
                                             textColor = cardContent,
-                                            animatedProgress = 0.5f
+                                            animatedProgress = 0.5f,
+                                            glowAlpha = 0f
                                         )
                                     } else {
                                         PlainLyric(

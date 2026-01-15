@@ -251,7 +251,9 @@ fun LyricsPage(
                                             )
 
                                             // Actions Row
-                                            Row {
+                                            Row(
+                                                modifier = Modifier.padding(horizontal = 8.dp)
+                                            ) {
                                                 Actions(
                                                     state = state,
                                                     action = action,
@@ -292,7 +294,7 @@ fun LyricsPage(
 
                                     Row(
                                         modifier = Modifier
-                                            .padding(start = 16.dp)
+                                            .padding(start = 32.dp)
                                             .fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
