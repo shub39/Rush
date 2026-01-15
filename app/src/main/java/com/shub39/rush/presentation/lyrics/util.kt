@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,6 +28,9 @@ import com.shub39.rush.presentation.lyrics.component.CurveVisualizer
 import com.shub39.rush.presentation.lyrics.component.GradientVisualizer
 import com.shub39.rush.presentation.lyrics.component.WaveVisualizer
 import io.gitlab.bpavuk.viz.VisualizerData
+import io.gitlab.bpavuk.viz.midBucket
+import io.gitlab.bpavuk.viz.trebleBucket
+import kotlin.math.absoluteValue
 
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
@@ -164,8 +167,17 @@ fun getWaveColors(
     )
 }
 
+fun calculateGlowMultiplier(waveData: VisualizerData?): Float {
+    if (waveData == null) return 0f
+
+    val mid = waveData.midBucket().max()
+    val treble = waveData.trebleBucket().max()
+    return (mid + treble).toFloat().absoluteValue / 128f
+}
+
+
 @Composable
-fun BoxWithConstraintsScope.ApplyLyricsBackground(
+fun BoxScope.ApplyLyricsBackground(
     background: LyricsBackground,
     artUrl: String?,
     cardBackground: Color,

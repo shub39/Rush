@@ -10,8 +10,8 @@ package com.shub39.rush.domain.dataclasses
  * @property cardContentMuted A suitable color for text or icons placed on top of [cardBackgroundMuted].
  */
 data class ExtractedColors(
-    val cardBackgroundDominant: Long = 0xFF444444,
-    val cardContentDominant: Long = 0xFFFFFFFF,
-    val cardBackgroundMuted: Long = 0xFF888888,
-    val cardContentMuted: Long = 0xFFFFFFFF
+    val cardBackgroundDominant: Int = 0xFF4444,
+    val cardContentDominant: Int = 0xFFFFFF,
+    val cardBackgroundMuted: Int = 0xFF8888,
+    val cardContentMuted: Int = 0xFFFFFF
 )

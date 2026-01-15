@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,28 +30,38 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.domain.dataclasses.ExtractedColors
+import com.shub39.rush.domain.dataclasses.Lyric
+import com.shub39.rush.domain.dataclasses.SongUi
+import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.domain.enums.CardColors
+import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.KeepScreenOn
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.Empty
+import com.shub39.rush.presentation.components.PageFill
+import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
 import com.shub39.rush.presentation.glowBackground
@@ -61,7 +70,9 @@ import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.SearchState
-import com.shub39.rush.presentation.lyrics.component.ActionsRow
+import com.shub39.rush.presentation.lyrics.TextPrefs
+import com.shub39.rush.presentation.lyrics.calculateGlowMultiplier
+import com.shub39.rush.presentation.lyrics.component.Actions
 import com.shub39.rush.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.presentation.lyrics.component.FetchingCard
 import com.shub39.rush.presentation.lyrics.component.LrcCorrectSheet
@@ -72,10 +83,7 @@ import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
 import com.shub39.rush.presentation.toAlignment
 import io.gitlab.bpavuk.viz.VisualizerData
-import io.gitlab.bpavuk.viz.midBucket
-import io.gitlab.bpavuk.viz.trebleBucket
 import kotlinx.coroutines.delay
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -147,156 +155,59 @@ fun LyricsPage(
                     }
 
                     is LyricsState.Loaded -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Updating colors
-                            LaunchedEffect(lyricsState.song.artUrl) {
-                                lyricsState.song.artUrl?.let {
-                                    action(LyricsPageAction.UpdateExtractedColors(it))
-                                }
+                        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+                        // Updating colors
+                        LaunchedEffect(lyricsState.song.artUrl) {
+                            lyricsState.song.artUrl?.let {
+                                action(LyricsPageAction.UpdateExtractedColors(it))
                             }
+                        }
 
-                            BoxWithConstraints(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                val landscape by remember { mutableStateOf(this.maxHeight < this.maxWidth) }
+                        PageFill {
 
-                                ApplyLyricsBackground(
-                                    background = state.lyricsBackground,
-                                    artUrl = lyricsState.song.artUrl,
-                                    cardBackground = cardBackground,
-                                    waveData = waveData,
-                                    waveColors = waveColors,
-                                    hypnoticColor1 = hypnoticColor1,
-                                    hypnoticColor2 = hypnoticColor2
-                                )
+                            ApplyLyricsBackground(
+                                background = state.lyricsBackground,
+                                artUrl = lyricsState.song.artUrl,
+                                cardBackground = cardBackground,
+                                waveData = waveData,
+                                waveColors = waveColors,
+                                hypnoticColor1 = hypnoticColor1,
+                                hypnoticColor2 = hypnoticColor2
+                            )
 
-                                Column {
-                                    if (!landscape) {
-                                        Box(
+                            Column {
+                                if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.align(Alignment.TopCenter)
+                                        ) {
+                                            AnimatedVisibility(
+                                                visible = !state.sync && top > 2 && state.lyricsBackground != LyricsBackground.ALBUM_ART
+                                            ) {
+                                                ArtFromUrl(
+                                                    imageUrl = lyricsState.song.artUrl!!,
+                                                    highlightColor = cardContent,
+                                                    baseColor = Color.Transparent,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(100.dp)
+                                                        .fadeBottomToTop()
+                                                )
+                                            }
+                                        }
+
+                                        Column(
                                             modifier = Modifier.fillMaxWidth(),
-                                            contentAlignment = Alignment.Center
+                                            horizontalAlignment = state.textPrefs.lyricsAlignment.toAlignment()
                                         ) {
-                                            Column(
-                                                modifier = Modifier.align(Alignment.TopCenter)
-                                            ) {
-                                                AnimatedVisibility(
-                                                    visible = !state.sync && top > 2 && state.lyricsBackground != LyricsBackground.ALBUM_ART
-                                                ) {
-                                                    ArtFromUrl(
-                                                        imageUrl = lyricsState.song.artUrl!!,
-                                                        highlightColor = cardContent,
-                                                        baseColor = Color.Transparent,
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .height(100.dp)
-                                                            .fadeBottomToTop()
-                                                    )
-                                                }
-                                            }
+                                            Spacer(modifier = Modifier.height(40.dp))
 
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = state.textPrefs.lyricsAlignment.toAlignment()
-                                            ) {
-                                                Spacer(modifier = Modifier.height(40.dp))
-
-                                                AnimatedVisibility(
-                                                    visible = top <= 2 && !state.sync
-                                                ) {
-                                                    Row(
-                                                        modifier = Modifier.padding(
-                                                            horizontal = 16.dp,
-                                                            vertical = 8.dp
-                                                        )
-                                                    ) {
-                                                        ArtFromUrl(
-                                                            imageUrl = lyricsState.song.artUrl!!,
-                                                            highlightColor = cardContent,
-                                                            baseColor = Color.Transparent,
-                                                            contentScale = ContentScale.Crop,
-                                                            modifier = Modifier
-                                                                .size(80.dp)
-                                                                .aspectRatio(1f)
-                                                                .clip(MaterialTheme.shapes.small)
-                                                        )
-                                                    }
-                                                }
-
-                                                Text(
-                                                    text = lyricsState.song.title,
-                                                    style = MaterialTheme.typography.titleLarge,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier
-                                                        .padding(horizontal = 16.dp)
-                                                        .basicMarquee()
-                                                )
-
-                                                Text(
-                                                    text = lyricsState.song.artists,
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    fontWeight = FontWeight.Bold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier
-                                                        .padding(horizontal = 16.dp)
-                                                        .basicMarquee()
-                                                )
-
-                                                // Actions Row
-                                                ActionsRow(
-                                                    state = state,
-                                                    action = action,
-                                                    notificationAccess = notificationAccess,
-                                                    cardBackground = cardBackground,
-                                                    cardContent = cardContent,
-                                                    onShare = onShare,
-                                                    onEdit = onEdit,
-                                                    glowMultiplier = glowMultiplier,
-                                                    modifier = Modifier.padding(16.dp)
-                                                )
-                                            }
-                                        }
-
-                                        if (!state.sync) {
-                                            PlainLyrics(
-                                                state = state,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier = Modifier
-                                                    .widthIn(max = 500.dp)
-                                                    .fillMaxWidth()
-                                                    .fadeTopToBottom()
-                                            )
-                                        } else if (lyricsState.song.syncedLyrics != null) {
-                                            SyncedLyrics(
-                                                state = state,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier = Modifier
-                                                    .widthIn(max = 500.dp)
-                                                    .fillMaxWidth()
-                                                    .fadeTopToBottom()
-                                            )
-                                        }
-                                    } else {
-                                        // landscape UI
-
-                                        Row(
-                                            modifier = Modifier
-                                                .padding(start = 40.dp)
-                                                .fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(0.3f)
+                                            AnimatedVisibility(
+                                                visible = top <= 2 && !state.sync
                                             ) {
                                                 Row(
                                                     modifier = Modifier.padding(
@@ -308,57 +219,160 @@ fun LyricsPage(
                                                         imageUrl = lyricsState.song.artUrl!!,
                                                         highlightColor = cardContent,
                                                         baseColor = Color.Transparent,
-                                                        contentScale = ContentScale.Fit,
+                                                        contentScale = ContentScale.Crop,
                                                         modifier = Modifier
-                                                            .size(100.dp)
+                                                            .size(80.dp)
+                                                            .aspectRatio(1f)
                                                             .clip(MaterialTheme.shapes.small)
                                                     )
                                                 }
+                                            }
 
-                                                Text(
-                                                    text = lyricsState.song.title,
-                                                    style = MaterialTheme.typography.titleLarge,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier
-                                                        .padding(horizontal = 16.dp)
-                                                        .basicMarquee()
+                                            Text(
+                                                text = lyricsState.song.title,
+                                                style = MaterialTheme.typography.titleLarge,
+                                                fontWeight = FontWeight.SemiBold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                                    .basicMarquee()
+                                            )
+
+                                            Text(
+                                                text = lyricsState.song.artists,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                                    .basicMarquee()
+                                            )
+
+                                            // Actions Row
+                                            Row {
+                                                Actions(
+                                                    state = state,
+                                                    action = action,
+                                                    notificationAccess = notificationAccess,
+                                                    cardBackground = cardBackground,
+                                                    cardContent = cardContent,
+                                                    onShare = onShare,
+                                                    onEdit = onEdit,
+                                                    glowMultiplier = glowMultiplier,
                                                 )
+                                            }
+                                        }
+                                    }
 
-                                                Text(
-                                                    text = lyricsState.song.artists,
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    fontWeight = FontWeight.Bold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
+                                    if (!state.sync) {
+                                        PlainLyrics(
+                                            state = state,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fadeTopToBottom()
+                                        )
+                                    } else if (lyricsState.song.syncedLyrics != null) {
+                                        SyncedLyrics(
+                                            state = state,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fadeTopToBottom()
+                                        )
+                                    }
+                                } else {
+                                    // landscape UI
+
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(start = 16.dp)
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Actions Row
+                                        Column {
+                                            Actions(
+                                                state = state,
+                                                action = action,
+                                                notificationAccess = notificationAccess,
+                                                cardBackground = cardBackground,
+                                                cardContent = cardContent,
+                                                onShare = onShare,
+                                                onEdit = onEdit,
+                                                glowMultiplier = glowMultiplier,
+                                            )
+                                        }
+
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(0.3f)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(
+                                                    horizontal = 16.dp,
+                                                    vertical = 8.dp
+                                                )
+                                            ) {
+                                                ArtFromUrl(
+                                                    imageUrl = lyricsState.song.artUrl!!,
+                                                    highlightColor = cardContent,
+                                                    baseColor = Color.Transparent,
+                                                    contentScale = ContentScale.Fit,
                                                     modifier = Modifier
-                                                        .padding(horizontal = 16.dp)
-                                                        .basicMarquee()
+                                                        .size(100.dp)
+                                                        .clip(MaterialTheme.shapes.small)
                                                 )
                                             }
 
-                                            if (!state.sync) {
-                                                PlainLyrics(
-                                                    state = state,
-                                                    lazyListState = lazyListState,
-                                                    cardContent = cardContent,
-                                                    action = action,
-                                                    modifier = Modifier
-                                                        .weight(1f)
-                                                        .fadeTopToBottom()
-                                                )
-                                            } else if (lyricsState.song.syncedLyrics != null) {
-                                                SyncedLyrics(
-                                                    state = state,
-                                                    lazyListState = lazyListState,
-                                                    cardContent = cardContent,
-                                                    action = action,
-                                                    modifier = Modifier
-                                                        .weight(1f)
-                                                        .fadeTopToBottom()
-                                                )
-                                            }
+                                            Text(
+                                                text = lyricsState.song.title,
+                                                style = MaterialTheme.typography.titleLarge,
+                                                fontWeight = FontWeight.SemiBold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                                    .basicMarquee()
+                                            )
+
+                                            Text(
+                                                text = lyricsState.song.artists,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 16.dp)
+                                                    .basicMarquee()
+                                            )
+                                        }
+
+                                        if (!state.sync) {
+                                            PlainLyrics(
+                                                state = state,
+                                                lazyListState = lazyListState,
+                                                cardContent = cardContent,
+                                                action = action,
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .fadeTopToBottom()
+                                            )
+                                        } else if (lyricsState.song.syncedLyrics != null) {
+                                            SyncedLyrics(
+                                                state = state,
+                                                lazyListState = lazyListState,
+                                                cardContent = cardContent,
+                                                action = action,
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .fadeTopToBottom()
+                                            )
                                         }
                                     }
                                 }
@@ -492,10 +506,50 @@ fun LyricsPage(
     }
 }
 
-fun calculateGlowMultiplier(waveData: VisualizerData?): Float {
-    if (waveData == null) return 0f
-
-    val mid = waveData.midBucket().max()
-    val treble = waveData.trebleBucket().max()
-    return (mid + treble).toFloat().absoluteValue / 128f
+@Preview(
+    device = "spec:width=411dp,height=891dp,orientation=landscape",
+    showSystemUi = false, showBackground = false, fontScale = 1.0f
+)
+@Composable
+fun LyricsPagePreview() {
+    RushTheme(theme = Theme()) {
+        LyricsPage(
+            onEdit = {},
+            onShare = {},
+            action = {},
+            state = LyricsPageState(
+                syncedAvailable = true,
+                extractedColors = ExtractedColors(
+                    cardContentMuted = Color.White.toArgb(),
+                    cardContentDominant = Color.White.toArgb(),
+                    cardBackgroundMuted = Color.Cyan.toArgb(),
+                    cardBackgroundDominant = Color.Blue.toArgb()
+                ),
+                cardColors = CardColors.VIBRANT,
+                textPrefs = TextPrefs(
+                    lyricsAlignment = LyricsAlignment.START
+                ),
+                lyricsBackground = LyricsBackground.HYPNOTIC,
+                lyricsState = LyricsState.Loaded(
+                    SongUi(
+                        id = 0L,
+                        title = "Sample Title",
+                        artists = "Sample Artist",
+                        album = "Sample Album",
+                        sourceUrl = "",
+                        artUrl = "",
+                        lyrics = (0..100).associateWith {
+                            "Line No : $it"
+                        }.entries.toList(),
+                        syncedLyrics = (0..100).map {
+                            Lyric(it.toLong(), "Line No : $it")
+                        },
+                        geniusLyrics = null
+                    )
+                )
+            ),
+            waveData = null,
+            notificationAccess = true
+        )
+    }
 }
