@@ -12,17 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.BoxOpen
 
 @Composable
 fun Empty(
-    imageVector: ImageVector = FontAwesomeIcons.Solid.BoxOpen,
+    painter: Painter = painterResource(R.drawable.deceased),
     suggestion: Boolean = true,
     color: Color = MaterialTheme.colorScheme.onBackground
 ) {
@@ -32,7 +30,7 @@ fun Empty(
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = imageVector,
+            painter = painter,
             contentDescription = "Empty Library",
             modifier = Modifier.size(128.dp).padding(16.dp),
             tint = color

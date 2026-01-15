@@ -19,9 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,9 +64,6 @@ import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.saved.component.SongCard
 import com.shub39.rush.presentation.simpleVerticalScrollbar
 import com.shub39.rush.presentation.toStringRes
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Meteor
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -93,7 +88,7 @@ fun SavedPage(
                             onClick = onNavigateToSettings,
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Settings,
+                                painter = painterResource(R.drawable.settings),
                                 contentDescription = "Settings"
                             )
                         }
@@ -215,7 +210,7 @@ fun SavedPage(
                         contentColor = if (state.autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary,
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Solid.Meteor,
+                            painter = painterResource(R.drawable.meteor),
                             contentDescription = "Rush Mode",
                             modifier = Modifier.size(24.dp)
                         )
@@ -226,7 +221,7 @@ fun SavedPage(
                     onClick = { onAction(SavedPageAction.OnToggleSearchSheet) }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Search,
+                        painter = painterResource(R.drawable.search),
                         contentDescription = "Search",
                         modifier = Modifier.size(40.dp)
                     )

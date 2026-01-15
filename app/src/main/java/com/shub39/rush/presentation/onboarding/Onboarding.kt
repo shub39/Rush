@@ -19,9 +19,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonShapes
@@ -41,18 +38,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.onboarding.component.AnimatedAppIcon
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Meteor
-import compose.icons.fontawesomeicons.solid.SyncAlt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -142,7 +137,7 @@ fun Onboarding(
                                 )
                             ) {
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                    painter = painterResource(R.drawable.arrow_forward),
                                     contentDescription = "Next"
                                 )
                             }
@@ -166,7 +161,7 @@ fun Onboarding(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Notifications,
+                                    painter = painterResource(R.drawable.notifications),
                                     contentDescription = "Notification",
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                     modifier = Modifier.size(60.dp)
@@ -190,12 +185,12 @@ fun Onboarding(
                             ) {
                                 listOf(
                                     Triple(
-                                        first = FontAwesomeIcons.Solid.Meteor,
+                                        first = painterResource(R.drawable.meteor),
                                         second = "Rush Mode",
                                         third = "Fetches songs automatically with your music player"
                                     ),
                                     Triple(
-                                        first = FontAwesomeIcons.Solid.SyncAlt,
+                                        first = painterResource(R.drawable.sync),
                                         second = "Synced Lyrics",
                                         third = "Syncs with your music player if timed lyrics is available"
                                     )
@@ -215,7 +210,7 @@ fun Onboarding(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Icon(
-                                                imageVector = feature.first,
+                                                painter = feature.first,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(42.dp)
                                             )

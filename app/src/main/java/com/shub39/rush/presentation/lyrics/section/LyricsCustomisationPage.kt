@@ -14,11 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.rounded.Audiotrack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,7 +113,7 @@ fun LyricsCustomisationsPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
@@ -129,7 +125,7 @@ fun LyricsCustomisationsPage(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Refresh,
+                            painter = painterResource(R.drawable.refresh),
                             contentDescription = "Reset Defaults"
                         )
                     }
@@ -404,7 +400,7 @@ fun LyricsCustomisationsPage(
                             modifier = Modifier.weight(1f)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Create,
+                                painter = painterResource(R.drawable.edit),
                                 contentDescription = "Select Color",
                             )
                         }
@@ -421,7 +417,7 @@ fun LyricsCustomisationsPage(
                             modifier = Modifier.weight(1f)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Create,
+                                painter = painterResource(R.drawable.edit),
                                 contentDescription = "Select Color"
                             )
                         }
@@ -515,7 +511,7 @@ private fun AudioPermissionDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Audiotrack,
+                    painter = painterResource(R.drawable.eq),
                     contentDescription = null
                 )
 

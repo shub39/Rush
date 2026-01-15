@@ -19,14 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.FontDownload
-import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -104,7 +97,7 @@ fun LookAndFeelPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back"
                         )
                     }
@@ -133,14 +126,14 @@ fun LookAndFeelPage(
                         ListItem(
                             leadingContent = {
                                 Icon(
-                                    imageVector = when (state.theme.appTheme) {
+                                    painter = painterResource(when (state.theme.appTheme) {
                                         AppTheme.SYSTEM -> {
-                                            if (isSystemInDarkTheme()) Icons.Rounded.DarkMode else Icons.Rounded.LightMode
+                                            if (isSystemInDarkTheme()) R.drawable.dark_mode else R.drawable.light_mode
                                         }
 
-                                        AppTheme.DARK -> Icons.Rounded.DarkMode
-                                        AppTheme.LIGHT -> Icons.Rounded.LightMode
-                                    },
+                                        AppTheme.DARK -> R.drawable.dark_mode
+                                        AppTheme.LIGHT -> R.drawable.light_mode
+                                    }),
                                     contentDescription = null
                                 )
                             },
@@ -246,7 +239,7 @@ fun LookAndFeelPage(
                             },
                             leadingContent = {
                                 Icon(
-                                    imageVector = Icons.Rounded.FontDownload,
+                                    painter = painterResource(R.drawable.font),
                                     contentDescription = null
                                 )
                             },
@@ -332,7 +325,7 @@ fun LookAndFeelPage(
                                     enabled = isProUser
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Create,
+                                        painter = painterResource(R.drawable.edit),
                                         contentDescription = "Select Color"
                                     )
                                 }
@@ -355,7 +348,7 @@ fun LookAndFeelPage(
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
-                                    imageVector = Icons.Rounded.Palette,
+                                    painter = painterResource(R.drawable.palette),
                                     contentDescription = null
                                 )
                             }
@@ -398,7 +391,7 @@ fun LookAndFeelPage(
                                 ) {
                                     if (selected) {
                                         Icon(
-                                            imageVector = Icons.Rounded.Check,
+                                            painter = painterResource(R.drawable.check),
                                             contentDescription = null,
                                             tint = scheme.onTertiary
                                         )

@@ -15,16 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material.icons.rounded.Palette
-import androidx.compose.material.icons.rounded.Upload
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -99,7 +90,7 @@ fun SettingRootPage(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
@@ -140,7 +131,7 @@ fun SettingRootPage(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Add,
+                            painter = painterResource(R.drawable.add),
                             contentDescription = "Rush Pro",
                             modifier = Modifier.size(24.dp)
                         )
@@ -156,7 +147,7 @@ fun SettingRootPage(
                         Spacer(modifier = Modifier.weight(1f))
 
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            painter = painterResource(R.drawable.arrow_forward_ios),
                             contentDescription = "Grit Plus"
                         )
                     }
@@ -177,14 +168,14 @@ fun SettingRootPage(
                         supportingContent = { Text(text = stringResource(R.string.look_and_feel_info)) },
                         leadingContent = {
                             Icon(
-                                imageVector = Icons.Rounded.Palette,
+                                painter = painterResource(R.drawable.palette),
                                 contentDescription = "Navigate",
                                 modifier = Modifier.size(24.dp)
                             )
                         },
                         trailingContent = {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                painter = painterResource(R.drawable.arrow_forward_ios),
                                 contentDescription = null
                             )
                         }
@@ -207,14 +198,14 @@ fun SettingRootPage(
                         },
                         leadingContent = {
                             Icon(
-                                imageVector = Icons.Rounded.Upload,
+                                painter = painterResource(R.drawable.upload_file),
                                 contentDescription = "Backup",
                                 modifier = Modifier.size(24.dp)
                             )
                         },
                         trailingContent = {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                painter = painterResource(R.drawable.arrow_forward_ios),
                                 contentDescription = null
                             )
                         }
@@ -245,13 +236,13 @@ fun SettingRootPage(
                             .clickable { context.startActivity(intent) },
                         leadingContent = {
                             Icon(
-                                imageVector = Icons.Rounded.Notifications,
+                                painter = painterResource(R.drawable.notifications),
                                 contentDescription = null
                             )
                         },
                         trailingContent = {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                painter = painterResource(R.drawable.arrow_forward_ios),
                                 contentDescription = null
                             )
                         }
@@ -264,7 +255,7 @@ fun SettingRootPage(
                 ListItem(
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.Rounded.Warning,
+                            painter = painterResource(R.drawable.warning),
                             contentDescription = "Caution"
                         )
                     },
@@ -272,7 +263,7 @@ fun SettingRootPage(
                     colors = listItemColors(),
                     trailingContent = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            painter = painterResource(R.drawable.arrow_forward_ios),
                             contentDescription = null
                         )
                     },
@@ -290,7 +281,7 @@ fun SettingRootPage(
     if (deleteConfirmationDialog) {
         RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
             Icon(
-                imageVector = Icons.Default.Warning,
+                painter = painterResource(R.drawable.warning),
                 contentDescription = "Warning",
             )
             Text(

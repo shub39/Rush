@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Coffee
-import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,16 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Brands
-import compose.icons.fontawesomeicons.brands.Discord
-import compose.icons.fontawesomeicons.brands.Github
-import compose.icons.fontawesomeicons.brands.GooglePlay
 
 @Composable
 fun AboutApp() {
@@ -68,7 +61,7 @@ fun AboutApp() {
                     onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Brands.Discord,
+                        painter = painterResource(R.drawable.discord),
                         contentDescription = "Discord",
                         modifier = Modifier.size(24.dp)
                     )
@@ -78,7 +71,7 @@ fun AboutApp() {
                     onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Brands.Github,
+                        painter = painterResource(R.drawable.github),
                         contentDescription = "Github",
                         modifier = Modifier.size(24.dp)
                     )
@@ -98,7 +91,7 @@ fun AboutApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Coffee,
+                        painter = painterResource(R.drawable.buymeacoffee),
                         contentDescription = "Buy me a coffee",
                         modifier = Modifier.size(24.dp)
                     )
@@ -115,7 +108,7 @@ fun AboutApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Language,
+                        painter = painterResource(R.drawable.language),
                         contentDescription = "Translate",
                         modifier = Modifier.size(24.dp)
                     )
@@ -132,7 +125,7 @@ fun AboutApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = FontAwesomeIcons.Brands.GooglePlay,
+                        painter = painterResource(R.drawable.play_store),
                         contentDescription = "Rate On Google Play",
                         modifier = Modifier.size(20.dp)
                     )
