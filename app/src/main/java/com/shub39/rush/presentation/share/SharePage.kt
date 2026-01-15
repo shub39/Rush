@@ -13,12 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -46,9 +40,11 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
@@ -232,7 +228,7 @@ private fun SharePageContent(
                         onClick = onDismiss
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
@@ -360,7 +356,7 @@ private fun SharePageContent(
                         containerColor = MaterialTheme.colorScheme.primary
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Create,
+                            painter = painterResource(R.drawable.edit),
                             contentDescription = "Edit"
                         )
                     }
@@ -381,7 +377,7 @@ private fun SharePageContent(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Download,
+                        painter = painterResource(R.drawable.save),
                         contentDescription = "Save",
                     )
                 }
@@ -396,7 +392,7 @@ private fun SharePageContent(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Share,
+                        painter = painterResource(R.drawable.share),
                         contentDescription = "Share",
                         modifier = Modifier.size(24.dp)
                     )
@@ -409,7 +405,7 @@ private fun SharePageContent(
                         onClick = onLaunchImagePicker
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Image,
+                            painter = painterResource(R.drawable.image),
                             contentDescription = "Image",
                             modifier = Modifier.size(24.dp)
                         )

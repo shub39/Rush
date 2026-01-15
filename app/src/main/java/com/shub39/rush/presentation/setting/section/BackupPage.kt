@@ -12,14 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.DriveFolderUpload
-import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material.icons.rounded.FileDownload
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -127,7 +120,7 @@ private fun BackupPageContent(
                         onClick = onNavigateBack
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
@@ -160,7 +153,7 @@ private fun BackupPageContent(
                             },
                             leadingContent = {
                                 Icon(
-                                    imageVector = Icons.Rounded.DriveFolderUpload,
+                                    painter = painterResource(R.drawable.upload_file),
                                     contentDescription = null
                                 )
                             },
@@ -186,7 +179,7 @@ private fun BackupPageContent(
                                 when (state.exportState) {
                                     is ExportState.ExportReady -> {
                                         Icon(
-                                            imageVector = Icons.Rounded.PlayArrow,
+                                            painter = painterResource(R.drawable.play),
                                             contentDescription = "Start Export",
                                         )
                                     }
@@ -199,7 +192,7 @@ private fun BackupPageContent(
 
                                     ExportState.Error -> {
                                         Icon(
-                                            imageVector = Icons.Rounded.Error,
+                                            painter = painterResource(R.drawable.error),
                                             contentDescription = "Error"
                                         )
                                     }
@@ -215,7 +208,7 @@ private fun BackupPageContent(
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
-                                    imageVector = Icons.Rounded.FileDownload,
+                                    painter = painterResource(R.drawable.download),
                                     contentDescription = null
                                 )
                             },
@@ -255,7 +248,7 @@ private fun BackupPageContent(
                                     when (state.restoreState) {
                                         RestoreState.Idle -> {
                                             Icon(
-                                                imageVector = Icons.Rounded.PlayArrow,
+                                                painter = painterResource(R.drawable.play),
                                                 contentDescription = "Start Restore",
                                                 modifier = Modifier.size(20.dp)
                                             )
@@ -273,7 +266,7 @@ private fun BackupPageContent(
 
                                         RestoreState.Restored -> {
                                             Icon(
-                                                imageVector = Icons.Rounded.Check,
+                                                painter = painterResource(R.drawable.check),
                                                 contentDescription = "Restored",
                                                 modifier = Modifier.size(20.dp)
                                             )
@@ -281,7 +274,7 @@ private fun BackupPageContent(
 
                                         is RestoreState.Failure -> {
                                             Icon(
-                                                imageVector = Icons.Rounded.Warning,
+                                                painter = painterResource(R.drawable.error),
                                                 contentDescription = "Error",
                                                 modifier = Modifier.size(20.dp)
                                             )

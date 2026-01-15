@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -128,7 +129,7 @@ fun LyricsPage(
                         Empty(
                             suggestion = false,
                             color = cardContent,
-                            imageVector = FontAwesomeIcons.Solid.Music
+                            painter = painterResource(R.drawable.music)
                         )
                     }
 
@@ -270,7 +271,6 @@ fun LyricsPage(
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
-                                                coroutineScope = coroutineScope,
                                                 modifier = Modifier
                                                     .widthIn(max = 500.dp)
                                                     .fillMaxWidth()
@@ -347,7 +347,6 @@ fun LyricsPage(
                                                     lazyListState = lazyListState,
                                                     cardContent = cardContent,
                                                     action = action,
-                                                    coroutineScope = coroutineScope,
                                                     modifier = Modifier
                                                         .weight(1f)
                                                         .fadeTopToBottom()
@@ -417,6 +416,7 @@ fun LyricsPage(
                             }
                         }
                     }
+
                     SearchState.UserPrompt -> {
                         Card(
                             shape = RoundedCornerShape(
@@ -434,7 +434,7 @@ fun LyricsPage(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    imageVector = Icons.Rounded.SearchOff,
+                                    painter = painterResource(R.drawable.search_off),
                                     contentDescription = "No exact match found"
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
@@ -472,11 +472,13 @@ fun LyricsPage(
                 }
             ) {
                 Icon(
-                    imageVector = if (state.playingSong.speed == 0f) {
-                        Icons.Rounded.PlayArrow
-                    } else {
-                        Icons.Rounded.Pause
-                    },
+                    painter = painterResource(
+                        if (state.playingSong.speed == 0f) {
+                            R.drawable.play
+                        } else {
+                            R.drawable.pause
+                        }
+                    ),
                     contentDescription = "Pause or Resume"
                 )
             }

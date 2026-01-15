@@ -23,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
@@ -35,9 +37,6 @@ import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.QuoteLeft
 
 @Composable
 fun QuoteShareCard(
@@ -71,7 +70,7 @@ fun QuoteShareCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = FontAwesomeIcons.Solid.QuoteLeft,
+                    painter = painterResource(R.drawable.quote),
                     contentDescription = "Quote",
                     modifier = Modifier.size(pxToDp(60))
                 )
