@@ -1,5 +1,7 @@
 package com.shub39.rush.domain.dataclasses
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 /**
  * A data class to hold the extracted colors from an image
@@ -10,8 +12,8 @@ package com.shub39.rush.domain.dataclasses
  * @property cardContentMuted A suitable color for text or icons placed on top of [cardBackgroundMuted].
  */
 data class ExtractedColors(
-    val cardBackgroundDominant: Int = 0xFF4444,
+    val cardBackgroundDominant: Int = Color.DarkGray.toArgb(),
     val cardContentDominant: Int = 0xFFFFFF,
-    val cardBackgroundMuted: Int = 0xFF8888,
+    val cardBackgroundMuted: Int = Color.DarkGray.toArgb(),
     val cardContentMuted: Int = 0xFFFFFF
 )

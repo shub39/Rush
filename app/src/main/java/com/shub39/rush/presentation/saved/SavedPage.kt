@@ -152,8 +152,8 @@ fun SavedPage(
                         modifier = Modifier
                             .clip(
                                 RoundedCornerShape(
-                                    topStart = 32.dp,
-                                    topEnd = 32.dp
+                                    topStart = 20.dp,
+                                    topEnd = 20.dp
                                 )
                             )
                             .clickable { onNavigateToLyrics() },
@@ -282,7 +282,7 @@ fun SavedPage(
     }
 }
 
-@Preview
+@Preview(device = "spec:width=411dp,height=891dp")
 @Composable
 private fun Preview() {
     val songs = (0..100).map {
