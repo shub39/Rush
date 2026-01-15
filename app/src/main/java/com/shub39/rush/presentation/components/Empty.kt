@@ -17,6 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 
+/**
+ * A composable function that displays a centered icon and text
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param icon The drawable resource ID for the icon to be displayed. Defaults to a "deceased" icon.
+ * @param suggestion A boolean flag to determine whether to show a suggestion text below the main text. Defaults to true.
+ * @param color The color to be applied to the icon and text. Defaults to the `onBackground` color from the current [MaterialTheme].
+ */
 @Composable
 fun Empty(
     modifier: Modifier = Modifier,

@@ -20,7 +20,16 @@ import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.placeholder.shimmer.Shimmer
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 
-// General Image Composable
+/**
+ * A general-purpose composable for displaying an image from a URL.
+ * In case of a failure to load the image, a placeholder icon is displayed.
+ *
+ * @param imageUrl The URL of the image to be displayed. Can be null.
+ * @param modifier The modifier to be applied to this composable.
+ * @param contentScale The scaling algorithm to be used to fit the image in the given bounds.
+ * @param baseColor The base color for the shimmer animation.
+ * @param highlightColor The highlight color for the shimmer animation.
+ */
 @Composable
 fun ArtFromUrl(
     imageUrl: String?,

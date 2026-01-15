@@ -25,7 +25,18 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
 
-// Color picker used app wide
+/**
+ * A composable dialog that allows the user to select a color.
+ * to provide a rich color selection experience, including an HSV color picker,
+ * a brightness slider, and an alpha tile.
+ *
+ * @param initialColor The color that is initially selected in the picker.
+ * @param onSelect The callback that is invoked when the user confirms their color selection.
+ *                 The selected [Color] is passed as an argument.
+ * @param onDismiss The callback that is invoked when the user dismisses the dialog
+ *                  without making a selection, or after a selection is made.
+ * @param modifier The [Modifier] to be applied to the dialog.
+ */
 @Composable
 fun ColorPickerDialog(
     initialColor: Color,

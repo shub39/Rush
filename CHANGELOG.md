@@ -1,7 +1,9 @@
 # Changelog
 
 ## 5.5.0
-- translation updates
+- Translation updates
+- Redid all icons
+- Fixed Synced lyrics anchoring to the bottom
 
 ## 5.4.2
 - Trimmed unneeded network calls
