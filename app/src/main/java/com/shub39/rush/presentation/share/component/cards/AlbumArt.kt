@@ -96,7 +96,7 @@ fun AlbumArt(
                 style = MaterialTheme.typography.headlineLarge.fromPx(
                     fontSize = 30,
                     letterSpacing = 0,
-                    lineHeight = 0
+                    lineHeight = 30
                 ).copy(textAlign = TextAlign.Center),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -132,7 +132,7 @@ private fun Preview() {
             song = SongDetails(
                 title = "Test Song",
                 artist = "Eminem",
-                null, ""
+                null, "as"
             ),
             cardColors = CardDefaults.cardColors(
                 contentColor = MaterialTheme.colorScheme.onPrimary,

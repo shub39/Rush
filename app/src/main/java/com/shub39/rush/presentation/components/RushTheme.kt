@@ -17,7 +17,6 @@ import com.shub39.rush.presentation.toMPaletteStyle
 @Composable
 fun RushTheme(
     theme: Theme,
-    fontScale: Float = 1f,
     content: @Composable () -> Unit
 ) {
     DynamicMaterialTheme(
@@ -35,7 +34,6 @@ fun RushTheme(
         style = theme.style.toMPaletteStyle(),
         typography = provideTypography(
             font = theme.font.toFontRes(),
-            scale = fontScale
         ),
         content = content
     )

@@ -129,7 +129,7 @@ fun CoupletShareCard(
                                     fontWeight = FontWeight.ExtraBold,
                                     fontSize = 28,
                                     letterSpacing = 0,
-                                    lineHeight = 0,
+                                    lineHeight = 28,
                                 ),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -140,7 +140,7 @@ fun CoupletShareCard(
                                 style = MaterialTheme.typography.bodySmall.fromPx(
                                     fontSize = 24,
                                     letterSpacing = 0,
-                                    lineHeight = 0,
+                                    lineHeight = 24,
                                 ),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis

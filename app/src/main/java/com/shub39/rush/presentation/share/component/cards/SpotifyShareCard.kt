@@ -84,7 +84,7 @@ fun SpotifyShareCard(
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 28,
                             letterSpacing = 0,
-                            lineHeight = 0,
+                            lineHeight = 28,
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -93,10 +93,9 @@ fun SpotifyShareCard(
                     Text(
                         text = song.artist,
                         style = MaterialTheme.typography.bodySmall.fromPx(
-                            fontWeight = FontWeight.Bold,
                             fontSize = 26,
                             letterSpacing = 0,
-                            lineHeight = 0,
+                            lineHeight = 26,
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

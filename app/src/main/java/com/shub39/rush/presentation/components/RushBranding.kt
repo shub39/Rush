@@ -42,7 +42,7 @@ fun RushBranding(
             ).fromPx(
                 fontSize = 36,
                 letterSpacing = 0,
-                lineHeight = 0,
+                lineHeight = 36,
                 fontWeight = FontWeight.Bold
             )
         )

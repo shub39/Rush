@@ -124,7 +124,7 @@ fun RushedShareCard(
                         style = MaterialTheme.typography.titleMedium.fromPx(
                             fontSize = 32,
                             letterSpacing = 0,
-                            lineHeight = 0,
+                            lineHeight = 32,
                             fontWeight = FontWeight.Bold
                         ),
                         overflow = TextOverflow.Ellipsis
@@ -134,7 +134,7 @@ fun RushedShareCard(
                         style = MaterialTheme.typography.bodySmall.fromPx(
                             fontSize = 24,
                             letterSpacing = 0,
-                            lineHeight = 0
+                            lineHeight = 24
                         ),
                         color = cardColors.contentColor,
                         maxLines = 1,
