@@ -30,12 +30,14 @@ import com.shub39.rush.R
 fun ColorPickerDialog(
     initialColor: Color,
     onSelect: (Color) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val controller = rememberColorPickerController()
 
     RushDialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        modifier = modifier
     ) {
         Column(
             modifier = Modifier

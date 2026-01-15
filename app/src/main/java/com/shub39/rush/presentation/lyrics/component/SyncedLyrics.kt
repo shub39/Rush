@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -51,19 +52,18 @@ import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
 import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SyncedLyrics(
     state: LyricsPageState,
-    coroutineScope: CoroutineScope,
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val scope = rememberCoroutineScope()
     val hapticFeedback = LocalHapticFeedback.current
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
@@ -71,7 +71,7 @@ fun SyncedLyrics(
 
     // updater for synced lyrics
     LaunchedEffect(state.playingSong.position) {
-        coroutineScope.launch {
+        scope.launch {
             val currentIndex =
                 getCurrentLyricIndex(
                     state.playingSong.position,
@@ -82,7 +82,7 @@ fun SyncedLyrics(
                     lazyListState.layoutInfo.viewportStartOffset
 
             val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 2) - (itemHeight / 2)
+            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
 
             lazyListState.animateScrollToItem(
                 index = currentIndex,
@@ -94,7 +94,7 @@ fun SyncedLyrics(
     // Synced Lyrics
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 64.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 256.dp),
         verticalArrangement = Arrangement.spacedBy(with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }),
         userScrollEnabled = state.playingSong.speed == 0f,
         state = lazyListState

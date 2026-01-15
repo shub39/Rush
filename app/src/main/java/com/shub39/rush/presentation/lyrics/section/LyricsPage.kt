@@ -37,7 +37,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -88,7 +87,6 @@ fun LyricsPage(
     waveData: VisualizerData?,
     notificationAccess: Boolean,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
     // keeping the screen on
@@ -129,7 +127,7 @@ fun LyricsPage(
                         Empty(
                             suggestion = false,
                             color = cardContent,
-                            painter = painterResource(R.drawable.music)
+                            icon = R.drawable.music
                         )
                     }
 
@@ -279,7 +277,6 @@ fun LyricsPage(
                                         } else if (lyricsState.song.syncedLyrics != null) {
                                             SyncedLyrics(
                                                 state = state,
-                                                coroutineScope = coroutineScope,
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
@@ -354,7 +351,6 @@ fun LyricsPage(
                                             } else if (lyricsState.song.syncedLyrics != null) {
                                                 SyncedLyrics(
                                                     state = state,
-                                                    coroutineScope = coroutineScope,
                                                     lazyListState = lazyListState,
                                                     cardContent = cardContent,
                                                     action = action,

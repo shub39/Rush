@@ -23,7 +23,7 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 // General Image Composable
 @Composable
 fun ArtFromUrl(
-    imageUrl: Any?,
+    imageUrl: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     baseColor: Color = MaterialTheme.colorScheme.surface,
