@@ -18,7 +18,7 @@
 - [x] Download Lyrics
 - [x] Share Lyrics
 - [x] Customisations
-- [x] Auto-fill current playing song in search 
+- [x] Autofill current playing song in search 
 - [x] Synced Lyrics
 - [x] Import and Export saved lyrics
 

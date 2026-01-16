@@ -5,6 +5,7 @@
 - Redid all icons. (reason)[https://x.com/riggaroo/status/1971485475866341530?s=20]
 - Fixed Synced lyrics anchoring to the bottom (#199)
 - Added Scale to the current synced lyric
+- Added google sans font (#206)
 - Added Controls for media (#204)
 - Added Action bar in landscape mode (#210)
 - All screens are now usable in landscape mode and larger devices.

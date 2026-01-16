@@ -30,7 +30,6 @@ fun SavedPageActions(
     onNavigateToLyrics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     @Composable
     fun Buttons() {
         if (notificationAccess) {
@@ -67,7 +66,7 @@ fun SavedPageActions(
     if (isRow) {
         Row(
             modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Buttons()
