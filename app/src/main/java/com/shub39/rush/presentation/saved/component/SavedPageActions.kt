@@ -1,7 +1,6 @@
 package com.shub39.rush.presentation.saved.component
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -23,15 +22,17 @@ import com.shub39.rush.presentation.saved.SavedPageState
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SavedPageActions(
-    isRow: Boolean,
     state: SavedPageState,
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    @Composable
-    fun Buttons() {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         if (notificationAccess) {
             FloatingActionButton(
                 onClick = {
@@ -60,24 +61,6 @@ fun SavedPageActions(
                 contentDescription = "Search",
                 modifier = Modifier.size(40.dp)
             )
-        }
-    }
-
-    if (isRow) {
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Buttons()
-        }
-    } else {
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Buttons()
         }
     }
 }
