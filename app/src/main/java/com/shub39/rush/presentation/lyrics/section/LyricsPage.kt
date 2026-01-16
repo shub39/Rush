@@ -31,7 +31,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -474,7 +473,7 @@ fun LyricsPage(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedIconButton(
+                    IconButton(
                         onClick = { action(LyricsPageAction.OnPlayPrevious) },
                         colors = IconButtonDefaults.outlinedIconButtonColors(
                             contentColor = cardBackground,
@@ -528,7 +527,7 @@ fun LyricsPage(
                         )
                     }
 
-                    OutlinedIconButton(
+                    IconButton(
                         onClick = { action(LyricsPageAction.OnPlayNext) },
                         shapes = IconButtonShapes(
                             shape = RoundedCornerShape(1000.dp),
