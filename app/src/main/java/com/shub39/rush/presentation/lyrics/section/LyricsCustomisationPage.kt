@@ -142,11 +142,12 @@ fun LyricsCustomisationsPage(
             modifier = modifier
         ) { paddingValues ->
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
                     end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
-                    top = paddingValues.calculateTopPadding() + 16.dp,
                     bottom = paddingValues.calculateBottomPadding() + 60.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
