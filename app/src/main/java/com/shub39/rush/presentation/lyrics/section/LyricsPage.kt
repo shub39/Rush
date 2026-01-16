@@ -3,9 +3,10 @@ package com.shub39.rush.presentation.lyrics.section
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,11 +25,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -385,114 +388,162 @@ fun LyricsPage(
             }
         }
 
-        AnimatedVisibility(
-            visible = state.autoChange,
+        Column(
             modifier = Modifier
-                .widthIn(max = 150.dp)
-                .padding(vertical = 32.dp)
-                .align(Alignment.BottomStart),
-            enter = slideInHorizontally(),
-            exit = fadeOut()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedContent(
-                targetState = state.searchState
+            AnimatedVisibility(
+                visible = state.autoChange,
+                modifier = Modifier.widthIn(max = 150.dp),
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
-                when (it) {
-                    SearchState.Idle -> {}
-                    is SearchState.Searching -> {
-                        Card(
-                            shape = RoundedCornerShape(
-                                topEnd = 100.dp,
-                                bottomEnd = 100.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                AnimatedContent(
+                    targetState = state.searchState
+                ) {
+                    when (it) {
+                        SearchState.Idle -> {}
+                        is SearchState.Searching -> {
+                            Card(
+                                shape = RoundedCornerShape(100.dp),
+                                colors = CardDefaults.cardColors(
+                                    contentColor = cardBackground,
+                                    containerColor = cardContent
+                                )
                             ) {
-                                LoadingIndicator(
-                                    color = cardBackground,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = it.query,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                Row(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LoadingIndicator(
+                                        color = cardBackground,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = it.query,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    SearchState.UserPrompt -> {
-                        Card(
-                            shape = RoundedCornerShape(
-                                topEnd = 100.dp,
-                                bottomEnd = 100.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent
-                            ),
-                            onClick = { action(LyricsPageAction.OnToggleSearchSheet) }
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                        SearchState.UserPrompt -> {
+                            Card(
+                                shape = RoundedCornerShape(100.dp),
+                                colors = CardDefaults.cardColors(
+                                    contentColor = cardBackground,
+                                    containerColor = cardContent
+                                ),
+                                onClick = { action(LyricsPageAction.OnToggleSearchSheet) }
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.search_off),
-                                    contentDescription = "No exact match found"
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = stringResource(R.string.not_found),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                Row(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.search_off),
+                                        contentDescription = "No exact match found"
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = stringResource(R.string.not_found),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        AnimatedVisibility(
-            visible = state.sync,
-            modifier = Modifier
-                .padding(32.dp)
-                .align(Alignment.BottomEnd)
-        ) {
-            FloatingActionButton(
-                contentColor = cardBackground,
-                containerColor = cardContent,
-                elevation = FloatingActionButtonDefaults.loweredElevation(0.dp),
-                shape = CircleShape,
-                onClick = { action(LyricsPageAction.OnPauseOrResume) },
-                modifier = Modifier.run {
-                    if (state.lyricsBackground in audioDependentBackgrounds) {
-                        glowBackground((24 * glowMultiplier).dp, CircleShape, cardContent)
-                    } else {
-                        this
+            AnimatedVisibility(
+                visible = state.sync,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedIconButton(
+                        onClick = { action(LyricsPageAction.OnPlayPrevious) },
+                        colors = IconButtonDefaults.outlinedIconButtonColors(
+                            contentColor = cardBackground,
+                            containerColor = cardContent
+                        ),
+                        shapes = IconButtonShapes(
+                            shape = RoundedCornerShape(1000.dp),
+                            pressedShape = RoundedCornerShape(16.dp)
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_previous),
+                            contentDescription = "Skip Previous"
+                        )
+                    }
+
+                    IconButton(
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = cardBackground,
+                            containerColor = cardContent
+                        ),
+                        shapes = IconButtonShapes(
+                            shape = RoundedCornerShape(1000.dp),
+                            pressedShape = RoundedCornerShape(16.dp)
+                        ),
+                        onClick = { action(LyricsPageAction.OnPauseOrResume) },
+                        modifier = Modifier
+                            .run {
+                                if (state.lyricsBackground in audioDependentBackgrounds) {
+                                    glowBackground(
+                                        (24 * glowMultiplier).dp,
+                                        CircleShape,
+                                        cardContent
+                                    )
+                                } else {
+                                    this
+                                }
+                            }
+                            .height(60.dp)
+                            .width(120.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (state.playingSong.speed == 0f) {
+                                    R.drawable.play
+                                } else {
+                                    R.drawable.pause
+                                }
+                            ),
+                            contentDescription = "Pause or Resume"
+                        )
+                    }
+
+                    OutlinedIconButton(
+                        onClick = { action(LyricsPageAction.OnPlayNext) },
+                        shapes = IconButtonShapes(
+                            shape = RoundedCornerShape(1000.dp),
+                            pressedShape = RoundedCornerShape(16.dp)
+                        ),
+                        colors = IconButtonDefaults.outlinedIconButtonColors(
+                            contentColor = cardBackground,
+                            containerColor = cardContent
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_next),
+                            contentDescription = "Skip Next"
+                        )
                     }
                 }
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (state.playingSong.speed == 0f) {
-                            R.drawable.play
-                        } else {
-                            R.drawable.pause
-                        }
-                    ),
-                    contentDescription = "Pause or Resume"
-                )
             }
         }
     }
@@ -509,7 +560,7 @@ fun LyricsPage(
 }
 
 @Preview(
-    device = "spec:width=411dp,height=891dp,orientation=landscape",
+    device = "spec:width=411dp,height=891dp",
     showSystemUi = false, showBackground = false, fontScale = 1.0f
 )
 @Composable
@@ -521,6 +572,9 @@ fun LyricsPagePreview() {
             action = {},
             state = LyricsPageState(
                 syncedAvailable = true,
+                sync = true,
+                autoChange = true,
+                searchState = SearchState.Searching("What the fuck"),
                 extractedColors = ExtractedColors(
                     cardContentMuted = Color.White.toArgb(),
                     cardContentDominant = Color.White.toArgb(),

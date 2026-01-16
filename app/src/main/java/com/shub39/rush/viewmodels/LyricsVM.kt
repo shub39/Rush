@@ -11,6 +11,8 @@ import com.shub39.rush.presentation.errorStringRes
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.LyricsState.Loaded
+import com.shub39.rush.presentation.lyrics.LyricsState.LyricsError
 import com.shub39.rush.presentation.lyrics.breakLyrics
 import com.shub39.rush.presentation.lyrics.toSongUi
 import com.shub39.rush.presentation.sortMapByKeys
@@ -127,7 +129,7 @@ class LyricsVM(
                     _state.update {
                         it.copy(
                             syncedAvailable = song.syncedLyrics != null,
-                            lyricsState = LyricsState.Loaded(song = song)
+                            lyricsState = Loaded(song = song)
                         )
                     }
                 }
@@ -206,10 +208,11 @@ class LyricsVM(
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
-                                    scraping = Pair(false, LyricsState.LyricsError(
+                                    scraping = Pair(false, LyricsError(
                                         errorCode = errorStringRes(result.error),
                                         debugMessage = result.message
-                                    ))
+                                    )
+                                    )
                                 )
                             }
                         }
@@ -218,7 +221,7 @@ class LyricsVM(
                             _state.update {
                                 it.copy(
                                     scraping = Pair(false, null),
-                                    lyricsState = (it.lyricsState as? LyricsState.Loaded)?.copy(
+                                    lyricsState = (it.lyricsState as? Loaded)?.copy(
                                         song = it.lyricsState.song.copy(
                                             geniusLyrics = breakLyrics(result.data)
                                         )
@@ -248,6 +251,8 @@ class LyricsVM(
                 is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
 
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
+                LyricsPageAction.OnPlayNext -> MediaListenerImpl.playNext()
+                LyricsPageAction.OnPlayPrevious -> MediaListenerImpl.playPrevious()
             }
         }
     }

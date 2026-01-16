@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
@@ -20,6 +21,7 @@ import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.dataclasses.WaveColors
 import com.shub39.rush.domain.enums.CardColors
+import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.HypnoticVisualizer
@@ -175,6 +177,13 @@ fun calculateGlowMultiplier(waveData: VisualizerData?): Float {
     return (mid + treble).toFloat().absoluteValue / 128f
 }
 
+fun LyricsAlignment.toTransformOrigin(): TransformOrigin {
+    return when (this) {
+        LyricsAlignment.START -> TransformOrigin(0f, 0.5f)
+        LyricsAlignment.CENTER -> TransformOrigin(0.5f, 0.5f)
+        LyricsAlignment.END -> TransformOrigin(1f, 0.5f)
+    }
+}
 
 @Composable
 fun BoxScope.ApplyLyricsBackground(
