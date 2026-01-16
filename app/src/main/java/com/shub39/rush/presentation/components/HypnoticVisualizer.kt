@@ -19,6 +19,16 @@ import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.shub39.rush.presentation.hypnoticAvailable
 
+/**
+ * A Composable that displays an animated, wavy gradient using a Skia shader.
+ *
+ * If shaders are not available on the device
+ * it falls back to a simple static `Brush.verticalGradient` using the provided colors.
+ *
+ * @param modifier The [Modifier] to be applied to this Composable.
+ * @param colors The list of [Color]s to be used in the gradient/shader. The shader
+ *               is dynamically generated to support the number of colors provided.
+ */
 @Composable
 fun HypnoticVisualizer(
     modifier: Modifier = Modifier,

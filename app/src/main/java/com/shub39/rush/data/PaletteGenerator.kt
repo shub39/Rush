@@ -36,7 +36,7 @@ class PaletteGenerator(
                         colors.vibrantSwatch?.rgb ?: colors.lightVibrantSwatch?.rgb
                         ?: colors.darkVibrantSwatch?.rgb ?: colors.dominantSwatch?.rgb
                         ?: Color.DarkGray.toArgb()
-                    ).copy(alpha = 1f).toArgb().toLong(),
+                    ).copy(alpha = 1f).toArgb(),
                 cardContentDominant =
                     Color(
                         colors.vibrantSwatch?.bodyTextColor
@@ -44,19 +44,19 @@ class PaletteGenerator(
                             ?: colors.darkVibrantSwatch?.bodyTextColor
                             ?: colors.dominantSwatch?.bodyTextColor
                             ?: Color.White.toArgb()
-                    ).copy(alpha = 1f).toArgb().toLong(),
+                    ).copy(alpha = 1f).toArgb(),
                 cardBackgroundMuted =
                     Color(
                         colors.mutedSwatch?.rgb ?: colors.darkMutedSwatch?.rgb
                         ?: colors.lightMutedSwatch?.rgb ?: Color.DarkGray.toArgb()
-                    ).copy(alpha = 1f).toArgb().toLong(),
+                    ).copy(alpha = 1f).toArgb(),
                 cardContentMuted =
                     Color(
                         colors.mutedSwatch?.bodyTextColor
                             ?: colors.darkMutedSwatch?.bodyTextColor
                             ?: colors.lightMutedSwatch?.bodyTextColor
                             ?: Color.White.toArgb()
-                    ).copy(alpha = 1f).toArgb().toLong()
+                    ).copy(alpha = 1f).toArgb()
             )
         } ?: ExtractedColors()
     }

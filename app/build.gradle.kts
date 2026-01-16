@@ -129,6 +129,8 @@ dependencies {
     "playImplementation"(libs.purchases)
 
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.windowsizeclass)
+    implementation(libs.androidx.material3.adaptive)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.graphics)

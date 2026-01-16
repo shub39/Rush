@@ -6,6 +6,7 @@ import com.shub39.rush.app.GlobalAction
 import com.shub39.rush.app.GlobalState
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
+import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.data.listener.NotificationListener
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import kotlinx.coroutines.Job
@@ -47,9 +48,13 @@ class GlobalVM(
                 otherPreferences.updateOnboardingDone(action.status)
             }
             is GlobalAction.OnCheckNotificationAccess -> {
+                val access = NotificationListener.canAccessNotifications(action.context)
+
+                if (access) MediaListenerImpl.startListening(action.context)
+
                 _state.update {
                     it.copy(
-                        notificationAccess = NotificationListener.canAccessNotifications(action.context)
+                        notificationAccess = access
                     )
                 }
             }

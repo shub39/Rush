@@ -100,6 +100,14 @@ object MediaListenerImpl {
         }
     }
 
+    fun playNext() {
+        activeMediaController?.transportControls?.skipToNext()
+    }
+
+    fun playPrevious() {
+        activeMediaController?.transportControls?.skipToPrevious()
+    }
+
     private fun onActiveSessionsChanged(controllers: List<MediaController?>?) {
         val newCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
 

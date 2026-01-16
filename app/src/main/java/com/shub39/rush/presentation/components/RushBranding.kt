@@ -17,6 +17,15 @@ import com.shub39.rush.R
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 
+/**
+ * A composable that displays the "Rush" application branding.
+ *
+ * This consists of the application icon followed by the "Rush" text.
+ * The color of both the icon and the text can be customized.
+ *
+ * @param modifier The [Modifier] to be applied to the branding container.
+ * @param color The color to be used for tinting the icon and for the text. Defaults to the primary color from the current [MaterialTheme].
+ */
 @Composable
 fun RushBranding(
     modifier: Modifier = Modifier,

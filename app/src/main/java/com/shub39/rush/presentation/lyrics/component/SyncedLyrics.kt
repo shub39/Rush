@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -33,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -49,29 +50,29 @@ import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
 import com.shub39.rush.presentation.lyrics.getNextLyricTime
+import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SyncedLyrics(
     state: LyricsPageState,
-    coroutineScope: CoroutineScope,
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val hapticFeedback = LocalHapticFeedback.current
+    val scope = rememberCoroutineScope()
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
     // updater for synced lyrics
     LaunchedEffect(state.playingSong.position) {
-        coroutineScope.launch {
+        scope.launch {
             val currentIndex =
                 getCurrentLyricIndex(
                     state.playingSong.position,
@@ -82,7 +83,7 @@ fun SyncedLyrics(
                     lazyListState.layoutInfo.viewportStartOffset
 
             val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 2) - (itemHeight / 2)
+            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
 
             lazyListState.animateScrollToItem(
                 index = currentIndex,
@@ -94,7 +95,7 @@ fun SyncedLyrics(
     // Synced Lyrics
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 64.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 256.dp),
         verticalArrangement = Arrangement.spacedBy(with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }),
         userScrollEnabled = state.playingSong.speed == 0f,
         state = lazyListState
@@ -102,6 +103,9 @@ fun SyncedLyrics(
         itemsIndexed(syncedLyrics) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
             val currentTime = state.playingSong.position
+            val lyricIndex = syncedLyrics.indexOf(lyric)
+            val currentPlayingIndex = getCurrentLyricIndex(state.playingSong.position, syncedLyrics)
+            val isCurrent = lyricIndex == currentPlayingIndex
 
             val progress = nextTime?.let { nt ->
                 val denom = (nt - lyric.time).toFloat()
@@ -112,23 +116,28 @@ fun SyncedLyrics(
             val animatedProgress by animateFloatAsState(
                 targetValue = progress,
                 animationSpec = tween(
-                    durationMillis = 500,
+                    durationMillis = 1000,
                     easing = LinearOutSlowInEasing
                 )
             )
 
-            val isCurrent = lyric.time <= state.playingSong.position &&
-                    syncedLyrics.indexOf(lyric) == getCurrentLyricIndex(
-                state.playingSong.position, syncedLyrics
-            )
-
-            val glowAlpha by animateFloatAsState(
+            val underTextAlpha by animateFloatAsState(
                 targetValue = if (isCurrent) 0.5f else 0.2f,
                 animationSpec = tween(500, easing = LinearEasing)
             )
 
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0f else 2f,
+                animationSpec = tween(500)
+            )
+
             val blur by animateDpAsState(
-                targetValue = if (isCurrent || !state.blurSyncedLyrics) 0.dp else 2.dp,
+                targetValue = if (!state.blurSyncedLyrics) 0.dp else (abs(lyricIndex - currentPlayingIndex) * 3).dp,
+                animationSpec = tween(100)
+            )
+
+            val scale by animateFloatAsState(
+                targetValue = if (isCurrent) 1f else 0.8f,
                 animationSpec = tween(100)
             )
 
@@ -149,9 +158,10 @@ fun SyncedLyrics(
                 blur = blur,
                 action = action,
                 lyric = lyric,
-                hapticFeedback = hapticFeedback,
-                glowAlpha = glowAlpha,
+                underTextAlpha = underTextAlpha,
                 textColor = textColor,
+                glowAlpha = glowAlpha,
+                scale = scale,
                 animatedProgress = animatedProgress,
                 modifier = Modifier
                     .onGloballyPositioned { layoutCoordinates ->
@@ -169,18 +179,26 @@ fun SyncedLyric(
     blur: Dp,
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
-    hapticFeedback: HapticFeedback?,
+    underTextAlpha: Float,
     glowAlpha: Float,
     textColor: Color,
+    scale: Float,
     animatedProgress: Float,
     modifier: Modifier = Modifier
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = textPrefs.lyricsAlignment.toArrangement()
     ) {
         Box(
             modifier = Modifier
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
+                }
                 .blur(
                     radius = blur,
                     edgeTreatment = BlurredEdgeTreatment.Unbounded
@@ -188,7 +206,7 @@ fun SyncedLyric(
                 .clip(MaterialTheme.shapes.medium)
                 .clickable {
                     action(LyricsPageAction.OnSeek(lyric.time))
-                    hapticFeedback?.performHapticFeedback(HapticFeedbackType.LongPress)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -196,12 +214,17 @@ fun SyncedLyric(
                 Text(
                     text = lyric.text,
                     fontWeight = FontWeight.Bold,
-                    color = textColor.copy(alpha = glowAlpha),
+                    color = textColor.copy(alpha = underTextAlpha),
                     fontSize = textPrefs.fontSize.sp,
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier.padding(6.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                        .blur(
+                            radius = glowAlpha.dp,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        )
                 )
 
                 Text(
@@ -213,7 +236,7 @@ fun SyncedLyric(
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                     modifier = Modifier
-                        .padding(6.dp)
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                         .drawWithContent {
                             val height = size.height * animatedProgress
                             clipRect(

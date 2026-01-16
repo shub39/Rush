@@ -13,6 +13,13 @@ import com.shub39.rush.presentation.provideTypography
 import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toMPaletteStyle
 
+/**
+ * A Composable function that applies a dynamic Material You theme to its content.
+ *
+ * @param theme The [Theme] data class containing all the user's selected theming options,
+ *   such as the seed color, light/dark mode preference, color style, and font.
+ * @param content The Composable content to which this theme will be applied.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RushTheme(

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -152,8 +154,8 @@ fun SavedPage(
                         modifier = Modifier
                             .clip(
                                 RoundedCornerShape(
-                                    topStart = 32.dp,
-                                    topEnd = 32.dp
+                                    topStart = 20.dp,
+                                    topEnd = 20.dp
                                 )
                             )
                             .clickable { onNavigateToLyrics() },
@@ -231,7 +233,10 @@ fun SavedPage(
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(
+                    start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                    end = paddingValues.calculateEndPadding(LocalLayoutDirection.current)
+                )
                 .fillMaxSize()
         ) {
             if (state.songsAsc.isEmpty()) {
@@ -257,8 +262,8 @@ fun SavedPage(
                             .simpleVerticalScrollbar(listState)
                             .animateContentSize(),
                         contentPadding = PaddingValues(
-                            top = 16.dp,
-                            bottom = 60.dp
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                            bottom = paddingValues.calculateBottomPadding() + 60.dp
                         )
                     ) {
                         items(
@@ -282,7 +287,7 @@ fun SavedPage(
     }
 }
 
-@Preview
+@Preview(device = "spec:width=411dp,height=891dp")
 @Composable
 private fun Preview() {
     val songs = (0..100).map {

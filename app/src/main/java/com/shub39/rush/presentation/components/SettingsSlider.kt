@@ -14,7 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-// yeeted from dn0ne/lotus
+/**
+ * A composable that displays a slider with a title and the current value.
+ *
+ * @param title The text to display as the title for the slider setting.
+ * @param value The current value of the slider.
+ * @param onValueChange A callback that is invoked when the slider's value changes. The new value is passed as a parameter.
+ * @param modifier The [Modifier] to be applied to the component.
+ * @param enabled A boolean indicating whether the slider is interactive.
+ * @param onValueChangeFinished A callback that is invoked when the user has finished dragging the slider.
+ * @param valueToShow An optional string to display as the current value. If null, the integer part of the [value] is shown.
+ * @param steps The number of discrete steps the slider can take. If 0, the slider is continuous.
+ * @param valueRange The range of values the slider can represent.
+ */
 @Composable
 fun SettingSlider(
     title: String,

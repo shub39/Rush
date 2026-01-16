@@ -14,7 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-// Generic Dialog used app wide
+/**
+ * A generic, customizable dialog composable used throughout the app.
+ *
+ * @param onDismissRequest Lambda to be invoked when the user attempts to dismiss the dialog,
+ * @param modifier The [Modifier] to be applied to the dialog's root container.
+ * @param padding The padding to be applied inside the card, around the content.
+ * @param content A composable lambda block that defines the content of the dialog.
+ *   The content is placed within a [ColumnScope], allowing for direct use of column-specific
+ *   modifiers like `weight`.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RushDialog(
