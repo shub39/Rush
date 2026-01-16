@@ -4,6 +4,9 @@
 - Translation updates
 - Redid all icons
 - Fixed Synced lyrics anchoring to the bottom
+- Added Scale to the current synced lyric
+- Added Controls for media
+- Added Action bar in landscape mode
 
 ## 5.4.2
 - Trimmed unneeded network calls
