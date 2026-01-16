@@ -181,6 +181,7 @@ fun LyricsPage(
 
                             Column {
                                 if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                                    // portrait ui
                                     Box(
                                         modifier = Modifier.fillMaxWidth(),
                                         contentAlignment = Alignment.Center

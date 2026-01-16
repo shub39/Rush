@@ -6,8 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -61,7 +62,8 @@ fun SearchSheet(
     state: SearchSheetState,
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
-    sheetState: SheetState
+    sheetState: SheetState,
+    modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -70,7 +72,7 @@ fun SearchSheet(
     if (state.visible) {
         ModalBottomSheet(
             sheetState = sheetState,
-            modifier = Modifier.widthIn(max = 800.dp),
+            modifier = modifier.widthIn(max = 800.dp),
             onDismissRequest = {
                 onAction(SearchSheetAction.OnToggleSearchSheet)
             }
@@ -139,10 +141,11 @@ fun SearchSheet(
                     )
                 )
 
-
+                HorizontalDivider()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp)
                 ) {
                     state.error?.let { error ->
                         item {
@@ -188,11 +191,8 @@ fun SearchSheet(
                             )
                         }
                     }
-
-                    item {
-                        Spacer(modifier = Modifier.padding(60.dp))
-                    }
                 }
+                HorizontalDivider()
             }
         }
     }

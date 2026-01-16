@@ -2,6 +2,7 @@ package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -14,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -53,20 +55,20 @@ fun LrcCorrectSheet(
         modifier = Modifier.heightIn(max = 900.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = stringResource(R.string.correct_lyrics),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 OutlinedTextField(
                     value = track,
@@ -93,7 +95,9 @@ fun LrcCorrectSheet(
                 },
                 enabled = track.isNotBlank() && !state.lrcCorrect.searching,
                 shape = MaterialTheme.shapes.extraLarge,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 if (!state.lrcCorrect.searching) {
                     Icon(
@@ -109,8 +113,10 @@ fun LrcCorrectSheet(
                 }
             }
 
+            HorizontalDivider()
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                contentPadding = PaddingValues(16.dp)
             ) {
                 items(state.lrcCorrect.searchResults, key = { it.id }) {
                     Card(
@@ -170,6 +176,7 @@ fun LrcCorrectSheet(
                     }
                 }
             }
+            HorizontalDivider()
         }
     }
 }
