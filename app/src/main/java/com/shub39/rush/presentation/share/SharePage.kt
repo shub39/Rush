@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -171,7 +172,7 @@ private fun SharePageContent(
     onShareImage: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val zoomState = rememberZoomState(initialScale = 1.5f)
+    val zoomState = rememberZoomState(initialScale = 1f)
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
@@ -347,6 +348,7 @@ private fun SharePageContent(
                 }
             }
 
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
             HorizontalFloatingToolbar(
                 expanded = true,
                 floatingActionButton = {
@@ -362,8 +364,14 @@ private fun SharePageContent(
                     }
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
+                    .align(
+                        if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                            Alignment.BottomCenter
+                        } else {
+                            Alignment.BottomEnd
+                        }
+                    )
+                    .padding(32.dp)
             ) {
                 IconButton(
                     onClick = {

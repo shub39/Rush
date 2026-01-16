@@ -208,39 +208,39 @@ fun Actions(
     }
 
     AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
-        Row {
-            IconButton(
-                onClick = {
-                    if (state.lyricsState is LyricsState.Loaded) {
-                        action(
-                            LyricsPageAction.OnUpdateShareLines(
-                                songDetails = SongDetails(
-                                    title = state.lyricsState.song.title,
-                                    artist = state.lyricsState.song.artists,
-                                    album = state.lyricsState.song.album,
-                                    artUrl = state.lyricsState.song.artUrl ?: ""
-                                )
+        IconButton(
+            onClick = {
+                if (state.lyricsState is LyricsState.Loaded) {
+                    action(
+                        LyricsPageAction.OnUpdateShareLines(
+                            songDetails = SongDetails(
+                                title = state.lyricsState.song.title,
+                                artist = state.lyricsState.song.artists,
+                                album = state.lyricsState.song.album,
+                                artUrl = state.lyricsState.song.artUrl ?: ""
                             )
                         )
+                    )
 
-                        onShare()
-                    }
+                    onShare()
                 }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.share),
-                    contentDescription = "Share"
-                )
             }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.share),
+                contentDescription = "Share"
+            )
+        }
+    }
 
-            IconButton(
-                onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.close),
-                    contentDescription = null
-                )
-            }
+    AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
+        IconButton(
+            onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.close),
+                contentDescription = null
+            )
         }
     }
 }

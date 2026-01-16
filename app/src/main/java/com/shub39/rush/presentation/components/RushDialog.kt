@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 
 /**
  * A generic, customizable dialog composable used throughout the app.
@@ -30,11 +31,13 @@ fun RushDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     padding: Dp = 16.dp,
+    properties: DialogProperties = DialogProperties(),
     content: @Composable (ColumnScope.() -> Unit)
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
-        modifier = modifier
+        modifier = modifier,
+        properties = properties
     ) {
         Card(
             shape = MaterialTheme.shapes.extraLarge

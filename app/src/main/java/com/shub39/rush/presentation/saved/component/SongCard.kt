@@ -23,9 +23,10 @@ fun SongCard(
     song: Song,
     onClick: () -> Unit,
     onDelete: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ListItem(
-        modifier = Modifier.clickable { onClick() },
+        modifier = modifier.clickable { onClick() },
         leadingContent = {
             ArtFromUrl(
                 imageUrl = song.artUrl,
