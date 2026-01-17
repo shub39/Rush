@@ -43,7 +43,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -165,7 +164,13 @@ fun SettingRootPage(
                             .clickable { onNavigateToLookAndFeel() },
                         colors = listItemColors(),
                         headlineContent = { Text(text = stringResource(R.string.look_and_feel)) },
-                        supportingContent = { Text(text = stringResource(R.string.look_and_feel_info)) },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.look_and_feel_info),
+                                maxLines = 1,
+                                modifier = Modifier.basicMarquee()
+                            )
+                        },
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.palette),
@@ -192,7 +197,6 @@ fun SettingRootPage(
                             Text(
                                 text = stringResource(R.string.backup_info),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.basicMarquee()
                             )
                         },
@@ -226,7 +230,6 @@ fun SettingRootPage(
                             Text(
                                 text = stringResource(R.string.notification_permission),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.basicMarquee()
                             )
                         },

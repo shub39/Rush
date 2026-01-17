@@ -2,6 +2,7 @@ package com.shub39.rush.presentation.share.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -211,10 +212,10 @@ fun SharePageSheet(
                     onSelectedChange = {
                         onAction(SharePageAction.OnUpdateCardFont(it))
                     },
-                    labelProvider = {
+                    labelProvider = { font ->
                         Text(
-                            text = it.toFullName(),
-                            fontFamily = FontFamily(Font(it.toFontRes()))
+                            text = font.toFullName(),
+                            fontFamily = font.toFontRes()?.let { FontFamily(Font(it)) } ?: FontFamily.Default
                         )
                     }
                 )
@@ -225,12 +226,16 @@ fun SharePageSheet(
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = "Show Rush Branding",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .basicMarquee()
+                            .weight(1f)
                     )
 
                     Switch(

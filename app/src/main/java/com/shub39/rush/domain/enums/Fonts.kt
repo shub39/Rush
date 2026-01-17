@@ -1,6 +1,7 @@
 package com.shub39.rush.domain.enums
 
 enum class Fonts {
+    SYSTEM_DEFAULT,
     POPPINS,
     DM_SANS,
     FIGTREE,

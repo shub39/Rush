@@ -1,8 +1,12 @@
 # Changelog
 
+## 5.5.1
+- Fixed text wrap on larger DPI (#220)
+- Added default font option (#212)
+
 ## 5.5.0
 - Translation updates
-- Redid all icons. (reason)[https://x.com/riggaroo/status/1971485475866341530?s=20]
+- Redid all icons. [reason](https://x.com/riggaroo/status/1971485475866341530?s=20)
 - Fixed Synced lyrics anchoring to the bottom (#199)
 - Added Scale to the current synced lyric
 - Added google sans font (#206)

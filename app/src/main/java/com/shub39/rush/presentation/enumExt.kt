@@ -145,6 +145,7 @@ fun CornerRadius.toStringRes(): Int {
 
 fun Fonts.toFullName(): String {
     return when (this) {
+        Fonts.SYSTEM_DEFAULT -> "System Default"
         Fonts.FIGTREE -> "Figtree"
         Fonts.INTER -> "Inter"
         Fonts.MANROPE -> "Manrope"
@@ -159,8 +160,9 @@ fun Fonts.toFullName(): String {
     }
 }
 
-fun Fonts.toFontRes(): Int {
+fun Fonts.toFontRes(): Int? {
     return when (this) {
+        Fonts.SYSTEM_DEFAULT -> null
         Fonts.POPPINS -> R.font.poppins_regular
         Fonts.DM_SANS -> R.font.dm_sans
         Fonts.FIGTREE -> R.font.figtree

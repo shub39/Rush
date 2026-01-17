@@ -3,6 +3,7 @@ package com.shub39.rush.presentation.components
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -39,9 +40,7 @@ fun RushTheme(
         },
         isAmoled = theme.withAmoled,
         style = theme.style.toMPaletteStyle(),
-        typography = provideTypography(
-            font = theme.font.toFontRes(),
-        ),
+        typography = theme.font.toFontRes()?.let { provideTypography(it) } ?: MaterialTheme.typography,
         content = content
     )
 }

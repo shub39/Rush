@@ -4,6 +4,7 @@ import android.R.color.system_accent1_200
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -167,7 +168,11 @@ fun LookAndFeelPage(
                                         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                                     )
                                 ) {
-                                    Text(text = stringResource(appTheme.toStringRes()))
+                                    Text(
+                                        text = stringResource(appTheme.toStringRes()),
+                                        modifier = Modifier.basicMarquee(),
+                                        maxLines = 1
+                                    )
                                 }
                             }
                         }
@@ -270,7 +275,7 @@ fun LookAndFeelPage(
                                                     Locale.getDefault()
                                                 ) else it.toString()
                                             }.replace("_", " "),
-                                        fontFamily = FontFamily(Font(font.toFontRes()))
+                                        fontFamily = font.toFontRes()?.let { FontFamily(Font(it)) } ?: FontFamily.Default
                                     )
                                 }
                             }
