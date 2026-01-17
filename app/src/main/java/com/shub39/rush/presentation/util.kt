@@ -185,11 +185,9 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     return rotate then adjustBounds
 }
 
-
-
 // very important
 fun getRandomLine(): String {
-    return when(Random.nextInt(0, 10)) {
+    return when(Random.nextInt(0, 11)) {
         1 -> "Bombardino Crocodilo"
         2 -> "Brr Brr Patapim"
         3 -> "Lirili Larila"
@@ -199,6 +197,7 @@ fun getRandomLine(): String {
         7 -> "Tung Tung Tung Sahur"
         8 -> "Chimpanzini Bananini"
         9 -> "Giraffa Celeste"
+        10 -> "Where are the epstein files Mr Trump?"
         else -> "Tralalero Tralala"
     }
 }
