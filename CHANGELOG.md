@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.5.2
+- Fixed synced lyrics not loading
+- Moved to jdk 21 (fdroid builds)
+
 ## 5.5.1
 - Fixed text wrap on larger DPI (#220)
 - Added default font option (#212)

@@ -10,8 +10,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.5.1"
-val appVersionCode = 5510
+val appVersionName = "5.5.2"
+val appVersionCode = 5520
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -37,12 +37,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
-        }
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmToolchain(17)
         }
     }
 
@@ -109,9 +103,10 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
