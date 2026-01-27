@@ -17,20 +17,18 @@ class LrcLibApi(
         trackName: String,
         artistName: String
     ): LrcGetDto? {
-        val result = searchLrcLyrics(
-            trackName = trackName,
-            artistName = artistName
-        )
+        val result = safeCall<LrcGetDto> {
+            client.get(
+                urlString = "$LRC_BASE_URL/api/get"
+            ) {
+                parameter("track_name", trackName)
+                parameter("artist_name", artistName)
+            }
+        }
 
         return when (result) {
+            is Result.Success -> result.data
             is Result.Error -> null
-            is Result.Success -> {
-                if (result.data.any { it.syncedLyrics != null }) {
-                    result.data.first { it.syncedLyrics != null }
-                } else {
-                    result.data.firstOrNull()
-                }
-            }
         }
     }
 
