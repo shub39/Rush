@@ -57,3 +57,14 @@ Translations are done via weblate, you can contribute there!
 - [Landscapist](https://github.com/skydoves/landscapist)
 - [Kmpalette](https://github.com/jordond/kmpalette)
 - [Zoomable](https://github.com/usuiat/Zoomable)
+
+# Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+
+# Security
+
+SHA-256 fingerprint for the signing certificate used for github releases
+```text
+0F:E1:B9:F4:4A:4D:B9:7E:C5:09:48:F5:18:9F:6B:43:00:71:6C:C6:D4:84:3F:56:98:D6:14:A2:15:2E:21:88
+```
