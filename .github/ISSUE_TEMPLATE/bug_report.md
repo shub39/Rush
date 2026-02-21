@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-[//]: # (If you are looking to make a feature request, please put them here : https://github.com/shub39/Grit/discussions/66)
+[//]: # (If you are looking to make a feature request, please put them here : https://github.com/shub39/Rush/discussions/113)
 
 **Describe the bug**
 A clear and concise description of what the bug is.
