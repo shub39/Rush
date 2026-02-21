@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -33,34 +49,28 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class SearchSheetVM(
-    private val stateLayer: SharedStates,
-    private val repo: SongRepository
-) : ViewModel() {
+class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
+    ViewModel() {
 
     private val _state = stateLayer.searchSheetState
     private val _lastSearched = MutableStateFlow("")
 
-    val state = _state.asStateFlow()
-        .onStart {
-            observeSearchSheet()
-            observeSongInfo()
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SearchSheetState()
-        )
+    val state =
+        _state
+            .asStateFlow()
+            .onStart {
+                observeSearchSheet()
+                observeSongInfo()
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SearchSheetState())
 
     private fun observeSongInfo() {
         viewModelScope.launch {
             MediaListenerImpl.songInfoFlow.collect { songInfo ->
                 stateLayer.lyricsState.update {
                     it.copy(
-                        playingSong = it.playingSong.copy(
-                            title = songInfo.first,
-                            artist = songInfo.second
-                        )
+                        playingSong =
+                            it.playingSong.copy(title = songInfo.first, artist = songInfo.second)
                     )
                 }
 
@@ -73,34 +83,21 @@ class SearchSheetVM(
 
     fun onAction(action: SearchSheetAction) {
         when (action) {
-            is SearchSheetAction.OnCardClicked -> viewModelScope.launch {
-                _state.update {
-                    it.copy(visible = !it.visible)
-                }
+            is SearchSheetAction.OnCardClicked ->
+                viewModelScope.launch {
+                    _state.update { it.copy(visible = !it.visible) }
 
-                fetchLyrics(action.id)
+                    fetchLyrics(action.id)
 
-                _state.update {
-                    it.copy(searchQuery = "", error = null)
+                    _state.update { it.copy(searchQuery = "", error = null) }
                 }
-            }
 
             is SearchSheetAction.OnQueryChange -> {
-                _state.update {
-                    it.copy(
-                        searchQuery = action.query
-                    )
-                }
+                _state.update { it.copy(searchQuery = action.query) }
             }
 
             SearchSheetAction.OnToggleSearchSheet -> {
-                _state.update {
-                    it.copy(
-                        visible = !it.visible,
-                        searchQuery = "",
-                        error = null
-                    )
-                }
+                _state.update { it.copy(visible = !it.visible, searchQuery = "", error = null) }
             }
         }
     }
@@ -114,19 +111,11 @@ class SearchSheetVM(
             .onEach { query ->
                 when {
                     query.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                error = null
-                            )
-                        }
+                        _state.update { it.copy(error = null) }
                     }
 
                     query.length >= 3 -> {
-                        _state.update {
-                            it.copy(
-                                localSearchResults = localSearch(query)
-                            )
-                        }
+                        _state.update { it.copy(localSearchResults = localSearch(query)) }
 
                         searchSong(query, false)
                     }
@@ -142,34 +131,18 @@ class SearchSheetVM(
     ) {
         if (query.isEmpty() || query == _lastSearched.value || _state.value.isSearching) return
 
-        _state.update {
-            it.copy(
-                isSearching = true,
-                error = null
-            )
-        }
+        _state.update { it.copy(isSearching = true, error = null) }
 
-        stateLayer.lyricsState.update {
-            it.copy(
-                searchState = SearchState.Searching(query)
-            )
-        }
+        stateLayer.lyricsState.update { it.copy(searchState = SearchState.Searching(query)) }
 
         try {
             when (val result = repo.searchGenius(query)) {
                 is Result.Error -> {
-                    _state.update {
-                        it.copy(error = errorStringRes(result.error))
-                    }
+                    _state.update { it.copy(error = errorStringRes(result.error)) }
                 }
 
                 is Result.Success -> {
-                    _state.update {
-                        it.copy(
-                            searchResults = result.data,
-                            error = null
-                        )
-                    }
+                    _state.update { it.copy(searchResults = result.data, error = null) }
                 }
             }
         } finally {
@@ -180,16 +153,13 @@ class SearchSheetVM(
 
         if (
             fetch &&
-            _state.value.searchResults.isNotEmpty() &&
-            query.contains(_state.value.searchResults.first().title.trim(), ignoreCase = true)
+                _state.value.searchResults.isNotEmpty() &&
+                query.contains(_state.value.searchResults.first().title.trim(), ignoreCase = true)
         ) {
             fetchLyrics(_state.value.searchResults.first().id)
         } else {
             stateLayer.lyricsState.update {
-                it.copy(
-                    searchState = SearchState.UserPrompt,
-                    sync = false
-                )
+                it.copy(searchState = SearchState.UserPrompt, sync = false)
             }
         }
     }
@@ -204,7 +174,7 @@ class SearchSheetVM(
                 lyricsState = LyricsState.Fetching("${song.title} - ${song.artist}"),
                 extractedColors = ExtractedColors(),
                 searchState = SearchState.Idle,
-                sync = false
+                sync = false,
             )
         }
 
@@ -216,24 +186,26 @@ class SearchSheetVM(
                     lyricsState = LyricsState.Loaded(song = result),
                     source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                     syncedAvailable = result.syncedLyrics != null,
-                    sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                        .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
+                    sync =
+                        result.syncedLyrics != null &&
+                            (getMainTitle(it.playingSong.title)
+                                .trim()
+                                .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
                     selectedLines = emptyMap(),
                 )
             }
 
-            stateLayer.savedPageState.update {
-                it.copy(currentSong = result)
-            }
+            stateLayer.savedPageState.update { it.copy(currentSong = result) }
         } else {
             when (val result = repo.fetchSong(song)) {
                 is Result.Error -> {
                     stateLayer.lyricsState.update {
                         it.copy(
-                            lyricsState = LyricsState.LyricsError(
-                                errorCode = errorStringRes(result.error),
-                                debugMessage = result.message
-                            )
+                            lyricsState =
+                                LyricsState.LyricsError(
+                                    errorCode = errorStringRes(result.error),
+                                    debugMessage = result.message,
+                                )
                         )
                     }
                 }
@@ -244,20 +216,23 @@ class SearchSheetVM(
                     stateLayer.lyricsState.update {
                         it.copy(
                             lyricsState = LyricsState.Loaded(song = retrievedSong),
-                            source = if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
+                            source =
+                                if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB
+                                else Sources.GENIUS,
                             syncedAvailable = retrievedSong.syncedLyrics != null,
-                            sync = retrievedSong.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                                .equals(
-                                    getMainTitle(retrievedSong.title).trim(),
-                                    ignoreCase = true
-                                )),
+                            sync =
+                                retrievedSong.syncedLyrics != null &&
+                                    (getMainTitle(it.playingSong.title)
+                                        .trim()
+                                        .equals(
+                                            getMainTitle(retrievedSong.title).trim(),
+                                            ignoreCase = true,
+                                        )),
                             selectedLines = emptyMap(),
                         )
                     }
 
-                    stateLayer.savedPageState.update {
-                        it.copy(currentSong = retrievedSong)
-                    }
+                    stateLayer.savedPageState.update { it.copy(currentSong = retrievedSong) }
                 }
             }
         }
@@ -277,7 +252,7 @@ class SearchSheetVM(
                     album = song.album,
                     artUrl = song.artUrl ?: "",
                     url = song.sourceUrl,
-                    id = song.id
+                    id = song.id,
                 )
             )
         }

@@ -18,7 +18,7 @@
     <string name="artist">sanatçı</string>
     <string name="width">Genişlik</string>
     <string name="colors">Renkler</string>
-    <string name="grant_permission">Bildirim Erişimi Ver</string>
+    <string name="grant_permission">İzin Ver</string>
     <string name="notification_permission">Şarkı sözlerini otomatik almak için bildirim erişimi gereklidir.</string>
     <string name="rounded_corners">Yuvarlatılmış Köşeler</string>
     <string name="max_lines">Paylaşılacak Maksimum Satır</string>
@@ -61,7 +61,7 @@
     <string name="no_audio_files">Ses dosyası bulunamadı</string>
     <string name="no_folder_selected">Seçili klasör yok</string>
     <string name="export">Dışa Aktar</string>
-    <string name="export_info">Şarkıları Downloads/Rush klasörüne kaydet</string>
+    <string name="export_info">Şarkıları seçilen klasöre kaydet</string>
     <string name="restore">Geri Yükle</string>
     <string name="restore_info">Seçilen dışa aktarma dosyasından geri yükle</string>
     <string name="choose_file">Dosya Seç</string>
@@ -71,7 +71,7 @@
     <string name="look_and_feel_info">Uygulamayı çeşitli şekillerde kişiselleştir</string>
     <string name="use_system_theme">Sistem temasını kullan</string>
     <string name="dark_theme">Koyu Temayı Kullan</string>
-    <string name="amoled">AMOLED Renk Paleti</string>
+    <string name="amoled">Amoled renkler</string>
     <string name="use_system_theme_desc">Sistem temasıyla aynı temayı kullan</string>
     <string name="amoled_desc">AMOLED ekranlara özel, canlı ve koyu tonlardan oluşan enerji tasarruflu renk paleti</string>
     <string name="palette_style">Renk Paleti Stili</string>
@@ -120,4 +120,20 @@
     <string name="letter_spacing">Harf aralığı</string>
     <string name="line_height">Satır yüksekliği</string>
     <string name="font_weight">Yazı kalınlığı</string>
+    <string name="bmc">Bana bir kahve ısmarla</string>
+    <string name="translate">Çevir</string>
+    <string name="rate_on_play">Google Play\'de oylayın</string>
+    <string name="lyrics_background">Şarkı Sözleri Arkaplanı</string>
+    <string name="messy">Dağınık</string>
+    <string name="audio_permission">Ses Kaydetme İzni Gerekiyor</string>
+    <string name="album_art">Sadece Kapak</string>
+    <string name="album_art_shape">Albüm Kapak Şekli</string>
+    <string name="synced_lyrics">Senkronize</string>
+    <string name="unlock_more_pro">Premium ile daha fazlasının kilidini açın</string>
+    <string name="wave">Dalga</string>
+    <string name="gradient">Yumuşak Geçiş</string>
+    <string name="audio_permission_info">Bu arkaplan mevcut çalan şarkınızı görselleştirir</string>
+    <string name="blurred_art">Bulanık Kapak</string>
+    <string name="solid_color">Katı</string>
+    <string name="not_found">Bulunamadı</string>
 </resources>

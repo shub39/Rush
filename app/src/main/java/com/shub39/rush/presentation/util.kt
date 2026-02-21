@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation
 
 import android.app.Activity
@@ -26,6 +42,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import kotlin.random.Random
 
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
 fun blurAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
 @Composable
@@ -35,17 +52,16 @@ fun KeepScreenOn() {
     DisposableEffect(Unit) {
         context.findActivity()?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
-            context.findActivity()?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            context
+                .findActivity()
+                ?.window
+                ?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }
 
 suspend fun Clipboard.copyToClipboard(text: String) {
-    setClipEntry(
-        ClipEntry(
-            ClipData.newPlainText("lyrics", text)
-        )
-    )
+    setClipEntry(ClipEntry(ClipData.newPlainText("lyrics", text)))
 }
 
 fun Context.findActivity(): Activity? {
@@ -118,25 +134,19 @@ fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
         "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
     }
 
-    return this
-        .graphicsLayer { alpha = 0.99f }
+    return this.graphicsLayer { alpha = 0.99f }
         .drawWithCache {
             val fadeHeight = size.height * fadeHeightFraction
-            val gradient = Brush.verticalGradient(
-                colors = listOf(
-                    Color.Transparent,
-                    Color.Black
-                ),
-                tileMode = TileMode.Clamp,
-                startY = 0f,
-                endY = fadeHeight
-            )
+            val gradient =
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    tileMode = TileMode.Clamp,
+                    startY = 0f,
+                    endY = fadeHeight,
+                )
             onDrawWithContent {
                 drawContent()
-                drawRect(
-                    brush = gradient,
-                    blendMode = BlendMode.DstIn
-                )
+                drawRect(brush = gradient, blendMode = BlendMode.DstIn)
             }
         }
 }
@@ -147,25 +157,19 @@ fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
         "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
     }
 
-    return this
-        .graphicsLayer { alpha = 0.99f }
+    return this.graphicsLayer { alpha = 0.99f }
         .drawWithCache {
             val fadeHeight = size.height * fadeHeightFraction
-            val gradient = Brush.verticalGradient(
-                colors = listOf(
-                    Color.Black,
-                    Color.Transparent
-                ),
-                tileMode = TileMode.Clamp,
-                startY = size.height - fadeHeight,
-                endY = size.height
-            )
+            val gradient =
+                Brush.verticalGradient(
+                    colors = listOf(Color.Black, Color.Transparent),
+                    tileMode = TileMode.Clamp,
+                    startY = size.height - fadeHeight,
+                    endY = size.height,
+                )
             onDrawWithContent {
                 drawContent()
-                drawRect(
-                    brush = gradient,
-                    blendMode = BlendMode.DstIn
-                )
+                drawRect(brush = gradient, blendMode = BlendMode.DstIn)
             }
         }
 }
@@ -178,7 +182,7 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
         layout(placeable.height, placeable.width) {
             placeable.place(
                 x = -(placeable.width / 2 - placeable.height / 2),
-                y = -(placeable.height / 2 - placeable.width / 2)
+                y = -(placeable.height / 2 - placeable.width / 2),
             )
         }
     }
@@ -187,7 +191,7 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
 
 // very important
 fun getRandomLine(): String {
-    return when(Random.nextInt(0, 11)) {
+    return when (Random.nextInt(0, 11)) {
         1 -> "Bombardino Crocodilo"
         2 -> "Brr Brr Patapim"
         3 -> "Lirili Larila"

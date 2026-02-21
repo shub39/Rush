@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics
 
 import android.Manifest
@@ -32,11 +48,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 private sealed interface LyricsRoutes {
-    @Serializable
-    data object LyricsPage : LyricsRoutes
+    @Serializable data object LyricsPage : LyricsRoutes
 
-    @Serializable
-    data object LyricsCustomisations : LyricsRoutes
+    @Serializable data object LyricsCustomisations : LyricsRoutes
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -46,17 +60,18 @@ fun LyricsGraph(
     lyricsState: LyricsPageState,
     lyricsAction: (LyricsPageAction) -> Unit,
     onDismiss: () -> Unit,
-    onShare: () -> Unit
+    onShare: () -> Unit,
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
 
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
-    val waveData = rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
-        if (state !is VisualizerState.Ready) return@let null
+    val waveData =
+        rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
+            if (state !is VisualizerState.Ready) return@let null
 
-        state.fft
-    }
+            state.fft
+        }
 
     BackHandler {
         updateSystemBars(context, true)
@@ -69,7 +84,7 @@ fun LyricsGraph(
         enterTransition = { fadeIn() },
         exitTransition = { fadeOut() },
         popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() }
+        popExitTransition = { fadeOut() },
     ) {
         composable<LyricsRoutes.LyricsPage> {
             LaunchedEffect(Unit) {
@@ -88,7 +103,7 @@ fun LyricsGraph(
                 action = lyricsAction,
                 state = lyricsState,
                 notificationAccess = notificationAccess,
-                waveData = waveData
+                waveData = waveData,
             )
         }
 
@@ -107,7 +122,7 @@ fun LyricsGraph(
                 notificationAccess = notificationAccess,
                 microphonePermission = microphonePermission.status.isGranted,
                 requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
-                waveData = waveData
+                waveData = waveData,
             )
         }
     }
@@ -116,21 +131,15 @@ fun LyricsGraph(
 @Preview
 @Composable
 private fun Preview() {
-    var state by remember {
-        mutableStateOf(
-            LyricsPageState()
-        )
-    }
+    var state by remember { mutableStateOf(LyricsPageState()) }
 
-    RushTheme(
-        theme = Theme()
-    ) { 
+    RushTheme(theme = Theme()) {
         LyricsGraph(
             notificationAccess = true,
             lyricsState = state,
             lyricsAction = {},
             onDismiss = {},
-            onShare = {}
+            onShare = {},
         )
     }
 }

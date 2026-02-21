@@ -50,7 +50,6 @@ Translations are done via weblate, you can contribute there!
 - Kotlin and Jetpack Compose 🖤
 - [MaterialKolor](https://github.com/jordond/MaterialKolor)
 - [ColorPicker Compose](https://github.com/skydoves/colorpicker-compose)
-- [Compose Icons](https://github.com/DevSrSouza/compose-icons)
 - [Revenuecat Android SDK](https://github.com/RevenueCat/purchases-android)
 - [FileKit](https://github.com/vinceglb/filekit)
 - [KSoup](https://github.com/fleeksoft/ksoup)

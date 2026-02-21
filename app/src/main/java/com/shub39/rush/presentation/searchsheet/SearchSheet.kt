@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.searchsheet
 
 import androidx.compose.animation.AnimatedVisibility
@@ -63,7 +79,7 @@ fun SearchSheet(
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     sheetState: SheetState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -73,9 +89,7 @@ fun SearchSheet(
         ModalBottomSheet(
             sheetState = sheetState,
             modifier = modifier.widthIn(max = 800.dp),
-            onDismissRequest = {
-                onAction(SearchSheetAction.OnToggleSearchSheet)
-            }
+            onDismissRequest = { onAction(SearchSheetAction.OnToggleSearchSheet) },
         ) {
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
@@ -85,7 +99,7 @@ fun SearchSheet(
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
                 OutlinedTextField(
                     value = state.searchQuery,
@@ -94,18 +108,18 @@ fun SearchSheet(
                         Icon(
                             painter = painterResource(R.drawable.search),
                             contentDescription = "Search",
-                            modifier = Modifier.padding(2.dp)
+                            modifier = Modifier.padding(2.dp),
                         )
                     },
                     trailingIcon = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(2.dp)
+                            modifier = Modifier.padding(2.dp),
                         ) {
                             AnimatedVisibility(
                                 visible = state.searchQuery.isNotBlank(),
                                 enter = fadeIn(animationSpec = tween(200)),
-                                exit = fadeOut(animationSpec = tween(200))
+                                exit = fadeOut(animationSpec = tween(200)),
                             ) {
                                 IconButton(
                                     onClick = {
@@ -118,7 +132,7 @@ fun SearchSheet(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.delete),
-                                        contentDescription = "Delete"
+                                        contentDescription = "Delete",
                                     )
                                 }
                             }
@@ -127,50 +141,42 @@ fun SearchSheet(
                     onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
                     shape = MaterialTheme.shapes.extraLarge,
                     placeholder = { Text(stringResource(R.string.search)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            keyboardController?.hide()
-                        }
-                    )
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                            .focusRequester(focusRequester),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
                 )
 
                 HorizontalDivider()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp)
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
                 ) {
                     state.error?.let { error ->
                         item {
                             ErrorCard(
                                 error = error,
                                 debugMessage = null,
-                                colors = Pair(
-                                    MaterialTheme.colorScheme.onSurface,
-                                    MaterialTheme.colorScheme.background
-                                )
+                                colors =
+                                    Pair(
+                                        MaterialTheme.colorScheme.onSurface,
+                                        MaterialTheme.colorScheme.background,
+                                    ),
                             )
                         }
                     }
 
-                    items(
-                        state.localSearchResults,
-                        key = { "Saved_${it.id}" }
-                    ) {
+                    items(state.localSearchResults, key = { "Saved_${it.id}" }) {
                         SearchResultCard(
                             result = it,
                             onClick = {
                                 onAction(SearchSheetAction.OnCardClicked(it.id))
                                 onNavigateToLyrics()
                             },
-                            downloaded = true
+                            downloaded = true,
                         )
                     }
 
@@ -181,15 +187,11 @@ fun SearchSheet(
                                 onClick = {
                                     onAction(SearchSheetAction.OnCardClicked(it.id))
                                     onNavigateToLyrics()
-                                }
+                                },
                             )
                         }
                     } else {
-                        item {
-                            LoadingIndicator(
-                                modifier = Modifier.size(60.dp)
-                            )
-                        }
+                        item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
                     }
                 }
                 HorizontalDivider()
@@ -204,23 +206,16 @@ fun SearchSheet(
 private fun Preview() {
     var state by remember {
         mutableStateOf(
-            SearchSheetState(
-                visible = true,
-                error = errorStringRes(SourceError.Data.PARSE_ERROR)
-            )
+            SearchSheetState(visible = true, error = errorStringRes(SourceError.Data.PARSE_ERROR))
         )
     }
 
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SearchSheet(
             state = state,
             onAction = {},
             onNavigateToLyrics = {},
-            sheetState = rememberStandardBottomSheetState()
+            sheetState = rememberStandardBottomSheetState(),
         )
     }
 }

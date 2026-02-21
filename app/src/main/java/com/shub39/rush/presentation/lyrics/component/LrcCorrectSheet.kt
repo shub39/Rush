@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.foundation.layout.Arrangement
@@ -45,30 +61,30 @@ fun LrcCorrectSheet(
     track: String,
     artist: String,
     action: (LyricsPageAction) -> Unit,
-    state: LyricsPageState
+    state: LyricsPageState,
 ) {
     var track by remember { mutableStateOf(track) }
     var artist by remember { mutableStateOf(artist) }
 
     ModalBottomSheet(
         onDismissRequest = { action(LyricsPageAction.OnLyricsCorrect(false)) },
-        modifier = Modifier.heightIn(max = 900.dp)
+        modifier = Modifier.heightIn(max = 900.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = stringResource(R.string.correct_lyrics),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 OutlinedTextField(
                     value = track,
@@ -76,7 +92,7 @@ fun LrcCorrectSheet(
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
                     label = { Text(text = stringResource(R.string.track)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 OutlinedTextField(
@@ -85,30 +101,26 @@ fun LrcCorrectSheet(
                     singleLine = true,
                     shape = MaterialTheme.shapes.extraLarge,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = stringResource(R.string.artist)) }
+                    label = { Text(text = stringResource(R.string.artist)) },
                 )
             }
 
             Button(
-                onClick = {
-                    action(LyricsPageAction.OnLrcSearch(track, artist))
-                },
+                onClick = { action(LyricsPageAction.OnLrcSearch(track, artist)) },
                 enabled = track.isNotBlank() && !state.lrcCorrect.searching,
                 shape = MaterialTheme.shapes.extraLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             ) {
                 if (!state.lrcCorrect.searching) {
                     Icon(
                         painter = painterResource(R.drawable.search),
                         contentDescription = "Search",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
                 } else {
                     CircularProgressIndicator(
                         strokeCap = StrokeCap.Round,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
@@ -116,7 +128,7 @@ fun LrcCorrectSheet(
             HorizontalDivider()
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
             ) {
                 items(state.lrcCorrect.searchResults, key = { it.id }) {
                     Card(
@@ -125,43 +137,35 @@ fun LrcCorrectSheet(
                                 LyricsPageAction.OnUpdateSongLyrics(
                                     (state.lyricsState as LyricsState.Loaded).song.id,
                                     it.plainLyrics!!,
-                                    it.syncedLyrics
+                                    it.syncedLyrics,
                                 )
                             )
 
-                            action(
-                                LyricsPageAction.OnLyricsCorrect(false)
-                            )
+                            action(LyricsPageAction.OnLyricsCorrect(false))
                         },
-                        colors = when (it.syncedLyrics) {
-                            null -> CardDefaults.elevatedCardColors()
-                            else -> CardDefaults.elevatedCardColors(
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        },
+                        colors =
+                            when (it.syncedLyrics) {
+                                null -> CardDefaults.elevatedCardColors()
+                                else ->
+                                    CardDefaults.elevatedCardColors(
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    )
+                            },
                         shape = MaterialTheme.shapes.large,
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(0.7f)
-                            ) {
-                                Text(
-                                    text = it.name,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                            Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                                Text(text = it.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 Text(
                                     text = it.artistName,
                                     style = MaterialTheme.typography.bodySmall,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                             }
 
@@ -169,7 +173,7 @@ fun LrcCorrectSheet(
                                 Icon(
                                     painter = painterResource(R.drawable.sync),
                                     contentDescription = "Synced",
-                                    modifier = Modifier.size(20.dp)
+                                    modifier = Modifier.size(20.dp),
                                 )
                             }
                         }

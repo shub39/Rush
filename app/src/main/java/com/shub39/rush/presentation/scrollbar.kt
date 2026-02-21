@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation
 
 import androidx.compose.animation.core.Spring.StiffnessMediumLow
@@ -17,28 +33,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Modifier.simpleVerticalScrollbar(
-    state: LazyListState,
-    width: Dp = 4.dp,
-): Modifier {
+fun Modifier.simpleVerticalScrollbar(state: LazyListState, width: Dp = 4.dp): Modifier {
 
     val targetAlpha = if (state.isScrollInProgress) .7f else 0f
     val duration = if (state.isScrollInProgress) 150 else 1000
 
-    val alpha by animateFloatAsState(
-        targetValue = targetAlpha,
-        animationSpec = tween(durationMillis = duration)
-    )
+    val alpha by
+        animateFloatAsState(
+            targetValue = targetAlpha,
+            animationSpec = tween(durationMillis = duration),
+        )
 
-    val firstIndex by animateFloatAsState(
-        targetValue = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index?.toFloat() ?: 0f,
-        animationSpec = spring(stiffness = StiffnessMediumLow)
-    )
+    val firstIndex by
+        animateFloatAsState(
+            targetValue = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index?.toFloat() ?: 0f,
+            animationSpec = spring(stiffness = StiffnessMediumLow),
+        )
 
-    val lastIndex by animateFloatAsState(
-        targetValue = state.layoutInfo.visibleItemsInfo.lastOrNull()?.index?.toFloat() ?: 0f,
-        animationSpec = spring(stiffness = StiffnessMediumLow)
-    )
+    val lastIndex by
+        animateFloatAsState(
+            targetValue = state.layoutInfo.visibleItemsInfo.lastOrNull()?.index?.toFloat() ?: 0f,
+            animationSpec = spring(stiffness = StiffnessMediumLow),
+        )
 
     val color = MaterialTheme.colorScheme.tertiary
 
@@ -56,7 +72,7 @@ fun Modifier.simpleVerticalScrollbar(
                 color = color,
                 topLeft = Offset(size.width - width.toPx(), scrollbarTop),
                 size = Size(width.toPx(), scrollbarHeight),
-                alpha = alpha
+                alpha = alpha,
             )
         }
     }

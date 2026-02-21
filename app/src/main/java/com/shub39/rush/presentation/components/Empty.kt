@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -22,8 +38,10 @@ import com.shub39.rush.R
  *
  * @param modifier The [Modifier] to be applied to the layout.
  * @param icon The drawable resource ID for the icon to be displayed. Defaults to a "deceased" icon.
- * @param suggestion A boolean flag to determine whether to show a suggestion text below the main text. Defaults to true.
- * @param color The color to be applied to the icon and text. Defaults to the `onBackground` color from the current [MaterialTheme].
+ * @param suggestion A boolean flag to determine whether to show a suggestion text below the main
+ *   text. Defaults to true.
+ * @param color The color to be applied to the icon and text. Defaults to the `onBackground` color
+ *   from the current [MaterialTheme].
  */
 @Composable
 fun Empty(
@@ -35,27 +53,19 @@ fun Empty(
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = "Empty Library",
-            modifier = Modifier
-                .size(128.dp)
-                .padding(16.dp),
-            tint = color
+            modifier = Modifier.size(128.dp).padding(16.dp),
+            tint = color,
         )
 
-        Text(
-            text = stringResource(R.string.empty),
-            color = color
-        )
+        Text(text = stringResource(R.string.empty), color = color)
 
         if (suggestion) {
-            Text(
-                text = stringResource(R.string.suggestion),
-                color = color
-            )
+            Text(text = stringResource(R.string.suggestion), color = color)
         }
     }
 }

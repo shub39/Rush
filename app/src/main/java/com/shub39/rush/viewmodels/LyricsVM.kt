@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -44,16 +60,14 @@ class LyricsVM(
 
     private val _state = stateLayer.lyricsState
 
-    val state = _state.asStateFlow()
-        .onStart {
-            observePlayback()
-            observeDatastore()
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            LyricsPageState()
-        )
+    val state =
+        _state
+            .asStateFlow()
+            .onStart {
+                observePlayback()
+                observeDatastore()
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LyricsPageState())
 
     fun onAction(action: LyricsPageAction) {
         viewModelScope.launch {
@@ -65,9 +79,8 @@ class LyricsVM(
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
-                                    lrcCorrect = it.lrcCorrect.copy(
-                                        error = errorStringRes(result.error)
-                                    )
+                                    lrcCorrect =
+                                        it.lrcCorrect.copy(error = errorStringRes(result.error))
                                 )
                             }
                         }
@@ -75,9 +88,7 @@ class LyricsVM(
                         is Result.Success -> {
                             _state.update {
                                 it.copy(
-                                    lrcCorrect = it.lrcCorrect.copy(
-                                        searchResults = result.data
-                                    )
+                                    lrcCorrect = it.lrcCorrect.copy(searchResults = result.data)
                                 )
                             }
                         }
@@ -89,34 +100,22 @@ class LyricsVM(
                 is LyricsPageAction.OnToggleAutoChange -> {
                     val newPref = !_state.value.autoChange
 
-                    _state.update {
-                        it.copy(
-                            autoChange = newPref
-                        )
-                    }
+                    _state.update { it.copy(autoChange = newPref) }
 
-                    stateLayer.savedPageState.update {
-                        it.copy(
-                            autoChange = newPref
-                        )
-                    }
+                    stateLayer.savedPageState.update { it.copy(autoChange = newPref) }
 
                     if (newPref) MediaListenerImpl.onSeekEagerly()
                 }
 
                 is LyricsPageAction.OnToggleSearchSheet -> {
-                    stateLayer.searchSheetState.update {
-                        it.copy(
-                            visible = !it.visible
-                        )
-                    }
+                    stateLayer.searchSheetState.update { it.copy(visible = !it.visible) }
                 }
 
                 is LyricsPageAction.OnUpdateShareLines -> {
                     stateLayer.sharePageState.update {
                         it.copy(
                             songDetails = action.songDetails,
-                            selectedLines = sortMapByKeys(_state.value.selectedLines)
+                            selectedLines = sortMapByKeys(_state.value.selectedLines),
                         )
                     }
                 }
@@ -129,75 +128,52 @@ class LyricsVM(
                     _state.update {
                         it.copy(
                             syncedAvailable = song.syncedLyrics != null,
-                            lyricsState = Loaded(song = song)
+                            lyricsState = Loaded(song = song),
                         )
                     }
                 }
 
-                is LyricsPageAction.UpdateExtractedColors -> launch(Dispatchers.Default) {
-                    val colors = paletteGenerator.generatePaletteFromUrl(action.url)
+                is LyricsPageAction.UpdateExtractedColors ->
+                    launch(Dispatchers.Default) {
+                        val colors = paletteGenerator.generatePaletteFromUrl(action.url)
 
-                    _state.update {
-                        it.copy(extractedColors = colors)
-                    }
+                        _state.update { it.copy(extractedColors = colors) }
 
-                    stateLayer.sharePageState.update {
-                        it.copy(extractedColors = colors)
-                    }
+                        stateLayer.sharePageState.update { it.copy(extractedColors = colors) }
 
-                    stateLayer.savedPageState.update {
-                        it.copy(extractedColors = colors)
+                        stateLayer.savedPageState.update { it.copy(extractedColors = colors) }
                     }
-                }
 
                 is LyricsPageAction.OnSourceChange -> {
-                    _state.update {
-                        it.copy(
-                            source = action.source,
-                            selectedLines = emptyMap()
-                        )
-                    }
+                    _state.update { it.copy(source = action.source, selectedLines = emptyMap()) }
                 }
 
                 is LyricsPageAction.OnSync -> {
-                    _state.update {
-                        it.copy(
-                            sync = action.sync
-                        )
-                    }
+                    _state.update { it.copy(sync = action.sync) }
                 }
 
                 is LyricsPageAction.OnSyncAvailable -> {
-                    _state.update {
-                        it.copy(
-                            syncedAvailable = action.sync
-                        )
-                    }
+                    _state.update { it.copy(syncedAvailable = action.sync) }
                 }
 
                 is LyricsPageAction.OnLyricsCorrect -> {
-                    _state.update {
-                        it.copy(
-                            lyricsCorrect = action.show
-                        )
-                    }
+                    _state.update { it.copy(lyricsCorrect = action.show) }
                 }
 
                 is LyricsPageAction.OnChangeSelectedLines -> {
-                    _state.update {
-                        it.copy(
-                            selectedLines = action.lines
-                        )
-                    }
+                    _state.update { it.copy(selectedLines = action.lines) }
                 }
 
-                is LyricsPageAction.OnChangeLyricsBackground -> lyricsPrefs.updateLyricsBackround(action.background)
+                is LyricsPageAction.OnChangeLyricsBackground ->
+                    lyricsPrefs.updateLyricsBackround(action.background)
 
                 is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
-                is LyricsPageAction.OnToggleColorPref -> lyricsPrefs.updateUseExtractedFlow(action.pref)
+                is LyricsPageAction.OnToggleColorPref ->
+                    lyricsPrefs.updateUseExtractedFlow(action.pref)
 
-                is LyricsPageAction.OnUpdatemBackground -> lyricsPrefs.updateCardBackground(action.color)
+                is LyricsPageAction.OnUpdatemBackground ->
+                    lyricsPrefs.updateCardBackground(action.color)
 
                 is LyricsPageAction.OnUpdatemContent -> lyricsPrefs.updateCardContent(action.color)
 
@@ -208,11 +184,14 @@ class LyricsVM(
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
-                                    scraping = Pair(false, LyricsError(
-                                        errorCode = errorStringRes(result.error),
-                                        debugMessage = result.message
-                                    )
-                                    )
+                                    scraping =
+                                        Pair(
+                                            false,
+                                            LyricsError(
+                                                errorCode = errorStringRes(result.error),
+                                                debugMessage = result.message,
+                                            ),
+                                        )
                                 )
                             }
                         }
@@ -221,24 +200,29 @@ class LyricsVM(
                             _state.update {
                                 it.copy(
                                     scraping = Pair(false, null),
-                                    lyricsState = (it.lyricsState as? Loaded)?.copy(
-                                        song = it.lyricsState.song.copy(
-                                            geniusLyrics = breakLyrics(result.data)
-                                        )
-                                    ) ?: LyricsState.Idle
+                                    lyricsState =
+                                        (it.lyricsState as? Loaded)?.copy(
+                                            song =
+                                                it.lyricsState.song.copy(
+                                                    geniusLyrics = breakLyrics(result.data)
+                                                )
+                                        ) ?: LyricsState.Idle,
                                 )
                             }
                         }
                     }
                 }
 
-                is LyricsPageAction.OnAlignmentChange -> lyricsPrefs.updateLyricAlignment(action.alignment)
+                is LyricsPageAction.OnAlignmentChange ->
+                    lyricsPrefs.updateLyricAlignment(action.alignment)
 
                 is LyricsPageAction.OnFontSizeChange -> lyricsPrefs.updateFontSize(action.size)
 
-                is LyricsPageAction.OnLineHeightChange -> lyricsPrefs.updateLineHeight(action.height)
+                is LyricsPageAction.OnLineHeightChange ->
+                    lyricsPrefs.updateLineHeight(action.height)
 
-                is LyricsPageAction.OnLetterSpacingChange -> lyricsPrefs.updateLetterSpacing(action.spacing)
+                is LyricsPageAction.OnLetterSpacingChange ->
+                    lyricsPrefs.updateLetterSpacing(action.spacing)
 
                 LyricsPageAction.OnCustomisationReset -> lyricsPrefs.reset()
 
@@ -246,7 +230,8 @@ class LyricsVM(
 
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
 
-                LyricsPageAction.OnPauseOrResume -> MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
+                LyricsPageAction.OnPauseOrResume ->
+                    MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
 
                 is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
 
@@ -259,144 +244,100 @@ class LyricsVM(
 
     private fun observeDatastore() {
         observeJob?.cancel()
-        observeJob = viewModelScope.launch {
-            lyricsPrefs.getBlurSynced()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            blurSyncedLyrics = pref
-                        )
-                    }
-                }
-                .launchIn(this)
+        observeJob =
+            viewModelScope.launch {
+                lyricsPrefs
+                    .getBlurSynced()
+                    .onEach { pref -> _state.update { it.copy(blurSyncedLyrics = pref) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getLyricAlignmentFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            textPrefs = it.textPrefs.copy(lyricsAlignment = pref)
-                        )
+                lyricsPrefs
+                    .getLyricAlignmentFlow()
+                    .onEach { pref ->
+                        _state.update {
+                            it.copy(textPrefs = it.textPrefs.copy(lyricsAlignment = pref))
+                        }
                     }
-                }
-                .launchIn(this)
+                    .launchIn(this)
 
-            lyricsPrefs.getFontSizeFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            textPrefs = it.textPrefs.copy(fontSize = pref)
-                        )
+                lyricsPrefs
+                    .getFontSizeFlow()
+                    .onEach { pref ->
+                        _state.update { it.copy(textPrefs = it.textPrefs.copy(fontSize = pref)) }
                     }
-                }
-                .launchIn(this)
+                    .launchIn(this)
 
-            lyricsPrefs.getLineHeightFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            textPrefs = it.textPrefs.copy(lineHeight = pref)
-                        )
+                lyricsPrefs
+                    .getLineHeightFlow()
+                    .onEach { pref ->
+                        _state.update { it.copy(textPrefs = it.textPrefs.copy(lineHeight = pref)) }
                     }
-                }
-                .launchIn(this)
+                    .launchIn(this)
 
-            lyricsPrefs.getLetterSpacingFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            textPrefs = it.textPrefs.copy(letterSpacing = pref)
-                        )
+                lyricsPrefs
+                    .getLetterSpacingFlow()
+                    .onEach { pref ->
+                        _state.update {
+                            it.copy(textPrefs = it.textPrefs.copy(letterSpacing = pref))
+                        }
                     }
-                }
-                .launchIn(this)
+                    .launchIn(this)
 
-            lyricsPrefs.getCardBackgroundFlow()
-                .onEach { color ->
-                    _state.update {
-                        it.copy(
-                            mCardBackground = color
-                        )
-                    }
-                }
-                .launchIn(this)
+                lyricsPrefs
+                    .getCardBackgroundFlow()
+                    .onEach { color -> _state.update { it.copy(mCardBackground = color) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getCardContentFlow()
-                .onEach { color ->
-                    _state.update {
-                        it.copy(
-                            mCardContent = color
-                        )
-                    }
-                }
-                .launchIn(this)
+                lyricsPrefs
+                    .getCardContentFlow()
+                    .onEach { color -> _state.update { it.copy(mCardContent = color) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getLyricsColorFlow()
-                .onEach { color ->
-                    _state.update {
-                        it.copy(
-                            cardColors = color
-                        )
-                    }
-                }
-                .launchIn(this)
+                lyricsPrefs
+                    .getLyricsColorFlow()
+                    .onEach { color -> _state.update { it.copy(cardColors = color) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getMaxLinesFlow()
-                .onEach { lines ->
-                    _state.update {
-                        it.copy(
-                            maxLines = lines
-                        )
-                    }
-                }
-                .launchIn(this)
+                lyricsPrefs
+                    .getMaxLinesFlow()
+                    .onEach { lines -> _state.update { it.copy(maxLines = lines) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getFullScreenFlow()
-                .onEach { pref ->
-                    _state.update {
-                        it.copy(
-                            fullscreen = pref
-                        )
-                    }
-                }
-                .launchIn(this)
+                lyricsPrefs
+                    .getFullScreenFlow()
+                    .onEach { pref -> _state.update { it.copy(fullscreen = pref) } }
+                    .launchIn(this)
 
-            lyricsPrefs.getLyricsBackgroundFlow()
-                .onEach { hyp ->
-                    _state.update {
-                        it.copy(
-                            lyricsBackground = hyp
-                        )
-                    }
-                }
-                .launchIn(this)
-        }
+                lyricsPrefs
+                    .getLyricsBackgroundFlow()
+                    .onEach { hyp -> _state.update { it.copy(lyricsBackground = hyp) } }
+                    .launchIn(this)
+            }
     }
 
     // Observes playback position and speed
     private fun observePlayback() {
         viewModelScope.launch(Dispatchers.Default) {
-            combine(
-                MediaListenerImpl.songPositionFlow,
-                MediaListenerImpl.playbackSpeedFlow,
-                ::Pair
-            ).collectLatest { (position, speed) ->
-                val start = System.currentTimeMillis()
+            combine(MediaListenerImpl.songPositionFlow, MediaListenerImpl.playbackSpeedFlow, ::Pair)
+                .collectLatest { (position, speed) ->
+                    val start = System.currentTimeMillis()
 
-                while (isActive) {
-                    val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
+                    while (isActive) {
+                        val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
 
-                    _state.update { lyricsPageState ->
-                        lyricsPageState.copy(
-                            playingSong = lyricsPageState.playingSong.copy(
-                                position = position + elapsed,
-                                speed = speed
+                        _state.update { lyricsPageState ->
+                            lyricsPageState.copy(
+                                playingSong =
+                                    lyricsPageState.playingSong.copy(
+                                        position = position + elapsed,
+                                        speed = speed,
+                                    )
                             )
-                        )
-                    }
+                        }
 
-                    delay(500)
+                        delay(500)
+                    }
                 }
-            }
         }
     }
 }

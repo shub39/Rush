@@ -64,6 +64,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Remove Foojay
+        run: sed -i -e '/foojay/d' settings.gradle.kts
+
       - name: Build with Gradle
         run: |
           ./gradlew assembleFossRelease \
@@ -101,6 +104,6 @@ jobs:
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \n https://github.com/shub39/Rush/releases")
+          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \nhttps://github.com/shub39/Rush/releases")
           curl -F "payload_json={\"content\":\"${message}\"}" \
           ${{ env.WEBHOOK }}

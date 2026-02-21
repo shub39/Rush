@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component.customisation
 
 import androidx.compose.animation.AnimatedVisibility
@@ -41,7 +57,7 @@ fun LazyListScope.lyricsCustomisationSettings(
     isShowingSynced: Boolean,
     microphonePermission: Boolean,
     onShowAudioPermissionDialog: () -> Unit,
-    onShowColorPickerDialog: (target: String) -> Unit
+    onShowColorPickerDialog: (target: String) -> Unit,
 ) {
     item {
         ListSelect(
@@ -62,23 +78,21 @@ fun LazyListScope.lyricsCustomisationSettings(
     item {
         AnimatedVisibility(
             visible = isShowingSynced && blurAvailable(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             ListItem(
                 headlineContent = {
                     Text(
                         text = stringResource(R.string.blur_synced),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 },
                 trailingContent = {
                     Switch(
                         checked = state.blurSyncedLyrics,
-                        onCheckedChange = {
-                            onAction(LyricsPageAction.OnBlurSyncedChange(it))
-                        }
+                        onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
                     )
-                }
+                },
             )
         }
     }
@@ -86,11 +100,12 @@ fun LazyListScope.lyricsCustomisationSettings(
     item {
         SettingSlider(
             title = stringResource(R.string.text_alignment),
-            value = when (state.textPrefs.lyricsAlignment) {
-                LyricsAlignment.CENTER -> 1f
-                LyricsAlignment.END -> 2f
-                LyricsAlignment.START -> 0f
-            },
+            value =
+                when (state.textPrefs.lyricsAlignment) {
+                    LyricsAlignment.CENTER -> 1f
+                    LyricsAlignment.END -> 2f
+                    LyricsAlignment.START -> 0f
+                },
             onValueChange = {
                 onAction(
                     LyricsPageAction.OnAlignmentChange(
@@ -102,14 +117,15 @@ fun LazyListScope.lyricsCustomisationSettings(
                     )
                 )
             },
-            valueToShow = when (state.textPrefs.lyricsAlignment) {
-                LyricsAlignment.CENTER -> stringResource(R.string.center)
-                LyricsAlignment.END -> stringResource(R.string.end)
-                LyricsAlignment.START -> stringResource(R.string.start)
-            },
+            valueToShow =
+                when (state.textPrefs.lyricsAlignment) {
+                    LyricsAlignment.CENTER -> stringResource(R.string.center)
+                    LyricsAlignment.END -> stringResource(R.string.end)
+                    LyricsAlignment.START -> stringResource(R.string.start)
+                },
             steps = 1,
             valueRange = 0f..2f,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         SettingSlider(
@@ -117,38 +133,30 @@ fun LazyListScope.lyricsCustomisationSettings(
             value = state.textPrefs.fontSize,
             steps = 33,
             valueRange = 16f..50f,
-            onValueChange = {
-                onAction(LyricsPageAction.OnFontSizeChange(it))
-            },
-            modifier = Modifier.padding(horizontal = 16.dp)
+            onValueChange = { onAction(LyricsPageAction.OnFontSizeChange(it)) },
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         SettingSlider(
             title = stringResource(R.string.line_height),
             value = state.textPrefs.lineHeight,
-            onValueChange = {
-                onAction(LyricsPageAction.OnLineHeightChange(it))
-            },
+            onValueChange = { onAction(LyricsPageAction.OnLineHeightChange(it)) },
             modifier = Modifier.padding(horizontal = 16.dp),
             steps = 33,
-            valueRange = 16f..50f
+            valueRange = 16f..50f,
         )
 
         SettingSlider(
             title = stringResource(R.string.letter_spacing),
             value = state.textPrefs.letterSpacing,
-            onValueChange = {
-                onAction(LyricsPageAction.OnLetterSpacingChange(it))
-            },
+            onValueChange = { onAction(LyricsPageAction.OnLetterSpacingChange(it)) },
             modifier = Modifier.padding(horizontal = 16.dp),
             steps = 3,
-            valueRange = -2f..2f
+            valueRange = -2f..2f,
         )
     }
 
-    item {
-        HorizontalDivider()
-    }
+    item { HorizontalDivider() }
 
     item {
         ListSelect(
@@ -161,24 +169,21 @@ fun LazyListScope.lyricsCustomisationSettings(
 
         AnimatedVisibility(
             visible = state.cardColors == CardColors.CUSTOM,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 IconButton(
-                    onClick = {
-                        onShowColorPickerDialog("content")
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(state.mCardContent),
-                        contentColor = Color(state.mCardBackground)
-                    ),
-                    modifier = Modifier.weight(1f)
+                    onClick = { onShowColorPickerDialog("content") },
+                    colors =
+                        IconButtonDefaults.iconButtonColors(
+                            containerColor = Color(state.mCardContent),
+                            contentColor = Color(state.mCardBackground),
+                        ),
+                    modifier = Modifier.weight(1f),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.edit),
@@ -187,64 +192,47 @@ fun LazyListScope.lyricsCustomisationSettings(
                 }
 
                 IconButton(
-                    onClick = {
-                        onShowColorPickerDialog("background")
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(state.mCardBackground),
-                        contentColor = Color(state.mCardContent)
-                    ),
-                    modifier = Modifier.weight(1f)
+                    onClick = { onShowColorPickerDialog("background") },
+                    colors =
+                        IconButtonDefaults.iconButtonColors(
+                            containerColor = Color(state.mCardBackground),
+                            contentColor = Color(state.mCardContent),
+                        ),
+                    modifier = Modifier.weight(1f),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.edit),
-                        contentDescription = "Select Color"
+                        contentDescription = "Select Color",
                     )
                 }
             }
         }
     }
 
-    item {
-        HorizontalDivider()
-    }
+    item { HorizontalDivider() }
 
     item {
         ListItem(
-            headlineContent = {
-                Text(
-                    text = stringResource(R.string.fullscreen)
-                )
-            },
-            supportingContent = {
-                Text(
-                    text = stringResource(R.string.fullscreen_desc)
-                )
-            },
+            headlineContent = { Text(text = stringResource(R.string.fullscreen)) },
+            supportingContent = { Text(text = stringResource(R.string.fullscreen_desc)) },
             trailingContent = {
                 Switch(
                     checked = state.fullscreen,
-                    onCheckedChange = {
-                        onAction(LyricsPageAction.OnFullscreenChange(it))
-                    }
+                    onCheckedChange = { onAction(LyricsPageAction.OnFullscreenChange(it)) },
                 )
-            }
+            },
         )
 
         SettingSlider(
             title = stringResource(R.string.max_lines),
             value = state.maxLines.toFloat(),
-            onValueChange = {
-                onAction(LyricsPageAction.OnMaxLinesChange(it.toInt()))
-            },
+            onValueChange = { onAction(LyricsPageAction.OnMaxLinesChange(it.toInt())) },
             valueToShow = state.maxLines.toString(),
             steps = 13,
             valueRange = 2f..16f,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
     }
 
-    item {
-        HorizontalDivider()
-    }
+    item { HorizontalDivider() }
 }

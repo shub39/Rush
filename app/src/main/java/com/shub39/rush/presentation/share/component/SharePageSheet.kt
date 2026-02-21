@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.share.component
 
 import androidx.compose.animation.AnimatedVisibility
@@ -62,35 +78,27 @@ fun SharePageSheet(
     onLaunchColorPicker: (String) -> Unit,
     isProUser: Boolean,
     onShowPaywall: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         HorizontalDivider()
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 400.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
                 ListSelect(
                     title = stringResource(R.string.card_theme),
                     options = CardTheme.entries.toList(),
                     selected = state.cardTheme,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardTheme(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.toStringRes())
-                        )
-                    }
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardTheme(it)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
             }
 
@@ -99,34 +107,28 @@ fun SharePageSheet(
                     title = stringResource(R.string.card_color),
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardColor(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.toStringRes())
-                        )
-                    }
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardColor(it)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
 
                 AnimatedVisibility(
                     visible = state.cardColors == CardColors.CUSTOM,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier.padding(horizontal = 32.dp, vertical = 8.dp).fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         IconButton(
                             onClick = { onLaunchColorPicker("content") },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.cardContent),
-                                contentColor = Color(state.cardBackground)
-                            ),
-                            modifier = Modifier.weight(1f)
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.cardContent),
+                                    contentColor = Color(state.cardBackground),
+                                ),
+                            modifier = Modifier.weight(1f),
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.edit),
@@ -136,15 +138,16 @@ fun SharePageSheet(
 
                         IconButton(
                             onClick = { onLaunchColorPicker("background") },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(state.cardBackground),
-                                contentColor = Color(state.cardContent)
-                            ),
-                            modifier = Modifier.weight(1f)
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.cardBackground),
+                                    contentColor = Color(state.cardContent),
+                                ),
+                            modifier = Modifier.weight(1f),
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.edit),
-                                contentDescription = "Select Color"
+                                contentDescription = "Select Color",
                             )
                         }
                     }
@@ -156,14 +159,8 @@ fun SharePageSheet(
                     title = stringResource(R.string.card_size),
                     options = CardFit.entries.toList(),
                     selected = state.cardFit,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardFit(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.toStringRes())
-                        )
-                    }
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardFit(it)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
             }
 
@@ -172,14 +169,8 @@ fun SharePageSheet(
                     title = stringResource(R.string.card_corners),
                     options = CornerRadius.entries.toList(),
                     selected = state.cardRoundness,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardRoundness(it))
-                    },
-                    labelProvider = {
-                        Text(
-                            text = stringResource(it.toStringRes())
-                        )
-                    }
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardRoundness(it)) },
+                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
             }
 
@@ -188,19 +179,17 @@ fun SharePageSheet(
                     title = stringResource(R.string.album_art_shape),
                     options = AlbumArtShape.entries.toList(),
                     selected = state.albumArtShape,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateAlbumArtShape(it))
-                    },
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateAlbumArtShape(it)) },
                     labelProvider = {
                         Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    shape = it.toShape()
-                                )
+                            modifier =
+                                Modifier.size(20.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        shape = it.toShape(),
+                                    )
                         )
-                    }
+                    },
                 )
             }
 
@@ -209,33 +198,28 @@ fun SharePageSheet(
                     title = stringResource(R.string.card_font),
                     options = Fonts.entries.toList(),
                     selected = state.cardFont,
-                    onSelectedChange = {
-                        onAction(SharePageAction.OnUpdateCardFont(it))
-                    },
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardFont(it)) },
                     labelProvider = { font ->
                         Text(
                             text = font.toFullName(),
-                            fontFamily = font.toFontRes()?.let { FontFamily(Font(it)) } ?: FontFamily.Default
+                            fontFamily =
+                                font.toFontRes()?.let { FontFamily(Font(it)) } ?: FontFamily.Default,
                         )
-                    }
+                    },
                 )
             }
 
             item {
                 Row(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
                         text = "Show Rush Branding",
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
-                        modifier = Modifier
-                            .basicMarquee()
-                            .weight(1f)
+                        modifier = Modifier.basicMarquee().weight(1f),
                     )
 
                     Switch(
@@ -246,7 +230,7 @@ fun SharePageSheet(
                             } else {
                                 onShowPaywall()
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -259,17 +243,11 @@ fun SharePageSheet(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SharePageSheet(
-            state = SharePageState(
-                cardColors = CardColors.CUSTOM
-            ),
-            onAction = { },
-            onDismissRequest = { },
+            state = SharePageState(cardColors = CardColors.CUSTOM),
+            onAction = {},
+            onDismissRequest = {},
             sheetState = rememberStandardBottomSheetState(),
             onLaunchColorPicker = {},
             isProUser = true,

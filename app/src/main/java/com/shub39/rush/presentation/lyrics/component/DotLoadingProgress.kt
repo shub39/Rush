@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.core.LinearEasing
@@ -19,49 +35,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 
 @Composable
-fun DotLoadingProgress(
-    progress: Float,
-    modifier: Modifier = Modifier,
-    color: Color = Color.White
-) {
+fun DotLoadingProgress(progress: Float, modifier: Modifier = Modifier, color: Color = Color.White) {
     val clampedProgress = progress.coerceIn(0f, 1f)
 
     val dotCount = 3
     val dotSpacing = 16.dp
 
-    val dotProgresses = List(dotCount) { index ->
-        ((clampedProgress - (index * 0.15f)) * 1.4f).coerceIn(0f, 1f)
-    }
+    val dotProgresses =
+        List(dotCount) { index -> ((clampedProgress - (index * 0.15f)) * 1.4f).coerceIn(0f, 1f) }
 
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dotSpacing)
+        horizontalArrangement = Arrangement.spacedBy(dotSpacing),
     ) {
         dotProgresses.forEach { dotProgress ->
-            val animatedScale by animateFloatAsState(
-                targetValue = lerp(1f, 1.8f, dotProgress),
-                animationSpec = tween(300, easing = LinearEasing),
-                label = "dotScale"
-            )
+            val animatedScale by
+                animateFloatAsState(
+                    targetValue = lerp(1f, 1.8f, dotProgress),
+                    animationSpec = tween(300, easing = LinearEasing),
+                    label = "dotScale",
+                )
 
-            val animatedAlpha by animateFloatAsState(
-                targetValue = lerp(0.3f, color.alpha, dotProgress),
-                animationSpec = tween(300, easing = LinearEasing),
-                label = "dotAlpha"
-            )
+            val animatedAlpha by
+                animateFloatAsState(
+                    targetValue = lerp(0.3f, color.alpha, dotProgress),
+                    animationSpec = tween(300, easing = LinearEasing),
+                    label = "dotAlpha",
+                )
 
             Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .graphicsLayer {
-                        scaleX = animatedScale
-                        scaleY = animatedScale
-                    }
-                    .background(color.copy(alpha = animatedAlpha), shape = CircleShape)
+                modifier =
+                    Modifier.size(8.dp)
+                        .graphicsLayer {
+                            scaleX = animatedScale
+                            scaleY = animatedScale
+                        }
+                        .background(color.copy(alpha = animatedAlpha), shape = CircleShape)
             )
         }
     }
 }
-
-

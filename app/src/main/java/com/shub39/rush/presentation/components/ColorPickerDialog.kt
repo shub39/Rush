@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -29,15 +45,14 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
 
 /**
- * A composable dialog that allows the user to select a color.
- * to provide a rich color selection experience, including an HSV color picker,
- * a brightness slider, and an alpha tile.
+ * A composable dialog that allows the user to select a color. to provide a rich color selection
+ * experience, including an HSV color picker, a brightness slider, and an alpha tile.
  *
  * @param initialColor The color that is initially selected in the picker.
- * @param onSelect The callback that is invoked when the user confirms their color selection.
- *                 The selected [Color] is passed as an argument.
- * @param onDismiss The callback that is invoked when the user dismisses the dialog
- *                  without making a selection, or after a selection is made.
+ * @param onSelect The callback that is invoked when the user confirms their color selection. The
+ *   selected [Color] is passed as an argument.
+ * @param onDismiss The callback that is invoked when the user dismisses the dialog without making a
+ *   selection, or after a selection is made.
  * @param modifier The [Modifier] to be applied to the dialog.
  */
 @Composable
@@ -45,7 +60,7 @@ fun ColorPickerDialog(
     initialColor: Color,
     onSelect: (Color) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     val controller = rememberColorPickerController()
@@ -53,39 +68,32 @@ fun ColorPickerDialog(
     RushDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier = modifier.padding(horizontal = 32.dp)
+        modifier = modifier.padding(horizontal = 32.dp),
     ) {
         if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
             Column(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(16.dp),
+                modifier = Modifier.wrapContentSize().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 HsvColorPicker(
-                    modifier = Modifier
-                        .width(350.dp)
-                        .height(300.dp)
-                        .padding(top = 10.dp),
+                    modifier = Modifier.width(350.dp).height(300.dp).padding(top = 10.dp),
                     initialColor = initialColor,
-                    controller = controller
+                    controller = controller,
                 )
 
                 BrightnessSlider(
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .height(35.dp),
+                    modifier = Modifier.padding(top = 10.dp).height(35.dp),
                     initialColor = initialColor,
-                    controller = controller
+                    controller = controller,
                 )
 
                 AlphaTile(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(vertical = 10.dp)
-                        .clip(RoundedCornerShape(6.dp)),
-                    controller = controller
+                    modifier =
+                        Modifier.size(80.dp)
+                            .padding(vertical = 10.dp)
+                            .clip(RoundedCornerShape(6.dp)),
+                    controller = controller,
                 )
 
                 Button(
@@ -97,42 +105,36 @@ fun ColorPickerDialog(
                     Text(
                         text = stringResource(R.string.done),
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
         } else {
             // landscape ui
             Row(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(16.dp),
+                modifier = Modifier.wrapContentSize().padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 HsvColorPicker(
-                    modifier = Modifier
-                        .width(250.dp)
-                        .height(200.dp),
+                    modifier = Modifier.width(250.dp).height(200.dp),
                     initialColor = initialColor,
-                    controller = controller
+                    controller = controller,
                 )
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     BrightnessSlider(
                         modifier = Modifier.height(35.dp),
                         initialColor = initialColor,
-                        controller = controller
+                        controller = controller,
                     )
 
                     AlphaTile(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(6.dp)),
-                        controller = controller
+                        modifier = Modifier.size(80.dp).clip(RoundedCornerShape(6.dp)),
+                        controller = controller,
                     )
 
                     Button(
@@ -144,7 +146,7 @@ fun ColorPickerDialog(
                         Text(
                             text = stringResource(R.string.done),
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }

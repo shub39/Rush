@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.setting.section
 
 import android.content.Intent
@@ -75,40 +91,38 @@ fun SettingRootPage(
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehaviour.nestedScrollConnection)
-            .widthIn(max = 700.dp),
+        modifier =
+            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
         topBar = {
             MediumFlexibleTopAppBar(
                 scrollBehavior = scrollBehaviour,
-                title = {
-                    Text(stringResource(R.string.settings))
-                },
+                title = { Text(stringResource(R.string.settings)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateBack
-                    ) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    ),
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 16.dp,
-                bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding =
+                PaddingValues(
+                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                    start =
+                        paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                    end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                ),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // about app
             item { AboutApp() }
@@ -118,21 +132,20 @@ fun SettingRootPage(
                 Card(
                     onClick = onShowPaywall,
                     shape = MaterialTheme.shapes.extraLarge,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = MaterialTheme.colorScheme.onTertiary
-                    )
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onTertiary,
+                        ),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.add),
                             contentDescription = "Rush Pro",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -140,79 +153,76 @@ fun SettingRootPage(
                         Text(
                             text = stringResource(R.string.rush_pro),
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
 
                         Icon(
                             painter = painterResource(R.drawable.arrow_forward_ios),
-                            contentDescription = "Grit Plus"
+                            contentDescription = "Grit Plus",
                         )
                     }
                 }
             }
 
             item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     // navigate to look and feel
                     ListItem(
-                        modifier = Modifier
-                            .clip(leadingItemShape())
-                            .clickable { onNavigateToLookAndFeel() },
+                        modifier =
+                            Modifier.clip(leadingItemShape()).clickable {
+                                onNavigateToLookAndFeel()
+                            },
                         colors = listItemColors(),
                         headlineContent = { Text(text = stringResource(R.string.look_and_feel)) },
                         supportingContent = {
                             Text(
                                 text = stringResource(R.string.look_and_feel_info),
                                 maxLines = 1,
-                                modifier = Modifier.basicMarquee()
+                                modifier = Modifier.basicMarquee(),
                             )
                         },
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.palette),
                                 contentDescription = "Navigate",
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         trailingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_forward_ios),
-                                contentDescription = null
+                                contentDescription = null,
                             )
-                        }
+                        },
                     )
 
                     // navigate to backup
                     ListItem(
-                        modifier = Modifier
-                            .clip(endItemShape())
-                            .clickable { onNavigateToBackup() },
+                        modifier = Modifier.clip(endItemShape()).clickable { onNavigateToBackup() },
                         colors = listItemColors(),
                         headlineContent = { Text(text = stringResource(R.string.backup)) },
                         supportingContent = {
                             Text(
                                 text = stringResource(R.string.backup_info),
                                 maxLines = 1,
-                                modifier = Modifier.basicMarquee()
+                                modifier = Modifier.basicMarquee(),
                             )
                         },
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.upload_file),
                                 contentDescription = "Backup",
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
                             )
                         },
                         trailingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_forward_ios),
-                                contentDescription = null
+                                contentDescription = null,
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -221,34 +231,36 @@ fun SettingRootPage(
             if (!notificationAccess) {
                 item {
                     val context = LocalContext.current
-                    val intent =
-                        Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 
                     ListItem(
-                        headlineContent = { Text(text = stringResource(R.string.grant_permission)) },
+                        headlineContent = {
+                            Text(text = stringResource(R.string.grant_permission))
+                        },
                         supportingContent = {
                             Text(
                                 text = stringResource(R.string.notification_permission),
                                 maxLines = 1,
-                                modifier = Modifier.basicMarquee()
+                                modifier = Modifier.basicMarquee(),
                             )
                         },
                         colors = listItemColors(),
-                        modifier = Modifier
-                            .clip(detachedItemShape())
-                            .clickable { context.startActivity(intent) },
+                        modifier =
+                            Modifier.clip(detachedItemShape()).clickable {
+                                context.startActivity(intent)
+                            },
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.notifications),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         },
                         trailingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_forward_ios),
-                                contentDescription = null
+                                contentDescription = null,
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -259,7 +271,7 @@ fun SettingRootPage(
                     leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.warning),
-                            contentDescription = "Caution"
+                            contentDescription = "Caution",
                         )
                     },
                     headlineContent = { Text(text = stringResource(R.string.delete_all)) },
@@ -267,14 +279,15 @@ fun SettingRootPage(
                     trailingContent = {
                         Icon(
                             painter = painterResource(R.drawable.arrow_forward_ios),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
-                    modifier = Modifier
-                        .clip(detachedItemShape())
-                        .clickable(enabled = state.deleteButtonEnabled) {
+                    modifier =
+                        Modifier.clip(detachedItemShape()).clickable(
+                            enabled = state.deleteButtonEnabled
+                        ) {
                             deleteConfirmationDialog = true
-                        }
+                        },
                 )
             }
         }
@@ -283,23 +296,14 @@ fun SettingRootPage(
     // dialog to confirm nuking
     if (deleteConfirmationDialog) {
         RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
-            Icon(
-                painter = painterResource(R.drawable.warning),
-                contentDescription = "Warning",
-            )
+            Icon(painter = painterResource(R.drawable.warning), contentDescription = "Warning")
             Text(
                 text = stringResource(R.string.delete_all),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleMedium,
             )
-            Text(
-                text = stringResource(R.string.delete_confirmation),
-                textAlign = TextAlign.Center,
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
+            Text(text = stringResource(R.string.delete_confirmation), textAlign = TextAlign.Center)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(
                     onClick = {
                         onAction(SettingsPageAction.OnDeleteSongs)
@@ -316,19 +320,15 @@ fun SettingRootPage(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SettingRootPage(
             notificationAccess = false,
             state = SettingsPageState(),
-            onAction = { },
-            onNavigateBack = { },
-            onNavigateToLookAndFeel = { },
-            onNavigateToBackup = { },
-            onShowPaywall = {}
+            onAction = {},
+            onNavigateBack = {},
+            onNavigateToLookAndFeel = {},
+            onNavigateToBackup = {},
+            onShowPaywall = {},
         )
     }
 }

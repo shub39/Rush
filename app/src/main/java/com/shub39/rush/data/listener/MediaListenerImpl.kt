@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.data.listener
 
 import android.content.ComponentName
@@ -24,19 +40,23 @@ import kotlinx.coroutines.launch
 /**
  * Singleton object responsible for listening to and interacting with system-wide media sessions.
  *
- * This object uses [MediaSessionManager] and a [NotificationListener] service to detect
- * active media sessions from various applications (e.g., Spotify, YouTube Music). It monitors
- * changes in playback state (play/pause), metadata (song title, artist), and playback position.
+ * This object uses [MediaSessionManager] and a [NotificationListener] service to detect active
+ * media sessions from various applications (e.g., Spotify, YouTube Music). It monitors changes in
+ * playback state (play/pause), metadata (song title, artist), and playback position.
  *
  * It exposes the retrieved media information through Kotlin Flows, allowing other parts of the
- * application to reactively observe media updates. It also provides methods to control the
- * active media session, such as seeking to a specific timestamp or toggling play/pause.
+ * application to reactively observe media updates. It also provides methods to control the active
+ * media session, such as seeking to a specific timestamp or toggling play/pause.
  *
- * To function correctly, the application must have Notification Access permission granted by the user.
+ * To function correctly, the application must have Notification Access permission granted by the
+ * user.
  *
- * @property playbackSpeedFlow A [MutableSharedFlow] that emits the current playback speed of the active media session. Emits 0f when paused.
- * @property songInfoFlow A [MutableSharedFlow] that emits a [Pair] containing the current song's title and artist.
- * @property songPositionFlow A [MutableSharedFlow] that emits the current playback position in milliseconds.
+ * @property playbackSpeedFlow A [MutableSharedFlow] that emits the current playback speed of the
+ *   active media session. Emits 0f when paused.
+ * @property songInfoFlow A [MutableSharedFlow] that emits a [Pair] containing the current song's
+ *   title and artist.
+ * @property songPositionFlow A [MutableSharedFlow] that emits the current playback position in
+ *   milliseconds.
  */
 object MediaListenerImpl {
     private var msm: MediaSessionManager? = null
@@ -60,9 +80,7 @@ object MediaListenerImpl {
                 nls = ComponentName(context, NotificationListener::class.java)
 
                 msm?.let { manager ->
-                    manager.addOnActiveSessionsChangedListener(
-                        { onActiveSessionsChanged(it) }, nls
-                    )
+                    manager.addOnActiveSessionsChangedListener({ onActiveSessionsChanged(it) }, nls)
 
                     val activeSessions = manager.getActiveSessions(nls!!)
                     val activeSession = activeSessions.find { isActive(it.playbackState) }
@@ -79,17 +97,13 @@ object MediaListenerImpl {
     fun onSeekEagerly() {
         if (!initialised) return
 
-        activeMediaController?.let {
-            updateMetadata(it, it.metadata)
-        }
+        activeMediaController?.let { updateMetadata(it, it.metadata) }
     }
 
     fun seek(timestamp: Long) {
         activeMediaController?.transportControls?.seekTo(timestamp)
         activeMediaController?.transportControls?.play()
-        coroutineScope.launch {
-            songPositionFlow.emit(timestamp)
-        }
+        coroutineScope.launch { songPositionFlow.emit(timestamp) }
     }
 
     fun pauseOrResume(resume: Boolean) {
@@ -123,18 +137,18 @@ object MediaListenerImpl {
             }
 
             if (internalCallbacks.containsKey(controller.sessionToken)) {
-                newCallbacks[controller.sessionToken] =
-                    internalCallbacks[controller.sessionToken]!!
+                newCallbacks[controller.sessionToken] = internalCallbacks[controller.sessionToken]!!
             } else {
-                val callback = object : MediaController.Callback() {
-                    override fun onPlaybackStateChanged(state: PlaybackState?) {
-                        onPlaybackStateChanged(controller, state)
-                    }
+                val callback =
+                    object : MediaController.Callback() {
+                        override fun onPlaybackStateChanged(state: PlaybackState?) {
+                            onPlaybackStateChanged(controller, state)
+                        }
 
-                    override fun onMetadataChanged(metadata: MediaMetadata?) {
-                        updateMetadata(controller, metadata)
+                        override fun onMetadataChanged(metadata: MediaMetadata?) {
+                            updateMetadata(controller, metadata)
+                        }
                     }
-                }
 
                 controller.registerCallback(callback)
                 newCallbacks[controller.sessionToken] = callback
@@ -170,9 +184,7 @@ object MediaListenerImpl {
         if (isActive(state)) {
             setActiveMediaSession(controller)
         } else {
-            coroutineScope.launch {
-                playbackSpeedFlow.emit(0f)
-            }
+            coroutineScope.launch { playbackSpeedFlow.emit(0f) }
         }
     }
 
@@ -185,8 +197,10 @@ object MediaListenerImpl {
         if (controller.sessionToken != activeMediaController?.sessionToken) return
 
         val title = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE) ?: ""
-        val artist = metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)
-            ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST) ?: ""
+        val artist =
+            metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)
+                ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
+                ?: ""
 
         coroutineScope.launch {
             if (controller.playbackState?.let { isActive(it) } == true) {

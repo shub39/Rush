@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package io.gitlab.bpavuk.viz
 
 import android.media.audiofx.Visualizer
@@ -15,9 +31,9 @@ import kotlinx.coroutines.delay
 private const val TAG = "VisualizerState"
 
 /**
- * Initializes the [Visualizer] and takes care of Visualizer management.
- * It assumes that you handle the [android.Manifest.permission.RECORD_AUDIO] permission
- * as well as specify the [android.Manifest.permission.MODIFY_AUDIO_SETTINGS] permission in Manifest.
+ * Initializes the [Visualizer] and takes care of Visualizer management. It assumes that you handle
+ * the [android.Manifest.permission.RECORD_AUDIO] permission as well as specify the
+ * [android.Manifest.permission.MODIFY_AUDIO_SETTINGS] permission in Manifest.
  *
  * Restarts if any of [keys] change.
  */
@@ -37,10 +53,7 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
                     waveform[i] = (-128 + (0..255).random()).toByte()
                     fft[i] = (-128 + (0..255).random()).toByte()
                 }
-                waveData = VisualizerState.Ready(
-                    waveform = waveform.toList(),
-                    fft = fft.toList()
-                )
+                waveData = VisualizerState.Ready(waveform = waveform.toList(), fft = fft.toList())
                 // A realistic capture rate is way faster, but this is enough for a preview
                 delay(100)
             }
@@ -52,43 +65,48 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
             } catch (e: UnsupportedOperationException) {
                 Log.wtf(TAG, "Device is unsupported!", e)
                 waveData = VisualizerState.Unsupported
-                return@DisposableEffect onDispose {  }
+                return@DisposableEffect onDispose {}
             } catch (e: RuntimeException) {
                 Log.wtf(TAG, "Something extremely terrible happened!", e)
                 waveData = VisualizerState.Unsupported
-                return@DisposableEffect onDispose {  }
+                return@DisposableEffect onDispose {}
             }
 
-
-            val samplingRate = Visualizer.getMaxCaptureRate() / 2 // half of max rate for the sake of performance
+            val samplingRate =
+                Visualizer.getMaxCaptureRate() / 2 // half of max rate for the sake of performance
             Log.d(TAG, "sampling rate: ${samplingRate / 1000} times per second")
             val captureSize = Visualizer.getCaptureSizeRange()[1]
             Log.d(TAG, "capture size range: $captureSize")
-            val listener = object : Visualizer.OnDataCaptureListener {
-                override fun onFftDataCapture(
-                    visualizer: Visualizer?,
-                    fft: ByteArray?,
-                    samplingRate: Int
-                ) {
-                    waveData = if (waveData is VisualizerState.Ready) {
-                        (waveData as VisualizerState.Ready).copy(fft = fft?.toList())
-                    } else {
-                        VisualizerState.Ready(fft = fft?.toList(), waveform = null)
+            val listener =
+                object : Visualizer.OnDataCaptureListener {
+                    override fun onFftDataCapture(
+                        visualizer: Visualizer?,
+                        fft: ByteArray?,
+                        samplingRate: Int,
+                    ) {
+                        waveData =
+                            if (waveData is VisualizerState.Ready) {
+                                (waveData as VisualizerState.Ready).copy(fft = fft?.toList())
+                            } else {
+                                VisualizerState.Ready(fft = fft?.toList(), waveform = null)
+                            }
                     }
-                }
 
-                override fun onWaveFormDataCapture(
-                    visualizer: Visualizer?,
-                    waveform: ByteArray?,
-                    samplingRate: Int
-                ) {
-                    waveData = if (waveData is VisualizerState.Ready) {
-                        (waveData as VisualizerState.Ready).copy(waveform = waveform?.toList())
-                    } else {
-                        VisualizerState.Ready(waveform = waveform?.toList(), fft = null)
+                    override fun onWaveFormDataCapture(
+                        visualizer: Visualizer?,
+                        waveform: ByteArray?,
+                        samplingRate: Int,
+                    ) {
+                        waveData =
+                            if (waveData is VisualizerState.Ready) {
+                                (waveData as VisualizerState.Ready).copy(
+                                    waveform = waveform?.toList()
+                                )
+                            } else {
+                                VisualizerState.Ready(waveform = waveform?.toList(), fft = null)
+                            }
                     }
                 }
-            }
 
             try {
                 visualizer.captureSize = captureSize
@@ -96,13 +114,13 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
                     listener,
                     /* rate = */ samplingRate,
                     /* waveform = */ true,
-                    /* fft = */ true
+                    /* fft = */ true,
                 )
                 visualizer.enabled = true
             } catch (e: Exception) {
                 Log.e(TAG, "Error initializing Visualizer!")
                 waveData = VisualizerState.Error(e)
-                return@DisposableEffect onDispose {  }
+                return@DisposableEffect onDispose {}
             }
 
             Log.d(TAG, "Visualizer successfully initialized")
@@ -120,10 +138,12 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
 
 sealed interface VisualizerState {
     data object Unsupported : VisualizerState
+
     data object Uninitialized : VisualizerState
+
     data class Error(val e: Exception) : VisualizerState
+
     data class Ready(val waveform: VisualizerData?, val fft: VisualizerData?) : VisualizerState
 }
 
 typealias VisualizerData = List<Byte>
-

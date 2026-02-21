@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.onboarding
 
 import android.content.Intent
@@ -54,17 +70,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 private sealed interface OnboardingRoutes {
-    @Serializable
-    data object Welcome : OnboardingRoutes
+    @Serializable data object Welcome : OnboardingRoutes
 
-    @Serializable
-    data object Permissions : OnboardingRoutes
+    @Serializable data object Permissions : OnboardingRoutes
 
     companion object {
-        val routes = listOf(
-            Welcome,
-            Permissions
-        )
+        val routes = listOf(Welcome, Permissions)
     }
 }
 
@@ -73,7 +84,7 @@ private sealed interface OnboardingRoutes {
 fun Onboarding(
     onDone: () -> Unit,
     notificationAccess: Boolean,
-    onUpdateNotificationAccess: () -> Unit
+    onUpdateNotificationAccess: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -90,10 +101,7 @@ fun Onboarding(
     BackHandler {}
 
     Surface {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
@@ -107,7 +115,7 @@ fun Onboarding(
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             AnimatedAppIcon()
 
@@ -115,12 +123,12 @@ fun Onboarding(
                                 text = "Welcome to Rush!",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
                             )
 
                             Text(
                                 text = "Search, Save and Share your favorite lyrics",
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
                             )
 
                             Spacer(Modifier.height(16.dp))
@@ -131,14 +139,15 @@ fun Onboarding(
                                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                     }
                                 },
-                                shapes = ButtonShapes(
-                                    shape = CircleShape,
-                                    pressedShape = RoundedCornerShape(10.dp)
-                                )
+                                shapes =
+                                    ButtonShapes(
+                                        shape = CircleShape,
+                                        pressedShape = RoundedCornerShape(10.dp),
+                                    ),
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.arrow_forward),
-                                    contentDescription = "Next"
+                                    contentDescription = "Next",
                                 )
                             }
                         }
@@ -149,22 +158,22 @@ fun Onboarding(
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.primaryContainer,
-                                        shape = VerySunny.toShape()
-                                    ),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier.size(100.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primaryContainer,
+                                            shape = VerySunny.toShape(),
+                                        ),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.notifications),
                                     contentDescription = "Notification",
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier.size(60.dp)
+                                    modifier = Modifier.size(60.dp),
                                 )
                             }
 
@@ -174,62 +183,68 @@ fun Onboarding(
                                 text = "Some features require Notification Access",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
                             )
 
                             Spacer(Modifier.height(16.dp))
 
                             Column(
                                 modifier = Modifier.widthIn(max = 350.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 listOf(
-                                    Triple(
-                                        first = painterResource(R.drawable.meteor),
-                                        second = "Rush Mode",
-                                        third = "Fetches songs automatically with your music player"
-                                    ),
-                                    Triple(
-                                        first = painterResource(R.drawable.sync),
-                                        second = "Synced Lyrics",
-                                        third = "Syncs with your music player if timed lyrics is available"
+                                        Triple(
+                                            first = painterResource(R.drawable.meteor),
+                                            second = "Rush Mode",
+                                            third =
+                                                "Fetches songs automatically with your music player",
+                                        ),
+                                        Triple(
+                                            first = painterResource(R.drawable.sync),
+                                            second = "Synced Lyrics",
+                                            third =
+                                                "Syncs with your music player if timed lyrics is available",
+                                        ),
                                     )
-                                ).forEach { feature ->
-                                    Card(
-                                        shape = MaterialTheme.shapes.extraLarge,
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .padding(16.dp)
-                                                .fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.spacedBy(14.dp),
-                                            verticalAlignment = Alignment.CenterVertically
+                                    .forEach { feature ->
+                                        Card(
+                                            shape = MaterialTheme.shapes.extraLarge,
+                                            colors =
+                                                CardDefaults.cardColors(
+                                                    containerColor =
+                                                        MaterialTheme.colorScheme
+                                                            .secondaryContainer,
+                                                    contentColor =
+                                                        MaterialTheme.colorScheme
+                                                            .onSecondaryContainer,
+                                                ),
                                         ) {
-                                            Icon(
-                                                painter = feature.first,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(42.dp)
-                                            )
+                                            Row(
+                                                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                Icon(
+                                                    painter = feature.first,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(42.dp),
+                                                )
 
-                                            Column {
-                                                Text(
-                                                    text = feature.second,
-                                                    style = MaterialTheme.typography.titleLarge.copy(
-                                                        fontWeight = FontWeight.Bold
+                                                Column {
+                                                    Text(
+                                                        text = feature.second,
+                                                        style =
+                                                            MaterialTheme.typography.titleLarge
+                                                                .copy(fontWeight = FontWeight.Bold),
                                                     )
-                                                )
-                                                Text(
-                                                    text = feature.third,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                                    Text(
+                                                        text = feature.third,
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                    )
+                                                }
                                             }
                                         }
                                     }
-                                }
                             }
 
                             Spacer(Modifier.height(16.dp))
@@ -237,29 +252,24 @@ fun Onboarding(
                             Button(
                                 onClick = {
                                     if (!notificationAccess) {
-                                        val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                        val intent =
+                                            Intent(
+                                                "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
+                                            )
                                         context.startActivity(intent)
                                     } else {
                                         onDone()
                                     }
                                 },
-                                contentPadding = ButtonDefaults.MediumContentPadding
+                                contentPadding = ButtonDefaults.MediumContentPadding,
                             ) {
-                                Text(
-                                    text = if (!notificationAccess) "Grant Access" else "Done"
-                                )
+                                Text(text = if (!notificationAccess) "Grant Access" else "Done")
                             }
 
                             Spacer(Modifier.height(6.dp))
 
                             if (!notificationAccess) {
-                                TextButton(
-                                    onClick = onDone
-                                ) {
-                                    Text(
-                                        text = "No Thanks"
-                                    )
-                                }
+                                TextButton(onClick = onDone) { Text(text = "No Thanks") }
                             }
                         }
                     }
@@ -272,15 +282,7 @@ fun Onboarding(
 @Composable
 @Preview
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
-        Onboarding(
-            onDone = { },
-            notificationAccess = false,
-            onUpdateNotificationAccess = { }
-        )
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
+        Onboarding(onDone = {}, notificationAccess = false, onUpdateNotificationAccess = {})
     }
 }

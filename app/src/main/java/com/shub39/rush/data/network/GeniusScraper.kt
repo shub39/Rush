@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.data.network
 
 import com.fleeksoft.ksoup.Ksoup
@@ -12,48 +28,42 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import org.koin.core.annotation.Single
 
-// thanks to https://github.com/imjyotiraditya/genius-lyrics-cli and https://github.com/rramiachraf/dumb
+// thanks to https://github.com/imjyotiraditya/genius-lyrics-cli and
+// https://github.com/rramiachraf/dumb
 @Single
-class GeniusScraper(
-    private val client: HttpClient
-) {
+class GeniusScraper(private val client: HttpClient) {
     companion object {
-        val dumbInstances = listOf(
-            "dumb.ducks.party/",
-            "dumb.lunar.icu/",
-            "dumb.bloat.cat/",
-            "dumb.jeikobu.net/"
-        )
+        val dumbInstances =
+            listOf("dumb.ducks.party/", "dumb.lunar.icu/", "dumb.bloat.cat/", "dumb.jeikobu.net/")
 
-        val nonLyricsRegex = listOf(
-            Regex("^\\d+Contributors.*"),
-            Regex("^\\d+ Contributor.*"),
-            Regex("(?i)^Translations.*"),
-            Regex("(?i)^Read More.*"),
-            Regex("(?i)^.*Lyrics$")
-        )
+        val nonLyricsRegex =
+            listOf(
+                Regex("^\\d+Contributors.*"),
+                Regex("^\\d+ Contributor.*"),
+                Regex("(?i)^Translations.*"),
+                Regex("(?i)^Read More.*"),
+                Regex("(?i)^.*Lyrics$"),
+            )
     }
 
     suspend fun geniusScrape(songUrl: String): Result<String, SourceError> {
-        val response = safeCall<HttpResponse> {
-            client.get(
-                urlString = songUrl
-            )
-        }
+        val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }
 
         when (response) {
             is Result.Success -> {
-                val lyricsElements = Ksoup.parse(response.data.body<String>())
-                    .select("div[data-lyrics-container='true']")
+                val lyricsElements =
+                    Ksoup.parse(response.data.body<String>())
+                        .select("div[data-lyrics-container='true']")
 
                 val data = buildString {
                     lyricsElements.forEach { element ->
                         element.childNodes().forEach { node ->
-                            val text = when (node) {
-                                is TextNode -> node.text()
-                                is Element -> node.wholeText()
-                                else -> return@forEach
-                            }.trim()
+                            val text =
+                                when (node) {
+                                    is TextNode -> node.text()
+                                    is Element -> node.wholeText()
+                                    else -> return@forEach
+                                }.trim()
 
                             if (text.isBlank()) return@forEach
 
@@ -73,7 +83,11 @@ class GeniusScraper(
             }
 
             is Result.Error -> {
-                var error = Result.Error<String, SourceError>(error = response.error, message = response.message)
+                var error =
+                    Result.Error<String, SourceError>(
+                        error = response.error,
+                        message = response.message,
+                    )
 
                 dumbInstances.forEach { instance ->
                     when (val result = dumbScrape(songUrl.replace("genius.com/", instance))) {
@@ -88,35 +102,36 @@ class GeniusScraper(
     }
 
     suspend fun dumbScrape(songUrl: String): Result<String, SourceError> {
-        val response = safeCall<HttpResponse> {
-            client.get(
-                urlString = songUrl
-            )
-        }
+        val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }
 
         return when (response) {
             is Result.Success -> {
                 val lyricsElements = Ksoup.parse(response.data.body<String>()).select("#lyrics")
 
-                val data = buildString {
-                    lyricsElements.forEach { element ->
-                        element.childNodes().forEach { node ->
-                            val text = when (node) {
-                                is TextNode -> node.text()
-                                is Element -> if (node.tagName() == "br") "\n" else node.wholeText()
-                                else -> return@forEach
-                            }.trimEnd()
+                val data =
+                    buildString {
+                            lyricsElements.forEach { element ->
+                                element.childNodes().forEach { node ->
+                                    val text =
+                                        when (node) {
+                                            is TextNode -> node.text()
+                                            is Element ->
+                                                if (node.tagName() == "br") "\n"
+                                                else node.wholeText()
+                                            else -> return@forEach
+                                        }.trimEnd()
 
-                            if (text.isNotEmpty()) {
-                                if (text.trim() in listOf("(", ")")) return@forEach
-                                if (text.startsWith("[") && text.endsWith("]")) {
-                                    append("\n")
+                                    if (text.isNotEmpty()) {
+                                        if (text.trim() in listOf("(", ")")) return@forEach
+                                        if (text.startsWith("[") && text.endsWith("]")) {
+                                            append("\n")
+                                        }
+                                        append("\n$text")
+                                    }
                                 }
-                                append("\n$text")
                             }
                         }
-                    }
-                }.trim()
+                        .trim()
 
                 Result.Success(data)
             }

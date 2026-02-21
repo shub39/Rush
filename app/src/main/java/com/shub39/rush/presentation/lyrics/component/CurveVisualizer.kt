@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import android.graphics.RuntimeShader
@@ -31,15 +47,9 @@ import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
 
 @Composable
-fun CurveVisualizer(
-    modifier: Modifier = Modifier,
-    waveData: VisualizerData?,
-    colors: WaveColors
-) {
+fun CurveVisualizer(modifier: Modifier = Modifier, waveData: VisualizerData?, colors: WaveColors) {
     if (!hypnoticAvailable()) {
-        Box(
-            modifier = modifier.background(Color(colors.cardWaveBackground))
-        )
+        Box(modifier = modifier.background(Color(colors.cardWaveBackground)))
     } else {
         if (waveData.isNullOrEmpty()) return
 
@@ -47,52 +57,66 @@ fun CurveVisualizer(
         val midBucket = waveData.midBucket().map { it.toInt().absoluteValue }
         val trebleBucket = waveData.trebleBucket().map { it.toInt().absoluteValue }
 
-        val bassMax by animateFloatAsState(
-            targetValue = bassBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
-        )
-        val midMax by animateFloatAsState(
-            targetValue = midBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
-        )
-        val trebleMax by animateFloatAsState(
-            targetValue = trebleBucket.maxOrNull()?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = Spring.StiffnessLow, dampingRatio = Spring.DampingRatioNoBouncy)
-        )
+        val bassMax by
+            animateFloatAsState(
+                targetValue = bassBucket.maxOrNull()?.toFloat() ?: 0f,
+                animationSpec =
+                    spring(
+                        stiffness = Spring.StiffnessLow,
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                    ),
+            )
+        val midMax by
+            animateFloatAsState(
+                targetValue = midBucket.maxOrNull()?.toFloat() ?: 0f,
+                animationSpec =
+                    spring(
+                        stiffness = Spring.StiffnessLow,
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                    ),
+            )
+        val trebleMax by
+            animateFloatAsState(
+                targetValue = trebleBucket.maxOrNull()?.toFloat() ?: 0f,
+                animationSpec =
+                    spring(
+                        stiffness = Spring.StiffnessLow,
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                    ),
+            )
 
         var startMillis = remember(colors) { -1L }
-        val time by produceState(0f) {
-            while (true) {
-                withInfiniteAnimationFrameMillis {
-                    if (startMillis < 0) startMillis = it
-                    value = ((it - startMillis) / 16.6f) / 10f
+        val time by
+            produceState(0f) {
+                while (true) {
+                    withInfiniteAnimationFrameMillis {
+                        if (startMillis < 0) startMillis = it
+                        value = ((it - startMillis) / 16.6f) / 10f
+                    }
                 }
             }
-        }
         val colorShader = RuntimeShader(sksl)
         val shaderBrush = ShaderBrush(colorShader)
 
-        Canvas(
-            modifier = modifier
-        ) {
+        Canvas(modifier = modifier) {
             colorShader.setFloatUniform(
                 "uResolution",
                 size.width,
                 size.height,
-                size.width / size.height
+                size.width / size.height,
             )
             colorShader.setFloatUniform("uTime", time)
             colorShader.setFloatUniform(
                 "cardWaveBackground",
                 Color(colors.cardWaveBackground).red,
                 Color(colors.cardWaveBackground).green,
-                Color(colors.cardWaveBackground).blue
+                Color(colors.cardWaveBackground).blue,
             )
             colorShader.setFloatUniform(
                 "cardBackground",
                 Color(colors.cardBackground).red,
                 Color(colors.cardBackground).green,
-                Color(colors.cardBackground).blue
+                Color(colors.cardBackground).blue,
             )
             colorShader.setFloatUniform("uBass", bassMax)
             colorShader.setFloatUniform("uMid", midMax)
@@ -104,7 +128,8 @@ fun CurveVisualizer(
 }
 
 @Language("AGSL")
-private val sksl: String = """
+private val sksl: String =
+    """
 uniform float uTime;
 uniform vec3 uResolution;
 
@@ -147,18 +172,20 @@ vec4 main(vec2 fragCoord) {
 @Preview
 @Composable
 private fun Preview() {
-    val waveData = rememberVisualizerState().let { state ->
-        if (state !is VisualizerState.Ready) return@let null
+    val waveData =
+        rememberVisualizerState().let { state ->
+            if (state !is VisualizerState.Ready) return@let null
 
-        state.fft
-    }
+            state.fft
+        }
 
     CurveVisualizer(
         waveData = waveData,
         modifier = Modifier.fillMaxSize(),
-        colors = WaveColors(
-            cardBackground = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-            cardWaveBackground = MaterialTheme.colorScheme.onPrimaryContainer.toArgb()
-        )
+        colors =
+            WaveColors(
+                cardBackground = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                cardWaveBackground = MaterialTheme.colorScheme.onPrimaryContainer.toArgb(),
+            ),
     )
 }
