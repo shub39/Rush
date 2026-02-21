@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.onboarding.component
 
 import androidx.compose.animation.core.Animatable
@@ -19,9 +35,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AnimatedAppIcon() {
-    Box(
-        modifier = Modifier.size(300.dp)
-    ) {
+    Box(modifier = Modifier.size(300.dp)) {
         val offsetX = remember { Animatable(300f) }
         val offsetY = remember { Animatable(-300f) }
         val scale = remember { Animatable(0.2f) }
@@ -34,28 +48,16 @@ fun AnimatedAppIcon() {
                 scale.snapTo(0.2f)
                 alpha.snapTo(0f)
 
-                launch {
-                    offsetX.animateTo(0f, animationSpec = tween(1000))
-                }
-                launch {
-                    offsetY.animateTo(0f, animationSpec = tween(1000))
-                }
-                launch {
-                    scale.animateTo(1f, animationSpec = tween(1000))
-                }
+                launch { offsetX.animateTo(0f, animationSpec = tween(1000)) }
+                launch { offsetY.animateTo(0f, animationSpec = tween(1000)) }
+                launch { scale.animateTo(1f, animationSpec = tween(1000)) }
                 alpha.animateTo(1f, animationSpec = tween(1000))
 
                 delay(2000)
 
-                launch {
-                    offsetX.animateTo(-300f, animationSpec = tween(1000))
-                }
-                launch {
-                    offsetY.animateTo(300f, animationSpec = tween(1000))
-                }
-                launch {
-                    scale.animateTo(0.2f, animationSpec = tween(1000))
-                }
+                launch { offsetX.animateTo(-300f, animationSpec = tween(1000)) }
+                launch { offsetY.animateTo(300f, animationSpec = tween(1000)) }
+                launch { scale.animateTo(0.2f, animationSpec = tween(1000)) }
                 alpha.animateTo(0f, animationSpec = tween(1000))
 
                 delay(300)
@@ -66,15 +68,15 @@ fun AnimatedAppIcon() {
             painter = painterResource(R.drawable.app_icon),
             contentDescription = "App Icon",
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .graphicsLayer {
-                    translationX = offsetX.value
-                    translationY = offsetY.value
-                    scaleX = scale.value
-                    scaleY = scale.value
-                    this.alpha = alpha.value
-                }
-                .size(300.dp)
+            modifier =
+                Modifier.graphicsLayer {
+                        translationX = offsetX.value
+                        translationY = offsetY.value
+                        scaleX = scale.value
+                        scaleY = scale.value
+                        this.alpha = alpha.value
+                    }
+                    .size(300.dp),
         )
     }
 }

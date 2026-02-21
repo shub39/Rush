@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.AnimatedVisibility
@@ -39,14 +55,8 @@ fun Actions(
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
-
-    IconButton(
-        onClick = onEdit
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.palette),
-            contentDescription = "Open Palette",
-        )
+    IconButton(onClick = onEdit) {
+        Icon(painter = painterResource(R.drawable.palette), contentDescription = "Open Palette")
     }
 
     IconButton(
@@ -55,119 +65,105 @@ fun Actions(
                 coroutineScope.launch {
                     clipboardManager.copyToClipboard(
                         if (state.selectedLines.isEmpty()) {
-                            buildAnnotatedString {
-                                append(
-                                    if (state.source == Sources.LRCLIB) {
-                                        state.lyricsState.song.lyrics.joinToString("\n") { it.value }
-                                    } else {
-                                        state.lyricsState.song.geniusLyrics?.joinToString("\n") { it.value }
-                                            ?: ""
-                                    }
-                                )
+                                buildAnnotatedString {
+                                    append(
+                                        if (state.source == Sources.LRCLIB) {
+                                            state.lyricsState.song.lyrics.joinToString("\n") {
+                                                it.value
+                                            }
+                                        } else {
+                                            state.lyricsState.song.geniusLyrics?.joinToString(
+                                                "\n"
+                                            ) {
+                                                it.value
+                                            } ?: ""
+                                        }
+                                    )
+                                }
+                            } else {
+                                buildAnnotatedString {
+                                    append(
+                                        state.selectedLines.toSortedMap().values.joinToString("\n")
+                                    )
+                                }
                             }
-                        } else {
-                            buildAnnotatedString {
-                                append(
-                                    state.selectedLines.toSortedMap().values.joinToString("\n")
-                                )
-                            }
-                        }.toString()
+                            .toString()
                     )
                 }
             }
         }
     ) {
-        Icon(
-            painter = painterResource(R.drawable.copy),
-            contentDescription = "Copy",
-        )
+        Icon(painter = painterResource(R.drawable.copy), contentDescription = "Copy")
     }
 
     AnimatedVisibility(visible = state.selectedLines.isEmpty()) {
-        IconButton(onClick = {
-            action(
-                LyricsPageAction.OnSourceChange(
-                    if (state.source == Sources.LRCLIB) Sources.GENIUS else Sources.LRCLIB
-                )
-            )
-
-            action(
-                LyricsPageAction.OnSync(false)
-            )
-        }) {
-            if (state.source == Sources.GENIUS) {
-                Icon(
-                    painter = painterResource(R.drawable.quote),
-                    contentDescription = "LrcLib",
-                )
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.genius),
-                    contentDescription = "Genius"
-                )
-            }
-        }
-    }
-
-    AnimatedVisibility(
-        visible = state.source == Sources.LRCLIB && state.selectedLines.isEmpty()
-    ) {
         IconButton(
             onClick = {
                 action(
-                    LyricsPageAction.OnLyricsCorrect(true)
+                    LyricsPageAction.OnSourceChange(
+                        if (state.source == Sources.LRCLIB) Sources.GENIUS else Sources.LRCLIB
+                    )
                 )
-                action(
-                    LyricsPageAction.OnSync(false)
-                )
-                if (state.autoChange) action(
-                    LyricsPageAction.OnToggleAutoChange
-                )
+
+                action(LyricsPageAction.OnSync(false))
             }
         ) {
-            Icon(
-                painter = painterResource(R.drawable.edit),
-                contentDescription = "Correct Lyrics"
-            )
+            if (state.source == Sources.GENIUS) {
+                Icon(painter = painterResource(R.drawable.quote), contentDescription = "LrcLib")
+            } else {
+                Icon(painter = painterResource(R.drawable.genius), contentDescription = "Genius")
+            }
+        }
+    }
+
+    AnimatedVisibility(visible = state.source == Sources.LRCLIB && state.selectedLines.isEmpty()) {
+        IconButton(
+            onClick = {
+                action(LyricsPageAction.OnLyricsCorrect(true))
+                action(LyricsPageAction.OnSync(false))
+                if (state.autoChange) action(LyricsPageAction.OnToggleAutoChange)
+            }
+        ) {
+            Icon(painter = painterResource(R.drawable.edit), contentDescription = "Correct Lyrics")
         }
     }
 
     AnimatedVisibility(
-        visible = state.syncedAvailable && state.selectedLines.isEmpty() && state.source == Sources.LRCLIB && notificationAccess
+        visible =
+            state.syncedAvailable &&
+                state.selectedLines.isEmpty() &&
+                state.source == Sources.LRCLIB &&
+                notificationAccess
     ) {
         Row {
             IconButton(
-                onClick = {
-                    action(
-                        LyricsPageAction.OnSync(!state.sync)
-                    )
-                },
-                colors = if (state.sync) {
-                    IconButtonDefaults.iconButtonColors(
-                        contentColor = cardBackground,
-                        containerColor = cardContent
-                    )
-                } else {
-                    IconButtonDefaults.iconButtonColors()
-                },
-                modifier = Modifier.run {
-                    if (state.sync &&
-                        (state.lyricsBackground in audioDependentBackgrounds)
-                    ) {
-                        glowBackground(
-                            (12 * glowMultiplier).dp,
-                            IconButtonDefaults.standardShape,
-                            cardContent
+                onClick = { action(LyricsPageAction.OnSync(!state.sync)) },
+                colors =
+                    if (state.sync) {
+                        IconButtonDefaults.iconButtonColors(
+                            contentColor = cardBackground,
+                            containerColor = cardContent,
                         )
                     } else {
-                        this
-                    }
-                }
+                        IconButtonDefaults.iconButtonColors()
+                    },
+                modifier =
+                    Modifier.run {
+                        if (state.sync && (state.lyricsBackground in audioDependentBackgrounds)) {
+                            glowBackground(
+                                (12 * glowMultiplier).dp,
+                                IconButtonDefaults.standardShape,
+                                cardContent,
+                            )
+                        } else {
+                            this
+                        }
+                    },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.sync),
                     contentDescription = "Synced Lyrics",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }
@@ -176,33 +172,32 @@ fun Actions(
     AnimatedVisibility(visible = notificationAccess) {
         IconButton(
             onClick = { action(LyricsPageAction.OnToggleAutoChange) },
-            colors = if (state.autoChange) {
-                IconButtonDefaults.iconButtonColors(
-                    contentColor = cardBackground,
-                    containerColor = cardContent
-                )
-            } else {
-                IconButtonDefaults.iconButtonColors()
-            },
-            modifier = Modifier.run {
-                if (
-                    state.autoChange &&
-                    (state.lyricsBackground in audioDependentBackgrounds)
-                ) {
-                    glowBackground(
-                        (12 * glowMultiplier).dp,
-                        IconButtonDefaults.standardShape,
-                        cardContent
+            colors =
+                if (state.autoChange) {
+                    IconButtonDefaults.iconButtonColors(
+                        contentColor = cardBackground,
+                        containerColor = cardContent,
                     )
                 } else {
-                    this
-                }
-            }
+                    IconButtonDefaults.iconButtonColors()
+                },
+            modifier =
+                Modifier.run {
+                    if (state.autoChange && (state.lyricsBackground in audioDependentBackgrounds)) {
+                        glowBackground(
+                            (12 * glowMultiplier).dp,
+                            IconButtonDefaults.standardShape,
+                            cardContent,
+                        )
+                    } else {
+                        this
+                    }
+                },
         ) {
             Icon(
                 painter = painterResource(R.drawable.meteor),
                 contentDescription = "Rush Mode",
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
         }
     }
@@ -213,12 +208,13 @@ fun Actions(
                 if (state.lyricsState is LyricsState.Loaded) {
                     action(
                         LyricsPageAction.OnUpdateShareLines(
-                            songDetails = SongDetails(
-                                title = state.lyricsState.song.title,
-                                artist = state.lyricsState.song.artists,
-                                album = state.lyricsState.song.album,
-                                artUrl = state.lyricsState.song.artUrl ?: ""
-                            )
+                            songDetails =
+                                SongDetails(
+                                    title = state.lyricsState.song.title,
+                                    artist = state.lyricsState.song.artists,
+                                    album = state.lyricsState.song.album,
+                                    artUrl = state.lyricsState.song.artUrl ?: "",
+                                )
                         )
                     )
 
@@ -226,21 +222,13 @@ fun Actions(
                 }
             }
         ) {
-            Icon(
-                painter = painterResource(R.drawable.share),
-                contentDescription = "Share"
-            )
+            Icon(painter = painterResource(R.drawable.share), contentDescription = "Share")
         }
     }
 
     AnimatedVisibility(visible = state.selectedLines.isNotEmpty()) {
-        IconButton(
-            onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.close),
-                contentDescription = null
-            )
+        IconButton(onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }) {
+            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
         }
     }
 }

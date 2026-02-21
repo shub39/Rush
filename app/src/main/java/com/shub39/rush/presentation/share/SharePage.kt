@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.share
 
 import android.graphics.Bitmap
@@ -98,18 +114,13 @@ fun SharePage(
     var selectedImage: PlatformFile? by remember { mutableStateOf(null) }
     var saveImage: ImageBitmap? by remember { mutableStateOf(null) }
 
-    val imagePicker = rememberFilePickerLauncher(
-        type = FileKitType.Image
-    ) { image -> selectedImage = image }
+    val imagePicker =
+        rememberFilePickerLauncher(type = FileKitType.Image) { image -> selectedImage = image }
 
     val imageSaver = rememberFileSaverLauncher { file ->
         if (saveImage != null) {
             coroutineScope.launch(Dispatchers.IO) {
-                file?.write(
-                    saveImage!!.encodeToByteArray(
-                        format = ImageFormat.PNG
-                    )
-                )
+                file?.write(saveImage!!.encodeToByteArray(format = ImageFormat.PNG))
             }
         }
     }
@@ -126,7 +137,7 @@ fun SharePage(
             saveImage = it
             imageSaver.launch(
                 suggestedName = "${state.songDetails.title} - ${state.songDetails.artist}",
-                extension = "png"
+                extension = "png",
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },
@@ -145,15 +156,11 @@ fun SharePage(
                 stream.close()
 
                 val contentUri: Uri =
-                    FileProvider.getUriForFile(
-                        context,
-                        "${context.packageName}.provider",
-                        file
-                    )
+                    FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
                 shareLauncher.launch(PlatformFile(contentUri))
             }
-        }
+        },
     )
 }
 
@@ -169,7 +176,7 @@ private fun SharePageContent(
     onLaunchImagePicker: () -> Unit,
     isProUser: Boolean,
     onShowPaywall: () -> Unit,
-    onShareImage: () -> Unit
+    onShareImage: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val zoomState = rememberZoomState(initialScale = 1f)
@@ -177,47 +184,52 @@ private fun SharePageContent(
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
 
-    val cornerRadius by animateDpAsState(
-        targetValue = when (state.cardRoundness) {
-            CornerRadius.DEFAULT -> pxToDp(0)
-            CornerRadius.ROUNDED -> pxToDp(32)
-        }, label = "corners"
-    )
-    val containerColor by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            CardColors.CUSTOM -> Color(state.cardBackground)
-        }, label = "container"
-    )
-    val contentColor by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-            CardColors.CUSTOM -> Color(state.cardContent)
-        }, label = "content"
-    )
-    val cardColor = CardDefaults.cardColors(
-        containerColor = containerColor,
-        contentColor = contentColor
-    )
+    val cornerRadius by
+        animateDpAsState(
+            targetValue =
+                when (state.cardRoundness) {
+                    CornerRadius.DEFAULT -> pxToDp(0)
+                    CornerRadius.ROUNDED -> pxToDp(32)
+                },
+            label = "corners",
+        )
+    val containerColor by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CardColors.CUSTOM -> Color(state.cardBackground)
+                },
+            label = "container",
+        )
+    val contentColor by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                    CardColors.CUSTOM -> Color(state.cardContent)
+                },
+            label = "content",
+        )
+    val cardColor =
+        CardDefaults.cardColors(containerColor = containerColor, contentColor = contentColor)
     val cardCorners = RoundedCornerShape(cornerRadius)
 
-    val modifier = Modifier
-        .width(pxToDp(720))
-        .zoomable(zoomState = zoomState)
-        .drawWithContent {
-            cardGraphicsLayer.record {
-                this@drawWithContent.drawContent()
+    val modifier =
+        Modifier.width(pxToDp(720))
+            .zoomable(zoomState = zoomState)
+            .drawWithContent {
+                cardGraphicsLayer.record { this@drawWithContent.drawContent() }
+                drawLayer(cardGraphicsLayer)
             }
-            drawLayer(cardGraphicsLayer)
-        }
-        .padding(pxToDp(32))
-        .let {
-            if (state.cardFit == CardFit.FIT) {
-                it.heightIn(max = pxToDp(1920))
-            } else it.height(pxToDp(1280))
-        }
+            .padding(pxToDp(32))
+            .let {
+                if (state.cardFit == CardFit.FIT) {
+                    it.heightIn(max = pxToDp(1920))
+                } else it.height(pxToDp(1280))
+            }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -225,126 +237,129 @@ private fun SharePageContent(
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(
-                        onClick = onDismiss
-                    ) {
+                    IconButton(onClick = onDismiss) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            RushTheme(
-                theme = Theme(font = state.cardFont)
-            ) {
+            RushTheme(theme = Theme(font = state.cardFont)) {
                 when (state.cardTheme) {
-                    CardTheme.SPOTIFY -> SpotifyShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.SPOTIFY ->
+                        SpotifyShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.RUSHED -> RushedShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        selectedImage = selectedImage,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.RUSHED ->
+                        RushedShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            selectedImage = selectedImage,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.HYPNOTIC -> HypnoticShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.HYPNOTIC ->
+                        HypnoticShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.VERTICAL -> VerticalShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.VERTICAL ->
+                        VerticalShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.QUOTE -> QuoteShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.QUOTE ->
+                        QuoteShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.COUPLET -> CoupletShareCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.COUPLET ->
+                        CoupletShareCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.MESSY -> MessyCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.MESSY ->
+                        MessyCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.CHAT -> ChatCard(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        sortedLines = state.selectedLines,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.CHAT ->
+                        ChatCard(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            sortedLines = state.selectedLines,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
 
-                    CardTheme.ALBUM_ART -> AlbumArt(
-                        modifier = modifier,
-                        song = state.songDetails,
-                        cardColors = cardColor,
-                        cardCorners = cardCorners,
-                        fit = state.cardFit,
-                        selectedImage = selectedImage,
-                        albumArtShape = state.albumArtShape.toShape(),
-                        rushBranding = state.rushBranding
-                    )
+                    CardTheme.ALBUM_ART ->
+                        AlbumArt(
+                            modifier = modifier,
+                            song = state.songDetails,
+                            cardColors = cardColor,
+                            cardCorners = cardCorners,
+                            fit = state.cardFit,
+                            selectedImage = selectedImage,
+                            albumArtShape = state.albumArtShape.toShape(),
+                            rushBranding = state.rushBranding,
+                        )
                 }
             }
 
@@ -355,39 +370,34 @@ private fun SharePageContent(
                     FloatingActionButton(
                         onClick = { editSheet = true },
                         shape = MaterialTheme.shapes.extraLarge,
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primary,
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.edit),
-                            contentDescription = "Edit"
+                            contentDescription = "Edit",
                         )
                     }
                 },
-                modifier = Modifier
-                    .align(
-                        if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
-                            Alignment.BottomCenter
-                        } else {
-                            Alignment.BottomEnd
-                        }
-                    )
-                    .padding(32.dp)
+                modifier =
+                    Modifier.align(
+                            if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                                Alignment.BottomCenter
+                            } else {
+                                Alignment.BottomEnd
+                            }
+                        )
+                        .padding(32.dp),
             ) {
                 IconButton(
                     onClick = {
                         if (isProUser || !premiumCards.contains(state.cardTheme)) {
-                            scope.launch {
-                                onSaveImage(cardGraphicsLayer.toImageBitmap())
-                            }
+                            scope.launch { onSaveImage(cardGraphicsLayer.toImageBitmap()) }
                         } else {
                             onShowPaywall()
                         }
                     }
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.save),
-                        contentDescription = "Save",
-                    )
+                    Icon(painter = painterResource(R.drawable.save), contentDescription = "Save")
                 }
 
                 IconButton(
@@ -402,20 +412,18 @@ private fun SharePageContent(
                     Icon(
                         painter = painterResource(R.drawable.share),
                         contentDescription = "Share",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                 }
 
                 AnimatedVisibility(
                     visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART)
                 ) {
-                    IconButton(
-                        onClick = onLaunchImagePicker
-                    ) {
+                    IconButton(onClick = onLaunchImagePicker) {
                         Icon(
                             painter = painterResource(R.drawable.image),
                             contentDescription = "Image",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -433,13 +441,15 @@ private fun SharePageContent(
                 colorPicker = true
             },
             isProUser = isProUser,
-            onShowPaywall = onShowPaywall
+            onShowPaywall = onShowPaywall,
         )
     }
 
     if (colorPicker) {
         ColorPickerDialog(
-            initialColor = if (editTarget == "content") Color(state.cardContent) else Color(state.cardBackground),
+            initialColor =
+                if (editTarget == "content") Color(state.cardContent)
+                else Color(state.cardBackground),
             onSelect = {
                 if (editTarget == "content") {
                     onAction(SharePageAction.OnUpdateCardContent(it.toArgb()))
@@ -447,48 +457,41 @@ private fun SharePageContent(
                     onAction(SharePageAction.OnUpdateCardBackground(it.toArgb()))
                 }
             },
-            onDismiss = {
-                colorPicker = false
-            }
+            onDismiss = { colorPicker = false },
         )
     }
 }
 
-@Preview(device = "spec:width=1080px,height=2340px,dpi=480", showSystemUi = false,
-    showBackground = false
+@Preview(
+    device = "spec:width=1080px,height=2340px,dpi=480",
+    showSystemUi = false,
+    showBackground = false,
 )
 @Composable
 private fun Preview() {
-    var state by remember { mutableStateOf(
-        SharePageState(
-            cardTheme = CardTheme.RUSHED,
-            songDetails = SongDetails(
-                title = "Satan in the wait",
-                artist = "Daughters",
-                null, ""
-            ),
-            selectedLines = (1..5).associateWith {
-                "This is line no $it"
-            }
+    var state by remember {
+        mutableStateOf(
+            SharePageState(
+                cardTheme = CardTheme.RUSHED,
+                songDetails =
+                    SongDetails(title = "Satan in the wait", artist = "Daughters", null, ""),
+                selectedLines = (1..5).associateWith { "This is line no $it" },
+            )
         )
-    ) }
+    }
 
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK,
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SharePageContent(
             state = state,
-            onDismiss = { },
+            onDismiss = {},
             selectedImage = null,
             onAction = {},
-            onSaveImage = { },
-            onLaunchImagePicker = { },
-            onShareImage = { },
+            onSaveImage = {},
+            onLaunchImagePicker = {},
+            onShareImage = {},
             cardGraphicsLayer = rememberGraphicsLayer(),
             isProUser = true,
-            onShowPaywall = {  },
+            onShowPaywall = {},
         )
     }
 }

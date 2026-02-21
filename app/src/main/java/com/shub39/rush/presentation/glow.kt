@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation
 
 import androidx.compose.animation.core.LinearEasing
@@ -35,74 +51,61 @@ fun AndroidPaint.applyShadowLayer(
     xShifting: Dp,
     yShifting: Dp,
     shadowColor: Color,
-    density: Density // TODO: make it a context parameter
+    density: Density, // TODO: make it a context parameter
 ): AndroidPaint = apply {
     with(density) {
-        setShadowLayer(
-            radius.toPx(),
-            xShifting.toPx(), yShifting.toPx(),
-            shadowColor.toArgb()
-        )
+        setShadowLayer(radius.toPx(), xShifting.toPx(), yShifting.toPx(), shadowColor.toArgb())
     }
 }
 
-/**
- * Creates a "glowing" background of specified [shape] and [color]
- */
+/** Creates a "glowing" background of specified [shape] and [color] */
 fun Modifier.glowBackground(
     radius: Dp,
     shape: Shape,
     color: Color,
     xShifting: Dp = 0.dp,
-    yShifting: Dp = 0.dp
+    yShifting: Dp = 0.dp,
 ): Modifier = drawBehind {
-    val path = when (val outline = shape.createOutline(size, layoutDirection, Density(density))) {
-        is Outline.Generic -> outline.path
-        is Outline.Rectangle -> Path().apply { addRect(outline.rect) }
-        is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
-    }
+    val path =
+        when (val outline = shape.createOutline(size, layoutDirection, Density(density))) {
+            is Outline.Generic -> outline.path
+            is Outline.Rectangle -> Path().apply { addRect(outline.rect) }
+            is Outline.Rounded -> Path().apply { addRoundRect(outline.roundRect) }
+        }
     val density = Density(density)
     drawContext.canvas.nativeCanvas.apply {
         drawPath(
             path.asAndroidPath(),
-            Paint().apply {
-                this.color = Color.Transparent
-            }.asFrameworkPaint().applyShadowLayer(
-                radius,
-                xShifting,
-                yShifting,
-                color,
-                density
-            )
+            Paint()
+                .apply { this.color = Color.Transparent }
+                .asFrameworkPaint()
+                .applyShadowLayer(radius, xShifting, yShifting, color, density),
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 private fun PreviewGlowText() {
     val infiniteTransition = rememberInfiniteTransition(label = "glow")
-    val glowRadius by infiniteTransition.animateFloat(
-        initialValue = 48f,
-        targetValue = 8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(500, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "glow"
-    )
+    val glowRadius by
+        infiniteTransition.animateFloat(
+            initialValue = 48f,
+            targetValue = 8f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+            label = "glow",
+        )
 
     Text(
         text = "Kotlinism is a perfect disease",
-        style = TextStyle(
-            color = Color(0xFF8B00FF),
-            fontSize = 24.sp
-        ),
-        modifier = Modifier
-            .padding(32.dp)
-            .glowBackground(glowRadius.dp, shape = RectangleShape, color = Color.Cyan)
+        style = TextStyle(color = Color(0xFF8B00FF), fontSize = 24.sp),
+        modifier =
+            Modifier.padding(32.dp)
+                .glowBackground(glowRadius.dp, shape = RectangleShape, color = Color.Cyan),
     )
 }
-

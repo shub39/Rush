@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.share.component.cards
 
 import androidx.compose.animation.AnimatedVisibility
@@ -46,104 +62,88 @@ fun CoupletShareCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean
+    rushBranding: Boolean,
 ) {
-    Box(
-        modifier = modifier.clip(cardCorners)
-    ) {
-        ArtFromUrl(
-            imageUrl = song.artUrl,
-            modifier = Modifier
-                .matchParentSize()
-                .blur(pxToDp(12))
-        )
+    Box(modifier = modifier.clip(cardCorners)) {
+        ArtFromUrl(imageUrl = song.artUrl, modifier = Modifier.matchParentSize().blur(pxToDp(12)))
 
         Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(color = cardColors.containerColor.copy(alpha = 0.7f))
+            modifier =
+                Modifier.matchParentSize()
+                    .background(color = cardColors.containerColor.copy(alpha = 0.7f))
         )
 
-        Card(
-            colors = cardColors.copy(containerColor = Color.Transparent)
-        ) {
+        Card(colors = cardColors.copy(containerColor = Color.Transparent)) {
             Row(
-                modifier = Modifier
-                    .padding(pxToDp(48))
-                    .let {
+                modifier =
+                    Modifier.padding(pxToDp(48)).let {
                         if (fit == CardFit.STANDARD) {
                             it.weight(1f)
                         } else it
                     },
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
-                    AnimatedVisibility(
-                        visible = rushBranding
-                    ) {
+                    AnimatedVisibility(visible = rushBranding) {
                         RushBranding(
                             color = cardColors.contentColor,
-                            modifier = Modifier.padding(bottom = pxToDp(48))
+                            modifier = Modifier.padding(bottom = pxToDp(48)),
                         )
                     }
 
                     Text(
                         text = sortedLines.values.firstOrNull() ?: "Woah...",
-                        style = MaterialTheme.typography.displayMedium.fromPx(
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 48,
-                            letterSpacing = 0,
-                            lineHeight = 48,
-                        ),
+                        style =
+                            MaterialTheme.typography.displayMedium.fromPx(
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 48,
+                                letterSpacing = 0,
+                                lineHeight = 48,
+                            ),
                     )
 
                     Text(
                         text = sortedLines.values.elementAtOrNull(1) ?: "...",
-                        style = MaterialTheme.typography.displaySmall.fromPx(
-                            letterSpacing = 0,
-                            lineHeight = 38,
-                            fontSize = 36
-                        ),
+                        style =
+                            MaterialTheme.typography.displaySmall.fromPx(
+                                letterSpacing = 0,
+                                lineHeight = 38,
+                                fontSize = 36,
+                            ),
                     )
 
-                    Spacer(
-                        modifier = Modifier.padding(pxToDp(64))
-                    )
+                    Spacer(modifier = Modifier.padding(pxToDp(64)))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         ArtFromUrl(
                             imageUrl = song.artUrl,
-                            modifier = Modifier
-                                .size(pxToDp(100))
-                                .clip(albumArtShape)
+                            modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
                         )
 
-                        Column(
-                            modifier = Modifier.padding(horizontal = pxToDp(16))
-                        ) {
+                        Column(modifier = Modifier.padding(horizontal = pxToDp(16))) {
                             Text(
                                 text = song.title,
-                                style = MaterialTheme.typography.titleMedium.fromPx(
-                                    fontWeight = FontWeight.ExtraBold,
-                                    fontSize = 28,
-                                    letterSpacing = 0,
-                                    lineHeight = 28,
-                                ),
+                                style =
+                                    MaterialTheme.typography.titleMedium.fromPx(
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 28,
+                                        letterSpacing = 0,
+                                        lineHeight = 28,
+                                    ),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
 
                             Text(
                                 text = song.artist,
-                                style = MaterialTheme.typography.bodySmall.fromPx(
-                                    fontSize = 24,
-                                    letterSpacing = 0,
-                                    lineHeight = 24,
-                                ),
+                                style =
+                                    MaterialTheme.typography.bodySmall.fromPx(
+                                        fontSize = 24,
+                                        letterSpacing = 0,
+                                        lineHeight = 24,
+                                    ),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
@@ -156,32 +156,24 @@ fun CoupletShareCard(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         CoupletShareCard(
-            modifier = Modifier
-                .width(pxToDp(720))
-                .heightIn(max = pxToDp(1280)),
-            song = SongDetails(
-                title = "Test Song",
-                artist = "Eminem",
-                null, ""
-            ),
-            sortedLines = mapOf(
-                0 to "This is a simple line"
-            ).plus(
-                2 to "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
-            ),
-            cardColors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
+            modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
+            song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
+            sortedLines =
+                mapOf(0 to "This is a simple line")
+                    .plus(
+                        2 to
+                            "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
+                    ),
+            cardColors =
+                CardDefaults.cardColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
             fit = CardFit.FIT,
-            rushBranding = false
+            rushBranding = false,
         )
     }
 }

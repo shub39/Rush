@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics
 
 import android.util.Log
@@ -48,25 +64,27 @@ fun parseLyrics(lyricsString: String): List<Lyric>? {
     val seenTimes = mutableSetOf<Long>()
 
     return try {
-        listOf(Lyric(0, "")).plus(
-            lyricsString.lines().mapNotNull { line ->
-                val parts = line.split("] ")
-                if (parts.size == 2) {
-                    val time = parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
-                        minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
-                    }
-                    if (time in seenTimes) {
-                        null
+        listOf(Lyric(0, ""))
+            .plus(
+                lyricsString.lines().mapNotNull { line ->
+                    val parts = line.split("] ")
+                    if (parts.size == 2) {
+                        val time =
+                            parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
+                                minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
+                            }
+                        if (time in seenTimes) {
+                            null
+                        } else {
+                            seenTimes.add(time)
+                            val text = parts[1]
+                            Lyric(time, text)
+                        }
                     } else {
-                        seenTimes.add(time)
-                        val text = parts[1]
-                        Lyric(time, text)
+                        null
                     }
-                } else {
-                    null
                 }
-            }
-        )
+            )
     } catch (e: Exception) {
         Log.wtf("LyricsPage", e)
         null
@@ -77,7 +95,7 @@ fun updateSelectedLines(
     selectedLines: Map<Int, String>,
     key: Int,
     value: String,
-    maxSelections: Int = 6
+    maxSelections: Int = 6,
 ): Map<Int, String> {
     return if (!selectedLines.contains(key) && selectedLines.size < maxSelections) {
         selectedLines.plus(key to value)
@@ -100,72 +118,85 @@ fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
 
 @Composable
 fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
-    val hypnoticColor1 by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-            CardColors.CUSTOM -> Color(state.mCardBackground)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-        }.lighten(2f),
-        label = "hypnotic color 1"
-    )
-    val hypnoticColor2 by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-            CardColors.CUSTOM -> Color(state.mCardBackground)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-        }.darken(2f),
-        label = "hypnotic color 2"
-    )
+    val hypnoticColor1 by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                }.lighten(2f),
+            label = "hypnotic color 1",
+        )
+    val hypnoticColor2 by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                }.darken(2f),
+            label = "hypnotic color 2",
+        )
     return Pair(hypnoticColor1, hypnoticColor2)
 }
 
 @Composable
-fun getCardColors(
-    state: LyricsPageState
-): Pair<Color, Color> {
-    val cardBackground by animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.CUSTOM -> Color(state.mCardBackground)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            },
-        label = "cardBackground"
-    )
-    val cardContent by animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                CardColors.CUSTOM -> Color(state.mCardContent)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-            },
-        label = "cardContent"
-    )
+fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
+    val cardBackground by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                },
+            label = "cardBackground",
+        )
+    val cardContent by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
+                    CardColors.CUSTOM -> Color(state.mCardContent)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                },
+            label = "cardContent",
+        )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
 }
 
 @Composable
-fun getWaveColors(
-    state: LyricsPageState
-): WaveColors {
-    val cardBackground by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            CardColors.CUSTOM -> Color(state.mCardBackground)
-        }
-    )
-    val cardWaveBackground by animateColorAsState(
-        targetValue = when (state.cardColors) {
-            CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted).blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f).darken(1.5f)
-            CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant).blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f).lighten(1.5f)
-            CardColors.CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
-        }
-    )
+fun getWaveColors(state: LyricsPageState): WaveColors {
+    val cardBackground by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                }
+        )
+    val cardWaveBackground by
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED ->
+                        Color(state.extractedColors.cardBackgroundMuted)
+                            .blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f)
+                            .darken(1.5f)
+                    CardColors.VIBRANT ->
+                        Color(state.extractedColors.cardBackgroundDominant)
+                            .blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f)
+                            .lighten(1.5f)
+                    CardColors.CUSTOM ->
+                        Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
+                }
+        )
 
     return WaveColors(
         cardBackground = cardBackground.toArgb(),
-        cardWaveBackground = cardWaveBackground.toArgb()
+        cardWaveBackground = cardWaveBackground.toArgb(),
     )
 }
 
@@ -193,23 +224,15 @@ fun BoxScope.ApplyLyricsBackground(
     waveData: VisualizerData?,
     waveColors: WaveColors,
     hypnoticColor1: Color,
-    hypnoticColor2: Color
+    hypnoticColor2: Color,
 ) {
     when (background) {
         LyricsBackground.ALBUM_ART -> {
-            ArtFromUrl(
-                imageUrl = artUrl,
-                modifier = Modifier
-                    .blur(80.dp)
-                    .matchParentSize()
-            )
+            ArtFromUrl(imageUrl = artUrl, modifier = Modifier.blur(80.dp).matchParentSize())
 
             Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        color = cardBackground.copy(alpha = 0.5f)
-                    )
+                modifier =
+                    Modifier.matchParentSize().background(color = cardBackground.copy(alpha = 0.5f))
             )
         }
 
@@ -217,7 +240,7 @@ fun BoxScope.ApplyLyricsBackground(
             WaveVisualizer(
                 waveData = waveData,
                 colors = waveColors,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier.matchParentSize(),
             )
         }
 
@@ -225,30 +248,26 @@ fun BoxScope.ApplyLyricsBackground(
             GradientVisualizer(
                 waveData = waveData,
                 colors = waveColors,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier.matchParentSize(),
             )
         }
 
         LyricsBackground.HYPNOTIC -> {
             HypnoticVisualizer(
                 modifier = Modifier.matchParentSize(),
-                colors = generateGradientColors(hypnoticColor1, hypnoticColor2)
+                colors = generateGradientColors(hypnoticColor1, hypnoticColor2),
             )
         }
 
         LyricsBackground.SOLID_COLOR -> {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(cardBackground)
-            )
+            Box(modifier = Modifier.matchParentSize().background(cardBackground))
         }
 
         LyricsBackground.CURVE -> {
             CurveVisualizer(
                 modifier = Modifier.matchParentSize(),
                 waveData = waveData,
-                colors = waveColors
+                colors = waveColors,
             )
         }
     }
@@ -264,6 +283,6 @@ fun Song.toSongUi(): SongUi {
         artUrl = artUrl,
         lyrics = breakLyrics(lyrics),
         syncedLyrics = if (syncedLyrics == null) null else parseLyrics(syncedLyrics),
-        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics)
+        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics),
     )
 }

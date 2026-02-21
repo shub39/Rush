@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.section
 
 import androidx.compose.foundation.background
@@ -86,14 +102,15 @@ fun LyricsCustomisationsPage(
     AudioPermissionDialog(
         show = audioPermissionDialog,
         onDismiss = { audioPermissionDialog = false },
-        onLaunchPermission = requestMicrophonePermission
+        onLaunchPermission = requestMicrophonePermission,
     )
 
     if (colorPickerDialog) {
         ColorPickerDialog(
-            initialColor = if (editTarget == "content") {
-                Color(state.mCardContent)
-            } else Color(state.mCardBackground),
+            initialColor =
+                if (editTarget == "content") {
+                    Color(state.mCardContent)
+                } else Color(state.mCardBackground),
             onSelect = {
                 if (editTarget == "content") {
                     onAction(LyricsPageAction.OnUpdatemContent(it.toArgb()))
@@ -101,7 +118,7 @@ fun LyricsCustomisationsPage(
                     onAction(LyricsPageAction.OnUpdatemBackground(it.toArgb()))
                 }
             },
-            onDismiss = { colorPickerDialog = false }
+            onDismiss = { colorPickerDialog = false },
         )
     }
 
@@ -109,16 +126,13 @@ fun LyricsCustomisationsPage(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = {
-                        Text(stringResource(R.string.customisations))
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                    ),
+                    title = { Text(stringResource(R.string.customisations)) },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                        ),
                     navigationIcon = {
-                        IconButton(
-                            onClick = onNavigateBack
-                        ) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back),
                                 contentDescription = "Navigate Back",
@@ -126,56 +140,45 @@ fun LyricsCustomisationsPage(
                         }
                     },
                     actions = {
-                        IconButton(
-                            onClick = {
-                                onAction(LyricsPageAction.OnCustomisationReset)
-                            }
-                        ) {
+                        IconButton(onClick = { onAction(LyricsPageAction.OnCustomisationReset) }) {
                             Icon(
                                 painter = painterResource(R.drawable.refresh),
-                                contentDescription = "Reset Defaults"
+                                contentDescription = "Reset Defaults",
                             )
                         }
-                    }
+                    },
                 )
             },
-            modifier = modifier
+            modifier = modifier,
         ) { paddingValues ->
             LazyColumn(
-                modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                    end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
-                    bottom = paddingValues.calculateBottomPadding() + 60.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier.padding(top = paddingValues.calculateTopPadding()).fillMaxSize(),
+                contentPadding =
+                    PaddingValues(
+                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
+                        bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 stickyHeader {
                     Column(
-                        modifier = Modifier
-                            .background(
+                        modifier =
+                            Modifier.background(
                                 color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                shape = RoundedCornerShape(
-                                    bottomStart = 32.dp,
-                                    bottomEnd = 32.dp
-                                )
+                                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
                             )
                     ) {
                         if (notificationAccess) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 ToggleButton(
                                     checked = !isShowingSynced,
                                     onCheckedChange = { isShowingSynced = false },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(vertical = 8.dp)
+                                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                                 ) {
                                     Text(text = stringResource(R.string.plain_lyrics))
                                 }
@@ -183,9 +186,7 @@ fun LyricsCustomisationsPage(
                                 ToggleButton(
                                     checked = isShowingSynced,
                                     onCheckedChange = { isShowingSynced = true },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(vertical = 8.dp)
+                                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                                 ) {
                                     Text(text = stringResource(R.string.synced_lyrics))
                                 }
@@ -201,7 +202,7 @@ fun LyricsCustomisationsPage(
                             hypnoticColor1 = hypnoticColor1,
                             hypnoticColor2 = hypnoticColor2,
                             waveColors = waveColors,
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         )
                     }
                 }
@@ -215,7 +216,7 @@ fun LyricsCustomisationsPage(
                     onShowColorPickerDialog = {
                         editTarget = it
                         colorPickerDialog = true
-                    }
+                    },
                 )
             }
         }
@@ -224,16 +225,13 @@ fun LyricsCustomisationsPage(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = {
-                        Text(stringResource(R.string.customisations))
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                    ),
+                    title = { Text(stringResource(R.string.customisations)) },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                        ),
                     navigationIcon = {
-                        IconButton(
-                            onClick = onNavigateBack
-                        ) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back),
                                 contentDescription = "Navigate Back",
@@ -241,54 +239,47 @@ fun LyricsCustomisationsPage(
                         }
                     },
                     actions = {
-                        IconButton(
-                            onClick = {
-                                onAction(LyricsPageAction.OnCustomisationReset)
-                            }
-                        ) {
+                        IconButton(onClick = { onAction(LyricsPageAction.OnCustomisationReset) }) {
                             Icon(
                                 painter = painterResource(R.drawable.refresh),
-                                contentDescription = "Reset Defaults"
+                                contentDescription = "Reset Defaults",
                             )
                         }
-                    }
+                    },
                 )
             },
-            modifier = modifier
+            modifier = modifier,
         ) { paddingValues ->
             Row(
-                modifier = Modifier
-                    .padding(
-                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current)
-                    )
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                modifier =
+                    Modifier.padding(
+                            start =
+                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                            end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
+                        )
+                        .fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(
-                            top = paddingValues.calculateTopPadding() + 16.dp,
-                            start = 16.dp,
-                            bottom = paddingValues.calculateBottomPadding() + 16.dp
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier.weight(1f)
+                            .verticalScroll(rememberScrollState())
+                            .padding(
+                                top = paddingValues.calculateTopPadding() + 16.dp,
+                                start = 16.dp,
+                                bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                            ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (notificationAccess) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             ToggleButton(
                                 checked = !isShowingSynced,
                                 onCheckedChange = { isShowingSynced = false },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(vertical = 8.dp)
+                                modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                             ) {
                                 Text(text = stringResource(R.string.plain_lyrics))
                             }
@@ -296,9 +287,7 @@ fun LyricsCustomisationsPage(
                             ToggleButton(
                                 checked = isShowingSynced,
                                 onCheckedChange = { isShowingSynced = true },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(vertical = 8.dp)
+                                modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                             ) {
                                 Text(text = stringResource(R.string.synced_lyrics))
                             }
@@ -313,20 +302,19 @@ fun LyricsCustomisationsPage(
                         waveData = waveData,
                         hypnoticColor1 = hypnoticColor1,
                         hypnoticColor2 = hypnoticColor2,
-                        waveColors = waveColors
+                        waveColors = waveColors,
                     )
                 }
 
                 LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(
-                        top = paddingValues.calculateTopPadding() + 16.dp,
-                        end = 16.dp,
-                        bottom = paddingValues.calculateBottomPadding() + 60.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                    contentPadding =
+                        PaddingValues(
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                            end = 16.dp,
+                            bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     lyricsCustomisationSettings(
                         state = state,
@@ -337,7 +325,7 @@ fun LyricsCustomisationsPage(
                         onShowColorPickerDialog = {
                             editTarget = it
                             colorPickerDialog = true
-                        }
+                        },
                     )
                 }
             }
@@ -350,32 +338,27 @@ fun LyricsCustomisationsPage(
 private fun AudioPermissionDialog(
     show: Boolean = true,
     onDismiss: () -> Unit = {},
-    onLaunchPermission: () -> Unit = {}
+    onLaunchPermission: () -> Unit = {},
 ) {
     if (show) {
-        RushDialog(
-            onDismissRequest = onDismiss
-        ) {
+        RushDialog(onDismissRequest = onDismiss) {
             Column(
                 modifier = Modifier.wrapContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.eq),
-                    contentDescription = null
-                )
+                Icon(painter = painterResource(R.drawable.eq), contentDescription = null)
 
                 Text(
                     text = stringResource(R.string.audio_permission),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
 
                 Text(
                     text = stringResource(R.string.audio_permission_info),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
 
                 Button(
@@ -383,11 +366,9 @@ private fun AudioPermissionDialog(
                         onLaunchPermission()
                         onDismiss()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
-                        text = stringResource(R.string.grant_permission)
-                    )
+                    Text(text = stringResource(R.string.grant_permission))
                 }
             }
         }
@@ -398,32 +379,21 @@ private fun AudioPermissionDialog(
 @Composable
 private fun Preview() {
     var state by remember {
-        mutableStateOf(
-            LyricsPageState(
-                sync = true,
-                lyricsBackground = LyricsBackground.ALBUM_ART
-            )
-        )
+        mutableStateOf(LyricsPageState(sync = true, lyricsBackground = LyricsBackground.ALBUM_ART))
     }
 
-    val waveData = rememberVisualizerState().let {
-        if (it is VisualizerState.Ready) it.fft else null
-    }
+    val waveData =
+        rememberVisualizerState().let { if (it is VisualizerState.Ready) it.fft else null }
 
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK,
-            seedColor = Color.Red.toArgb()
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK, seedColor = Color.Red.toArgb())) {
         LyricsCustomisationsPage(
-            onNavigateBack = { },
+            onNavigateBack = {},
             state = state,
-            onAction = { },
+            onAction = {},
             notificationAccess = true,
             microphonePermission = true,
-            requestMicrophonePermission = { },
-            waveData = waveData
+            requestMicrophonePermission = {},
+            waveData = waveData,
         )
     }
 }

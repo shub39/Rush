@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.setting.section
 
 import androidx.compose.foundation.background
@@ -62,21 +78,20 @@ import kotlinx.coroutines.launch
 fun BackupPage(
     state: SettingsPageState,
     action: (SettingsPageAction) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
 ) = PageFill {
     val scope = rememberCoroutineScope()
 
     var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
     val fileSaverLauncher = rememberFileSaverLauncher { file ->
         if (file != null && state.exportState is ExportState.ExportReady) {
-            scope.launch {
-                file.writeString(state.exportState.data)
-            }
+            scope.launch { file.writeString(state.exportState.data) }
         }
     }
-    val filePickerLauncher = rememberFilePickerLauncher(
-        type = FileKitType.File(extensions = listOf("json"))
-    ) { file -> restoreFile = file }
+    val filePickerLauncher =
+        rememberFilePickerLauncher(type = FileKitType.File(extensions = listOf("json"))) { file ->
+            restoreFile = file
+        }
 
     LaunchedEffect(Unit) {
         action(SettingsPageAction.ResetBackup)
@@ -86,15 +101,12 @@ fun BackupPage(
     BackupPageContent(
         onNavigateBack = onNavigateBack,
         onSaveFile = {
-            fileSaverLauncher.launch(
-                suggestedName = "Rush Export",
-                extension = "json"
-            )
+            fileSaverLauncher.launch(suggestedName = "Rush Export", extension = "json")
         },
         state = state,
         restoreFile = restoreFile,
         action = action,
-        onPickFile = { filePickerLauncher.launch() }
+        onPickFile = { filePickerLauncher.launch() },
     )
 }
 
@@ -106,75 +118,63 @@ private fun BackupPageContent(
     state: SettingsPageState,
     restoreFile: PlatformFile?,
     onPickFile: () -> Unit,
-    action: (SettingsPageAction) -> Unit
+    action: (SettingsPageAction) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
             TopAppBar(
-                title = {
-                    Text(stringResource(R.string.backup))
-                },
+                title = { Text(stringResource(R.string.backup)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateBack
-                    ) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
-            contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 16.dp,
-                bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = paddingValues.calculateTopPadding() + 16.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                    start =
+                        paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                    end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                ),
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.clip(leadingItemShape())
-                    ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Column(modifier = Modifier.clip(leadingItemShape())) {
                         ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.export)
-                                )
-                            },
+                            headlineContent = { Text(text = stringResource(R.string.export)) },
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(R.drawable.upload_file),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                             },
                             colors = listItemColors(),
                             supportingContent = {
-                                Text(
-                                    text = stringResource(R.string.export_info)
-                                )
-                            }
+                                Text(text = stringResource(R.string.export_info))
+                            },
                         )
 
                         Row(
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .background(listItemColors().containerColor)
-                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
+                            modifier =
+                                Modifier.fillParentMaxWidth()
+                                    .background(listItemColors().containerColor)
+                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
                         ) {
                             Button(
                                 onClick = onSaveFile,
                                 enabled = state.exportState is ExportState.ExportReady,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             ) {
                                 when (state.exportState) {
                                     is ExportState.ExportReady -> {
@@ -185,15 +185,13 @@ private fun BackupPageContent(
                                     }
 
                                     ExportState.Exporting -> {
-                                        LoadingIndicator(
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        LoadingIndicator(modifier = Modifier.size(24.dp))
                                     }
 
                                     ExportState.Error -> {
                                         Icon(
                                             painter = painterResource(R.drawable.error),
-                                            contentDescription = "Error"
+                                            contentDescription = "Error",
                                         )
                                     }
                                 }
@@ -201,40 +199,32 @@ private fun BackupPageContent(
                         }
                     }
 
-                    Column(
-                        modifier = Modifier.clip(endItemShape())
-                    ) {
+                    Column(modifier = Modifier.clip(endItemShape())) {
                         ListItem(
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(R.drawable.download),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                             },
-                            headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.restore)
-                                )
-                            },
+                            headlineContent = { Text(text = stringResource(R.string.restore)) },
                             supportingContent = {
-                                Text(
-                                    text = stringResource(R.string.restore_info)
-                                )
-                            }
+                                Text(text = stringResource(R.string.restore_info))
+                            },
                         )
 
                         Row(
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .background(listItemColors().containerColor)
-                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            modifier =
+                                Modifier.fillParentMaxWidth()
+                                    .background(listItemColors().containerColor)
+                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             Button(
                                 onClick = onPickFile,
                                 modifier = Modifier.weight(1f),
-                                enabled = state.restoreState !is RestoreState.Restoring
+                                enabled = state.restoreState !is RestoreState.Restoring,
                             ) {
                                 Text(text = stringResource(R.string.choose_file))
                             }
@@ -242,33 +232,38 @@ private fun BackupPageContent(
                             if (restoreFile != null) {
                                 Button(
                                     modifier = Modifier.weight(1f),
-                                    onClick = { action(SettingsPageAction.OnRestoreSongs(restoreFile.toString())) },
-                                    enabled = state.restoreState is RestoreState.Idle
+                                    onClick = {
+                                        action(
+                                            SettingsPageAction.OnRestoreSongs(
+                                                restoreFile.toString()
+                                            )
+                                        )
+                                    },
+                                    enabled = state.restoreState is RestoreState.Idle,
                                 ) {
                                     when (state.restoreState) {
                                         RestoreState.Idle -> {
                                             Icon(
                                                 painter = painterResource(R.drawable.play),
                                                 contentDescription = "Start Restore",
-                                                modifier = Modifier.size(20.dp)
+                                                modifier = Modifier.size(20.dp),
                                             )
-                                            Spacer(modifier = Modifier.width(ButtonDefaults.MediumIconSpacing))
-                                            Text(
-                                                text = stringResource(R.string.start)
+                                            Spacer(
+                                                modifier =
+                                                    Modifier.width(ButtonDefaults.MediumIconSpacing)
                                             )
+                                            Text(text = stringResource(R.string.start))
                                         }
 
                                         RestoreState.Restoring -> {
-                                            LoadingIndicator(
-                                                modifier = Modifier.size(24.dp)
-                                            )
+                                            LoadingIndicator(modifier = Modifier.size(24.dp))
                                         }
 
                                         RestoreState.Restored -> {
                                             Icon(
                                                 painter = painterResource(R.drawable.check),
                                                 contentDescription = "Restored",
-                                                modifier = Modifier.size(20.dp)
+                                                modifier = Modifier.size(20.dp),
                                             )
                                         }
 
@@ -276,7 +271,7 @@ private fun BackupPageContent(
                                             Icon(
                                                 painter = painterResource(R.drawable.error),
                                                 contentDescription = "Error",
-                                                modifier = Modifier.size(20.dp)
+                                                modifier = Modifier.size(20.dp),
                                             )
                                         }
                                     }
@@ -293,18 +288,14 @@ private fun BackupPageContent(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         BackupPageContent(
-            onNavigateBack = { },
-            onSaveFile = { },
+            onNavigateBack = {},
+            onSaveFile = {},
             state = SettingsPageState(),
             restoreFile = PlatformFile(""),
-            onPickFile = { },
-            action = { }
+            onPickFile = {},
+            action = {},
         )
     }
 }

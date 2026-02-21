@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +37,9 @@ import androidx.compose.ui.window.DialogProperties
  * @param onDismissRequest Lambda to be invoked when the user attempts to dismiss the dialog,
  * @param modifier The [Modifier] to be applied to the dialog's root container.
  * @param padding The padding to be applied inside the card, around the content.
- * @param content A composable lambda block that defines the content of the dialog.
- *   The content is placed within a [ColumnScope], allowing for direct use of column-specific
- *   modifiers like `weight`.
+ * @param content A composable lambda block that defines the content of the dialog. The content is
+ *   placed within a [ColumnScope], allowing for direct use of column-specific modifiers like
+ *   `weight`.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,21 +48,19 @@ fun RushDialog(
     modifier: Modifier = Modifier,
     padding: Dp = 16.dp,
     properties: DialogProperties = DialogProperties(),
-    content: @Composable (ColumnScope.() -> Unit)
+    content: @Composable (ColumnScope.() -> Unit),
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
-        properties = properties
+        properties = properties,
     ) {
-        Card(
-            shape = MaterialTheme.shapes.extraLarge
-        ) {
+        Card(shape = MaterialTheme.shapes.extraLarge) {
             Column(
                 modifier = Modifier.padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                content = content
+                content = content,
             )
         }
     }

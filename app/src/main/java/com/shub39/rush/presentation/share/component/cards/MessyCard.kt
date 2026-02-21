@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.share.component.cards
 
 import androidx.compose.animation.AnimatedVisibility
@@ -45,7 +61,7 @@ private data class Word(
     val fontWeight: FontWeight,
     val fontSize: Int,
     val rotate: Int,
-    val fontDecoration: TextDecoration
+    val fontDecoration: TextDecoration,
 )
 
 @Composable
@@ -57,7 +73,7 @@ fun MessyCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean
+    rushBranding: Boolean,
 ) {
     val firstLine = sortedLines.values.firstOrNull() ?: "Woah..."
     val words = remember {
@@ -67,100 +83,85 @@ fun MessyCard(
                 fontWeight = if (Random.nextBoolean()) FontWeight.Normal else FontWeight.ExtraBold,
                 fontSize = Random.nextInt(50, 100),
                 rotate = Random.nextInt(-10..10),
-                fontDecoration = listOf(
-                    TextDecoration.Underline,
-                    TextDecoration.None
-                ).random()
+                fontDecoration = listOf(TextDecoration.Underline, TextDecoration.None).random(),
             )
         }
     }
 
-    Card(
-        modifier = modifier,
-        colors = cardColors,
-        shape = cardCorners
-    ) {
+    Card(modifier = modifier, colors = cardColors, shape = cardCorners) {
         Column(
-            modifier = Modifier
-                .padding(pxToDp(48))
-                .let {
+            modifier =
+                Modifier.padding(pxToDp(48)).let {
                     if (fit == CardFit.STANDARD) {
                         it.weight(1f)
                     } else it
                 },
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
-            AnimatedVisibility(
-                visible = rushBranding
-            ) {
+            AnimatedVisibility(visible = rushBranding) {
                 RushBranding(
                     color = cardColors.contentColor,
-                    modifier = Modifier.padding(bottom = pxToDp(32))
+                    modifier = Modifier.padding(bottom = pxToDp(32)),
                 )
             }
 
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(pxToDp(16)),
-                verticalArrangement = Arrangement.spacedBy(pxToDp(16))
+                verticalArrangement = Arrangement.spacedBy(pxToDp(16)),
             ) {
                 words.forEach { word ->
                     Text(
                         modifier = Modifier.rotate(word.rotate.toFloat()),
                         text = word.text,
-                        style = MaterialTheme.typography.titleMedium
-                            .copy(
-                                textDecoration = word.fontDecoration
-                            )
-                            .fromPx(
-                                fontSize = word.fontSize,
-                                letterSpacing = 0,
-                                lineHeight = word.fontSize,
-                                fontWeight = word.fontWeight,
-                            ),
+                        style =
+                            MaterialTheme.typography.titleMedium
+                                .copy(textDecoration = word.fontDecoration)
+                                .fromPx(
+                                    fontSize = word.fontSize,
+                                    letterSpacing = 0,
+                                    lineHeight = word.fontSize,
+                                    fontWeight = word.fontWeight,
+                                ),
                     )
                 }
             }
 
             Spacer(modifier = Modifier.padding(pxToDp(64)))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = pxToDp(32)),
-                    horizontalAlignment = Alignment.End
+                    modifier = Modifier.weight(1f).padding(horizontal = pxToDp(32)),
+                    horizontalAlignment = Alignment.End,
                 ) {
                     Text(
                         text = song.title,
-                        style = MaterialTheme.typography.titleMedium.fromPx(
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 28,
-                            letterSpacing = 0,
-                            lineHeight = 28,
-                        ),
+                        style =
+                            MaterialTheme.typography.titleMedium.fromPx(
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 28,
+                                letterSpacing = 0,
+                                lineHeight = 28,
+                            ),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
 
                     Text(
                         text = song.artist,
-                        style = MaterialTheme.typography.bodySmall.fromPx(
-                            fontSize = 26,
-                            letterSpacing = 0,
-                            lineHeight = 26,
-                        ),
+                        style =
+                            MaterialTheme.typography.bodySmall.fromPx(
+                                fontSize = 26,
+                                letterSpacing = 0,
+                                lineHeight = 26,
+                            ),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
                 ArtFromUrl(
                     imageUrl = song.artUrl,
-                    modifier = Modifier
-                        .size(pxToDp(100))
-                        .clip(albumArtShape)
+                    modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
                 )
             }
         }
@@ -170,32 +171,24 @@ fun MessyCard(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         MessyCard(
-            modifier = Modifier
-                .width(pxToDp(720))
-                .heightIn(max = pxToDp(1280)),
-            song = SongDetails(
-                title = "Test Song",
-                artist = "Eminem",
-                null, ""
-            ),
-            sortedLines = mapOf(
-                0 to "This is a simple line"
-            ).plus(
-                0 to "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
-            ),
-            cardColors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
+            modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
+            song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
+            sortedLines =
+                mapOf(0 to "This is a simple line")
+                    .plus(
+                        0 to
+                            "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
+                    ),
+            cardColors =
+                CardDefaults.cardColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
             fit = CardFit.FIT,
-            rushBranding = true
+            rushBranding = true,
         )
     }
 }

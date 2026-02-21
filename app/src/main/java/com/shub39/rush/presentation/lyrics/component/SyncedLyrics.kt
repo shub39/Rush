@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
@@ -63,7 +79,7 @@ fun SyncedLyrics(
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
@@ -74,21 +90,16 @@ fun SyncedLyrics(
     LaunchedEffect(state.playingSong.position) {
         scope.launch {
             val currentIndex =
-                getCurrentLyricIndex(
-                    state.playingSong.position,
-                    syncedLyrics
-                ).coerceAtLeast(0)
+                getCurrentLyricIndex(state.playingSong.position, syncedLyrics).coerceAtLeast(0)
 
-            val viewportHeight = lazyListState.layoutInfo.viewportEndOffset -
+            val viewportHeight =
+                lazyListState.layoutInfo.viewportEndOffset -
                     lazyListState.layoutInfo.viewportStartOffset
 
             val itemHeight = itemHeights[currentIndex] ?: 0
             val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
 
-            lazyListState.animateScrollToItem(
-                index = currentIndex,
-                scrollOffset = -centerOffset
-            )
+            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
         }
     }
 
@@ -96,9 +107,12 @@ fun SyncedLyrics(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 256.dp),
-        verticalArrangement = Arrangement.spacedBy(with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }),
+        verticalArrangement =
+            Arrangement.spacedBy(
+                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
+            ),
         userScrollEnabled = state.playingSong.speed == 0f,
-        state = lazyListState
+        state = lazyListState,
     ) {
         itemsIndexed(syncedLyrics) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
@@ -107,51 +121,55 @@ fun SyncedLyrics(
             val currentPlayingIndex = getCurrentLyricIndex(state.playingSong.position, syncedLyrics)
             val isCurrent = lyricIndex == currentPlayingIndex
 
-            val progress = nextTime?.let { nt ->
-                val denom = (nt - lyric.time).toFloat()
-                if (denom <= 0f) 1f
-                else ((currentTime - lyric.time).toFloat() / denom).coerceIn(0f, 1f)
-            } ?: 1f
+            val progress =
+                nextTime?.let { nt ->
+                    val denom = (nt - lyric.time).toFloat()
+                    if (denom <= 0f) 1f
+                    else ((currentTime - lyric.time).toFloat() / denom).coerceIn(0f, 1f)
+                } ?: 1f
 
-            val animatedProgress by animateFloatAsState(
-                targetValue = progress,
-                animationSpec = tween(
-                    durationMillis = 1000,
-                    easing = LinearOutSlowInEasing
+            val animatedProgress by
+                animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = tween(durationMillis = 1000, easing = LinearOutSlowInEasing),
                 )
-            )
 
-            val underTextAlpha by animateFloatAsState(
-                targetValue = if (isCurrent) 0.5f else 0.2f,
-                animationSpec = tween(500, easing = LinearEasing)
-            )
+            val underTextAlpha by
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
+                    animationSpec = tween(500, easing = LinearEasing),
+                )
 
-            val glowAlpha by animateFloatAsState(
-                targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0f else 2f,
-                animationSpec = tween(500)
-            )
+            val glowAlpha by
+                animateFloatAsState(
+                    targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0f else 2f,
+                    animationSpec = tween(500),
+                )
 
-            val blur by animateDpAsState(
-                targetValue = if (!state.blurSyncedLyrics) 0.dp else (abs(lyricIndex - currentPlayingIndex) * 3).dp,
-                animationSpec = tween(100)
-            )
+            val blur by
+                animateDpAsState(
+                    targetValue =
+                        if (!state.blurSyncedLyrics) 0.dp
+                        else (abs(lyricIndex - currentPlayingIndex) * 3).dp,
+                    animationSpec = tween(100),
+                )
 
-            val scale by animateFloatAsState(
-                targetValue = if (isCurrent) 1f else 0.8f,
-                animationSpec = tween(100)
-            )
+            val scale by
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 1f else 0.8f,
+                    animationSpec = tween(100),
+                )
 
-            val textColor by animateColorAsState(
-                targetValue = when {
-                    lyric.time <= state.playingSong.position -> cardContent
-                    else -> cardContent.copy(0.3f)
-                },
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = FastOutSlowInEasing
-                ),
-                label = "textColor"
-            )
+            val textColor by
+                animateColorAsState(
+                    targetValue =
+                        when {
+                            lyric.time <= state.playingSong.position -> cardContent
+                            else -> cardContent.copy(0.3f)
+                        },
+                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                    label = "textColor",
+                )
 
             SyncedLyric(
                 textPrefs = state.textPrefs,
@@ -163,11 +181,11 @@ fun SyncedLyrics(
                 glowAlpha = glowAlpha,
                 scale = scale,
                 animatedProgress = animatedProgress,
-                modifier = Modifier
-                    .onGloballyPositioned { layoutCoordinates ->
+                modifier =
+                    Modifier.onGloballyPositioned { layoutCoordinates ->
                         val height = layoutCoordinates.size.height
                         itemHeights[index] = height
-                    }
+                    },
             )
         }
     }
@@ -184,31 +202,28 @@ fun SyncedLyric(
     textColor: Color,
     scale: Float,
     animatedProgress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = textPrefs.lyricsAlignment.toArrangement()
+        horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
     ) {
         Box(
-            modifier = Modifier
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                    transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
-                }
-                .blur(
-                    radius = blur,
-                    edgeTreatment = BlurredEdgeTreatment.Unbounded
-                )
-                .clip(MaterialTheme.shapes.medium)
-                .clickable {
-                    action(LyricsPageAction.OnSeek(lyric.time))
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                },
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier.graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
+                    }
+                    .blur(radius = blur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable {
+                        action(LyricsPageAction.OnSeek(lyric.time))
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    },
+            contentAlignment = Alignment.Center,
         ) {
             if (lyric.text.isNotEmpty()) {
                 Text(
@@ -219,12 +234,12 @@ fun SyncedLyric(
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                        .blur(
-                            radius = glowAlpha.dp,
-                            edgeTreatment = BlurredEdgeTreatment.Unbounded
-                        )
+                    modifier =
+                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            .blur(
+                                radius = glowAlpha.dp,
+                                edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                            ),
                 )
 
                 Text(
@@ -235,23 +250,19 @@ fun SyncedLyric(
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                        .drawWithContent {
+                    modifier =
+                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp).drawWithContent {
                             val height = size.height * animatedProgress
-                            clipRect(
-                                top = 0f,
-                                bottom = height
-                            ) {
+                            clipRect(top = 0f, bottom = height) {
                                 this@drawWithContent.drawContent()
                             }
-                        }
+                        },
                 )
             } else {
                 DotLoadingProgress(
                     progress = animatedProgress,
                     color = textColor,
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(12.dp),
                 )
             }
         }

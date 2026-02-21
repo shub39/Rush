@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -29,22 +45,18 @@ import org.koin.android.annotation.KoinViewModel
 class SavedVM(
     private val stateLayer: SharedStates,
     private val repo: SongRepository,
-    private val datastore: OtherPreferences
+    private val datastore: OtherPreferences,
 ) : ViewModel() {
 
     private var savedJob: Job? = null
 
     private val _state = stateLayer.savedPageState
 
-    val state = _state.asStateFlow()
-        .onStart {
-            observeData()
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SavedPageState()
-        )
+    val state =
+        _state
+            .asStateFlow()
+            .onStart { observeData() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SavedPageState())
 
     fun onAction(action: SavedPageAction) {
         viewModelScope.launch {
@@ -56,25 +68,15 @@ class SavedVM(
                 SavedPageAction.OnToggleAutoChange -> {
                     val newPref = !_state.value.autoChange
 
-                    stateLayer.lyricsState.update {
-                        it.copy(
-                            autoChange = newPref
-                        )
-                    }
+                    stateLayer.lyricsState.update { it.copy(autoChange = newPref) }
 
-                    _state.update {
-                        it.copy(autoChange = newPref)
-                    }
+                    _state.update { it.copy(autoChange = newPref) }
 
                     if (newPref) MediaListenerImpl.onSeekEagerly()
                 }
 
                 SavedPageAction.OnToggleSearchSheet -> {
-                    stateLayer.searchSheetState.update {
-                        it.copy(
-                            visible = !it.visible
-                        )
-                    }
+                    stateLayer.searchSheetState.update { it.copy(visible = !it.visible) }
                 }
 
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
@@ -84,42 +86,39 @@ class SavedVM(
 
     private fun observeData() {
         savedJob?.cancel()
-        savedJob = viewModelScope.launch {
-            repo.getSongs()
-                .onEach { songs ->
-                    if (songs.isEmpty()) {
-                        _state.update {
-                            it.copy(
-                                songsByTime = emptyList(),
-                                songsAsc = emptyList(),
-                                songsDesc = emptyList(),
-                            )
+        savedJob =
+            viewModelScope.launch {
+                repo
+                    .getSongs()
+                    .onEach { songs ->
+                        if (songs.isEmpty()) {
+                            _state.update {
+                                it.copy(
+                                    songsByTime = emptyList(),
+                                    songsAsc = emptyList(),
+                                    songsDesc = emptyList(),
+                                )
+                            }
+
+                            return@onEach
                         }
 
-                        return@onEach
+                        _state.update { state ->
+                            state.copy(
+                                songsByTime = songs.sortedByDescending { it.dateAdded },
+                                songsAsc = songs.sortedBy { it.title },
+                                songsDesc = songs.sortedByDescending { it.title },
+                            )
+                        }
                     }
+                    .flowOn(Dispatchers.Default)
+                    .launchIn(this)
 
-                    _state.update { state ->
-                        state.copy(
-                            songsByTime = songs.sortedByDescending { it.dateAdded },
-                            songsAsc = songs.sortedBy { it.title },
-                            songsDesc = songs.sortedByDescending { it.title },
-                        )
-                    }
-                }
-                .flowOn(Dispatchers.Default)
-                .launchIn(this)
-
-            datastore.getSortOrderFlow()
-                .onEach { sortOrder ->
-                    _state.update {
-                        it.copy(
-                            sortOrder = sortOrder
-                        )
-                    }
-                }
-                .launchIn(this)
-        }
+                datastore
+                    .getSortOrderFlow()
+                    .onEach { sortOrder -> _state.update { it.copy(sortOrder = sortOrder) } }
+                    .launchIn(this)
+            }
     }
 
     private suspend fun fetchLyrics(id: Long) {
@@ -133,14 +132,15 @@ class SavedVM(
                 source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null,
-                sync = result.syncedLyrics != null && (getMainTitle(it.playingSong.title).trim()
-                    .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
+                sync =
+                    result.syncedLyrics != null &&
+                        (getMainTitle(it.playingSong.title)
+                            .trim()
+                            .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
                 selectedLines = emptyMap(),
             )
         }
 
-        _state.update {
-            it.copy(currentSong = result)
-        }
+        _state.update { it.copy(currentSong = result) }
     }
 }

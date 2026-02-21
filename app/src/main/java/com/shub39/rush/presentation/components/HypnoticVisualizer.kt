@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.components
 
 import android.graphics.RuntimeShader
@@ -22,50 +38,39 @@ import com.shub39.rush.presentation.hypnoticAvailable
 /**
  * A Composable that displays an animated, wavy gradient using a Skia shader.
  *
- * If shaders are not available on the device
- * it falls back to a simple static `Brush.verticalGradient` using the provided colors.
+ * If shaders are not available on the device it falls back to a simple static
+ * `Brush.verticalGradient` using the provided colors.
  *
  * @param modifier The [Modifier] to be applied to this Composable.
- * @param colors The list of [Color]s to be used in the gradient/shader. The shader
- *               is dynamically generated to support the number of colors provided.
+ * @param colors The list of [Color]s to be used in the gradient/shader. The shader is dynamically
+ *   generated to support the number of colors provided.
  */
 @Composable
-fun HypnoticVisualizer(
-    modifier: Modifier = Modifier,
-    colors: List<Color>
-) {
+fun HypnoticVisualizer(modifier: Modifier = Modifier, colors: List<Color>) {
     if (!hypnoticAvailable()) {
-        Box(
-            modifier = modifier.background(
-                brush = Brush.verticalGradient(colors)
-            )
-        )
+        Box(modifier = modifier.background(brush = Brush.verticalGradient(colors)))
     } else {
         var startMillis = remember(colors) { -1L }
-        val time by produceState(0f) {
-            while (true) {
-                withInfiniteAnimationFrameMillis {
-                    if (startMillis < 0) startMillis = it
-                    value = ((it - startMillis) / 16.6f) / 10f
+        val time by
+            produceState(0f) {
+                while (true) {
+                    withInfiniteAnimationFrameMillis {
+                        if (startMillis < 0) startMillis = it
+                        value = ((it - startMillis) / 16.6f) / 10f
+                    }
                 }
             }
-        }
-        val colorShader = RuntimeShader(
-            getSksl(colorCount = colors.size)
-        )
+        val colorShader = RuntimeShader(getSksl(colorCount = colors.size))
         val shaderBrush = ShaderBrush(colorShader)
-        val colorUniforms = colors.flatMap {
-            listOf(it.red, it.green, it.blue)
-        }.toTypedArray().toFloatArray()
+        val colorUniforms =
+            colors.flatMap { listOf(it.red, it.green, it.blue) }.toTypedArray().toFloatArray()
 
-        Canvas(
-            modifier = modifier
-        ) {
+        Canvas(modifier = modifier) {
             colorShader.setFloatUniform(
                 "uResolution",
                 size.width,
                 size.height,
-                size.width / size.height
+                size.width / size.height,
             )
             colorShader.setFloatUniform("uTime", time)
             colorShader.setFloatUniform("uColor", colorUniforms)
@@ -75,9 +80,8 @@ fun HypnoticVisualizer(
     }
 }
 
-private fun getSksl(
-    colorCount: Int
-): String = """
+private fun getSksl(colorCount: Int): String =
+    """
     uniform float uTime;
     uniform vec3 uResolution;
 
@@ -109,12 +113,7 @@ private fun getSksl(
 @Composable
 private fun Preview() {
     HypnoticVisualizer(
-        colors = listOf(
-            Color.Red,
-            Color.Red.lighten(2f),
-            Color.Yellow.darken(2f),
-            Color.Yellow
-        ),
-        modifier = Modifier.fillMaxSize()
+        colors = listOf(Color.Red, Color.Red.lighten(2f), Color.Yellow.darken(2f), Color.Yellow),
+        modifier = Modifier.fillMaxSize(),
     )
 }

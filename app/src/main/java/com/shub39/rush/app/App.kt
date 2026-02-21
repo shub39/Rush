@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.app
 
 import androidx.compose.animation.fadeIn
@@ -39,23 +55,17 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 private sealed interface Route {
-    @Serializable
-    data object SavedPage : Route
+    @Serializable data object SavedPage : Route
 
-    @Serializable
-    data object LyricsGraph : Route
+    @Serializable data object LyricsGraph : Route
 
-    @Serializable
-    data object SettingsGraph : Route
+    @Serializable data object SettingsGraph : Route
 
-    @Serializable
-    data object SharePage : Route
+    @Serializable data object SharePage : Route
 
-    @Serializable
-    data object OnboardingPage : Route
+    @Serializable data object OnboardingPage : Route
 
-    @Serializable
-    data object PaywallPage : Route
+    @Serializable data object PaywallPage : Route
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,9 +77,7 @@ fun App() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context))
-    }
+    LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context)) }
 
     LaunchedEffect(globalState.onBoardingDone, globalState.showPaywall) {
         if (!globalState.onBoardingDone) {
@@ -80,9 +88,7 @@ fun App() {
         }
     }
 
-    CompositionLocalProvider(
-        LocalCoilImageLoader provides koinInject<ImageLoader>()
-    ) {
+    CompositionLocalProvider(LocalCoilImageLoader provides koinInject<ImageLoader>()) {
         RushTheme(theme = globalState.theme) {
             NavHost(
                 enterTransition = { fadeIn() },
@@ -91,9 +97,7 @@ fun App() {
                 popExitTransition = { fadeOut() },
                 navController = navController,
                 startDestination = Route.SavedPage,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .fillMaxSize()
+                modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
             ) {
                 composable<Route.SavedPage> {
                     val savedVM: SavedVM = koinViewModel()
@@ -116,14 +120,10 @@ fun App() {
                         notificationAccess = globalState.notificationAccess,
                         lyricsState = lyricsState,
                         lyricsAction = lyricsVM::onAction,
-                        onDismiss = {
-                            navController.navigateUp()
-                        },
+                        onDismiss = { navController.navigateUp() },
                         onShare = {
-                            navController.navigate(Route.SharePage) {
-                                launchSingleTop = true
-                            }
-                        }
+                            navController.navigate(Route.SharePage) { launchSingleTop = true }
+                        },
                     )
                 }
 
@@ -163,7 +163,7 @@ fun App() {
                         notificationAccess = globalState.notificationAccess,
                         onUpdateNotificationAccess = {
                             globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context))
-                        }
+                        },
                     )
                 }
 
@@ -173,7 +173,7 @@ fun App() {
                         onDismissRequest = {
                             navController.navigateUp()
                             globalVM.onAction(GlobalAction.OnTogglePaywall)
-                        }
+                        },
                     )
                 }
             }
@@ -184,11 +184,9 @@ fun App() {
                 state = searchState,
                 onAction = searchSheetVM::onAction,
                 onNavigateToLyrics = {
-                    navController.navigate(Route.LyricsGraph) {
-                        launchSingleTop = true
-                    }
+                    navController.navigate(Route.LyricsGraph) { launchSingleTop = true }
                 },
-                sheetState = rememberModalBottomSheetState()
+                sheetState = rememberModalBottomSheetState(),
             )
         }
     }

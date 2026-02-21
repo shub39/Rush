@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.billing
 
 import androidx.compose.foundation.layout.Box
@@ -20,11 +36,7 @@ import com.shub39.rush.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaywallPage(
-    isProUser: Boolean,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     val paywallOptions = remember {
         PaywallOptions.Builder(dismissRequest = onDismissRequest)
             .setShouldDisplayDismissButton(true)
@@ -40,18 +52,15 @@ fun PaywallPage(
 
         IconButton(
             onClick = onDismissRequest,
-            colors = IconButtonDefaults.iconButtonColors(
-                contentColor = Color(0xFF282828),
-                containerColor = Color(0xfff2e3b1)
-            ),
-            modifier = Modifier
-                .padding(vertical = 32.dp, horizontal = 16.dp)
-                .align(Alignment.TopEnd)
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    contentColor = Color(0xFF282828),
+                    containerColor = Color(0xfff2e3b1),
+                ),
+            modifier =
+                Modifier.padding(vertical = 32.dp, horizontal = 16.dp).align(Alignment.TopEnd),
         ) {
-            Icon(
-                painter = painterResource(R.drawable.close),
-                contentDescription = "Close"
-            )
+            Icon(painter = painterResource(R.drawable.close), contentDescription = "Close")
         }
     }
 }

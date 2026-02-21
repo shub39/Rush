@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.setting.section
 
 import android.R.color.system_accent1_200
@@ -81,97 +97,89 @@ fun LookAndFeelPage(
     isProUser: Boolean,
     onAction: (SettingsPageAction) -> Unit,
     onShowPaywall: () -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.look_and_feel)
-                    )
-                },
+                title = { Text(text = stringResource(R.string.look_and_feel)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateBack
-                    ) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = "Navigate Back"
+                            contentDescription = "Navigate Back",
                         )
                     }
-                }
+                },
             )
         },
-        modifier = Modifier.widthIn(max = 700.dp)
+        modifier = Modifier.widthIn(max = 700.dp),
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = padding.calculateTopPadding() + 16.dp,
-                bottom = padding.calculateBottomPadding() + 60.dp,
-                start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = padding.calculateTopPadding() + 16.dp,
+                    bottom = padding.calculateBottomPadding() + 60.dp,
+                    start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                    end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                ),
         ) {
             item {
                 // appTheme picker
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.clip(leadingItemShape())
-                    ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Column(modifier = Modifier.clip(leadingItemShape())) {
                         ListItem(
                             leadingContent = {
                                 Icon(
-                                    painter = painterResource(when (state.theme.appTheme) {
-                                        AppTheme.SYSTEM -> {
-                                            if (isSystemInDarkTheme()) R.drawable.dark_mode else R.drawable.light_mode
-                                        }
+                                    painter =
+                                        painterResource(
+                                            when (state.theme.appTheme) {
+                                                AppTheme.SYSTEM -> {
+                                                    if (isSystemInDarkTheme()) R.drawable.dark_mode
+                                                    else R.drawable.light_mode
+                                                }
 
-                                        AppTheme.DARK -> R.drawable.dark_mode
-                                        AppTheme.LIGHT -> R.drawable.light_mode
-                                    }),
-                                    contentDescription = null
+                                                AppTheme.DARK -> R.drawable.dark_mode
+                                                AppTheme.LIGHT -> R.drawable.light_mode
+                                            }
+                                        ),
+                                    contentDescription = null,
                                 )
                             },
                             headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.select_app_theme)
-                                )
+                                Text(text = stringResource(R.string.select_app_theme))
                             },
-                            colors = listItemColors()
+                            colors = listItemColors(),
                         )
 
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .background(listItemColors().containerColor)
-                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
+                            horizontalArrangement =
+                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                            modifier =
+                                Modifier.fillParentMaxWidth()
+                                    .background(listItemColors().containerColor)
+                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                         ) {
                             AppTheme.entries.forEach { appTheme ->
                                 ToggleButton(
                                     checked = appTheme == state.theme.appTheme,
                                     onCheckedChange = {
-                                        onAction(
-                                            SettingsPageAction.OnThemeSwitch(
-                                                appTheme
-                                            )
-                                        )
+                                        onAction(SettingsPageAction.OnThemeSwitch(appTheme))
                                     },
                                     modifier = Modifier.weight(1f),
-                                    colors = ToggleButtonDefaults.toggleButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                                    )
+                                    colors =
+                                        ToggleButtonDefaults.toggleButtonColors(
+                                            containerColor =
+                                                MaterialTheme.colorScheme.surfaceContainerLow
+                                        ),
                                 ) {
                                     Text(
                                         text = stringResource(appTheme.toStringRes()),
                                         modifier = Modifier.basicMarquee(),
-                                        maxLines = 1
+                                        maxLines = 1,
                                     )
                                 }
                             }
@@ -181,29 +189,22 @@ fun LookAndFeelPage(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         ListItem(
                             headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.material_theme)
-                                )
+                                Text(text = stringResource(R.string.material_theme))
                             },
                             supportingContent = {
-                                Text(
-                                    text = stringResource(R.string.material_theme_desc)
-                                )
+                                Text(text = stringResource(R.string.material_theme_desc))
                             },
                             trailingContent = {
                                 Switch(
                                     checked = state.theme.materialTheme,
                                     onCheckedChange = {
-                                        onAction(
-                                            SettingsPageAction.OnMaterialThemeToggle(it)
-                                        )
-                                    }
+                                        onAction(SettingsPageAction.OnMaterialThemeToggle(it))
+                                    },
                                 )
                             },
                             colors = listItemColors(),
-                            modifier = Modifier.clip(
-                                if (isProUser) middleItemShape() else endItemShape()
-                            )
+                            modifier =
+                                Modifier.clip(if (isProUser) middleItemShape() else endItemShape()),
                         )
                     }
 
@@ -211,52 +212,41 @@ fun LookAndFeelPage(
                     if (!isProUser) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(60.dp)
+                            modifier = Modifier.fillParentMaxWidth().height(60.dp),
                         ) {
                             LinearWavyProgressIndicator(
                                 progress = { 0.90f },
-                                modifier = Modifier.fillParentMaxWidth()
+                                modifier = Modifier.fillParentMaxWidth(),
                             )
 
-                            Button(
-                                onClick = onShowPaywall
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.unlock_more_pro)
-                                )
+                            Button(onClick = onShowPaywall) {
+                                Text(text = stringResource(R.string.unlock_more_pro))
                             }
                         }
                     }
 
                     // font picker
                     Column(
-                        modifier = Modifier.clip(
-                            if (isProUser) middleItemShape() else leadingItemShape()
-                        )
+                        modifier =
+                            Modifier.clip(if (isProUser) middleItemShape() else leadingItemShape())
                     ) {
                         ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.font)
-                                )
-                            },
+                            headlineContent = { Text(text = stringResource(R.string.font)) },
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(R.drawable.font),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                             },
-                            colors = listItemColors()
+                            colors = listItemColors(),
                         )
 
                         FlowRow(
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .background(listItemColors().containerColor)
-                                .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            modifier =
+                                Modifier.fillParentMaxWidth()
+                                    .background(listItemColors().containerColor)
+                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             Fonts.entries.forEach { font ->
                                 ToggleButton(
@@ -264,18 +254,25 @@ fun LookAndFeelPage(
                                     onCheckedChange = {
                                         onAction(SettingsPageAction.OnFontChange(font))
                                     },
-                                    colors = ToggleButtonDefaults.toggleButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                                    )
+                                    colors =
+                                        ToggleButtonDefaults.toggleButtonColors(
+                                            containerColor =
+                                                MaterialTheme.colorScheme.surfaceContainerLow
+                                        ),
                                 ) {
                                     Text(
-                                        text = font.name.lowercase()
-                                            .replaceFirstChar {
-                                                if (it.isLowerCase()) it.titlecase(
-                                                    Locale.getDefault()
-                                                ) else it.toString()
-                                            }.replace("_", " "),
-                                        fontFamily = font.toFontRes()?.let { FontFamily(Font(it)) } ?: FontFamily.Default
+                                        text =
+                                            font.name
+                                                .lowercase()
+                                                .replaceFirstChar {
+                                                    if (it.isLowerCase())
+                                                        it.titlecase(Locale.getDefault())
+                                                    else it.toString()
+                                                }
+                                                .replace("_", " "),
+                                        fontFamily =
+                                            font.toFontRes()?.let { FontFamily(Font(it)) }
+                                                ?: FontFamily.Default,
                                     )
                                 }
                             }
@@ -283,122 +280,112 @@ fun LookAndFeelPage(
                     }
 
                     ListItem(
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.amoled)
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = stringResource(R.string.amoled_desc)
-                            )
-                        },
+                        headlineContent = { Text(text = stringResource(R.string.amoled)) },
+                        supportingContent = { Text(text = stringResource(R.string.amoled_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = state.theme.withAmoled,
                                 enabled = isProUser,
                                 onCheckedChange = {
                                     onAction(SettingsPageAction.OnAmoledSwitch(it))
-                                }
+                                },
                             )
                         },
                         colors = listItemColors(),
-                        modifier = Modifier.clip(middleItemShape())
+                        modifier = Modifier.clip(middleItemShape()),
                     )
 
-                    AnimatedVisibility(
-                        visible = !state.theme.materialTheme
-                    ) {
+                    AnimatedVisibility(visible = !state.theme.materialTheme) {
                         ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.seed_color)
-                                )
-                            },
+                            headlineContent = { Text(text = stringResource(R.string.seed_color)) },
                             supportingContent = {
-                                Text(
-                                    text = stringResource(R.string.seed_color_desc)
-                                )
+                                Text(text = stringResource(R.string.seed_color_desc))
                             },
                             trailingContent = {
                                 IconButton(
                                     onClick = { colorPickerDialog = true },
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = Color(state.theme.seedColor),
-                                        contentColor = contentColorFor(Color(state.theme.seedColor))
-                                    ),
-                                    enabled = isProUser
+                                    colors =
+                                        IconButtonDefaults.iconButtonColors(
+                                            containerColor = Color(state.theme.seedColor),
+                                            contentColor =
+                                                contentColorFor(Color(state.theme.seedColor)),
+                                        ),
+                                    enabled = isProUser,
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.edit),
-                                        contentDescription = "Select Color"
+                                        contentDescription = "Select Color",
                                     )
                                 }
                             },
                             colors = listItemColors(),
-                            modifier = Modifier.clip(middleItemShape())
+                            modifier = Modifier.clip(middleItemShape()),
                         )
                     }
 
                     // palette style picker
-                    Column(
-                        modifier = Modifier.clip(endItemShape())
-                    ) {
+                    Column(modifier = Modifier.clip(endItemShape())) {
                         ListItem(
                             headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.palette_style)
-                                )
+                                Text(text = stringResource(R.string.palette_style))
                             },
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(R.drawable.palette),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
-                            }
+                            },
                         )
 
                         FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .background(listItemColors().containerColor)
-                                .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier =
+                                Modifier.fillParentMaxWidth()
+                                    .background(listItemColors().containerColor)
+                                    .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             PaletteStyle.entries.toList().forEach { style ->
-                                val scheme = rememberDynamicColorScheme(
-                                    primary = if (state.theme.materialTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        colorResource(system_accent1_200)
-                                    } else Color(state.theme.seedColor),
-                                    isDark = when (state.theme.appTheme) {
-                                        AppTheme.SYSTEM -> isSystemInDarkTheme()
-                                        AppTheme.DARK -> true
-                                        AppTheme.LIGHT -> false
-                                    },
-                                    isAmoled = state.theme.withAmoled,
-                                    style = style.toMPaletteStyle()
-                                )
+                                val scheme =
+                                    rememberDynamicColorScheme(
+                                        primary =
+                                            if (
+                                                state.theme.materialTheme &&
+                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                            ) {
+                                                colorResource(system_accent1_200)
+                                            } else Color(state.theme.seedColor),
+                                        isDark =
+                                            when (state.theme.appTheme) {
+                                                AppTheme.SYSTEM -> isSystemInDarkTheme()
+                                                AppTheme.DARK -> true
+                                                AppTheme.LIGHT -> false
+                                            },
+                                        isAmoled = state.theme.withAmoled,
+                                        style = style.toMPaletteStyle(),
+                                    )
                                 val selected = state.theme.style == style
 
                                 Box(
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .background(
-                                            color = scheme.tertiary,
-                                            shape = if (selected) MaterialShapes.VerySunny.toShape() else CircleShape
-                                        )
-                                        .clickable {
-                                            onAction(SettingsPageAction.OnPaletteChange(style))
-                                        },
-                                    contentAlignment = Alignment.Center
+                                    modifier =
+                                        Modifier.size(50.dp)
+                                            .background(
+                                                color = scheme.tertiary,
+                                                shape =
+                                                    if (selected) MaterialShapes.VerySunny.toShape()
+                                                    else CircleShape,
+                                            )
+                                            .clickable {
+                                                onAction(SettingsPageAction.OnPaletteChange(style))
+                                            },
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     if (selected) {
                                         Icon(
                                             painter = painterResource(R.drawable.check),
                                             contentDescription = null,
-                                            tint = scheme.onTertiary
+                                            tint = scheme.onTertiary,
                                         )
                                     }
                                 }
@@ -414,7 +401,7 @@ fun LookAndFeelPage(
         ColorPickerDialog(
             initialColor = Color(state.theme.seedColor),
             onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
-            onDismiss = { colorPickerDialog = false }
+            onDismiss = { colorPickerDialog = false },
         )
     }
 }

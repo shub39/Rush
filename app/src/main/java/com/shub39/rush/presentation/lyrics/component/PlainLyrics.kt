@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.AnimatedContent
@@ -58,12 +74,12 @@ fun PlainLyrics(
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val uriHandler = LocalUriHandler.current
     val clipboard = LocalClipboard.current
-    val scope  = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
 
@@ -72,24 +88,26 @@ fun PlainLyrics(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 64.dp),
-        verticalArrangement = Arrangement.spacedBy(with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }),
-        state = lazyListState
+        verticalArrangement =
+            Arrangement.spacedBy(
+                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
+            ),
+        state = lazyListState,
     ) {
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
-            items(
-                items = items,
-                key = { it.key }
-            ) {
+            items(items = items, key = { it.key }) {
                 if (it.value.isNotBlank()) {
                     val isSelected = state.selectedLines.contains(it.key)
-                    val containerColor by animateColorAsState(
-                        targetValue = when (!isSelected) {
-                            true -> Color.Transparent
-                            else -> cardContent.copy(alpha = 0.3f)
-                        },
-                        label = "container"
-                    )
+                    val containerColor by
+                        animateColorAsState(
+                            targetValue =
+                                when (!isSelected) {
+                                    true -> Color.Transparent
+                                    else -> cardContent.copy(alpha = 0.3f)
+                                },
+                            label = "container",
+                        )
 
                     PlainLyric(
                         entry = it.toPair(),
@@ -103,7 +121,7 @@ fun PlainLyrics(
                                         state.selectedLines,
                                         it.key,
                                         it.value,
-                                        state.maxLines
+                                        state.maxLines,
                                     )
                                 )
                             )
@@ -111,7 +129,7 @@ fun PlainLyrics(
                             if (!isSelected) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -124,17 +142,15 @@ fun PlainLyrics(
                             action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
                         }
 
-                        AnimatedContent(
-                            targetState = state.scraping
-                        ) {
+                        AnimatedContent(targetState = state.scraping) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 if (it.first) {
                                     CircularProgressIndicator(
                                         color = cardContent,
-                                        modifier = Modifier.padding(16.dp)
+                                        modifier = Modifier.padding(16.dp),
                                     )
 
                                     Text(stringResource(R.string.loading_genius))
@@ -142,7 +158,7 @@ fun PlainLyrics(
                                     Icon(
                                         painter = painterResource(R.drawable.warning),
                                         contentDescription = null,
-                                        modifier = Modifier.size(100.dp)
+                                        modifier = Modifier.size(100.dp),
                                     )
 
                                     Text(stringResource(it.second!!.errorCode))
@@ -152,30 +168,34 @@ fun PlainLyrics(
                                             action(
                                                 LyricsPageAction.OnScrapeGeniusLyrics(
                                                     song.id,
-                                                    song.sourceUrl
+                                                    song.sourceUrl,
                                                 )
                                             )
                                         },
-                                        colors = ButtonDefaults.buttonColors(
-                                            contentColor = cardContent,
-                                            containerColor = Color.Transparent
-                                        ),
-                                        modifier = Modifier.padding(vertical = 4.dp)
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                contentColor = cardContent,
+                                                containerColor = Color.Transparent,
+                                            ),
+                                        modifier = Modifier.padding(vertical = 4.dp),
                                     ) {
                                         Text(stringResource(R.string.retry))
                                     }
 
                                     TextButton(
                                         onClick = {
-                                           scope.launch {
-                                               clipboard.copyToClipboard(it.second!!.debugMessage ?: "i am dumb")
-                                           }
+                                            scope.launch {
+                                                clipboard.copyToClipboard(
+                                                    it.second!!.debugMessage ?: "i am dumb"
+                                                )
+                                            }
                                         },
-                                        colors = ButtonDefaults.buttonColors(
-                                            contentColor = cardContent,
-                                            containerColor = Color.Transparent
-                                        ),
-                                        modifier = Modifier.padding(vertical = 4.dp)
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                contentColor = cardContent,
+                                                containerColor = Color.Transparent,
+                                            ),
+                                        modifier = Modifier.padding(vertical = 4.dp),
                                     ) {
                                         Text(stringResource(R.string.copy_error))
                                     }
@@ -189,14 +209,14 @@ fun PlainLyrics(
                     item {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Spacer(modifier = Modifier.padding(10.dp))
 
                             Icon(
                                 painter = painterResource(R.drawable.warning),
                                 contentDescription = null,
-                                modifier = Modifier.size(100.dp)
+                                modifier = Modifier.size(100.dp),
                             )
 
                             Spacer(modifier = Modifier.padding(10.dp))
@@ -211,18 +231,14 @@ fun PlainLyrics(
         // Bottom Actions Row
         item {
             Row(
-                modifier = Modifier
-                    .padding(vertical = 100.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(
-                    onClick = {
-                        scope.launch {
-                            lazyListState.scrollToItem(0)
-                        }
-                    },
-                    enabled = if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty() else !song.geniusLyrics.isNullOrEmpty()
+                    onClick = { scope.launch { lazyListState.scrollToItem(0) } },
+                    enabled =
+                        if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty()
+                        else !song.geniusLyrics.isNullOrEmpty(),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.arrow_warm_up),
@@ -231,22 +247,17 @@ fun PlainLyrics(
                 }
 
                 Button(
-                    onClick = {
-                        uriHandler.openUri(song.sourceUrl)
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = cardContent.copy(alpha = 0.3f),
-                        contentColor = cardContent
-                    )
+                    onClick = { uriHandler.openUri(song.sourceUrl) },
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = cardContent.copy(alpha = 0.3f),
+                            contentColor = cardContent,
+                        ),
                 ) {
-                    Text(
-                        text = stringResource(R.string.source)
-                    )
+                    Text(text = stringResource(R.string.source))
                 }
 
-                IconButton(
-                    onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
-                ) {
+                IconButton(onClick = { action(LyricsPageAction.OnToggleSearchSheet) }) {
                     Icon(
                         painter = painterResource(R.drawable.search),
                         contentDescription = "Search",
@@ -263,19 +274,17 @@ fun PlainLyric(
     entry: Pair<Int, String>,
     onClick: () -> Unit,
     containerColor: Color,
-    cardContent: Color
+    cardContent: Color,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = textPrefs.lyricsAlignment.toArrangement()
+        horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
     ) {
         Card(
             onClick = onClick,
             shape = MaterialTheme.shapes.small,
-            colors = CardDefaults.cardColors(
-                containerColor = containerColor,
-                contentColor = cardContent
-            )
+            colors =
+                CardDefaults.cardColors(containerColor = containerColor, contentColor = cardContent),
         ) {
             Text(
                 text = entry.second,
@@ -284,7 +293,7 @@ fun PlainLyric(
                 lineHeight = textPrefs.lineHeight.sp,
                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(6.dp)
+                modifier = Modifier.padding(6.dp),
             )
         }
     }

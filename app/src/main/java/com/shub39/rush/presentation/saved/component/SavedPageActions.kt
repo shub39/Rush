@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.saved.component
 
 import androidx.compose.foundation.layout.Arrangement
@@ -26,12 +42,12 @@ fun SavedPageActions(
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (notificationAccess) {
             FloatingActionButton(
@@ -42,24 +58,26 @@ fun SavedPageActions(
                     }
                 },
                 shape = MaterialShapes.Sunny.toShape(),
-                containerColor = if (state.autoChange) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary,
-                contentColor = if (state.autoChange) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary,
+                containerColor =
+                    if (state.autoChange) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onSecondary,
+                contentColor =
+                    if (state.autoChange) MaterialTheme.colorScheme.onSecondary
+                    else MaterialTheme.colorScheme.secondary,
             ) {
                 Icon(
                     painter = painterResource(R.drawable.meteor),
                     contentDescription = "Rush Mode",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
             }
         }
 
-        MediumFloatingActionButton(
-            onClick = { onAction(SavedPageAction.OnToggleSearchSheet) }
-        ) {
+        MediumFloatingActionButton(onClick = { onAction(SavedPageAction.OnToggleSearchSheet) }) {
             Icon(
                 painter = painterResource(R.drawable.search),
                 contentDescription = "Search",
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(40.dp),
             )
         }
     }

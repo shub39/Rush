@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 /**
- * A composable that displays a title and a list of options as toggleable buttons,
- * allowing the user to select one option from the list. It's laid out in a [FlowRow]
- * to accommodate a variable number of options.
+ * A composable that displays a title and a list of options as toggleable buttons, allowing the user
+ * to select one option from the list. It's laid out in a [FlowRow] to accommodate a variable number
+ * of options.
  *
  * @param T The type of the options in the list.
  * @param title The title text to be displayed above the selection options.
@@ -27,7 +43,7 @@ import androidx.compose.ui.unit.dp
  * @param selected The currently selected option of type [T].
  * @param onSelectedChange A callback that is invoked when a new option is selected.
  * @param labelProvider A composable lambda that defines how to display the label for each option.
- *                      It receives an option of type [T] and is expected to render its UI representation.
+ *   It receives an option of type [T] and is expected to render its UI representation.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -37,29 +53,27 @@ fun <T> ListSelect(
     selected: T,
     onSelectedChange: (T) -> Unit,
     labelProvider: @Composable (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
-        FlowRow(
-            horizontalArrangement = Arrangement.Center
-        ) {
+        FlowRow(horizontalArrangement = Arrangement.Center) {
             options.forEach { option ->
                 ToggleButton(
                     checked = option == selected,
                     onCheckedChange = { onSelectedChange(option) },
                     content = { labelProvider(option) },
                     colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                    modifier = Modifier.padding(horizontal = 4.dp)
+                    modifier = Modifier.padding(horizontal = 4.dp),
                 )
             }
         }

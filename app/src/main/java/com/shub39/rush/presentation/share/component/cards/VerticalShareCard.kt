@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.share.component.cards
 
 import androidx.compose.animation.AnimatedVisibility
@@ -48,32 +64,22 @@ fun VerticalShareCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean
+    rushBranding: Boolean,
 ) {
-    Card(
-        modifier = modifier,
-        shape = cardCorners
-    ) {
-        Card(
-            colors = cardColors
-        ) {
+    Card(modifier = modifier, shape = cardCorners) {
+        Card(colors = cardColors) {
             Row(
-                modifier = Modifier
-                    .padding(pxToDp(48))
-                    .let {
+                modifier =
+                    Modifier.padding(pxToDp(48)).let {
                         if (fit == CardFit.STANDARD) {
                             it.fillMaxHeight()
                         } else it
                     }
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     ArtFromUrl(
                         imageUrl = song.artUrl,
-                        modifier = Modifier
-                            .size(pxToDp(100))
-                            .clip(albumArtShape)
+                        modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
                     )
 
                     Spacer(modifier = Modifier.padding(pxToDp(8)))
@@ -81,28 +87,30 @@ fun VerticalShareCard(
                     Row {
                         Text(
                             text = song.artist,
-                            style = MaterialTheme.typography.bodySmall.fromPx(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 24,
-                                letterSpacing = 0,
-                                lineHeight = 24,
-                            ),
+                            style =
+                                MaterialTheme.typography.bodySmall.fromPx(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 24,
+                                    letterSpacing = 0,
+                                    lineHeight = 24,
+                                ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.rotateVertically()
+                            modifier = Modifier.rotateVertically(),
                         )
 
                         Text(
                             text = song.title,
-                            style = MaterialTheme.typography.titleMedium.fromPx(
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 28,
-                                letterSpacing = 0,
-                                lineHeight = 28,
-                            ),
+                            style =
+                                MaterialTheme.typography.titleMedium.fromPx(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 28,
+                                    letterSpacing = 0,
+                                    lineHeight = 28,
+                                ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.rotateVertically()
+                            modifier = Modifier.rotateVertically(),
                         )
                     }
                 }
@@ -111,28 +119,27 @@ fun VerticalShareCard(
 
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(pxToDp(10))
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(10)),
                 ) {
                     items(sortedLines.entries.toList()) {
                         Text(
                             text = it.value,
                             fontStyle = FontStyle.Italic,
-                            style = MaterialTheme.typography.bodyMedium.fromPx(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 42,
-                                letterSpacing = 0,
-                                lineHeight = 44,
-                            ),
+                            style =
+                                MaterialTheme.typography.bodyMedium.fromPx(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 42,
+                                    letterSpacing = 0,
+                                    lineHeight = 44,
+                                ),
                         )
                     }
 
                     item {
-                        AnimatedVisibility(
-                            visible = rushBranding
-                        ) {
+                        AnimatedVisibility(visible = rushBranding) {
                             RushBranding(
                                 color = cardColors.contentColor,
-                                modifier = Modifier.padding(top = pxToDp(42))
+                                modifier = Modifier.padding(top = pxToDp(42)),
                             )
                         }
                     }
@@ -145,30 +152,25 @@ fun VerticalShareCard(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(
-        theme = Theme(
-            appTheme = AppTheme.DARK
-        )
-    ) {
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         VerticalShareCard(
-            modifier = Modifier
-                .width(pxToDp(720))
-                .heightIn(max = pxToDp(1280)),
-            song = SongDetails(
-                title = "Test Song",
-                artist = "Eminem",
-                null, ""
-            ),
-            sortedLines = (0..5).associateWith { "This is a simple line $it" }.plus(
-                6 to "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
-            ),
-            cardColors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
+            modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
+            song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
+            sortedLines =
+                (0..5)
+                    .associateWith { "This is a simple line $it" }
+                    .plus(
+                        6 to
+                            "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
+                    ),
+            cardColors =
+                CardDefaults.cardColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
             cardCorners = RoundedCornerShape(pxToDp(48)),
             fit = CardFit.FIT,
-            rushBranding = true
+            rushBranding = true,
         )
     }
 }
