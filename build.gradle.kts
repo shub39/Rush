@@ -28,24 +28,26 @@ plugins {
 allprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     configure<SpotlessExtension> {
-        kotlin {
-            ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
-            target("src/**/*.kt")
-            targetExclude("${layout.buildDirectory}/**/*.kt")
-            licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
-        }
-        kotlinGradle {
-            ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
-            target("*.kts")
-            targetExclude("${layout.buildDirectory}/**/*.kts")
-            licenseHeaderFile(rootProject.file("spotless/copyright.txt"), "(^(?![\\/ ]\\*).*$)")
-            toggleOffOn()
-        }
-        format("xml") {
-            target("src/**/*.xml")
-            targetExclude("**/build/", ".idea/")
-            trimTrailingWhitespace()
-            endWithNewline()
+        if (project.path != ":visualizer-helper") {
+            kotlin {
+                ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
+                target("src/**/*.kt")
+                targetExclude("${layout.buildDirectory}/**/*.kt")
+                licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
+            }
+            kotlinGradle {
+                ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
+                target("*.kts")
+                targetExclude("${layout.buildDirectory}/**/*.kts")
+                licenseHeaderFile(rootProject.file("spotless/copyright.txt"), "(^(?![\\/ ]\\*).*$)")
+                toggleOffOn()
+            }
+            format("xml") {
+                target("src/**/*.xml")
+                targetExclude("**/build/", ".idea/")
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
         }
     }
 }
