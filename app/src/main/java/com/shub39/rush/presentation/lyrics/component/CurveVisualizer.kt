@@ -43,8 +43,8 @@ import io.gitlab.bpavuk.viz.bassBucket
 import io.gitlab.bpavuk.viz.midBucket
 import io.gitlab.bpavuk.viz.rememberVisualizerState
 import io.gitlab.bpavuk.viz.trebleBucket
-import org.intellij.lang.annotations.Language
 import kotlin.math.absoluteValue
+import org.intellij.lang.annotations.Language
 
 @Composable
 fun CurveVisualizer(modifier: Modifier = Modifier, waveData: VisualizerData?, colors: WaveColors) {

@@ -14,14 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
 }
 
@@ -105,16 +103,10 @@ android {
         }
     }
 
-    applicationVariants.all {
-        outputs.all {
-            val apkOutput = this as ApkVariantOutputImpl
-            apkOutput.outputFileName = "app-release.apk"
-        }
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
 
     compileOptions {

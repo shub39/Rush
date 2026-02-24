@@ -30,14 +30,14 @@ import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.interfaces.SongRepository
 import com.shub39.rush.presentation.getMainArtist
 import com.shub39.rush.presentation.getMainTitle
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 @Single
 class RushRepository(
