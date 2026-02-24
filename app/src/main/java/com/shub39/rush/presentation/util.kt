@@ -97,18 +97,41 @@ fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     return sortedMap
 }
 
-private val titleCleanupPatterns = listOf(
-    Regex("""\s*\(.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?\)""", RegexOption.IGNORE_CASE),
-    Regex("""\s*\[.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?]""", RegexOption.IGNORE_CASE),
-    Regex("""\s*【.*?】"""),
-    Regex("""\s*\|.*$"""),
-    Regex("""\s*-\s*(official|video|audio|lyrics|lyric|visualizer).*$""", RegexOption.IGNORE_CASE),
-    Regex("""\s*\(feat\..*?\)""", RegexOption.IGNORE_CASE),
-    Regex("""\s*\(ft\..*?\)""", RegexOption.IGNORE_CASE),
-    Regex("""\s*feat\..*$""", RegexOption.IGNORE_CASE),
-    Regex("""\s*ft\..*$""", RegexOption.IGNORE_CASE),
-)
-private val artistSeparators = listOf(" & ", " and ", ", ", " x ", " X ", " feat. ", " feat ", " ft. ", " ft ", " featuring ", " with ")
+private val titleCleanupPatterns =
+    listOf(
+        Regex(
+            """\s*\(.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?\)""",
+            RegexOption.IGNORE_CASE,
+        ),
+        Regex(
+            """\s*\[.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?]""",
+            RegexOption.IGNORE_CASE,
+        ),
+        Regex("""\s*【.*?】"""),
+        Regex("""\s*\|.*$"""),
+        Regex(
+            """\s*-\s*(official|video|audio|lyrics|lyric|visualizer).*$""",
+            RegexOption.IGNORE_CASE,
+        ),
+        Regex("""\s*\(feat\..*?\)""", RegexOption.IGNORE_CASE),
+        Regex("""\s*\(ft\..*?\)""", RegexOption.IGNORE_CASE),
+        Regex("""\s*feat\..*$""", RegexOption.IGNORE_CASE),
+        Regex("""\s*ft\..*$""", RegexOption.IGNORE_CASE),
+    )
+private val artistSeparators =
+    listOf(
+        " & ",
+        " and ",
+        ", ",
+        " x ",
+        " X ",
+        " feat. ",
+        " feat ",
+        " ft. ",
+        " ft ",
+        " featuring ",
+        " with ",
+    )
 
 fun getMainArtist(artists: String): String {
     var cleaned = artists.trim()

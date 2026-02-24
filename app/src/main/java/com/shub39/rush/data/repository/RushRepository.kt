@@ -28,8 +28,6 @@ import com.shub39.rush.domain.dataclasses.LrcLibSong
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.interfaces.SongRepository
-import com.shub39.rush.presentation.getMainArtist
-import com.shub39.rush.presentation.getMainTitle
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.Dispatchers
@@ -51,10 +49,7 @@ class RushRepository(
         try {
             val lrcLibLyrics =
                 withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(
-                        trackName = result.title,
-                        artistName = result.artist,
-                    )
+                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
                 }
             val geniusLyrics =
                 if (lrcLibLyrics == null) {

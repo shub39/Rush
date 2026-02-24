@@ -16,28 +16,69 @@
  */
 package com.shub39.rush.presentation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.R
 
 val TYPOGRAPHY = Typography()
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
-fun provideTypography(font: Int = R.font.poppins_regular): Typography {
-    val selectedFont = FontFamily(Font(font))
+fun provideTypography(font: Int? = R.font.poppins_regular): Typography {
+    val flexFontDisplay =
+        FontFamily(
+            Font(
+                resId = R.font.google_sans_flex,
+                variationSettings =
+                    FontVariation.Settings(
+                        FontVariation.weight(900),
+                        FontVariation.slant(-6f),
+                        FontVariation.width(120f),
+                    ),
+            )
+        )
+    val flexFontHeadline =
+        FontFamily(
+            Font(
+                resId = R.font.google_sans_flex,
+                variationSettings =
+                    FontVariation.Settings(
+                        FontVariation.weight(800),
+                        FontVariation.slant(-6f),
+                        FontVariation.width(110f),
+                    ),
+            )
+        )
+    val flexFontTitle =
+        FontFamily(
+            Font(
+                resId = R.font.google_sans_flex,
+                variationSettings =
+                    FontVariation.Settings(
+                        FontVariation.weight(500),
+                        FontVariation.Setting("ROND", 100f),
+                    ),
+            )
+        )
+    val selectedFont = font?.let { FontFamily(Font(it)) } ?: FontFamily.Default
 
     return Typography(
-        displayLarge = TYPOGRAPHY.displayLarge.copy(fontFamily = selectedFont),
-        displayMedium = TYPOGRAPHY.displayMedium.copy(fontFamily = selectedFont),
-        displaySmall = TYPOGRAPHY.displaySmall.copy(fontFamily = selectedFont),
-        headlineLarge = TYPOGRAPHY.headlineLarge.copy(fontFamily = selectedFont),
-        headlineMedium = TYPOGRAPHY.headlineMedium.copy(fontFamily = selectedFont),
-        headlineSmall = TYPOGRAPHY.headlineSmall.copy(fontFamily = selectedFont),
-        titleLarge = TYPOGRAPHY.titleLarge.copy(fontFamily = selectedFont),
-        titleMedium = TYPOGRAPHY.titleMedium.copy(fontFamily = selectedFont),
-        titleSmall = TYPOGRAPHY.titleSmall.copy(fontFamily = selectedFont),
+        displayLarge = TYPOGRAPHY.displayLarge.copy(fontFamily = flexFontDisplay),
+        displayMedium = TYPOGRAPHY.displayMedium.copy(fontFamily = flexFontDisplay),
+        displaySmall = TYPOGRAPHY.displaySmall.copy(fontFamily = flexFontDisplay),
+        headlineLarge = TYPOGRAPHY.headlineLarge.copy(fontFamily = flexFontHeadline),
+        headlineMedium = TYPOGRAPHY.headlineMedium.copy(fontFamily = flexFontHeadline),
+        headlineSmall = TYPOGRAPHY.headlineSmall.copy(fontFamily = flexFontHeadline),
+        titleLarge = TYPOGRAPHY.titleLarge.copy(fontFamily = flexFontTitle),
+        titleMedium = TYPOGRAPHY.titleMedium.copy(fontFamily = flexFontTitle),
+        titleSmall = TYPOGRAPHY.titleSmall.copy(fontFamily = flexFontTitle),
         bodyLarge = TYPOGRAPHY.bodyLarge.copy(fontFamily = selectedFont),
         bodyMedium = TYPOGRAPHY.bodyMedium.copy(fontFamily = selectedFont),
         bodySmall = TYPOGRAPHY.bodySmall.copy(fontFamily = selectedFont),
@@ -45,4 +86,27 @@ fun provideTypography(font: Int = R.font.poppins_regular): Typography {
         labelMedium = TYPOGRAPHY.labelMedium.copy(fontFamily = selectedFont),
         labelSmall = TYPOGRAPHY.labelSmall.copy(fontFamily = selectedFont),
     )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFF)
+@Composable
+fun TypographyPreview() {
+    val typography = provideTypography()
+    Column {
+        Text("Display Large", style = typography.displayLarge)
+        Text("Display Medium", style = typography.displayMedium)
+        Text("Display Small", style = typography.displaySmall)
+        Text("Headline Large", style = typography.headlineLarge)
+        Text("Headline Medium", style = typography.headlineMedium)
+        Text("Headline Small", style = typography.headlineSmall)
+        Text("Title Large", style = typography.titleLarge)
+        Text("Title Medium", style = typography.titleMedium)
+        Text("Title Small", style = typography.titleSmall)
+        Text("Body Large", style = typography.bodyLarge)
+        Text("Body Medium", style = typography.bodyMedium)
+        Text("Body Small", style = typography.bodySmall)
+        Text("Label Large", style = typography.labelLarge)
+        Text("Label Medium", style = typography.labelMedium)
+        Text("Label Small", style = typography.labelSmall)
+    }
 }

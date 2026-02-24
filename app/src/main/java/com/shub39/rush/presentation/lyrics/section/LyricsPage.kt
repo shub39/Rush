@@ -245,8 +245,7 @@ fun LyricsPage(
 
                                             Text(
                                                 text = lyricsState.song.title,
-                                                style = MaterialTheme.typography.titleLarge,
-                                                fontWeight = FontWeight.SemiBold,
+                                                style = MaterialTheme.typography.headlineSmall,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier =
@@ -256,7 +255,7 @@ fun LyricsPage(
 
                                             Text(
                                                 text = lyricsState.song.artists,
-                                                style = MaterialTheme.typography.bodyMedium,
+                                                style = MaterialTheme.typography.titleSmall,
                                                 fontWeight = FontWeight.Bold,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,

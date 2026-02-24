@@ -36,9 +36,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -120,10 +122,12 @@ private fun BackupPageContent(
     onPickFile: () -> Unit,
     action: (SettingsPageAction) -> Unit,
 ) {
+    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier =
+            Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            MediumFlexibleTopAppBar(
                 title = { Text(stringResource(R.string.backup)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
@@ -133,6 +137,7 @@ private fun BackupPageContent(
                         )
                     }
                 },
+                scrollBehavior = scrollBehaviour,
             )
         },
     ) { paddingValues ->

@@ -37,10 +37,7 @@ import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import okhttp3.ConnectionPool
-import okhttp3.Protocol
 import org.koin.core.annotation.Single
-import java.util.concurrent.TimeUnit
 
 @Single
 class LrcLibApi {
@@ -74,7 +71,10 @@ class LrcLibApi {
 
             defaultRequest {
                 url("https://lrclib.net")
-                header(HttpHeaders.UserAgent, "Rush v${BuildConfig.VERSION_NAME} (https://github.com/shub39/Rush)")
+                header(
+                    HttpHeaders.UserAgent,
+                    "Rush v${BuildConfig.VERSION_NAME} (https://github.com/shub39/Rush)",
+                )
             }
 
             expectSuccess = true
@@ -84,54 +84,59 @@ class LrcLibApi {
     suspend fun getLrcLyrics(trackName: String, artistName: String): LrcGetDto? {
         return when (val result = searchLrcLyrics(trackName, artistName)) {
             is Result.Error -> null
-            is Result.Success -> result.data.firstOrNull { it.syncedLyrics != null || it.plainLyrics != null }
+            is Result.Success ->
+                result.data.firstOrNull { it.syncedLyrics != null || it.plainLyrics != null }
         }
     }
 
     suspend fun searchLrcLyrics(
         trackName: String,
         artistName: String,
-        albumName: String? = null
+        albumName: String? = null,
     ): Result<List<LrcGetDto>, SourceError> = safeCall {
         val cleanedTitle = getMainTitle(trackName)
         val cleanedArtist = getMainArtist(artistName)
 
         // Strategy 1: Search with cleaned title and artist
-        var results = queryLyricsWithParams(
-            trackName = cleanedTitle,
-            artistName = cleanedArtist,
-            albumName = albumName
-        ).filter { it.syncedLyrics != null || it.plainLyrics != null }
+        var results =
+            queryLyricsWithParams(
+                    trackName = cleanedTitle,
+                    artistName = cleanedArtist,
+                    albumName = albumName,
+                )
+                .filter { it.syncedLyrics != null || it.plainLyrics != null }
 
         if (results.isNotEmpty()) return Result.Success(results)
 
         // Strategy 2: Search with cleaned title only (artist might be different)
-        results = queryLyricsWithParams(
-            trackName = cleanedTitle
-        ).filter { it.syncedLyrics != null || it.plainLyrics != null }
+        results =
+            queryLyricsWithParams(trackName = cleanedTitle).filter {
+                it.syncedLyrics != null || it.plainLyrics != null
+            }
 
         if (results.isNotEmpty()) return Result.Success(results)
 
         // Strategy 3: Use q parameter with combined search
-        results = queryLyricsWithParams(
-            query = "$cleanedArtist $cleanedTitle"
-        ).filter { it.syncedLyrics != null || it.plainLyrics != null }
+        results =
+            queryLyricsWithParams(query = "$cleanedArtist $cleanedTitle").filter {
+                it.syncedLyrics != null || it.plainLyrics != null
+            }
 
         if (results.isNotEmpty()) return Result.Success(results)
 
         // Strategy 4: Use q parameter with just title
-        results = queryLyricsWithParams(
-            query = cleanedTitle
-        ).filter { it.syncedLyrics != null || it.plainLyrics != null }
+        results =
+            queryLyricsWithParams(query = cleanedTitle).filter {
+                it.syncedLyrics != null || it.plainLyrics != null
+            }
 
         if (results.isNotEmpty()) return Result.Success(results)
 
         // Strategy 5: Try original title if different from cleaned
         if (cleanedTitle != trackName.trim()) {
-            results = queryLyricsWithParams(
-                trackName = trackName.trim(),
-                artistName = artistName.trim()
-            ).filter { it.syncedLyrics != null || it.plainLyrics != null }
+            results =
+                queryLyricsWithParams(trackName = trackName.trim(), artistName = artistName.trim())
+                    .filter { it.syncedLyrics != null || it.plainLyrics != null }
         }
 
         return Result.Error(SourceError.Data.NO_RESULTS)
@@ -142,13 +147,16 @@ class LrcLibApi {
         artistName: String? = null,
         albumName: String? = null,
         query: String? = null,
-    ): List<LrcGetDto> = runCatching {
-        client.get("/api/search") {
-            if (query != null) parameter("q", query)
-            if (trackName != null) parameter("track_name", trackName)
-            if (artistName != null) parameter("artist_name", artistName)
-            if (albumName != null) parameter("album_name", albumName)
-        }.body<List<LrcGetDto>>()
-    }.getOrDefault(emptyList())
-
+    ): List<LrcGetDto> =
+        runCatching {
+                client
+                    .get("/api/search") {
+                        if (query != null) parameter("q", query)
+                        if (trackName != null) parameter("track_name", trackName)
+                        if (artistName != null) parameter("artist_name", artistName)
+                        if (albumName != null) parameter("album_name", albumName)
+                    }
+                    .body<List<LrcGetDto>>()
+            }
+            .getOrDefault(emptyList())
 }
