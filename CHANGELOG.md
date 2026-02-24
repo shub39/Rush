@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.6.0
+- Fixed LRCLIB api not responding sometimes
+- Misc updates and fixes
+- Added flex fonts for headlines and displays
+
 ## 5.5.2
 - Fixed synced lyrics not loading
 - Moved to jdk 21 (fdroid builds)
