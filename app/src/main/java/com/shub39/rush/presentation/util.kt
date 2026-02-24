@@ -97,14 +97,36 @@ fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
     return sortedMap
 }
 
+private val titleCleanupPatterns = listOf(
+    Regex("""\s*\(.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?\)""", RegexOption.IGNORE_CASE),
+    Regex("""\s*\[.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?]""", RegexOption.IGNORE_CASE),
+    Regex("""\s*【.*?】"""),
+    Regex("""\s*\|.*$"""),
+    Regex("""\s*-\s*(official|video|audio|lyrics|lyric|visualizer).*$""", RegexOption.IGNORE_CASE),
+    Regex("""\s*\(feat\..*?\)""", RegexOption.IGNORE_CASE),
+    Regex("""\s*\(ft\..*?\)""", RegexOption.IGNORE_CASE),
+    Regex("""\s*feat\..*$""", RegexOption.IGNORE_CASE),
+    Regex("""\s*ft\..*$""", RegexOption.IGNORE_CASE),
+)
+private val artistSeparators = listOf(" & ", " and ", ", ", " x ", " X ", " feat. ", " feat ", " ft. ", " ft ", " featuring ", " with ")
+
 fun getMainArtist(artists: String): String {
-    val regex = Regex("\\s*\\(.*?\\)\\s*$")
-    return artists.replace(regex, "").split(",")[0].trim()
+    var cleaned = artists.trim()
+    for (separator in artistSeparators) {
+        if (cleaned.contains(separator, ignoreCase = true)) {
+            cleaned = cleaned.split(separator, ignoreCase = true, limit = 2)[0]
+            break
+        }
+    }
+    return cleaned.trim()
 }
 
 fun getMainTitle(songTitle: String): String {
-    val regex = Regex("\\s*\\(.*?\\)\\s*$")
-    return songTitle.replace(regex, "").trim()
+    var cleaned = songTitle.trim()
+    for (pattern in titleCleanupPatterns) {
+        cleaned = cleaned.replace(pattern, "")
+    }
+    return cleaned.trim()
 }
 
 fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {

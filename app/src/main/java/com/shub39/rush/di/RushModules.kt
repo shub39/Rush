@@ -24,7 +24,6 @@ import coil3.disk.DiskCache
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import com.shub39.rush.data.DatastoreFactory
-import com.shub39.rush.data.HttpClientFactory
 import com.shub39.rush.data.LyricsPagePreferencesImpl
 import com.shub39.rush.data.OtherPreferencesImpl
 import com.shub39.rush.data.SharePagePreferencesImpl
@@ -34,7 +33,6 @@ import com.shub39.rush.data.database.SongDatabase
 import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SharePagePreferences
-import io.ktor.client.HttpClient
 import okio.Path.Companion.toOkioPath
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -47,8 +45,6 @@ class RushModules {
     @Single fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
 
     @Single fun provideSongDao(db: SongDatabase): SongDao = db.songDao()
-
-    @Single fun provideHttpClient(): HttpClient = HttpClientFactory.create()
 
     @Single
     fun provideImageLoader(context: Context): ImageLoader {

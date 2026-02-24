@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.data.HttpClientFactory
 import com.shub39.rush.data.network.GeniusScraper
 import com.shub39.rush.domain.Result
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class ScraperTest {
-    val scraper = GeniusScraper(client = HttpClientFactory.create())
+    val scraper = GeniusScraper()
 
     private fun testIn(title: String, block: suspend CoroutineScope.() -> Unit) = runBlocking {
         println("\n-- $title --")

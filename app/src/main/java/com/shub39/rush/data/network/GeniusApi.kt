@@ -16,18 +16,53 @@
  */
 package com.shub39.rush.data.network
 
+import com.shub39.rush.BuildConfig
 import com.shub39.rush.data.network.dto.genius.GeniusSearchDto
 import com.shub39.rush.data.safeCall
 import com.shub39.rush.domain.Result
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single
-class GeniusApi(private val client: HttpClient) {
+class GeniusApi {
+    private val client by lazy {
+        HttpClient(OkHttp) {
+            install(ContentNegotiation) { json(json = Json { ignoreUnknownKeys = true }) }
+
+            install(HttpTimeout) {
+                socketTimeoutMillis = 20_000
+                requestTimeoutMillis = 20_000
+            }
+
+            if (BuildConfig.DEBUG) {
+                install(Logging) {
+                    logger =
+                        object : Logger {
+                            override fun log(message: String) {
+                                println(message)
+                            }
+                        }
+                }
+            }
+
+            defaultRequest { contentType(ContentType.Application.Json) }
+        }
+    }
+
     suspend fun geniusSearch(
         query: String
     ): Result<GeniusSearchDto, com.shub39.rush.domain.SourceError> = safeCall {
@@ -39,6 +74,6 @@ class GeniusApi(private val client: HttpClient) {
 
     private companion object {
         private const val BASE_URL = "https://api.genius.com"
-        private const val BEARER_TOKEN = "Bearer ${Tokens.GENIUS_API}"
+        private const val BEARER_TOKEN = "Bearer ${BuildConfig.GENIUS_API_TOKEN}"
     }
 }

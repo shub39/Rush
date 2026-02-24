@@ -52,8 +52,8 @@ class RushRepository(
             val lrcLibLyrics =
                 withContext(Dispatchers.IO) {
                     lrcLibApi.getLrcLyrics(
-                        trackName = getMainTitle(result.title),
-                        artistName = getMainArtist(result.artist),
+                        trackName = result.title,
+                        artistName = result.artist,
                     )
                 }
             val geniusLyrics =

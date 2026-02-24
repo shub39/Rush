@@ -19,19 +19,54 @@ package com.shub39.rush.data.network
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.TextNode
+import com.shub39.rush.BuildConfig
 import com.shub39.rush.data.safeCall
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 // thanks to https://github.com/imjyotiraditya/genius-lyrics-cli and
 // https://github.com/rramiachraf/dumb
 @Single
-class GeniusScraper(private val client: HttpClient) {
+class GeniusScraper {
+    private val client by lazy {
+        HttpClient(OkHttp) {
+            install(ContentNegotiation) { json(json = Json { ignoreUnknownKeys = true }) }
+
+            install(HttpTimeout) {
+                socketTimeoutMillis = 20_000
+                requestTimeoutMillis = 20_000
+            }
+
+            if (BuildConfig.DEBUG) {
+                install(Logging) {
+                    logger =
+                        object : Logger {
+                            override fun log(message: String) {
+                                println(message)
+                            }
+                        }
+                }
+            }
+
+            defaultRequest { contentType(ContentType.Application.Json) }
+        }
+    }
+
     companion object {
         val dumbInstances =
             listOf("dumb.ducks.party/", "dumb.lunar.icu/", "dumb.bloat.cat/", "dumb.jeikobu.net/")

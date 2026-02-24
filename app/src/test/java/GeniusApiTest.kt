@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.data.HttpClientFactory
 import com.shub39.rush.data.network.GeniusApi
 import com.shub39.rush.domain.Result
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class GeniusApiTest {
-    val geniusApi = GeniusApi(client = HttpClientFactory.create())
+    val geniusApi = GeniusApi()
 
     private fun testIn(title: String, block: suspend CoroutineScope.() -> Unit) = runBlocking {
         println("\n-- $title --")
