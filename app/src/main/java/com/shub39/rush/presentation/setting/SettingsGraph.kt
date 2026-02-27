@@ -98,7 +98,7 @@ fun SettingsGraph(
     }
 }
 
-@Preview(device = "spec:width=673dp,height=841dp")
+@Preview
 @Composable
 private fun Preview() {
     RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {

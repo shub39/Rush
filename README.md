@@ -1,9 +1,9 @@
 ![](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
-[<img alt="Get it on Google Play" src="badges/playstore.png" width="200px">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
-[<img alt="Get it on github" src="badges/github.png" width="200px">](https://github.com/shub39/Rush/releases)
-[<img alt="Get it on izzyondroid" src="badges/izzyondroid.png" width="200px">](https://apt.izzysoft.de/fdroid/index/apk/com.shub39.rush)
-[<img alt="Get it on fdroid" src="badges/fdroid.png" width="200px">](https://f-droid.org/en/packages/com.shub39.rush/)
+[<img alt="Get it on Google Play" src="badges/playstore.png" width="180px">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
+[<img alt="Get it on github" src="badges/github.png" width="180px">](https://github.com/shub39/Rush/releases)
+[<img alt="Get it on izzyondroid" src="badges/izzyondroid.png" width="180px">](https://apt.izzysoft.de/fdroid/index/apk/com.shub39.rush)
+[<img alt="Get it on fdroid" src="badges/fdroid.png" width="180px">](https://f-droid.org/en/packages/com.shub39.rush/)
 
 ## Screenshots
 

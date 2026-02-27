@@ -36,9 +36,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,6 +63,7 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.endItemShape
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
@@ -120,11 +123,15 @@ private fun BackupPageContent(
     onPickFile: () -> Unit,
     action: (SettingsPageAction) -> Unit,
 ) {
+    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier =
+            Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.backup)) },
+            MediumFlexibleTopAppBar(
+                title = {
+                    Text(text = stringResource(R.string.backup), fontFamily = flexFontEmphasis())
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -133,6 +140,7 @@ private fun BackupPageContent(
                         )
                     }
                 },
+                scrollBehavior = scrollBehaviour,
             )
         },
     ) { paddingValues ->

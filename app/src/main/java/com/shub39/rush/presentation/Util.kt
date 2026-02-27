@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import kotlin.random.Random
 
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -95,16 +94,6 @@ fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {
         sortedMap[entry.key] = entry.value
     }
     return sortedMap
-}
-
-fun getMainArtist(artists: String): String {
-    val regex = Regex("\\s*\\(.*?\\)\\s*$")
-    return artists.replace(regex, "").split(",")[0].trim()
-}
-
-fun getMainTitle(songTitle: String): String {
-    val regex = Regex("\\s*\\(.*?\\)\\s*$")
-    return songTitle.replace(regex, "").trim()
 }
 
 fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {
@@ -190,18 +179,18 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
 }
 
 // very important
-fun getRandomLine(): String {
-    return when (Random.nextInt(0, 11)) {
-        1 -> "Bombardino Crocodilo"
-        2 -> "Brr Brr Patapim"
-        3 -> "Lirili Larila"
-        4 -> "Trippi Troppi"
-        5 -> "Capucino Assassaino"
-        6 -> "Trulimero Trulichina"
-        7 -> "Tung Tung Tung Sahur"
-        8 -> "Chimpanzini Bananini"
-        9 -> "Giraffa Celeste"
-        10 -> "Where are the epstein files Mr Trump?"
-        else -> "Tralalero Tralala"
-    }
-}
+private val brainrots =
+    listOf(
+        "Bombardino Crocodilo",
+        "Brr Brr Patapim",
+        "Lirili Larila",
+        "Trippi Troppi",
+        "Capucino Assassaino",
+        "Trulimero Trulichina",
+        "Tung Tung Tung Sahur",
+        "Chimpanzini Bananini",
+        "Giraffa Celeste",
+        "Tralalero Tralala",
+    )
+
+fun getRandomLine(): String = brainrots.random()

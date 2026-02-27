@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +52,8 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 import io.github.vinceglb.filekit.PlatformFile
@@ -91,12 +92,8 @@ fun AlbumArt(
                 text = song.title,
                 style =
                     MaterialTheme.typography.headlineLarge
-                        .fromPx(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 60,
-                            letterSpacing = 0,
-                            lineHeight = 60,
-                        )
+                        .copy(fontFamily = flexFontEmphasis())
+                        .fromPx(fontSize = 60, letterSpacing = 0, lineHeight = 60)
                         .copy(textAlign = TextAlign.Center),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -105,8 +102,8 @@ fun AlbumArt(
                 text = song.artist,
                 style =
                     MaterialTheme.typography.headlineLarge
-                        .fromPx(fontSize = 30, letterSpacing = 0, lineHeight = 30)
-                        .copy(textAlign = TextAlign.Center),
+                        .copy(textAlign = TextAlign.Center, fontFamily = flexFontRounded())
+                        .fromPx(fontSize = 30, letterSpacing = 0, lineHeight = 30),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

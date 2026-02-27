@@ -37,9 +37,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,7 +57,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +68,10 @@ import com.shub39.rush.presentation.components.RushDialog
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
+import com.shub39.rush.presentation.flexFontBold
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.getRandomLine
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
@@ -94,9 +97,12 @@ fun SettingRootPage(
         modifier =
             Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
         topBar = {
-            MediumFlexibleTopAppBar(
+            LargeFlexibleTopAppBar(
                 scrollBehavior = scrollBehaviour,
-                title = { Text(stringResource(R.string.settings)) },
+                title = {
+                    Text(text = stringResource(R.string.settings), fontFamily = flexFontEmphasis())
+                },
+                subtitle = { Text(text = getRandomLine(), fontFamily = flexFontRounded()) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -152,8 +158,10 @@ fun SettingRootPage(
 
                         Text(
                             text = stringResource(R.string.rush_pro),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
+                            style =
+                                MaterialTheme.typography.headlineSmall.copy(
+                                    fontFamily = flexFontBold()
+                                ),
                         )
 
                         Spacer(modifier = Modifier.weight(1f))

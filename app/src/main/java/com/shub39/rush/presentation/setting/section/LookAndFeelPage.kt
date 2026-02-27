@@ -47,12 +47,13 @@ import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -65,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -80,6 +82,7 @@ import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.endItemShape
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
@@ -101,10 +104,16 @@ fun LookAndFeelPage(
 ) = PageFill {
     var colorPickerDialog by remember { mutableStateOf(false) }
 
+    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.look_and_feel)) },
+            MediumFlexibleTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.look_and_feel),
+                        fontFamily = flexFontEmphasis(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -113,9 +122,11 @@ fun LookAndFeelPage(
                         )
                     }
                 },
+                scrollBehavior = scrollBehaviour,
             )
         },
-        modifier = Modifier.widthIn(max = 700.dp),
+        modifier =
+            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

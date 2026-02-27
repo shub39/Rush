@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.data.network.GeniusApi
+import com.shub39.rush.data.network.LrcLibApi
 import com.shub39.rush.domain.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class GeniusApiTest {
-    val geniusApi = GeniusApi()
+class LrcLibApiTest {
+    private val lrcLibApi = LrcLibApi()
 
     private fun testIn(title: String, block: suspend CoroutineScope.() -> Unit) = runBlocking {
         println("\n-- $title --")
@@ -32,13 +32,9 @@ class GeniusApiTest {
     @Test
     fun testSearch() =
         testIn("Test Search") {
-            when (val search = geniusApi.geniusSearch("Satan in the wait")) {
-                is Result.Error -> {
-                    println(search.message)
-                }
-                is Result.Success -> {
-                    println(search.data)
-                }
+            when (val result = lrcLibApi.searchLrcLyrics("DtmF", "Bad Bunny")) {
+                is Result.Error -> throw Exception("${result.error} : ${result.message}")
+                is Result.Success -> println(result.data)
             }
         }
 }

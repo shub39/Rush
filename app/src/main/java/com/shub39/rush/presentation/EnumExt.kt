@@ -195,7 +195,7 @@ fun Fonts.toFontRes(): Int? {
         Fonts.OUTFIT -> R.font.outfit
         Fonts.QUICKSAND -> R.font.quicksand
         Fonts.JOSH -> R.font.jost
-        Fonts.GOOGLE_SANS -> R.font.google_sans
+        Fonts.GOOGLE_SANS -> R.font.google_sans_flex
     }
 }
 

@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.presentation
 
+import android.graphics.Paint as AndroidPaint
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -44,7 +45,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.graphics.Paint as AndroidPaint
 
 fun AndroidPaint.applyShadowLayer(
     radius: Dp,

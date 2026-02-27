@@ -82,6 +82,8 @@ import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
@@ -245,8 +247,10 @@ fun LyricsPage(
 
                                             Text(
                                                 text = lyricsState.song.title,
-                                                style = MaterialTheme.typography.titleLarge,
-                                                fontWeight = FontWeight.SemiBold,
+                                                style =
+                                                    MaterialTheme.typography.headlineMedium.copy(
+                                                        fontFamily = flexFontEmphasis()
+                                                    ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier =
@@ -256,7 +260,10 @@ fun LyricsPage(
 
                                             Text(
                                                 text = lyricsState.song.artists,
-                                                style = MaterialTheme.typography.bodyMedium,
+                                                style =
+                                                    MaterialTheme.typography.titleMedium.copy(
+                                                        fontFamily = flexFontRounded()
+                                                    ),
                                                 fontWeight = FontWeight.Bold,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,

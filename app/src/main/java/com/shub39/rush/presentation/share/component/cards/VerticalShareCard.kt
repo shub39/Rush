@@ -51,6 +51,8 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.rotateVertically
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
@@ -88,12 +90,9 @@ fun VerticalShareCard(
                         Text(
                             text = song.artist,
                             style =
-                                MaterialTheme.typography.bodySmall.fromPx(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 24,
-                                    letterSpacing = 0,
-                                    lineHeight = 24,
-                                ),
+                                MaterialTheme.typography.bodySmall
+                                    .copy(fontFamily = flexFontRounded())
+                                    .fromPx(fontSize = 24, letterSpacing = 0, lineHeight = 24),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.rotateVertically(),
@@ -102,12 +101,9 @@ fun VerticalShareCard(
                         Text(
                             text = song.title,
                             style =
-                                MaterialTheme.typography.titleMedium.fromPx(
-                                    fontWeight = FontWeight.ExtraBold,
-                                    fontSize = 28,
-                                    letterSpacing = 0,
-                                    lineHeight = 28,
-                                ),
+                                MaterialTheme.typography.titleMedium
+                                    .copy(fontFamily = flexFontEmphasis())
+                                    .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.rotateVertically(),

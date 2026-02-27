@@ -27,9 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.R
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 
@@ -57,13 +57,8 @@ fun RushBranding(modifier: Modifier = Modifier, color: Color = MaterialTheme.col
             text = "Rush",
             style =
                 MaterialTheme.typography.headlineSmall
-                    .copy(color = color)
-                    .fromPx(
-                        fontSize = 36,
-                        letterSpacing = 0,
-                        lineHeight = 36,
-                        fontWeight = FontWeight.Bold,
-                    ),
+                    .copy(color = color, fontFamily = flexFontEmphasis())
+                    .fromPx(fontSize = 36, letterSpacing = 0, lineHeight = 36),
         )
     }
 }

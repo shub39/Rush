@@ -51,6 +51,8 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 import io.github.vinceglb.filekit.PlatformFile
@@ -125,22 +127,17 @@ fun RushedShareCard(
                         color = cardColors.contentColor,
                         maxLines = 1,
                         style =
-                            MaterialTheme.typography.titleMedium.fromPx(
-                                fontSize = 32,
-                                letterSpacing = 0,
-                                lineHeight = 32,
-                                fontWeight = FontWeight.Bold,
-                            ),
+                            MaterialTheme.typography.titleMedium
+                                .copy(fontFamily = flexFontEmphasis())
+                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 32),
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = song.artist,
                         style =
-                            MaterialTheme.typography.bodySmall.fromPx(
-                                fontSize = 24,
-                                letterSpacing = 0,
-                                lineHeight = 24,
-                            ),
+                            MaterialTheme.typography.bodySmall
+                                .copy(fontFamily = flexFontRounded())
+                                .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 24),
                         color = cardColors.contentColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

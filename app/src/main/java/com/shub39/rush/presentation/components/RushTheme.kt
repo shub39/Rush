@@ -19,7 +19,6 @@ package com.shub39.rush.presentation.components
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -55,8 +54,7 @@ fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
             },
         isAmoled = theme.withAmoled,
         style = theme.style.toMPaletteStyle(),
-        typography =
-            theme.font.toFontRes()?.let { provideTypography(it) } ?: MaterialTheme.typography,
+        typography = provideTypography(theme.font.toFontRes()),
         content = content,
     )
 }

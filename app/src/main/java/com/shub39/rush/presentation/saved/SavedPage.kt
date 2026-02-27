@@ -43,8 +43,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -77,6 +77,8 @@ import com.shub39.rush.domain.enums.SortOrder
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.Empty
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.saved.component.SavedPageActions
 import com.shub39.rush.presentation.saved.component.SongCard
 import com.shub39.rush.presentation.simpleVerticalScrollbar
@@ -100,10 +102,18 @@ fun SavedPage(
         topBar = {
             Column {
                 if (!isLandscape) {
-                    MediumFlexibleTopAppBar(
-                        title = { Text(stringResource(R.string.rush_branding)) },
+                    LargeFlexibleTopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(R.string.rush_branding),
+                                fontFamily = flexFontEmphasis(),
+                            )
+                        },
                         subtitle = {
-                            Text(text = "${state.songsAsc.size} " + stringResource(R.string.saved))
+                            Text(
+                                text = "${state.songsAsc.size} " + stringResource(R.string.saved),
+                                fontFamily = flexFontRounded(),
+                            )
                         },
                         actions = {
                             IconButton(onClick = onNavigateToSettings) {
@@ -121,9 +131,17 @@ fun SavedPage(
                     )
                 } else {
                     TopAppBar(
-                        title = { Text(stringResource(R.string.rush_branding)) },
+                        title = {
+                            Text(
+                                text = stringResource(R.string.rush_branding),
+                                fontFamily = flexFontEmphasis(),
+                            )
+                        },
                         subtitle = {
-                            Text(text = "${state.songsAsc.size} " + stringResource(R.string.saved))
+                            Text(
+                                text = "${state.songsAsc.size} " + stringResource(R.string.saved),
+                                fontFamily = flexFontRounded(),
+                            )
                         },
                         actions = {
                             IconButton(onClick = onNavigateToSettings) {
