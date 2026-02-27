@@ -31,54 +31,62 @@ val TYPOGRAPHY = Typography()
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
+fun flexFontEmphasis(slant: Float = -6f): FontFamily =
+    FontFamily(
+        Font(
+            resId = R.font.google_sans_flex,
+            variationSettings =
+                FontVariation.Settings(
+                    FontVariation.weight(1000),
+                    FontVariation.slant(slant),
+                    FontVariation.width(120f),
+                ),
+        )
+    )
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun flexFontBold(slant: Float = -6f): FontFamily =
+    FontFamily(
+        Font(
+            resId = R.font.google_sans_flex,
+            variationSettings =
+                FontVariation.Settings(
+                    FontVariation.weight(800),
+                    FontVariation.slant(slant),
+                    FontVariation.width(100f),
+                ),
+        )
+    )
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun flexFontRounded(): FontFamily =
+    FontFamily(
+        Font(
+            resId = R.font.google_sans_flex,
+            variationSettings =
+                FontVariation.Settings(
+                    FontVariation.weight(800),
+                    FontVariation.Setting("ROND", 100f),
+                ),
+        )
+    )
+
+@Composable
 fun provideTypography(font: Int? = R.font.poppins_regular): Typography {
-    val flexFontDisplay =
-        FontFamily(
-            Font(
-                resId = R.font.google_sans_flex,
-                variationSettings =
-                    FontVariation.Settings(
-                        FontVariation.weight(900),
-                        FontVariation.slant(-6f),
-                        FontVariation.width(120f),
-                    ),
-            )
-        )
-    val flexFontHeadline =
-        FontFamily(
-            Font(
-                resId = R.font.google_sans_flex,
-                variationSettings =
-                    FontVariation.Settings(
-                        FontVariation.weight(800),
-                        FontVariation.slant(-6f),
-                        FontVariation.width(110f),
-                    ),
-            )
-        )
-    val flexFontTitle =
-        FontFamily(
-            Font(
-                resId = R.font.google_sans_flex,
-                variationSettings =
-                    FontVariation.Settings(
-                        FontVariation.weight(500),
-                        FontVariation.Setting("ROND", 100f),
-                    ),
-            )
-        )
-    val selectedFont = font?.let { FontFamily(Font(it)) } ?: FontFamily.Default
+    val selectedFont = font?.let { FontFamily(Font(font)) } ?: FontFamily.Default
 
     return Typography(
-        displayLarge = TYPOGRAPHY.displayLarge.copy(fontFamily = flexFontDisplay),
-        displayMedium = TYPOGRAPHY.displayMedium.copy(fontFamily = flexFontDisplay),
-        displaySmall = TYPOGRAPHY.displaySmall.copy(fontFamily = flexFontDisplay),
-        headlineLarge = TYPOGRAPHY.headlineLarge.copy(fontFamily = flexFontHeadline),
-        headlineMedium = TYPOGRAPHY.headlineMedium.copy(fontFamily = flexFontHeadline),
-        headlineSmall = TYPOGRAPHY.headlineSmall.copy(fontFamily = flexFontHeadline),
-        titleLarge = TYPOGRAPHY.titleLarge.copy(fontFamily = flexFontTitle),
-        titleMedium = TYPOGRAPHY.titleMedium.copy(fontFamily = flexFontTitle),
-        titleSmall = TYPOGRAPHY.titleSmall.copy(fontFamily = flexFontTitle),
+        displayLarge = TYPOGRAPHY.displayLarge.copy(fontFamily = selectedFont),
+        displayMedium = TYPOGRAPHY.displayMedium.copy(fontFamily = selectedFont),
+        displaySmall = TYPOGRAPHY.displaySmall.copy(fontFamily = selectedFont),
+        headlineLarge = TYPOGRAPHY.headlineLarge.copy(fontFamily = selectedFont),
+        headlineMedium = TYPOGRAPHY.headlineMedium.copy(fontFamily = selectedFont),
+        headlineSmall = TYPOGRAPHY.headlineSmall.copy(fontFamily = selectedFont),
+        titleLarge = TYPOGRAPHY.titleLarge.copy(fontFamily = selectedFont),
+        titleMedium = TYPOGRAPHY.titleMedium.copy(fontFamily = selectedFont),
+        titleSmall = TYPOGRAPHY.titleSmall.copy(fontFamily = selectedFont),
         bodyLarge = TYPOGRAPHY.bodyLarge.copy(fontFamily = selectedFont),
         bodyMedium = TYPOGRAPHY.bodyMedium.copy(fontFamily = selectedFont),
         bodySmall = TYPOGRAPHY.bodySmall.copy(fontFamily = selectedFont),
@@ -90,9 +98,13 @@ fun provideTypography(font: Int? = R.font.poppins_regular): Typography {
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
-fun TypographyPreview() {
+private fun TypographyPreview() {
     val typography = provideTypography()
     Column {
+        Text("Flex Font Emphasis", fontFamily = flexFontEmphasis())
+        Text("Flex Font Bold", fontFamily = flexFontBold())
+        Text("Flex Font Rounded", fontFamily = flexFontRounded())
+
         Text("Display Large", style = typography.displayLarge)
         Text("Display Medium", style = typography.displayMedium)
         Text("Display Small", style = typography.displaySmall)

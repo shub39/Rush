@@ -18,11 +18,10 @@ package com.shub39.rush.data.network
 
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.data.network.dto.lrclib.LrcGetDto
-import com.shub39.rush.data.safeCall
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
-import com.shub39.rush.presentation.getMainArtist
-import com.shub39.rush.presentation.getMainTitle
+import com.shub39.rush.domain.getMainArtist
+import com.shub39.rush.domain.getMainTitle
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -84,8 +83,7 @@ class LrcLibApi {
     suspend fun getLrcLyrics(trackName: String, artistName: String): LrcGetDto? {
         return when (val result = searchLrcLyrics(trackName, artistName)) {
             is Result.Error -> null
-            is Result.Success ->
-                result.data.firstOrNull { it.syncedLyrics != null || it.plainLyrics != null }
+            is Result.Success -> result.data.firstOrNull()
         }
     }
 
@@ -93,7 +91,7 @@ class LrcLibApi {
         trackName: String,
         artistName: String,
         albumName: String? = null,
-    ): Result<List<LrcGetDto>, SourceError> = safeCall {
+    ): Result<List<LrcGetDto>, SourceError> {
         val cleanedTitle = getMainTitle(trackName)
         val cleanedArtist = getMainArtist(artistName)
 
@@ -139,7 +137,11 @@ class LrcLibApi {
                     .filter { it.syncedLyrics != null || it.plainLyrics != null }
         }
 
-        return Result.Error(SourceError.Data.NO_RESULTS)
+        return if (results.isEmpty()) {
+            Result.Error(SourceError.Data.NO_RESULTS)
+        } else {
+            Result.Success(results)
+        }
     }
 
     private suspend fun queryLyricsWithParams(

@@ -20,9 +20,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.getMainTitle
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SongRepository
-import com.shub39.rush.presentation.getMainTitle
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.SearchState
 import com.shub39.rush.presentation.lyrics.toSongUi

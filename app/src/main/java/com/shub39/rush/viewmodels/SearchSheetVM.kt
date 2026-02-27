@@ -23,9 +23,9 @@ import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.dataclasses.ExtractedColors
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.getMainTitle
 import com.shub39.rush.domain.interfaces.SongRepository
 import com.shub39.rush.presentation.errorStringRes
-import com.shub39.rush.presentation.getMainTitle
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.SearchState
 import com.shub39.rush.presentation.lyrics.toSongUi

@@ -29,8 +29,6 @@ import androidx.core.content.getSystemService
 import com.shub39.rush.data.listener.MediaListenerImpl.playbackSpeedFlow
 import com.shub39.rush.data.listener.MediaListenerImpl.songInfoFlow
 import com.shub39.rush.data.listener.MediaListenerImpl.songPositionFlow
-import com.shub39.rush.presentation.getMainArtist
-import com.shub39.rush.presentation.getMainTitle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -204,7 +202,7 @@ object MediaListenerImpl {
 
         coroutineScope.launch {
             if (controller.playbackState?.let { isActive(it) } == true) {
-                songInfoFlow.emit(Pair(getMainTitle(title), getMainArtist(artist)))
+                songInfoFlow.emit(Pair(title, artist))
                 playbackSpeedFlow.emit(controller.playbackState?.playbackSpeed ?: 1f)
                 controller.playbackState?.position?.let { songPositionFlow.emit(it) }
             }
