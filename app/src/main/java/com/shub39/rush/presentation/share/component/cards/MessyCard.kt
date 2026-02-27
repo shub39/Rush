@@ -51,6 +51,8 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 import kotlin.random.Random
@@ -136,12 +138,9 @@ fun MessyCard(
                     Text(
                         text = song.title,
                         style =
-                            MaterialTheme.typography.titleMedium.fromPx(
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 28,
-                                letterSpacing = 0,
-                                lineHeight = 28,
-                            ),
+                            MaterialTheme.typography.titleMedium
+                                .copy(fontFamily = flexFontEmphasis())
+                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 32),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -149,11 +148,9 @@ fun MessyCard(
                     Text(
                         text = song.artist,
                         style =
-                            MaterialTheme.typography.bodySmall.fromPx(
-                                fontSize = 26,
-                                letterSpacing = 0,
-                                lineHeight = 26,
-                            ),
+                            MaterialTheme.typography.bodySmall
+                                .copy(fontFamily = flexFontRounded())
+                                .fromPx(fontSize = 26, letterSpacing = 0, lineHeight = 26),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

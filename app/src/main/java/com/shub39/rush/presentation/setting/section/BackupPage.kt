@@ -63,6 +63,7 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.endItemShape
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
@@ -128,7 +129,9 @@ private fun BackupPageContent(
             Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = {
             MediumFlexibleTopAppBar(
-                title = { Text(stringResource(R.string.backup)) },
+                title = {
+                    Text(text = stringResource(R.string.backup), fontFamily = flexFontEmphasis())
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

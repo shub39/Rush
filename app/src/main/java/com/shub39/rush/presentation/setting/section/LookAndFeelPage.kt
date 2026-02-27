@@ -82,6 +82,7 @@ import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.endItemShape
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
@@ -107,7 +108,12 @@ fun LookAndFeelPage(
     Scaffold(
         topBar = {
             MediumFlexibleTopAppBar(
-                title = { Text(text = stringResource(R.string.look_and_feel)) },
+                title = {
+                    Text(
+                        text = stringResource(R.string.look_and_feel),
+                        fontFamily = flexFontEmphasis(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

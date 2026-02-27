@@ -1,9 +1,9 @@
 # Changelog
 
 ## 5.6.0
-- Fixed LRCLIB api not responding sometimes
+- Fixed LRCLIB api not responding sometimes (hopefully)
 - Misc updates and fixes
-- Added flex fonts for headlines and displays
+- Added flex fonts for headlines, displays and sharecards
 
 ## 5.5.2
 - Fixed synced lyrics not loading

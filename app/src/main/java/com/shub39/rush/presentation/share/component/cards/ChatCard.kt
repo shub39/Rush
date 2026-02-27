@@ -49,6 +49,8 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.presentation.components.ArtFromUrl
 import com.shub39.rush.presentation.components.RushBranding
 import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 
@@ -99,12 +101,9 @@ fun ChatCard(
                             Text(
                                 text = song.title,
                                 style =
-                                    MaterialTheme.typography.titleMedium.fromPx(
-                                        fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 28,
-                                        letterSpacing = 0,
-                                        lineHeight = 28,
-                                    ),
+                                    MaterialTheme.typography.titleMedium
+                                        .copy(fontFamily = flexFontEmphasis())
+                                        .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -112,11 +111,9 @@ fun ChatCard(
                             Text(
                                 text = song.artist,
                                 style =
-                                    MaterialTheme.typography.bodySmall.fromPx(
-                                        fontSize = 24,
-                                        letterSpacing = 0,
-                                        lineHeight = 24,
-                                    ),
+                                    MaterialTheme.typography.bodySmall
+                                        .copy(fontFamily = flexFontRounded())
+                                        .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 24),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -154,10 +151,10 @@ fun ChatCard(
                                 text = it.value,
                                 style =
                                     MaterialTheme.typography.bodyMedium.fromPx(
+                                        fontSize = 42,
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 32,
                                         letterSpacing = 0,
-                                        lineHeight = 36,
+                                        lineHeight = 42,
                                     ),
                                 modifier =
                                     Modifier.padding(horizontal = pxToDp(16), vertical = pxToDp(8)),
@@ -184,13 +181,7 @@ private fun Preview() {
         ChatCard(
             modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
             song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
-            sortedLines =
-                (0..5)
-                    .associateWith { "This is a simple line $it" }
-                    .plus(
-                        6 to
-                            "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
-                    ),
+            sortedLines = (0..5).associateWith { "This is a simple line $it" },
             cardColors =
                 CardDefaults.cardColors(
                     contentColor = MaterialTheme.colorScheme.onPrimary,

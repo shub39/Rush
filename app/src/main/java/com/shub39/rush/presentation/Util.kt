@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import kotlin.random.Random
 
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -180,18 +179,18 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
 }
 
 // very important
-fun getRandomLine(): String {
-    return when (Random.nextInt(0, 11)) {
-        1 -> "Bombardino Crocodilo"
-        2 -> "Brr Brr Patapim"
-        3 -> "Lirili Larila"
-        4 -> "Trippi Troppi"
-        5 -> "Capucino Assassaino"
-        6 -> "Trulimero Trulichina"
-        7 -> "Tung Tung Tung Sahur"
-        8 -> "Chimpanzini Bananini"
-        9 -> "Giraffa Celeste"
-        10 -> "Where are the epstein files Mr Trump?"
-        else -> "Tralalero Tralala"
-    }
-}
+private val brainrots =
+    listOf(
+        "Bombardino Crocodilo",
+        "Brr Brr Patapim",
+        "Lirili Larila",
+        "Trippi Troppi",
+        "Capucino Assassaino",
+        "Trulimero Trulichina",
+        "Tung Tung Tung Sahur",
+        "Chimpanzini Bananini",
+        "Giraffa Celeste",
+        "Tralalero Tralala",
+    )
+
+fun getRandomLine(): String = brainrots.random()

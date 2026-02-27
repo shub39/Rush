@@ -37,10 +37,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
+import com.shub39.rush.presentation.flexFontEmphasis
 
 @Composable
 fun AboutApp() {
@@ -63,8 +63,10 @@ fun AboutApp() {
             Column {
                 Text(
                     text = "Rush",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
+                    style =
+                        MaterialTheme.typography.headlineMedium.copy(
+                            fontFamily = flexFontEmphasis()
+                        ),
                 )
                 Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
             }
