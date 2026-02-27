@@ -66,7 +66,7 @@ import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.RushDialog
 import com.shub39.rush.presentation.components.RushTheme
-import com.shub39.rush.presentation.flexFontBold
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.component.customisation.LyricsCustomisationPreview
@@ -131,7 +131,7 @@ fun LyricsCustomisationsPage(
                     title = {
                         Text(
                             text = stringResource(R.string.customisations),
-                            fontFamily = flexFontBold(),
+                            fontFamily = flexFontEmphasis(),
                             maxLines = 1,
                             modifier = Modifier.basicMarquee(),
                         )

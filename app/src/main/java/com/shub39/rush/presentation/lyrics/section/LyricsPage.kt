@@ -82,7 +82,7 @@ import com.shub39.rush.presentation.components.PageFill
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
-import com.shub39.rush.presentation.flexFontBold
+import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
@@ -248,8 +248,8 @@ fun LyricsPage(
                                             Text(
                                                 text = lyricsState.song.title,
                                                 style =
-                                                    MaterialTheme.typography.headlineSmall.copy(
-                                                        fontFamily = flexFontBold()
+                                                    MaterialTheme.typography.headlineMedium.copy(
+                                                        fontFamily = flexFontEmphasis()
                                                     ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
@@ -261,7 +261,7 @@ fun LyricsPage(
                                             Text(
                                                 text = lyricsState.song.artists,
                                                 style =
-                                                    MaterialTheme.typography.titleSmall.copy(
+                                                    MaterialTheme.typography.titleMedium.copy(
                                                         fontFamily = flexFontRounded()
                                                     ),
                                                 fontWeight = FontWeight.Bold,
