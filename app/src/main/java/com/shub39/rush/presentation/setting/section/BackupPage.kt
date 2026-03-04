@@ -69,6 +69,7 @@ import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
@@ -86,11 +87,12 @@ fun BackupPage(
     val scope = rememberCoroutineScope()
 
     var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
-    val fileSaverLauncher = rememberFileSaverLauncher { file ->
-        if (file != null && state.exportState is ExportState.ExportReady) {
-            scope.launch { file.writeString(state.exportState.data) }
+    val fileSaverLauncher =
+        rememberFileSaverLauncher(dialogSettings = FileKitDialogSettings()) { file ->
+            if (file != null && state.exportState is ExportState.ExportReady) {
+                scope.launch { file.writeString(state.exportState.data) }
+            }
         }
-    }
     val filePickerLauncher =
         rememberFilePickerLauncher(type = FileKitType.File(extensions = listOf("json"))) { file ->
             restoreFile = file

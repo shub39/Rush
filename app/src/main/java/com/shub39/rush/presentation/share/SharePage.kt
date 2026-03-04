@@ -85,6 +85,7 @@ import com.shub39.rush.presentation.share.component.cards.VerticalShareCard
 import com.shub39.rush.presentation.toShape
 import io.github.vinceglb.filekit.ImageFormat
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
@@ -117,13 +118,14 @@ fun SharePage(
     val imagePicker =
         rememberFilePickerLauncher(type = FileKitType.Image) { image -> selectedImage = image }
 
-    val imageSaver = rememberFileSaverLauncher { file ->
-        if (saveImage != null) {
-            coroutineScope.launch(Dispatchers.IO) {
-                file?.write(saveImage!!.encodeToByteArray(format = ImageFormat.PNG))
+    val imageSaver =
+        rememberFileSaverLauncher(dialogSettings = FileKitDialogSettings()) { file ->
+            if (saveImage != null) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    file?.write(saveImage!!.encodeToByteArray(format = ImageFormat.PNG))
+                }
             }
         }
-    }
 
     val shareLauncher = rememberShareFileLauncher()
 

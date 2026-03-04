@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.7.0
+- Changed Synced Lyrics Animation
+
 ## 5.6.0
 - Fixed LRCLIB api not responding sometimes (hopefully)
 - Misc updates and fixes
