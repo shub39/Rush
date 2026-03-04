@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 val appName = "Rush"
@@ -164,6 +165,8 @@ dependencies {
     ksp(libs.koin.ksp.compiler)
     api(libs.koin.annotations)
 }
+
+room { schemaDirectory("$projectDir/schemas") }
 
 fun execute(vararg command: String): String =
     providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

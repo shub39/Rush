@@ -22,6 +22,7 @@ import com.shub39.rush.data.mappers.toSongEntity
 import com.shub39.rush.data.network.GeniusApi
 import com.shub39.rush.data.network.GeniusScraper
 import com.shub39.rush.data.network.LrcLibApi
+import com.shub39.rush.data.network.LyricsPlusApi
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.domain.dataclasses.LrcLibSong
@@ -42,23 +43,28 @@ class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,
     private val lrcLibApi: LrcLibApi,
+    private val lyricsPlusApi: LyricsPlusApi,
     private val geniusScraper: GeniusScraper,
 ) : SongRepository {
     @OptIn(ExperimentalTime::class)
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
-            val lrcLibLyrics =
+            val ttmlLyrics =
                 withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
                 }
+            val lrcLibLyrics =
+                if (ttmlLyrics == null) {
+                    withContext(Dispatchers.IO) {
+                        lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                    }
+                } else null
             val geniusLyrics =
                 if (lrcLibLyrics == null) {
                     withContext(Dispatchers.IO) {
                         (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
                     }
-                } else {
-                    null
-                }
+                } else null
 
             return Result.Success<Song, SourceError>(
                     Song(
@@ -71,6 +77,7 @@ class RushRepository(
                         artUrl = result.artUrl,
                         geniusLyrics = geniusLyrics,
                         syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        ttmlLyrics = ttmlLyrics,
                         dateAdded = Clock.System.now().epochSeconds,
                     )
                 )

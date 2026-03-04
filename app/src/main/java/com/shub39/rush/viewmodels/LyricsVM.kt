@@ -335,7 +335,7 @@ class LyricsVM(
                             )
                         }
 
-                        delay(500)
+                        delay(100)
                     }
                 }
         }

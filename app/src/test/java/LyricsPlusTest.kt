@@ -14,27 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.domain.backup
+import com.shub39.rush.data.network.LyricsPlusApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+class LyricsPlusTest {
+    private val lyricsPlusApi = LyricsPlusApi()
 
-@Serializable
-@SerialName("Export")
-data class ExportSchema(val schemaVersion: Int = 3, val songs: List<SongSchema>)
+    private fun testIn(title: String, block: suspend CoroutineScope.() -> Unit) = runBlocking {
+        println("\n-- $title --")
+        block.invoke(this)
+        println("\n")
+    }
 
-@Serializable
-@SerialName("Song")
-data class SongSchema(
-    val id: Long,
-    val title: String,
-    val artists: String,
-    val lyrics: String,
-    val album: String?,
-    val sourceUrl: String,
-    val artUrl: String?,
-    val syncedLyrics: String?,
-    val geniusLyrics: String?,
-    val ttmlLyrics: String?,
-    val dateAdded: Long = 0,
-)
+    @Test
+    fun testFetch() =
+        testIn("Test Fetch") { println(lyricsPlusApi.fetchTTML("Snowchild", "the weeknd")) }
+}

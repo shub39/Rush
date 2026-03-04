@@ -85,7 +85,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SyncedLyrics(
+fun LineSyncedLyrics(
     state: LyricsPageState,
     lazyListState: LazyListState,
     cardContent: Color,
@@ -249,9 +249,8 @@ fun SyncedLyric(
                         val isHighlightedWord = currentWordIndex >= index && scale == 1f
                         val wordAlpha by
                             animateFloatAsState(targetValue = if (isHighlightedWord) 1f else 0f)
-                        val glowAlpha by animateFloatAsState(
-                            targetValue =  if (isHighlightedWord) 5f else 0f
-                        )
+                        val glowAlpha by
+                            animateFloatAsState(targetValue = if (isHighlightedWord) 5f else 0f)
                         val wordScale by
                             animateFloatAsState(
                                 targetValue = if (isHighlightedWord || scale != 1f) 1f else 0.98f,
@@ -301,7 +300,7 @@ fun SyncedLyric(
 
 @Preview(showBackground = true, backgroundColor = 0xAB89)
 @Composable
-fun SyncedLyricsPreview() {
+fun LineSyncedLyricsPreview() {
     var position by remember { mutableLongStateOf(0L) }
     val lyrics = remember {
         listOf(
@@ -342,6 +341,7 @@ fun SyncedLyricsPreview() {
                             lyrics = emptyList(),
                             syncedLyrics = lyrics,
                             geniusLyrics = null,
+                            ttmlLyrics = null,
                         )
                 ),
             playingSong =
@@ -354,7 +354,7 @@ fun SyncedLyricsPreview() {
         )
 
     Box(modifier = Modifier.fillMaxSize()) {
-        SyncedLyrics(
+        LineSyncedLyrics(
             state = state,
             lazyListState = rememberLazyListState(),
             cardContent = Color.White,

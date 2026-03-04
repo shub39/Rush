@@ -42,4 +42,5 @@ data class SongUi(
     val lyrics: List<Map.Entry<Int, String>>,
     val syncedLyrics: List<Lyric>?,
     val geniusLyrics: List<Map.Entry<Int, String>>?,
+    val ttmlLyrics: List<ParsedLine>?,
 )

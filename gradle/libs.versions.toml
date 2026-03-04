@@ -87,6 +87,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
+room = { id = "androidx.room", version.ref = "room" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }

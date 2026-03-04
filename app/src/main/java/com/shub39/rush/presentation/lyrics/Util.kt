@@ -35,6 +35,7 @@ import com.materialkolor.ktx.lighten
 import com.shub39.rush.domain.dataclasses.Lyric
 import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.dataclasses.SongUi
+import com.shub39.rush.domain.dataclasses.TTMLParser
 import com.shub39.rush.domain.dataclasses.WaveColors
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
@@ -282,7 +283,8 @@ fun Song.toSongUi(): SongUi {
         sourceUrl = sourceUrl,
         artUrl = artUrl,
         lyrics = breakLyrics(lyrics),
-        syncedLyrics = if (syncedLyrics == null) null else parseLyrics(syncedLyrics),
-        geniusLyrics = if (geniusLyrics == null) null else breakLyrics(geniusLyrics),
+        syncedLyrics = syncedLyrics?.let { parseLyrics(it) },
+        geniusLyrics = geniusLyrics?.let { breakLyrics(it) },
+        ttmlLyrics = ttmlLyrics?.let { TTMLParser.parseTTML(it) },
     )
 }

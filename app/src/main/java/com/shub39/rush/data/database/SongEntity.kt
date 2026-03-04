@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.data.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -31,4 +32,5 @@ data class SongEntity(
     val geniusLyrics: String?,
     val syncedLyrics: String?,
     val dateAdded: Long = 0,
+    @ColumnInfo(name = "ttmlLyrics", defaultValue = "NULL") val ttmlLyrics: String? = null,
 )
