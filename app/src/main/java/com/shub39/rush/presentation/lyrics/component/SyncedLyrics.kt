@@ -151,12 +151,6 @@ fun SyncedLyrics(
                     animationSpec = tween(500, easing = LinearEasing),
                 )
 
-            val glowAlpha by
-                animateFloatAsState(
-                    targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0f else 2f,
-                    animationSpec = tween(500),
-                )
-
             val blur by
                 animateDpAsState(
                     targetValue =
@@ -189,7 +183,6 @@ fun SyncedLyrics(
                 lyric = lyric,
                 underTextAlpha = underTextAlpha,
                 textColor = textColor,
-                glowAlpha = glowAlpha,
                 scale = scale,
                 animatedProgress = animatedProgress,
                 modifier =
@@ -209,7 +202,6 @@ fun SyncedLyric(
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
     underTextAlpha: Float,
-    glowAlpha: Float,
     textColor: Color,
     scale: Float,
     animatedProgress: Float,
@@ -254,12 +246,15 @@ fun SyncedLyric(
                             }
                         }
 
-                        val highlightWord = currentWordIndex >= index && scale == 1f
+                        val isHighlightedWord = currentWordIndex >= index && scale == 1f
                         val wordAlpha by
-                            animateFloatAsState(targetValue = if (highlightWord) 1f else 0f)
+                            animateFloatAsState(targetValue = if (isHighlightedWord) 1f else 0f)
+                        val glowAlpha by animateFloatAsState(
+                            targetValue =  if (isHighlightedWord) 5f else 0f
+                        )
                         val wordScale by
                             animateFloatAsState(
-                                targetValue = if (highlightWord || scale != 1f) 1f else 0.95f,
+                                targetValue = if (isHighlightedWord || scale != 1f) 1f else 0.98f,
                                 animationSpec = spring(),
                             )
 
