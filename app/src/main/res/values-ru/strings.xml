@@ -35,7 +35,7 @@
     <string name="track">трек</string>
     <string name="artist">исполнитель</string>
     <string name="width">Ширина</string>
-    <string name="grant_permission">Дать доступ к уведомлениям</string>
+    <string name="grant_permission">Предоставить доступ</string>
     <string name="rounded_corners">Скругленные углы</string>
     <string name="downloaded">Сохраненные тексты песен</string>
     <string name="theme">Тема</string>
@@ -128,7 +128,7 @@
     <string name="restore_info">Восстановить из выбранного экспортированного файла</string>
     <string name="spotify">Обычный</string>
     <string name="rushed">Стиль \"Rush\"</string>
-    <string name="messy">Разбросанный</string>
+    <string name="messy">Беспорядочный</string>
     <string name="album_art">Только Обложка</string>
     <string name="album_art_shape">Форма обложки альбома</string>
     <string name="blurred_art">Размытая Обложка</string>
@@ -137,4 +137,7 @@
     <string name="plain_lyrics">Простой</string>
     <string name="synced_lyrics">Синхронизированный</string>
     <string name="blur_synced">Размыть Синхронизированный Текст</string>
+    <string name="wave">Волна</string>
+    <string name="gradient">Градиент</string>
+    <string name="audio_permission">Требуется разрешение на запись аудио</string>
 </resources>
