@@ -96,7 +96,7 @@ import com.shub39.rush.presentation.lyrics.component.Actions
 import com.shub39.rush.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.presentation.lyrics.component.FetchingCard
 import com.shub39.rush.presentation.lyrics.component.LineSyncedLyrics
-import com.shub39.rush.presentation.lyrics.component.LrcCorrectSheet
+import com.shub39.rush.presentation.lyrics.component.LrcCorrectDialog
 import com.shub39.rush.presentation.lyrics.component.PlainLyrics
 import com.shub39.rush.presentation.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.presentation.lyrics.getCardColors
@@ -295,15 +295,7 @@ fun LyricsPage(
                                             lazyListState = lazyListState,
                                             cardContent = cardContent,
                                             action = action,
-                                            modifier = Modifier.fillMaxWidth().fadeTopToBottom(),
-                                        )
-                                    } else if (lyricsState.song.syncedLyrics != null) {
-                                        LineSyncedLyrics(
-                                            state = state,
-                                            lazyListState = lazyListState,
-                                            cardContent = cardContent,
-                                            action = action,
-                                            modifier = Modifier.fillMaxWidth().fadeTopToBottom(),
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
                                         )
                                     } else if (lyricsState.song.ttmlLyrics != null) {
                                         SyllableSyncedLyrics(
@@ -311,7 +303,15 @@ fun LyricsPage(
                                             lazyListState = lazyListState,
                                             cardContent = cardContent,
                                             action = action,
-                                            modifier = Modifier.fillMaxWidth().fadeTopToBottom(),
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                        )
+                                    } else if (lyricsState.song.syncedLyrics != null) {
+                                        LineSyncedLyrics(
+                                            state = state,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
                                         )
                                     }
                                 } else {
@@ -385,16 +385,16 @@ fun LyricsPage(
                                                 action = action,
                                                 modifier = Modifier.weight(1f).fadeTopToBottom(),
                                             )
-                                        } else if (lyricsState.song.syncedLyrics != null) {
-                                            LineSyncedLyrics(
+                                        } else if (lyricsState.song.ttmlLyrics != null) {
+                                            SyllableSyncedLyrics(
                                                 state = state,
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
                                                 modifier = Modifier.weight(1f).fadeTopToBottom(),
                                             )
-                                        } else if (lyricsState.song.ttmlLyrics != null) {
-                                            SyllableSyncedLyrics(
+                                        } else if (lyricsState.song.syncedLyrics != null) {
+                                            LineSyncedLyrics(
                                                 state = state,
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
@@ -574,7 +574,7 @@ fun LyricsPage(
 
     // Lyrics Correction from LRCLIB
     if (state.lyricsCorrect) {
-        LrcCorrectSheet(
+        LrcCorrectDialog(
             action = action,
             state = state,
             track = (state.lyricsState as? LyricsState.Loaded)?.song?.title ?: "",

@@ -72,10 +72,10 @@ class LyricsVM(
     fun onAction(action: LyricsPageAction) {
         viewModelScope.launch {
             when (action) {
-                is LyricsPageAction.OnLrcSearch -> {
+                is LyricsPageAction.OnCorrectionSearch -> {
                     _state.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = true)) }
 
-                    when (val result = repo.searchLrcLib(action.track, action.artist)) {
+                    when (val result = repo.searchCorrections(action.track, action.artist)) {
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
@@ -121,13 +121,13 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnUpdateSongLyrics -> {
-                    repo.updateLrcLyrics(action.id, action.plainLyrics, action.syncedLyrics)
+                    repo.correctLyrics(action.id, action.searchResult)
 
                     val song = repo.getSong(action.id).toSongUi()
 
                     _state.update {
                         it.copy(
-                            syncedAvailable = song.syncedLyrics != null,
+                            syncedAvailable = song.syncedLyrics != null || song.ttmlLyrics != null,
                             lyricsState = Loaded(song = song),
                         )
                     }
@@ -150,10 +150,6 @@ class LyricsVM(
 
                 is LyricsPageAction.OnSync -> {
                     _state.update { it.copy(sync = action.sync) }
-                }
-
-                is LyricsPageAction.OnSyncAvailable -> {
-                    _state.update { it.copy(syncedAvailable = action.sync) }
                 }
 
                 is LyricsPageAction.OnLyricsCorrect -> {

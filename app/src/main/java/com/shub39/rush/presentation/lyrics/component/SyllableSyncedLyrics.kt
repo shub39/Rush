@@ -222,24 +222,26 @@ fun SyllableLine(
                         val wordStartTimeMs = (word.startTime * 1000).toLong()
                         val wordEndTimeMs = (word.endTime * 1000).toLong()
 
-                        val wordProgress = if (currentTime >= wordEndTimeMs) {
-                            1f
-                        } else if (currentTime < wordStartTimeMs) {
-                            0f
-                        } else {
-                            val duration = wordEndTimeMs - wordStartTimeMs
-                            if (duration > 0) {
-                                (currentTime - wordStartTimeMs).toFloat() / duration
-                            } else {
+                        val wordProgress =
+                            if (currentTime >= wordEndTimeMs) {
                                 1f
+                            } else if (currentTime < wordStartTimeMs) {
+                                0f
+                            } else {
+                                val duration = wordEndTimeMs - wordStartTimeMs
+                                if (duration > 0) {
+                                    (currentTime - wordStartTimeMs).toFloat() / duration
+                                } else {
+                                    1f
+                                }
                             }
-                        }
 
-                        val animatedWordProgress by animateFloatAsState(
-                            targetValue = wordProgress,
-                            animationSpec = tween(durationMillis = 100, easing = LinearEasing),
-                            label = "wordProgress"
-                        )
+                        val animatedWordProgress by
+                            animateFloatAsState(
+                                targetValue = wordProgress,
+                                animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                                label = "wordProgress",
+                            )
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -278,24 +280,35 @@ fun SyllableLine(
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                modifier = Modifier.scale(wordScale)
-                                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                                    .drawWithContent {
-                                        if (animatedWordProgress > 0f) {
-                                            drawContent()
-                                            val feather = 16.dp.toPx()
-                                            val x = size.width * animatedWordProgress
-                                            drawRect(
-                                                brush = Brush.horizontalGradient(
-                                                    0f to Color.Black,
-                                                    ((x - feather / 2) / size.width).coerceIn(0f, 1f) to Color.Black,
-                                                    ((x + feather / 2) / size.width).coerceIn(0f, 1f) to Color.Transparent,
-                                                    1f to Color.Transparent
-                                                ),
-                                                blendMode = BlendMode.DstIn
-                                            )
-                                        }
-                                    },
+                                modifier =
+                                    Modifier.scale(wordScale)
+                                        .graphicsLayer(
+                                            compositingStrategy = CompositingStrategy.Offscreen
+                                        )
+                                        .drawWithContent {
+                                            if (animatedWordProgress > 0f) {
+                                                drawContent()
+                                                if (animatedWordProgress < 1f) {
+                                                    val feather = 16.dp.toPx()
+                                                    val x =
+                                                        (size.width + feather) *
+                                                            animatedWordProgress
+                                                    drawRect(
+                                                        brush =
+                                                            Brush.horizontalGradient(
+                                                                0f to Color.Black,
+                                                                ((x - feather) / size.width)
+                                                                    .coerceIn(0f, 1f) to
+                                                                    Color.Black,
+                                                                (x / size.width).coerceIn(0f, 1f) to
+                                                                    Color.Transparent,
+                                                                1f to Color.Transparent,
+                                                            ),
+                                                        blendMode = BlendMode.DstIn,
+                                                    )
+                                                }
+                                            }
+                                        },
                             )
                         }
                     }
@@ -371,7 +384,6 @@ fun SyllableSyncedLyricsPreview() {
 
     val state =
         LyricsPageState(
-            textPrefs = TextPrefs(fontSize = 32f),
             lyricsState =
                 LyricsState.Loaded(
                     song =

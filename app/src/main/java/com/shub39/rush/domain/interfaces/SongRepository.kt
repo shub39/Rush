@@ -18,7 +18,6 @@ package com.shub39.rush.domain.interfaces
 
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
-import com.shub39.rush.domain.dataclasses.LrcLibSong
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.dataclasses.Song
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +30,10 @@ interface SongRepository {
 
     suspend fun searchGenius(query: String): Result<List<SearchResult>, SourceError>
 
-    suspend fun searchLrcLib(track: String, artist: String): Result<List<LrcLibSong>, SourceError>
+    suspend fun searchCorrections(
+        track: String,
+        artist: String,
+    ): Result<List<CorrectionSearchResult>, SourceError>
 
     // database input/ output
     suspend fun insertSong(song: Song)
@@ -46,7 +48,7 @@ interface SongRepository {
 
     suspend fun deleteSong(id: Long)
 
-    suspend fun updateLrcLyrics(id: Long, plainLyrics: String, syncedLyrics: String?)
+    suspend fun correctLyrics(id: Long, searchResult: CorrectionSearchResult)
 
     suspend fun deleteAllSongs()
 }
