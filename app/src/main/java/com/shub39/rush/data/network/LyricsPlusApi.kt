@@ -61,8 +61,8 @@ class LyricsPlusApi {
                 )
             }
             install(HttpTimeout) {
-                socketTimeoutMillis = 20_000
-                requestTimeoutMillis = 20_000
+                socketTimeoutMillis = 10_000
+                requestTimeoutMillis = 10_000
             }
 
             if (BuildConfig.DEBUG) {
