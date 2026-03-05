@@ -46,6 +46,7 @@ Translations are done via weblate, you can contribute there!
 - [Fastlyrics](https://github.com/TecCheck/FastLyrics)
 - [SongSync](https://github.com/Lambada10/SongSync)
 - [LrcLib](https://lrclib.net/) 
+- [LyricsPlus](https://github.com/ibratabian17/lyricsplus)
 - Spotify Lyrics UI
 - Kotlin and Jetpack Compose 🖤
 - [MaterialKolor](https://github.com/jordond/MaterialKolor)
