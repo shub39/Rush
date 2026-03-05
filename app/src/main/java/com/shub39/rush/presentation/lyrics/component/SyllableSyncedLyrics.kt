@@ -95,7 +95,6 @@ fun SyllableSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
@@ -103,24 +102,17 @@ fun SyllableSyncedLyrics(
         ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= state.playingSong.position }
 
     // updater for synced lyrics
-    LaunchedEffect(state.playingSong.position) {
-        scope.launch {
-            val currentIndex =
-                ttmlLyrics
-                    .indexOfLast { (it.startTime * 1000).toLong() <= state.playingSong.position }
-
+    LaunchedEffect(currentPlayingIndex) {
+        if (currentPlayingIndex >= 0) {
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
                         lazyListState.layoutInfo.viewportStartOffset
-
-            if (currentIndex >= 0) {
-                val itemHeight = itemHeights[currentIndex] ?: 0
-                val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
-                lazyListState.animateScrollToItem(
-                    index = currentIndex,
-                    scrollOffset = -centerOffset
-                )
-            }
+            val itemHeight = itemHeights[currentPlayingIndex] ?: 0
+            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
+            lazyListState.animateScrollToItem(
+                index = currentPlayingIndex,
+                scrollOffset = -centerOffset
+            )
         }
     }
 
