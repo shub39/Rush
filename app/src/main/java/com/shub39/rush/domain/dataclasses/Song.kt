@@ -40,5 +40,6 @@ data class Song(
     val artUrl: String?,
     val geniusLyrics: String?,
     val syncedLyrics: String?,
+    val ttmlLyrics: String?,
     val dateAdded: Long,
 )

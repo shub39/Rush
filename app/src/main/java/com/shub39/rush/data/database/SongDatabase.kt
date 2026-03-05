@@ -16,10 +16,16 @@
  */
 package com.shub39.rush.data.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [SongEntity::class], version = 3, exportSchema = false)
+@Database(
+    entities = [SongEntity::class],
+    version = 4,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 3, to = 4)],
+)
 abstract class SongDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
 

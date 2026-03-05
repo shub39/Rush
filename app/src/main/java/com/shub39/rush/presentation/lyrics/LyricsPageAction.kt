@@ -21,6 +21,7 @@ import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 
 sealed interface LyricsPageAction {
     data class OnBlurSyncedChange(val pref: Boolean) : LyricsPageAction
@@ -46,8 +47,6 @@ sealed interface LyricsPageAction {
     data class OnScrapeGeniusLyrics(val id: Long, val url: String) : LyricsPageAction
 
     data class OnLyricsCorrect(val show: Boolean) : LyricsPageAction
-
-    data class OnSyncAvailable(val sync: Boolean) : LyricsPageAction
 
     data class OnToggleColorPref(val pref: Boolean) : LyricsPageAction
 
@@ -77,11 +76,8 @@ sealed interface LyricsPageAction {
 
     data class UpdateExtractedColors(val url: String) : LyricsPageAction
 
-    data class OnLrcSearch(val track: String, val artist: String) : LyricsPageAction
+    data class OnCorrectionSearch(val track: String, val artist: String) : LyricsPageAction
 
-    data class OnUpdateSongLyrics(
-        val id: Long,
-        val plainLyrics: String,
-        val syncedLyrics: String?,
-    ) : LyricsPageAction
+    data class OnUpdateSongLyrics(val id: Long, val searchResult: CorrectionSearchResult) :
+        LyricsPageAction
 }

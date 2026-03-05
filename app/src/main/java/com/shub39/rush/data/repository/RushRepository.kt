@@ -22,11 +22,12 @@ import com.shub39.rush.data.mappers.toSongEntity
 import com.shub39.rush.data.network.GeniusApi
 import com.shub39.rush.data.network.GeniusScraper
 import com.shub39.rush.data.network.LrcLibApi
+import com.shub39.rush.data.network.LyricsPlusApi
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
-import com.shub39.rush.domain.dataclasses.LrcLibSong
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.dataclasses.Song
+import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 import com.shub39.rush.domain.interfaces.SongRepository
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -42,23 +43,26 @@ class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,
     private val lrcLibApi: LrcLibApi,
+    private val lyricsPlusApi: LyricsPlusApi,
     private val geniusScraper: GeniusScraper,
 ) : SongRepository {
     @OptIn(ExperimentalTime::class)
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
+            val ttmlLyrics =
+                withContext(Dispatchers.IO) {
+                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
+                }
             val lrcLibLyrics =
                 withContext(Dispatchers.IO) {
                     lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
                 }
             val geniusLyrics =
-                if (lrcLibLyrics == null) {
+                if (lrcLibLyrics == null && ttmlLyrics == null) {
                     withContext(Dispatchers.IO) {
                         (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
                     }
-                } else {
-                    null
-                }
+                } else null
 
             return Result.Success<Song, SourceError>(
                     Song(
@@ -71,6 +75,7 @@ class RushRepository(
                         artUrl = result.artUrl,
                         geniusLyrics = geniusLyrics,
                         syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        ttmlLyrics = ttmlLyrics,
                         dateAdded = Clock.System.now().epochSeconds,
                     )
                 )
@@ -87,6 +92,7 @@ class RushRepository(
             is Result.Error -> {
                 Result.Error(error = request.error, message = request.message)
             }
+
             is Result.Success -> {
                 Result.Success<String, SourceError>(request.data.ifBlank { "[INSTRUMENTAL]" })
                     .also { localDao.updateGeniusLyrics(id = id, lyrics = it.data) }
@@ -123,36 +129,62 @@ class RushRepository(
         }
     }
 
-    override suspend fun searchLrcLib(
+    override suspend fun searchCorrections(
         track: String,
         artist: String,
-    ): Result<List<LrcLibSong>, SourceError> {
-        val result = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
+    ): Result<List<CorrectionSearchResult>, SourceError> {
+        val ttmlResult = withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
+        val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
-        when (result) {
+        var searchResults = listOf<CorrectionSearchResult>()
+
+        if (ttmlResult != null) {
+            searchResults =
+                searchResults.plus(
+                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
+                        title = track,
+                        artist = artist,
+                        syllableSyncedLyrics = ttmlResult,
+                    )
+                )
+        }
+
+        when (lrcResults) {
             is Result.Success -> {
-                val searchResults =
-                    result.data
-                        .filter { it.instrumental == false }
-                        .map { dto ->
-                            LrcLibSong(
-                                id = dto.id.toInt(),
-                                name = dto.name,
-                                trackName = dto.trackName,
-                                artistName = dto.artistName ?: "???",
-                                albumName = dto.albumName ?: "???",
-                                duration = dto.duration ?: 0.0,
-                                instrumental = false,
-                                plainLyrics = dto.plainLyrics,
-                                syncedLyrics = dto.syncedLyrics,
-                            )
+                lrcResults.data
+                    .filter { it.instrumental == false }
+                    .forEach { dto ->
+                        if (dto.syncedLyrics != null) {
+                            searchResults =
+                                searchResults.plus(
+                                    CorrectionSearchResult.LineSyncedLyricsSearchResult(
+                                        title = track,
+                                        artist = artist,
+                                        plainLyrics = dto.plainLyrics ?: "",
+                                        lineSyncedLyrics = dto.syncedLyrics,
+                                    )
+                                )
+                        } else {
+                            searchResults =
+                                searchResults.plus(
+                                    CorrectionSearchResult.PlainLyricsSearchResult(
+                                        title = track,
+                                        artist = artist,
+                                        plainLyrics = dto.plainLyrics ?: "",
+                                    )
+                                )
                         }
+                    }
 
                 return Result.Success(searchResults)
             }
 
             is Result.Error -> {
-                return Result.Error(error = result.error, message = result.message)
+                return if (searchResults.isNotEmpty()) {
+                    Result.Success(searchResults)
+                } else {
+                    Result.Error(error = lrcResults.error, message = lrcResults.message)
+                }
             }
         }
     }
@@ -181,8 +213,19 @@ class RushRepository(
         localDao.deleteSong(id)
     }
 
-    override suspend fun updateLrcLyrics(id: Long, plainLyrics: String, syncedLyrics: String?) {
-        localDao.updateLrcLyricsById(id, plainLyrics, syncedLyrics)
+    override suspend fun correctLyrics(id: Long, searchResult: CorrectionSearchResult) {
+        when (searchResult) {
+            is CorrectionSearchResult.LineSyncedLyricsSearchResult -> {
+                localDao.updateSyncedLyricsById(id, searchResult.lineSyncedLyrics)
+                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
+            }
+
+            is CorrectionSearchResult.PlainLyricsSearchResult ->
+                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
+
+            is CorrectionSearchResult.SyllableSyncedLyricsSearchResult ->
+                localDao.updateTTMLLyricsById(id, searchResult.syllableSyncedLyrics)
+        }
     }
 
     override suspend fun deleteAllSongs() {

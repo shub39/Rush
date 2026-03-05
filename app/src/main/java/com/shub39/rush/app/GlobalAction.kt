@@ -24,4 +24,6 @@ sealed interface GlobalAction {
     data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
 
     data class OnCheckNotificationAccess(val context: Context) : GlobalAction
+
+    data object DismissChangelog : GlobalAction
 }

@@ -35,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
+import com.shub39.rush.presentation.ChangelogDialog
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsGraph
 import com.shub39.rush.presentation.onboarding.Onboarding
@@ -90,6 +91,13 @@ fun App() {
 
     CompositionLocalProvider(LocalCoilImageLoader provides koinInject<ImageLoader>()) {
         RushTheme(theme = globalState.theme) {
+            if (globalState.currentChangelog != null) {
+                ChangelogDialog(
+                    currentLog = globalState.currentChangelog!!,
+                    onDismissRequest = { globalVM.onAction(GlobalAction.DismissChangelog) },
+                )
+            }
+
             NavHost(
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() },

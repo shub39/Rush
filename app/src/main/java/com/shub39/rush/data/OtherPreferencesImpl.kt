@@ -31,10 +31,10 @@ import com.shub39.rush.domain.interfaces.OtherPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class OtherPreferencesImpl(private val dataStore: DataStore<Preferences>) : OtherPreferences {
+class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : OtherPreferences {
 
     override suspend fun resetAppTheme() {
-        dataStore.edit { preferences ->
+        datastore.edit { preferences ->
             preferences[seedColor] = 0xFFFFFF
             preferences[amoledPref] = false
             preferences[paletteStyle] = PaletteStyle.TONALSPOT.name
@@ -52,20 +52,21 @@ class OtherPreferencesImpl(private val dataStore: DataStore<Preferences>) : Othe
         private val sortOrder = stringPreferencesKey("sort_order")
         private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
+        private val lastChangelogShownKey = stringPreferencesKey("last_changelog_shown")
     }
 
     override fun getAppThemePrefFlow(): Flow<AppTheme> =
-        dataStore.data.map { preferences ->
+        datastore.data.map { preferences ->
             val theme = preferences[appTheme] ?: AppTheme.SYSTEM.name
             AppTheme.valueOf(theme)
         }
 
     override suspend fun updateAppThemePref(pref: AppTheme) {
-        dataStore.edit { it[appTheme] = pref.name }
+        datastore.edit { it[appTheme] = pref.name }
     }
 
     override fun getSeedColorFlow(): Flow<Int> =
-        dataStore.data.map { preferences ->
+        datastore.data.map { preferences ->
             try {
                 preferences[seedColor] ?: 0xFFFFFF
             } catch (e: Exception) {
@@ -75,18 +76,18 @@ class OtherPreferencesImpl(private val dataStore: DataStore<Preferences>) : Othe
         }
 
     override suspend fun updateSeedColor(newCardContent: Int) {
-        dataStore.edit { settings -> settings[seedColor] = newCardContent }
+        datastore.edit { settings -> settings[seedColor] = newCardContent }
     }
 
     override fun getAmoledPrefFlow(): Flow<Boolean> =
-        dataStore.data.map { preferences -> preferences[amoledPref] == true }
+        datastore.data.map { preferences -> preferences[amoledPref] == true }
 
     override suspend fun updateAmoledPref(amoled: Boolean) {
-        dataStore.edit { settings -> settings[amoledPref] = amoled }
+        datastore.edit { settings -> settings[amoledPref] = amoled }
     }
 
     override fun getPaletteStyle(): Flow<PaletteStyle> =
-        dataStore.data.map { preferences ->
+        datastore.data.map { preferences ->
             try {
                 PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TONALSPOT.name)
             } catch (e: Exception) {
@@ -96,40 +97,47 @@ class OtherPreferencesImpl(private val dataStore: DataStore<Preferences>) : Othe
         }
 
     override suspend fun updatePaletteStyle(style: PaletteStyle) {
-        dataStore.edit { settings -> settings[paletteStyle] = style.name }
+        datastore.edit { settings -> settings[paletteStyle] = style.name }
     }
 
     override fun getSortOrderFlow(): Flow<SortOrder> =
-        dataStore.data.map { preferences ->
+        datastore.data.map { preferences ->
             val order = preferences[sortOrder] ?: SortOrder.TITLE_ASC.name
             SortOrder.valueOf(order.uppercase())
         }
 
     override suspend fun updateSortOrder(newSortOrder: SortOrder) {
-        dataStore.edit { settings -> settings[sortOrder] = newSortOrder.name }
+        datastore.edit { settings -> settings[sortOrder] = newSortOrder.name }
     }
 
     override fun getMaterialYouFlow(): Flow<Boolean> =
-        dataStore.data.map { preferences -> preferences[materialTheme] == true }
+        datastore.data.map { preferences -> preferences[materialTheme] == true }
 
     override suspend fun updateMaterialTheme(pref: Boolean) {
-        dataStore.edit { settings -> settings[materialTheme] = pref }
+        datastore.edit { settings -> settings[materialTheme] = pref }
     }
 
     override fun getFontFlow(): Flow<Fonts> =
-        dataStore.data.map { prefs ->
+        datastore.data.map { prefs ->
             val font = prefs[selectedFont] ?: Fonts.FIGTREE.name
             Fonts.valueOf(font)
         }
 
     override suspend fun updateFonts(font: Fonts) {
-        dataStore.edit { settings -> settings[selectedFont] = font.name }
+        datastore.edit { settings -> settings[selectedFont] = font.name }
     }
 
     override fun getOnboardingDoneFlow(): Flow<Boolean> =
-        dataStore.data.map { preferences -> preferences[onboardingDone] == true }
+        datastore.data.map { preferences -> preferences[onboardingDone] == true }
 
     override suspend fun updateOnboardingDone(done: Boolean) {
-        dataStore.edit { settings -> settings[onboardingDone] = done }
+        datastore.edit { settings -> settings[onboardingDone] = done }
+    }
+
+    override fun getLastChangelogShown(): Flow<String> =
+        datastore.data.map { prefs -> prefs[lastChangelogShownKey] ?: "" }
+
+    override suspend fun updateLastChangelogShown(version: String) {
+        datastore.edit { settings -> settings[lastChangelogShownKey] = version }
     }
 }

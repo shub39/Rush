@@ -89,6 +89,7 @@ fun SettingRootPage(
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
+    onNavigateToChangelog: () -> Unit,
 ) = PageFill {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
 
@@ -273,6 +274,27 @@ fun SettingRootPage(
                 }
             }
 
+            item {
+                ListItem(
+                    colors = listItemColors(),
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.check_list),
+                            contentDescription = null,
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_forward),
+                            contentDescription = "Navigate",
+                        )
+                    },
+                    headlineContent = { Text(text = stringResource(R.string.changelog)) },
+                    modifier =
+                        Modifier.clip(detachedItemShape()).clickable { onNavigateToChangelog() },
+                )
+            }
+
             // nuke everything
             item {
                 ListItem(
@@ -337,6 +359,7 @@ private fun Preview() {
             onNavigateToLookAndFeel = {},
             onNavigateToBackup = {},
             onShowPaywall = {},
+            onNavigateToChangelog = {},
         )
     }
 }

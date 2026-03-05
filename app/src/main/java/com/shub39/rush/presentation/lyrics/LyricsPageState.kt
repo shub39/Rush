@@ -21,12 +21,12 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.domain.dataclasses.ExtractedColors
-import com.shub39.rush.domain.dataclasses.LrcLibSong
 import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.domain.enums.Sources
+import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 
 @Stable
 @Immutable
@@ -95,7 +95,7 @@ data class PlayingSong(
 @Stable
 @Immutable
 data class LrcCorrect(
-    val searchResults: List<LrcLibSong> = emptyList(),
+    val searchResults: List<CorrectionSearchResult> = emptyList(),
     val searching: Boolean = false,
     val error: Int? = null,
 )

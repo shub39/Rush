@@ -185,9 +185,9 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
                 it.copy(
                     lyricsState = LyricsState.Loaded(song = result),
                     source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
-                    syncedAvailable = result.syncedLyrics != null,
+                    syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
                     sync =
-                        result.syncedLyrics != null &&
+                        (result.syncedLyrics != null || result.ttmlLyrics != null) &&
                             (getMainTitle(it.playingSong.title)
                                 .trim()
                                 .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
@@ -219,9 +219,12 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
                             source =
                                 if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB
                                 else Sources.GENIUS,
-                            syncedAvailable = retrievedSong.syncedLyrics != null,
+                            syncedAvailable =
+                                retrievedSong.syncedLyrics != null ||
+                                    retrievedSong.ttmlLyrics != null,
                             sync =
-                                retrievedSong.syncedLyrics != null &&
+                                (retrievedSong.syncedLyrics != null ||
+                                    retrievedSong.ttmlLyrics != null) &&
                                     (getMainTitle(it.playingSong.title)
                                         .trim()
                                         .equals(

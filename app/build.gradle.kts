@@ -21,11 +21,12 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 val appName = "Rush"
-val appVersionName = "5.6.0"
-val appVersionCode = 5600
+val appVersionName = "5.7.0"
+val appVersionCode = 5700
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -164,6 +165,68 @@ dependencies {
     ksp(libs.koin.ksp.compiler)
     api(libs.koin.annotations)
 }
+
+room { schemaDirectory("$projectDir/schemas") }
+
+val generateChangelogJson by
+    tasks.registering {
+        val inputFile = rootProject.file("CHANGELOG.md")
+        val outputDir = file("$projectDir/src/main/assets/")
+        val outputFile = File(outputDir, "changelog.json")
+
+        inputs.file(inputFile)
+        outputs.file(outputFile)
+
+        doLast {
+            if (!outputDir.exists()) outputDir.mkdirs()
+
+            val lines = inputFile.readLines()
+
+            val map = mutableMapOf<String, MutableList<String>>()
+            var currentVersion: String? = null
+
+            for (line in lines) {
+                when {
+                    line.startsWith("## ") -> {
+                        currentVersion = line.removePrefix("## ").trim()
+                        map[currentVersion] = mutableListOf()
+                    }
+
+                    line.startsWith("- ") && currentVersion != null -> {
+                        map[currentVersion]?.add(line.removePrefix("- ").trim())
+                    }
+                }
+            }
+
+            val json = buildString {
+                append("[\n")
+
+                map.entries.forEachIndexed { index, entry ->
+                    append("  {\n")
+                    append("    \"version\": \"${entry.key}\",\n")
+                    append("    \"changes\": [\n")
+
+                    entry.value.forEachIndexed { i, item ->
+                        append("      \"${item.replace("\"", "\\\"")}\"")
+                        if (i != entry.value.lastIndex) append(",")
+                        append("\n")
+                    }
+
+                    append("    ]\n")
+                    append("  }")
+
+                    if (index != map.entries.size - 1) append(",")
+                    append("\n")
+                }
+
+                append("]")
+            }
+
+            outputFile.writeText(json)
+        }
+    }
+
+tasks.named("preBuild") { dependsOn(generateChangelogJson) }
 
 fun execute(vararg command: String): String =
     providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

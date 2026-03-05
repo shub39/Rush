@@ -33,7 +33,7 @@ class ExportImpl(private val songRepo: SongRepository) : ExportRepo {
             return@withContext try {
                 val songsData = songRepo.getAllSongs().map { it.toSongSchema() }
 
-                Json.encodeToString(ExportSchema(schemaVersion = 3, songs = songsData))
+                Json.encodeToString(ExportSchema(schemaVersion = 4, songs = songsData))
             } catch (e: Exception) {
                 Log.wtf("ExportImpl", e)
 

@@ -14,24 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+import com.shub39.rush.data.network.LyricsPlusApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import com.shub39.rush.domain.dataclasses.Theme
-import kotlinx.serialization.Serializable
+class LyricsPlusTest {
+    private val lyricsPlusApi = LyricsPlusApi()
 
-@Serializable data class VersionEntry(val version: String, val changes: List<String>)
+    private fun testIn(title: String, block: suspend CoroutineScope.() -> Unit) = runBlocking {
+        println("\n-- $title --")
+        block.invoke(this)
+        println("\n")
+    }
 
-typealias Changelog = List<VersionEntry>
-
-@Stable
-@Immutable
-data class GlobalState(
-    val isProUser: Boolean = false,
-    val showPaywall: Boolean = false,
-    val theme: Theme = Theme(),
-    val onBoardingDone: Boolean = true,
-    val notificationAccess: Boolean = false,
-    val currentChangelog: VersionEntry? = null,
-)
+    @Test
+    fun testFetch() =
+        testIn("Test Fetch") { println(lyricsPlusApi.fetchTTML("Snowchild", "the weeknd")) }
+}

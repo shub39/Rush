@@ -18,10 +18,12 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.BuildConfig
 import com.shub39.rush.app.GlobalAction
 import com.shub39.rush.app.GlobalState
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
+import com.shub39.rush.data.ChangelogManager
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.data.listener.NotificationListener
 import com.shub39.rush.domain.interfaces.OtherPreferences
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -42,6 +45,8 @@ import org.koin.android.annotation.KoinViewModel
 class GlobalVM(
     private val billingHandler: BillingHandler,
     private val otherPreferences: OtherPreferences,
+    private val changelogManager: ChangelogManager,
+    private val datastore: OtherPreferences,
 ) : ViewModel() {
     private var syncJob: Job? = null
 
@@ -51,6 +56,7 @@ class GlobalVM(
             .asStateFlow()
             .onStart {
                 checkSubscription()
+                checkChangelog()
                 startSync()
             }
             .stateIn(
@@ -63,14 +69,23 @@ class GlobalVM(
         when (action) {
             GlobalAction.OnTogglePaywall ->
                 _state.update { it.copy(showPaywall = !_state.value.showPaywall) }
+
             is GlobalAction.OnUpdateOnboardingDone ->
                 viewModelScope.launch { otherPreferences.updateOnboardingDone(action.status) }
+
             is GlobalAction.OnCheckNotificationAccess -> {
                 val access = NotificationListener.canAccessNotifications(action.context)
 
                 if (access) MediaListenerImpl.startListening(action.context)
 
                 _state.update { it.copy(notificationAccess = access) }
+            }
+
+            GlobalAction.DismissChangelog -> {
+                _state.update { it.copy(currentChangelog = null) }
+                viewModelScope.launch {
+                    datastore.updateLastChangelogShown(BuildConfig.VERSION_NAME)
+                }
             }
         }
     }
@@ -84,6 +99,17 @@ class GlobalVM(
             }
 
             else -> {}
+        }
+    }
+
+    private fun checkChangelog() {
+        viewModelScope.launch {
+            val changeLogs = changelogManager.changelogs.first()
+            val lastShownChangelog = datastore.getLastChangelogShown().first()
+
+            if (BuildConfig.DEBUG || lastShownChangelog != BuildConfig.VERSION_NAME) {
+                _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
+            }
         }
     }
 

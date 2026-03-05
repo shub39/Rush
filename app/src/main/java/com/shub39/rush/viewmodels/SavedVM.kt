@@ -131,9 +131,9 @@ class SavedVM(
                 lyricsState = LyricsState.Loaded(song = result),
                 source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                 searchState = SearchState.Idle,
-                syncedAvailable = result.syncedLyrics != null,
+                syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
                 sync =
-                    result.syncedLyrics != null &&
+                    (result.syncedLyrics != null || result.ttmlLyrics != null) &&
                         (getMainTitle(it.playingSong.title)
                             .trim()
                             .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
