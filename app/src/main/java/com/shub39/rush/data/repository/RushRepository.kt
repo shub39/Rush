@@ -54,33 +54,31 @@ class RushRepository(
                     lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
                 }
             val lrcLibLyrics =
-                if (ttmlLyrics == null) {
-                    withContext(Dispatchers.IO) {
-                        lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
-                    }
-                } else null
+                withContext(Dispatchers.IO) {
+                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                }
             val geniusLyrics =
-                if (lrcLibLyrics == null) {
+                if (lrcLibLyrics == null && ttmlLyrics == null) {
                     withContext(Dispatchers.IO) {
                         (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
                     }
                 } else null
 
             return Result.Success<Song, SourceError>(
-                    Song(
-                        id = result.id,
-                        title = result.title,
-                        artists = result.artist,
-                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                        album = result.album,
-                        sourceUrl = result.url,
-                        artUrl = result.artUrl,
-                        geniusLyrics = geniusLyrics,
-                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                        ttmlLyrics = ttmlLyrics,
-                        dateAdded = Clock.System.now().epochSeconds,
-                    )
+                Song(
+                    id = result.id,
+                    title = result.title,
+                    artists = result.artist,
+                    lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                    album = result.album,
+                    sourceUrl = result.url,
+                    artUrl = result.artUrl,
+                    geniusLyrics = geniusLyrics,
+                    syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                    ttmlLyrics = ttmlLyrics,
+                    dateAdded = Clock.System.now().epochSeconds,
                 )
+            )
                 .also { localDao.insertSong(it.data.toSongEntity()) }
         } catch (e: Exception) {
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
@@ -94,6 +92,7 @@ class RushRepository(
             is Result.Error -> {
                 Result.Error(error = request.error, message = request.message)
             }
+
             is Result.Success -> {
                 Result.Success<String, SourceError>(request.data.ifBlank { "[INSTRUMENTAL]" })
                     .also { localDao.updateGeniusLyrics(id = id, lyrics = it.data) }

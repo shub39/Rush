@@ -18,6 +18,7 @@ package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -49,11 +50,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -128,18 +132,17 @@ fun SyllableSyncedLyrics(
     ) {
         itemsIndexed(ttmlLyrics) { index, line ->
             val currentTime = state.playingSong.position
-            val lineIndex = index
             val currentPlayingIndex =
                 ttmlLyrics
                     .indexOfLast { (it.startTime * 1000).toLong() <= currentTime }
                     .coerceAtLeast(0)
-            val isCurrent = lineIndex == currentPlayingIndex
+            val isCurrent = index == currentPlayingIndex
 
             val blur by
                 animateDpAsState(
                     targetValue =
                         if (!state.blurSyncedLyrics) 0.dp
-                        else (abs(lineIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
+                        else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
                     animationSpec = tween(100),
                 )
 
@@ -217,6 +220,26 @@ fun SyllableLine(
                 ) {
                     line.words.forEach { word ->
                         val wordStartTimeMs = (word.startTime * 1000).toLong()
+                        val wordEndTimeMs = (word.endTime * 1000).toLong()
+
+                        val wordProgress = if (currentTime >= wordEndTimeMs) {
+                            1f
+                        } else if (currentTime < wordStartTimeMs) {
+                            0f
+                        } else {
+                            val duration = wordEndTimeMs - wordStartTimeMs
+                            if (duration > 0) {
+                                (currentTime - wordStartTimeMs).toFloat() / duration
+                            } else {
+                                1f
+                            }
+                        }
+
+                        val animatedWordProgress by animateFloatAsState(
+                            targetValue = wordProgress,
+                            animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                            label = "wordProgress"
+                        )
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -226,11 +249,9 @@ fun SyllableLine(
                                 animationSpec = spring(),
                             )
                         val glowAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 5f else 0f)
+                            animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
                         val underAlpha by
                             animateFloatAsState(targetValue = if (isHighlighted) 0.7f else 0.2f)
-                        val textAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 1f else 0f)
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(
@@ -257,7 +278,24 @@ fun SyllableLine(
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                modifier = Modifier.scale(wordScale).alpha(textAlpha),
+                                modifier = Modifier.scale(wordScale)
+                                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                                    .drawWithContent {
+                                        if (animatedWordProgress > 0f) {
+                                            drawContent()
+                                            val feather = 16.dp.toPx()
+                                            val x = size.width * animatedWordProgress
+                                            drawRect(
+                                                brush = Brush.horizontalGradient(
+                                                    0f to Color.Black,
+                                                    ((x - feather / 2) / size.width).coerceIn(0f, 1f) to Color.Black,
+                                                    ((x + feather / 2) / size.width).coerceIn(0f, 1f) to Color.Transparent,
+                                                    1f to Color.Transparent
+                                                ),
+                                                blendMode = BlendMode.DstIn
+                                            )
+                                        }
+                                    },
                             )
                         }
                     }
