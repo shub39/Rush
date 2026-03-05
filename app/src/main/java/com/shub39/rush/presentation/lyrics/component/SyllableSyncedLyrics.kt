@@ -99,6 +99,8 @@ fun SyllableSyncedLyrics(
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
+    val currentPlayingIndex =
+        ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= state.playingSong.position }
 
     // updater for synced lyrics
     LaunchedEffect(state.playingSong.position) {
@@ -106,16 +108,19 @@ fun SyllableSyncedLyrics(
             val currentIndex =
                 ttmlLyrics
                     .indexOfLast { (it.startTime * 1000).toLong() <= state.playingSong.position }
-                    .coerceAtLeast(0)
 
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
-                    lazyListState.layoutInfo.viewportStartOffset
+                        lazyListState.layoutInfo.viewportStartOffset
 
-            val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
-
-            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
+            if (currentIndex >= 0) {
+                val itemHeight = itemHeights[currentIndex] ?: 0
+                val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
+                lazyListState.animateScrollToItem(
+                    index = currentIndex,
+                    scrollOffset = -centerOffset
+                )
+            }
         }
     }
 
@@ -132,36 +137,32 @@ fun SyllableSyncedLyrics(
     ) {
         itemsIndexed(ttmlLyrics) { index, line ->
             val currentTime = state.playingSong.position
-            val currentPlayingIndex =
-                ttmlLyrics
-                    .indexOfLast { (it.startTime * 1000).toLong() <= currentTime }
-                    .coerceAtLeast(0)
             val isCurrent = index == currentPlayingIndex
 
             val blur by
-                animateDpAsState(
-                    targetValue =
-                        if (!state.blurSyncedLyrics) 0.dp
-                        else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = tween(100),
-                )
+            animateDpAsState(
+                targetValue =
+                    if (!state.blurSyncedLyrics) 0.dp
+                    else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
+                animationSpec = tween(100),
+            )
 
             val scale by
-                animateFloatAsState(
-                    targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = tween(100),
-                )
+            animateFloatAsState(
+                targetValue = if (isCurrent) 1f else 0.8f,
+                animationSpec = tween(100),
+            )
 
             val textColor by
-                animateColorAsState(
-                    targetValue =
-                        when {
-                            (line.startTime * 1000).toLong() <= currentTime -> cardContent
-                            else -> cardContent.copy(0.3f)
-                        },
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-                    label = "textColor",
-                )
+            animateColorAsState(
+                targetValue =
+                    when {
+                        (line.startTime * 1000).toLong() <= currentTime -> cardContent
+                        else -> cardContent.copy(0.3f)
+                    },
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                label = "textColor",
+            )
 
             SyllableLine(
                 textPrefs = state.textPrefs,
@@ -200,7 +201,8 @@ fun SyllableLine(
     ) {
         Box(
             modifier =
-                Modifier.graphicsLayer {
+                Modifier
+                    .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -237,23 +239,23 @@ fun SyllableLine(
                             }
 
                         val animatedWordProgress by
-                            animateFloatAsState(
-                                targetValue = wordProgress,
-                                animationSpec = tween(durationMillis = 100, easing = LinearEasing),
-                                label = "wordProgress",
-                            )
+                        animateFloatAsState(
+                            targetValue = wordProgress,
+                            animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                            label = "wordProgress",
+                        )
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
                         val wordScale by
-                            animateFloatAsState(
-                                targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-                                animationSpec = spring(),
-                            )
+                        animateFloatAsState(
+                            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+                            animationSpec = spring(),
+                        )
                         val glowAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
+                        animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
                         val underAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 0.7f else 0.2f)
+                        animateFloatAsState(targetValue = if (isHighlighted) 0.7f else 0.2f)
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(
@@ -265,7 +267,8 @@ fun SyllableLine(
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                                 modifier =
-                                    Modifier.scale(wordScale)
+                                    Modifier
+                                        .scale(wordScale)
                                         .blur(
                                             radius = glowAlpha.dp,
                                             edgeTreatment = BlurredEdgeTreatment.Unbounded,
@@ -281,7 +284,8 @@ fun SyllableLine(
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                                 modifier =
-                                    Modifier.scale(wordScale)
+                                    Modifier
+                                        .scale(wordScale)
                                         .graphicsLayer(
                                             compositingStrategy = CompositingStrategy.Offscreen
                                         )
@@ -292,16 +296,16 @@ fun SyllableLine(
                                                     val feather = 16.dp.toPx()
                                                     val x =
                                                         (size.width + feather) *
-                                                            animatedWordProgress
+                                                                animatedWordProgress
                                                     drawRect(
                                                         brush =
                                                             Brush.horizontalGradient(
                                                                 0f to Color.Black,
                                                                 ((x - feather) / size.width)
                                                                     .coerceIn(0f, 1f) to
-                                                                    Color.Black,
+                                                                        Color.Black,
                                                                 (x / size.width).coerceIn(0f, 1f) to
-                                                                    Color.Transparent,
+                                                                        Color.Transparent,
                                                                 1f to Color.Transparent,
                                                             ),
                                                         blendMode = BlendMode.DstIn,

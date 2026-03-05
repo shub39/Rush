@@ -45,7 +45,6 @@ class LyricsPlusApi {
                 "https://lyricsplus.atomix.one", // meow's mirror
                 "https://lyricsplus-seven.vercel.app", // jigen's mirror
                 "https://lyricsplus.prjktla.workers.dev", // ibra's cf worker
-                "http://ly.mxtiy.xyz", // painfueg0's server (http)
                 "https://lyrics-plus-backend.vercel.app", // ibra's vercel
                 "https://youlyplus.binimum.org", // binimum's server
             )

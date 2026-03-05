@@ -2,7 +2,9 @@
   {
     "version": "5.7.0",
     "changes": [
-      "Changed Synced Lyrics Animation"
+      "Added support for TTML (Syllable Synced) Lyrics",
+      "Improved Synced Lyrics Animation",
+      "Added in app Changelogs"
     ]
   },
   {

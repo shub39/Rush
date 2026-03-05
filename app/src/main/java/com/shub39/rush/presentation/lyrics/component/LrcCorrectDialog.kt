@@ -136,12 +136,9 @@ fun LrcCorrectDialog(
                     itemsIndexed(state.lrcCorrect.searchResults) { _, result ->
                         Card(
                             onClick = {
-                                action(
-                                    LyricsPageAction.OnUpdateSongLyrics(
-                                        (state.lyricsState as LyricsState.Loaded).song.id,
-                                        result,
-                                    )
-                                )
+                                (state.lyricsState as? LyricsState.Loaded)?.song?.id?.let {
+                                    action(LyricsPageAction.OnUpdateSongLyrics(it, result))
+                                }
                                 action(LyricsPageAction.OnLyricsCorrect(false))
                             },
                             colors = CardDefaults.elevatedCardColors(),

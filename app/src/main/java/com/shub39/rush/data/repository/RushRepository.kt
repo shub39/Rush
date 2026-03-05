@@ -65,20 +65,20 @@ class RushRepository(
                 } else null
 
             return Result.Success<Song, SourceError>(
-                    Song(
-                        id = result.id,
-                        title = result.title,
-                        artists = result.artist,
-                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                        album = result.album,
-                        sourceUrl = result.url,
-                        artUrl = result.artUrl,
-                        geniusLyrics = geniusLyrics,
-                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                        ttmlLyrics = ttmlLyrics,
-                        dateAdded = Clock.System.now().epochSeconds,
-                    )
+                Song(
+                    id = result.id,
+                    title = result.title,
+                    artists = result.artist,
+                    lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                    album = result.album,
+                    sourceUrl = result.url,
+                    artUrl = result.artUrl,
+                    geniusLyrics = geniusLyrics,
+                    syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                    ttmlLyrics = ttmlLyrics,
+                    dateAdded = Clock.System.now().epochSeconds,
                 )
+            )
                 .also { localDao.insertSong(it.data.toSongEntity()) }
         } catch (e: Exception) {
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
@@ -136,21 +136,21 @@ class RushRepository(
         val ttmlResult = withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
         val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
+        var searchResults = listOf<CorrectionSearchResult>()
+
+        if (ttmlResult != null) {
+            searchResults =
+                searchResults.plus(
+                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
+                        title = track,
+                        artist = artist,
+                        syllableSyncedLyrics = ttmlResult,
+                    )
+                )
+        }
+
         when (lrcResults) {
             is Result.Success -> {
-                var searchResults = listOf<CorrectionSearchResult>()
-
-                if (ttmlResult != null) {
-                    searchResults =
-                        searchResults.plus(
-                            CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
-                                title = track,
-                                artist = artist,
-                                syllableSyncedLyrics = ttmlResult,
-                            )
-                        )
-                }
-
                 lrcResults.data
                     .filter { it.instrumental == false }
                     .forEach { dto ->
@@ -180,7 +180,11 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return Result.Error(error = lrcResults.error, message = lrcResults.message)
+                return if (searchResults.isNotEmpty()) {
+                    Result.Success(searchResults)
+                } else {
+                    Result.Error(error = lrcResults.error, message = lrcResults.message)
+                }
             }
         }
     }
@@ -215,8 +219,10 @@ class RushRepository(
                 localDao.updateSyncedLyricsById(id, searchResult.lineSyncedLyrics)
                 localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
             }
+
             is CorrectionSearchResult.PlainLyricsSearchResult ->
                 localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
+
             is CorrectionSearchResult.SyllableSyncedLyricsSearchResult ->
                 localDao.updateTTMLLyricsById(id, searchResult.syllableSyncedLyrics)
         }
