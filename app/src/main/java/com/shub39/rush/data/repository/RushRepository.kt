@@ -65,20 +65,20 @@ class RushRepository(
                 } else null
 
             return Result.Success<Song, SourceError>(
-                Song(
-                    id = result.id,
-                    title = result.title,
-                    artists = result.artist,
-                    lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                    album = result.album,
-                    sourceUrl = result.url,
-                    artUrl = result.artUrl,
-                    geniusLyrics = geniusLyrics,
-                    syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                    ttmlLyrics = ttmlLyrics,
-                    dateAdded = Clock.System.now().epochSeconds,
+                    Song(
+                        id = result.id,
+                        title = result.title,
+                        artists = result.artist,
+                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                        album = result.album,
+                        sourceUrl = result.url,
+                        artUrl = result.artUrl,
+                        geniusLyrics = geniusLyrics,
+                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        ttmlLyrics = ttmlLyrics,
+                        dateAdded = Clock.System.now().epochSeconds,
+                    )
                 )
-            )
                 .also { localDao.insertSong(it.data.toSongEntity()) }
         } catch (e: Exception) {
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
