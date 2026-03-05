@@ -56,4 +56,8 @@ interface OtherPreferences {
     fun getOnboardingDoneFlow(): Flow<Boolean>
 
     suspend fun updateOnboardingDone(done: Boolean)
+
+    fun getLastChangelogShown(): Flow<String>
+
+    suspend fun updateLastChangelogShown(version: String)
 }

@@ -1,0 +1,93 @@
+[
+  {
+    "version": "5.7.0",
+    "changes": [
+      "Changed Synced Lyrics Animation"
+    ]
+  },
+  {
+    "version": "5.6.0",
+    "changes": [
+      "Fixed LRCLIB api not responding sometimes (hopefully)",
+      "Misc updates and fixes",
+      "Added flex fonts for headlines, displays and sharecards"
+    ]
+  },
+  {
+    "version": "5.5.2",
+    "changes": [
+      "Fixed synced lyrics not loading",
+      "Moved to jdk 21 (fdroid builds)"
+    ]
+  },
+  {
+    "version": "5.5.1",
+    "changes": [
+      "Fixed text wrap on larger DPI (#220)",
+      "Added default font option (#212)"
+    ]
+  },
+  {
+    "version": "5.5.0",
+    "changes": [
+      "Translation updates",
+      "Redid all icons. [reason](https://x.com/riggaroo/status/1971485475866341530?s=20)",
+      "Fixed Synced lyrics anchoring to the bottom (#199)",
+      "Added Scale to the current synced lyric",
+      "Added google sans font (#206)",
+      "Added Controls for media (#204)",
+      "Added Action bar in landscape mode (#210)",
+      "All screens are now usable in landscape mode and larger devices."
+    ]
+  },
+  {
+    "version": "5.4.2",
+    "changes": [
+      "Trimmed unneeded network calls"
+    ]
+  },
+  {
+    "version": "5.4.0",
+    "changes": [
+      "Fixed local search results not appearing #201",
+      "Prefill title and artist in correct dialog #198",
+      "Prettified settings and saved page ui",
+      "fixed misc bugs",
+      "removed about libraries"
+    ]
+  },
+  {
+    "version": "5.3.0",
+    "changes": [
+      "**Improved autosearch**, a button will be displayed when exact match is not found",
+      "Added Rush Logo to cards and a toggle for that",
+      "misc bug fixes, updated deps, metadata and fixed deprecations"
+    ]
+  },
+  {
+    "version": "5.2.0",
+    "changes": [
+      "Optimised share cards",
+      "Optimised Backup ui and fix crashes",
+      "made padding between lines scale with lineheight",
+      "polished onboarding",
+      "Added new Lyrics background - curves",
+      "Made errors copyable"
+    ]
+  },
+  {
+    "version": "5.1.1",
+    "changes": [
+      "Fixed saved page lagging for huge lists",
+      "Fixed inconsistent ui in onboarding"
+    ]
+  },
+  {
+    "version": "5.1.0",
+    "changes": [
+      "Added new Audio sensitive lyrics backgrounds Gradient and Wave (#182)",
+      "Added pulsating buttons on audio sensitive backgrounds",
+      "Misc Background Improvements"
+    ]
+  }
+]

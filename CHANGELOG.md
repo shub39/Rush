@@ -1,7 +1,9 @@
 # Changelog
 
 ## 5.7.0
-- Changed Synced Lyrics Animation
+- Added support for TTML (Syllable Synced) Lyrics
+- Improved Synced Lyrics Animation
+- Added in app Changelogs
 
 ## 5.6.0
 - Fixed LRCLIB api not responding sometimes (hopefully)

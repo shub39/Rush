@@ -18,6 +18,7 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.data.ChangelogManager
 import com.shub39.rush.data.repository.RushRepository
 import com.shub39.rush.domain.backup.ExportRepo
 import com.shub39.rush.domain.backup.ExportState
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -46,6 +48,7 @@ class SettingsVM(
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
     private val restoreRepo: RestoreRepo,
+    private val changelogManager: ChangelogManager,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
@@ -54,7 +57,10 @@ class SettingsVM(
     val state =
         _state
             .asStateFlow()
-            .onStart { observeJob() }
+            .onStart {
+                observeJob()
+                getChangeLogs()
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     fun onAction(action: SettingsPageAction) {
@@ -74,6 +80,7 @@ class SettingsVM(
                         )
                     }
                 }
+
                 is SettingsPageAction.OnRestoreSongs -> {
                     _state.update { it.copy(restoreState = RestoreState.Restoring) }
 
@@ -92,6 +99,7 @@ class SettingsVM(
                         }
                     }
                 }
+
                 SettingsPageAction.ResetBackup -> {
                     _state.update {
                         it.copy(
@@ -100,14 +108,22 @@ class SettingsVM(
                         )
                     }
                 }
+
                 is SettingsPageAction.OnThemeSwitch -> datastore.updateAppThemePref(action.appTheme)
                 is SettingsPageAction.OnAmoledSwitch -> datastore.updateAmoledPref(action.amoled)
                 is SettingsPageAction.OnSeedColorChange -> datastore.updateSeedColor(action.color)
                 is SettingsPageAction.OnPaletteChange -> datastore.updatePaletteStyle(action.style)
                 is SettingsPageAction.OnMaterialThemeToggle ->
                     datastore.updateMaterialTheme(action.pref)
+
                 is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
             }
+        }
+    }
+
+    private fun getChangeLogs() {
+        viewModelScope.launch {
+            _state.update { it.copy(changelog = changelogManager.changelogs.first()) }
         }
     }
 

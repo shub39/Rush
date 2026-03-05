@@ -145,4 +145,5 @@
     <string name="not_found">Not found</string>
     <string name="line_synced_lyrics">Line Synced</string>
     <string name="syllable_synced_lyrics">Syllable Synced</string>
+    <string name="changelog">Changelog</string>
 </resources>

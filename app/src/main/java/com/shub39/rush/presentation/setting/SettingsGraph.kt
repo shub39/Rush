@@ -30,6 +30,7 @@ import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.setting.section.BackupPage
+import com.shub39.rush.presentation.setting.section.Changelog
 import com.shub39.rush.presentation.setting.section.LookAndFeelPage
 import com.shub39.rush.presentation.setting.section.SettingRootPage
 import kotlinx.serialization.Serializable
@@ -41,6 +42,8 @@ private sealed interface SettingsRoutes {
     @Serializable data object BackupPage : SettingsRoutes
 
     @Serializable data object LookAndFeelPage : SettingsRoutes
+
+    @Serializable data object ChangelogPage : SettingsRoutes
 }
 
 @Composable
@@ -73,6 +76,7 @@ fun SettingsGraph(
                     navController.navigate(SettingsRoutes.LookAndFeelPage)
                 },
                 onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },
+                onNavigateToChangelog = { navController.navigate(SettingsRoutes.ChangelogPage) },
                 state = state,
                 onShowPaywall = onShowPaywall,
             )
@@ -94,6 +98,10 @@ fun SettingsGraph(
                 onShowPaywall = onShowPaywall,
                 isProUser = isProUser,
             )
+        }
+
+        composable<SettingsRoutes.ChangelogPage> {
+            Changelog(changelog = state.changelog, onNavigateBack = { navController.navigateUp() })
         }
     }
 }

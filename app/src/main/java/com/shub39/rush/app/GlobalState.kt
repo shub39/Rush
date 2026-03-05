@@ -19,6 +19,11 @@ package com.shub39.rush.app
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.shub39.rush.domain.dataclasses.Theme
+import kotlinx.serialization.Serializable
+
+@Serializable data class VersionEntry(val version: String, val changes: List<String>)
+
+typealias Changelog = List<VersionEntry>
 
 @Stable
 @Immutable
@@ -28,4 +33,5 @@ data class GlobalState(
     val theme: Theme = Theme(),
     val onBoardingDone: Boolean = true,
     val notificationAccess: Boolean = false,
+    val currentChangelog: VersionEntry? = null,
 )
