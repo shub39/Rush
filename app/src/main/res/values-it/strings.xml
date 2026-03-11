@@ -144,4 +144,7 @@
     <string name="copy_error">Errore Copia</string>
     <string name="not_found">Non trovato</string>
     <string name="album_art">Solo Copertina</string>
+    <string name="line_synced_lyrics">Sincronizzati per linea</string>
+    <string name="syllable_synced_lyrics">Sincronizzati per sillaba</string>
+    <string name="changelog">Registro modifiche</string>
 </resources>
