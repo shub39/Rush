@@ -42,7 +42,7 @@ import com.shub39.rush.app.VersionEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangelogDialog(
+fun ChangelogSheet(
     modifier: Modifier = Modifier,
     currentLog: VersionEntry,
     onDismissRequest: () -> Unit,
@@ -55,7 +55,7 @@ fun ChangelogDialog(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(R.string.changelog),
-                    style = MaterialTheme.typography.displaySmall.copy(fontFamily = flexFontBold()),
+                    style = MaterialTheme.typography.displaySmall.copy(fontFamily = flexFontEmphasis()),
                 )
                 Text(text = currentLog.version, style = MaterialTheme.typography.titleLarge)
             }

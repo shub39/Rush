@@ -68,7 +68,6 @@ import com.shub39.rush.presentation.components.RushDialog
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontBold
 import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.getRandomLine
@@ -161,7 +160,7 @@ fun SettingRootPage(
                             text = stringResource(R.string.rush_pro),
                             style =
                                 MaterialTheme.typography.headlineSmall.copy(
-                                    fontFamily = flexFontBold()
+                                    fontFamily = flexFontEmphasis()
                                 ),
                         )
 

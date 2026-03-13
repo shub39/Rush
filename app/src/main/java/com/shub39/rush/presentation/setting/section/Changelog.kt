@@ -47,7 +47,6 @@ import com.shub39.rush.app.Changelog
 import com.shub39.rush.app.VersionEntry
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.presentation.components.RushTheme
-import com.shub39.rush.presentation.flexFontBold
 import com.shub39.rush.presentation.flexFontEmphasis
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -88,7 +87,7 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
                     Text(
                         text = versionEntry.version,
                         style =
-                            MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontBold()),
+                            MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontEmphasis()),
                     )
                 }
 
