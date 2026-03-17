@@ -59,6 +59,7 @@ class LyricsVM(
 ) : ViewModel() {
 
     private var observeJob: Job? = null
+    private var observePlaybackJob: Job? = null
 
     private val _state = stateLayer.lyricsState
     private val _playbackInfo = MutableStateFlow(PlaybackInfo())
@@ -66,10 +67,7 @@ class LyricsVM(
     val state =
         _state
             .asStateFlow()
-            .onStart {
-                observePlayback()
-                observeDatastore()
-            }
+            .onStart { observeDatastore() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LyricsPageState())
     val playbackInfo =
         _playbackInfo
@@ -321,21 +319,27 @@ class LyricsVM(
 
     // Observes playback position and speed
     private fun observePlayback() {
-        viewModelScope.launch(Dispatchers.Default) {
-            combine(MediaListenerImpl.songPositionFlow, MediaListenerImpl.playbackSpeedFlow, ::Pair)
-                .collectLatest { (position, speed) ->
-                    val start = System.currentTimeMillis()
+        observePlaybackJob?.cancel()
+        observePlaybackJob =
+            viewModelScope.launch(Dispatchers.Default) {
+                combine(
+                        MediaListenerImpl.songPositionFlow,
+                        MediaListenerImpl.playbackSpeedFlow,
+                        ::Pair,
+                    )
+                    .collectLatest { (position, speed) ->
+                        val start = System.currentTimeMillis()
 
-                    while (isActive) {
-                        val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
+                        while (isActive) {
+                            val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
 
-                        _playbackInfo.update {
-                            it.copy(position = position + elapsed, speed = speed)
+                            _playbackInfo.update {
+                                it.copy(position = position + elapsed, speed = speed)
+                            }
+
+                            delay(100)
                         }
-
-                        delay(100)
                     }
-                }
-        }
+            }
     }
 }

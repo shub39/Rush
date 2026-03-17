@@ -31,8 +31,11 @@ import com.shub39.rush.data.listener.MediaListenerImpl.songInfoFlow
 import com.shub39.rush.data.listener.MediaListenerImpl.songPositionFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
@@ -63,10 +66,14 @@ object MediaListenerImpl {
     private val internalCallbacks = mutableMapOf<MediaSession.Token, MediaController.Callback>()
     private var initialised = false
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var positionUpdateJob: Job? = null
 
-    val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
-    val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
-    val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
+    val playbackSpeedFlow: MutableSharedFlow<Float> =
+        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val songInfoFlow: MutableSharedFlow<Pair<String, String>> =
+        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val songPositionFlow: MutableSharedFlow<Long> =
+        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     fun startListening(context: Context) {
         try {
@@ -132,6 +139,8 @@ object MediaListenerImpl {
                     delay(2000)
                     setActiveMediaSession(controller)
                 }
+            } else if (isActive(controller.playbackState)) {
+                setActiveMediaSession(controller)
             }
 
             if (internalCallbacks.containsKey(controller.sessionToken)) {
@@ -182,13 +191,41 @@ object MediaListenerImpl {
         if (isActive(state)) {
             setActiveMediaSession(controller)
         } else {
-            coroutineScope.launch { playbackSpeedFlow.emit(0f) }
+            stopPositionUpdates()
+            coroutineScope.launch {
+                playbackSpeedFlow.emit(0f)
+                state?.position?.let { songPositionFlow.emit(it) }
+            }
         }
     }
 
     private fun setActiveMediaSession(newActive: MediaController) {
         activeMediaController = newActive
         updateMetadata(newActive, newActive.metadata)
+        startPositionUpdates()
+    }
+
+    private fun startPositionUpdates() {
+        positionUpdateJob?.cancel()
+        positionUpdateJob =
+            coroutineScope.launch {
+                while (isActive) {
+                    activeMediaController?.let { controller ->
+                        if (isActive(controller.playbackState)) {
+                            val position = controller.playbackState?.position ?: 0L
+                            val speed = controller.playbackState?.playbackSpeed ?: 1f
+                            songPositionFlow.emit(position)
+                            playbackSpeedFlow.emit(speed)
+                        }
+                    }
+                    delay(1000)
+                }
+            }
+    }
+
+    private fun stopPositionUpdates() {
+        positionUpdateJob?.cancel()
+        positionUpdateJob = null
     }
 
     private fun updateMetadata(controller: MediaController, metadata: MediaMetadata?) {
