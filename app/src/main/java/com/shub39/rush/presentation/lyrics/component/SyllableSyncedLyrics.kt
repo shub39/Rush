@@ -75,6 +75,7 @@ import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
@@ -88,6 +89,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SyllableSyncedLyrics(
     state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
@@ -97,7 +99,7 @@ fun SyllableSyncedLyrics(
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
     val currentPlayingIndex =
-        ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= state.playingSong.position }
+        ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
 
     // updater for synced lyrics
     LaunchedEffect(currentPlayingIndex) {
@@ -122,11 +124,11 @@ fun SyllableSyncedLyrics(
             Arrangement.spacedBy(
                 with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
             ),
-        userScrollEnabled = state.playingSong.speed == 0f,
+        userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
         itemsIndexed(ttmlLyrics) { index, line ->
-            val currentTime = state.playingSong.position
+            val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
             val blur by
@@ -243,14 +245,12 @@ fun SyllableLine(
                             )
                         val glowAlpha by
                             animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
-                        val underAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 0.7f else 0.2f)
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(
                                 text = word.text,
                                 fontWeight = FontWeight.Bold,
-                                color = textColor.copy(alpha = underAlpha),
+                                color = textColor.copy(alpha = 0.2f),
                                 fontSize = textPrefs.fontSize.sp,
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
@@ -391,13 +391,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
-            playingSong =
-                PlayingSong(
-                    title = "Preview Song",
-                    artist = "Rush",
-                    position = position,
-                    speed = 1f,
-                ),
+            playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
     RushTheme(theme = Theme()) {
@@ -408,6 +402,7 @@ fun SyllableSyncedLyricsPreview() {
                 cardContent = Color.White,
                 action = {},
                 modifier = Modifier.fillMaxSize(),
+                playbackInfo = PlaybackInfo(position = position, speed = 1f),
             )
         }
     }

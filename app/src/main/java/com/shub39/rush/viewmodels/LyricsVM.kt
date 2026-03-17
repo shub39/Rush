@@ -29,12 +29,14 @@ import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.LyricsState.Loaded
 import com.shub39.rush.presentation.lyrics.LyricsState.LyricsError
+import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.breakLyrics
 import com.shub39.rush.presentation.lyrics.toSongUi
 import com.shub39.rush.presentation.sortMapByKeys
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -59,6 +61,7 @@ class LyricsVM(
     private var observeJob: Job? = null
 
     private val _state = stateLayer.lyricsState
+    private val _playbackInfo = MutableStateFlow(PlaybackInfo())
 
     val state =
         _state
@@ -68,6 +71,11 @@ class LyricsVM(
                 observeDatastore()
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LyricsPageState())
+    val playbackInfo =
+        _playbackInfo
+            .asStateFlow()
+            .onStart { observePlayback() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlaybackInfo())
 
     fun onAction(action: LyricsPageAction) {
         viewModelScope.launch {
@@ -227,7 +235,7 @@ class LyricsVM(
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
 
                 LyricsPageAction.OnPauseOrResume ->
-                    MediaListenerImpl.pauseOrResume(_state.value.playingSong.speed == 0f)
+                    MediaListenerImpl.pauseOrResume(_playbackInfo.value.speed == 0f)
 
                 is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
 
@@ -321,14 +329,8 @@ class LyricsVM(
                     while (isActive) {
                         val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
 
-                        _state.update { lyricsPageState ->
-                            lyricsPageState.copy(
-                                playingSong =
-                                    lyricsPageState.playingSong.copy(
-                                        position = position + elapsed,
-                                        speed = speed,
-                                    )
-                            )
+                        _playbackInfo.update {
+                            it.copy(position = position + elapsed, speed = speed)
                         }
 
                         delay(100)

@@ -87,7 +87,9 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
                     Text(
                         text = versionEntry.version,
                         style =
-                            MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontEmphasis()),
+                            MaterialTheme.typography.headlineLarge.copy(
+                                fontFamily = flexFontEmphasis()
+                            ),
                     )
                 }
 

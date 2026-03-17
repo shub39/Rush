@@ -72,6 +72,7 @@ import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
@@ -87,6 +88,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LineSyncedLyrics(
     state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
@@ -98,10 +100,10 @@ fun LineSyncedLyrics(
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
     // updater for synced lyrics
-    LaunchedEffect(state.playingSong.position) {
+    LaunchedEffect(playbackInfo.position) {
         scope.launch {
             val currentIndex =
-                getCurrentLyricIndex(state.playingSong.position, syncedLyrics).coerceAtLeast(0)
+                getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
 
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
@@ -122,14 +124,14 @@ fun LineSyncedLyrics(
             Arrangement.spacedBy(
                 with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
             ),
-        userScrollEnabled = state.playingSong.speed == 0f,
+        userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
         itemsIndexed(syncedLyrics) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
-            val currentTime = state.playingSong.position
+            val currentTime = playbackInfo.position
             val lyricIndex = syncedLyrics.indexOf(lyric)
-            val currentPlayingIndex = getCurrentLyricIndex(state.playingSong.position, syncedLyrics)
+            val currentPlayingIndex = getCurrentLyricIndex(playbackInfo.position, syncedLyrics)
             val isCurrent = lyricIndex == currentPlayingIndex
 
             val progress =
@@ -169,7 +171,7 @@ fun LineSyncedLyrics(
                 animateColorAsState(
                     targetValue =
                         when {
-                            lyric.time <= state.playingSong.position -> cardContent
+                            lyric.time <= playbackInfo.position -> cardContent
                             else -> cardContent.copy(0.3f)
                         },
                     animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
@@ -344,13 +346,7 @@ fun LineSyncedLyricsPreview() {
                             ttmlLyrics = null,
                         )
                 ),
-            playingSong =
-                PlayingSong(
-                    title = "Preview Song",
-                    artist = "Rush",
-                    position = position,
-                    speed = 1f,
-                ),
+            playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -360,6 +356,7 @@ fun LineSyncedLyricsPreview() {
             cardContent = Color.White,
             action = {},
             modifier = Modifier.fillMaxSize(),
+            playbackInfo = PlaybackInfo(position = position, speed = 1f),
         )
     }
 }

@@ -55,7 +55,8 @@ fun ChangelogSheet(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(R.string.changelog),
-                    style = MaterialTheme.typography.displaySmall.copy(fontFamily = flexFontEmphasis()),
+                    style =
+                        MaterialTheme.typography.displaySmall.copy(fontFamily = flexFontEmphasis()),
                 )
                 Text(text = currentLog.version, style = MaterialTheme.typography.titleLarge)
             }

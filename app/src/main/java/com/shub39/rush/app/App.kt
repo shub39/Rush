@@ -123,12 +123,14 @@ fun App() {
                 composable<Route.LyricsGraph> {
                     val lyricsVM: LyricsVM = koinViewModel()
                     val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
+                    val playbackInfo by lyricsVM.playbackInfo.collectAsStateWithLifecycle()
 
                     LyricsGraph(
                         notificationAccess = globalState.notificationAccess,
                         lyricsState = lyricsState,
                         lyricsAction = lyricsVM::onAction,
                         onDismiss = { navController.navigateUp() },
+                        playbackInfo = playbackInfo,
                         onShare = {
                             navController.navigate(Route.SharePage) { launchSingleTop = true }
                         },
