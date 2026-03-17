@@ -166,7 +166,9 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
             delay(5000)
 
             stateLayer.lyricsState.update {
-                if (it.searchState == SearchState.UserPrompt) it.copy(searchState = SearchState.Idle) else it
+                if (it.searchState == SearchState.UserPrompt)
+                    it.copy(searchState = SearchState.Idle)
+                else it
             }
         }
     }
