@@ -33,6 +33,7 @@ import com.shub39.rush.presentation.searchsheet.SearchSheetAction
 import com.shub39.rush.presentation.searchsheet.SearchSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -160,6 +161,12 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
         } else {
             stateLayer.lyricsState.update {
                 it.copy(searchState = SearchState.UserPrompt, sync = false)
+            }
+
+            delay(5000)
+
+            stateLayer.lyricsState.update {
+                if (it.searchState == SearchState.UserPrompt) it.copy(searchState = SearchState.Idle) else it
             }
         }
     }
