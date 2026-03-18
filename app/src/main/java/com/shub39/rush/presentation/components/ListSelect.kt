@@ -27,9 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 /**
@@ -55,25 +53,17 @@ fun <T> ListSelect(
     labelProvider: @Composable (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-        )
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(text = title, style = MaterialTheme.typography.titleMedium)
 
-        FlowRow(horizontalArrangement = Arrangement.Center) {
+        FlowRow {
             options.forEach { option ->
                 ToggleButton(
                     checked = option == selected,
                     onCheckedChange = { onSelectedChange(option) },
                     content = { labelProvider(option) },
                     colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                    modifier = Modifier.padding(horizontal = 4.dp),
+                    modifier = Modifier.padding(horizontal = 2.dp),
                 )
             }
         }

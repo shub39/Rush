@@ -89,6 +89,7 @@ import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.SearchState
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.calculateGlowMultiplier
@@ -113,6 +114,7 @@ fun LyricsPage(
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
     waveData: VisualizerData?,
     notificationAccess: Boolean,
 ) {
@@ -300,6 +302,7 @@ fun LyricsPage(
                                     } else if (lyricsState.song.ttmlLyrics != null) {
                                         SyllableSyncedLyrics(
                                             state = state,
+                                            playbackInfo = playbackInfo,
                                             lazyListState = lazyListState,
                                             cardContent = cardContent,
                                             action = action,
@@ -308,6 +311,7 @@ fun LyricsPage(
                                     } else if (lyricsState.song.syncedLyrics != null) {
                                         LineSyncedLyrics(
                                             state = state,
+                                            playbackInfo = playbackInfo,
                                             lazyListState = lazyListState,
                                             cardContent = cardContent,
                                             action = action,
@@ -388,6 +392,7 @@ fun LyricsPage(
                                         } else if (lyricsState.song.ttmlLyrics != null) {
                                             SyllableSyncedLyrics(
                                                 state = state,
+                                                playbackInfo = playbackInfo,
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
@@ -396,6 +401,7 @@ fun LyricsPage(
                                         } else if (lyricsState.song.syncedLyrics != null) {
                                             LineSyncedLyrics(
                                                 state = state,
+                                                playbackInfo = playbackInfo,
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
@@ -539,7 +545,7 @@ fun LyricsPage(
                         Icon(
                             painter =
                                 painterResource(
-                                    if (state.playingSong.speed == 0f) {
+                                    if (playbackInfo.speed == 0f) {
                                         R.drawable.play
                                     } else {
                                         R.drawable.pause
@@ -631,6 +637,7 @@ fun LyricsPagePreview() {
                 ),
             waveData = null,
             notificationAccess = true,
+            playbackInfo = PlaybackInfo(),
         )
     }
 }

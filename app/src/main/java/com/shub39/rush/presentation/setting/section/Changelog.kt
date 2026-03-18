@@ -18,7 +18,6 @@ package com.shub39.rush.presentation.setting.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -28,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
@@ -35,11 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -47,8 +47,13 @@ import com.shub39.rush.app.Changelog
 import com.shub39.rush.app.VersionEntry
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.presentation.components.RushTheme
-import com.shub39.rush.presentation.flexFontBold
+import com.shub39.rush.presentation.detachedItemShape
+import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.leadingItemShape
+import com.shub39.rush.presentation.listItemColors
+import com.shub39.rush.presentation.middleItemShape
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -75,6 +80,7 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding =
                 PaddingValues(
                     top = padding.calculateTopPadding() + 16.dp,
@@ -88,16 +94,28 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
                     Text(
                         text = versionEntry.version,
                         style =
-                            MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontBold()),
+                            MaterialTheme.typography.headlineSmall.copy(
+                                fontFamily = flexFontRounded()
+                            ),
                     )
                 }
 
-                itemsIndexed(versionEntry.changes) { index, change ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = "${index.plus(1)}.", fontWeight = FontWeight.Bold)
+                item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                        Text(text = change, modifier = Modifier.weight(1f))
-                    }
+                itemsIndexed(versionEntry.changes) { index, change ->
+                    val shape =
+                        when {
+                            versionEntry.changes.size == 1 -> detachedItemShape()
+                            index == 0 -> leadingItemShape()
+                            index == versionEntry.changes.size - 1 -> endItemShape()
+                            else -> middleItemShape()
+                        }
+
+                    ListItem(
+                        colors = listItemColors(),
+                        modifier = Modifier.clip(shape),
+                        headlineContent = { Text(text = change) },
+                    )
                 }
 
                 item { Spacer(modifier = Modifier.height(32.dp)) }

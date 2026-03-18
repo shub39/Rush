@@ -58,6 +58,7 @@ private sealed interface LyricsRoutes {
 fun LyricsGraph(
     notificationAccess: Boolean,
     lyricsState: LyricsPageState,
+    playbackInfo: PlaybackInfo,
     lyricsAction: (LyricsPageAction) -> Unit,
     onDismiss: () -> Unit,
     onShare: () -> Unit,
@@ -102,6 +103,7 @@ fun LyricsGraph(
                 onShare = onShare,
                 action = lyricsAction,
                 state = lyricsState,
+                playbackInfo = playbackInfo,
                 notificationAccess = notificationAccess,
                 waveData = waveData,
             )
@@ -140,6 +142,7 @@ private fun Preview() {
             lyricsAction = {},
             onDismiss = {},
             onShare = {},
+            playbackInfo = PlaybackInfo(),
         )
     }
 }

@@ -63,7 +63,6 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.components.RushTheme
-import com.shub39.rush.presentation.flexFontBold
 import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.onboarding.component.AnimatedAppIcon
 import kotlinx.coroutines.delay
@@ -188,7 +187,7 @@ fun Onboarding(
                                 text = "Some features require Notification Access",
                                 style =
                                     MaterialTheme.typography.headlineMedium.copy(
-                                        fontFamily = flexFontBold()
+                                        fontFamily = flexFontEmphasis()
                                     ),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
@@ -245,7 +244,7 @@ fun Onboarding(
                                                             MaterialTheme.typography.titleLarge
                                                                 .copy(
                                                                     fontWeight = FontWeight.Bold,
-                                                                    fontFamily = flexFontBold(),
+                                                                    fontFamily = flexFontEmphasis(),
                                                                 ),
                                                     )
                                                     Text(

@@ -16,15 +16,16 @@
  */
 package com.shub39.rush.presentation.setting.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,13 +35,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
+import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.leadingItemShape
+import com.shub39.rush.presentation.middleItemShape
 
 @Composable
 fun AboutApp() {
@@ -62,13 +68,14 @@ fun AboutApp() {
         ) {
             Column {
                 Text(
-                    text = "Rush",
+                    text = "Grit",
                     style =
-                        MaterialTheme.typography.headlineMedium.copy(
-                            fontFamily = flexFontEmphasis()
-                        ),
+                        MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontEmphasis()),
                 )
-                Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+                Text(
+                    text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                    fontFamily = flexFontRounded(),
+                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -92,58 +99,98 @@ fun AboutApp() {
             }
         }
 
-        FlowRow(
+        Column(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Button(onClick = { uriHandler.openUri("https://buymeacoffee.com/shub39") }) {
+            Row(
+                modifier =
+                    Modifier.background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = leadingItemShape(),
+                        )
+                        .clip(leadingItemShape())
+                        .clickable { uriHandler.openUri("https://buymeacoffee.com/shub39") }
+            ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.buymeacoffee),
                         contentDescription = "Buy me a coffee",
                         modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
-
-                    Text(text = stringResource(R.string.bmc))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.bmc),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontFamily = flexFontRounded(),
+                    )
                 }
             }
 
-            Button(onClick = { uriHandler.openUri("https://hosted.weblate.org/engage/rush/") }) {
+            Row(
+                modifier =
+                    Modifier.background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = middleItemShape(),
+                        )
+                        .clip(middleItemShape())
+                        .clickable { uriHandler.openUri("https://hosted.weblate.org/engage/rush/") }
+            ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.language),
                         contentDescription = "Translate",
                         modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
-
-                    Text(text = stringResource(R.string.translate))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.translate),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontFamily = flexFontRounded(),
+                    )
                 }
             }
 
-            Button(
-                onClick = {
-                    uriHandler.openUri(
-                        "https://play.google.com/store/apps/details?id=com.shub39.rush.play"
-                    )
-                }
+            Row(
+                modifier =
+                    Modifier.background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = endItemShape(),
+                        )
+                        .clip(endItemShape())
+                        .clickable {
+                            uriHandler.openUri(
+                                "https://play.google.com/store/apps/details?id=com.shub39.rush.play"
+                            )
+                        }
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.play_store),
                         contentDescription = "Rate On Google Play",
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
-
-                    Text(text = stringResource(R.string.rate_on_play))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.rate_on_play),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontFamily = flexFontRounded(),
+                    )
                 }
             }
         }

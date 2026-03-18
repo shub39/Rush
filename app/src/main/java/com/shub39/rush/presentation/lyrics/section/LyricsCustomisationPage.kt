@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.components.ColorPickerDialog
 import com.shub39.rush.presentation.components.RushDialog
@@ -388,7 +389,13 @@ private fun AudioPermissionDialog(
 @Composable
 private fun Preview() {
     var state by remember {
-        mutableStateOf(LyricsPageState(sync = true, lyricsBackground = LyricsBackground.ALBUM_ART))
+        mutableStateOf(
+            LyricsPageState(
+                cardColors = CardColors.CUSTOM,
+                sync = true,
+                lyricsBackground = LyricsBackground.ALBUM_ART,
+            )
+        )
     }
 
     val waveData =

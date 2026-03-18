@@ -1,5 +1,14 @@
 [
   {
+    "version": "5.7.1",
+    "changes": [
+      "Fixed auto lyrics fetching issues",
+      "Fixed miscellaneous song sync bugs",
+      "Updated Lyrics Customisation UI",
+      "Updated Share Cards UI"
+    ]
+  },
+  {
     "version": "5.7.0",
     "changes": [
       "Added support for TTML (Syllable Synced) Lyrics",
