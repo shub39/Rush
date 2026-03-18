@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +41,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -76,7 +78,7 @@ import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toShape
 import com.shub39.rush.presentation.toStringRes
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharePageSheet(
     state: SharePageState,
@@ -204,7 +206,11 @@ fun SharePageSheet(
                                 modifier =
                                     Modifier.size(20.dp)
                                         .background(
-                                            color = MaterialTheme.colorScheme.onSurface,
+                                            color = if (state.albumArtShape == it) {
+                                                ToggleButtonDefaults.tonalToggleButtonColors().checkedContentColor
+                                            } else {
+                                                ToggleButtonDefaults.tonalToggleButtonColors().contentColor
+                                            },
                                             shape = it.toShape(),
                                         )
                             )
