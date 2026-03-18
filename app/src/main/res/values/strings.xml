@@ -147,4 +147,7 @@
     <string name="syllable_synced_lyrics">Syllable Synced</string>
     <string name="changelog">Changelog</string>
     <string name="whats_changed">What\'s Changed</string>
+    <string name="looks">Looks</string>
+    <string name="text">Text</string>
+    <string name="others">Others</string>
 </resources>

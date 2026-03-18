@@ -29,7 +29,7 @@ private const val endCornerRadius = 16
 
 @Composable
 fun listItemColors(): ListItemColors {
-    return ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+    return ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
 }
 
 fun leadingItemShape(): Shape =

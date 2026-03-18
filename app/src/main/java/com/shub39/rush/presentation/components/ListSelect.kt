@@ -57,23 +57,21 @@ fun <T> ListSelect(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
         )
 
-        FlowRow(horizontalArrangement = Arrangement.Center) {
+        FlowRow {
             options.forEach { option ->
                 ToggleButton(
                     checked = option == selected,
                     onCheckedChange = { onSelectedChange(option) },
                     content = { labelProvider(option) },
                     colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                    modifier = Modifier.padding(horizontal = 4.dp),
+                    modifier = Modifier.padding(horizontal = 2.dp),
                 )
             }
         }
