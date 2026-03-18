@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.7.1
+- Fixed auto lyrics fetching issues
+- Fixed miscellaneous song sync bugs
+- Updated Lyrics Customisation UI
+- Updated Share Cards UI
+
 ## 5.7.0
 - Added support for TTML (Syllable Synced) Lyrics
 - Improved Synced Lyrics Animation

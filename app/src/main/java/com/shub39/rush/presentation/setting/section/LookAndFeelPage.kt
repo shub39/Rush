@@ -46,7 +46,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -89,9 +88,9 @@ import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
 import com.shub39.rush.presentation.toFontRes
+import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toMPaletteStyle
 import com.shub39.rush.presentation.toStringRes
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -181,11 +180,7 @@ fun LookAndFeelPage(
                                         onAction(SettingsPageAction.OnThemeSwitch(appTheme))
                                     },
                                     modifier = Modifier.weight(1f),
-                                    colors =
-                                        ToggleButtonDefaults.toggleButtonColors(
-                                            containerColor =
-                                                MaterialTheme.colorScheme.surfaceContainerLow
-                                        ),
+                                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
                                 ) {
                                     Text(
                                         text = stringResource(appTheme.toStringRes()),
@@ -265,22 +260,10 @@ fun LookAndFeelPage(
                                     onCheckedChange = {
                                         onAction(SettingsPageAction.OnFontChange(font))
                                     },
-                                    colors =
-                                        ToggleButtonDefaults.toggleButtonColors(
-                                            containerColor =
-                                                MaterialTheme.colorScheme.surfaceContainerLow
-                                        ),
+                                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
                                 ) {
                                     Text(
-                                        text =
-                                            font.name
-                                                .lowercase()
-                                                .replaceFirstChar {
-                                                    if (it.isLowerCase())
-                                                        it.titlecase(Locale.getDefault())
-                                                    else it.toString()
-                                                }
-                                                .replace("_", " "),
+                                        text = font.toFullName(),
                                         fontFamily =
                                             font.toFontRes()?.let { FontFamily(Font(it)) }
                                                 ?: FontFamily.Default,
@@ -381,22 +364,47 @@ fun LookAndFeelPage(
                                 Box(
                                     modifier =
                                         Modifier.size(50.dp)
-                                            .background(
-                                                color = scheme.tertiary,
-                                                shape =
-                                                    if (selected) MaterialShapes.VerySunny.toShape()
-                                                    else CircleShape,
+                                            .clip(
+                                                if (selected) MaterialShapes.VerySunny.toShape()
+                                                else CircleShape
                                             )
                                             .clickable {
                                                 onAction(SettingsPageAction.OnPaletteChange(style))
                                             },
                                     contentAlignment = Alignment.Center,
                                 ) {
+                                    Column(modifier = Modifier.matchParentSize()) {
+                                        Row {
+                                            Box(
+                                                modifier =
+                                                    Modifier.size(25.dp)
+                                                        .background(color = scheme.primary)
+                                            )
+                                            Box(
+                                                modifier =
+                                                    Modifier.size(25.dp)
+                                                        .background(color = scheme.tertiary)
+                                            )
+                                        }
+                                        Row {
+                                            Box(
+                                                modifier =
+                                                    Modifier.size(25.dp)
+                                                        .background(color = scheme.secondary)
+                                            )
+                                            Box(
+                                                modifier =
+                                                    Modifier.size(25.dp)
+                                                        .background(color = scheme.onSurface)
+                                            )
+                                        }
+                                    }
+
                                     if (selected) {
                                         Icon(
                                             painter = painterResource(R.drawable.check),
                                             contentDescription = null,
-                                            tint = scheme.onTertiary,
+                                            tint = scheme.onPrimary,
                                         )
                                     }
                                 }

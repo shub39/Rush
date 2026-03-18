@@ -389,7 +389,13 @@ private fun AudioPermissionDialog(
 @Composable
 private fun Preview() {
     var state by remember {
-        mutableStateOf(LyricsPageState(cardColors = CardColors.CUSTOM, sync = true, lyricsBackground = LyricsBackground.ALBUM_ART))
+        mutableStateOf(
+            LyricsPageState(
+                cardColors = CardColors.CUSTOM,
+                sync = true,
+                lyricsBackground = LyricsBackground.ALBUM_ART,
+            )
+        )
     }
 
     val waveData =

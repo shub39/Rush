@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -72,16 +71,14 @@ fun LazyListScope.lyricsCustomisationSettings(
     item {
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(R.string.looks),
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded())
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded()),
             )
             Spacer(modifier = Modifier.height(8.dp))
-            ListItemCard(
-                shape = leadingItemShape()
-            ) {
+            ListItemCard(shape = leadingItemShape()) {
                 ListSelect(
                     title = stringResource(R.string.lyrics_background),
                     options = allBackgrounds,
@@ -107,7 +104,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.blur_synced),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     },
                     trailingContent = {
@@ -115,13 +112,11 @@ fun LazyListScope.lyricsCustomisationSettings(
                             checked = state.blurSyncedLyrics,
                             onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
                         )
-                    }
+                    },
                 )
             }
 
-            ListItemCard(
-                shape = endItemShape()
-            ) {
+            ListItemCard(shape = endItemShape()) {
                 ListSelect(
                     title = stringResource(R.string.card_color),
                     options = CardColors.entries.toList(),
@@ -177,11 +172,11 @@ fun LazyListScope.lyricsCustomisationSettings(
     item {
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(R.string.text),
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded())
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded()),
             )
             Spacer(modifier = Modifier.height(8.dp))
             ListItemCard(shape = leadingItemShape()) {
@@ -250,11 +245,11 @@ fun LazyListScope.lyricsCustomisationSettings(
     item {
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(R.string.others),
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded())
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded()),
             )
             Spacer(modifier = Modifier.height(8.dp))
 
