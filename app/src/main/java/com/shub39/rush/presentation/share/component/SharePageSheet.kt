@@ -94,11 +94,11 @@ fun SharePageSheet(
         modifier = modifier,
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .heightIn(max = 500.dp)
-                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .heightIn(max = 500.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
             contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -202,8 +202,7 @@ fun SharePageSheet(
                         labelProvider = {
                             Box(
                                 modifier =
-                                    Modifier
-                                        .size(20.dp)
+                                    Modifier.size(20.dp)
                                         .background(
                                             color = MaterialTheme.colorScheme.onSurface,
                                             shape = it.toShape(),
@@ -241,9 +240,7 @@ fun SharePageSheet(
                         Text(
                             text = "Show Rush Branding",
                             maxLines = 1,
-                            modifier = Modifier
-                                .basicMarquee()
-                                .weight(1f),
+                            modifier = Modifier.basicMarquee().weight(1f),
                         )
                     },
                     trailingContent = {
@@ -257,7 +254,7 @@ fun SharePageSheet(
                                 }
                             },
                         )
-                    }
+                    },
                 )
             }
         }
