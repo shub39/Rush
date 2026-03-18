@@ -101,12 +101,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.blur_synced),
-                            modifier = Modifier.weight(1f),
-                        )
-                    },
+                    headlineContent = { Text(text = stringResource(R.string.blur_synced)) },
                     trailingContent = {
                         Switch(
                             checked = state.blurSyncedLyrics,

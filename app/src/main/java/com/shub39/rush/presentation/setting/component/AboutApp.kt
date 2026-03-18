@@ -89,7 +89,7 @@ fun AboutApp() {
                     )
                 }
 
-                IconButton(onClick = { uriHandler.openUri("https://github.com/shub39/Grit") }) {
+                IconButton(onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }) {
                     Icon(
                         painter = painterResource(R.drawable.github),
                         contentDescription = "Github",
@@ -139,7 +139,7 @@ fun AboutApp() {
                             shape = middleItemShape(),
                         )
                         .clip(middleItemShape())
-                        .clickable { uriHandler.openUri("https://hosted.weblate.org/engage/grit/") }
+                        .clickable { uriHandler.openUri("https://hosted.weblate.org/engage/rush/") }
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -170,7 +170,7 @@ fun AboutApp() {
                         .clip(endItemShape())
                         .clickable {
                             uriHandler.openUri(
-                                "https://play.google.com/store/apps/details?id=com.shub39.grit"
+                                "https://play.google.com/store/apps/details?id=com.shub39.rush.play"
                             )
                         }
             ) {

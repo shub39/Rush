@@ -238,9 +238,9 @@ fun SharePageSheet(
                     modifier = Modifier.clip(endItemShape()),
                     headlineContent = {
                         Text(
-                            text = "Show Rush Branding",
+                            text = stringResource(R.string.show_app_branding),
                             maxLines = 1,
-                            modifier = Modifier.basicMarquee().weight(1f),
+                            modifier = Modifier.basicMarquee(),
                         )
                     },
                     trailingContent = {

@@ -150,4 +150,5 @@
     <string name="looks">Looks</string>
     <string name="text">Text</string>
     <string name="others">Others</string>
+    <string name="show_app_branding">Show App Branding</string>
 </resources>

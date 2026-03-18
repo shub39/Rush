@@ -33,6 +33,7 @@ import com.shub39.rush.presentation.searchsheet.SearchSheetAction
 import com.shub39.rush.presentation.searchsheet.SearchSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,6 +53,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
     ViewModel() {
+    private var searchStateResetJob: Job? = null
 
     private val _state = stateLayer.searchSheetState
     private val _lastSearched = MutableStateFlow("")
@@ -163,13 +165,17 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
                 it.copy(searchState = SearchState.UserPrompt, sync = false)
             }
 
-            delay(5000)
+            searchStateResetJob?.cancel()
+            searchStateResetJob =
+                viewModelScope.launch {
+                    delay(5000)
 
-            stateLayer.lyricsState.update {
-                if (it.searchState == SearchState.UserPrompt)
-                    it.copy(searchState = SearchState.Idle)
-                else it
-            }
+                    stateLayer.lyricsState.update {
+                        if (it.searchState == SearchState.UserPrompt)
+                            it.copy(searchState = SearchState.Idle)
+                        else it
+                    }
+                }
         }
     }
 
