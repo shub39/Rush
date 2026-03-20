@@ -16,7 +16,7 @@
     <string name="grant_permission">Concedi autorizzazione</string>
     <string name="notification_permission">L\'accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l\'app dopo aver concesso il permesso.</string>
     <string name="rounded_corners">Angoli arrotondati</string>
-    <string name="max_lines">Max righe condivisibili</string>
+    <string name="max_lines">Righe massime condivisibili</string>
     <string name="theme">Tema app</string>
     <string name="sort_title_asc">Titolo (A-Z)</string>
     <string name="sort_title_desc">Titolo (Z-A)</string>
@@ -147,4 +147,9 @@
     <string name="line_synced_lyrics">Sincronizzati per linea</string>
     <string name="syllable_synced_lyrics">Sincronizzati per sillaba</string>
     <string name="changelog">Registro modifiche</string>
+    <string name="whats_changed">Cosa è cambiato</string>
+    <string name="looks">Aspetto</string>
+    <string name="text">Testo</string>
+    <string name="others">Altri</string>
+    <string name="show_app_branding">Mostra Marchio dell\'App</string>
 </resources>
