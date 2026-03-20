@@ -19,7 +19,7 @@
     <string name="width">Szerokość</string>
     <string name="colors">Niestandardowe Kolory</string>
     <string name="grant_permission">Udziel Uprawnień</string>
-    <string name="notification_permission">Dostęp do powiadomień jest wymagany do automatycznego zdobywania tekstów piosenek</string>
+    <string name="notification_permission">Dostęp do powiadomień jest wymagany do automatycznego zdobywania tekstów piosenek.</string>
     <string name="rounded_corners">Zaokrąglone rogi</string>
     <string name="max_lines">Maksimum wierszy do udostępnienia</string>
     <string name="theme">Motyw Aplikacji</string>
@@ -49,7 +49,7 @@
     <string name="vibrant_colors_info">Używaj bardziej żywych kolorów na stronie z tekstem piosenki</string>
     <string name="backup">Kopia zapasowa</string>
     <string name="backup_info">Importuj lub Eksportuj bazę danych z zapisanymi tekstami piosenek</string>
-    <string name="batch_download_info">Pobieraj teksty do lokalnie zapisanych piosenek jednym kliknięciem</string>
+    <string name="batch_download_info">Pobieraj teksty do lokalnie zapisanych piosenek jednym kliknięciem.</string>
     <string name="sort_date_added">Ostatnio dodane</string>
     <string name="rush_branding">Rush</string>
     <string name="bmc">Postaw mi kawę</string>
