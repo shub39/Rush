@@ -22,6 +22,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.koin.compiler)
 }
 
 val appName = "Rush"
@@ -162,8 +163,7 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
-    ksp(libs.koin.ksp.compiler)
-    api(libs.koin.annotations)
+    implementation(libs.koin.annotations)
 }
 
 room { schemaDirectory("$projectDir/schemas") }
