@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.nativePaint
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +79,7 @@ fun Modifier.glowBackground(
             path.asAndroidPath(),
             Paint()
                 .apply { this.color = Color.Transparent }
-                .asFrameworkPaint()
+                .nativePaint
                 .applyShadowLayer(radius, xShifting, yShifting, color, density),
         )
     }

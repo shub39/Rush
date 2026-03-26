@@ -1,5 +1,11 @@
 [
   {
+    "version": "5.7.2",
+    "changes": [
+      "Fixed Material Theme not Working #230"
+    ]
+  },
+  {
     "version": "5.7.1",
     "changes": [
       "Fixed auto lyrics fetching issues",

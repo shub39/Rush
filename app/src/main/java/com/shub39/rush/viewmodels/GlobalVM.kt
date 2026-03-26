@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class GlobalVM(
@@ -136,6 +136,13 @@ class GlobalVM(
                                     )
                             )
                         }
+                    }
+                    .launchIn(this)
+
+                otherPreferences
+                    .getMaterialYouFlow()
+                    .onEach { pref ->
+                        _state.update { it.copy(theme = it.theme.copy(materialTheme = pref)) }
                     }
                     .launchIn(this)
 

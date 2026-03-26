@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.room) apply false
+    alias(libs.plugins.koin.compiler) apply false
 }
 
 allprojects {

@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.7.2
+- Fixed Material Theme not Working #230
+
 ## 5.7.1
 - Fixed auto lyrics fetching issues
 - Fixed miscellaneous song sync bugs

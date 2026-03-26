@@ -23,18 +23,16 @@ import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.di.RushModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.ksp.generated.module
+import org.koin.plugin.module.dsl.startKoin
 
 class RushApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
+        startKoin<RushModules> {
             if (BuildConfig.DEBUG) androidLogger()
             androidContext(this@RushApplication)
-            modules(RushModules().module)
         }
 
         BillingInitializerImpl().initialize(this)
