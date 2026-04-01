@@ -66,7 +66,7 @@
     <string name="rush_mode">Rush 모드</string>
     <string name="rush_mode_desc">알림에서 현재 재생 중인 노래를 찾아 가사를 불러오고, 음악에 맞춰 자동으로 변경됩니다.</string>
     <string name="look_and_feel">디자인</string>
-    <string name="look_and_feel_info">앱을 원하는 대로 설정할 수 있습니다</string>
+    <string name="look_and_feel_info">앱을 다양한 방식으로 맞춤 설정</string>
     <string name="vibrant_colors">선명한 색상 사용</string>
     <string name="suggestion">아래 검색 아이콘이 보이나요?</string>
     <string name="fetching">가사 불러오는 중</string>
@@ -77,4 +77,6 @@
     <string name="amoled">AMOLED 색상표</string>
     <string name="use_system_theme_desc">시스템과 동일한 테마 사용</string>
     <string name="amoled_desc">AMOLED 디스플레이에서 최적의 경험 제공</string>
+    <string name="palette_style">팔레트 스타일</string>
+    <string name="seed_color">시드 색상 선택</string>
 </resources>

@@ -144,4 +144,7 @@
     <string name="rush_pro">Rush Pro</string>
     <string name="audio_permission">Audioaufnahme-Berechtigung erforderlich</string>
     <string name="audio_permission_info">Dieser Hintergrund visualisiert den aktuell abgespielten Song</string>
+    <string name="line_synced_lyrics">Zeilen Synchronisiert</string>
+    <string name="syllable_synced_lyrics">Silbe synchronisiert</string>
+    <string name="changelog">Änderungsprotokoll</string>
 </resources>
