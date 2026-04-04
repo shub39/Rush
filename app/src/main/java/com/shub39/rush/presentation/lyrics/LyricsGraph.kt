@@ -17,8 +17,6 @@
 package com.shub39.rush.presentation.lyrics
 
 import android.Manifest
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,9 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -46,11 +45,10 @@ import io.gitlab.bpavuk.viz.rememberVisualizerState
 import kotlinx.serialization.Serializable
 
 @Serializable
-private sealed interface LyricsRoutes {
-    @Serializable data object LyricsPage : LyricsRoutes
+data object LyricsPage : NavKey
 
-    @Serializable data object LyricsCustomisations : LyricsRoutes
-}
+@Serializable
+data object LyricsCustomisations : NavKey
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -62,7 +60,7 @@ fun LyricsGraph(
     onShare: () -> Unit,
 ) {
     val context = LocalContext.current
-    val navController = rememberNavController()
+    val backStack = rememberNavBackStack(LyricsPage)
 
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData =
@@ -72,48 +70,40 @@ fun LyricsGraph(
             state.fft
         }
 
-    NavHost(
-        navController = navController,
-        startDestination = LyricsRoutes.LyricsPage,
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() },
-    ) {
-        composable<LyricsRoutes.LyricsPage> {
-            DisposableEffect(Unit) {
-                updateSystemBars(context, show = !lyricsState.fullscreen)
-                onDispose { updateSystemBars(context, show = true) }
+    NavDisplay(
+        backStack = backStack,
+        entryProvider = entryProvider {
+            entry<LyricsPage> {
+                DisposableEffect(Unit) {
+                    updateSystemBars(context, show = !lyricsState.fullscreen)
+                    onDispose { updateSystemBars(context, show = true) }
+                }
+
+                LyricsPage(
+                    onNavigateToCustomisations = { backStack.add(LyricsCustomisations) },
+                    onShare = onShare,
+                    action = lyricsAction,
+                    state = lyricsState,
+                    playbackInfo = playbackInfo,
+                    notificationAccess = notificationAccess,
+                    waveData = waveData,
+                )
             }
 
-            LyricsPage(
-                onEdit = {
-                    navController.navigate(LyricsRoutes.LyricsCustomisations) {
-                        launchSingleTop = true
-                    }
-                },
-                onShare = onShare,
-                action = lyricsAction,
-                state = lyricsState,
-                playbackInfo = playbackInfo,
-                notificationAccess = notificationAccess,
-                waveData = waveData,
-            )
+            entry<LyricsCustomisations> {
+                LyricsCustomisationsPage(
+                    state = lyricsState,
+                    onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                    onAction = lyricsAction,
+                    modifier = Modifier.widthIn(max = 700.dp),
+                    notificationAccess = notificationAccess,
+                    microphonePermission = microphonePermission.status.isGranted,
+                    requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
+                    waveData = waveData,
+                )
+            }
         }
-
-        composable<LyricsRoutes.LyricsCustomisations> {
-            LyricsCustomisationsPage(
-                state = lyricsState,
-                onNavigateBack = { navController.navigateUp() },
-                onAction = lyricsAction,
-                modifier = Modifier.widthIn(max = 700.dp),
-                notificationAccess = notificationAccess,
-                microphonePermission = microphonePermission.status.isGranted,
-                requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
-                waveData = waveData,
-            )
-        }
-    }
+    )
 }
 
 @Preview
