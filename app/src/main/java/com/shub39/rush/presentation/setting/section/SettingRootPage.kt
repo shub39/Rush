@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -148,19 +147,11 @@ fun SettingRootPage(
                         modifier = Modifier.padding(16.dp).fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add),
-                            contentDescription = "Rush Pro",
-                            modifier = Modifier.size(24.dp),
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
                         Text(
                             text = stringResource(R.string.rush_pro),
                             style =
                                 MaterialTheme.typography.headlineSmall.copy(
-                                    fontFamily = flexFontEmphasis()
+                                    fontFamily = flexFontRounded()
                                 ),
                         )
 
