@@ -110,7 +110,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LyricsPage(
-    onEdit: () -> Unit,
+    onNavigateToCustomisations: () -> Unit,
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
     state: LyricsPageState,
@@ -284,7 +284,7 @@ fun LyricsPage(
                                                     cardBackground = cardBackground,
                                                     cardContent = cardContent,
                                                     onShare = onShare,
-                                                    onEdit = onEdit,
+                                                    onEdit = onNavigateToCustomisations,
                                                     glowMultiplier = glowMultiplier,
                                                 )
                                             }
@@ -334,7 +334,7 @@ fun LyricsPage(
                                                 cardBackground = cardBackground,
                                                 cardContent = cardContent,
                                                 onShare = onShare,
-                                                onEdit = onEdit,
+                                                onEdit = onNavigateToCustomisations,
                                                 glowMultiplier = glowMultiplier,
                                             )
                                         }
@@ -599,7 +599,7 @@ fun LyricsPage(
 fun LyricsPagePreview() {
     RushTheme(theme = Theme()) {
         LyricsPage(
-            onEdit = {},
+            onNavigateToCustomisations = {},
             onShare = {},
             action = {},
             state =

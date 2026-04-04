@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.middleItemShape
@@ -68,14 +67,11 @@ fun AboutApp() {
         ) {
             Column {
                 Text(
-                    text = "Grit",
+                    text = stringResource(R.string.app_name),
                     style =
-                        MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontEmphasis()),
+                        MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontRounded()),
                 )
-                Text(
-                    text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                    fontFamily = flexFontRounded(),
-                )
+                Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
             }
 
             Spacer(modifier = Modifier.weight(1f))

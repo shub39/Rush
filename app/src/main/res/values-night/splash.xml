@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Rush.Splash" parent="Theme.SplashScreen" >
         <item name="windowSplashScreenAnimatedIcon">@drawable/rush_splash</item>
-        <item name="windowSplashScreenBackground">#FF282828</item>
+        <item name="windowSplashScreenBackground" tools:targetApi="31">@android:color/system_accent1_800</item>
         <item name="postSplashScreenTheme">@style/Theme.Rush</item>
     </style>
 </resources>

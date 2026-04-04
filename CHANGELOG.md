@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.7.3
+- Improved App Navigation Experience
+
 ## 5.7.2
 - Fixed Material Theme not Working #230
 

@@ -18,7 +18,7 @@
     <string name="artist">artista</string>
     <string name="width">Largura</string>
     <string name="colors">Cores</string>
-    <string name="grant_permission">Conceder Acesso à Notificação</string>
+    <string name="grant_permission">Conceder permissões</string>
     <string name="notification_permission">O Acesso à Notificação é necessário para obter letras automaticamente. Limpe e reinicie o aplicativo após conceder permissão.</string>
     <string name="rounded_corners">Cantos arredondados</string>
     <string name="max_lines">Máximo de linhas para compartilhar</string>
@@ -61,7 +61,7 @@
     <string name="no_audio_files">Nenhum arquivo de áudio</string>
     <string name="no_folder_selected">Nenhuma pasta selecionada</string>
     <string name="export">Exportar</string>
-    <string name="export_info">Exportar músicas para Downloads/Rush</string>
+    <string name="export_info">Exportar músicas para pasta selecionada</string>
     <string name="restore">Restaurar</string>
     <string name="restore_info">Restaurar do arquivo de exportação selecionado</string>
     <string name="choose_file">Escolher arquivo</string>
@@ -139,4 +139,17 @@
     <string name="blur_synced">Letras borradas e sincronizadas</string>
     <string name="wave">Onda</string>
     <string name="gradient">Gradiente</string>
+    <string name="audio_permission">Requer permissão para gravação de áudio</string>
+    <string name="audio_permission_info">Este plano de fundo visualiza a música sendo reproduzida atualmente</string>
+    <string name="curve">Curva</string>
+    <string name="copy_error">Erro ao copiar</string>
+    <string name="not_found">Não encontrado</string>
+    <string name="line_synced_lyrics">Linha sincronizada</string>
+    <string name="syllable_synced_lyrics">Sílaba sincronizada</string>
+    <string name="changelog">Histórico de alterações</string>
+    <string name="whats_changed">O que há de novo</string>
+    <string name="looks">Aparência</string>
+    <string name="text">Texto</string>
+    <string name="others">Outros</string>
+    <string name="show_app_branding">Mostrar logomarca do app</string>
 </resources>

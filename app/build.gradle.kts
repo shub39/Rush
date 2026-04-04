@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.7.2"
-val appVersionCode = 5720
+val appVersionName = "5.7.3"
+val appVersionCode = 5730
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -137,6 +137,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     ksp(libs.androidx.room.compiler)
@@ -146,7 +148,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.datetime)
     implementation(libs.bundles.ktor)
-    implementation(libs.jetbrains.compose.navigation)
     implementation(libs.materialkolor)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.viewmodel)

@@ -17,12 +17,9 @@
 package com.shub39.rush.presentation.lyrics
 
 import android.Manifest
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,13 +28,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.presentation.lyrics.section.LyricsPage
@@ -46,12 +45,9 @@ import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
 import kotlinx.serialization.Serializable
 
-@Serializable
-private sealed interface LyricsRoutes {
-    @Serializable data object LyricsPage : LyricsRoutes
+@Serializable data object LyricsPage : NavKey
 
-    @Serializable data object LyricsCustomisations : LyricsRoutes
-}
+@Serializable data object LyricsCustomisations : NavKey
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -60,11 +56,10 @@ fun LyricsGraph(
     lyricsState: LyricsPageState,
     playbackInfo: PlaybackInfo,
     lyricsAction: (LyricsPageAction) -> Unit,
-    onDismiss: () -> Unit,
     onShare: () -> Unit,
 ) {
     val context = LocalContext.current
-    val navController = rememberNavController()
+    val backStack = rememberNavBackStack(LyricsPage)
 
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData =
@@ -74,60 +69,43 @@ fun LyricsGraph(
             state.fft
         }
 
-    BackHandler {
-        updateSystemBars(context, true)
-        onDismiss()
-    }
-
-    NavHost(
-        navController = navController,
-        startDestination = LyricsRoutes.LyricsPage,
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() },
-    ) {
-        composable<LyricsRoutes.LyricsPage> {
-            LaunchedEffect(Unit) {
-                if (lyricsState.fullscreen) {
-                    updateSystemBars(context, false)
-                }
-            }
-
-            LyricsPage(
-                onEdit = {
-                    navController.navigate(LyricsRoutes.LyricsCustomisations) {
-                        launchSingleTop = true
+    NavDisplay(
+        backStack = backStack,
+        entryProvider =
+            entryProvider {
+                entry<LyricsPage> {
+                    DisposableEffect(Unit) {
+                        updateSystemBars(context, show = !lyricsState.fullscreen)
+                        onDispose { updateSystemBars(context, show = true) }
                     }
-                },
-                onShare = onShare,
-                action = lyricsAction,
-                state = lyricsState,
-                playbackInfo = playbackInfo,
-                notificationAccess = notificationAccess,
-                waveData = waveData,
-            )
-        }
 
-        composable<LyricsRoutes.LyricsCustomisations> {
-            LaunchedEffect(Unit) {
-                if (lyricsState.fullscreen) {
-                    updateSystemBars(context, true)
+                    LyricsPage(
+                        onNavigateToCustomisations = { backStack.add(LyricsCustomisations) },
+                        onShare = onShare,
+                        action = lyricsAction,
+                        state = lyricsState,
+                        playbackInfo = playbackInfo,
+                        notificationAccess = notificationAccess,
+                        waveData = waveData,
+                    )
                 }
-            }
 
-            LyricsCustomisationsPage(
-                state = lyricsState,
-                onNavigateBack = { navController.navigateUp() },
-                onAction = lyricsAction,
-                modifier = Modifier.widthIn(max = 700.dp),
-                notificationAccess = notificationAccess,
-                microphonePermission = microphonePermission.status.isGranted,
-                requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
-                waveData = waveData,
-            )
-        }
-    }
+                entry<LyricsCustomisations>(metadata = horizontalTransitionMetadata()) {
+                    LyricsCustomisationsPage(
+                        state = lyricsState,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onAction = lyricsAction,
+                        modifier = Modifier.widthIn(max = 700.dp),
+                        notificationAccess = notificationAccess,
+                        microphonePermission = microphonePermission.status.isGranted,
+                        requestMicrophonePermission = {
+                            microphonePermission.launchPermissionRequest()
+                        },
+                        waveData = waveData,
+                    )
+                }
+            },
+    )
 }
 
 @Preview
@@ -140,7 +118,6 @@ private fun Preview() {
             notificationAccess = true,
             lyricsState = state,
             lyricsAction = {},
-            onDismiss = {},
             onShare = {},
             playbackInfo = PlaybackInfo(),
         )

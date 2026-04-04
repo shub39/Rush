@@ -16,18 +16,16 @@
  */
 package com.shub39.rush.presentation.setting
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.setting.section.BackupPage
 import com.shub39.rush.presentation.setting.section.Changelog
@@ -35,16 +33,13 @@ import com.shub39.rush.presentation.setting.section.LookAndFeelPage
 import com.shub39.rush.presentation.setting.section.SettingRootPage
 import kotlinx.serialization.Serializable
 
-@Serializable
-private sealed interface SettingsRoutes {
-    @Serializable data object SettingRootPage : SettingsRoutes
+@Serializable data object SettingRootPage : NavKey
 
-    @Serializable data object BackupPage : SettingsRoutes
+@Serializable data object BackupPage : NavKey
 
-    @Serializable data object LookAndFeelPage : SettingsRoutes
+@Serializable data object LookAndFeelPage : NavKey
 
-    @Serializable data object ChangelogPage : SettingsRoutes
-}
+@Serializable data object ChangelogPage : NavKey
 
 @Composable
 fun SettingsGraph(
@@ -56,54 +51,52 @@ fun SettingsGraph(
     onShowPaywall: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val navController = rememberNavController()
+    val backStack = rememberNavBackStack(SettingRootPage)
 
-    NavHost(
-        navController = navController,
-        startDestination = SettingsRoutes.SettingRootPage,
-        enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
-        exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) + fadeOut() },
-        popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) + fadeIn() },
-        popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+    NavDisplay(
+        backStack = backStack,
         modifier = modifier,
-    ) {
-        composable<SettingsRoutes.SettingRootPage> {
-            SettingRootPage(
-                notificationAccess = notificationAccess,
-                onAction = action,
-                onNavigateBack = onNavigateBack,
-                onNavigateToLookAndFeel = {
-                    navController.navigate(SettingsRoutes.LookAndFeelPage)
-                },
-                onNavigateToBackup = { navController.navigate(SettingsRoutes.BackupPage) },
-                onNavigateToChangelog = { navController.navigate(SettingsRoutes.ChangelogPage) },
-                state = state,
-                onShowPaywall = onShowPaywall,
-            )
-        }
+        entryProvider =
+            entryProvider {
+                entry<SettingRootPage> {
+                    SettingRootPage(
+                        notificationAccess = notificationAccess,
+                        onAction = action,
+                        onNavigateBack = onNavigateBack,
+                        onNavigateToLookAndFeel = { backStack.add(LookAndFeelPage) },
+                        onNavigateToBackup = { backStack.add(BackupPage) },
+                        onNavigateToChangelog = { backStack.add(ChangelogPage) },
+                        state = state,
+                        onShowPaywall = onShowPaywall,
+                    )
+                }
 
-        composable<SettingsRoutes.BackupPage> {
-            BackupPage(
-                state = state,
-                action = action,
-                onNavigateBack = { navController.navigateUp() },
-            )
-        }
+                entry<BackupPage>(metadata = horizontalTransitionMetadata()) {
+                    BackupPage(
+                        state = state,
+                        action = action,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                    )
+                }
 
-        composable<SettingsRoutes.LookAndFeelPage> {
-            LookAndFeelPage(
-                state = state,
-                onAction = action,
-                onNavigateBack = { navController.navigateUp() },
-                onShowPaywall = onShowPaywall,
-                isProUser = isProUser,
-            )
-        }
+                entry<LookAndFeelPage>(metadata = horizontalTransitionMetadata()) {
+                    LookAndFeelPage(
+                        state = state,
+                        onAction = action,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onShowPaywall = onShowPaywall,
+                        isProUser = isProUser,
+                    )
+                }
 
-        composable<SettingsRoutes.ChangelogPage> {
-            Changelog(changelog = state.changelog, onNavigateBack = { navController.navigateUp() })
-        }
-    }
+                entry<ChangelogPage>(metadata = horizontalTransitionMetadata()) {
+                    Changelog(
+                        changelog = state.changelog,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                    )
+                }
+            },
+    )
 }
 
 @Preview
