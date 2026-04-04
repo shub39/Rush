@@ -17,12 +17,11 @@
 package com.shub39.rush.presentation.lyrics
 
 import android.Manifest
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,7 +59,6 @@ fun LyricsGraph(
     lyricsState: LyricsPageState,
     playbackInfo: PlaybackInfo,
     lyricsAction: (LyricsPageAction) -> Unit,
-    onDismiss: () -> Unit,
     onShare: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -74,11 +72,6 @@ fun LyricsGraph(
             state.fft
         }
 
-    BackHandler {
-        updateSystemBars(context, true)
-        onDismiss()
-    }
-
     NavHost(
         navController = navController,
         startDestination = LyricsRoutes.LyricsPage,
@@ -88,10 +81,9 @@ fun LyricsGraph(
         popExitTransition = { fadeOut() },
     ) {
         composable<LyricsRoutes.LyricsPage> {
-            LaunchedEffect(Unit) {
-                if (lyricsState.fullscreen) {
-                    updateSystemBars(context, false)
-                }
+            DisposableEffect(Unit) {
+                updateSystemBars(context, show = !lyricsState.fullscreen)
+                onDispose { updateSystemBars(context, show = true) }
             }
 
             LyricsPage(
@@ -110,12 +102,6 @@ fun LyricsGraph(
         }
 
         composable<LyricsRoutes.LyricsCustomisations> {
-            LaunchedEffect(Unit) {
-                if (lyricsState.fullscreen) {
-                    updateSystemBars(context, true)
-                }
-            }
-
             LyricsCustomisationsPage(
                 state = lyricsState,
                 onNavigateBack = { navController.navigateUp() },
@@ -140,7 +126,6 @@ private fun Preview() {
             notificationAccess = true,
             lyricsState = state,
             lyricsAction = {},
-            onDismiss = {},
             onShare = {},
             playbackInfo = PlaybackInfo(),
         )
