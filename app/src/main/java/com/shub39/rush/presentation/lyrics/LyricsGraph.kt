@@ -36,6 +36,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.presentation.lyrics.section.LyricsPage
@@ -44,11 +45,9 @@ import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
 import kotlinx.serialization.Serializable
 
-@Serializable
-data object LyricsPage : NavKey
+@Serializable data object LyricsPage : NavKey
 
-@Serializable
-data object LyricsCustomisations : NavKey
+@Serializable data object LyricsCustomisations : NavKey
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -72,37 +71,40 @@ fun LyricsGraph(
 
     NavDisplay(
         backStack = backStack,
-        entryProvider = entryProvider {
-            entry<LyricsPage> {
-                DisposableEffect(Unit) {
-                    updateSystemBars(context, show = !lyricsState.fullscreen)
-                    onDispose { updateSystemBars(context, show = true) }
+        entryProvider =
+            entryProvider {
+                entry<LyricsPage> {
+                    DisposableEffect(Unit) {
+                        updateSystemBars(context, show = !lyricsState.fullscreen)
+                        onDispose { updateSystemBars(context, show = true) }
+                    }
+
+                    LyricsPage(
+                        onNavigateToCustomisations = { backStack.add(LyricsCustomisations) },
+                        onShare = onShare,
+                        action = lyricsAction,
+                        state = lyricsState,
+                        playbackInfo = playbackInfo,
+                        notificationAccess = notificationAccess,
+                        waveData = waveData,
+                    )
                 }
 
-                LyricsPage(
-                    onNavigateToCustomisations = { backStack.add(LyricsCustomisations) },
-                    onShare = onShare,
-                    action = lyricsAction,
-                    state = lyricsState,
-                    playbackInfo = playbackInfo,
-                    notificationAccess = notificationAccess,
-                    waveData = waveData,
-                )
-            }
-
-            entry<LyricsCustomisations> {
-                LyricsCustomisationsPage(
-                    state = lyricsState,
-                    onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
-                    onAction = lyricsAction,
-                    modifier = Modifier.widthIn(max = 700.dp),
-                    notificationAccess = notificationAccess,
-                    microphonePermission = microphonePermission.status.isGranted,
-                    requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
-                    waveData = waveData,
-                )
-            }
-        }
+                entry<LyricsCustomisations>(metadata = horizontalTransitionMetadata()) {
+                    LyricsCustomisationsPage(
+                        state = lyricsState,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onAction = lyricsAction,
+                        modifier = Modifier.widthIn(max = 700.dp),
+                        notificationAccess = notificationAccess,
+                        microphonePermission = microphonePermission.status.isGranted,
+                        requestMicrophonePermission = {
+                            microphonePermission.launchPermissionRequest()
+                        },
+                        waveData = waveData,
+                    )
+                }
+            },
     )
 }
 
