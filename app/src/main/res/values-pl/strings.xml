@@ -147,8 +147,8 @@
     <string name="audio_permission_info">To tło wizualizuje obecnie grającą piosenkę</string>
     <string name="curve">Krzywa</string>
     <string name="copy_error">Błąd kopiowania</string>
-    <string name="line_synced_lyrics">Zsynchronizowany wierszami</string>
-    <string name="syllable_synced_lyrics">Zsynchronizowany sylabami</string>
+    <string name="line_synced_lyrics">Zsynchronizowane wierszami</string>
+    <string name="syllable_synced_lyrics">Zsynchronizowane sylabami</string>
     <string name="changelog">Lista zmian</string>
     <string name="looks">Wygląd</string>
     <string name="show_app_branding">Pokazuj wizerunek marki</string>
