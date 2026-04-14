@@ -136,13 +136,13 @@ fun SyllableSyncedLyrics(
                     targetValue =
                         if (!state.blurSyncedLyrics) 0.dp
                         else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
 
             val scale by
                 animateFloatAsState(
                     targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                 )
 
             val textColor by
@@ -152,7 +152,7 @@ fun SyllableSyncedLyrics(
                             (line.startTime * 1000).toLong() <= currentTime -> cardContent
                             else -> cardContent.copy(0.3f)
                         },
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                     label = "textColor",
                 )
 
@@ -232,7 +232,7 @@ fun SyllableLine(
                         val animatedWordProgress by
                             animateFloatAsState(
                                 targetValue = wordProgress,
-                                animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                                 label = "wordProgress",
                             )
 
@@ -241,10 +241,13 @@ fun SyllableLine(
                         val wordScale by
                             animateFloatAsState(
                                 targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-                                animationSpec = spring(),
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                             )
                         val glowAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
+                            animateFloatAsState(
+                                targetValue = if (isHighlighted) 2f else 0f,
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                            )
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(

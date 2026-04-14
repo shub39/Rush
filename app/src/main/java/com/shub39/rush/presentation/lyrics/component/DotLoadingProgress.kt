@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,14 +54,14 @@ fun DotLoadingProgress(progress: Float, modifier: Modifier = Modifier, color: Co
             val animatedScale by
                 animateFloatAsState(
                     targetValue = lerp(1f, 1.8f, dotProgress),
-                    animationSpec = tween(300, easing = LinearEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                     label = "dotScale",
                 )
 
             val animatedAlpha by
                 animateFloatAsState(
                     targetValue = lerp(0.3f, color.alpha, dotProgress),
-                    animationSpec = tween(300, easing = LinearEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                     label = "dotAlpha",
                 )
 
