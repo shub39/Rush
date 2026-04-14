@@ -75,7 +75,7 @@ fun App() {
 
     val backStack = rememberNavBackStack(SavedPage)
     val context = LocalContext.current
-
+    
     LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context)) }
 
     LaunchedEffect(globalState.onBoardingDone, globalState.showPaywall) {

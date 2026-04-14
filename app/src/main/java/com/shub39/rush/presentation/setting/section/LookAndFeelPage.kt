@@ -16,9 +16,9 @@
  */
 package com.shub39.rush.presentation.setting.section
 
-import android.R.color.system_accent1_200
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -91,6 +91,8 @@ import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toMPaletteStyle
 import com.shub39.rush.presentation.toStringRes
+import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -125,7 +127,9 @@ fun LookAndFeelPage(
             )
         },
         modifier =
-            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
+            Modifier
+                .nestedScroll(scrollBehaviour.nestedScrollConnection)
+                .widthIn(max = 700.dp),
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -169,7 +173,8 @@ fun LookAndFeelPage(
                             horizontalArrangement =
                                 Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                             modifier =
-                                Modifier.fillParentMaxWidth()
+                                Modifier
+                                    .fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                         ) {
@@ -219,7 +224,9 @@ fun LookAndFeelPage(
                     if (!isProUser) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillParentMaxWidth().height(60.dp),
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(60.dp),
                         ) {
                             LinearWavyProgressIndicator(
                                 progress = { 0.90f },
@@ -250,7 +257,8 @@ fun LookAndFeelPage(
 
                         FlowRow(
                             modifier =
-                                Modifier.fillParentMaxWidth()
+                                Modifier
+                                    .fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -324,6 +332,16 @@ fun LookAndFeelPage(
                             headlineContent = {
                                 Text(text = stringResource(R.string.palette_style))
                             },
+                            supportingContent = {
+                                Text(
+                                    text = state.theme.style.toString().lowercase()
+                                        .replaceFirstChar {
+                                            if (it.isLowerCase()) it.titlecase(
+                                                LocalLocale.current.platformLocale
+                                            ) else it.toString()
+                                        }
+                                )
+                            },
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -336,7 +354,8 @@ fun LookAndFeelPage(
                         FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier =
-                                Modifier.fillParentMaxWidth()
+                                Modifier
+                                    .fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -347,9 +366,9 @@ fun LookAndFeelPage(
                                         primary =
                                             if (
                                                 state.theme.materialTheme &&
-                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                                             ) {
-                                                colorResource(system_accent1_200)
+                                                colorResource(android.R.color.system_accent1_900)
                                             } else Color(state.theme.seedColor),
                                         isDark =
                                             when (state.theme.appTheme) {
@@ -364,7 +383,8 @@ fun LookAndFeelPage(
 
                                 Box(
                                     modifier =
-                                        Modifier.size(50.dp)
+                                        Modifier
+                                            .size(50.dp)
                                             .clip(
                                                 if (selected) MaterialShapes.VerySunny.toShape()
                                                 else CircleShape
@@ -374,32 +394,36 @@ fun LookAndFeelPage(
                                             },
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    Column(modifier = Modifier.matchParentSize()) {
-                                        Row {
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.primary)
+                                    Canvas(modifier = Modifier.matchParentSize()) {
+                                        val colors =
+                                            listOf(
+                                                scheme.primary,
+                                                scheme.primaryContainer,
+                                                scheme.secondary,
+                                                scheme.secondaryContainer,
+                                                scheme.tertiary,
+                                                scheme.tertiaryContainer,
                                             )
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.tertiary)
-                                            )
-                                        }
-                                        Row {
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.secondary)
-                                            )
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.onSurface)
+                                        val sweepAngle = 360f / colors.size
+                                        colors.forEachIndexed { index, color ->
+                                            drawArc(
+                                                color = color,
+                                                startAngle = index * sweepAngle,
+                                                sweepAngle = sweepAngle,
+                                                useCenter = true,
                                             )
                                         }
                                     }
+
+                                    Box(
+                                        modifier = Modifier
+                                            .matchParentSize()
+                                            .background(
+                                                color = scheme.primary.copy(
+                                                    alpha = if (selected) 0.7f else 0f
+                                                )
+                                            )
+                                    )
 
                                     if (selected) {
                                         Icon(

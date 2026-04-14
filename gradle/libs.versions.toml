@@ -1,8 +1,8 @@
 [versions]
-agp = "9.1.0"
+agp = "9.1.1"
 minSdk = "24"
-targetSdk = "36"
-compileSdk = "36"
+targetSdk = "37"
+compileSdk = "37"
 accompanist = "0.37.3"
 colorpicker = "1.1.3"
 filekit = "0.13.0"
