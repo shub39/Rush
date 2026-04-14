@@ -23,13 +23,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -43,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
@@ -73,14 +70,12 @@ fun AboutApp() {
                 painter = painterResource(R.drawable.app_icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
-                modifier = Modifier.matchParentSize().offset(x = (-120).dp, y = (-90).dp)
+                modifier = Modifier.matchParentSize().offset(x = (-120).dp, y = (-90).dp),
             )
 
             Column {
                 Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -88,7 +83,9 @@ fun AboutApp() {
                         Text(
                             text = stringResource(R.string.app_name),
                             style =
-                                MaterialTheme.typography.headlineLarge.copy(fontFamily = flexFontRounded()),
+                                MaterialTheme.typography.headlineLarge.copy(
+                                    fontFamily = flexFontRounded()
+                                ),
                         )
                         Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
                     }
@@ -96,7 +93,9 @@ fun AboutApp() {
                     Spacer(modifier = Modifier.weight(1f))
 
                     Row {
-                        IconButton(onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }) {
+                        IconButton(
+                            onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.discord),
                                 contentDescription = "Discord",
@@ -104,7 +103,9 @@ fun AboutApp() {
                             )
                         }
 
-                        IconButton(onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }) {
+                        IconButton(
+                            onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.github),
                                 contentDescription = "Github",
@@ -120,8 +121,7 @@ fun AboutApp() {
                 ) {
                     Row(
                         modifier =
-                            Modifier
-                                .background(
+                            Modifier.background(
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = leadingItemShape(),
                                 )
@@ -129,9 +129,7 @@ fun AboutApp() {
                                 .clickable { uriHandler.openUri("https://buymeacoffee.com/shub39") }
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -152,18 +150,17 @@ fun AboutApp() {
 
                     Row(
                         modifier =
-                            Modifier
-                                .background(
+                            Modifier.background(
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = middleItemShape(),
                                 )
                                 .clip(middleItemShape())
-                                .clickable { uriHandler.openUri("https://hosted.weblate.org/engage/rush/") }
+                                .clickable {
+                                    uriHandler.openUri("https://hosted.weblate.org/engage/rush/")
+                                }
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -184,8 +181,7 @@ fun AboutApp() {
 
                     Row(
                         modifier =
-                            Modifier
-                                .background(
+                            Modifier.background(
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = endItemShape(),
                                 )
@@ -197,9 +193,7 @@ fun AboutApp() {
                                 }
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -226,7 +220,5 @@ fun AboutApp() {
 @PreviewLightDark
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme()) {
-        AboutApp()
-    }
+    RushTheme(theme = Theme()) { AboutApp() }
 }

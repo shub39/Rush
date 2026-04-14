@@ -67,6 +67,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -91,8 +92,6 @@ import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toMPaletteStyle
 import com.shub39.rush.presentation.toStringRes
-import java.util.Locale
-import androidx.compose.ui.platform.LocalLocale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -127,9 +126,7 @@ fun LookAndFeelPage(
             )
         },
         modifier =
-            Modifier
-                .nestedScroll(scrollBehaviour.nestedScrollConnection)
-                .widthIn(max = 700.dp),
+            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -173,8 +170,7 @@ fun LookAndFeelPage(
                             horizontalArrangement =
                                 Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                             modifier =
-                                Modifier
-                                    .fillParentMaxWidth()
+                                Modifier.fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                         ) {
@@ -224,9 +220,7 @@ fun LookAndFeelPage(
                     if (!isProUser) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(60.dp),
+                            modifier = Modifier.fillParentMaxWidth().height(60.dp),
                         ) {
                             LinearWavyProgressIndicator(
                                 progress = { 0.90f },
@@ -257,8 +251,7 @@ fun LookAndFeelPage(
 
                         FlowRow(
                             modifier =
-                                Modifier
-                                    .fillParentMaxWidth()
+                                Modifier.fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -334,11 +327,11 @@ fun LookAndFeelPage(
                             },
                             supportingContent = {
                                 Text(
-                                    text = state.theme.style.toString().lowercase()
-                                        .replaceFirstChar {
-                                            if (it.isLowerCase()) it.titlecase(
-                                                LocalLocale.current.platformLocale
-                                            ) else it.toString()
+                                    text =
+                                        state.theme.style.toString().lowercase().replaceFirstChar {
+                                            if (it.isLowerCase())
+                                                it.titlecase(LocalLocale.current.platformLocale)
+                                            else it.toString()
                                         }
                                 )
                             },
@@ -354,8 +347,7 @@ fun LookAndFeelPage(
                         FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier =
-                                Modifier
-                                    .fillParentMaxWidth()
+                                Modifier.fillParentMaxWidth()
                                     .background(listItemColors().containerColor)
                                     .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -366,7 +358,7 @@ fun LookAndFeelPage(
                                         primary =
                                             if (
                                                 state.theme.materialTheme &&
-                                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                                             ) {
                                                 colorResource(android.R.color.system_accent1_900)
                                             } else Color(state.theme.seedColor),
@@ -383,8 +375,7 @@ fun LookAndFeelPage(
 
                                 Box(
                                     modifier =
-                                        Modifier
-                                            .size(50.dp)
+                                        Modifier.size(50.dp)
                                             .clip(
                                                 if (selected) MaterialShapes.VerySunny.toShape()
                                                 else CircleShape
@@ -416,13 +407,14 @@ fun LookAndFeelPage(
                                     }
 
                                     Box(
-                                        modifier = Modifier
-                                            .matchParentSize()
-                                            .background(
-                                                color = scheme.primary.copy(
-                                                    alpha = if (selected) 0.7f else 0f
+                                        modifier =
+                                            Modifier.matchParentSize()
+                                                .background(
+                                                    color =
+                                                        scheme.primary.copy(
+                                                            alpha = if (selected) 0.7f else 0f
+                                                        )
                                                 )
-                                            )
                                     )
 
                                     if (selected) {

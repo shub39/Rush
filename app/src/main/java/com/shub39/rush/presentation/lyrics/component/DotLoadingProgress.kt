@@ -16,18 +16,13 @@
  */
 package com.shub39.rush.presentation.lyrics.component
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,43 +31,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 
 @Composable
-fun DotLoadingProgress(progress: Float, modifier: Modifier = Modifier, color: Color = Color.White) {
-    val clampedProgress = progress.coerceIn(0f, 1f)
-
+fun DotLoadingProgress(
+    progress: () -> Float,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+) {
     val dotCount = 3
     val dotSpacing = 16.dp
-
-    val dotProgresses =
-        List(dotCount) { index -> ((clampedProgress - (index * 0.15f)) * 1.4f).coerceIn(0f, 1f) }
 
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(dotSpacing),
     ) {
-        dotProgresses.forEach { dotProgress ->
-            val animatedScale by
-                animateFloatAsState(
-                    targetValue = lerp(1f, 1.8f, dotProgress),
-                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                    label = "dotScale",
-                )
-
-            val animatedAlpha by
-                animateFloatAsState(
-                    targetValue = lerp(0.3f, color.alpha, dotProgress),
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "dotAlpha",
-                )
-
+        repeat(dotCount) { index ->
             Box(
                 modifier =
                     Modifier.size(8.dp)
                         .graphicsLayer {
-                            scaleX = animatedScale
-                            scaleY = animatedScale
+                            val currentProgress = progress().coerceIn(0f, 1f)
+                            // Calculate per-dot progress based on the master progress
+                            val dotProgress =
+                                ((currentProgress - (index * 0.15f)) * 1.4f).coerceIn(0f, 1f)
+
+                            val scale = lerp(1f, 1.8f, dotProgress)
+                            scaleX = scale
+                            scaleY = scale
+                            alpha = lerp(0.3f, 1f, dotProgress)
                         }
-                        .background(color.copy(alpha = animatedAlpha), shape = CircleShape)
+                        .background(color, shape = CircleShape)
             )
         }
     }

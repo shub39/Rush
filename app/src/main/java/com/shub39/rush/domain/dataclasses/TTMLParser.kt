@@ -169,7 +169,22 @@ object TTMLParser {
             return emptyList()
         }
 
-        return lines
+        return buildList {
+            if (lines.firstOrNull()?.let { it.startTime > 5.0 } == true) {
+                add(ParsedLine(text = "", startTime = 0.0, words = emptyList()))
+            }
+            lines.forEachIndexed { index, line ->
+                add(line)
+                val nextLine = lines.getOrNull(index + 1)
+                if (nextLine != null) {
+                    val currentLineEnd = line.words.lastOrNull()?.endTime ?: line.startTime
+                    val nextLineStart = nextLine.startTime
+                    if (nextLineStart - currentLineEnd > 5.0) {
+                        add(ParsedLine(text = "", startTime = currentLineEnd, words = emptyList()))
+                    }
+                }
+            }
+        }
     }
 
     private fun parseBackgroundSpan(span: Element, parentStartTime: Double): ParsedLine? {

@@ -43,25 +43,28 @@ import com.shub39.rush.presentation.toMPaletteStyle
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
-    val dynamicColorScheme = rememberDynamicColorScheme(
-        seedColor = if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-            colorResource(android.R.color.system_accent1_900)
-        } else {
-            Color(theme.seedColor)
-        },
-        isDark =  when (theme.appTheme) {
-            AppTheme.SYSTEM -> isSystemInDarkTheme()
-            AppTheme.LIGHT -> false
-            AppTheme.DARK -> true
-        },
-        isAmoled = theme.withAmoled,
-        style = theme.style.toMPaletteStyle(),
-    )
+    val dynamicColorScheme =
+        rememberDynamicColorScheme(
+            seedColor =
+                if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+                    colorResource(android.R.color.system_accent1_900)
+                } else {
+                    Color(theme.seedColor)
+                },
+            isDark =
+                when (theme.appTheme) {
+                    AppTheme.SYSTEM -> isSystemInDarkTheme()
+                    AppTheme.LIGHT -> false
+                    AppTheme.DARK -> true
+                },
+            isAmoled = theme.withAmoled,
+            style = theme.style.toMPaletteStyle(),
+        )
 
     MaterialExpressiveTheme(
         colorScheme = dynamicColorScheme,
         motionScheme = MotionScheme.expressive(),
         typography = provideTypography(theme.font.toFontRes()),
-        content = content
-    ) 
+        content = content,
+    )
 }

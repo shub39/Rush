@@ -291,7 +291,7 @@ fun SyncedLyric(
                 }
             } else {
                 DotLoadingProgress(
-                    progress = animatedProgress,
+                    progress = { animatedProgress },
                     color = textColor,
                     modifier = Modifier.padding(12.dp),
                 )
