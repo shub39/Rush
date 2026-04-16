@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.8.0
+- Added Expressive motion scheme to animations
+- Updated Translations
+
 ## 5.7.3
 - Improved App Navigation Experience
 
