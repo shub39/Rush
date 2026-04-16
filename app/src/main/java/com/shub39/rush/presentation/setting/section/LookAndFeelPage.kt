@@ -18,6 +18,8 @@ package com.shub39.rush.presentation.setting.section
 
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -46,6 +48,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -291,7 +294,11 @@ fun LookAndFeelPage(
                         modifier = Modifier.clip(middleItemShape()),
                     )
 
-                    AnimatedVisibility(visible = !state.theme.materialTheme) {
+                    AnimatedVisibility(
+                        visible = !state.theme.materialTheme,
+                        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+                    ) {
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.seed_color)) },
                             supportingContent = {

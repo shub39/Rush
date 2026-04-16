@@ -17,6 +17,8 @@
 package com.shub39.rush.presentation.lyrics.component.customisation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -97,6 +99,8 @@ fun LazyListScope.lyricsCustomisationSettings(
             AnimatedVisibility(
                 visible = isShowingSynced && blurAvailable(),
                 modifier = Modifier.fillMaxWidth(),
+                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
             ) {
                 ListItem(
                     colors = listItemColors(),
@@ -123,6 +127,8 @@ fun LazyListScope.lyricsCustomisationSettings(
                 AnimatedVisibility(
                     visible = state.cardColors == CardColors.CUSTOM,
                     modifier = Modifier.fillMaxWidth(),
+                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
