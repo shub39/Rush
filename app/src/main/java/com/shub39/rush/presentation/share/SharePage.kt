@@ -196,7 +196,7 @@ private fun SharePageContent(
                     CornerRadius.ROUNDED -> pxToDp(32)
                 },
             label = "corners",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
     val containerColor by
         animateColorAsState(
@@ -207,7 +207,7 @@ private fun SharePageContent(
                     CardColors.CUSTOM -> Color(state.cardBackground)
                 },
             label = "container",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
     val contentColor by
         animateColorAsState(
@@ -218,7 +218,7 @@ private fun SharePageContent(
                     CardColors.CUSTOM -> Color(state.cardContent)
                 },
             label = "content",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
     val cardColor =
         CardDefaults.cardColors(containerColor = containerColor, contentColor = contentColor)
@@ -426,7 +426,7 @@ private fun SharePageContent(
                 AnimatedVisibility(
                     visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART),
                     enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
                 ) {
                     IconButton(onClick = onLaunchImagePicker) {
                         Icon(

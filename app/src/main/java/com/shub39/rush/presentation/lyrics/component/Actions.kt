@@ -102,7 +102,7 @@ fun Actions(
     AnimatedVisibility(
         visible = state.selectedLines.isEmpty(),
         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
     ) {
         IconButton(
             onClick = {
@@ -142,7 +142,7 @@ fun Actions(
                 state.source == Sources.LRCLIB &&
                 notificationAccess,
         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
     ) {
         Row {
             IconButton(
@@ -181,7 +181,7 @@ fun Actions(
     AnimatedVisibility(
         visible = notificationAccess,
         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
     ) {
         IconButton(
             onClick = { action(LyricsPageAction.OnToggleAutoChange) },
@@ -218,7 +218,7 @@ fun Actions(
     AnimatedVisibility(
         visible = state.selectedLines.isNotEmpty(),
         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
     ) {
         IconButton(
             onClick = {
@@ -246,7 +246,7 @@ fun Actions(
     AnimatedVisibility(
         visible = state.selectedLines.isNotEmpty(),
         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
     ) {
         IconButton(onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }) {
             Icon(painter = painterResource(R.drawable.close), contentDescription = null)

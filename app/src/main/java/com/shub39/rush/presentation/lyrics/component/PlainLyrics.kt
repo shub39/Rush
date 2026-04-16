@@ -107,7 +107,7 @@ fun PlainLyrics(
                                     else -> cardContent.copy(alpha = 0.3f)
                                 },
                             label = "container",
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                         )
 
                     PlainLyric(

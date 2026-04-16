@@ -100,7 +100,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 visible = isShowingSynced && blurAvailable(),
                 modifier = Modifier.fillMaxWidth(),
                 enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
             ) {
                 ListItem(
                     colors = listItemColors(),
@@ -128,7 +128,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     visible = state.cardColors == CardColors.CUSTOM,
                     modifier = Modifier.fillMaxWidth(),
                     enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

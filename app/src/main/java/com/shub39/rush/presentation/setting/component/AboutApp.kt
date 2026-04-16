@@ -19,12 +19,10 @@ package com.shub39.rush.presentation.setting.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,151 +63,138 @@ fun AboutApp() {
             ),
         shape = MaterialTheme.shapes.extraLarge,
     ) {
-        Box {
-            Icon(
-                painter = painterResource(R.drawable.app_icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
-                modifier = Modifier.matchParentSize().offset(x = (-120).dp, y = (-90).dp),
-            )
+        Column {
+            Row(
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        style =
+                            MaterialTheme.typography.headlineLarge.copy(
+                                fontFamily = flexFontRounded()
+                            ),
+                    )
+                    Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+                }
 
-            Column {
-                Row(
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.app_name),
-                            style =
-                                MaterialTheme.typography.headlineLarge.copy(
-                                    fontFamily = flexFontRounded()
-                                ),
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row {
+                    IconButton(onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }) {
+                        Icon(
+                            painter = painterResource(R.drawable.discord),
+                            contentDescription = "Discord",
+                            modifier = Modifier.size(24.dp),
                         )
-                        Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }) {
+                        Icon(
+                            painter = painterResource(R.drawable.github),
+                            contentDescription = "Github",
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                }
+            }
 
-                    Row {
-                        IconButton(
-                            onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.discord),
-                                contentDescription = "Discord",
-                                modifier = Modifier.size(24.dp),
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Row(
+                    modifier =
+                        Modifier.background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = leadingItemShape(),
                             )
-                        }
-
-                        IconButton(
-                            onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.github),
-                                contentDescription = "Github",
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
+                            .clip(leadingItemShape())
+                            .clickable { uriHandler.openUri("https://buymeacoffee.com/shub39") }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.buymeacoffee),
+                            contentDescription = "Buy me a coffee",
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.bmc),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontFamily = flexFontRounded(),
+                        )
                     }
                 }
 
-                Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                Row(
+                    modifier =
+                        Modifier.background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = middleItemShape(),
+                            )
+                            .clip(middleItemShape())
+                            .clickable {
+                                uriHandler.openUri("https://hosted.weblate.org/engage/rush/")
+                            }
                 ) {
                     Row(
-                        modifier =
-                            Modifier.background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = leadingItemShape(),
-                                )
-                                .clip(leadingItemShape())
-                                .clickable { uriHandler.openUri("https://buymeacoffee.com/shub39") }
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.buymeacoffee),
-                                contentDescription = "Buy me a coffee",
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.bmc),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontFamily = flexFontRounded(),
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.language),
+                            contentDescription = "Translate",
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.translate),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontFamily = flexFontRounded(),
+                        )
                     }
+                }
 
-                    Row(
-                        modifier =
-                            Modifier.background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = middleItemShape(),
+                Row(
+                    modifier =
+                        Modifier.background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = endItemShape(),
+                            )
+                            .clip(endItemShape())
+                            .clickable {
+                                uriHandler.openUri(
+                                    "https://play.google.com/store/apps/details?id=com.shub39.rush.play"
                                 )
-                                .clip(middleItemShape())
-                                .clickable {
-                                    uriHandler.openUri("https://hosted.weblate.org/engage/rush/")
-                                }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.language),
-                                contentDescription = "Translate",
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.translate),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontFamily = flexFontRounded(),
-                            )
-                        }
-                    }
-
+                            }
+                ) {
                     Row(
-                        modifier =
-                            Modifier.background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = endItemShape(),
-                                )
-                                .clip(endItemShape())
-                                .clickable {
-                                    uriHandler.openUri(
-                                        "https://play.google.com/store/apps/details?id=com.shub39.rush.play"
-                                    )
-                                }
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.play_store),
-                                contentDescription = "Rate On Google Play",
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.rate_on_play),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontFamily = flexFontRounded(),
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.play_store),
+                            contentDescription = "Rate On Google Play",
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.rate_on_play),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontFamily = flexFontRounded(),
+                        )
                     }
                 }
             }

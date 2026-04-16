@@ -297,7 +297,7 @@ fun LookAndFeelPage(
                     AnimatedVisibility(
                         visible = !state.theme.materialTheme,
                         enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
+                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
                     ) {
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.seed_color)) },

@@ -121,88 +121,88 @@ fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
 @Composable
 fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
     val hypnoticColor1 by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.CUSTOM -> Color(state.mCardBackground)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            }.lighten(2f),
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "hypnotic color 1",
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                }.lighten(2f),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "hypnotic color 1",
+        )
     val hypnoticColor2 by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.CUSTOM -> Color(state.mCardBackground)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            }.darken(2f),
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "hypnotic color 2",
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                }.darken(2f),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "hypnotic color 2",
+        )
     return Pair(hypnoticColor1, hypnoticColor2)
 }
 
 @Composable
 fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
     val cardBackground by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.CUSTOM -> Color(state.mCardBackground)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-            },
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "cardBackground",
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "cardBackground",
+        )
     val cardContent by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                CardColors.CUSTOM -> Color(state.mCardContent)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-            },
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "cardContent",
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
+                    CardColors.CUSTOM -> Color(state.mCardContent)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "cardContent",
+        )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
 }
 
 @Composable
 fun getWaveColors(state: LyricsPageState): WaveColors {
     val cardBackground by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-                CardColors.CUSTOM -> Color(state.mCardBackground)
-            },
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        )
     val cardWaveBackground by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED ->
-                    Color(state.extractedColors.cardBackgroundMuted)
-                        .blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f)
-                        .darken(1.5f)
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED ->
+                        Color(state.extractedColors.cardBackgroundMuted)
+                            .blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f)
+                            .darken(1.5f)
 
-                CardColors.VIBRANT ->
-                    Color(state.extractedColors.cardBackgroundDominant)
-                        .blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f)
-                        .lighten(1.5f)
+                    CardColors.VIBRANT ->
+                        Color(state.extractedColors.cardBackgroundDominant)
+                            .blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f)
+                            .lighten(1.5f)
 
-                CardColors.CUSTOM ->
-                    Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
-            },
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-    )
+                    CardColors.CUSTOM ->
+                        Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        )
 
     return WaveColors(
         cardBackground = cardBackground.toArgb(),
@@ -238,15 +238,11 @@ fun BoxScope.ApplyLyricsBackground(
 ) {
     when (background) {
         LyricsBackground.ALBUM_ART -> {
-            ArtFromUrl(imageUrl = artUrl, modifier = Modifier
-                .blur(80.dp)
-                .matchParentSize())
+            ArtFromUrl(imageUrl = artUrl, modifier = Modifier.blur(80.dp).matchParentSize())
 
             Box(
                 modifier =
-                    Modifier
-                        .matchParentSize()
-                        .background(color = cardBackground.copy(alpha = 0.5f))
+                    Modifier.matchParentSize().background(color = cardBackground.copy(alpha = 0.5f))
             )
         }
 
@@ -274,9 +270,7 @@ fun BoxScope.ApplyLyricsBackground(
         }
 
         LyricsBackground.SOLID_COLOR -> {
-            Box(modifier = Modifier
-                .matchParentSize()
-                .background(cardBackground))
+            Box(modifier = Modifier.matchParentSize().background(cardBackground))
         }
 
         LyricsBackground.CURVE -> {

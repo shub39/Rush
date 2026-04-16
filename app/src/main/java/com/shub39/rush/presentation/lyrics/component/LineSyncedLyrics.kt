@@ -75,9 +75,9 @@ import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
+import kotlin.math.abs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -247,12 +247,12 @@ fun SyncedLyric(
                         val wordAlpha by
                             animateFloatAsState(
                                 targetValue = if (isHighlightedWord) 1f else 0f,
-                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                             )
                         val glowAlpha by
                             animateFloatAsState(
                                 targetValue = if (isHighlightedWord) 5f else 0f,
-                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                             )
                         val wordScale by
                             animateFloatAsState(
