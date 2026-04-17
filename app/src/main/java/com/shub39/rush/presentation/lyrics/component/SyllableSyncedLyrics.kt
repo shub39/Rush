@@ -17,10 +17,8 @@
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -143,7 +141,7 @@ fun SyllableSyncedLyrics(
             val animatedProgress by
                 animateFloatAsState(
                     targetValue = progress,
-                    animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                     label = "loadingProgress",
                 )
 

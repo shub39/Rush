@@ -16,10 +16,7 @@
  */
 package com.shub39.rush.presentation
 
-import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -32,28 +29,28 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Modifier.simpleVerticalScrollbar(state: LazyListState, width: Dp = 4.dp): Modifier {
 
     val targetAlpha = if (state.isScrollInProgress) .7f else 0f
-    val duration = if (state.isScrollInProgress) 150 else 1000
 
     val alpha by
         animateFloatAsState(
             targetValue = targetAlpha,
-            animationSpec = tween(durationMillis = duration),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
 
     val firstIndex by
         animateFloatAsState(
             targetValue = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = StiffnessMediumLow),
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         )
 
     val lastIndex by
         animateFloatAsState(
             targetValue = state.layoutInfo.visibleItemsInfo.lastOrNull()?.index?.toFloat() ?: 0f,
-            animationSpec = spring(stiffness = StiffnessMediumLow),
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         )
 
     val color = MaterialTheme.colorScheme.tertiary
