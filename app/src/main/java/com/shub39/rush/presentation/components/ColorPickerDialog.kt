@@ -72,7 +72,7 @@ fun ColorPickerDialog(
     ) {
         if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
             Column(
-                modifier = Modifier.wrapContentSize().padding(16.dp),
+                modifier = Modifier.wrapContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {

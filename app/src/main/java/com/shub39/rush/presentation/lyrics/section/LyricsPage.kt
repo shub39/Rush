@@ -127,7 +127,11 @@ fun LyricsPage(
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
     val waveColors = getWaveColors(state)
 
-    val glowMultiplier by animateFloatAsState(calculateGlowMultiplier(waveData))
+    val glowMultiplier by
+        animateFloatAsState(
+            targetValue = calculateGlowMultiplier(waveData),
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+        )
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
@@ -425,8 +429,8 @@ fun LyricsPage(
             AnimatedVisibility(
                 visible = state.autoChange,
                 modifier = Modifier.widthIn(max = 150.dp),
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()),
+                exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()),
             ) {
                 AnimatedContent(targetState = state.searchState) {
                     when (it) {
@@ -491,7 +495,11 @@ fun LyricsPage(
                 }
             }
 
-            AnimatedVisibility(visible = state.sync, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(
+                visible = state.sync,
+                enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()),
+                exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()),
+            ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically,

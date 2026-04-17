@@ -16,9 +16,11 @@
  */
 package com.shub39.rush.presentation.setting.section
 
-import android.R.color.system_accent1_200
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -46,6 +48,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -67,6 +70,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -290,7 +294,11 @@ fun LookAndFeelPage(
                         modifier = Modifier.clip(middleItemShape()),
                     )
 
-                    AnimatedVisibility(visible = !state.theme.materialTheme) {
+                    AnimatedVisibility(
+                        visible = !state.theme.materialTheme,
+                        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+                    ) {
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.seed_color)) },
                             supportingContent = {
@@ -324,6 +332,16 @@ fun LookAndFeelPage(
                             headlineContent = {
                                 Text(text = stringResource(R.string.palette_style))
                             },
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        state.theme.style.toString().lowercase().replaceFirstChar {
+                                            if (it.isLowerCase())
+                                                it.titlecase(LocalLocale.current.platformLocale)
+                                            else it.toString()
+                                        }
+                                )
+                            },
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -349,7 +367,7 @@ fun LookAndFeelPage(
                                                 state.theme.materialTheme &&
                                                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                                             ) {
-                                                colorResource(system_accent1_200)
+                                                colorResource(android.R.color.system_accent1_900)
                                             } else Color(state.theme.seedColor),
                                         isDark =
                                             when (state.theme.appTheme) {
@@ -374,32 +392,37 @@ fun LookAndFeelPage(
                                             },
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    Column(modifier = Modifier.matchParentSize()) {
-                                        Row {
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.primary)
+                                    Canvas(modifier = Modifier.matchParentSize()) {
+                                        val colors =
+                                            listOf(
+                                                scheme.primary,
+                                                scheme.primaryContainer,
+                                                scheme.secondary,
+                                                scheme.secondaryContainer,
+                                                scheme.tertiary,
+                                                scheme.tertiaryContainer,
                                             )
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.tertiary)
-                                            )
-                                        }
-                                        Row {
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.secondary)
-                                            )
-                                            Box(
-                                                modifier =
-                                                    Modifier.size(25.dp)
-                                                        .background(color = scheme.onSurface)
+                                        val sweepAngle = 360f / colors.size
+                                        colors.forEachIndexed { index, color ->
+                                            drawArc(
+                                                color = color,
+                                                startAngle = index * sweepAngle,
+                                                sweepAngle = sweepAngle,
+                                                useCenter = true,
                                             )
                                         }
                                     }
+
+                                    Box(
+                                        modifier =
+                                            Modifier.matchParentSize()
+                                                .background(
+                                                    color =
+                                                        scheme.primary.copy(
+                                                            alpha = if (selected) 0.7f else 0f
+                                                        )
+                                                )
+                                    )
 
                                     if (selected) {
                                         Icon(

@@ -17,12 +17,8 @@
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -98,6 +94,7 @@ fun SyllableSyncedLyrics(
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
+
     val currentPlayingIndex =
         ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
 
@@ -131,18 +128,42 @@ fun SyllableSyncedLyrics(
             val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
+            val nextTime = ttmlLyrics.getOrNull(index + 1)?.startTime
+            val progress =
+                nextTime?.let { nt ->
+                    val startTime = line.startTime
+                    val currentSecs = currentTime / 1000.0
+                    val denom = (nt - startTime).toFloat()
+                    if (denom <= 0f) 1f
+                    else ((currentSecs - startTime).toFloat() / denom).coerceIn(0f, 1f)
+                } ?: 1f
+
+            val animatedProgress by
+                animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "loadingProgress",
+                )
+
+            val underTextAlpha by
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "underTextAlpha",
+                )
+
             val blur by
                 animateDpAsState(
                     targetValue =
                         if (!state.blurSyncedLyrics) 0.dp
                         else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
 
             val scale by
                 animateFloatAsState(
                     targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                 )
 
             val textColor by
@@ -152,7 +173,7 @@ fun SyllableSyncedLyrics(
                             (line.startTime * 1000).toLong() <= currentTime -> cardContent
                             else -> cardContent.copy(0.3f)
                         },
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                     label = "textColor",
                 )
 
@@ -164,6 +185,9 @@ fun SyllableSyncedLyrics(
                 textColor = textColor,
                 scale = scale,
                 currentTime = currentTime,
+                animatedProgress = animatedProgress,
+                underTextAlpha = underTextAlpha,
+                isCurrent = isCurrent,
                 modifier =
                     Modifier.onGloballyPositioned { layoutCoordinates ->
                         val height = layoutCoordinates.size.height
@@ -183,6 +207,9 @@ fun SyllableLine(
     textColor: Color,
     scale: Float,
     currentTime: Long,
+    animatedProgress: Float,
+    underTextAlpha: Float,
+    isCurrent: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -232,7 +259,7 @@ fun SyllableLine(
                         val animatedWordProgress by
                             animateFloatAsState(
                                 targetValue = wordProgress,
-                                animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                                 label = "wordProgress",
                             )
 
@@ -241,16 +268,19 @@ fun SyllableLine(
                         val wordScale by
                             animateFloatAsState(
                                 targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-                                animationSpec = spring(),
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                             )
                         val glowAlpha by
-                            animateFloatAsState(targetValue = if (isHighlighted) 2f else 0f)
+                            animateFloatAsState(
+                                targetValue = if (isHighlighted) 2f else 0f,
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                            )
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
                             Text(
                                 text = word.text,
                                 fontWeight = FontWeight.Bold,
-                                color = textColor.copy(alpha = 0.2f),
+                                color = textColor.copy(alpha = underTextAlpha),
                                 fontSize = textPrefs.fontSize.sp,
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
@@ -304,16 +334,22 @@ fun SyllableLine(
                         }
                     }
                 }
-            } else {
+            } else if (line.text.isNotEmpty()) {
                 Text(
                     text = line.text,
                     fontWeight = FontWeight.Bold,
-                    color = textColor,
+                    color = if (isCurrent) textColor else textColor.copy(alpha = underTextAlpha),
                     fontSize = textPrefs.fontSize.sp,
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                     modifier = Modifier.padding(16.dp),
+                )
+            } else {
+                DotLoadingProgress(
+                    progress = { animatedProgress },
+                    color = textColor,
+                    modifier = Modifier.padding(12.dp),
                 )
             }
         }
@@ -338,27 +374,27 @@ fun SyllableSyncedLyricsPreview() {
             ),
             ParsedLine(
                 text = "Per-syllable highlight",
-                startTime = 3.0,
+                startTime = 6.0,
                 words =
                     listOf(
-                        ParsedWord("Per-", 3.0, 3.5),
-                        ParsedWord("syl-", 3.5, 4.0),
-                        ParsedWord("la-", 4.0, 4.5),
-                        ParsedWord("ble", 4.5, 5.0),
-                        ParsedWord("high-", 5.0, 5.5),
-                        ParsedWord("light", 5.5, 6.0),
+                        ParsedWord("Per-", 6.0, 6.5),
+                        ParsedWord("syl-", 6.5, 7.0),
+                        ParsedWord("la-", 7.0, 7.5),
+                        ParsedWord("ble", 7.5, 8.0),
+                        ParsedWord("high-", 8.0, 8.5),
+                        ParsedWord("light", 8.5, 9.0),
                     ),
             ),
             ParsedLine(
                 text = "Enjoy the music",
-                startTime = 7.0,
+                startTime = 10.0,
                 words =
                     listOf(
-                        ParsedWord("En-", 7.0, 7.5),
-                        ParsedWord("joy", 7.5, 8.0),
-                        ParsedWord("the", 8.0, 8.5),
-                        ParsedWord("mu-", 8.5, 9.0),
-                        ParsedWord("sic", 9.0, 10.0),
+                        ParsedWord("En-", 10.0, 10.5),
+                        ParsedWord("joy", 10.5, 11.0),
+                        ParsedWord("the", 11.0, 11.5),
+                        ParsedWord("mu-", 11.5, 12.0),
+                        ParsedWord("sic", 12.0, 13.0),
                     ),
             ),
         )
@@ -368,7 +404,7 @@ fun SyllableSyncedLyricsPreview() {
         val startTime = System.currentTimeMillis()
         while (true) {
             val elapsed = System.currentTimeMillis() - startTime
-            position = elapsed % 12000
+            position = elapsed % 15000
             delay(16)
         }
     }

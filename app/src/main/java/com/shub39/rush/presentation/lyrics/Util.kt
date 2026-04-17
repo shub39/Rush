@@ -21,6 +21,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -127,6 +128,7 @@ fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
                     CardColors.CUSTOM -> Color(state.mCardBackground)
                     CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 }.lighten(2f),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "hypnotic color 1",
         )
     val hypnoticColor2 by
@@ -137,6 +139,7 @@ fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
                     CardColors.CUSTOM -> Color(state.mCardBackground)
                     CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 }.darken(2f),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "hypnotic color 2",
         )
     return Pair(hypnoticColor1, hypnoticColor2)
@@ -152,6 +155,7 @@ fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
                     CardColors.CUSTOM -> Color(state.mCardBackground)
                     CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "cardBackground",
         )
     val cardContent by
@@ -162,6 +166,7 @@ fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
                     CardColors.CUSTOM -> Color(state.mCardContent)
                     CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
                 },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "cardContent",
         )
     return Pair(cardBackground.copy(alpha = 1f), cardContent.copy(alpha = 1f))
@@ -176,7 +181,8 @@ fun getWaveColors(state: LyricsPageState): WaveColors {
                     CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
                     CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                     CardColors.CUSTOM -> Color(state.mCardBackground)
-                }
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
     val cardWaveBackground by
         animateColorAsState(
@@ -186,13 +192,16 @@ fun getWaveColors(state: LyricsPageState): WaveColors {
                         Color(state.extractedColors.cardBackgroundMuted)
                             .blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f)
                             .darken(1.5f)
+
                     CardColors.VIBRANT ->
                         Color(state.extractedColors.cardBackgroundDominant)
                             .blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f)
                             .lighten(1.5f)
+
                     CardColors.CUSTOM ->
                         Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
-                }
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
 
     return WaveColors(

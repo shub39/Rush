@@ -17,13 +17,8 @@
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -144,13 +139,13 @@ fun LineSyncedLyrics(
             val animatedProgress by
                 animateFloatAsState(
                     targetValue = progress,
-                    animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
 
             val underTextAlpha by
                 animateFloatAsState(
                     targetValue = if (isCurrent) 0.5f else 0.2f,
-                    animationSpec = tween(500, easing = LinearEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
 
             val blur by
@@ -158,13 +153,13 @@ fun LineSyncedLyrics(
                     targetValue =
                         if (!state.blurSyncedLyrics) 0.dp
                         else (abs(lyricIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
 
             val scale by
                 animateFloatAsState(
                     targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = tween(100),
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                 )
 
             val textColor by
@@ -174,7 +169,7 @@ fun LineSyncedLyrics(
                             lyric.time <= playbackInfo.position -> cardContent
                             else -> cardContent.copy(0.3f)
                         },
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                     label = "textColor",
                 )
 
@@ -250,13 +245,19 @@ fun SyncedLyric(
 
                         val isHighlightedWord = currentWordIndex >= index && scale == 1f
                         val wordAlpha by
-                            animateFloatAsState(targetValue = if (isHighlightedWord) 1f else 0f)
+                            animateFloatAsState(
+                                targetValue = if (isHighlightedWord) 1f else 0f,
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                            )
                         val glowAlpha by
-                            animateFloatAsState(targetValue = if (isHighlightedWord) 5f else 0f)
+                            animateFloatAsState(
+                                targetValue = if (isHighlightedWord) 5f else 0f,
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                            )
                         val wordScale by
                             animateFloatAsState(
                                 targetValue = if (isHighlightedWord || scale != 1f) 1f else 0.98f,
-                                animationSpec = spring(),
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                             )
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
@@ -291,7 +292,7 @@ fun SyncedLyric(
                 }
             } else {
                 DotLoadingProgress(
-                    progress = animatedProgress,
+                    progress = { animatedProgress },
                     color = textColor,
                     modifier = Modifier.padding(12.dp),
                 )
