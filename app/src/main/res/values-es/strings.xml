@@ -7,7 +7,7 @@
     <string name="share">Compartir</string>
     <string name="vibrant_colors">Usar colores brillantes</string>
     <string name="save">Guardar cambios</string>
-    <string name="delete_confirmation">¿ Estás seguro que quieres eliminar todas las letras guardadas?</string>
+    <string name="delete_confirmation">¿Estás seguro que quieres eliminar todas las letras guardadas?</string>
     <string name="no_lyrics">No se pudo obtener la letra desde LRCLIB</string>
     <string name="suggestion">¿Ves el icono de búsqueda a continuación?</string>
     <string name="downloaded">Letras guardadas</string>
@@ -143,5 +143,13 @@
     <string name="audio_permission_info">Este fondo visualiza to cancion reproduciendo actualmente</string>
     <string name="curve">Curva</string>
     <string name="copy_error">Error de Copia</string>
-    <string name="not_found">Nl encontrado</string>
+    <string name="not_found">No encontrado</string>
+    <string name="line_synced_lyrics">Línea Sincronizada</string>
+    <string name="syllable_synced_lyrics">Sílaba Sincronizada</string>
+    <string name="changelog">Registro de Cambios</string>
+    <string name="whats_changed">¿Qué ha cambiado?</string>
+    <string name="looks">Apariencia</string>
+    <string name="text">Texto</string>
+    <string name="others">Otros</string>
+    <string name="show_app_branding">Mostrar Marca de la App</string>
 </resources>
