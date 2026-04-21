@@ -223,7 +223,7 @@ val generateChangelogJson by
                     append("    ]\n")
                     append("  }")
 
-                    if (index != map.entries.size - 1) append(",")
+                    if (index != 9) append(",")
                     append("\n")
                 }
 
