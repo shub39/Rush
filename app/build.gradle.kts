@@ -209,7 +209,7 @@ val generateChangelogJson by
             val json = buildString {
                 append("[\n")
 
-                map.entries.forEachIndexed { index, entry ->
+                map.entries.take(10).forEachIndexed { index, entry ->
                     append("  {\n")
                     append("    \"version\": \"${entry.key}\",\n")
                     append("    \"changes\": [\n")

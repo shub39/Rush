@@ -1,5 +1,11 @@
 [
   {
+    "version": "5.8.1",
+    "changes": [
+      "Miscellaneous updates and fixes"
+    ]
+  },
+  {
     "version": "5.8.0",
     "changes": [
       "Added Expressive motion scheme to animations",
