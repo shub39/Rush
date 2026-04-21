@@ -265,6 +265,7 @@ fun LookAndFeelPage(
                                     onCheckedChange = {
                                         onAction(SettingsPageAction.OnFontChange(font))
                                     },
+                                    enabled = isProUser,
                                     colors = ToggleButtonDefaults.tonalToggleButtonColors(),
                                 ) {
                                     Text(
@@ -387,7 +388,7 @@ fun LookAndFeelPage(
                                                 if (selected) MaterialShapes.VerySunny.toShape()
                                                 else CircleShape
                                             )
-                                            .clickable {
+                                            .clickable(enabled = isProUser) {
                                                 onAction(SettingsPageAction.OnPaletteChange(style))
                                             },
                                     contentAlignment = Alignment.Center,

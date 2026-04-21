@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.8.1
+- Miscellaneous updates and fixes
+
 ## 5.8.0
 - Added Expressive motion scheme to animations
 - Updated Translations

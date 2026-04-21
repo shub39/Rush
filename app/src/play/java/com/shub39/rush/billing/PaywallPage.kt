@@ -43,24 +43,9 @@ fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modi
             .build()
     }
 
-    Box(modifier = modifier) {
-        if (!isProUser) {
-            Paywall(paywallOptions)
-        } else {
-            CustomerCenter(onDismiss = onDismissRequest)
-        }
-
-        IconButton(
-            onClick = onDismissRequest,
-            colors =
-                IconButtonDefaults.iconButtonColors(
-                    contentColor = Color(0xFF282828),
-                    containerColor = Color(0xfff2e3b1),
-                ),
-            modifier =
-                Modifier.padding(vertical = 32.dp, horizontal = 16.dp).align(Alignment.TopEnd),
-        ) {
-            Icon(painter = painterResource(R.drawable.close), contentDescription = "Close")
-        }
+    if (!isProUser) {
+        Paywall(paywallOptions)
+    } else {
+        CustomerCenter(onDismiss = onDismissRequest)
     }
 }
