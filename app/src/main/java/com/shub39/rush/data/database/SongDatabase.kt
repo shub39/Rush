@@ -16,9 +16,9 @@
  */
 package com.shub39.rush.data.database
 
-import androidx.room.AutoMigration
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import androidx.room3.AutoMigration
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
 
 @Database(
     entities = [SongEntity::class],

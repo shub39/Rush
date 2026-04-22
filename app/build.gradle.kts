@@ -174,7 +174,7 @@ dependencies {
     implementation(libs.koin.annotations)
 }
 
-room { schemaDirectory("$projectDir/schemas") }
+room3 { schemaDirectory("$projectDir/schemas") }
 
 val generateChangelogJson by
     tasks.registering {
