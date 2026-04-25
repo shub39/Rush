@@ -94,6 +94,7 @@ fun LyricsCustomisationPreview(
                             textColor = cardContent,
                             animatedProgress = 1f,
                             scale = 0.8f,
+                            glowAlpha = 0.dp
                         )
                         SyncedLyric(
                             textPrefs = state.textPrefs,
@@ -104,6 +105,7 @@ fun LyricsCustomisationPreview(
                             textColor = cardContent,
                             animatedProgress = 0.5f,
                             scale = 1f,
+                            glowAlpha = 2.dp
                         )
                         SyncedLyric(
                             textPrefs = state.textPrefs,
@@ -114,6 +116,7 @@ fun LyricsCustomisationPreview(
                             textColor = cardContent,
                             animatedProgress = 0.5f,
                             scale = 0.8f,
+                            glowAlpha = 0.dp
                         )
                     } else {
                         PlainLyric(
