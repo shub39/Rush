@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="search">Wyszukaj tekstu piosenki</string>
+    <string name="search">Wyszukaj tekst piosenki</string>
     <string name="saved">Zapisane</string>
     <string name="settings">Ustawienia</string>
-    <string name="empty">Pusto tutaj...</string>
+    <string name="empty">Brak elementów</string>
     <string name="share">Udostępnij</string>
     <string name="vibrant_colors">Używaj żywych kolorów</string>
     <string name="save">Zapisz zmiany</string>
-    <string name="delete_confirmation">Czy masz pewność, że chcesz usunąć wszystkie zapisane teksty piosenek?</string>
+    <string name="delete_confirmation">Czy na pewno chcesz usunąć wszystkie zapisane teksty piosenek?</string>
     <string name="no_lyrics">Nie udało się zdobyć tekstu piosenki od LRCLIB</string>
     <string name="suggestion">Widzisz tą ikonę wyszukiwania poniżej?</string>
     <string name="downloaded">Zapisane teksty piosenek</string>
@@ -21,12 +21,12 @@
     <string name="grant_permission">Udziel Uprawnień</string>
     <string name="notification_permission">Dostęp do powiadomień jest wymagany do automatycznego zdobywania tekstów piosenek.</string>
     <string name="rounded_corners">Zaokrąglone rogi</string>
-    <string name="max_lines">Maksimum wierszy do udostępnienia</string>
+    <string name="max_lines">Maksymalna ilość wierszy do udostępnienia</string>
     <string name="theme">Motyw Aplikacji</string>
     <string name="sort_title_asc">Tytuł (od A do Z)</string>
     <string name="sort_title_desc">Tytuł (od Z do A)</string>
-    <string name="sort_artists_asc">Grupowane według wykonawcy</string>
-    <string name="sort_album_asc">Grupowane według albumu</string>
+    <string name="sort_artists_asc">Grupowanie według wykonawcy</string>
+    <string name="sort_album_asc">Grupowanie według albumu</string>
     <string name="batch_download">Masowe pobieranie tekstów piosenek</string>
     <string name="select_folder">Wybierz Folder</string>
     <string name="download">Pobierz</string>

@@ -27,6 +27,7 @@ import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.dataclasses.Song
+import com.shub39.rush.domain.dataclasses.TTMLParser
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 import com.shub39.rush.domain.interfaces.SongRepository
 import kotlin.time.Clock
@@ -74,7 +75,8 @@ class RushRepository(
                         sourceUrl = result.url,
                         artUrl = result.artUrl,
                         geniusLyrics = geniusLyrics,
-                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        syncedLyrics =
+                            lrcLibLyrics?.syncedLyrics ?: ttmlLyrics?.let { TTMLParser.toLRC(it) },
                         ttmlLyrics = ttmlLyrics,
                         dateAdded = Clock.System.now().epochSeconds,
                     )
@@ -138,7 +140,7 @@ class RushRepository(
 
         var searchResults = listOf<CorrectionSearchResult>()
 
-        if (ttmlResult != null) {
+        if (ttmlResult != null && TTMLParser.isValidTTML(ttmlResult)) {
             searchResults =
                 searchResults.plus(
                     CorrectionSearchResult.SyllableSyncedLyricsSearchResult(

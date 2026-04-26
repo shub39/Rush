@@ -22,7 +22,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,25 +31,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -77,9 +72,7 @@ import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlin.math.abs
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LineSyncedLyrics(
     state: LyricsPageState,
@@ -89,26 +82,23 @@ fun LineSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
     // updater for synced lyrics
     LaunchedEffect(playbackInfo.position) {
-        scope.launch {
-            val currentIndex =
-                getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
+        val currentIndex =
+            getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
 
-            val viewportHeight =
-                lazyListState.layoutInfo.viewportEndOffset -
-                    lazyListState.layoutInfo.viewportStartOffset
+        val viewportHeight =
+            lazyListState.layoutInfo.viewportEndOffset -
+                lazyListState.layoutInfo.viewportStartOffset
 
-            val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
+        val itemHeight = itemHeights[currentIndex] ?: 0
+        val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
 
-            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
-        }
+        lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
     }
 
     // Synced Lyrics
@@ -173,12 +163,19 @@ fun LineSyncedLyrics(
                     label = "textColor",
                 )
 
+            val glowAlpha by
+                animateDpAsState(
+                    targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0.dp else 2.dp,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
+
             SyncedLyric(
                 textPrefs = state.textPrefs,
                 blur = blur,
                 action = action,
                 lyric = lyric,
                 underTextAlpha = underTextAlpha,
+                glowAlpha = glowAlpha,
                 textColor = textColor,
                 scale = scale,
                 animatedProgress = animatedProgress,
@@ -199,6 +196,7 @@ fun SyncedLyric(
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
     underTextAlpha: Float,
+    glowAlpha: Dp,
     textColor: Color,
     scale: Float,
     animatedProgress: Float,
@@ -226,70 +224,32 @@ fun SyncedLyric(
             contentAlignment = Alignment.Center,
         ) {
             if (lyric.text.isNotEmpty()) {
-                val words = lyric.text.split(" ")
-                var currentWordIndex by remember { mutableIntStateOf(0) }
+                Text(
+                    text = lyric.text,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor.copy(alpha = underTextAlpha),
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                    modifier =
+                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            .blur(
+                                radius = glowAlpha,
+                                edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                            ),
+                )
 
-                FlowRow(
-                    horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
-                    modifier = Modifier.padding(vertical = 6.dp),
-                ) {
-                    words.forEachIndexed { index, string ->
-                        LaunchedEffect(currentWordIndex, scale) {
-                            if (currentWordIndex == (index - 1) && scale == 1f) {
-                                delay(100)
-                                currentWordIndex = index
-                            } else if (scale != 1f) {
-                                currentWordIndex = 0
-                            }
-                        }
-
-                        val isHighlightedWord = currentWordIndex >= index && scale == 1f
-                        val wordAlpha by
-                            animateFloatAsState(
-                                targetValue = if (isHighlightedWord) 1f else 0f,
-                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                            )
-                        val glowAlpha by
-                            animateFloatAsState(
-                                targetValue = if (isHighlightedWord) 5f else 0f,
-                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                            )
-                        val wordScale by
-                            animateFloatAsState(
-                                targetValue = if (isHighlightedWord || scale != 1f) 1f else 0.98f,
-                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                            )
-
-                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
-                            Text(
-                                text = string,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor.copy(alpha = underTextAlpha),
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                modifier =
-                                    Modifier.scale(wordScale)
-                                        .blur(
-                                            radius = glowAlpha.dp,
-                                            edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                                        ),
-                            )
-
-                            Text(
-                                text = string,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor,
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                modifier = Modifier.scale(wordScale).alpha(wordAlpha),
-                            )
-                        }
-                    }
-                }
+                Text(
+                    text = lyric.text,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor,
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                )
             } else {
                 DotLoadingProgress(
                     progress = { animatedProgress },
@@ -301,7 +261,7 @@ fun SyncedLyric(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xAB89)
+@Preview
 @Composable
 fun LineSyncedLyricsPreview() {
     var position by remember { mutableLongStateOf(0L) }
@@ -350,14 +310,16 @@ fun LineSyncedLyricsPreview() {
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        LineSyncedLyrics(
-            state = state,
-            lazyListState = rememberLazyListState(),
-            cardContent = Color.White,
-            action = {},
-            modifier = Modifier.fillMaxSize(),
-            playbackInfo = PlaybackInfo(position = position, speed = 1f),
-        )
+    Surface {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LineSyncedLyrics(
+                state = state,
+                lazyListState = rememberLazyListState(),
+                cardContent = MaterialTheme.colorScheme.onSurface,
+                action = {},
+                modifier = Modifier.fillMaxSize(),
+                playbackInfo = PlaybackInfo(position = position, speed = 1f),
+            )
+        }
     }
 }

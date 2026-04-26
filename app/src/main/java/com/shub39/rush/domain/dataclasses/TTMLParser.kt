@@ -41,6 +41,11 @@ private data class SpanInfo(
 
 object TTMLParser {
 
+    fun isValidTTML(ttml: String): Boolean {
+        val parsedLines = parseTTML(ttml)
+        return parsedLines.any { it.words.isNotEmpty() }
+    }
+
     // Helper function to get attribute by local name (handles namespace prefixes)
     private fun Element.getAttributeByLocalName(localName: String): String {
         // First try namespace-aware lookup
@@ -319,7 +324,9 @@ object TTMLParser {
     }
 
     @SuppressLint("DefaultLocale")
-    fun toLRC(lines: List<ParsedLine>): String {
+    fun toLRC(ttml: String): String {
+        val lines = parseTTML(ttml)
+
         return buildString {
             lines.forEach { line ->
                 val timeMs = (line.startTime * 1000).toLong()
@@ -327,18 +334,8 @@ object TTMLParser {
                 val seconds = (timeMs % 60000) / 1000
                 val centiseconds = (timeMs % 1000) / 10
 
-                // Add agent info if present
-                val agentPrefix = if (!line.agent.isNullOrEmpty()) "{agent:${line.agent}}" else ""
-
                 appendLine(
-                    String.format(
-                        "[%02d:%02d.%02d]%s%s",
-                        minutes,
-                        seconds,
-                        centiseconds,
-                        agentPrefix,
-                        line.text,
-                    )
+                    String.format("[%02d:%02d.%02d]%s", minutes, seconds, centiseconds, line.text)
                 )
 
                 if (line.words.isNotEmpty()) {

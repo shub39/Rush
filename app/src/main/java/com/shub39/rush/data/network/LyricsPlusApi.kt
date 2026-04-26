@@ -19,6 +19,7 @@ package com.shub39.rush.data.network
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.data.safeCall
 import com.shub39.rush.domain.Result
+import com.shub39.rush.domain.dataclasses.TTMLParser
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -94,7 +95,12 @@ class LyricsPlusApi {
 
             when (result) {
                 is Result.Error -> {}
-                is Result.Success -> return result.data.ttml
+                is Result.Success ->
+                    return if (TTMLParser.isValidTTML(result.data.ttml)) {
+                        result.data.ttml
+                    } else {
+                        null
+                    }
             }
         }
 
