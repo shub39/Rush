@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.8.2
+- Fixed misleading Syllable Synced Lyrics for some tracks
+- Removed word by word highlight from line synced lyrics
+- Updated Translations
+
 ## 5.8.1
 - Miscellaneous updates and fixes
 
