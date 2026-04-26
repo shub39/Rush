@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import com.shub39.rush.data.network.LyricsPlusApi
+import com.shub39.rush.domain.dataclasses.TTMLParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -30,5 +31,19 @@ class LyricsPlusTest {
 
     @Test
     fun testFetch() =
-        testIn("Test Fetch") { println(lyricsPlusApi.fetchTTML("Snowchild", "the weeknd")) }
+        testIn("Test Fetch") {
+            val ttml = lyricsPlusApi.fetchTTML("Snowchild", "the weeknd")
+            val parsedLines = TTMLParser.parseTTML(ttml ?: "")
+            parsedLines.forEach { println(it) }
+            println(TTMLParser.isValidTTML(ttml ?: ""))
+        }
+
+    @Test
+    fun testConvertToLRC() =
+        testIn("Test Convert to LRC") {
+            val ttml = lyricsPlusApi.fetchTTML("Dominator", "clipping.")
+            val parsedLines = TTMLParser.parseTTML(ttml ?: "")
+            parsedLines.forEach { println(it) }
+            println(TTMLParser.isValidTTML(ttml ?: ""))
+        }
 }

@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,9 +70,8 @@ import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlinx.coroutines.delay
 
 @Composable
 fun LineSyncedLyrics(
@@ -84,26 +82,23 @@ fun LineSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
     // updater for synced lyrics
     LaunchedEffect(playbackInfo.position) {
-        scope.launch {
-            val currentIndex =
-                getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
+        val currentIndex =
+            getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
 
-            val viewportHeight =
-                lazyListState.layoutInfo.viewportEndOffset -
-                        lazyListState.layoutInfo.viewportStartOffset
+        val viewportHeight =
+            lazyListState.layoutInfo.viewportEndOffset -
+                lazyListState.layoutInfo.viewportStartOffset
 
-            val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
+        val itemHeight = itemHeights[currentIndex] ?: 0
+        val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
 
-            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
-        }
+        lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
     }
 
     // Synced Lyrics
@@ -132,47 +127,47 @@ fun LineSyncedLyrics(
                 } ?: 1f
 
             val animatedProgress by
-            animateFloatAsState(
-                targetValue = progress,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             val underTextAlpha by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 0.5f else 0.2f,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             val blur by
-            animateDpAsState(
-                targetValue =
-                    if (!state.blurSyncedLyrics) 0.dp
-                    else (abs(lyricIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateDpAsState(
+                    targetValue =
+                        if (!state.blurSyncedLyrics) 0.dp
+                        else (abs(lyricIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             val scale by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 1f else 0.8f,
-                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 1f else 0.8f,
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                )
 
             val textColor by
-            animateColorAsState(
-                targetValue =
-                    when {
-                        lyric.time <= playbackInfo.position -> cardContent
-                        else -> cardContent.copy(0.3f)
-                    },
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "textColor",
-            )
+                animateColorAsState(
+                    targetValue =
+                        when {
+                            lyric.time <= playbackInfo.position -> cardContent
+                            else -> cardContent.copy(0.3f)
+                        },
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "textColor",
+                )
 
             val glowAlpha by
-            animateDpAsState(
-                targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0.dp else 2.dp,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateDpAsState(
+                    targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0.dp else 2.dp,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             SyncedLyric(
                 textPrefs = state.textPrefs,
@@ -215,8 +210,7 @@ fun SyncedLyric(
     ) {
         Box(
             modifier =
-                Modifier
-                    .graphicsLayer {
+                Modifier.graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -254,8 +248,7 @@ fun SyncedLyric(
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier =
-                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                 )
             } else {
                 DotLoadingProgress(
