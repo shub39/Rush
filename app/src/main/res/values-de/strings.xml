@@ -51,7 +51,7 @@
     <string name="backup_info">Importieren oder Exportieren Sie die Datenbank der gesicherten Liedtexte</string>
     <string name="batch_download_info">Laden Sie Liedtexte für Ihre lokal gespeicherten Lieder auf einmal herunter.</string>
     <string name="sort_date_added">Zuletzt hinzugefügt</string>
-    <string name="rush_branding">Rush</string>
+    <string name="rush_branding">Rush-Branding</string>
     <string name="exporting">Exportiere</string>
     <string name="exported">Exportiert</string>
     <string name="restoring">Wiederherstellung der Lieder</string>
@@ -147,9 +147,4 @@
     <string name="line_synced_lyrics">Zeilen Synchronisiert</string>
     <string name="syllable_synced_lyrics">Silbe synchronisiert</string>
     <string name="changelog">Änderungsprotokoll</string>
-    <string name="whats_changed">Änderungen</string>
-    <string name="looks">Aussehen</string>
-    <string name="text">Text</string>
-    <string name="others">Andere</string>
-    <string name="show_app_branding">App-Branding anzeigen</string>
 </resources>
