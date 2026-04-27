@@ -22,6 +22,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -68,6 +69,7 @@ import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
 import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
+import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlin.math.abs
@@ -85,6 +87,11 @@ fun LineSyncedLyrics(
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
+
+    // Force recomposition when romanization version changes
+    LaunchedEffect(state.romanizationVersion) {
+        // no-op: exists solely to subscribe to version changes
+    }
 
     // updater for synced lyrics
     LaunchedEffect(playbackInfo.position) {
@@ -112,7 +119,10 @@ fun LineSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(items = syncedLyrics, key = { it, _ -> it }) { index, lyric ->
+        itemsIndexed(
+            items = syncedLyrics,
+            key = { index, lyric -> "${state.romanizationVersion}_${lyric.time.toInt()}" },
+        ) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
             val currentTime = playbackInfo.position
             val lyricIndex = syncedLyrics.indexOf(lyric)
@@ -174,6 +184,9 @@ fun LineSyncedLyrics(
                 blur = blur,
                 action = action,
                 lyric = lyric,
+                romanizedText =
+                    if (state.romanizationEnabled) state.romanizedLyrics[lyric.time.toInt()]
+                    else null,
                 underTextAlpha = underTextAlpha,
                 glowAlpha = glowAlpha,
                 textColor = textColor,
@@ -195,6 +208,7 @@ fun SyncedLyric(
     blur: Dp,
     action: (LyricsPageAction) -> Unit,
     lyric: Lyric,
+    romanizedText: String?,
     underTextAlpha: Float,
     glowAlpha: Dp,
     textColor: Color,
@@ -224,32 +238,49 @@ fun SyncedLyric(
             contentAlignment = Alignment.Center,
         ) {
             if (lyric.text.isNotEmpty()) {
-                Text(
-                    text = lyric.text,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor.copy(alpha = underTextAlpha),
-                    fontSize = textPrefs.fontSize.sp,
-                    letterSpacing = textPrefs.letterSpacing.sp,
-                    lineHeight = textPrefs.lineHeight.sp,
-                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier =
-                        Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
-                            .blur(
+                Column(
+                    horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
+                ) {
+                    Text(
+                        text = lyric.text,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor.copy(alpha = underTextAlpha),
+                        fontSize = textPrefs.fontSize.sp,
+                        letterSpacing = textPrefs.letterSpacing.sp,
+                        lineHeight = textPrefs.lineHeight.sp,
+                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                        modifier =
+                            Modifier.blur(
                                 radius = glowAlpha,
                                 edgeTreatment = BlurredEdgeTreatment.Unbounded,
                             ),
-                )
+                    )
 
-                Text(
-                    text = lyric.text,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor,
-                    fontSize = textPrefs.fontSize.sp,
-                    letterSpacing = textPrefs.letterSpacing.sp,
-                    lineHeight = textPrefs.lineHeight.sp,
-                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
-                )
+                    Text(
+                        text = lyric.text,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor,
+                        fontSize = textPrefs.fontSize.sp,
+                        letterSpacing = textPrefs.letterSpacing.sp,
+                        lineHeight = textPrefs.lineHeight.sp,
+                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                    )
+
+                    // Romanized text below
+                    if (!romanizedText.isNullOrBlank()) {
+                        Text(
+                            text = romanizedText,
+                            fontWeight = FontWeight.Normal,
+                            color = textColor.copy(alpha = 0.7f),
+                            fontSize = (textPrefs.fontSize * 0.75f).sp,
+                            letterSpacing = textPrefs.letterSpacing.sp,
+                            lineHeight = (textPrefs.lineHeight * 0.75f).sp,
+                            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
+                }
             } else {
                 DotLoadingProgress(
                     progress = { animatedProgress },

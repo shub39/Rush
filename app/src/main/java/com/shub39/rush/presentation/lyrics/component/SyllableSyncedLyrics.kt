@@ -22,6 +22,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -79,9 +80,9 @@ import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlin.collections.set
 import kotlin.math.abs
 import kotlinx.coroutines.delay
 
@@ -97,6 +98,11 @@ fun SyllableSyncedLyrics(
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
+
+    // Force recomposition when romanization version changes
+    LaunchedEffect(state.romanizationVersion) {
+        // no-op: exists solely to subscribe to version changes
+    }
 
     val currentPlayingIndex =
         ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
@@ -127,7 +133,12 @@ fun SyllableSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
+        itemsIndexed(
+            items = ttmlLyrics,
+            key = { index, line ->
+                "${state.romanizationVersion}_${(line.startTime * 1000).toInt()}"
+            },
+        ) { index, line ->
             val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
@@ -185,6 +196,10 @@ fun SyllableSyncedLyrics(
                 blur = blur,
                 action = action,
                 line = line,
+                romanizedText =
+                    if (state.romanizationEnabled)
+                        state.romanizedLyrics[(line.startTime * 1000).toInt()]
+                    else null,
                 textColor = textColor,
                 scale = scale,
                 currentTime = currentTime,
@@ -208,6 +223,7 @@ fun SyllableLine(
     blur: Dp,
     action: (LyricsPageAction) -> Unit,
     line: ParsedLine,
+    romanizedText: String?,
     textColor: Color,
     scale: Float,
     currentTime: Long,
@@ -239,19 +255,35 @@ fun SyllableLine(
             contentAlignment = Alignment.Center,
         ) {
             if (line.words.isNotEmpty()) {
-                FlowRow(
-                    horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
+                Column(
+                    horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
                     modifier = Modifier.padding(vertical = 6.dp),
                 ) {
-                    line.words.forEach { word ->
-                        SyllableWord(
-                            word = word,
-                            currentTime = currentTime,
-                            textPrefs = textPrefs,
-                            expressiveSyllables = expressiveSyllables,
-                            textColor = textColor,
-                            underTextAlpha = underTextAlpha,
-                            scale = scale,
+                    FlowRow(horizontalArrangement = textPrefs.lyricsAlignment.toArrangement()) {
+                        line.words.forEach { word ->
+                            SyllableWord(
+                                word = word,
+                                currentTime = currentTime,
+                                textPrefs = textPrefs,
+                                expressiveSyllables = expressiveSyllables,
+                                textColor = textColor,
+                                underTextAlpha = underTextAlpha,
+                                scale = scale,
+                            )
+                        }
+                    }
+
+                    // Romanized text below
+                    if (!romanizedText.isNullOrBlank()) {
+                        Text(
+                            text = romanizedText,
+                            fontWeight = FontWeight.Normal,
+                            color = textColor.copy(alpha = 0.7f),
+                            fontSize = (textPrefs.fontSize * 0.75f).sp,
+                            letterSpacing = textPrefs.letterSpacing.sp,
+                            lineHeight = (textPrefs.lineHeight * 0.75f).sp,
+                            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                            modifier = Modifier.padding(top = 4.dp),
                         )
                     }
                 }

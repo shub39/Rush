@@ -55,6 +55,9 @@ data class LyricsPageState(
     val mCardBackground: Int = Color.DarkGray.toArgb(),
     val mCardContent: Int = Color.White.toArgb(),
     val fullscreen: Boolean = false,
+    val romanizationEnabled: Boolean = false,
+    val romanizedLyrics: Map<Int, String> = emptyMap(),
+    val romanizationVersion: Long = 0L,
 )
 
 sealed interface LyricsState {

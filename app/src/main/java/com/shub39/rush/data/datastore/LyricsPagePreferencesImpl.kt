@@ -50,6 +50,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val lyricsBackground = stringPreferencesKey("lyrics_background")
         private val blurSynced = booleanPreferencesKey("blur_synced")
         private val expressiveSyllables = booleanPreferencesKey("expressive_syllables")
+        private val romanizationEnabled = booleanPreferencesKey("romanization_enabled")
     }
 
     override suspend fun reset() {
@@ -83,6 +84,13 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateExpressiveSyllablesPref(pref: Boolean) {
         dataStore.edit { prefs -> prefs[expressiveSyllables] = pref }
+    }
+
+    override fun getRomanizationEnabledFlow(): Flow<Boolean> =
+        dataStore.data.map { it[romanizationEnabled] ?: false }
+
+    override suspend fun updateRomanizationEnabled(enabled: Boolean) {
+        dataStore.edit { it[romanizationEnabled] = enabled }
     }
 
     override fun getFullScreenFlow(): Flow<Boolean> =

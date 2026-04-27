@@ -64,6 +64,7 @@ import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.updateSelectedLines
+import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlinx.coroutines.launch
@@ -84,6 +85,7 @@ fun PlainLyrics(
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
 
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
+    val romanizedKeyOffset = if (state.source == Sources.LRCLIB) 0 else 100000
 
     LazyColumn(
         modifier = modifier,
@@ -96,7 +98,7 @@ fun PlainLyrics(
     ) {
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
-            items(items = items, key = { it.key }) {
+            items(items = items, key = { "${state.romanizationVersion}_${it.key}" }) {
                 if (it.value.isNotBlank()) {
                     val isSelected = state.selectedLines.contains(it.key)
                     val containerColor by
@@ -112,6 +114,10 @@ fun PlainLyrics(
 
                     PlainLyric(
                         entry = it.toPair(),
+                        romanizedText =
+                            if (state.romanizationEnabled)
+                                state.romanizedLyrics[romanizedKeyOffset + it.key]
+                            else null,
                         containerColor = containerColor,
                         textPrefs = state.textPrefs,
                         cardContent = cardContent,
@@ -273,6 +279,7 @@ fun PlainLyrics(
 fun PlainLyric(
     textPrefs: TextPrefs,
     entry: Pair<Int, String>,
+    romanizedText: String?,
     onClick: () -> Unit,
     containerColor: Color,
     cardContent: Color,
@@ -288,15 +295,31 @@ fun PlainLyric(
             colors =
                 CardDefaults.cardColors(containerColor = containerColor, contentColor = cardContent),
         ) {
-            Text(
-                text = entry.second,
-                fontSize = textPrefs.fontSize.sp,
-                letterSpacing = textPrefs.letterSpacing.sp,
-                lineHeight = textPrefs.lineHeight.sp,
-                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                fontWeight = FontWeight.Bold,
+            Column(
+                horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
                 modifier = Modifier.padding(6.dp),
-            )
+            ) {
+                Text(
+                    text = entry.second,
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                    fontWeight = FontWeight.Bold,
+                )
+                if (!romanizedText.isNullOrBlank()) {
+                    Text(
+                        text = romanizedText,
+                        fontSize = (textPrefs.fontSize * 0.75f).sp,
+                        letterSpacing = textPrefs.letterSpacing.sp,
+                        lineHeight = (textPrefs.lineHeight * 0.75f).sp,
+                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                        fontWeight = FontWeight.Normal,
+                        color = cardContent.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
         }
     }
 }

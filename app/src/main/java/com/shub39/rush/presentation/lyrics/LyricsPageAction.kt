@@ -84,4 +84,6 @@ sealed interface LyricsPageAction {
 
     data class OnUpdateSongLyrics(val id: Long, val searchResult: CorrectionSearchResult) :
         LyricsPageAction
+
+    data class OnRomanizationToggle(val enabled: Boolean) : LyricsPageAction
 }
