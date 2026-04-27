@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Song
-import com.shub39.rush.presentation.components.ArtFromUrl
+import com.shub39.rush.presentation.component.ArtFromUrl
 
 @Composable
 fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Modifier = Modifier) {

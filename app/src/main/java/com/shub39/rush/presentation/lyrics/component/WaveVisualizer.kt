@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.dataclasses.WaveColors
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.theme.RushTheme
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.bassBucket

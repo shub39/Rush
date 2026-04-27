@@ -26,7 +26,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.navigation.horizontalTransitionMetadata
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.setting.section.BackupPage
 import com.shub39.rush.presentation.setting.section.Changelog
 import com.shub39.rush.presentation.setting.section.LookAndFeelPage

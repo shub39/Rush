@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.presentation.components
+package com.shub39.rush.presentation.theme
 
+import android.R
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -27,7 +28,6 @@ import androidx.compose.ui.res.colorResource
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.provideTypography
 import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toMPaletteStyle
 
@@ -47,7 +47,7 @@ fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
         rememberDynamicColorScheme(
             seedColor =
                 if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-                    colorResource(android.R.color.system_accent1_900)
+                    colorResource(R.color.system_accent1_900)
                 } else {
                     Color(theme.seedColor)
                 },

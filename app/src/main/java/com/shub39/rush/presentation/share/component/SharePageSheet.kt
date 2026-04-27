@@ -63,9 +63,9 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.domain.enums.Fonts
-import com.shub39.rush.presentation.components.ListItemCard
-import com.shub39.rush.presentation.components.ListSelect
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.ListItemCard
+import com.shub39.rush.presentation.component.ListSelect
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors

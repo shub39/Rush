@@ -82,10 +82,10 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
-import com.shub39.rush.presentation.components.ColorPickerDialog
-import com.shub39.rush.presentation.components.PageFill
+import com.shub39.rush.presentation.component.ColorPickerDialog
+import com.shub39.rush.presentation.component.PageFill
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontEmphasis
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape

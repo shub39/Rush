@@ -55,8 +55,8 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
-import com.shub39.rush.presentation.components.RushDialog
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.RushDialog
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.lyrics.LrcCorrect
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState

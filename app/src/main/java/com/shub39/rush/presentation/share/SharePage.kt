@@ -71,8 +71,8 @@ import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
-import com.shub39.rush.presentation.components.ColorPickerDialog
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.ColorPickerDialog
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
 import com.shub39.rush.presentation.share.component.cards.AlbumArt

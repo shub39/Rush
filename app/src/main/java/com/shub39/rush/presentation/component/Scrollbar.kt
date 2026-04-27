@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.lazy.LazyListState
@@ -29,7 +29,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Modifier.simpleVerticalScrollbar(state: LazyListState, width: Dp = 4.dp): Modifier {
 

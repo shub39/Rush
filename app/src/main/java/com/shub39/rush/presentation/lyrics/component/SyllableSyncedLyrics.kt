@@ -67,7 +67,7 @@ import com.shub39.rush.domain.dataclasses.ParsedLine
 import com.shub39.rush.domain.dataclasses.ParsedWord
 import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState

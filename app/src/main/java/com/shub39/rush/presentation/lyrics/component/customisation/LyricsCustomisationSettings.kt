@@ -48,11 +48,11 @@ import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.presentation.allBackgrounds
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.blurAvailable
-import com.shub39.rush.presentation.components.ListItemCard
-import com.shub39.rush.presentation.components.ListSelect
-import com.shub39.rush.presentation.components.SettingSlider
+import com.shub39.rush.presentation.component.ListItemCard
+import com.shub39.rush.presentation.component.ListSelect
+import com.shub39.rush.presentation.component.SettingSlider
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.lyrics.LyricsPageAction

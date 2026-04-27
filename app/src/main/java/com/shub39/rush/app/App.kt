@@ -36,8 +36,8 @@ import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.navigation.verticalTransitionMetadata
-import com.shub39.rush.presentation.ChangelogSheet
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.ChangelogSheet
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsGraph
 import com.shub39.rush.presentation.onboarding.Onboarding
 import com.shub39.rush.presentation.saved.SavedPage

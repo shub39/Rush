@@ -46,11 +46,11 @@ import com.shub39.rush.R
 import com.shub39.rush.app.Changelog
 import com.shub39.rush.app.VersionEntry
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontEmphasis
-import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape

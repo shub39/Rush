@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.presentation.components
+package com.shub39.rush.presentation.component
 
 import android.graphics.RuntimeShader
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
