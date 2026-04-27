@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,16 +35,24 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.presentation.component.ArtFromUrl
+import com.shub39.rush.presentation.detachedItemShape
+import com.shub39.rush.presentation.listItemColors
 
 @Composable
-fun SearchResultCard(result: SearchResult, onClick: () -> Unit, downloaded: Boolean = false) {
+fun SearchResultCard(
+    result: SearchResult,
+    modifier: Modifier = Modifier,
+    downloaded: Boolean = false,
+) {
     ListItem(
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-        modifier = Modifier.clickable { onClick() },
+        colors = listItemColors(),
+        modifier = modifier,
         leadingContent = {
             ArtFromUrl(
                 imageUrl = result.artUrl,
-                modifier = Modifier.size(70.dp).clip(MaterialTheme.shapes.small),
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(MaterialTheme.shapes.small),
             )
         },
         headlineContent = {

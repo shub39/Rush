@@ -96,7 +96,7 @@ fun SharePageSheet(
                 Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .heightIn(max = 500.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    .clip(RoundedCornerShape(16.dp)),
             contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -263,7 +263,6 @@ fun SharePageSheet(
                 )
             }
         }
-        HorizontalDivider()
     }
 }
 

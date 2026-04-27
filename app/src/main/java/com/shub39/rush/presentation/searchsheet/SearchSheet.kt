@@ -16,21 +16,28 @@
  */
 package com.shub39.rush.presentation.searchsheet
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
@@ -52,6 +59,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -64,10 +72,15 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.detachedItemShape
+import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.errorStringRes
+import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.lyrics.component.ErrorCard
+import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.searchsheet.component.SearchResultCard
 import com.shub39.rush.presentation.theme.RushTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -89,6 +102,7 @@ fun SearchSheet(
             onDismissRequest = { onAction(SearchSheetAction.OnToggleSearchSheet) },
         ) {
             LaunchedEffect(Unit) {
+                delay(400)
                 focusRequester.requestFocus()
                 keyboardController?.show()
             }
@@ -139,17 +153,21 @@ fun SearchSheet(
                     shape = MaterialTheme.shapes.extraLarge,
                     placeholder = { Text(stringResource(R.string.search)) },
                     modifier =
-                        Modifier.fillMaxWidth()
+                        Modifier
+                            .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                             .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
                 )
 
-                HorizontalDivider()
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
                 ) {
                     state.error?.let { error ->
@@ -166,32 +184,59 @@ fun SearchSheet(
                         }
                     }
 
-                    items(state.localSearchResults, key = { "Saved_${it.id}" }) {
+                    itemsIndexed(
+                        items = state.localSearchResults,
+                        key = { _, it -> "Saved_${it.id}" }
+                    ) { index, it ->
+                        val shape = when {
+                            state.localSearchResults.size == 1 -> detachedItemShape()
+                            index == 0 -> leadingItemShape()
+                            index == state.localSearchResults.lastIndex -> endItemShape()
+                            else -> middleItemShape()
+                        }
+
                         SearchResultCard(
                             result = it,
-                            onClick = {
-                                onAction(SearchSheetAction.OnCardClicked(it.id))
-                                onNavigateToLyrics()
-                            },
                             downloaded = true,
+                            modifier = Modifier
+                                .clip(shape)
+                                .clickable {
+                                    onAction(SearchSheetAction.OnCardClicked(it.id))
+                                    onNavigateToLyrics()
+                                }
                         )
                     }
 
+                    if (state.localSearchResults.isNotEmpty()) {
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                    }
+
                     if (!state.isSearching) {
-                        items(state.searchResults, key = { it.id }) {
+                        itemsIndexed(
+                            items = state.searchResults,
+                            key = { _, it -> it.id }
+                        ) { index, it ->
+                            val shape = when {
+                                state.searchResults.size == 1 -> detachedItemShape()
+                                index == 0 -> leadingItemShape()
+                                index == state.searchResults.lastIndex -> endItemShape()
+                                else -> middleItemShape()
+                            }
+
                             SearchResultCard(
                                 result = it,
-                                onClick = {
-                                    onAction(SearchSheetAction.OnCardClicked(it.id))
-                                    onNavigateToLyrics()
-                                },
+                                modifier = Modifier
+                                    .clip(shape)
+                                    .clickable {
+                                        onAction(SearchSheetAction.OnCardClicked(it.id))
+                                        onNavigateToLyrics()
+                                    }
                             )
                         }
                     } else {
                         item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
                     }
                 }
-                HorizontalDivider()
             }
         }
     }
