@@ -37,9 +37,9 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.navigation.horizontalTransitionMetadata
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.presentation.lyrics.section.LyricsPage
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.updateSystemBars
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState

@@ -72,7 +72,6 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.presentation.component.ColorPickerDialog
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
 import com.shub39.rush.presentation.share.component.cards.AlbumArt
@@ -84,6 +83,7 @@ import com.shub39.rush.presentation.share.component.cards.QuoteShareCard
 import com.shub39.rush.presentation.share.component.cards.RushedShareCard
 import com.shub39.rush.presentation.share.component.cards.SpotifyShareCard
 import com.shub39.rush.presentation.share.component.cards.VerticalShareCard
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.toShape
 import io.github.vinceglb.filekit.ImageFormat
 import io.github.vinceglb.filekit.PlatformFile

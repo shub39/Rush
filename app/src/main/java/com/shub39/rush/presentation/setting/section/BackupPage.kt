@@ -61,13 +61,13 @@ import com.shub39.rush.domain.backup.RestoreState
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.component.PageFill
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.FileKitType

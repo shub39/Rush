@@ -29,9 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.R
-import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 
 /**
  * A composable that displays the "Rush" application branding.

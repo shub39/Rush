@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -52,16 +51,15 @@ import com.shub39.rush.presentation.component.ListItemCard
 import com.shub39.rush.presentation.component.ListSelect
 import com.shub39.rush.presentation.component.SettingSlider
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.middleItemShape
+import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toStringRes
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.lyricsCustomisationSettings(
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,

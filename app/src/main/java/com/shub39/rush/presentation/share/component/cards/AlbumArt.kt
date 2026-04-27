@@ -32,7 +32,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes.Companion.VerySunny
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -51,14 +50,13 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.RushBranding
+import com.shub39.rush.presentation.share.fromPx
+import com.shub39.rush.presentation.share.pxToDp
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
-import com.shub39.rush.presentation.share.fromPx
-import com.shub39.rush.presentation.share.pxToDp
 import io.github.vinceglb.filekit.PlatformFile
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AlbumArt(
     song: SongDetails,
@@ -120,7 +118,6 @@ fun AlbumArt(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview
 @Composable
 private fun Preview() {

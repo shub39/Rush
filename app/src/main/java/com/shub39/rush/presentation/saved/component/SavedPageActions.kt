@@ -19,7 +19,6 @@ package com.shub39.rush.presentation.saved.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
@@ -35,7 +34,6 @@ import com.shub39.rush.R
 import com.shub39.rush.presentation.saved.SavedPageAction
 import com.shub39.rush.presentation.saved.SavedPageState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SavedPageActions(
     state: SavedPageState,

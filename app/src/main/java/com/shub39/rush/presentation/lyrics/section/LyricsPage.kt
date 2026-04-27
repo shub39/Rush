@@ -79,11 +79,8 @@ import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.Empty
 import com.shub39.rush.presentation.component.PageFill
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
-import com.shub39.rush.presentation.theme.flexFontEmphasis
-import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
@@ -103,6 +100,9 @@ import com.shub39.rush.presentation.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.presentation.lyrics.getCardColors
 import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toAlignment
 import io.gitlab.bpavuk.viz.VisualizerData
 import kotlinx.coroutines.delay

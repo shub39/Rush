@@ -66,8 +66,6 @@ import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.component.RushDialog
-import com.shub39.rush.presentation.theme.RushTheme
-import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.component.customisation.LyricsCustomisationPreview
@@ -75,6 +73,8 @@ import com.shub39.rush.presentation.lyrics.component.customisation.lyricsCustomi
 import com.shub39.rush.presentation.lyrics.getCardColors
 import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState

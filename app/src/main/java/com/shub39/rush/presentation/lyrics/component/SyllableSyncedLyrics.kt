@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +66,6 @@ import com.shub39.rush.domain.dataclasses.ParsedLine
 import com.shub39.rush.domain.dataclasses.ParsedWord
 import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
@@ -75,13 +73,13 @@ import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlin.collections.set
 import kotlin.math.abs
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SyllableSyncedLyrics(
     state: LyricsPageState,

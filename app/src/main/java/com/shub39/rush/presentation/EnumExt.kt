@@ -17,7 +17,6 @@
 package com.shub39.rush.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -199,7 +198,6 @@ fun Fonts.toFontRes(): Int? {
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AlbumArtShape.toShape(): Shape {
     return when (this) {
