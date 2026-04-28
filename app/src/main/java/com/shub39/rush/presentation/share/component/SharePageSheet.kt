@@ -29,9 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -63,21 +60,20 @@ import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.domain.enums.Fonts
-import com.shub39.rush.presentation.components.ListItemCard
-import com.shub39.rush.presentation.components.ListSelect
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.ListItemCard
+import com.shub39.rush.presentation.component.ListSelect
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.share.SharePageAction
 import com.shub39.rush.presentation.share.SharePageState
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toShape
 import com.shub39.rush.presentation.toStringRes
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharePageSheet(
     state: SharePageState,
@@ -99,7 +95,7 @@ fun SharePageSheet(
                 Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .heightIn(max = 500.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    .clip(RoundedCornerShape(16.dp)),
             contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -266,11 +262,9 @@ fun SharePageSheet(
                 )
             }
         }
-        HorizontalDivider()
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun Preview() {

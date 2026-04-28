@@ -23,13 +23,13 @@ import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.request.CachePolicy
 import coil3.request.crossfade
-import com.shub39.rush.data.DatastoreFactory
-import com.shub39.rush.data.LyricsPagePreferencesImpl
-import com.shub39.rush.data.OtherPreferencesImpl
-import com.shub39.rush.data.SharePagePreferencesImpl
 import com.shub39.rush.data.database.DatabaseFactory
 import com.shub39.rush.data.database.SongDao
 import com.shub39.rush.data.database.SongDatabase
+import com.shub39.rush.data.datastore.DatastoreFactory
+import com.shub39.rush.data.datastore.LyricsPagePreferencesImpl
+import com.shub39.rush.data.datastore.OtherPreferencesImpl
+import com.shub39.rush.data.datastore.SharePagePreferencesImpl
 import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SharePagePreferences

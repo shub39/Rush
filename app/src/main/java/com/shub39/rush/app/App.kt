@@ -18,7 +18,6 @@ package com.shub39.rush.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,14 +35,14 @@ import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.navigation.verticalTransitionMetadata
-import com.shub39.rush.presentation.ChangelogSheet
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.ChangelogSheet
 import com.shub39.rush.presentation.lyrics.LyricsGraph
 import com.shub39.rush.presentation.onboarding.Onboarding
 import com.shub39.rush.presentation.saved.SavedPage
 import com.shub39.rush.presentation.searchsheet.SearchSheet
 import com.shub39.rush.presentation.setting.SettingsGraph
 import com.shub39.rush.presentation.share.SharePage
+import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.viewmodels.GlobalVM
 import com.shub39.rush.viewmodels.LyricsVM
 import com.shub39.rush.viewmodels.SavedVM
@@ -67,7 +66,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable data object PaywallPage : NavKey
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
     val globalVM: GlobalVM = koinViewModel()

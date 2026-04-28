@@ -31,7 +31,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -55,15 +54,14 @@ import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
-import com.shub39.rush.presentation.components.RushDialog
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.RushDialog
 import com.shub39.rush.presentation.lyrics.LrcCorrect
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
+import com.shub39.rush.presentation.theme.RushTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun LrcCorrectDialog(
     track: String,
     artist: String,

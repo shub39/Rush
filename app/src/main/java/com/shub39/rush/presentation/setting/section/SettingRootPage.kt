@@ -63,19 +63,19 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.components.PageFill
-import com.shub39.rush.presentation.components.RushDialog
-import com.shub39.rush.presentation.components.RushTheme
+import com.shub39.rush.presentation.component.PageFill
+import com.shub39.rush.presentation.component.RushDialog
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontEmphasis
-import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.getRandomLine
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
 import com.shub39.rush.presentation.setting.component.AboutApp
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.theme.flexFontRounded
 
 // topmost settings page
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

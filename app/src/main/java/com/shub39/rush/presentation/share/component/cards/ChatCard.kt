@@ -46,13 +46,13 @@ import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardFit
-import com.shub39.rush.presentation.components.ArtFromUrl
-import com.shub39.rush.presentation.components.RushBranding
-import com.shub39.rush.presentation.components.RushTheme
-import com.shub39.rush.presentation.flexFontEmphasis
-import com.shub39.rush.presentation.flexFontRounded
+import com.shub39.rush.presentation.component.ArtFromUrl
+import com.shub39.rush.presentation.component.RushBranding
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.theme.flexFontRounded
 
 @Composable
 fun ChatCard(

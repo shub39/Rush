@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.presentation
+package com.shub39.rush.presentation.theme
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -31,15 +31,19 @@ val TYPOGRAPHY = Typography()
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun flexFontEmphasis(slant: Float = 0f): FontFamily =
+fun flexFontEmphasis(
+    slant: Float = 0f,
+    fontWeight: Int = 1000,
+    fontWidth: Float = 120f,
+): FontFamily =
     FontFamily(
         Font(
             resId = R.font.google_sans_flex,
             variationSettings =
                 FontVariation.Settings(
-                    FontVariation.weight(1000),
+                    FontVariation.weight(fontWeight),
                     FontVariation.slant(slant),
-                    FontVariation.width(120f),
+                    FontVariation.width(fontWidth),
                 ),
         )
     )

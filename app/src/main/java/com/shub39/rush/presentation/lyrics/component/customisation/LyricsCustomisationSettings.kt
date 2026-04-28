@@ -19,6 +19,7 @@ package com.shub39.rush.presentation.lyrics.component.customisation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -48,20 +48,19 @@ import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.presentation.allBackgrounds
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.blurAvailable
-import com.shub39.rush.presentation.components.ListItemCard
-import com.shub39.rush.presentation.components.ListSelect
-import com.shub39.rush.presentation.components.SettingSlider
+import com.shub39.rush.presentation.component.ListItemCard
+import com.shub39.rush.presentation.component.ListSelect
+import com.shub39.rush.presentation.component.SettingSlider
 import com.shub39.rush.presentation.endItemShape
-import com.shub39.rush.presentation.flexFontRounded
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.middleItemShape
+import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toStringRes
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.lyricsCustomisationSettings(
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -93,6 +92,35 @@ fun LazyListScope.lyricsCustomisationSettings(
                         }
                     },
                     labelProvider = { Text(text = stringResource(it.toStringRes())) },
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isShowingSynced,
+                modifier = Modifier.fillMaxWidth(),
+                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+            ) {
+                ListItem(
+                    colors = listItemColors(),
+                    modifier = Modifier.clip(middleItemShape()),
+                    headlineContent = { Text(text = "Enable Expressive Syllables") },
+                    supportingContent = {
+                        Text(
+                            text =
+                                "[Experimental] Font weight and Font Width are animated based" +
+                                    " on duration of the word. Might cause stutters and glitches",
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.expressiveSyllables,
+                            onCheckedChange = {
+                                onAction(LyricsPageAction.OnExpressiveLyricsChange(it))
+                            },
+                        )
+                    },
                 )
             }
 

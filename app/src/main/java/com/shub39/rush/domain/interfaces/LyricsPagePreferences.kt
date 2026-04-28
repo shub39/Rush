@@ -66,9 +66,13 @@ interface LyricsPagePreferences {
 
     fun getLyricsBackgroundFlow(): Flow<LyricsBackground>
 
-    suspend fun updateLyricsBackround(background: LyricsBackground)
+    suspend fun updateLyricsBackground(background: LyricsBackground)
 
     fun getBlurSynced(): Flow<Boolean>
 
     suspend fun updateBlurSynced(pref: Boolean)
+
+    fun getExpressiveSyllablesPref(): Flow<Boolean>
+
+    suspend fun updateExpressiveSyllablesPref(pref: Boolean)
 }

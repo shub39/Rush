@@ -20,7 +20,6 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.TextNode
 import com.shub39.rush.BuildConfig
-import com.shub39.rush.data.safeCall
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
 import io.ktor.client.HttpClient

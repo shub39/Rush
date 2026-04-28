@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.presentation.components
+package com.shub39.rush.presentation.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -29,9 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.R
-import com.shub39.rush.presentation.flexFontEmphasis
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 
 /**
  * A composable that displays the "Rush" application branding.

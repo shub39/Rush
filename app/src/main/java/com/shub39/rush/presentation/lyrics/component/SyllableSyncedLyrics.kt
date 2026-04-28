@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -67,7 +67,6 @@ import com.shub39.rush.domain.dataclasses.ParsedLine
 import com.shub39.rush.domain.dataclasses.ParsedWord
 import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.presentation.components.RushTheme
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
@@ -75,13 +74,14 @@ import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
+import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlin.collections.set
 import kotlin.math.abs
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SyllableSyncedLyrics(
     state: LyricsPageState,
@@ -124,7 +124,7 @@ fun SyllableSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(ttmlLyrics) { index, line ->
+        itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
             val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
@@ -188,6 +188,7 @@ fun SyllableSyncedLyrics(
                 animatedProgress = animatedProgress,
                 underTextAlpha = underTextAlpha,
                 isCurrent = isCurrent,
+                expressiveSyllables = state.expressiveSyllables,
                 modifier =
                     Modifier.onGloballyPositioned { layoutCoordinates ->
                         val height = layoutCoordinates.size.height
@@ -210,6 +211,7 @@ fun SyllableLine(
     animatedProgress: Float,
     underTextAlpha: Float,
     isCurrent: Boolean,
+    expressiveSyllables: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -241,27 +243,51 @@ fun SyllableLine(
                     line.words.forEach { word ->
                         val wordStartTimeMs = (word.startTime * 1000).toLong()
                         val wordEndTimeMs = (word.endTime * 1000).toLong()
+                        val duration = wordEndTimeMs - wordStartTimeMs
 
-                        val wordProgress =
-                            if (currentTime >= wordEndTimeMs) {
-                                1f
-                            } else if (currentTime < wordStartTimeMs) {
-                                0f
-                            } else {
-                                val duration = wordEndTimeMs - wordStartTimeMs
-                                if (duration > 0) {
-                                    (currentTime - wordStartTimeMs).toFloat() / duration
-                                } else {
-                                    1f
-                                }
+                        val maxWordWeight =
+                            when (duration) {
+                                in 0..500 -> 300
+                                in 501..1000 -> 500
+                                in 1001..1500 -> 700
+                                else -> 900
                             }
 
-                        val animatedWordProgress by
+                        val maxWordWidth =
+                            when (duration) {
+                                in 0..500 -> 100f
+                                in 501..1000 -> 105f
+                                in 1001..1500 -> 110f
+                                in 1501..2000 -> 115f
+                                else -> 120f
+                            }
+
+                        val wordProgress =
+                            if (currentTime >= wordEndTimeMs) 1f
+                            else if (currentTime < wordStartTimeMs) 0f
+                            else
+                                (currentTime - wordStartTimeMs).toFloat() /
+                                    duration.coerceAtLeast(1)
+
+                        val animatedProgress by
                             animateFloatAsState(
                                 targetValue = wordProgress,
                                 animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                                 label = "wordProgress",
                             )
+
+                        val currentWeight =
+                            remember(animatedProgress) {
+                                ((animatedProgress * 1000).toInt().coerceIn(200, maxWordWeight) /
+                                    10) * 10
+                            }
+                        val currentWidth =
+                            remember(animatedProgress) {
+                                (animatedProgress * 20f + 100f)
+                                    .coerceIn(100f, maxWordWidth)
+                                    .toInt()
+                                    .toFloat()
+                            }
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -277,6 +303,38 @@ fun SyllableLine(
                             )
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
+                            if (expressiveSyllables) {
+                                Text(
+                                    text = word.text,
+                                    fontSize = textPrefs.fontSize.sp,
+                                    letterSpacing = textPrefs.letterSpacing.sp,
+                                    lineHeight = textPrefs.lineHeight.sp,
+                                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                    fontFamily =
+                                        flexFontEmphasis(
+                                            fontWeight = maxWordWeight,
+                                            fontWidth = maxWordWidth,
+                                        ),
+                                    modifier = Modifier.alpha(0f),
+                                )
+                            }
+
+                            val textModifier =
+                                Modifier.then(
+                                        if (expressiveSyllables) Modifier.matchParentSize()
+                                        else Modifier
+                                    )
+                                    .scale(wordScale)
+                            val commonFontFamily =
+                                if (expressiveSyllables) {
+                                    flexFontEmphasis(
+                                        fontWeight = currentWeight,
+                                        fontWidth = currentWidth,
+                                    )
+                                } else {
+                                    MaterialTheme.typography.bodyLarge.fontFamily
+                                }
+
                             Text(
                                 text = word.text,
                                 fontWeight = FontWeight.Bold,
@@ -285,12 +343,12 @@ fun SyllableLine(
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontFamily = commonFontFamily,
                                 modifier =
-                                    Modifier.scale(wordScale)
-                                        .blur(
-                                            radius = glowAlpha.dp,
-                                            edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                                        ),
+                                    textModifier.blur(
+                                        radius = glowAlpha.dp,
+                                        edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                                    ),
                             )
 
                             Text(
@@ -301,19 +359,19 @@ fun SyllableLine(
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontFamily = commonFontFamily,
                                 modifier =
-                                    Modifier.scale(wordScale)
+                                    textModifier
                                         .graphicsLayer(
                                             compositingStrategy = CompositingStrategy.Offscreen
                                         )
                                         .drawWithContent {
-                                            if (animatedWordProgress > 0f) {
+                                            if (animatedProgress > 0f) {
                                                 drawContent()
-                                                if (animatedWordProgress < 1f) {
+                                                if (animatedProgress < 1f) {
                                                     val feather = 16.dp.toPx()
                                                     val x =
-                                                        (size.width + feather) *
-                                                            animatedWordProgress
+                                                        (size.width + feather) * animatedProgress
                                                     drawRect(
                                                         brush =
                                                             Brush.horizontalGradient(

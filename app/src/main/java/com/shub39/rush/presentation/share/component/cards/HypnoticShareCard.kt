@@ -30,7 +30,7 @@ import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.enums.CardFit
-import com.shub39.rush.presentation.components.HypnoticVisualizer
+import com.shub39.rush.presentation.component.HypnoticVisualizer
 import com.shub39.rush.presentation.generateGradientColors
 
 @Composable

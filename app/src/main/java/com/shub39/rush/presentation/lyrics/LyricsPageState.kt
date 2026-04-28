@@ -46,6 +46,7 @@ data class LyricsPageState(
     val searchState: SearchState = SearchState.Idle,
 
     // datastore
+    val expressiveSyllables: Boolean = false,
     val blurSyncedLyrics: Boolean = true,
     val textPrefs: TextPrefs = TextPrefs(),
     val cardColors: CardColors = CardColors.MUTED,
