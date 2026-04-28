@@ -348,10 +348,11 @@ class LyricsVM(
                         while (isActive) {
                             val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
 
-                            if (_playbackInfo.value.position < (position + elapsed)) {
-                                _playbackInfo.update {
-                                    it.copy(position = position + elapsed, speed = speed)
-                                }
+                            _playbackInfo.update {
+                                it.copy(
+                                    position = maxOf(it.position, position + elapsed),
+                                    speed = speed,
+                                )
                             }
 
                             delay(100)
