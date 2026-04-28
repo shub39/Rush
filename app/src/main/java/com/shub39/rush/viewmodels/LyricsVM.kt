@@ -167,7 +167,7 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnChangeLyricsBackground ->
-                    lyricsPrefs.updateLyricsBackround(action.background)
+                    lyricsPrefs.updateLyricsBackground(action.background)
 
                 is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
 
@@ -176,6 +176,9 @@ class LyricsVM(
 
                 is LyricsPageAction.OnUpdatemBackground ->
                     lyricsPrefs.updateCardBackground(action.color)
+
+                is LyricsPageAction.OnExpressiveLyricsChange ->
+                    lyricsPrefs.updateExpressiveSyllablesPref(action.pref)
 
                 is LyricsPageAction.OnUpdatemContent -> lyricsPrefs.updateCardContent(action.color)
 
@@ -237,15 +240,11 @@ class LyricsVM(
 
                 is LyricsPageAction.OnSeek -> {
                     MediaListenerImpl.seek(action.position)
-                    _playbackInfo.update {
-                        it.copy(position = action.position)
-                    }
+                    _playbackInfo.update { it.copy(position = action.position) }
                 }
 
                 is LyricsPageAction.OnSetPosition -> {
-                    _playbackInfo.update {
-                        it.copy(position = action.position)
-                    }
+                    _playbackInfo.update { it.copy(position = action.position) }
                 }
 
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
@@ -324,6 +323,11 @@ class LyricsVM(
                 lyricsPrefs
                     .getLyricsBackgroundFlow()
                     .onEach { hyp -> _state.update { it.copy(lyricsBackground = hyp) } }
+                    .launchIn(this)
+
+                lyricsPrefs
+                    .getExpressiveSyllablesPref()
+                    .onEach { pref -> _state.update { it.copy(expressiveSyllables = pref) } }
                     .launchIn(this)
             }
     }

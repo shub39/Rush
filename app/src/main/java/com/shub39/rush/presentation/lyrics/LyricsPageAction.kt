@@ -24,6 +24,8 @@ import com.shub39.rush.domain.enums.Sources
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 
 sealed interface LyricsPageAction {
+    data class OnExpressiveLyricsChange(val pref: Boolean) : LyricsPageAction
+
     data class OnBlurSyncedChange(val pref: Boolean) : LyricsPageAction
 
     data class OnChangeLyricsBackground(val background: LyricsBackground) : LyricsPageAction

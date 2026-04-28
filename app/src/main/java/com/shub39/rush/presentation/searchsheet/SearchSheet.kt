@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.presentation.searchsheet
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -32,15 +31,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -153,8 +149,7 @@ fun SearchSheet(
                     shape = MaterialTheme.shapes.extraLarge,
                     placeholder = { Text(stringResource(R.string.search)) },
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
+                        Modifier.fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                             .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
@@ -162,10 +157,10 @@ fun SearchSheet(
                 )
 
                 LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier.padding(horizontal = 16.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
@@ -186,24 +181,24 @@ fun SearchSheet(
 
                     itemsIndexed(
                         items = state.localSearchResults,
-                        key = { _, it -> "Saved_${it.id}" }
+                        key = { _, it -> "Saved_${it.id}" },
                     ) { index, it ->
-                        val shape = when {
-                            state.localSearchResults.size == 1 -> detachedItemShape()
-                            index == 0 -> leadingItemShape()
-                            index == state.localSearchResults.lastIndex -> endItemShape()
-                            else -> middleItemShape()
-                        }
+                        val shape =
+                            when {
+                                state.localSearchResults.size == 1 -> detachedItemShape()
+                                index == 0 -> leadingItemShape()
+                                index == state.localSearchResults.lastIndex -> endItemShape()
+                                else -> middleItemShape()
+                            }
 
                         SearchResultCard(
                             result = it,
                             downloaded = true,
-                            modifier = Modifier
-                                .clip(shape)
-                                .clickable {
+                            modifier =
+                                Modifier.clip(shape).clickable {
                                     onAction(SearchSheetAction.OnCardClicked(it.id))
                                     onNavigateToLyrics()
-                                }
+                                },
                         )
                     }
 
@@ -212,25 +207,24 @@ fun SearchSheet(
                     }
 
                     if (!state.isSearching) {
-                        itemsIndexed(
-                            items = state.searchResults,
-                            key = { _, it -> it.id }
-                        ) { index, it ->
-                            val shape = when {
-                                state.searchResults.size == 1 -> detachedItemShape()
-                                index == 0 -> leadingItemShape()
-                                index == state.searchResults.lastIndex -> endItemShape()
-                                else -> middleItemShape()
-                            }
+                        itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) {
+                            index,
+                            it ->
+                            val shape =
+                                when {
+                                    state.searchResults.size == 1 -> detachedItemShape()
+                                    index == 0 -> leadingItemShape()
+                                    index == state.searchResults.lastIndex -> endItemShape()
+                                    else -> middleItemShape()
+                                }
 
                             SearchResultCard(
                                 result = it,
-                                modifier = Modifier
-                                    .clip(shape)
-                                    .clickable {
+                                modifier =
+                                    Modifier.clip(shape).clickable {
                                         onAction(SearchSheetAction.OnCardClicked(it.id))
                                         onNavigateToLyrics()
-                                    }
+                                    },
                             )
                         }
                     } else {

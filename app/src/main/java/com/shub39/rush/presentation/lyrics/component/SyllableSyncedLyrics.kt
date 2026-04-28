@@ -19,7 +19,6 @@ package com.shub39.rush.presentation.lyrics.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -104,7 +103,7 @@ fun SyllableSyncedLyrics(
         if (currentPlayingIndex >= 0) {
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
-                        lazyListState.layoutInfo.viewportStartOffset
+                    lazyListState.layoutInfo.viewportStartOffset
             val itemHeight = itemHeights[currentPlayingIndex] ?: 0
             val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
             lazyListState.animateScrollToItem(
@@ -125,10 +124,7 @@ fun SyllableSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(
-            items = ttmlLyrics,
-            key = { it, _ -> it }
-        ) { index, line ->
+        itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
             val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
@@ -143,43 +139,43 @@ fun SyllableSyncedLyrics(
                 } ?: 1f
 
             val animatedProgress by
-            animateFloatAsState(
-                targetValue = progress,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "loadingProgress",
-            )
+                animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "loadingProgress",
+                )
 
             val underTextAlpha by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 0.5f else 0.2f,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "underTextAlpha",
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "underTextAlpha",
+                )
 
             val blur by
-            animateDpAsState(
-                targetValue =
-                    if (!state.blurSyncedLyrics) 0.dp
-                    else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateDpAsState(
+                    targetValue =
+                        if (!state.blurSyncedLyrics) 0.dp
+                        else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             val scale by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 1f else 0.8f,
-                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 1f else 0.8f,
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                )
 
             val textColor by
-            animateColorAsState(
-                targetValue =
-                    when {
-                        (line.startTime * 1000).toLong() <= currentTime -> cardContent
-                        else -> cardContent.copy(0.3f)
-                    },
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "textColor",
-            )
+                animateColorAsState(
+                    targetValue =
+                        when {
+                            (line.startTime * 1000).toLong() <= currentTime -> cardContent
+                            else -> cardContent.copy(0.3f)
+                        },
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "textColor",
+                )
 
             SyllableLine(
                 textPrefs = state.textPrefs,
@@ -192,6 +188,7 @@ fun SyllableSyncedLyrics(
                 animatedProgress = animatedProgress,
                 underTextAlpha = underTextAlpha,
                 isCurrent = isCurrent,
+                expressiveSyllables = state.expressiveSyllables,
                 modifier =
                     Modifier.onGloballyPositioned { layoutCoordinates ->
                         val height = layoutCoordinates.size.height
@@ -214,6 +211,7 @@ fun SyllableLine(
     animatedProgress: Float,
     underTextAlpha: Float,
     isCurrent: Boolean,
+    expressiveSyllables: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -224,8 +222,7 @@ fun SyllableLine(
     ) {
         Box(
             modifier =
-                Modifier
-                    .graphicsLayer {
+                Modifier.graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -248,78 +245,95 @@ fun SyllableLine(
                         val wordEndTimeMs = (word.endTime * 1000).toLong()
                         val duration = wordEndTimeMs - wordStartTimeMs
 
-                        val maxWordWeight = when (duration) {
-                            in 0..500 -> 300
-                            in 501..1000 -> 500
-                            in 1001..1500 -> 700
-                            else -> 900
-                        }
+                        val maxWordWeight =
+                            when (duration) {
+                                in 0..500 -> 300
+                                in 501..1000 -> 500
+                                in 1001..1500 -> 700
+                                else -> 900
+                            }
 
-                        val maxWordWidth = when (duration) {
-                            in 0..500 -> 100f
-                            in 501..1000 -> 105f
-                            in 1001..1500 -> 110f
-                            in 1501..2000 -> 115f
-                            else -> 120f
-                        }
+                        val maxWordWidth =
+                            when (duration) {
+                                in 0..500 -> 100f
+                                in 501..1000 -> 105f
+                                in 1001..1500 -> 110f
+                                in 1501..2000 -> 115f
+                                else -> 120f
+                            }
 
                         val wordProgress =
                             if (currentTime >= wordEndTimeMs) 1f
                             else if (currentTime < wordStartTimeMs) 0f
-                            else (currentTime - wordStartTimeMs).toFloat() /
+                            else
+                                (currentTime - wordStartTimeMs).toFloat() /
                                     duration.coerceAtLeast(1)
 
                         val animatedProgress by
-                        animateFloatAsState(
-                            targetValue = wordProgress,
-                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                            label = "wordProgress",
-                        )
+                            animateFloatAsState(
+                                targetValue = wordProgress,
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                                label = "wordProgress",
+                            )
 
-                        val currentWeight = remember(animatedProgress) {
-                            ((animatedProgress * 1000).toInt()
-                                .coerceIn(200, maxWordWeight) / 10) * 10
-                        }
-                        val currentWidth = remember(animatedProgress) {
-                            (animatedProgress * 20f + 100f).coerceIn(100f, maxWordWidth).toInt()
-                                .toFloat()
-                        }
+                        val currentWeight =
+                            remember(animatedProgress) {
+                                ((animatedProgress * 1000).toInt().coerceIn(200, maxWordWeight) /
+                                    10) * 10
+                            }
+                        val currentWidth =
+                            remember(animatedProgress) {
+                                (animatedProgress * 20f + 100f)
+                                    .coerceIn(100f, maxWordWidth)
+                                    .toInt()
+                                    .toFloat()
+                            }
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
                         val wordScale by
-                        animateFloatAsState(
-                            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                        )
+                            animateFloatAsState(
+                                targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                            )
                         val glowAlpha by
-                        animateFloatAsState(
-                            targetValue = if (isHighlighted) 2f else 0f,
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                        )
+                            animateFloatAsState(
+                                targetValue = if (isHighlighted) 2f else 0f,
+                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                            )
 
                         Box(modifier = Modifier.padding(horizontal = 4.dp)) {
-                            Text(
-                                text = word.text,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                fontFamily = flexFontEmphasis(
-                                    fontWeight = maxWordWeight,
-                                    fontWidth = maxWordWidth
-                                ),
-                                modifier = Modifier.alpha(0f)
-                            )
+                            if (expressiveSyllables) {
+                                Text(
+                                    text = word.text,
+                                    fontSize = textPrefs.fontSize.sp,
+                                    letterSpacing = textPrefs.letterSpacing.sp,
+                                    lineHeight = textPrefs.lineHeight.sp,
+                                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                    fontFamily =
+                                        flexFontEmphasis(
+                                            fontWeight = maxWordWeight,
+                                            fontWidth = maxWordWidth,
+                                        ),
+                                    modifier = Modifier.alpha(0f),
+                                )
+                            }
 
-                            val textModifier = Modifier
-                                .matchParentSize()
-                                .scale(wordScale)
-                            val commonFontFamily = flexFontEmphasis(
-                                fontWeight = currentWeight,
-                                fontWidth = currentWidth
-                            )
+                            val textModifier =
+                                Modifier.then(
+                                        if (expressiveSyllables) Modifier.matchParentSize()
+                                        else Modifier
+                                    )
+                                    .scale(wordScale)
+                            val commonFontFamily =
+                                if (expressiveSyllables) {
+                                    flexFontEmphasis(
+                                        fontWeight = currentWeight,
+                                        fontWidth = currentWidth,
+                                    )
+                                } else {
+                                    MaterialTheme.typography.bodyLarge.fontFamily
+                                }
 
                             Text(
                                 text = word.text,
@@ -330,8 +344,8 @@ fun SyllableLine(
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                                 fontFamily = commonFontFamily,
-                                modifier = textModifier
-                                    .blur(
+                                modifier =
+                                    textModifier.blur(
                                         radius = glowAlpha.dp,
                                         edgeTreatment = BlurredEdgeTreatment.Unbounded,
                                     ),
@@ -346,34 +360,34 @@ fun SyllableLine(
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                                 fontFamily = commonFontFamily,
-                                modifier = textModifier
-                                    .graphicsLayer(
-                                        compositingStrategy = CompositingStrategy.Offscreen
-                                    )
-                                    .drawWithContent {
-                                        if (animatedProgress > 0f) {
-                                            drawContent()
-                                            if (animatedProgress < 1f) {
-                                                val feather = 16.dp.toPx()
-                                                val x =
-                                                    (size.width + feather) *
-                                                            animatedProgress
-                                                drawRect(
-                                                    brush =
-                                                        Brush.horizontalGradient(
-                                                            0f to Color.Black,
-                                                            ((x - feather) / size.width)
-                                                                .coerceIn(0f, 1f) to
+                                modifier =
+                                    textModifier
+                                        .graphicsLayer(
+                                            compositingStrategy = CompositingStrategy.Offscreen
+                                        )
+                                        .drawWithContent {
+                                            if (animatedProgress > 0f) {
+                                                drawContent()
+                                                if (animatedProgress < 1f) {
+                                                    val feather = 16.dp.toPx()
+                                                    val x =
+                                                        (size.width + feather) * animatedProgress
+                                                    drawRect(
+                                                        brush =
+                                                            Brush.horizontalGradient(
+                                                                0f to Color.Black,
+                                                                ((x - feather) / size.width)
+                                                                    .coerceIn(0f, 1f) to
                                                                     Color.Black,
-                                                            (x / size.width).coerceIn(0f, 1f) to
+                                                                (x / size.width).coerceIn(0f, 1f) to
                                                                     Color.Transparent,
-                                                            1f to Color.Transparent,
-                                                        ),
-                                                    blendMode = BlendMode.DstIn,
-                                                )
+                                                                1f to Color.Transparent,
+                                                            ),
+                                                        blendMode = BlendMode.DstIn,
+                                                    )
+                                                }
                                             }
-                                        }
-                                    },
+                                        },
                             )
                         }
                     }

@@ -19,6 +19,7 @@ package com.shub39.rush.presentation.lyrics.component.customisation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -91,6 +92,35 @@ fun LazyListScope.lyricsCustomisationSettings(
                         }
                     },
                     labelProvider = { Text(text = stringResource(it.toStringRes())) },
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isShowingSynced,
+                modifier = Modifier.fillMaxWidth(),
+                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+            ) {
+                ListItem(
+                    colors = listItemColors(),
+                    modifier = Modifier.clip(middleItemShape()),
+                    headlineContent = { Text(text = "Enable Expressive Syllables") },
+                    supportingContent = {
+                        Text(
+                            text =
+                                "[Experimental] Font weight and Font Width are animated based" +
+                                    " on duration of the word. Might cause stutters and glitches",
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.expressiveSyllables,
+                            onCheckedChange = {
+                                onAction(LyricsPageAction.OnExpressiveLyricsChange(it))
+                            },
+                        )
+                    },
                 )
             }
 

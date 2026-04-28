@@ -49,6 +49,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val fullscreen = booleanPreferencesKey("fullscreen")
         private val lyricsBackground = stringPreferencesKey("lyrics_background")
         private val blurSynced = booleanPreferencesKey("blur_synced")
+        private val expressiveSyllables = booleanPreferencesKey("expressive_syllables")
     }
 
     override suspend fun reset() {
@@ -67,7 +68,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
             LyricsBackground.valueOf(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name)
         }
 
-    override suspend fun updateLyricsBackround(background: LyricsBackground) {
+    override suspend fun updateLyricsBackground(background: LyricsBackground) {
         dataStore.edit { it[lyricsBackground] = background.name }
     }
 
@@ -75,6 +76,13 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateBlurSynced(pref: Boolean) {
         dataStore.edit { it[blurSynced] = pref }
+    }
+
+    override fun getExpressiveSyllablesPref(): Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[expressiveSyllables] == true }
+
+    override suspend fun updateExpressiveSyllablesPref(pref: Boolean) {
+        dataStore.edit { prefs -> prefs[expressiveSyllables] = pref }
     }
 
     override fun getFullScreenFlow(): Flow<Boolean> =
