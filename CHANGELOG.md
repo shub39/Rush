@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.8.3
+## 5.9.0
 - [Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations 
 - Translation Updates
 - Misc UI Improvements in bottom sheets
