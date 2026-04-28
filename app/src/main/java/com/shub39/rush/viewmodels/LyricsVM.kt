@@ -235,7 +235,18 @@ class LyricsVM(
                 LyricsPageAction.OnPauseOrResume ->
                     MediaListenerImpl.pauseOrResume(_playbackInfo.value.speed == 0f)
 
-                is LyricsPageAction.OnSeek -> MediaListenerImpl.seek(action.position)
+                is LyricsPageAction.OnSeek -> {
+                    MediaListenerImpl.seek(action.position)
+                    _playbackInfo.update {
+                        it.copy(position = action.position)
+                    }
+                }
+
+                is LyricsPageAction.OnSetPosition -> {
+                    _playbackInfo.update {
+                        it.copy(position = action.position)
+                    }
+                }
 
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
                 LyricsPageAction.OnPlayNext -> MediaListenerImpl.playNext()
@@ -333,8 +344,10 @@ class LyricsVM(
                         while (isActive) {
                             val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
 
-                            _playbackInfo.update {
-                                it.copy(position = position + elapsed, speed = speed)
+                            if (_playbackInfo.value.position < (position + elapsed)) {
+                                _playbackInfo.update {
+                                    it.copy(position = position + elapsed, speed = speed)
+                                }
                             }
 
                             delay(100)

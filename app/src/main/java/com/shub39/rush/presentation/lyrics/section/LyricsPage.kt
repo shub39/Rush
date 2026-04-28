@@ -138,6 +138,7 @@ fun LyricsPage(
     LaunchedEffect(state.lyricsState) {
         delay(100)
         lazyListState.animateScrollToItem(0)
+        action(LyricsPageAction.OnSetPosition(0))
     }
 
     // Content Start

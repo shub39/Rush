@@ -19,6 +19,7 @@ package com.shub39.rush.presentation.lyrics.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -74,6 +76,7 @@ import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlin.collections.set
@@ -242,6 +245,22 @@ fun SyllableLine(
                     line.words.forEach { word ->
                         val wordStartTimeMs = (word.startTime * 1000).toLong()
                         val wordEndTimeMs = (word.endTime * 1000).toLong()
+                        val duration = wordEndTimeMs - wordStartTimeMs
+
+                        val maxWordWeight = when (duration) {
+                            in 0..500 -> 300
+                            in 501..1000 -> 500
+                            in 1001..1500 -> 700
+                            else -> 900
+                        }
+
+                        val maxWordWidth =  when (duration) {
+                            in 0..500 -> 100f
+                            in 501..1000 -> 105f
+                            in 1001..1500 -> 110f
+                            in 1501..2000 -> 115f
+                            else -> 120f
+                        }
 
                         val wordProgress =
                             if (currentTime >= wordEndTimeMs) {
@@ -249,7 +268,6 @@ fun SyllableLine(
                             } else if (currentTime < wordStartTimeMs) {
                                 0f
                             } else {
-                                val duration = wordEndTimeMs - wordStartTimeMs
                                 if (duration > 0) {
                                     (currentTime - wordStartTimeMs).toFloat() / duration
                                 } else {
@@ -263,6 +281,15 @@ fun SyllableLine(
                                 animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                                 label = "wordProgress",
                             )
+
+                        val animatedFontWeight by animateIntAsState(
+                            targetValue = (wordProgress * 1000).toInt().coerceIn(200, maxWordWeight),
+                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+                        )
+                        val animatedFontWidth by animateFloatAsState(
+                            targetValue = (wordProgress * 20f + 100f).coerceIn(100f, maxWordWidth),
+                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+                        )
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -281,11 +308,29 @@ fun SyllableLine(
                             Text(
                                 text = word.text,
                                 fontWeight = FontWeight.Bold,
+                                fontSize = textPrefs.fontSize.sp,
+                                letterSpacing = textPrefs.letterSpacing.sp,
+                                lineHeight = textPrefs.lineHeight.sp,
+                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontFamily = flexFontEmphasis(
+                                    fontWeight = maxWordWeight,
+                                    fontWidth = maxWordWidth
+                                ),
+                                modifier = Modifier.alpha(0f)
+                            )
+
+                            Text(
+                                text = word.text,
+                                fontWeight = FontWeight.Bold,
                                 color = textColor.copy(alpha = underTextAlpha),
                                 fontSize = textPrefs.fontSize.sp,
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontFamily = flexFontEmphasis(
+                                    fontWeight = animatedFontWeight,
+                                    fontWidth = animatedFontWidth
+                                ),
                                 modifier =
                                     Modifier.scale(wordScale)
                                         .blur(
@@ -302,6 +347,10 @@ fun SyllableLine(
                                 letterSpacing = textPrefs.letterSpacing.sp,
                                 lineHeight = textPrefs.lineHeight.sp,
                                 textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontFamily = flexFontEmphasis(
+                                    fontWeight = animatedFontWeight,
+                                    fontWidth = animatedFontWidth
+                                ),
                                 modifier =
                                     Modifier.scale(wordScale)
                                         .graphicsLayer(

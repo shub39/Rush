@@ -70,6 +70,8 @@ sealed interface LyricsPageAction {
 
     data class OnSeek(val position: Long) : LyricsPageAction
 
+    data class OnSetPosition(val position: Long) : LyricsPageAction
+
     data class OnUpdateShareLines(val songDetails: SongDetails) : LyricsPageAction
 
     data object OnToggleSearchSheet : LyricsPageAction
