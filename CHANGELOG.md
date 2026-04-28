@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.8.3
+- [Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations 
+- Translation Updates
+- Misc UI Improvements in bottom sheets
+
 ## 5.8.2
 - Fixed misleading Syllable Synced Lyrics for some tracks
 - Removed word by word highlight from line synced lyrics

@@ -1,5 +1,13 @@
 [
   {
+    "version": "5.8.3",
+    "changes": [
+      "[Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations",
+      "Translation Updates",
+      "Misc UI Improvements in bottom sheets"
+    ]
+  },
+  {
     "version": "5.8.2",
     "changes": [
       "Fixed misleading Syllable Synced Lyrics for some tracks",
@@ -62,13 +70,6 @@
     "changes": [
       "Fixed synced lyrics not loading",
       "Moved to jdk 21 (fdroid builds)"
-    ]
-  },
-  {
-    "version": "5.5.1",
-    "changes": [
-      "Fixed text wrap on larger DPI (#220)",
-      "Added default font option (#212)"
     ]
   }
 ]
