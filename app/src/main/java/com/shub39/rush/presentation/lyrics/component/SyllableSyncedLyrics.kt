@@ -278,8 +278,9 @@ fun SyllableLine(
 
                         val currentWeight =
                             remember(animatedProgress) {
-                                ((animatedProgress * 1000).toInt().coerceIn(200, maxWordWeight) /
-                                    10) * 10
+                                ((animatedProgress * 1000)
+                                    .toInt()
+                                    .coerceIn(200, maxWordWeight) / 10) * 10
                             }
                         val currentWidth =
                             remember(animatedProgress) {
