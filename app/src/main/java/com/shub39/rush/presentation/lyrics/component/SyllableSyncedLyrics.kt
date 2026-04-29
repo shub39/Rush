@@ -455,6 +455,41 @@ fun SyllableSyncedLyricsPreview() {
                         ParsedWord("sic", 12.0, 13.0),
                     ),
             ),
+            ParsedLine(
+                text = "Slow and heavy beats",
+                startTime = 14.0,
+                words =
+                    listOf(
+                        ParsedWord("Slow", 14.0, 16.0),
+                        ParsedWord("and", 16.0, 16.5),
+                        ParsedWord("hea-", 16.5, 18.0),
+                        ParsedWord("vy", 18.0, 19.0),
+                        ParsedWord("beats", 19.0, 21.0),
+                    ),
+            ),
+            ParsedLine(
+                text = "Fast fast fast fast",
+                startTime = 22.0,
+                words =
+                    listOf(
+                        ParsedWord("Fast", 22.0, 22.3),
+                        ParsedWord("fast", 22.3, 22.6),
+                        ParsedWord("fast", 22.6, 22.9),
+                        ParsedWord("fast", 22.9, 23.2),
+                    ),
+            ),
+            ParsedLine(
+                text = "Varied rhythm here",
+                startTime = 24.0,
+                words =
+                    listOf(
+                        ParsedWord("Va-", 24.0, 24.2),
+                        ParsedWord("ried", 24.2, 25.0),
+                        ParsedWord("rhy-", 25.0, 25.1),
+                        ParsedWord("thm", 25.1, 26.5),
+                        ParsedWord("here", 26.5, 28.0),
+                    ),
+            ),
         )
     }
 
@@ -462,7 +497,7 @@ fun SyllableSyncedLyricsPreview() {
         val startTime = System.currentTimeMillis()
         while (true) {
             val elapsed = System.currentTimeMillis() - startTime
-            position = elapsed % 15000
+            position = elapsed % 30000
             delay(16)
         }
     }
@@ -485,6 +520,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
+            expressiveSyllables = true,
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
