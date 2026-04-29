@@ -47,7 +47,7 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -58,7 +58,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -277,18 +280,12 @@ fun SyllableLine(
                             )
 
                         val currentWeight =
-                            remember(animatedProgress) {
-                                ((animatedProgress * 1000)
-                                    .toInt()
-                                    .coerceIn(200, maxWordWeight) / 10) * 10
-                            }
+                            (200 + (animatedProgress * (maxWordWeight - 200)))
+                                .toInt()
+                                .coerceIn(200, maxWordWeight)
                         val currentWidth =
-                            remember(animatedProgress) {
-                                (animatedProgress * 20f + 100f)
-                                    .coerceIn(100f, maxWordWidth)
-                                    .toInt()
-                                    .toFloat()
-                            }
+                            (100f + (animatedProgress * (maxWordWidth - 100f)))
+                                .coerceIn(100f, maxWordWidth)
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -296,99 +293,111 @@ fun SyllableLine(
                             animateFloatAsState(
                                 targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
                                 animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                                label = "wordScale",
                             )
                         val glowAlpha by
                             animateFloatAsState(
                                 targetValue = if (isHighlighted) 2f else 0f,
                                 animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                                label = "glowAlpha",
                             )
 
-                        Box(modifier = Modifier.padding(horizontal = 4.dp)) {
-                            if (expressiveSyllables) {
-                                Text(
-                                    text = word.text,
-                                    fontSize = textPrefs.fontSize.sp,
-                                    letterSpacing = textPrefs.letterSpacing.sp,
-                                    lineHeight = textPrefs.lineHeight.sp,
-                                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                    fontFamily =
+                        val textMeasurer = rememberTextMeasurer()
+                        val textStyle =
+                            TextStyle(
+                                fontSize = textPrefs.fontSize.sp,
+                                letterSpacing = textPrefs.letterSpacing.sp,
+                                lineHeight = textPrefs.lineHeight.sp,
+                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                                fontWeight = FontWeight.Bold,
+                                fontFamily =
+                                    if (expressiveSyllables) {
                                         flexFontEmphasis(
-                                            fontWeight = maxWordWeight,
-                                            fontWidth = maxWordWidth,
-                                        ),
-                                    modifier = Modifier.alpha(0f),
-                                )
-                            }
-
-                            val textModifier =
-                                Modifier.then(
-                                        if (expressiveSyllables) Modifier.matchParentSize()
-                                        else Modifier
-                                    )
-                                    .scale(wordScale)
-                            val commonFontFamily =
-                                if (expressiveSyllables) {
-                                    flexFontEmphasis(
-                                        fontWeight = currentWeight,
-                                        fontWidth = currentWidth,
-                                    )
-                                } else {
-                                    MaterialTheme.typography.bodyLarge.fontFamily
-                                }
-
-                            Text(
-                                text = word.text,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor.copy(alpha = underTextAlpha),
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                fontFamily = commonFontFamily,
-                                modifier =
-                                    textModifier.blur(
-                                        radius = glowAlpha.dp,
-                                        edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                                    ),
+                                            fontWeight = currentWeight,
+                                            fontWidth = currentWidth,
+                                        )
+                                    } else {
+                                        MaterialTheme.typography.bodyLarge.fontFamily
+                                    },
                             )
 
+                        val textLayoutResult =
+                            remember(textStyle) { textMeasurer.measure(word.text, textStyle) }
+
+                        Box(
+                            modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale),
+                        ) {
+                            // Ghost text for layout consistency
                             Text(
                                 text = word.text,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor,
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                fontFamily = commonFontFamily,
+                                style =
+                                    textStyle.copy(
+                                        fontFamily =
+                                            if (expressiveSyllables) {
+                                                flexFontEmphasis(
+                                                    fontWeight = maxWordWeight,
+                                                    fontWidth = maxWordWidth,
+                                                )
+                                            } else {
+                                                MaterialTheme.typography.bodyLarge.fontFamily
+                                            }
+                                    ),
+                                modifier = Modifier.alpha(0f),
+                            )
+
+                            // Undertext + Glow
+                            Box(
                                 modifier =
-                                    textModifier
+                                    Modifier.matchParentSize()
+                                        .blur(
+                                            radius = glowAlpha.dp,
+                                            edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                                        )
+                                        .drawWithCache {
+                                            onDrawBehind {
+                                                drawText(
+                                                    textLayoutResult,
+                                                    color = textColor.copy(alpha = underTextAlpha),
+                                                )
+                                            }
+                                        }
+                            )
+
+                            // Main Highlight Layer with Mask
+                            Box(
+                                modifier =
+                                    Modifier.matchParentSize()
                                         .graphicsLayer(
                                             compositingStrategy = CompositingStrategy.Offscreen
                                         )
-                                        .drawWithContent {
-                                            if (animatedProgress > 0f) {
-                                                drawContent()
-                                                if (animatedProgress < 1f) {
-                                                    val feather = 16.dp.toPx()
-                                                    val x =
-                                                        (size.width + feather) * animatedProgress
-                                                    drawRect(
-                                                        brush =
-                                                            Brush.horizontalGradient(
-                                                                0f to Color.Black,
-                                                                ((x - feather) / size.width)
-                                                                    .coerceIn(0f, 1f) to
-                                                                    Color.Black,
-                                                                (x / size.width).coerceIn(0f, 1f) to
-                                                                    Color.Transparent,
-                                                                1f to Color.Transparent,
-                                                            ),
-                                                        blendMode = BlendMode.DstIn,
-                                                    )
+                                        .drawWithCache {
+                                            onDrawBehind {
+                                                if (animatedProgress > 0f) {
+                                                    drawText(textLayoutResult, color = textColor)
+                                                    if (animatedProgress < 1f) {
+                                                        val feather = 16.dp.toPx()
+                                                        val x =
+                                                            (size.width + feather) *
+                                                                animatedProgress
+                                                        drawRect(
+                                                            brush =
+                                                                Brush.horizontalGradient(
+                                                                    0f to Color.Black,
+                                                                    ((x - feather) / size.width)
+                                                                        .coerceIn(0f, 1f) to
+                                                                        Color.Black,
+                                                                    (x / size.width).coerceIn(
+                                                                        0f,
+                                                                        1f,
+                                                                    ) to Color.Transparent,
+                                                                    1f to Color.Transparent,
+                                                                ),
+                                                            blendMode = BlendMode.DstIn,
+                                                        )
+                                                    }
                                                 }
                                             }
-                                        },
+                                        }
                             )
                         }
                     }
