@@ -284,8 +284,10 @@ fun SyllableLine(
                                 .toInt()
                                 .coerceIn(200, maxWordWeight)
                         val currentWidth =
-                            (100f + (animatedProgress * (maxWordWidth - 100f)))
-                                .coerceIn(100f, maxWordWidth)
+                            (100f + (animatedProgress * (maxWordWidth - 100f))).coerceIn(
+                                100f,
+                                maxWordWidth,
+                            )
 
                         // word highlighting design
                         val isHighlighted = currentTime >= wordStartTimeMs
@@ -324,9 +326,7 @@ fun SyllableLine(
                         val textLayoutResult =
                             remember(textStyle) { textMeasurer.measure(word.text, textStyle) }
 
-                        Box(
-                            modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale),
-                        ) {
+                        Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
                             // Ghost text for layout consistency
                             Text(
                                 text = word.text,
