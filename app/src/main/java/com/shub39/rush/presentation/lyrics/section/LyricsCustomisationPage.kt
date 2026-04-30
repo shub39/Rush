@@ -32,8 +32,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -79,7 +77,6 @@ import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LyricsCustomisationsPage(
     onNavigateBack: () -> Unit,

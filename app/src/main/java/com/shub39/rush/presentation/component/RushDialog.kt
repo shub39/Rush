@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,7 +40,6 @@ import androidx.compose.ui.window.DialogProperties
  *   placed within a [ColumnScope], allowing for direct use of column-specific modifiers like
  *   `weight`.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RushDialog(
     onDismissRequest: () -> Unit,
