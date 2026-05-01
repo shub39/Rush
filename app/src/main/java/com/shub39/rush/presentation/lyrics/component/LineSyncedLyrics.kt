@@ -233,7 +233,7 @@ fun SyncedLyric(
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                     modifier =
-                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
                             .blur(
                                 radius = glowAlpha,
                                 edgeTreatment = BlurredEdgeTreatment.Unbounded,
@@ -248,7 +248,7 @@ fun SyncedLyric(
                     letterSpacing = textPrefs.letterSpacing.sp,
                     lineHeight = textPrefs.lineHeight.sp,
                     textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
                 )
             } else {
                 DotLoadingProgress(

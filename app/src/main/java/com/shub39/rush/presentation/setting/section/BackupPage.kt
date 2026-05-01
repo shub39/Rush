@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -77,7 +75,6 @@ import io.github.vinceglb.filekit.writeString
 import kotlinx.coroutines.launch
 
 // backup page
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BackupPage(
     state: SettingsPageState,
@@ -116,7 +113,6 @@ fun BackupPage(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 private fun BackupPageContent(
     onNavigateBack: () -> Unit,
     onSaveFile: () -> Unit,

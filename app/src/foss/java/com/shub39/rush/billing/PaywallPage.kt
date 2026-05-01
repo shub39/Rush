@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.billing
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,8 +43,6 @@ import com.shub39.rush.R
 @Composable
 fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     val uriHandler = LocalUriHandler.current
-
-    BackHandler { onDismissRequest() }
 
     Scaffold { paddingValues ->
         Box(

@@ -276,9 +276,10 @@ fun PlainLyric(
     onClick: () -> Unit,
     containerColor: Color,
     cardContent: Color,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
     ) {
         Card(

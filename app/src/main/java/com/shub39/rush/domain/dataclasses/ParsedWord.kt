@@ -14,23 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.domain.dataclasses
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import com.shub39.rush.domain.dataclasses.Theme
-import kotlinx.serialization.Serializable
-
-@Serializable data class VersionEntry(val version: String, val changes: List<String>)
-
-typealias Changelog = List<VersionEntry>
-
-@Stable
-@Immutable
-data class GlobalState(
-    val isProUser: Boolean = false,
-    val theme: Theme = Theme(),
-    val onBoardingDone: Boolean = true,
-    val notificationAccess: Boolean = false,
-    val currentChangelog: VersionEntry? = null,
-)
+data class ParsedWord(val text: String, val startTime: Double, val endTime: Double)

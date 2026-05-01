@@ -95,12 +95,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
-            AnimatedVisibility(
-                visible = isShowingSynced,
-                modifier = Modifier.fillMaxWidth(),
-                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-            ) {
+            if (isShowingSynced) {
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
@@ -124,12 +119,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
-            AnimatedVisibility(
-                visible = isShowingSynced && blurAvailable(),
-                modifier = Modifier.fillMaxWidth(),
-                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-            ) {
+            if (isShowingSynced && blurAvailable()) {
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),

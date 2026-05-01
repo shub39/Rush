@@ -139,4 +139,6 @@
     <string name="curve">曲線</string>
     <string name="copy_error">複製錯誤</string>
     <string name="not_found">未找到</string>
+    <string name="chat">聊天</string>
+    <string name="synced_lyrics">同步</string>
 </resources>

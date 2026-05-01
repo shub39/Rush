@@ -30,7 +30,6 @@ import com.shub39.rush.R
 val TYPOGRAPHY = Typography()
 
 @OptIn(ExperimentalTextApi::class)
-@Composable
 fun flexFontEmphasis(
     slant: Float = 0f,
     fontWeight: Int = 1000,
@@ -49,7 +48,6 @@ fun flexFontEmphasis(
     )
 
 @OptIn(ExperimentalTextApi::class)
-@Composable
 fun flexFontRounded(): FontFamily =
     FontFamily(
         Font(

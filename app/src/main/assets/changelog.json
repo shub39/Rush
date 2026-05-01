@@ -1,5 +1,15 @@
 [
   {
+    "version": "5.9.1",
+    "changes": [
+      "Improved Expressive Syllables, Enable it from Lyrics Customizations",
+      "Translation Updates",
+      "Redesigned Messy Share Card with Flex Fonts",
+      "Added Animated Previews for Synced Lyrics",
+      "Fixed SearchSheet UX issues with keyboard"
+    ]
+  },
+  {
     "version": "5.9.0",
     "changes": [
       "[Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations",
@@ -63,13 +73,6 @@
       "Fixed LRCLIB api not responding sometimes (hopefully)",
       "Misc updates and fixes",
       "Added flex fonts for headlines, displays and sharecards"
-    ]
-  },
-  {
-    "version": "5.5.2",
-    "changes": [
-      "Fixed synced lyrics not loading",
-      "Moved to jdk 21 (fdroid builds)"
     ]
   }
 ]
