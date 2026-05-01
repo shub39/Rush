@@ -95,12 +95,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
-            AnimatedVisibility(
-                visible = isShowingSynced,
-                modifier = Modifier.fillMaxWidth(),
-                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-            ) {
+            if (isShowingSynced) {
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
@@ -109,7 +104,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                         Text(
                             text =
                                 "[Experimental] Font weight and Font Width are animated based" +
-                                    " on duration of the word. Might cause stutters and glitches",
+                                        " on duration of the word. Might cause stutters and glitches",
                             modifier = Modifier.basicMarquee(),
                         )
                     },
@@ -124,12 +119,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
-            AnimatedVisibility(
-                visible = isShowingSynced && blurAvailable(),
-                modifier = Modifier.fillMaxWidth(),
-                enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-            ) {
+            if (isShowingSynced && blurAvailable()) {
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),

@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.presentation.lyrics.section
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -162,7 +163,10 @@ fun LyricsCustomisationsPage(
         ) { paddingValues ->
             LazyColumn(
                 modifier =
-                    Modifier.padding(top = paddingValues.calculateTopPadding()).fillMaxSize(),
+                    Modifier
+                        .padding(top = paddingValues.calculateTopPadding())
+                        .fillMaxSize()
+                        .animateContentSize(),
                 contentPadding =
                     PaddingValues(
                         start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
