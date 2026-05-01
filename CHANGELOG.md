@@ -1,9 +1,11 @@
 # Changelog
 
 ## 5.9.1
-- Improvements to Expressive Syllables, Enable it from Lyrics Customizations 
+- Improved Expressive Syllables, Enable it from Lyrics Customizations 
 - Translation Updates
 - Redesigned Messy Share Card with Flex Fonts
+- Added Animated Previews for Synced Lyrics
+- Fixed SearchSheet UX issues with keyboard
 
 ## 5.9.0
 - [Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations 
