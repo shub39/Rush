@@ -76,12 +76,9 @@ fun App() {
 
     LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context)) }
 
-    LaunchedEffect(globalState.onBoardingDone, globalState.showPaywall) {
+    LaunchedEffect(globalState.onBoardingDone) {
         if (!globalState.onBoardingDone) {
             backStack.add(OnboardingPage)
-        }
-        if (globalState.showPaywall) {
-            backStack.add(PaywallPage)
         }
     }
 
@@ -137,7 +134,7 @@ fun App() {
                                 state = shareState,
                                 onAction = shareVM::onAction,
                                 isProUser = globalState.isProUser,
-                                onShowPaywall = { globalVM.onAction(GlobalAction.OnTogglePaywall) },
+                                onShowPaywall = { backStack.add(PaywallPage) },
                             )
                         }
 
@@ -153,7 +150,7 @@ fun App() {
                                     if (backStack.size != 1) backStack.removeLastOrNull()
                                 },
                                 isProUser = globalState.isProUser,
-                                onShowPaywall = { globalVM.onAction(GlobalAction.OnTogglePaywall) },
+                                onShowPaywall = { backStack.add(PaywallPage) },
                             )
                         }
 
@@ -177,8 +174,7 @@ fun App() {
                                 isProUser = globalState.isProUser,
                                 onDismissRequest = {
                                     if (backStack.size != 1) backStack.removeLastOrNull()
-                                    globalVM.onAction(GlobalAction.OnTogglePaywall)
-                                },
+                                }
                             )
                         }
                     },

@@ -67,9 +67,6 @@ class GlobalVM(
 
     fun onAction(action: GlobalAction) {
         when (action) {
-            GlobalAction.OnTogglePaywall ->
-                _state.update { it.copy(showPaywall = !_state.value.showPaywall) }
-
             is GlobalAction.OnUpdateOnboardingDone ->
                 viewModelScope.launch { otherPreferences.updateOnboardingDone(action.status) }
 
