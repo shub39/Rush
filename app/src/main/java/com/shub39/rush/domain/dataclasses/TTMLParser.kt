@@ -21,24 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 
-data class ParsedLine(
-    val text: String,
-    val startTime: Double,
-    val words: List<ParsedWord>,
-    val agent: String? = null,
-    val isBackground: Boolean = false,
-    val backgroundLines: List<ParsedLine> = emptyList(),
-)
-
-data class ParsedWord(val text: String, val startTime: Double, val endTime: Double)
-
-private data class SpanInfo(
-    val text: String,
-    val startTime: Double,
-    val endTime: Double,
-    val hasTrailingSpace: Boolean,
-)
-
 object TTMLParser {
 
     fun isValidTTML(ttml: String): Boolean {
@@ -170,7 +152,7 @@ object TTMLParser {
                     )
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return emptyList()
         }
 
@@ -194,7 +176,7 @@ object TTMLParser {
 
     private fun parseBackgroundSpan(span: Element, parentStartTime: Double): ParsedLine? {
         val bgBegin = span.getAttribute("begin")
-        val bgEnd = span.getAttribute("end")
+//        val bgEnd = span.getAttribute("end")
         val bgStartTime = if (bgBegin.isNotEmpty()) parseTime(bgBegin) else parentStartTime
 
         val spanInfos = mutableListOf<SpanInfo>()
@@ -397,7 +379,7 @@ object TTMLParser {
                 }
                 else -> timeStr.toDoubleOrNull() ?: 0.0
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             0.0
         }
     }
