@@ -20,8 +20,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -76,7 +79,7 @@ fun LyricsCustomisationPreview(
 
             AnimatedContent(targetState = isShowingSynced, modifier = Modifier.fillMaxWidth()) {
                 Column(
-                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth(),
                     verticalArrangement =
                         Arrangement.spacedBy(
                             with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
@@ -85,39 +88,58 @@ fun LyricsCustomisationPreview(
                     if (it) {
                         val lines by remember { mutableStateOf((1..2).map { getRandomLine() }) }
 
-                        SyncedLyric(
-                            textPrefs = state.textPrefs,
-                            blur = if (state.blurSyncedLyrics) 2.dp else 0.dp,
-                            action = {},
-                            lyric = Lyric(1L, lines.first()),
-                            underTextAlpha = 0.2f,
-                            textColor = cardContent,
-                            animatedProgress = 1f,
-                            scale = 0.8f,
-                            glowAlpha = 0.dp,
-                        )
-                        SyncedLyric(
-                            textPrefs = state.textPrefs,
-                            blur = 0.dp,
-                            action = {},
-                            lyric = Lyric(1L, lines.last()),
-                            underTextAlpha = 0.5f,
-                            textColor = cardContent,
-                            animatedProgress = 0.5f,
-                            scale = 1f,
-                            glowAlpha = 2.dp,
-                        )
-                        SyncedLyric(
-                            textPrefs = state.textPrefs,
-                            blur = 0.dp,
-                            action = {},
-                            lyric = Lyric(1L, ""),
-                            underTextAlpha = 0.5f,
-                            textColor = cardContent,
-                            animatedProgress = 0.5f,
-                            scale = 0.8f,
-                            glowAlpha = 0.dp,
-                        )
+                        LazyColumn(
+                            contentPadding = PaddingValues(vertical = 16.dp),
+                            modifier = Modifier.heightIn(max = 400.dp),
+                            verticalArrangement =
+                                Arrangement.spacedBy(
+                                    with(LocalDensity.current) {
+                                        state.textPrefs.lineHeight.sp.toDp() / 2
+                                    }
+                                )
+                        ) {
+                            item {
+                                SyncedLyric(
+                                    textPrefs = state.textPrefs,
+                                    blur = if (state.blurSyncedLyrics) 2.dp else 0.dp,
+                                    action = {},
+                                    lyric = Lyric(1L, lines.first()),
+                                    underTextAlpha = 0.2f,
+                                    textColor = cardContent,
+                                    animatedProgress = 1f,
+                                    scale = 0.8f,
+                                    glowAlpha = 0.dp,
+                                )
+                            }
+
+                            item {
+                                SyncedLyric(
+                                    textPrefs = state.textPrefs,
+                                    blur = 0.dp,
+                                    action = {},
+                                    lyric = Lyric(1L, lines.last()),
+                                    underTextAlpha = 0.5f,
+                                    textColor = cardContent,
+                                    animatedProgress = 0.5f,
+                                    scale = 1f,
+                                    glowAlpha = 2.dp,
+                                )
+                            }
+
+                            item {
+                                SyncedLyric(
+                                    textPrefs = state.textPrefs,
+                                    blur = 0.dp,
+                                    action = {},
+                                    lyric = Lyric(1L, ""),
+                                    underTextAlpha = 0.5f,
+                                    textColor = cardContent,
+                                    animatedProgress = 0.5f,
+                                    scale = 0.8f,
+                                    glowAlpha = 0.dp,
+                                )
+                            }
+                        }
                     } else {
                         PlainLyric(
                             entry =
@@ -130,6 +152,7 @@ fun LyricsCustomisationPreview(
                                     Color.Transparent
                                 else cardBackground,
                             cardContent = cardContent,
+                            modifier = Modifier.padding(vertical = 10.dp)
                         )
                     }
                 }
