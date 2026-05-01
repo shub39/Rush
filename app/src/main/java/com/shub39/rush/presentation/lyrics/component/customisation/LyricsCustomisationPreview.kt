@@ -109,9 +109,7 @@ fun LyricsCustomisationPreview(
     }
 
     val currentPlayingIndex =
-        remember(currentTime) {
-            lyrics.indexOfLast { it.time <= currentTime }.coerceAtLeast(0)
-        }
+        remember(currentTime) { lyrics.indexOfLast { it.time <= currentTime }.coerceAtLeast(0) }
 
     LaunchedEffect(currentPlayingIndex) {
         if (isShowingSynced) {
@@ -159,7 +157,7 @@ fun LyricsCustomisationPreview(
                                         state.textPrefs.lineHeight.sp.toDp() / 2
                                     }
                                 ),
-                            userScrollEnabled = false
+                            userScrollEnabled = false,
                         ) {
                             items(lyrics.size) { index ->
                                 val isCurrent = index == currentPlayingIndex
@@ -173,14 +171,16 @@ fun LyricsCustomisationPreview(
                                                 (abs(index - currentPlayingIndex) * 3)
                                                     .coerceIn(0..10)
                                                     .dp,
-                                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                                        animationSpec =
+                                            MaterialTheme.motionScheme.fastEffectsSpec(),
                                         label = "blur",
                                     )
 
                                 val scale by
                                     animateFloatAsState(
                                         targetValue = if (isCurrent) 1f else 0.8f,
-                                        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                                        animationSpec =
+                                            MaterialTheme.motionScheme.fastSpatialSpec(),
                                         label = "scale",
                                     )
 

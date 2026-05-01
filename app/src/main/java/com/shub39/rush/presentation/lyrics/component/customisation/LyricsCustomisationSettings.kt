@@ -104,7 +104,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                         Text(
                             text =
                                 "[Experimental] Font weight and Font Width are animated based" +
-                                        " on duration of the word. Might cause stutters and glitches",
+                                    " on duration of the word. Might cause stutters and glitches",
                             modifier = Modifier.basicMarquee(),
                         )
                     },

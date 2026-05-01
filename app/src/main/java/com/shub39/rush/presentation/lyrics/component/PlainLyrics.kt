@@ -276,7 +276,7 @@ fun PlainLyric(
     onClick: () -> Unit,
     containerColor: Color,
     cardContent: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

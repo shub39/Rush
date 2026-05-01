@@ -110,13 +110,15 @@ fun MessyCard(
                 words.forEach { word ->
                     Text(
                         text = word.text,
-                        style = TextStyle(
-                            fontFamily = flexFontEmphasis(
-                                fontWeight = word.fontWeight,
-                                fontWidth = word.fontWidth,
+                        style =
+                            TextStyle(
+                                fontFamily =
+                                    flexFontEmphasis(
+                                        fontWeight = word.fontWeight,
+                                        fontWidth = word.fontWidth,
+                                    ),
+                                fontSize = pxToSp(word.fontSize),
                             ),
-                            fontSize = pxToSp(word.fontSize)
-                        ),
                     )
                 }
             }

@@ -33,7 +33,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -163,8 +162,7 @@ fun LyricsCustomisationsPage(
         ) { paddingValues ->
             LazyColumn(
                 modifier =
-                    Modifier
-                        .padding(top = paddingValues.calculateTopPadding())
+                    Modifier.padding(top = paddingValues.calculateTopPadding())
                         .fillMaxSize()
                         .animateContentSize(),
                 contentPadding =
@@ -186,7 +184,8 @@ fun LyricsCustomisationsPage(
                         if (notificationAccess) {
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                             ) {
                                 ToggleButton(
                                     checked = !isShowingSynced,

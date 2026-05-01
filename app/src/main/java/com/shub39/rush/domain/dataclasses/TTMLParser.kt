@@ -176,7 +176,7 @@ object TTMLParser {
 
     private fun parseBackgroundSpan(span: Element, parentStartTime: Double): ParsedLine? {
         val bgBegin = span.getAttribute("begin")
-//        val bgEnd = span.getAttribute("end")
+        //        val bgEnd = span.getAttribute("end")
         val bgStartTime = if (bgBegin.isNotEmpty()) parseTime(bgBegin) else parentStartTime
 
         val spanInfos = mutableListOf<SpanInfo>()

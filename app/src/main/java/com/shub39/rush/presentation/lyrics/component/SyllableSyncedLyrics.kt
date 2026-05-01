@@ -363,17 +363,15 @@ private fun SyllableWord(
                 fontWeight = FontWeight.Bold,
                 fontFamily =
                     if (expressiveSyllables) {
-                        flexFontEmphasis(
-                            fontWeight = currentWeight,
-                            fontWidth = currentWidth,
-                        )
+                        flexFontEmphasis(fontWeight = currentWeight, fontWidth = currentWidth)
                     } else {
                         fontFamily
                     },
             )
         }
 
-    val textLayoutResult = remember(textStyle, word.text) { textMeasurer.measure(word.text, textStyle) }
+    val textLayoutResult =
+        remember(textStyle, word.text) { textMeasurer.measure(word.text, textStyle) }
 
     Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
         // Ghost text for layout consistency
@@ -400,10 +398,7 @@ private fun SyllableWord(
         Box(
             modifier =
                 Modifier.matchParentSize()
-                    .blur(
-                        radius = glowAlpha.dp,
-                        edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                    )
+                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                     .drawWithCache {
                         onDrawBehind {
                             drawText(
@@ -445,7 +440,6 @@ private fun SyllableWord(
         )
     }
 }
-
 
 @Preview(showBackground = true, backgroundColor = 0xAB89)
 @Composable

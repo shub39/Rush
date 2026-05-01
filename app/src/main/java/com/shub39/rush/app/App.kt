@@ -174,7 +174,7 @@ fun App() {
                                 isProUser = globalState.isProUser,
                                 onDismissRequest = {
                                     if (backStack.size != 1) backStack.removeLastOrNull()
-                                }
+                                },
                             )
                         }
                     },
