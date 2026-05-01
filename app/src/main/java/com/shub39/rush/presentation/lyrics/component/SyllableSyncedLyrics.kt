@@ -244,162 +244,15 @@ fun SyllableLine(
                     modifier = Modifier.padding(vertical = 6.dp),
                 ) {
                     line.words.forEach { word ->
-                        val wordStartTimeMs = (word.startTime * 1000).toLong()
-                        val wordEndTimeMs = (word.endTime * 1000).toLong()
-                        val duration = wordEndTimeMs - wordStartTimeMs
-
-                        val maxWordWeight =
-                            when (duration) {
-                                in 0..500 -> 300
-                                in 501..1000 -> 500
-                                in 1001..1500 -> 700
-                                else -> 900
-                            }
-
-                        val maxWordWidth =
-                            when (duration) {
-                                in 0..500 -> 100f
-                                in 501..1000 -> 105f
-                                in 1001..1500 -> 110f
-                                in 1501..2000 -> 115f
-                                else -> 120f
-                            }
-
-                        val wordProgress =
-                            if (currentTime >= wordEndTimeMs) 1f
-                            else if (currentTime < wordStartTimeMs) 0f
-                            else
-                                (currentTime - wordStartTimeMs).toFloat() /
-                                    duration.coerceAtLeast(1)
-
-                        val animatedProgress by
-                            animateFloatAsState(
-                                targetValue = wordProgress,
-                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                                label = "wordProgress",
-                            )
-
-                        val currentWeight =
-                            (200 + (animatedProgress * (maxWordWeight - 200)))
-                                .toInt()
-                                .coerceIn(200, maxWordWeight)
-                        val currentWidth =
-                            (100f + (animatedProgress * (maxWordWidth - 100f))).coerceIn(
-                                100f,
-                                maxWordWidth,
-                            )
-
-                        // word highlighting design
-                        val isHighlighted = currentTime >= wordStartTimeMs
-                        val wordScale by
-                            animateFloatAsState(
-                                targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-                                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                                label = "wordScale",
-                            )
-                        val glowAlpha by
-                            animateFloatAsState(
-                                targetValue = if (isHighlighted) 2f else 0f,
-                                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                                label = "glowAlpha",
-                            )
-
-                        val textMeasurer = rememberTextMeasurer()
-                        val textStyle =
-                            TextStyle(
-                                fontSize = textPrefs.fontSize.sp,
-                                letterSpacing = textPrefs.letterSpacing.sp,
-                                lineHeight = textPrefs.lineHeight.sp,
-                                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                                fontWeight = FontWeight.Bold,
-                                fontFamily =
-                                    if (expressiveSyllables) {
-                                        flexFontEmphasis(
-                                            fontWeight = currentWeight,
-                                            fontWidth = currentWidth,
-                                        )
-                                    } else {
-                                        MaterialTheme.typography.bodyLarge.fontFamily
-                                    },
-                            )
-
-                        val textLayoutResult =
-                            remember(textStyle) { textMeasurer.measure(word.text, textStyle) }
-
-                        Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
-                            // Ghost text for layout consistency
-                            Text(
-                                text = word.text,
-                                style =
-                                    textStyle.copy(
-                                        fontFamily =
-                                            if (expressiveSyllables) {
-                                                flexFontEmphasis(
-                                                    fontWeight = maxWordWeight,
-                                                    fontWidth = maxWordWidth,
-                                                )
-                                            } else {
-                                                MaterialTheme.typography.bodyLarge.fontFamily
-                                            }
-                                    ),
-                                modifier = Modifier.alpha(0f),
-                            )
-
-                            // Undertext + Glow
-                            Box(
-                                modifier =
-                                    Modifier.matchParentSize()
-                                        .blur(
-                                            radius = glowAlpha.dp,
-                                            edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                                        )
-                                        .drawWithCache {
-                                            onDrawBehind {
-                                                drawText(
-                                                    textLayoutResult,
-                                                    color = textColor.copy(alpha = underTextAlpha),
-                                                )
-                                            }
-                                        }
-                            )
-
-                            // Main Highlight Layer with Mask
-                            Box(
-                                modifier =
-                                    Modifier.matchParentSize()
-                                        .graphicsLayer(
-                                            compositingStrategy = CompositingStrategy.Offscreen
-                                        )
-                                        .drawWithCache {
-                                            onDrawBehind {
-                                                if (animatedProgress > 0f) {
-                                                    drawText(textLayoutResult, color = textColor)
-                                                    if (animatedProgress < 1f) {
-                                                        val feather = 16.dp.toPx()
-                                                        val x =
-                                                            (size.width + feather) *
-                                                                animatedProgress
-                                                        drawRect(
-                                                            brush =
-                                                                Brush.horizontalGradient(
-                                                                    0f to Color.Black,
-                                                                    ((x - feather) / size.width)
-                                                                        .coerceIn(0f, 1f) to
-                                                                        Color.Black,
-                                                                    (x / size.width).coerceIn(
-                                                                        0f,
-                                                                        1f,
-                                                                    ) to Color.Transparent,
-                                                                    1f to Color.Transparent,
-                                                                ),
-                                                            blendMode = BlendMode.DstIn,
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                            )
-                        }
+                        SyllableWord(
+                            word = word,
+                            currentTime = currentTime,
+                            textPrefs = textPrefs,
+                            expressiveSyllables = expressiveSyllables,
+                            textColor = textColor,
+                            underTextAlpha = underTextAlpha,
+                            scale = scale,
+                        )
                     }
                 }
             } else if (line.text.isNotEmpty()) {
@@ -423,6 +276,176 @@ fun SyllableLine(
         }
     }
 }
+
+@Composable
+private fun SyllableWord(
+    word: ParsedWord,
+    currentTime: Long,
+    textPrefs: TextPrefs,
+    expressiveSyllables: Boolean,
+    textColor: Color,
+    underTextAlpha: Float,
+    scale: Float,
+) {
+    val fontFamily = MaterialTheme.typography.bodyLarge.fontFamily
+
+    val wordStartTimeMs = remember(word) { (word.startTime * 1000).toLong() }
+    val wordEndTimeMs = remember(word) { (word.endTime * 1000).toLong() }
+    val duration = remember(word) { (wordEndTimeMs - wordStartTimeMs).coerceAtLeast(1) }
+
+    val maxWordWeight =
+        remember(duration) {
+            when (duration) {
+                in 0..500 -> 300
+                in 501..1000 -> 500
+                in 1001..1500 -> 700
+                else -> 900
+            }
+        }
+
+    val maxWordWidth =
+        remember(duration) {
+            when (duration) {
+                in 0..500 -> 100f
+                in 501..1000 -> 105f
+                in 1001..1500 -> 110f
+                in 1501..2000 -> 115f
+                else -> 120f
+            }
+        }
+
+    val wordProgress =
+        if (currentTime >= wordEndTimeMs) 1f
+        else if (currentTime < wordStartTimeMs) 0f
+        else (currentTime - wordStartTimeMs).toFloat() / duration
+
+    val animatedProgress by
+        animateFloatAsState(
+            targetValue = wordProgress,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordProgress",
+        )
+
+    val currentWeight =
+        remember(animatedProgress, maxWordWeight) {
+                ((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10
+            }
+            .coerceIn(200, maxWordWeight)
+    val currentWidth =
+        remember(animatedProgress, maxWordWidth) {
+                ((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f
+            }
+            .coerceIn(100f, maxWordWidth)
+
+    // word highlighting design
+    val isHighlighted = currentTime >= wordStartTimeMs
+    val wordScale by
+        animateFloatAsState(
+            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordScale",
+        )
+    val glowAlpha by
+        animateFloatAsState(
+            targetValue = if (isHighlighted) 2f else 0f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "glowAlpha",
+        )
+
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle =
+        remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
+            TextStyle(
+                fontSize = textPrefs.fontSize.sp,
+                letterSpacing = textPrefs.letterSpacing.sp,
+                lineHeight = textPrefs.lineHeight.sp,
+                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                fontWeight = FontWeight.Bold,
+                fontFamily =
+                    if (expressiveSyllables) {
+                        flexFontEmphasis(
+                            fontWeight = currentWeight,
+                            fontWidth = currentWidth,
+                        )
+                    } else {
+                        fontFamily
+                    },
+            )
+        }
+
+    val textLayoutResult = remember(textStyle, word.text) { textMeasurer.measure(word.text, textStyle) }
+
+    Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
+        // Ghost text for layout consistency
+        Text(
+            text = word.text,
+            style =
+                remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
+                    textStyle.copy(
+                        fontFamily =
+                            if (expressiveSyllables) {
+                                flexFontEmphasis(
+                                    fontWeight = maxWordWeight,
+                                    fontWidth = maxWordWidth,
+                                )
+                            } else {
+                                fontFamily
+                            }
+                    )
+                },
+            modifier = Modifier.alpha(0f),
+        )
+
+        // Undertext + Glow
+        Box(
+            modifier =
+                Modifier.matchParentSize()
+                    .blur(
+                        radius = glowAlpha.dp,
+                        edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                    )
+                    .drawWithCache {
+                        onDrawBehind {
+                            drawText(
+                                textLayoutResult,
+                                color = textColor.copy(alpha = underTextAlpha),
+                            )
+                        }
+                    }
+        )
+
+        // Main Highlight Layer with Mask
+        Box(
+            modifier =
+                Modifier.matchParentSize()
+                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                    .drawWithCache {
+                        onDrawBehind {
+                            if (animatedProgress > 0f) {
+                                drawText(textLayoutResult, color = textColor)
+                                if (animatedProgress < 1f) {
+                                    val feather = 16.dp.toPx()
+                                    val x = (size.width + feather) * animatedProgress
+                                    drawRect(
+                                        brush =
+                                            Brush.horizontalGradient(
+                                                0f to Color.Black,
+                                                ((x - feather) / size.width).coerceIn(0f, 1f) to
+                                                    Color.Black,
+                                                (x / size.width).coerceIn(0f, 1f) to
+                                                    Color.Transparent,
+                                                1f to Color.Transparent,
+                                            ),
+                                        blendMode = BlendMode.DstIn,
+                                    )
+                                }
+                            }
+                        }
+                    }
+        )
+    }
+}
+
 
 @Preview(showBackground = true, backgroundColor = 0xAB89)
 @Composable
