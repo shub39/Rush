@@ -147,4 +147,9 @@
     <string name="line_synced_lyrics">Zeilen Synchronisiert</string>
     <string name="syllable_synced_lyrics">Silbe synchronisiert</string>
     <string name="changelog">Änderungsprotokoll</string>
+    <string name="whats_changed">Änderungen</string>
+    <string name="looks">Aussehen</string>
+    <string name="text">Text</string>
+    <string name="others">Andere</string>
+    <string name="show_app_branding">App-Branding anzeigen</string>
 </resources>
