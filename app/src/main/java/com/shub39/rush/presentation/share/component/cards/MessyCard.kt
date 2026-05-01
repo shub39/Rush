@@ -38,10 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.shub39.rush.domain.dataclasses.SongDetails
@@ -52,18 +50,17 @@ import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.RushBranding
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
+import com.shub39.rush.presentation.share.pxToSp
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 private data class Word(
     val text: String,
-    val fontWeight: FontWeight,
+    val fontWeight: Int,
     val fontSize: Int,
-    val rotate: Int,
-    val fontDecoration: TextDecoration,
+    val fontWidth: Float,
 )
 
 @Composable
@@ -82,10 +79,9 @@ fun MessyCard(
         firstLine.split(" ").map {
             Word(
                 text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
-                fontWeight = if (Random.nextBoolean()) FontWeight.Normal else FontWeight.ExtraBold,
+                fontWeight = Random.nextInt(500, 1000),
                 fontSize = Random.nextInt(50, 100),
-                rotate = Random.nextInt(-10..10),
-                fontDecoration = listOf(TextDecoration.Underline, TextDecoration.None).random(),
+                fontWidth = Random.nextInt(100, 120).toFloat(),
             )
         }
     }
@@ -113,17 +109,14 @@ fun MessyCard(
             ) {
                 words.forEach { word ->
                     Text(
-                        modifier = Modifier.rotate(word.rotate.toFloat()),
                         text = word.text,
-                        style =
-                            MaterialTheme.typography.titleMedium
-                                .copy(textDecoration = word.fontDecoration)
-                                .fromPx(
-                                    fontSize = word.fontSize,
-                                    letterSpacing = 0,
-                                    lineHeight = word.fontSize,
-                                    fontWeight = word.fontWeight,
-                                ),
+                        style = TextStyle(
+                            fontFamily = flexFontEmphasis(
+                                fontWeight = word.fontWeight,
+                                fontWidth = word.fontWidth,
+                            ),
+                            fontSize = pxToSp(word.fontSize)
+                        ),
                     )
                 }
             }
