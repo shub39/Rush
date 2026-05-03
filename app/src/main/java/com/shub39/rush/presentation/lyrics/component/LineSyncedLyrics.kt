@@ -88,11 +88,6 @@ fun LineSyncedLyrics(
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
-    // Force recomposition when romanization version changes
-    LaunchedEffect(state.romanizationEnabled) {
-        // no-op: exists solely to subscribe to version changes
-    }
-
     // updater for synced lyrics
     LaunchedEffect(playbackInfo.position) {
         val currentIndex =
@@ -121,7 +116,7 @@ fun LineSyncedLyrics(
     ) {
         itemsIndexed(
             items = syncedLyrics,
-            key = { index, lyric -> "${state.romanizationEnabled}_${lyric.time.toInt()}" },
+            key = { index, _ -> index },
         ) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
             val currentTime = playbackInfo.position
@@ -185,7 +180,8 @@ fun LineSyncedLyrics(
                 action = action,
                 lyric = lyric,
                 romanizedText =
-                    if (state.romanizationEnabled) state.romanizedLyrics[lyric.time.toInt()]
+                    if (state.romanizationEnabled)
+                        state.lyricsState.song.romanizedSyncedLyrics[lyric.time]
                     else null,
                 underTextAlpha = underTextAlpha,
                 glowAlpha = glowAlpha,

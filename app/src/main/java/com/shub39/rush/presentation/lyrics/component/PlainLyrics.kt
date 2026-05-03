@@ -83,9 +83,7 @@ fun PlainLyrics(
     val scope = rememberCoroutineScope()
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
-
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
-    val romanizedKeyOffset = if (state.source == Sources.LRCLIB) 0 else 100000
 
     LazyColumn(
         modifier = modifier,
@@ -98,25 +96,28 @@ fun PlainLyrics(
     ) {
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
-            items(items = items, key = { "${state.romanizationEnabled}_${it.key}" }) {
+            items(items = items, key = { it.key }) {
                 if (it.value.isNotBlank()) {
                     val isSelected = state.selectedLines.contains(it.key)
                     val containerColor by
-                        animateColorAsState(
-                            targetValue =
-                                when (!isSelected) {
-                                    true -> Color.Transparent
-                                    else -> cardContent.copy(alpha = 0.3f)
-                                },
-                            label = "container",
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                        )
+                    animateColorAsState(
+                        targetValue =
+                            when (!isSelected) {
+                                true -> Color.Transparent
+                                else -> cardContent.copy(alpha = 0.3f)
+                            },
+                        label = "container",
+                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    )
 
                     PlainLyric(
                         entry = it.toPair(),
                         romanizedText =
                             if (state.romanizationEnabled)
-                                state.romanizedLyrics[romanizedKeyOffset + it.key]
+                                if (state.source == Sources.GENIUS)
+                                    state.lyricsState.song.romanizedGeniusLyrics[it.key]
+                                else
+                                    state.lyricsState.song.romanizedLyrics[it.key]
                             else null,
                         containerColor = containerColor,
                         textPrefs = state.textPrefs,
@@ -238,7 +239,9 @@ fun PlainLyrics(
         // Bottom Actions Row
         item {
             Row(
-                modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(vertical = 100.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 IconButton(
@@ -293,7 +296,10 @@ fun PlainLyric(
             onClick = onClick,
             shape = MaterialTheme.shapes.small,
             colors =
-                CardDefaults.cardColors(containerColor = containerColor, contentColor = cardContent),
+                CardDefaults.cardColors(
+                    containerColor = containerColor,
+                    contentColor = cardContent
+                ),
         ) {
             Column(
                 horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
