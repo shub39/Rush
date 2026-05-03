@@ -1491,9 +1491,32 @@ object RomanizationUtils {
         return text.any { it in '\u0400'..'\u04FF' }
     }
 
+    /**
+     * Characters unique to each Cyrillic language (not present in Russian).
+     * Used for disambiguation: if any unique marker is found, the language is identified
+     * without relying on the percentage-based fallback, which is biased toward Russian.
+     */
+    private val UKRAINIAN_UNIQUE_LETTERS = setOf('Ґ', 'ґ', 'Є', 'є', 'Ї', 'ї')
+    private val SERBIAN_UNIQUE_LETTERS = setOf('Ђ', 'ђ', 'Ћ', 'ћ', 'Џ', 'џ')
+    private val BELARUSIAN_UNIQUE_LETTERS = setOf('Ў', 'ў')
+    private val KYRGYZ_UNIQUE_LETTERS = setOf('Ң', 'ң', 'Ү', 'ү')
+    private val MACEDONIAN_UNIQUE_LETTERS = setOf('Ѓ', 'ѓ', 'Ѕ', 'ѕ', 'Ќ', 'ќ')
+    /** Russian-specific letters not found in Bulgarian (the closest overlap). */
+    private val RUSSIAN_SPECIFIC_LETTERS = setOf('Ы', 'ы', 'Э', 'э', 'Ё', 'ё')
+
     fun isRussian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
+        // If any other Cyrillic language has unique markers, this is not Russian
+        if (cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }) return false
+        // Require Russian-specific letters (Ы, Э, Ё) as confirmation.
+        // Without them, the text is ambiguous (could be Bulgarian or another
+        // Cyrillic language with overlapping letter sets).
+        if (cyrillicChars.none { it in RUSSIAN_SPECIFIC_LETTERS }) return false
         val russianSpecific =
             cyrillicChars.count { RUSSIAN_CYRILLIC_LETTERS.contains(it.toString()) }
         return russianSpecific.toFloat() / cyrillicChars.length >= 0.7
@@ -1502,22 +1525,28 @@ object RomanizationUtils {
     fun isUkrainian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        val ukrainianSpecific =
-            cyrillicChars.count { UKRAINIAN_CYRILLIC_LETTERS.contains(it.toString()) }
-        return ukrainianSpecific.toFloat() / cyrillicChars.length >= 0.7
+        // Require unique Ukrainian letters for identification
+        return cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }
     }
 
     fun isSerbian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        val serbianSpecific =
-            cyrillicChars.count { SERBIAN_CYRILLIC_LETTERS.contains(it.toString()) }
-        return serbianSpecific.toFloat() / cyrillicChars.length >= 0.7
+        // Require unique Serbian letters for identification
+        return cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }
     }
 
     fun isBulgarian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
+        // Bulgarian has no unique letters (subset of Russian), so exclude other languages first
+        if (cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }) return false
+        if (cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }) return false
+        // If Russian-specific letters are present, it's Russian not Bulgarian
+        if (cyrillicChars.any { it in RUSSIAN_SPECIFIC_LETTERS }) return false
         val bulgarianSpecific =
             cyrillicChars.count { BULGARIAN_CYRILLIC_LETTERS.contains(it.toString()) }
         return bulgarianSpecific.toFloat() / cyrillicChars.length >= 0.7
@@ -1526,24 +1555,22 @@ object RomanizationUtils {
     fun isBelarusian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        val belarusianSpecific =
-            cyrillicChars.count { BELARUSIAN_CYRILLIC_LETTERS.contains(it.toString()) }
-        return belarusianSpecific.toFloat() / cyrillicChars.length >= 0.7
+        // Require unique Belarusian letters for identification
+        return cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }
     }
 
     fun isKyrgyz(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        val kyrgyzSpecific = cyrillicChars.count { KYRGYZ_CYRILLIC_LETTERS.contains(it.toString()) }
-        return kyrgyzSpecific.toFloat() / cyrillicChars.length >= 0.7
+        // Require unique Kyrgyz letters for identification
+        return cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }
     }
 
     fun isMacedonian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        val macedonianSpecific =
-            cyrillicChars.count { MACEDONIAN_CYRILLIC_LETTERS.contains(it.toString()) }
-        return macedonianSpecific.toFloat() / cyrillicChars.length >= 0.7
+        // Require unique Macedonian letters for identification
+        return cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }
     }
 
     // Main romanization function
@@ -1558,17 +1585,19 @@ object RomanizationUtils {
             "Korean" in enabledLanguages && isKorean(text) -> romanizeKorean(text)
             "Chinese" in enabledLanguages && isChinese(text) -> romanizeChinese(text)
             "Hindi" in enabledLanguages && isHindi(text) -> romanizeHindi(text)
+            // Languages with unique markers are checked first; Russian is last as fallback
             "Ukrainian" in enabledLanguages && isUkrainian(text) ->
                 romanizeCyrillic(text, "Ukrainian")
-            "Russian" in enabledLanguages && isRussian(text) -> romanizeCyrillic(text, "Russian")
             "Serbian" in enabledLanguages && isSerbian(text) -> romanizeCyrillic(text, "Serbian")
-            "Bulgarian" in enabledLanguages && isBulgarian(text) ->
-                romanizeCyrillic(text, "Bulgarian")
+            "Macedonian" in enabledLanguages && isMacedonian(text) ->
+                romanizeCyrillic(text, "Macedonian")
             "Belarusian" in enabledLanguages && isBelarusian(text) ->
                 romanizeCyrillic(text, "Belarusian")
             "Kyrgyz" in enabledLanguages && isKyrgyz(text) -> romanizeCyrillic(text, "Kyrgyz")
-            "Macedonian" in enabledLanguages && isMacedonian(text) ->
-                romanizeCyrillic(text, "Macedonian")
+            "Bulgarian" in enabledLanguages && isBulgarian(text) ->
+                romanizeCyrillic(text, "Bulgarian")
+            // Russian is the fallback — its letter set overlaps with all other Cyrillic languages
+            "Russian" in enabledLanguages && isRussian(text) -> romanizeCyrillic(text, "Russian")
             else -> null
         }
     }

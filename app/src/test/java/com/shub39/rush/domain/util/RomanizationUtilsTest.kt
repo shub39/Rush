@@ -109,25 +109,104 @@ class RomanizationUtilsTest {
 
     @Test
     fun testIsRussian() {
-        assertTrue(RomanizationUtils.isRussian("привет мир"))
+        // Russian text with Russian-specific letters (Ы, Э, Ё)
+        assertTrue(RomanizationUtils.isRussian("рыба"))
+        assertTrue(RomanizationUtils.isRussian("эксперт"))
+        assertTrue(RomanizationUtils.isRussian("ёлка"))
+        // Russian text with unique letters should NOT match other Cyrillic languages
+        assertFalse(RomanizationUtils.isUkrainian("рыба"))
+        assertFalse(RomanizationUtils.isSerbian("рыба"))
+        assertFalse(RomanizationUtils.isBulgarian("рыба"))
+        assertFalse(RomanizationUtils.isBelarusian("рыба"))
+        assertFalse(RomanizationUtils.isKyrgyz("рыба"))
+        assertFalse(RomanizationUtils.isMacedonian("рыба"))
     }
 
     @Test
     fun testIsUkrainian() {
-        // Ukrainian detection may not be fully implemented
+        // Ukrainian is identified by its unique letters (Ґ, Є, Ї)
+        assertTrue(RomanizationUtils.isUkrainian("ґіденс"))
+        assertTrue(RomanizationUtils.isUkrainian("європа"))
+        assertTrue(RomanizationUtils.isUkrainian("їжак"))
         assertFalse(RomanizationUtils.isUkrainian("hello"))
+        // Text without unique Ukrainian letters is not identified as Ukrainian
+        assertFalse(RomanizationUtils.isUkrainian("привет"))
     }
 
     @Test
     fun testIsSerbian() {
-        // Serbian detection may not be fully implemented
+        // Serbian is identified by its unique letters (Ђ, Ћ, Џ)
+        assertTrue(RomanizationUtils.isSerbian("ђурђевак"))
+        assertTrue(RomanizationUtils.isSerbian("ћирилица"))
+        assertTrue(RomanizationUtils.isSerbian("џак"))
         assertFalse(RomanizationUtils.isSerbian("hello"))
+        // Text without unique Serbian letters is not identified as Serbian
+        assertFalse(RomanizationUtils.isSerbian("привет"))
     }
 
     @Test
     fun testIsBulgarian() {
         assertTrue(RomanizationUtils.isBulgarian("здравейте"))
         assertTrue(RomanizationUtils.isBulgarian("българия"))
+        // Bulgarian text should NOT be misidentified as Russian
+        assertFalse(RomanizationUtils.isRussian("здравейте"))
+        assertFalse(RomanizationUtils.isRussian("българия"))
+    }
+
+    @Test
+    fun testIsBelarusian() {
+        // Belarusian is identified by its unique letter (Ў)
+        assertTrue(RomanizationUtils.isBelarusian("ўрад"))
+        assertFalse(RomanizationUtils.isBelarusian("hello"))
+        // Text without unique Belarusian letters is not identified as Belarusian
+        assertFalse(RomanizationUtils.isBelarusian("привет"))
+    }
+
+    @Test
+    fun testIsKyrgyz() {
+        // Kyrgyz is identified by its unique letters (Ң, Ү)
+        assertTrue(RomanizationUtils.isKyrgyz("үч"))
+        assertFalse(RomanizationUtils.isKyrgyz("hello"))
+        // Text without unique Kyrgyz letters is not identified as Kyrgyz
+        assertFalse(RomanizationUtils.isKyrgyz("кыргызстан"))
+    }
+
+    @Test
+    fun testIsMacedonian() {
+        // Macedonian is identified by its unique letters (Ѓ, Ѕ, Ќ)
+        assertTrue(RomanizationUtils.isMacedonian("ѓорѓи"))
+        assertTrue(RomanizationUtils.isMacedonian("ѕвезда"))
+        assertTrue(RomanizationUtils.isMacedonian("ќе"))
+        assertFalse(RomanizationUtils.isMacedonian("hello"))
+        // Text without unique Macedonian letters is not identified as Macedonian
+        assertFalse(RomanizationUtils.isMacedonian("привет"))
+    }
+
+    @Test
+    fun testCyrillicDisambiguation() {
+        // Serbian text with Ћ should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("ћирилица"))
+        assertTrue(RomanizationUtils.isSerbian("ћирилица"))
+
+        // Ukrainian text with Є should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("європа"))
+        assertTrue(RomanizationUtils.isUkrainian("європа"))
+
+        // Belarusian text with Ў should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("ўрад"))
+        assertTrue(RomanizationUtils.isBelarusian("ўрад"))
+
+        // Kyrgyz text with Ү should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("үч"))
+        assertTrue(RomanizationUtils.isKyrgyz("үч"))
+
+        // Macedonian text with Ќ should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("ќе"))
+        assertTrue(RomanizationUtils.isMacedonian("ќе"))
+
+        // Bulgarian text without Russian-specific letters should NOT be detected as Russian
+        assertFalse(RomanizationUtils.isRussian("здравейте"))
+        assertTrue(RomanizationUtils.isBulgarian("здравейте"))
     }
 
     @Test
@@ -163,8 +242,8 @@ class RomanizationUtilsTest {
     @Test
     fun testRomanize_autoDetectRussian() = runBlocking {
         val result =
-            RomanizationUtils.romanize("привет", enabledLanguages = listOf("Russian", "Japanese"))
-        assertTrue(result!!.contains("privet"))
+            RomanizationUtils.romanize("рыба", enabledLanguages = listOf("Russian", "Japanese"))
+        assertTrue(result!!.contains("ryba"))
     }
 
     @Test
