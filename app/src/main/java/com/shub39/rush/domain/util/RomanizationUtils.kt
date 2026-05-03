@@ -1214,7 +1214,7 @@ object RomanizationUtils {
             }
 
             if (!consumed && katakana[i] == 'ッ') {
-                val nextCharToDouble = nextKatakana?.getOrNull(0)
+                val nextCharToDouble = katakana.getOrNull(i + 1) ?: nextKatakana?.getOrNull(0)
                 if (nextCharToDouble != null) {
                     val nextCharRomaji =
                         KANA_ROMAJI_MAP[nextCharToDouble.toString()]?.getOrNull(0)?.toString()
