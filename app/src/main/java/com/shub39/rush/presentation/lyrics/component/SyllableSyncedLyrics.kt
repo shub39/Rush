@@ -100,7 +100,7 @@ fun SyllableSyncedLyrics(
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
 
     // Force recomposition when romanization version changes
-    LaunchedEffect(state.romanizationVersion) {
+    LaunchedEffect(state.romanizationEnabled) {
         // no-op: exists solely to subscribe to version changes
     }
 
@@ -136,7 +136,7 @@ fun SyllableSyncedLyrics(
         itemsIndexed(
             items = ttmlLyrics,
             key = { index, line ->
-                "${state.romanizationVersion}_${(line.startTime * 1000).toInt()}"
+                "${state.romanizationEnabled}_${(line.startTime * 1000).toInt()}"
             },
         ) { index, line ->
             val currentTime = playbackInfo.position

@@ -267,7 +267,6 @@ class LyricsVM(
                         _state.update {
                             it.copy(
                                 romanizedLyrics = emptyMap(),
-                                romanizationVersion = System.currentTimeMillis(),
                             )
                         }
                     }
@@ -317,7 +316,6 @@ class LyricsVM(
             _state.update {
                 it.copy(
                     romanizedLyrics = romanizedMap,
-                    romanizationVersion = System.currentTimeMillis(),
                 )
             }
         }

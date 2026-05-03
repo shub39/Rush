@@ -57,7 +57,6 @@ data class LyricsPageState(
     val fullscreen: Boolean = false,
     val romanizationEnabled: Boolean = false,
     val romanizedLyrics: Map<Int, String> = emptyMap(),
-    val romanizationVersion: Long = 0L,
 )
 
 sealed interface LyricsState {

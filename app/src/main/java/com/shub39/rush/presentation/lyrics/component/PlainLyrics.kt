@@ -98,7 +98,7 @@ fun PlainLyrics(
     ) {
         // plain lyrics with logic
         if (!items.isNullOrEmpty()) {
-            items(items = items, key = { "${state.romanizationVersion}_${it.key}" }) {
+            items(items = items, key = { "${state.romanizationEnabled}_${it.key}" }) {
                 if (it.value.isNotBlank()) {
                     val isSelected = state.selectedLines.contains(it.key)
                     val containerColor by
