@@ -268,14 +268,16 @@ class LyricsVM(
 
                         _state.update {
                             it.copy(
-                                lyricsState = Loaded(
-                                    song = song.copy(
-                                        romanizedLyrics = emptyMap(),
-                                        romanizedGeniusLyrics = emptyMap(),
-                                        romanizedSyncedLyrics = emptyMap(),
-                                        romanizedTtmlLyrics = emptyMap(),
+                                lyricsState =
+                                    Loaded(
+                                        song =
+                                            song.copy(
+                                                romanizedLyrics = emptyMap(),
+                                                romanizedGeniusLyrics = emptyMap(),
+                                                romanizedSyncedLyrics = emptyMap(),
+                                                romanizedTtmlLyrics = emptyMap(),
+                                            )
                                     )
-                                )
                             )
                         }
                     }
@@ -286,52 +288,59 @@ class LyricsVM(
 
     private fun generateRomanizedLyrics() {
         romanizationJob?.cancel()
-        romanizationJob = viewModelScope.launch(Dispatchers.Default) {
-            if (!_state.value.romanizationEnabled) return@launch
+        romanizationJob =
+            viewModelScope.launch(Dispatchers.Default) {
+                if (!_state.value.romanizationEnabled) return@launch
 
-            val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
+                val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
 
-            // Plain lyrics (LRCLIB)
-            val romanizedLyrics = song.lyrics.associate { entry ->
-                RomanizationUtils.romanize(entry.value)?.let { romanized ->
-                    entry.key to romanized
-                } ?: (entry.key to "")
-            }
+                // Plain lyrics (LRCLIB)
+                val romanizedLyrics =
+                    song.lyrics.associate { entry ->
+                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                            entry.key to romanized
+                        } ?: (entry.key to "")
+                    }
 
-            // Genius lyrics — offset to avoid collision with LRCLIB keys
-            val romanizedGeniusLyrics = song.geniusLyrics?.associate { entry ->
-                RomanizationUtils.romanize(entry.value)?.let { romanized ->
-                    entry.key to romanized
-                } ?: (entry.key to "")
-            } ?: emptyMap()
+                // Genius lyrics — offset to avoid collision with LRCLIB keys
+                val romanizedGeniusLyrics =
+                    song.geniusLyrics?.associate { entry ->
+                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                            entry.key to romanized
+                        } ?: (entry.key to "")
+                    } ?: emptyMap()
 
-            // Synced lyrics — time-based keys
-            val romanizedSyncedLyrics = song.syncedLyrics?.associate { lyric ->
-                RomanizationUtils.romanize(lyric.text)?.let { romanized ->
-                    lyric.time to romanized
-                } ?: (lyric.time to "")
-            } ?: emptyMap()
+                // Synced lyrics — time-based keys
+                val romanizedSyncedLyrics =
+                    song.syncedLyrics?.associate { lyric ->
+                        RomanizationUtils.romanize(lyric.text)?.let { romanized ->
+                            lyric.time to romanized
+                        } ?: (lyric.time to "")
+                    } ?: emptyMap()
 
-            // TTML lyrics — startTime in ms as key
-            val romanizedTTMLLyrics = song.ttmlLyrics?.associate { parsedLine ->
-                RomanizationUtils.romanize(parsedLine.text)?.let { romanized ->
-                    parsedLine.startTime to romanized
-                } ?: (parsedLine.startTime to "")
-            } ?: emptyMap()
+                // TTML lyrics — startTime in ms as key
+                val romanizedTTMLLyrics =
+                    song.ttmlLyrics?.associate { parsedLine ->
+                        RomanizationUtils.romanize(parsedLine.text)?.let { romanized ->
+                            parsedLine.startTime to romanized
+                        } ?: (parsedLine.startTime to "")
+                    } ?: emptyMap()
 
-            _state.update {
-                it.copy(
-                    lyricsState = Loaded(
-                        song = song.copy(
-                            romanizedLyrics = romanizedLyrics,
-                            romanizedGeniusLyrics = romanizedGeniusLyrics,
-                            romanizedSyncedLyrics = romanizedSyncedLyrics,
-                            romanizedTtmlLyrics = romanizedTTMLLyrics,
-                        )
+                _state.update {
+                    it.copy(
+                        lyricsState =
+                            Loaded(
+                                song =
+                                    song.copy(
+                                        romanizedLyrics = romanizedLyrics,
+                                        romanizedGeniusLyrics = romanizedGeniusLyrics,
+                                        romanizedSyncedLyrics = romanizedSyncedLyrics,
+                                        romanizedTtmlLyrics = romanizedTTMLLyrics,
+                                    )
+                            )
                     )
-                )
+                }
             }
-        }
     }
 
     private fun observeDatastore() {

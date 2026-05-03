@@ -114,10 +114,7 @@ fun LineSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(
-            items = syncedLyrics,
-            key = { index, _ -> index },
-        ) { index, lyric ->
+        itemsIndexed(items = syncedLyrics, key = { index, _ -> index }) { index, lyric ->
             val nextTime = getNextLyricTime(index, syncedLyrics)
             val currentTime = playbackInfo.position
             val lyricIndex = syncedLyrics.indexOf(lyric)

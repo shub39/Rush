@@ -16,8 +16,8 @@
  */
 package com.shub39.romanization
 
-import kotlinx.coroutines.test.runTest
 import kotlin.test.*
+import kotlinx.coroutines.test.runTest
 
 class RomanizationUtilsTest {
 
@@ -266,7 +266,8 @@ class RomanizationUtilsTest {
 
     @Test
     fun testRomanize_autoDetectPunjabi() = runTest {
-        val result = RomanizationUtils.romanize("ਸਤ ਸ੍ਰੀ ਅਕਾਲ", enabledLanguages = listOf("Punjabi"))
+        val result =
+            RomanizationUtils.romanize("ਸਤ ਸ੍ਰੀ ਅਕਾਲ", enabledLanguages = listOf("Punjabi"))
         assertNotNull(result)
         assertTrue(result.isNotEmpty())
     }
