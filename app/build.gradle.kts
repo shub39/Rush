@@ -119,8 +119,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/CONTRIBUTORS.md"
-            excludes += "META-INF/LICENSE.md"
         }
         jniLibs.keepDebugSymbols.add("**/*.so")
     }
@@ -139,6 +137,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":shared:romanization"))
+
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)
 
@@ -179,8 +179,6 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
     implementation(libs.koin.annotations)
-    implementation(libs.kuromoji)
-    implementation(libs.tinypinyin)
 }
 
 room3 { schemaDirectory("$projectDir/schemas") }

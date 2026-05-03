@@ -25,7 +25,7 @@ datetime = "0.7.1"
 androidx-lifecycle = "2.10.0"
 zoomable = "2.11.1"
 compose = "1.11.0"
-coroutines = "1.10.1"
+coroutines = "1.10.2"
 material3 = "1.5.0-alpha18"
 adaptive = "1.2.0"
 purchases = "10.2.1"
@@ -33,8 +33,6 @@ junit = "4.13.2"
 junit-version = "1.3.0"
 spotless = "8.4.0"
 ktfmt = "0.61"
-kuromoji = "0.9.0"
-tinypinyin = "2.0.3.RELEASE"
 
 [libraries]
 # Android
@@ -82,8 +80,6 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kuromoji = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromoji" }
-tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
