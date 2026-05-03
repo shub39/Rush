@@ -198,6 +198,7 @@ fun LyricsCustomisationPreview(
                                         currentTime = currentTime,
                                         isCurrent = isCurrent,
                                         line = syllableLine,
+                                        romanizedText = null,
                                     )
                                 } else {
                                     // Regular Line Synced
@@ -230,6 +231,7 @@ fun LyricsCustomisationPreview(
                                         animatedProgress = animatedProgress,
                                         scale = scale,
                                         glowAlpha = 0.dp,
+                                        romanizedText = null,
                                     )
                                 }
                             }
@@ -239,6 +241,7 @@ fun LyricsCustomisationPreview(
                             entry =
                                 1 to
                                     "This is a very very long text depicting how lyrics should appear based on these settings",
+                            romanizedText = null,
                             textPrefs = state.textPrefs,
                             onClick = {},
                             containerColor =

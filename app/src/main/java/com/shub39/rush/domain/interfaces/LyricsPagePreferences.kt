@@ -75,4 +75,8 @@ interface LyricsPagePreferences {
     fun getExpressiveSyllablesPref(): Flow<Boolean>
 
     suspend fun updateExpressiveSyllablesPref(pref: Boolean)
+
+    fun getRomanizationEnabledFlow(): Flow<Boolean>
+
+    suspend fun updateRomanizationEnabled(enabled: Boolean)
 }

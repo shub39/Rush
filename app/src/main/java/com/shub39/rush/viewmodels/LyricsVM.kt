@@ -23,6 +23,7 @@ import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.domain.util.RomanizationUtils
 import com.shub39.rush.presentation.errorStringRes
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
@@ -41,7 +42,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -60,6 +63,7 @@ class LyricsVM(
 
     private var observeJob: Job? = null
     private var observePlaybackJob: Job? = null
+    private var romanizationJob: Job? = null
 
     private val _state = stateLayer.lyricsState
     private val _playbackInfo = MutableStateFlow(PlaybackInfo())
@@ -137,6 +141,8 @@ class LyricsVM(
                             lyricsState = Loaded(song = song),
                         )
                     }
+
+                    generateRomanizedLyrics()
                 }
 
                 is LyricsPageAction.UpdateExtractedColors ->
@@ -214,6 +220,8 @@ class LyricsVM(
                                         ) ?: LyricsState.Idle,
                                 )
                             }
+
+                            generateRomanizedLyrics()
                         }
                     }
                 }
@@ -250,6 +258,65 @@ class LyricsVM(
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
                 LyricsPageAction.OnPlayNext -> MediaListenerImpl.playNext()
                 LyricsPageAction.OnPlayPrevious -> MediaListenerImpl.playPrevious()
+
+                is LyricsPageAction.OnRomanizationToggle -> {
+                    lyricsPrefs.updateRomanizationEnabled(action.enabled)
+                    if (action.enabled) {
+                        generateRomanizedLyrics()
+                    } else {
+                        _state.update {
+                            it.copy(
+                                romanizedLyrics = emptyMap(),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun generateRomanizedLyrics() {
+        romanizationJob?.cancel()
+        romanizationJob = viewModelScope.launch(Dispatchers.Default) {
+            val currentState = _state.value
+            if (!currentState.romanizationEnabled) return@launch
+
+            val song = (currentState.lyricsState as? Loaded)?.song ?: return@launch
+
+            val romanizedMap = mutableMapOf<Int, String>()
+
+            // Plain lyrics (LRCLIB)
+            song.lyrics.forEach { entry ->
+                RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                    romanizedMap[entry.key] = romanized
+                }
+            }
+
+            // Genius lyrics — offset to avoid collision with LRCLIB keys
+            song.geniusLyrics?.forEach { entry ->
+                RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                    romanizedMap[100000 + entry.key] = romanized
+                }
+            }
+
+            // Synced lyrics — time-based keys
+            song.syncedLyrics?.forEach { lyric ->
+                RomanizationUtils.romanize(lyric.text)?.let { romanized ->
+                    romanizedMap[lyric.time.toInt()] = romanized
+                }
+            }
+
+            // TTML lyrics — startTime in ms as key
+            song.ttmlLyrics?.forEach { parsedLine ->
+                RomanizationUtils.romanize(parsedLine.text)?.let { romanized ->
+                    romanizedMap[(parsedLine.startTime * 1000).toInt()] = romanized
+                }
+            }
+
+            _state.update {
+                it.copy(
+                    romanizedLyrics = romanizedMap,
+                )
             }
         }
     }
@@ -328,6 +395,27 @@ class LyricsVM(
                 lyricsPrefs
                     .getExpressiveSyllablesPref()
                     .onEach { pref -> _state.update { it.copy(expressiveSyllables = pref) } }
+                    .launchIn(this)
+
+                lyricsPrefs
+                    .getRomanizationEnabledFlow()
+                    .onEach { enabled ->
+                        _state.update { it.copy(romanizationEnabled = enabled) }
+                        if (enabled) {
+                            generateRomanizedLyrics()
+                        }
+                    }
+                    .launchIn(this)
+
+                // Watch for song changes and regenerate romanization if enabled
+                _state
+                    .map { (it.lyricsState as? Loaded)?.song?.id }
+                    .distinctUntilChanged()
+                    .onEach {
+                        if (_state.value.romanizationEnabled) {
+                            generateRomanizedLyrics()
+                        }
+                    }
                     .launchIn(this)
             }
     }

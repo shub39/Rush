@@ -22,6 +22,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -47,7 +48,7 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -59,9 +60,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -79,9 +78,9 @@ import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
+import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlin.collections.set
 import kotlin.math.abs
 import kotlinx.coroutines.delay
 
@@ -97,6 +96,11 @@ fun SyllableSyncedLyrics(
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
+
+    // Force recomposition when romanization version changes
+    LaunchedEffect(state.romanizationEnabled) {
+        // no-op: exists solely to subscribe to version changes
+    }
 
     val currentPlayingIndex =
         ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
@@ -127,7 +131,12 @@ fun SyllableSyncedLyrics(
         userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
-        itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
+        itemsIndexed(
+            items = ttmlLyrics,
+            key = { index, line ->
+                "${state.romanizationEnabled}_${(line.startTime * 1000).toInt()}"
+            },
+        ) { index, line ->
             val currentTime = playbackInfo.position
             val isCurrent = index == currentPlayingIndex
 
@@ -185,6 +194,10 @@ fun SyllableSyncedLyrics(
                 blur = blur,
                 action = action,
                 line = line,
+                romanizedText =
+                    if (state.romanizationEnabled)
+                        state.romanizedLyrics[(line.startTime * 1000).toInt()]
+                    else null,
                 textColor = textColor,
                 scale = scale,
                 currentTime = currentTime,
@@ -208,6 +221,7 @@ fun SyllableLine(
     blur: Dp,
     action: (LyricsPageAction) -> Unit,
     line: ParsedLine,
+    romanizedText: String?,
     textColor: Color,
     scale: Float,
     currentTime: Long,
@@ -239,19 +253,35 @@ fun SyllableLine(
             contentAlignment = Alignment.Center,
         ) {
             if (line.words.isNotEmpty()) {
-                FlowRow(
-                    horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
+                Column(
+                    horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
                     modifier = Modifier.padding(vertical = 6.dp),
                 ) {
-                    line.words.forEach { word ->
-                        SyllableWord(
-                            word = word,
-                            currentTime = currentTime,
-                            textPrefs = textPrefs,
-                            expressiveSyllables = expressiveSyllables,
-                            textColor = textColor,
-                            underTextAlpha = underTextAlpha,
-                            scale = scale,
+                    FlowRow(horizontalArrangement = textPrefs.lyricsAlignment.toArrangement()) {
+                        line.words.forEach { word ->
+                            SyllableWord(
+                                word = word,
+                                currentTime = currentTime,
+                                textPrefs = textPrefs,
+                                expressiveSyllables = expressiveSyllables,
+                                textColor = textColor,
+                                underTextAlpha = underTextAlpha,
+                                scale = scale,
+                            )
+                        }
+                    }
+
+                    // Romanized text below
+                    if (!romanizedText.isNullOrBlank()) {
+                        Text(
+                            text = romanizedText,
+                            fontWeight = FontWeight.Normal,
+                            color = textColor.copy(alpha = 0.7f),
+                            fontSize = (textPrefs.fontSize * 0.75f).sp,
+                            letterSpacing = (textPrefs.letterSpacing * 0.75f).sp,
+                            lineHeight = (textPrefs.lineHeight * 0.75f).sp,
+                            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                            modifier = Modifier.padding(4.dp),
                         )
                     }
                 }
@@ -352,7 +382,6 @@ private fun SyllableWord(
             label = "glowAlpha",
         )
 
-    val textMeasurer = rememberTextMeasurer()
     val textStyle =
         remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
             TextStyle(
@@ -369,9 +398,6 @@ private fun SyllableWord(
                     },
             )
         }
-
-    val textLayoutResult =
-        remember(textStyle, word.text) { textMeasurer.measure(word.text, textStyle) }
 
     Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
         // Ghost text for layout consistency
@@ -395,48 +421,43 @@ private fun SyllableWord(
         )
 
         // Undertext + Glow
-        Box(
+        Text(
+            text = word.text,
+            style = textStyle,
+            color = textColor.copy(alpha = underTextAlpha),
             modifier =
                 Modifier.matchParentSize()
-                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .drawWithCache {
-                        onDrawBehind {
-                            drawText(
-                                textLayoutResult,
-                                color = textColor.copy(alpha = underTextAlpha),
-                            )
-                        }
-                    }
+                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
         )
 
         // Main Highlight Layer with Mask
-        Box(
+        Text(
+            text = word.text,
+            style = textStyle,
+            color = textColor,
             modifier =
                 Modifier.matchParentSize()
                     .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                    .drawWithCache {
-                        onDrawBehind {
-                            if (animatedProgress > 0f) {
-                                drawText(textLayoutResult, color = textColor)
-                                if (animatedProgress < 1f) {
-                                    val feather = 16.dp.toPx()
-                                    val x = (size.width + feather) * animatedProgress
-                                    drawRect(
-                                        brush =
-                                            Brush.horizontalGradient(
-                                                0f to Color.Black,
-                                                ((x - feather) / size.width).coerceIn(0f, 1f) to
-                                                    Color.Black,
-                                                (x / size.width).coerceIn(0f, 1f) to
-                                                    Color.Transparent,
-                                                1f to Color.Transparent,
-                                            ),
-                                        blendMode = BlendMode.DstIn,
-                                    )
-                                }
+                    .drawWithContent {
+                        if (animatedProgress > 0f) {
+                            drawContent()
+                            if (animatedProgress < 1f) {
+                                val feather = 16.dp.toPx()
+                                val x = (size.width + feather) * animatedProgress
+                                drawRect(
+                                    brush =
+                                        Brush.horizontalGradient(
+                                            0f to Color.Black,
+                                            ((x - feather) / size.width).coerceIn(0f, 1f) to
+                                                Color.Black,
+                                            (x / size.width).coerceIn(0f, 1f) to Color.Transparent,
+                                            1f to Color.Transparent,
+                                        ),
+                                    blendMode = BlendMode.DstIn,
+                                )
                             }
                         }
-                    }
+                    },
         )
     }
 }

@@ -285,7 +285,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 },
             )
 
-            ListItemCard(shape = endItemShape()) {
+            ListItemCard(shape = middleItemShape()) {
                 SettingSlider(
                     title = stringResource(R.string.max_lines),
                     value = state.maxLines.toFloat(),
@@ -295,6 +295,19 @@ fun LazyListScope.lyricsCustomisationSettings(
                     valueRange = 2f..16f,
                 )
             }
+
+            ListItem(
+                colors = listItemColors(),
+                modifier = Modifier.clip(endItemShape()),
+                headlineContent = { Text(text = stringResource(R.string.romanization)) },
+                supportingContent = { Text(text = stringResource(R.string.romanization_desc)) },
+                trailingContent = {
+                    Switch(
+                        checked = state.romanizationEnabled,
+                        onCheckedChange = { onAction(LyricsPageAction.OnRomanizationToggle(it)) },
+                    )
+                },
+            )
         }
     }
 }
