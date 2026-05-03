@@ -44,24 +44,18 @@ jobs:
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK
+        id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
           name: foss-beta.apk
           path: app/build/outputs/**/*.apk
 
-      - name: Upload APK to Discord
+      - name: Send download link to Discord
         shell: bash
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          APK_PATH=$(find app/build/outputs -name "*.apk" -print -quit)
-
-          if [ -z "$APK_PATH" ]; then
-            echo "Error: No APK file found in the build outputs directory."
-            exit 1
-          fi
-          
-          message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}")
-          curl -F "payload_json={\"content\":\"${message}\"}" \
-          -F "rush_beta=@${APK_PATH}" \
+          message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}\n\nDownload: ${{ steps.upload-artifact.outputs.artifact-url }}")
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\":\"${message}\"}" \
           ${{ env.WEBHOOK }}
