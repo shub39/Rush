@@ -17,6 +17,9 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlinx.coroutines)
+
+                implementation(libs.kuromoji)
+                implementation(libs.tinypinyin)
             }
         }
 

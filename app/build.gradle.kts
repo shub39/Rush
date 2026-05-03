@@ -119,6 +119,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/CONTRIBUTORS.md"
+            excludes += "META-INF/LICENSE.md"
         }
         jniLibs.keepDebugSymbols.add("**/*.so")
     }

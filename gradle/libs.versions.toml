@@ -33,6 +33,8 @@ junit = "4.13.2"
 junit-version = "1.3.0"
 spotless = "8.4.0"
 ktfmt = "0.61"
+kuromoji = "0.9.0"
+tinypinyin = "2.0.3"
 
 [libraries]
 # Android
@@ -78,6 +80,8 @@ materialkolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+kuromoji = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromoji" }
+tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 

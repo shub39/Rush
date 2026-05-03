@@ -16,13 +16,17 @@
  */
 package com.shub39.romanization
 
+import com.atilika.kuromoji.ipadic.Tokenizer
+import com.github.promeg.pinyinhelper.Pinyin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 /**
  * Romanization utilities implemented in pure Kotlin for Multiplatform use.
  */
 object RomanizationUtils {
+    private val kuromojiTokenizer by lazy { Tokenizer() }
 
     // Katakana/Hiragana to Romaji mapping
     private val KANA_ROMAJI_MAP: Map<String, String> =
@@ -195,18 +199,29 @@ object RomanizationUtils {
             "џ" to "dž", "ч" to "č", "ш" to "sh", "ж" to "zh", "ц" to "c", "х" to "h",
         )
 
-    // Japanese romanization (Kana-only fallback since we removed Kuromoji)
+    // Japanese romanization
     suspend fun romanizeJapanese(text: String): String =
         withContext(Dispatchers.Default) {
-            // Convert Hiragana to Katakana then to Romaji
-            katakanaToRomaji(hiraganaToKatakana(text))
+            val tokens = kuromojiTokenizer.tokenize(text)
+            val romanizedTokens =
+                tokens.mapIndexed { index, token ->
+                    val currentReading =
+                        if (token.reading.isNullOrEmpty() || token.reading == "*") {
+                            token.surface
+                        } else {
+                            token.reading
+                        }
+                    val nextTokenReading =
+                        if (index + 1 < tokens.size) {
+                            tokens[index + 1].reading?.takeIf { it.isNotEmpty() && it != "*" }
+                                ?: tokens[index + 1].surface
+                        } else {
+                            null
+                        }
+                    katakanaToRomaji(currentReading, nextTokenReading)
+                }
+            romanizedTokens.joinToString(" ")
         }
-
-    private fun hiraganaToKatakana(text: String): String {
-        return text.map { ch ->
-            if (ch in '\u3041'..'\u3096') (ch.code + 0x60).toChar() else ch
-        }.joinToString("")
-    }
 
     private fun katakanaToRomaji(katakana: String?, nextKatakana: String? = null): String {
         if (katakana.isNullOrEmpty()) return ""
@@ -309,8 +324,8 @@ object RomanizationUtils {
             val builder = StringBuilder(text.length * 2)
             for (ch in text) {
                 if (Pinyin.isChinese(ch)) {
-                    val pinyin = Pinyin.toPinyin(ch)
-                    builder.append(pinyin).append(' ')
+                    val py = Pinyin.toPinyin(ch).lowercase(Locale.getDefault())
+                    builder.append(py).append(' ')
                 } else {
                     builder.append(ch)
                 }
