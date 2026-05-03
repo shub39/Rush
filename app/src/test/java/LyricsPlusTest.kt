@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import com.shub39.rush.data.network.LyricsPlusApi
-import com.shub39.rush.domain.dataclasses.TTMLParser
+import com.shub39.rush.domain.util.TTMLParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

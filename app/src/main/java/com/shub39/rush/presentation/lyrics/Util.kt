@@ -36,7 +36,7 @@ import com.materialkolor.ktx.lighten
 import com.shub39.rush.domain.dataclasses.Lyric
 import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.dataclasses.SongUi
-import com.shub39.rush.domain.dataclasses.TTMLParser
+import com.shub39.rush.domain.util.TTMLParser
 import com.shub39.rush.domain.dataclasses.WaveColors
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment

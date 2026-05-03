@@ -27,7 +27,7 @@ import com.shub39.rush.domain.Result
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.domain.dataclasses.SearchResult
 import com.shub39.rush.domain.dataclasses.Song
-import com.shub39.rush.domain.dataclasses.TTMLParser
+import com.shub39.rush.domain.util.TTMLParser
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
 import com.shub39.rush.domain.interfaces.SongRepository
 import kotlin.time.Clock
