@@ -1487,6 +1487,10 @@ object RomanizationUtils {
         return text.any { it in '\u0900'..'\u097F' }
     }
 
+    fun isPunjabi(text: String): Boolean {
+        return text.any { it in '\u0A00'..'\u0A7F' }
+    }
+
     fun isCyrillic(text: String): Boolean {
         return text.any { it in '\u0400'..'\u04FF' }
     }
@@ -1577,7 +1581,11 @@ object RomanizationUtils {
     suspend fun romanize(
         text: String,
         enabledLanguages: List<String> =
-            listOf("Japanese", "Korean", "Chinese", "Russian", "Ukrainian"),
+            listOf(
+                "Japanese", "Korean", "Chinese",
+                "Hindi", "Punjabi",
+                "Russian", "Ukrainian", "Serbian", "Bulgarian", "Belarusian", "Kyrgyz", "Macedonian"
+            ),
     ): String? {
         return when {
             // Japanese takes precedence when hiragana/katakana are present, even with Kanji
@@ -1585,6 +1593,7 @@ object RomanizationUtils {
             "Korean" in enabledLanguages && isKorean(text) -> romanizeKorean(text)
             "Chinese" in enabledLanguages && isChinese(text) -> romanizeChinese(text)
             "Hindi" in enabledLanguages && isHindi(text) -> romanizeHindi(text)
+            "Punjabi" in enabledLanguages && isPunjabi(text) -> romanizePunjabi(text)
             // Languages with unique markers are checked first; Russian is last as fallback
             "Ukrainian" in enabledLanguages && isUkrainian(text) ->
                 romanizeCyrillic(text, "Ukrainian")

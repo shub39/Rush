@@ -247,8 +247,22 @@ class RomanizationUtilsTest {
     }
 
     @Test
+    fun testIsPunjabi() {
+        assertTrue(RomanizationUtils.isPunjabi("ਸਤ ਸ੍ਰੀ ਅਕਾਲ"))
+        assertTrue(RomanizationUtils.isPunjabi("ਪੰਜਾਬ"))
+        assertFalse(RomanizationUtils.isPunjabi("hello"))
+        assertFalse(RomanizationUtils.isPunjabi("नमस्ते"))
+    }
+
+    @Test
     fun testRomanize_autoDetectHindi() = runBlocking {
         val result = RomanizationUtils.romanize("नमस्ते", enabledLanguages = listOf("Hindi"))
+        assertTrue(result!!.isNotEmpty())
+    }
+
+    @Test
+    fun testRomanize_autoDetectPunjabi() = runBlocking {
+        val result = RomanizationUtils.romanize("ਸਤ ਸ੍ਰੀ ਅਕਾਲ", enabledLanguages = listOf("Punjabi"))
         assertTrue(result!!.isNotEmpty())
     }
 

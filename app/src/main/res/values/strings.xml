@@ -152,5 +152,5 @@
     <string name="others">Others</string>
     <string name="show_app_branding">Show App Branding</string>
     <string name="romanization">Romanization</string>
-    <string name="romanization_desc">Show romanized lyrics for Japanese, Korean, Chinese, and Cyrillic languages</string>
+    <string name="romanization_desc">Show romanized lyrics for Japanese, Korean, Chinese, Hindi, Punjabi, and Cyrillic languages</string>
 </resources>
