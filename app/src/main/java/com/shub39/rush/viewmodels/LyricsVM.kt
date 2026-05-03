@@ -63,6 +63,7 @@ class LyricsVM(
 
     private var observeJob: Job? = null
     private var observePlaybackJob: Job? = null
+    private var romanizationJob: Job? = null
 
     private val _state = stateLayer.lyricsState
     private val _playbackInfo = MutableStateFlow(PlaybackInfo())
@@ -276,7 +277,8 @@ class LyricsVM(
     }
 
     private fun generateRomanizedLyrics() {
-        viewModelScope.launch(Dispatchers.Default) {
+        romanizationJob?.cancel()
+        romanizationJob = viewModelScope.launch(Dispatchers.Default) {
             val currentState = _state.value
             if (!currentState.romanizationEnabled) return@launch
 
