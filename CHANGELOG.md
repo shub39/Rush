@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.0.0
+- Added Lyrics Romanizations for Japanese, Chinese and other Cyrillic Languages Thanks to @rbelem. Enable it from Lyrics Customizations
+- Added Warning Dialog for imminent Android Restrictions.
+- Updated Translations
+
 ## 5.9.1
 - Improved Expressive Syllables, Enable it from Lyrics Customizations 
 - Translation Updates
