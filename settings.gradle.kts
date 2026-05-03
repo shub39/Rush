@@ -45,4 +45,6 @@ dependencyResolutionManagement {
 
 include(":app")
 
+include(":shared:romanization")
+
 include(":visualizer-helper")
