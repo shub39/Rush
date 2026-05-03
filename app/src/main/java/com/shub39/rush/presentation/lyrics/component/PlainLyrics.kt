@@ -311,7 +311,7 @@ fun PlainLyric(
                     Text(
                         text = romanizedText,
                         fontSize = (textPrefs.fontSize * 0.75f).sp,
-                        letterSpacing = textPrefs.letterSpacing.sp,
+                        letterSpacing = (textPrefs.letterSpacing * 0.75f).sp,
                         lineHeight = (textPrefs.lineHeight * 0.75f).sp,
                         textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
                         fontWeight = FontWeight.Normal,

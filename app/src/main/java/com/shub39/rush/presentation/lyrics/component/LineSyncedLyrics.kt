@@ -242,30 +242,32 @@ fun SyncedLyric(
                     horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
                 ) {
-                    Text(
-                        text = lyric.text,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor.copy(alpha = underTextAlpha),
-                        fontSize = textPrefs.fontSize.sp,
-                        letterSpacing = textPrefs.letterSpacing.sp,
-                        lineHeight = textPrefs.lineHeight.sp,
-                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                        modifier =
-                            Modifier.blur(
-                                radius = glowAlpha,
-                                edgeTreatment = BlurredEdgeTreatment.Unbounded,
-                            ),
-                    )
+                    Box {
+                        Text(
+                            text = lyric.text,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor.copy(alpha = underTextAlpha),
+                            fontSize = textPrefs.fontSize.sp,
+                            letterSpacing = textPrefs.letterSpacing.sp,
+                            lineHeight = textPrefs.lineHeight.sp,
+                            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                            modifier =
+                                Modifier.blur(
+                                    radius = glowAlpha,
+                                    edgeTreatment = BlurredEdgeTreatment.Unbounded,
+                                ),
+                        )
 
-                    Text(
-                        text = lyric.text,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor,
-                        fontSize = textPrefs.fontSize.sp,
-                        letterSpacing = textPrefs.letterSpacing.sp,
-                        lineHeight = textPrefs.lineHeight.sp,
-                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    )
+                        Text(
+                            text = lyric.text,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            fontSize = textPrefs.fontSize.sp,
+                            letterSpacing = textPrefs.letterSpacing.sp,
+                            lineHeight = textPrefs.lineHeight.sp,
+                            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                        )
+                    }
 
                     // Romanized text below
                     if (!romanizedText.isNullOrBlank()) {
