@@ -89,6 +89,6 @@ fun WarningReminder(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun Preview(modifier: Modifier = Modifier) {
+private fun Preview() {
     RushTheme(theme = Theme()) { WarningReminder() }
 }
