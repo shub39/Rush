@@ -16,15 +16,11 @@
  */
 package com.shub39.rush.presentation.lyrics.component
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -99,11 +95,7 @@ fun Actions(
         Icon(painter = painterResource(R.drawable.copy), contentDescription = "Copy")
     }
 
-    AnimatedVisibility(
-        visible = state.selectedLines.isEmpty(),
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-    ) {
+    if (state.selectedLines.isEmpty()) {
         IconButton(
             onClick = {
                 action(
@@ -123,7 +115,7 @@ fun Actions(
         }
     }
 
-    AnimatedVisibility(visible = state.source == Sources.LRCLIB && state.selectedLines.isEmpty()) {
+    if (state.source == Sources.LRCLIB && state.selectedLines.isEmpty()) {
         IconButton(
             onClick = {
                 action(LyricsPageAction.OnLyricsCorrect(true))
@@ -135,14 +127,11 @@ fun Actions(
         }
     }
 
-    AnimatedVisibility(
-        visible =
-            state.syncedAvailable &&
-                state.selectedLines.isEmpty() &&
-                state.source == Sources.LRCLIB &&
-                notificationAccess,
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+    if (
+        state.syncedAvailable &&
+            state.selectedLines.isEmpty() &&
+            state.source == Sources.LRCLIB &&
+            notificationAccess
     ) {
         Row {
             IconButton(
@@ -178,11 +167,7 @@ fun Actions(
         }
     }
 
-    AnimatedVisibility(
-        visible = notificationAccess,
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-    ) {
+    if (notificationAccess) {
         IconButton(
             onClick = { action(LyricsPageAction.OnToggleAutoChange) },
             colors =
@@ -215,11 +200,7 @@ fun Actions(
         }
     }
 
-    AnimatedVisibility(
-        visible = state.selectedLines.isNotEmpty(),
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-    ) {
+    if (state.selectedLines.isNotEmpty()) {
         IconButton(
             onClick = {
                 if (state.lyricsState is LyricsState.Loaded) {
@@ -243,11 +224,7 @@ fun Actions(
         }
     }
 
-    AnimatedVisibility(
-        visible = state.selectedLines.isNotEmpty(),
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-    ) {
+    if (state.selectedLines.isNotEmpty()) {
         IconButton(onClick = { action(LyricsPageAction.OnChangeSelectedLines(emptyMap())) }) {
             Icon(painter = painterResource(R.drawable.close), contentDescription = null)
         }

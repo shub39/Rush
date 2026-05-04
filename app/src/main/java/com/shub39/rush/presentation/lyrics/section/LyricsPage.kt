@@ -18,6 +18,7 @@ package com.shub39.rush.presentation.lyrics.section
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -279,7 +280,11 @@ fun LyricsPage(
                                             )
 
                                             // Actions Row
-                                            Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+                                            Row(
+                                                modifier =
+                                                    Modifier.padding(horizontal = 8.dp)
+                                                        .animateContentSize()
+                                            ) {
                                                 Actions(
                                                     state = state,
                                                     action = action,
@@ -329,7 +334,7 @@ fun LyricsPage(
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         // Actions Row
-                                        Column {
+                                        Column(modifier = Modifier.animateContentSize()) {
                                             Actions(
                                                 state = state,
                                                 action = action,
