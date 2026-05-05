@@ -16,133 +16,14 @@
  */
 package com.shub39.romanization
 
-import com.atilika.kuromoji.ipadic.Tokenizer
-import com.github.promeg.pinyinhelper.Pinyin
+import android.icu.text.Transliterator
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** Romanization utilities implemented in pure Kotlin for Multiplatform use. */
 object RomanizationUtils {
-    private val kuromojiTokenizer by lazy { Tokenizer() }
-
-    // Katakana/Hiragana to Romaji mapping
-    private val KANA_ROMAJI_MAP: Map<String, String> =
-        mapOf(
-            // Digraphs (Yōon)
-            "キャ" to "kya",
-            "キュ" to "kyu",
-            "キョ" to "kyo",
-            "シャ" to "sha",
-            "シュ" to "shu",
-            "ショ" to "sho",
-            "チャ" to "cha",
-            "チュ" to "chu",
-            "チョ" to "cho",
-            "ニャ" to "nya",
-            "ニュ" to "nyu",
-            "ニョ" to "nyo",
-            "ヒャ" to "hya",
-            "ヒュ" to "hyu",
-            "ヒョ" to "hyo",
-            "ミャ" to "mya",
-            "ミュ" to "myu",
-            "ミョ" to "myo",
-            "リャ" to "rya",
-            "リュ" to "ryu",
-            "リョ" to "ryo",
-            "ギャ" to "gya",
-            "ギュ" to "gyu",
-            "ギョ" to "gyo",
-            "ジャ" to "ja",
-            "ジュ" to "ju",
-            "ジョ" to "jo",
-            "ヂャ" to "ja",
-            "ヂュ" to "ju",
-            "ヂョ" to "jo",
-            "ビャ" to "bya",
-            "ビュ" to "byu",
-            "ビョ" to "byo",
-            "ピャ" to "pya",
-            "ピュ" to "pyu",
-            "ピョ" to "pyo",
-            // Basic Katakana
-            "ア" to "a",
-            "イ" to "i",
-            "ウ" to "u",
-            "エ" to "e",
-            "オ" to "o",
-            "カ" to "ka",
-            "キ" to "ki",
-            "ク" to "ku",
-            "ケ" to "ke",
-            "コ" to "ko",
-            "サ" to "sa",
-            "シ" to "shi",
-            "ス" to "su",
-            "セ" to "se",
-            "ソ" to "so",
-            "タ" to "ta",
-            "チ" to "chi",
-            "ツ" to "tsu",
-            "テ" to "te",
-            "ト" to "to",
-            "ナ" to "na",
-            "ニ" to "ni",
-            "ヌ" to "nu",
-            "ネ" to "ne",
-            "ノ" to "no",
-            "ハ" to "ha",
-            "ヒ" to "hi",
-            "フ" to "fu",
-            "ヘ" to "he",
-            "ホ" to "ho",
-            "マ" to "ma",
-            "ミ" to "mi",
-            "ム" to "mu",
-            "メ" to "me",
-            "モ" to "mo",
-            "ヤ" to "ya",
-            "ユ" to "yu",
-            "ヨ" to "yo",
-            "ラ" to "ra",
-            "リ" to "ri",
-            "ル" to "ru",
-            "レ" to "re",
-            "ロ" to "ro",
-            "ワ" to "wa",
-            "ヲ" to "o",
-            "ン" to "n",
-            // Dakuten
-            "ガ" to "ga",
-            "ギ" to "gi",
-            "グ" to "gu",
-            "ゲ" to "ge",
-            "ゴ" to "go",
-            "ザ" to "za",
-            "ジ" to "ji",
-            "ズ" to "zu",
-            "ゼ" to "ze",
-            "ゾ" to "zo",
-            "ダ" to "da",
-            "ヂ" to "ji",
-            "ヅ" to "zu",
-            "デ" to "de",
-            "ド" to "do",
-            // Handakuten
-            "バ" to "ba",
-            "ビ" to "bi",
-            "ブ" to "bu",
-            "ベ" to "be",
-            "ボ" to "bo",
-            "パ" to "pa",
-            "ピ" to "pi",
-            "プ" to "pu",
-            "ペ" to "pe",
-            "ポ" to "po",
-            // Chōonpu
-            "ー" to "",
-        )
+    private val japaneseTransliterator by lazy { Transliterator.getInstance("Any-Latin") }
+    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
 
     // Hangul Romaja mapping
     private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =
@@ -697,70 +578,8 @@ object RomanizationUtils {
     // Japanese romanization
     suspend fun romanizeJapanese(text: String): String =
         withContext(Dispatchers.Default) {
-            val tokens = kuromojiTokenizer.tokenize(text)
-            val romanizedTokens =
-                tokens.mapIndexed { index, token ->
-                    val currentReading =
-                        if (token.reading.isNullOrEmpty() || token.reading == "*") {
-                            token.surface
-                        } else {
-                            token.reading
-                        }
-                    val nextTokenReading =
-                        if (index + 1 < tokens.size) {
-                            tokens[index + 1].reading?.takeIf { it.isNotEmpty() && it != "*" }
-                                ?: tokens[index + 1].surface
-                        } else {
-                            null
-                        }
-                    katakanaToRomaji(currentReading, nextTokenReading)
-                }
-            romanizedTokens.joinToString(" ")
+            japaneseTransliterator.transliterate(text).lowercase(Locale.getDefault())
         }
-
-    private fun katakanaToRomaji(katakana: String?, nextKatakana: String? = null): String {
-        if (katakana.isNullOrEmpty()) return ""
-
-        val romajiBuilder = StringBuilder(katakana.length)
-        var i = 0
-        val n = katakana.length
-        while (i < n) {
-            var consumed = false
-            if (i + 1 < n) {
-                val twoCharCandidate = katakana.substring(i, i + 2)
-                val mappedTwoChar = KANA_ROMAJI_MAP[twoCharCandidate]
-                if (mappedTwoChar != null) {
-                    romajiBuilder.append(mappedTwoChar)
-                    i += 2
-                    consumed = true
-                }
-            }
-
-            if (!consumed && katakana[i] == 'ッ') {
-                val nextCharToDouble = katakana.getOrNull(i + 1) ?: nextKatakana?.getOrNull(0)
-                if (nextCharToDouble != null) {
-                    val nextCharRomaji =
-                        KANA_ROMAJI_MAP[nextCharToDouble.toString()]?.getOrNull(0)?.toString()
-                            ?: nextCharToDouble.toString()
-                    romajiBuilder.append(nextCharRomaji.lowercase().trim())
-                }
-                i += 1
-                consumed = true
-            }
-
-            if (!consumed) {
-                val oneCharCandidate = katakana[i].toString()
-                val mappedOneChar = KANA_ROMAJI_MAP[oneCharCandidate]
-                if (mappedOneChar != null) {
-                    romajiBuilder.append(mappedOneChar)
-                } else {
-                    romajiBuilder.append(oneCharCandidate)
-                }
-                i += 1
-            }
-        }
-        return romajiBuilder.toString().lowercase()
-    }
 
     // Korean romanization
     suspend fun romanizeKorean(text: String): String =
@@ -815,21 +634,7 @@ object RomanizationUtils {
     // Chinese romanization
     suspend fun romanizeChinese(text: String): String =
         withContext(Dispatchers.Default) {
-            if (text.isEmpty()) return@withContext ""
-            val builder = StringBuilder(text.length * 2)
-            for (ch in text) {
-                if (Pinyin.isChinese(ch)) {
-                    val py = Pinyin.toPinyin(ch).lowercase(Locale.getDefault())
-                    builder.append(py).append(' ')
-                } else {
-                    builder.append(ch)
-                }
-            }
-            builder
-                .toString()
-                .replace(Regex("\\s+([,.!?;:])"), "$1")
-                .replace(Regex("\\s+([，。！？；：、（）《》〈〉【】『』「」])"), "$1")
-                .trim()
+            chineseTransliterator.transliterate(text).lowercase(Locale.getDefault())
         }
 
     // Cyrillic romanization

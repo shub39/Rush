@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.romanization
 
+import com.shub39.romanization.RomanizationUtils
 import kotlin.test.*
 import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
 class RomanizationUtilsTest {
 
@@ -57,7 +58,8 @@ class RomanizationUtilsTest {
     @Test
     fun testChinese_basic() = runTest {
         val result = RomanizationUtils.romanizeChinese("你好")
-        assertTrue(result.contains("ni") || result.contains("hao"))
+        println(result)
+        assertTrue(result.contains("nǐ") || result.contains("hǎo"))
     }
 
     @Test
