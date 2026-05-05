@@ -22,8 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
-    private val japaneseTransliterator by lazy { Transliterator.getInstance("Any-Latin") }
-    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
+    private val japaneseTransliterator by lazy { Transliterator.getInstance("Any-Latin; Any-ASCII") }
+    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin; Any-ASCII") }
 
     // Hangul Romaja mapping
     private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =

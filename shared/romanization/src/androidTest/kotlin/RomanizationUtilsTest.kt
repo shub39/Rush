@@ -59,7 +59,7 @@ class RomanizationUtilsTest {
     fun testChinese_basic() = runTest {
         val result = RomanizationUtils.romanizeChinese("你好")
         println(result)
-        assertTrue(result.contains("nǐ") || result.contains("hǎo"))
+        assertTrue(result.contains("ni") || result.contains("hao"))
     }
 
     @Test
