@@ -22,7 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
-    private val japaneseTransliterator by lazy { Transliterator.getInstance("Any-Latin; Any-ASCII") }
+    private val japaneseTransliterator by lazy {
+        Transliterator.getInstance("Hiragana-Latin; Katakana-Latin; Any-ASCII")
+    }
     private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin; Any-ASCII") }
 
     // Hangul Romaja mapping

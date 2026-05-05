@@ -83,8 +83,8 @@ import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.delay
 import kotlin.math.abs
+import kotlinx.coroutines.delay
 
 @Composable
 fun SyllableSyncedLyrics(
@@ -110,7 +110,7 @@ fun SyllableSyncedLyrics(
         if (currentPlayingIndex >= 0 && !pauseAutoScroll) {
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
-                        lazyListState.layoutInfo.viewportStartOffset
+                    lazyListState.layoutInfo.viewportStartOffset
             val itemHeight = itemHeights[currentPlayingIndex] ?: 0
             val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
             lazyListState.animateScrollToItem(
@@ -155,43 +155,43 @@ fun SyllableSyncedLyrics(
                 } ?: 1f
 
             val animatedProgress by
-            animateFloatAsState(
-                targetValue = progress,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "loadingProgress",
-            )
+                animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "loadingProgress",
+                )
 
             val underTextAlpha by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 0.5f else 0.2f,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "underTextAlpha",
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 0.5f else 0.2f,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "underTextAlpha",
+                )
 
             val blur by
-            animateDpAsState(
-                targetValue =
-                    if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
-                    else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            )
+                animateDpAsState(
+                    targetValue =
+                        if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
+                        else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                )
 
             val scale by
-            animateFloatAsState(
-                targetValue = if (isCurrent) 1f else 0.8f,
-                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            )
+                animateFloatAsState(
+                    targetValue = if (isCurrent) 1f else 0.8f,
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                )
 
             val textColor by
-            animateColorAsState(
-                targetValue =
-                    when {
-                        (line.startTime * 1000).toLong() <= currentTime -> cardContent
-                        else -> cardContent.copy(0.3f)
-                    },
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "textColor",
-            )
+                animateColorAsState(
+                    targetValue =
+                        when {
+                            (line.startTime * 1000).toLong() <= currentTime -> cardContent
+                            else -> cardContent.copy(0.3f)
+                        },
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "textColor",
+                )
 
             SyllableLine(
                 textPrefs = state.textPrefs,
@@ -243,8 +243,7 @@ fun SyllableLine(
     ) {
         Box(
             modifier =
-                Modifier
-                    .graphicsLayer {
+                Modifier.graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -355,37 +354,37 @@ private fun SyllableWord(
         else (currentTime - wordStartTimeMs).toFloat() / duration
 
     val animatedProgress by
-    animateFloatAsState(
-        targetValue = wordProgress,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        label = "wordProgress",
-    )
+        animateFloatAsState(
+            targetValue = wordProgress,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordProgress",
+        )
 
     val currentWeight =
         remember(animatedProgress, maxWordWeight) {
-            ((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10
-        }
+                ((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10
+            }
             .coerceIn(200, maxWordWeight)
     val currentWidth =
         remember(animatedProgress, maxWordWidth) {
-            ((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f
-        }
+                ((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f
+            }
             .coerceIn(100f, maxWordWidth)
 
     // word highlighting design
     val isHighlighted = currentTime >= wordStartTimeMs
     val wordScale by
-    animateFloatAsState(
-        targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        label = "wordScale",
-    )
+        animateFloatAsState(
+            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordScale",
+        )
     val glowAlpha by
-    animateFloatAsState(
-        targetValue = if (isHighlighted) 2f else 0f,
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "glowAlpha",
-    )
+        animateFloatAsState(
+            targetValue = if (isHighlighted) 2f else 0f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "glowAlpha",
+        )
 
     val textStyle =
         remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
@@ -404,11 +403,7 @@ private fun SyllableWord(
             )
         }
 
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 4.dp)
-            .scale(wordScale)
-    ) {
+    Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
         // Ghost text for layout consistency
         Text(
             text = word.text,
@@ -435,8 +430,7 @@ private fun SyllableWord(
             style = textStyle,
             color = textColor.copy(alpha = underTextAlpha),
             modifier =
-                Modifier
-                    .matchParentSize()
+                Modifier.matchParentSize()
                     .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
         )
 
@@ -446,8 +440,7 @@ private fun SyllableWord(
             style = textStyle,
             color = textColor,
             modifier =
-                Modifier
-                    .matchParentSize()
+                Modifier.matchParentSize()
                     .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
                     .drawWithContent {
                         if (animatedProgress > 0f) {
@@ -460,7 +453,7 @@ private fun SyllableWord(
                                         Brush.horizontalGradient(
                                             0f to Color.Black,
                                             ((x - feather) / size.width).coerceIn(0f, 1f) to
-                                                    Color.Black,
+                                                Color.Black,
                                             (x / size.width).coerceIn(0f, 1f) to Color.Transparent,
                                             1f to Color.Transparent,
                                         ),

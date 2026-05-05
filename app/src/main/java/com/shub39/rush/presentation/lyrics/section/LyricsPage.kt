@@ -487,9 +487,10 @@ fun LyricsPage(
                                     Column {
                                         Text(
                                             text = stringResource(R.string.not_found),
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                fontWeight = FontWeight.Bold
-                                            ),
+                                            style =
+                                                MaterialTheme.typography.bodySmall.copy(
+                                                    fontWeight = FontWeight.Bold
+                                                ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                         )

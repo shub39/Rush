@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-plugins {
-    alias(libs.plugins.android.library)
-}
+plugins { alias(libs.plugins.android.library) }
 
 android {
     namespace = "com.shub39.romanization"
