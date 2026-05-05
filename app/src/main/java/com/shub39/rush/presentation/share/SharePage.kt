@@ -95,12 +95,12 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberShareFileLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
 import io.github.vinceglb.filekit.write
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
-import java.io.File
-import java.io.FileOutputStream
 
 @Composable
 fun SharePage(
@@ -267,12 +267,10 @@ private fun SharePageContent(
             ) {
                 Surface(
                     modifier =
-                        Modifier.fillMaxWidth(0.8f)
-                            .aspectRatio(9f / 16f)
-                            .drawWithContent {
-                                fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
-                                drawLayer(fullScreenGraphicsLayer)
-                            },
+                        Modifier.fillMaxWidth(0.8f).aspectRatio(9f / 16f).drawWithContent {
+                            fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
+                            drawLayer(fullScreenGraphicsLayer)
+                        },
                     color = if (state.fullScreen) containerColor else Color.Transparent,
                 ) {
                     Box(contentAlignment = Alignment.Center) {

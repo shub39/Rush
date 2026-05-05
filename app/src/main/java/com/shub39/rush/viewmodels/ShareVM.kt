@@ -94,7 +94,8 @@ class ShareVM(stateLayer: SharedStates, private val datastore: SharePagePreferen
                     .onEach { pref -> _state.update { it.copy(rushBranding = pref) } }
                     .launchIn(this)
 
-                datastore.getFullscreenShare()
+                datastore
+                    .getFullscreenShare()
                     .onEach { fullScreen -> _state.update { it.copy(fullScreen = fullScreen) } }
                     .launchIn(this)
             }
