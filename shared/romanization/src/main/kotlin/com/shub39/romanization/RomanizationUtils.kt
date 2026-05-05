@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
     private val japaneseTransliterator by lazy {
-        Transliterator.getInstance("Hiragana-Latin; Katakana-Latin; Any-ASCII")
+        Transliterator.getInstance("Any-Latin; Any-ASCII")
     }
     private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin; Any-ASCII") }
 
