@@ -2,6 +2,9 @@
 
 ## 6.1.0
 - Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)
+- Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds
+- Optimised App size
+- Fixed miscellaneous UI issues
 
 ## 6.0.0
 - Added lyrics romanizations for lyrics Thanks to @rbelem.
