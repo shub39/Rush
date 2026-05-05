@@ -64,6 +64,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.materialkolor.ktx.blend
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
@@ -234,7 +235,6 @@ private fun SharePageContent(
                 cardGraphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(cardGraphicsLayer)
             }
-            .padding(pxToDp(32))
             .let {
                 if (state.cardFit == CardFit.FIT) {
                     it.heightIn(max = pxToDp(1920))
@@ -271,7 +271,10 @@ private fun SharePageContent(
                             fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
                             drawLayer(fullScreenGraphicsLayer)
                         },
-                    color = if (state.fullScreen) containerColor else Color.Transparent,
+                    color =
+                        if (state.fullScreen)
+                            containerColor.blend(MaterialTheme.colorScheme.surface)
+                        else Color.Transparent,
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         RushTheme(theme = Theme(font = state.cardFont)) {
