@@ -239,6 +239,26 @@ fun SharePageSheet(
             item {
                 ListItem(
                     colors = listItemColors(),
+                    modifier = Modifier.clip(middleItemShape()),
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.full_screen_share),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = state.fullScreen,
+                            onCheckedChange = { onAction(SharePageAction.OnToggleFullScreen(it)) },
+                        )
+                    },
+                )
+            }
+
+            item {
+                ListItem(
+                    colors = listItemColors(),
                     modifier = Modifier.clip(endItemShape()),
                     headlineContent = {
                         Text(

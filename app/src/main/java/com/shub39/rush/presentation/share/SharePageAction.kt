@@ -41,4 +41,6 @@ sealed interface SharePageAction {
     data class OnUpdateCardBackground(val color: Int) : SharePageAction
 
     data class OnUpdateCardFont(val font: Fonts) : SharePageAction
+
+    data class OnToggleFullScreen(val fullScreen: Boolean) : SharePageAction
 }

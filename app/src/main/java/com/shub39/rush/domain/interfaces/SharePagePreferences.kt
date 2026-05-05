@@ -60,4 +60,7 @@ interface SharePagePreferences {
     fun showRushBranding(): Flow<Boolean>
 
     suspend fun updateRushBranding(newPref: Boolean)
+
+    fun getFullscreenShare(): Flow<Boolean>
+    suspend fun updateFullscreenShare(newPref: Boolean)
 }
