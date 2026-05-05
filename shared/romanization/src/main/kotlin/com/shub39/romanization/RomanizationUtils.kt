@@ -578,7 +578,7 @@ object RomanizationUtils {
     // Japanese romanization
     suspend fun romanizeJapanese(text: String): String =
         withContext(Dispatchers.Default) {
-            japaneseTransliterator.transliterate(text).lowercase(Locale.getDefault())
+            japaneseTransliterator.transliterate(text).lowercase(Locale.ROOT)
         }
 
     // Korean romanization
@@ -634,7 +634,7 @@ object RomanizationUtils {
     // Chinese romanization
     suspend fun romanizeChinese(text: String): String =
         withContext(Dispatchers.Default) {
-            chineseTransliterator.transliterate(text).lowercase(Locale.getDefault())
+            chineseTransliterator.transliterate(text).lowercase(Locale.ROOT)
         }
 
     // Cyrillic romanization

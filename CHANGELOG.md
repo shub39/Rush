@@ -7,7 +7,7 @@
 - Fixed miscellaneous UI issues
 
 ## 6.0.0
-- Added lyrics romanizations for lyrics Thanks to @rbelem.
+- Added lyrics romanizations. Thanks to @rbelem.
 - Supported languages: Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages
 - Enable Romanization from Lyrics Customizations
 - Updated Translations
