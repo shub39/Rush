@@ -264,6 +264,8 @@ class LyricsVM(
                     if (action.enabled) {
                         generateRomanizedLyrics()
                     } else {
+                        romanizationJob?.cancel()
+
                         val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
 
                         _state.update {

@@ -1,7 +1,7 @@
 # Changelog
 
 ## 6.0.0
-- Added Lyrics Romanizations for Japanese, Chinese and other Cyrillic Languages Thanks to @rbelem.
+- Added lyrics romanizations for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages Thanks to @rbelem.
 - Enable Romanization from Lyrics Customizations
 - Updated Translations
 
