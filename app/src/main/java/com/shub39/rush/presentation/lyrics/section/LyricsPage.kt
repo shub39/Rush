@@ -293,7 +293,6 @@ fun LyricsPage(
                                                     cardContent = cardContent,
                                                     onShare = onShare,
                                                     onEdit = onNavigateToCustomisations,
-                                                    glowMultiplier = glowMultiplier,
                                                 )
                                             }
                                         }
@@ -343,7 +342,6 @@ fun LyricsPage(
                                                 cardContent = cardContent,
                                                 onShare = onShare,
                                                 onEdit = onNavigateToCustomisations,
-                                                glowMultiplier = glowMultiplier,
                                             )
                                         }
 
