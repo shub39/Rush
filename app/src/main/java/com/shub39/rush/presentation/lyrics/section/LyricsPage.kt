@@ -484,12 +484,22 @@ fun LyricsPage(
                                         contentDescription = "No exact match found",
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = stringResource(R.string.not_found),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.not_found),
+                                            style = MaterialTheme.typography.bodySmall.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.open_search),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -617,7 +627,7 @@ fun LyricsPagePreview() {
                     syncedAvailable = true,
                     sync = true,
                     autoChange = true,
-                    searchState = SearchState.Searching("What the fuck"),
+                    searchState = SearchState.UserPrompt,
                     extractedColors =
                         ExtractedColors(
                             cardContentMuted = Color.White.toArgb(),
