@@ -1,8 +1,18 @@
 [
   {
+    "version": "6.1.0",
+    "changes": [
+      "Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)",
+      "Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds",
+      "Optimised App size",
+      "Fixed miscellaneous UI issues"
+    ]
+  },
+  {
     "version": "6.0.0",
     "changes": [
-      "Added lyrics romanizations for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages Thanks to @rbelem.",
+      "Added lyrics romanizations. Thanks to @rbelem.",
+      "Supported languages: Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages",
       "Enable Romanization from Lyrics Customizations",
       "Updated Translations"
     ]
@@ -65,14 +75,6 @@
       "Fixed miscellaneous song sync bugs",
       "Updated Lyrics Customisation UI",
       "Updated Share Cards UI"
-    ]
-  },
-  {
-    "version": "5.7.0",
-    "changes": [
-      "Added support for TTML (Syllable Synced) Lyrics",
-      "Improved Synced Lyrics Animation",
-      "Added in app Changelogs"
     ]
   }
 ]

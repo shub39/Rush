@@ -20,6 +20,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -93,6 +95,9 @@ fun SyllableSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isUserScrolling by lazyListState.interactionSource.collectIsDraggedAsState()
+    var pauseAutoScroll by remember { mutableStateOf(false) }
+
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
@@ -101,8 +106,8 @@ fun SyllableSyncedLyrics(
         ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
 
     // updater for synced lyrics
-    LaunchedEffect(currentPlayingIndex) {
-        if (currentPlayingIndex >= 0) {
+    LaunchedEffect(currentPlayingIndex, pauseAutoScroll) {
+        if (currentPlayingIndex >= 0 && !pauseAutoScroll) {
             val viewportHeight =
                 lazyListState.layoutInfo.viewportEndOffset -
                     lazyListState.layoutInfo.viewportStartOffset
@@ -115,6 +120,16 @@ fun SyllableSyncedLyrics(
         }
     }
 
+    // scroll interaction
+    LaunchedEffect(isUserScrolling) {
+        if (!isUserScrolling) {
+            delay(3000)
+            pauseAutoScroll = false
+        } else {
+            pauseAutoScroll = true
+        }
+    }
+
     // Synced Lyrics
     LazyColumn(
         modifier = modifier,
@@ -123,7 +138,6 @@ fun SyllableSyncedLyrics(
             Arrangement.spacedBy(
                 with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
             ),
-        userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
         itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
@@ -157,7 +171,7 @@ fun SyllableSyncedLyrics(
             val blur by
                 animateDpAsState(
                     targetValue =
-                        if (!state.blurSyncedLyrics) 0.dp
+                        if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
                         else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
                     animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )
@@ -498,7 +512,7 @@ fun SyllableSyncedLyricsPreview() {
                 startTime = 14.0,
                 words =
                     listOf(
-                        ParsedWord("Slow", 14.0, 16.0),
+                        ParsedWord("Sloooooooooooooooooooooooooooooooooow", 14.0, 16.0),
                         ParsedWord("and", 16.0, 16.5),
                         ParsedWord("hea-", 16.5, 18.0),
                         ParsedWord("vy", 18.0, 19.0),
@@ -558,7 +572,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
-            expressiveSyllables = true,
+            expressiveSyllables = false,
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 

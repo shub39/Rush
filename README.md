@@ -21,15 +21,16 @@
 - [x] Autofill current playing song in search 
 - [x] Synced Lyrics
 - [x] Import and Export saved lyrics
+- [x] Romanizations for Japanese, Chinese, Korean, Hindi, Punjabi and other Cyrillic Languages
 
 Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)
 
 ## Motivation 
 
 Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
-So, I made this app to get and store lyrics for my favorite songs from Genius and share them like Spotify,
-all in Material 3 look. As an audiophile, This has now become my way to listen to complete albums with lyrics without 
-dealing with genius's "UI".
+So, I made this app to get and store lyrics for my favorite songs from Genius and share them like 
+Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete 
+albums with lyrics without dealing with genius's "UI".
 
 ## Stargazers over time
 
@@ -60,7 +61,8 @@ Translations are done via weblate, you can contribute there!
 
 # Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for
+submitting pull requests.
 
 # Security
 

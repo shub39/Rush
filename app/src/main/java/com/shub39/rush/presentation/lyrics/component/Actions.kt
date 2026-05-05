@@ -32,9 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.enums.Sources
-import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.copyToClipboard
-import com.shub39.rush.presentation.glowBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
@@ -49,7 +47,6 @@ fun Actions(
     cardContent: Color,
     onShare: () -> Unit,
     onEdit: () -> Unit,
-    glowMultiplier: Float = 0f,
 ) {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -145,18 +142,6 @@ fun Actions(
                     } else {
                         IconButtonDefaults.iconButtonColors()
                     },
-                modifier =
-                    Modifier.run {
-                        if (state.sync && (state.lyricsBackground in audioDependentBackgrounds)) {
-                            glowBackground(
-                                (12 * glowMultiplier).dp,
-                                IconButtonDefaults.standardShape,
-                                cardContent,
-                            )
-                        } else {
-                            this
-                        }
-                    },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.sync),
@@ -178,18 +163,6 @@ fun Actions(
                     )
                 } else {
                     IconButtonDefaults.iconButtonColors()
-                },
-            modifier =
-                Modifier.run {
-                    if (state.autoChange && (state.lyricsBackground in audioDependentBackgrounds)) {
-                        glowBackground(
-                            (12 * glowMultiplier).dp,
-                            IconButtonDefaults.standardShape,
-                            cardContent,
-                        )
-                    } else {
-                        this
-                    }
                 },
         ) {
             Icon(

@@ -44,4 +44,5 @@ data class SharePageState(
     val cardTheme: CardTheme = CardTheme.SPOTIFY,
     val albumArtShape: AlbumArtShape = AlbumArtShape.COOKIE_12,
     val rushBranding: Boolean = true,
+    val fullScreen: Boolean = false,
 )

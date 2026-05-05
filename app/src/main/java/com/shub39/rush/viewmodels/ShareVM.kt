@@ -93,6 +93,11 @@ class ShareVM(stateLayer: SharedStates, private val datastore: SharePagePreferen
                     .showRushBranding()
                     .onEach { pref -> _state.update { it.copy(rushBranding = pref) } }
                     .launchIn(this)
+
+                datastore
+                    .getFullscreenShare()
+                    .onEach { fullScreen -> _state.update { it.copy(fullScreen = fullScreen) } }
+                    .launchIn(this)
             }
         }
 
@@ -111,6 +116,8 @@ class ShareVM(stateLayer: SharedStates, private val datastore: SharePagePreferen
                 is SharePageAction.OnUpdateAlbumArtShape ->
                     datastore.updateAlbumArtShape(action.shape)
                 is SharePageAction.OnToggleRushBranding -> datastore.updateRushBranding(action.pref)
+                is SharePageAction.OnToggleFullScreen ->
+                    datastore.updateFullscreenShare(action.fullScreen)
             }
         }
     }

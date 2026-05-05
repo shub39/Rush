@@ -1,7 +1,14 @@
 # Changelog
 
+## 6.1.0
+- Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)
+- Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds
+- Optimised App size
+- Fixed miscellaneous UI issues
+
 ## 6.0.0
-- Added lyrics romanizations for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages Thanks to @rbelem.
+- Added lyrics romanizations. Thanks to @rbelem.
+- Supported languages: Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages
 - Enable Romanization from Lyrics Customizations
 - Updated Translations
 

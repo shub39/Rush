@@ -55,7 +55,14 @@ jobs:
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}\n\nDownload: ${{ steps.upload-artifact.outputs.artifact-url }}")
-          curl -H "Content-Type: application/json" \
-          -d "{\"content\":\"${message}\"}" \
+          APK_PATH=$(find app/build/outputs -name "*.apk" -print -quit)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "Error: No APK file found in the build outputs directory."
+            exit 1
+          fi
+          
+          message=$(echo "New Rush beta **${{ env.VERSION }}**\n${{ env.COMMIT }}")
+          curl -F "payload_json={\"content\":\"${message}\"}" \
+          -F "rush_beta=@${APK_PATH}" \
           ${{ env.WEBHOOK }}

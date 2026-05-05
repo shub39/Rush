@@ -151,6 +151,8 @@
     <string name="text">Text</string>
     <string name="others">Others</string>
     <string name="show_app_branding">Show App Branding</string>
+    <string name="full_screen_share">Full Screen Share</string>
     <string name="romanization">Romanization</string>
     <string name="romanization_desc">Show romanized lyrics for Japanese, Korean, Chinese, Hindi, Punjabi, and Cyrillic languages</string>
+    <string name="open_search">Open Search</string>
 </resources>
