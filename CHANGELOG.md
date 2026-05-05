@@ -1,7 +1,7 @@
 # Changelog
 
 ## 6.1.0
-- Added Fullscreen mode for share cards (#242)
+- Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)
 
 ## 6.0.0
 - Added lyrics romanizations for lyrics Thanks to @rbelem.
