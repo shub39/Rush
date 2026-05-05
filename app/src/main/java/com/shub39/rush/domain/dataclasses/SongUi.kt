@@ -43,4 +43,8 @@ data class SongUi(
     val syncedLyrics: List<Lyric>?,
     val geniusLyrics: List<Map.Entry<Int, String>>?,
     val ttmlLyrics: List<ParsedLine>?,
+    val romanizedLyrics: Map<Int, String> = emptyMap(),
+    val romanizedTtmlLyrics: Map<Double, String> = emptyMap(),
+    val romanizedGeniusLyrics: Map<Int, String> = emptyMap(),
+    val romanizedSyncedLyrics: Map<Long, String> = emptyMap(),
 )

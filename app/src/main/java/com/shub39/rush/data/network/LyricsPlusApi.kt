@@ -18,7 +18,7 @@ package com.shub39.rush.data.network
 
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.domain.Result
-import com.shub39.rush.domain.dataclasses.TTMLParser
+import com.shub39.rush.domain.util.TTMLParser
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout

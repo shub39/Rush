@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.0.0
+- Added lyrics romanizations for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages Thanks to @rbelem.
+- Enable Romanization from Lyrics Customizations
+- Updated Translations
+
 ## 5.9.1
 - Improved Expressive Syllables, Enable it from Lyrics Customizations 
 - Translation Updates

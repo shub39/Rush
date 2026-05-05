@@ -49,6 +49,8 @@ import com.shub39.rush.viewmodels.SavedVM
 import com.shub39.rush.viewmodels.SearchSheetVM
 import com.shub39.rush.viewmodels.SettingsVM
 import com.shub39.rush.viewmodels.ShareVM
+import com.shub39.rush.warning.WarningDialog
+import com.shub39.rush.warning.WarningManager
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
@@ -84,7 +86,12 @@ fun App() {
 
     CompositionLocalProvider(LocalCoilImageLoader provides koinInject<ImageLoader>()) {
         RushTheme(theme = globalState.theme) {
-            if (globalState.currentChangelog != null) {
+            val showWarning by WarningManager.showWarningDialog.collectAsStateWithLifecycle()
+            if (globalState.currentChangelog != null && showWarning) {
+                WarningDialog(onDismissRequest = { WarningManager.updateWarningDialog(false) })
+            }
+
+            if (globalState.currentChangelog != null && !showWarning) {
                 ChangelogSheet(
                     currentLog = globalState.currentChangelog!!,
                     onDismissRequest = { globalVM.onAction(GlobalAction.DismissChangelog) },

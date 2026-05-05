@@ -25,6 +25,7 @@ datetime = "0.7.1"
 androidx-lifecycle = "2.10.0"
 zoomable = "2.11.1"
 compose = "1.11.0"
+coroutines = "1.10.2"
 material3 = "1.5.0-alpha18"
 adaptive = "1.2.0"
 purchases = "10.2.1"
@@ -32,6 +33,8 @@ junit = "4.13.2"
 junit-version = "1.3.0"
 spotless = "8.4.0"
 ktfmt = "0.61"
+kuromoji = "0.9.0"
+tinypinyin = "2.0.3"
 
 [libraries]
 # Android
@@ -77,6 +80,10 @@ materialkolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+kuromoji = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromoji" }
+tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -89,6 +96,8 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 [plugins]
 room = { id = "androidx.room3", version.ref = "room3" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

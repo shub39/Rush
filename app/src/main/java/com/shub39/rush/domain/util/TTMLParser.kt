@@ -14,9 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.domain.dataclasses
+package com.shub39.rush.domain.util
 
 import android.annotation.SuppressLint
+import com.shub39.rush.domain.dataclasses.ParsedLine
+import com.shub39.rush.domain.dataclasses.ParsedWord
+import com.shub39.rush.domain.dataclasses.SpanInfo
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Element
 import org.w3c.dom.Node

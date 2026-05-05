@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "5.9.1"
-val appVersionCode = 5910
+val appVersionName = "6.0.0"
+val appVersionCode = 6000
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -117,7 +117,11 @@ android {
     }
 
     packaging {
-        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/CONTRIBUTORS.md"
+            excludes += "META-INF/LICENSE.md"
+        }
         jniLibs.keepDebugSymbols.add("**/*.so")
     }
 
@@ -135,6 +139,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":shared:romanization"))
+
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)
 

@@ -18,6 +18,7 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.romanization.RomanizationUtils
 import com.shub39.rush.data.PaletteGenerator
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.domain.Result
@@ -41,7 +42,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -60,6 +63,7 @@ class LyricsVM(
 
     private var observeJob: Job? = null
     private var observePlaybackJob: Job? = null
+    private var romanizationJob: Job? = null
 
     private val _state = stateLayer.lyricsState
     private val _playbackInfo = MutableStateFlow(PlaybackInfo())
@@ -137,6 +141,8 @@ class LyricsVM(
                             lyricsState = Loaded(song = song),
                         )
                     }
+
+                    generateRomanizedLyrics()
                 }
 
                 is LyricsPageAction.UpdateExtractedColors ->
@@ -214,6 +220,8 @@ class LyricsVM(
                                         ) ?: LyricsState.Idle,
                                 )
                             }
+
+                            generateRomanizedLyrics()
                         }
                     }
                 }
@@ -250,8 +258,91 @@ class LyricsVM(
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
                 LyricsPageAction.OnPlayNext -> MediaListenerImpl.playNext()
                 LyricsPageAction.OnPlayPrevious -> MediaListenerImpl.playPrevious()
+
+                is LyricsPageAction.OnRomanizationToggle -> {
+                    lyricsPrefs.updateRomanizationEnabled(action.enabled)
+                    if (action.enabled) {
+                        generateRomanizedLyrics()
+                    } else {
+                        romanizationJob?.cancel()
+
+                        val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
+
+                        _state.update {
+                            it.copy(
+                                lyricsState =
+                                    Loaded(
+                                        song =
+                                            song.copy(
+                                                romanizedLyrics = emptyMap(),
+                                                romanizedGeniusLyrics = emptyMap(),
+                                                romanizedSyncedLyrics = emptyMap(),
+                                                romanizedTtmlLyrics = emptyMap(),
+                                            )
+                                    )
+                            )
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun generateRomanizedLyrics() {
+        romanizationJob?.cancel()
+        romanizationJob =
+            viewModelScope.launch(Dispatchers.Default) {
+                if (!_state.value.romanizationEnabled) return@launch
+
+                val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
+
+                // Plain lyrics (LRCLIB)
+                val romanizedLyrics =
+                    song.lyrics.associate { entry ->
+                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                            entry.key to romanized
+                        } ?: (entry.key to "")
+                    }
+
+                // Genius lyrics — offset to avoid collision with LRCLIB keys
+                val romanizedGeniusLyrics =
+                    song.geniusLyrics?.associate { entry ->
+                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                            entry.key to romanized
+                        } ?: (entry.key to "")
+                    } ?: emptyMap()
+
+                // Synced lyrics — time-based keys
+                val romanizedSyncedLyrics =
+                    song.syncedLyrics?.associate { lyric ->
+                        RomanizationUtils.romanize(lyric.text)?.let { romanized ->
+                            lyric.time to romanized
+                        } ?: (lyric.time to "")
+                    } ?: emptyMap()
+
+                // TTML lyrics — startTime in ms as key
+                val romanizedTTMLLyrics =
+                    song.ttmlLyrics?.associate { parsedLine ->
+                        RomanizationUtils.romanize(parsedLine.text)?.let { romanized ->
+                            parsedLine.startTime to romanized
+                        } ?: (parsedLine.startTime to "")
+                    } ?: emptyMap()
+
+                _state.update {
+                    it.copy(
+                        lyricsState =
+                            Loaded(
+                                song =
+                                    song.copy(
+                                        romanizedLyrics = romanizedLyrics,
+                                        romanizedGeniusLyrics = romanizedGeniusLyrics,
+                                        romanizedSyncedLyrics = romanizedSyncedLyrics,
+                                        romanizedTtmlLyrics = romanizedTTMLLyrics,
+                                    )
+                            )
+                    )
+                }
+            }
     }
 
     private fun observeDatastore() {
@@ -328,6 +419,27 @@ class LyricsVM(
                 lyricsPrefs
                     .getExpressiveSyllablesPref()
                     .onEach { pref -> _state.update { it.copy(expressiveSyllables = pref) } }
+                    .launchIn(this)
+
+                lyricsPrefs
+                    .getRomanizationEnabledFlow()
+                    .onEach { enabled ->
+                        _state.update { it.copy(romanizationEnabled = enabled) }
+                        if (enabled) {
+                            generateRomanizedLyrics()
+                        }
+                    }
+                    .launchIn(this)
+
+                // Watch for song changes and regenerate romanization if enabled
+                _state
+                    .map { (it.lyricsState as? Loaded)?.song?.id }
+                    .distinctUntilChanged()
+                    .onEach {
+                        if (_state.value.romanizationEnabled) {
+                            generateRomanizedLyrics()
+                        }
+                    }
                     .launchIn(this)
             }
     }

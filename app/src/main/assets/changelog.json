@@ -1,5 +1,13 @@
 [
   {
+    "version": "6.0.0",
+    "changes": [
+      "Added lyrics romanizations for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages Thanks to @rbelem.",
+      "Enable Romanization from Lyrics Customizations",
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "5.9.1",
     "changes": [
       "Improved Expressive Syllables, Enable it from Lyrics Customizations",
@@ -65,14 +73,6 @@
       "Added support for TTML (Syllable Synced) Lyrics",
       "Improved Synced Lyrics Animation",
       "Added in app Changelogs"
-    ]
-  },
-  {
-    "version": "5.6.0",
-    "changes": [
-      "Fixed LRCLIB api not responding sometimes (hopefully)",
-      "Misc updates and fixes",
-      "Added flex fonts for headlines, displays and sharecards"
     ]
   }
 ]
