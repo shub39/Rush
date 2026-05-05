@@ -152,4 +152,8 @@
     <string name="changelog">Lista zmian</string>
     <string name="looks">Wygląd</string>
     <string name="show_app_branding">Pokazuj wizerunek marki</string>
+    <string name="full_screen_share">Pełnoekranowe udostępnianie</string>
+    <string name="romanization">Transkrypcja</string>
+    <string name="romanization_desc">Pokazuj transkrypcję tekstów piosenek dla Japońskiego, Koreańskiego, Chińskiego, Hindi, Punjabi i Cyrylicy</string>
+    <string name="open_search">Otwórz wyszukiwanie</string>
 </resources>
