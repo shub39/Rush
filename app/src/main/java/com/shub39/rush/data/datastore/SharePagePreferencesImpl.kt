@@ -47,6 +47,7 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val cardFont = stringPreferencesKey("card_font")
         private val albumArtShapeKey = stringPreferencesKey("album_art_shape")
         private val rushBrandingKey = booleanPreferencesKey("rush_branding")
+        private val fullscreenShareKey = booleanPreferencesKey("fullscreen_share")
     }
 
     override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> =
@@ -63,6 +64,13 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateRushBranding(newPref: Boolean) {
         dataStore.edit { preferences -> preferences[rushBrandingKey] = newPref }
+    }
+
+    override fun getFullscreenShare(): Flow<Boolean> =
+        dataStore.data.map { preferences -> preferences[fullscreenShareKey] ?: false }
+
+    override suspend fun updateFullscreenShare(newPref: Boolean) {
+        dataStore.edit { preferences -> preferences[fullscreenShareKey] = newPref }
     }
 
     override fun getCardFitFlow(): Flow<CardFit> =
