@@ -1,6 +1,6 @@
 [
   {
-    "version": "6.1.1",
+    "version": "6.1.11",
     "changes": [
       "Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)",
       "Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds",

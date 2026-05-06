@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.1.1
+## 6.1.11
 - Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)
 - Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds
 - Optimised App size
