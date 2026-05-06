@@ -20,6 +20,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -84,23 +86,35 @@ fun LineSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isUserScrolling by lazyListState.interactionSource.collectIsDraggedAsState()
+    var pauseAutoScroll by remember { mutableStateOf(false) }
+
     val itemHeights = remember { mutableStateMapOf<Int, Int>() }
 
     val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
 
     // updater for synced lyrics
-    LaunchedEffect(playbackInfo.position) {
-        val currentIndex =
-            getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
+    LaunchedEffect(playbackInfo.position, pauseAutoScroll) {
+        if (!pauseAutoScroll) {
+            val currentIndex =
+                getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
+            val viewportHeight =
+                lazyListState.layoutInfo.viewportEndOffset -
+                    lazyListState.layoutInfo.viewportStartOffset
+            val itemHeight = itemHeights[currentIndex] ?: 0
+            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
+            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
+        }
+    }
 
-        val viewportHeight =
-            lazyListState.layoutInfo.viewportEndOffset -
-                lazyListState.layoutInfo.viewportStartOffset
-
-        val itemHeight = itemHeights[currentIndex] ?: 0
-        val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
-
-        lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
+    // scroll interaction
+    LaunchedEffect(isUserScrolling) {
+        if (!isUserScrolling) {
+            delay(3000)
+            pauseAutoScroll = false
+        } else {
+            pauseAutoScroll = true
+        }
     }
 
     // Synced Lyrics
@@ -111,7 +125,6 @@ fun LineSyncedLyrics(
             Arrangement.spacedBy(
                 with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
             ),
-        userScrollEnabled = playbackInfo.speed == 0f,
         state = lazyListState,
     ) {
         itemsIndexed(items = syncedLyrics, key = { index, _ -> index }) { index, lyric ->
@@ -143,7 +156,7 @@ fun LineSyncedLyrics(
             val blur by
                 animateDpAsState(
                     targetValue =
-                        if (!state.blurSyncedLyrics) 0.dp
+                        if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
                         else (abs(lyricIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
                     animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                 )

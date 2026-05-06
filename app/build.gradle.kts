@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "6.1.1"
-val appVersionCode = 6110
+val appVersionName = "6.1.11"
+val appVersionCode = 6111
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 

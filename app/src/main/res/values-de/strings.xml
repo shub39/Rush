@@ -3,7 +3,7 @@
     <string name="search">Liedtexte suchen</string>
     <string name="saved">Gespeichert</string>
     <string name="settings">Einstellungen</string>
-    <string name="empty">Nichts hier</string>
+    <string name="empty">Hier ist es noch leer</string>
     <string name="share">Teilen</string>
     <string name="vibrant_colors">Lebendige Farben verwenden</string>
     <string name="save">Änderungen speichern</string>
@@ -17,7 +17,7 @@
     <string name="track">Titel</string>
     <string name="artist">Künstler</string>
     <string name="width">Breite</string>
-    <string name="colors">Farben</string>
+    <string name="colors">Eigene Farben</string>
     <string name="grant_permission">Berechtigung gewähren</string>
     <string name="notification_permission">Benachrichtigungszugriff ist erforderlich, um Liedtexte automatisch zu erhalten.</string>
     <string name="rounded_corners">Abgerundete Ecken</string>
@@ -72,7 +72,7 @@
     <string name="extract_colors_desc">Setzen Sie Palettenfarben aus dem Album des aktuell angezeigten Lied</string>
     <string name="select_app_theme">Wählen Sie das Farbschema</string>
     <string name="about_libraries">Über Bibliotheken</string>
-    <string name="look_and_feel">Aussehen</string>
+    <string name="look_and_feel">Erscheinungsbild</string>
     <string name="use_system_theme">Systemfarbschema verwenden</string>
     <string name="material_theme">Material-Farbschema</string>
     <string name="dark">Dunkel</string>
@@ -125,7 +125,7 @@
     <string name="bmc">Kauf mir einen Kaffe</string>
     <string name="blurred_art">Verschwommmendes Cover</string>
     <string name="foss">Sie benutzen die FOSS Variante</string>
-    <string name="foss_desc">Alle Funktionen sind freigeschaltet. Diese Variante der App unterstützt keine In-App-Käufe. Wenn diese App Ihr Leben bereichert hat, unterstützen Sie mich bitte mit einer Spende auf</string>
+    <string name="foss_desc">Alle Funktionen sind freigeschaltet. Diese App-Variante unterstützt keine In-App-Käufe. Wenn diese App Ihr Leben bereichert hat, unterstützen Sie mich bitte mit einer Spende auf</string>
     <string name="unlock_more_pro">Mit Pro noch mehr freischalten</string>
     <string name="album_art">Nur Cover</string>
     <string name="album_art_shape">Form des Albumcovers</string>
@@ -133,7 +133,7 @@
     <string name="lyrics_background">Liedtext-Hintergrund</string>
     <string name="plain_lyrics">Einfach</string>
     <string name="synced_lyrics">Synchronisiert</string>
-    <string name="blur_synced">Synchronisierte Liedtexte verblassen lassen</string>
+    <string name="blur_synced">Synchronisierte Liedtexte weichzeichnen</string>
     <string name="wave">Welle</string>
     <string name="gradient">Farbverlauf</string>
     <string name="curve">Kurve</string>
@@ -144,7 +144,16 @@
     <string name="rush_pro">Rush Pro</string>
     <string name="audio_permission">Audioaufnahme-Berechtigung erforderlich</string>
     <string name="audio_permission_info">Dieser Hintergrund visualisiert den aktuell abgespielten Song</string>
-    <string name="line_synced_lyrics">Zeilen Synchronisiert</string>
-    <string name="syllable_synced_lyrics">Silbe synchronisiert</string>
+    <string name="line_synced_lyrics">Zeilensynchron</string>
+    <string name="syllable_synced_lyrics">Silbensynchron</string>
     <string name="changelog">Änderungsprotokoll</string>
+    <string name="whats_changed">Änderungen</string>
+    <string name="looks">Aussehen</string>
+    <string name="text">Text</string>
+    <string name="others">Andere</string>
+    <string name="show_app_branding">App-Branding anzeigen</string>
+    <string name="full_screen_share">Vollbild teilen</string>
+    <string name="romanization">Romanisierung</string>
+    <string name="romanization_desc">Romanisierte Liedtexte für Japanisch, Koreanisch, Chinesisch, Hindi, Panjabi und kyrillische Sprachen anzeigen</string>
+    <string name="open_search">Suche öffnen</string>
 </resources>
