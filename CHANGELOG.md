@@ -5,6 +5,7 @@
 - Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds
 - Optimised App size
 - Fixed miscellaneous UI issues
+- Updated Translations
 
 ## 6.0.0
 - Added lyrics romanizations. Thanks to @rbelem.
