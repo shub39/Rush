@@ -72,7 +72,7 @@
     <string name="look_and_feel_info">Personalizza l\'app in vari modi</string>
     <string name="use_system_theme">Usa il tema di sistema</string>
     <string name="dark_theme">Usa tema scuro</string>
-    <string name="amoled">Palette AMOLED</string>
+    <string name="amoled">Tavolozza AMOLED</string>
     <string name="use_system_theme_desc">Usa lo stesso tema del sistema</string>
     <string name="amoled_desc">Esperienza migliore su schermi AMOLED</string>
     <string name="palette_style">Stile Palette</string>
@@ -152,4 +152,8 @@
     <string name="text">Testo</string>
     <string name="others">Altri</string>
     <string name="show_app_branding">Mostra Marchio dell\'App</string>
+    <string name="full_screen_share">Condivisione a schermo intero</string>
+    <string name="romanization">Romanizzazione</string>
+    <string name="romanization_desc">Mostra i testi in caratteri latini per le lingue giapponese, coreana, cinese, hindi, punjabi e cirillica</string>
+    <string name="open_search">Apri Ricerca</string>
 </resources>
