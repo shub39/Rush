@@ -63,6 +63,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Inject Genius API Key
+        run: echo "GENIUS_API_PRIVATE=${{ secrets.GENIUS_API_PRIVATE }}" >> local.properties
+
       - name: Build with Gradle
         run: |
           ./gradlew bundlePlayRelease \

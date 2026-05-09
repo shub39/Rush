@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.1.12
+## 6.1.13
 - Fixed local search results not loading Lyrics
 
 ## 6.1.11
