@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "6.1.11"
-val appVersionCode = 6111
+val appVersionName = "6.1.12"
+val appVersionCode = 6112
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -187,6 +187,7 @@ room3 { schemaDirectory("$projectDir/schemas") }
 
 val generateChangelogJson by
     tasks.registering {
+        description = "Extract changelogs from CHANGELOG.md"
         val inputFile = rootProject.file("CHANGELOG.md")
         val outputDir = file("$projectDir/src/main/assets/")
         val outputFile = File(outputDir, "changelog.json")

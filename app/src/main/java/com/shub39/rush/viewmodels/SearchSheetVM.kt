@@ -49,11 +49,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
 @KoinViewModel
 class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
     ViewModel() {
-    private var searchStateResetJob: Job? = null
+    private var lyricsSearchStateJob: Job? = null
 
     private val _state = stateLayer.searchSheetState
     private val _lastSearched = MutableStateFlow("")
@@ -110,7 +111,7 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
         state
             .map { it.searchQuery }
             .distinctUntilChanged()
-            .debounce(500L)
+            .debounce(500.milliseconds)
             .onEach { query ->
                 when {
                     query.isBlank() -> {
@@ -165,10 +166,10 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
                 it.copy(searchState = SearchState.UserPrompt, sync = false)
             }
 
-            searchStateResetJob?.cancel()
-            searchStateResetJob =
+            lyricsSearchStateJob?.cancel()
+            lyricsSearchStateJob =
                 viewModelScope.launch {
-                    delay(5000)
+                    delay(5000.milliseconds)
 
                     stateLayer.lyricsState.update {
                         if (it.searchState == SearchState.UserPrompt)
@@ -182,7 +183,9 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
     private suspend fun fetchLyrics(songId: Long) {
         if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
-        val song = _state.value.searchResults.find { it.id == songId } ?: return
+        val song = _state.value.searchResults.find { it.id == songId }
+            ?: _state.value.localSearchResults.find { it.id == songId }
+            ?: return
 
         stateLayer.lyricsState.update {
             it.copy(

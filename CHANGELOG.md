@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.1.12
+- Fixed local search results not loading Lyrics
+
 ## 6.1.11
 - Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)
 - Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds

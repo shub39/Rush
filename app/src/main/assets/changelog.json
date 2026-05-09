@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.1.12",
+    "changes": [
+      "Fixed local search results not loading Lyrics"
+    ]
+  },
+  {
     "version": "6.1.11",
     "changes": [
       "Added Fullscreen mode for share cards. Thanks to @BobbyEsp (#242)",
@@ -67,15 +73,6 @@
     "version": "5.7.2",
     "changes": [
       "Fixed Material Theme not Working #230"
-    ]
-  },
-  {
-    "version": "5.7.1",
-    "changes": [
-      "Fixed auto lyrics fetching issues",
-      "Fixed miscellaneous song sync bugs",
-      "Updated Lyrics Customisation UI",
-      "Updated Share Cards UI"
     ]
   }
 ]
