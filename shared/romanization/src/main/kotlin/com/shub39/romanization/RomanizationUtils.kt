@@ -896,6 +896,54 @@ object RomanizationUtils {
     }
 
     // Hindi romanization
+    // Inherent vowel 'a' is added after consonants unless followed by a replacing
+    // vowel sign (that replaces inherent 'a'), virama, or end of word.
+    private val DEVANAGARI_REPLACING_VOWEL_SIGNS =
+        setOf("ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ")
+    private val DEVANAGARI_CONSONANTS =
+        setOf(
+            "क",
+            "ख",
+            "ग",
+            "घ",
+            "ङ",
+            "च",
+            "छ",
+            "ज",
+            "झ",
+            "ञ",
+            "ट",
+            "ठ",
+            "ड",
+            "ढ",
+            "ण",
+            "त",
+            "थ",
+            "द",
+            "ध",
+            "न",
+            "प",
+            "फ",
+            "ब",
+            "भ",
+            "म",
+            "य",
+            "र",
+            "ल",
+            "व",
+            "श",
+            "ष",
+            "स",
+            "ह",
+            "ळ",
+            "क्ष",
+            "त्र",
+            "ज्ञ",
+            "श्र",
+            "़",
+        )
+    private val DEVANAGARI_VIRAMA = "्"
+
     suspend fun romanizeHindi(text: String): String =
         withContext(Dispatchers.Default) {
             val sb = StringBuilder()
@@ -913,7 +961,28 @@ object RomanizationUtils {
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    sb.append(DEVANAGARI_ROMAJI_MAP[str] ?: str)
+                    val mapped = DEVANAGARI_ROMAJI_MAP[str] ?: str
+                    sb.append(mapped)
+                    // Add inherent 'a' after a consonant unless followed by:
+                    // - a replacing vowel sign (that replaces inherent 'a')
+                    // - virama (kills inherent 'a')
+                    // - end of word (space, punctuation, end of string)
+                    // Nasalization marks (ं, ँ) and visarga (ः) modify the inherent vowel, not
+                    // replace it
+                    if (str in DEVANAGARI_CONSONANTS) {
+                        val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
+                        if (
+                            nextChar != null &&
+                                nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
+                                nextChar != DEVANAGARI_VIRAMA &&
+                                (nextChar in DEVANAGARI_CONSONANTS ||
+                                    nextChar == "ं" ||
+                                    nextChar == "ः" ||
+                                    nextChar == "ँ")
+                        ) {
+                            sb.append("a")
+                        }
+                    }
                     i++
                 }
             }
@@ -921,6 +990,53 @@ object RomanizationUtils {
         }
 
     // Punjabi romanization
+    // Inherent vowel 'a' is added after consonants unless followed by a replacing
+    // vowel sign (that replaces inherent 'a'), virama, or end of word.
+    private val GURMUKHI_REPLACING_VOWEL_SIGNS = setOf("ਾ", "ਿ", "ੀ", "ੁ", "ੂ", "ੇ", "ੈ", "ੋ", "ੌ")
+    private val GURMUKHI_CONSONANTS =
+        setOf(
+            "ਸ",
+            "ਹ",
+            "ਕ",
+            "ਖ",
+            "ਗ",
+            "ਘ",
+            "ਙ",
+            "ਚ",
+            "ਛ",
+            "ਜ",
+            "ਝ",
+            "ਞ",
+            "ਟ",
+            "ਠ",
+            "ਡ",
+            "ਢ",
+            "ਣ",
+            "ਤ",
+            "ਥ",
+            "ਦ",
+            "ਧ",
+            "ਨ",
+            "ਪ",
+            "ਫ",
+            "ਬ",
+            "ਭ",
+            "ਮ",
+            "ਯ",
+            "ਰ",
+            "ਲ",
+            "ਵ",
+            "ੜ",
+            "ਸ਼",
+            "ਖ਼",
+            "ਗ਼",
+            "ਜ਼",
+            "ਫ਼",
+            "ਲ਼",
+            "਼",
+        )
+    private val GURMUKHI_VIRAMA = "੍"
+
     suspend fun romanizePunjabi(text: String): String =
         withContext(Dispatchers.Default) {
             val sb = StringBuilder()
@@ -938,7 +1054,28 @@ object RomanizationUtils {
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    sb.append(GURMUKHI_ROMAJI_MAP[str] ?: str)
+                    val mapped = GURMUKHI_ROMAJI_MAP[str] ?: str
+                    sb.append(mapped)
+                    // Add inherent 'a' after a consonant unless followed by:
+                    // - a replacing vowel sign (that replaces inherent 'a')
+                    // - virama (kills inherent 'a')
+                    // - end of word (space, punctuation, end of string)
+                    // Nasalization marks (ੰ, ਂ) and chandrabindu (ਁ) modify the inherent vowel, not
+                    // replace it
+                    if (str in GURMUKHI_CONSONANTS) {
+                        val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
+                        if (
+                            nextChar != null &&
+                                nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
+                                nextChar != GURMUKHI_VIRAMA &&
+                                (nextChar in GURMUKHI_CONSONANTS ||
+                                    nextChar == "ੰ" ||
+                                    nextChar == "ਂ" ||
+                                    nextChar == "ਁ")
+                        ) {
+                            sb.append("a")
+                        }
+                    }
                     i++
                 }
             }
