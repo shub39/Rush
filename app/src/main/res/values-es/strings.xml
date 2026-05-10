@@ -152,4 +152,8 @@
     <string name="text">Texto</string>
     <string name="others">Otros</string>
     <string name="show_app_branding">Mostrar Marca de la App</string>
+    <string name="full_screen_share">Compartir pantalla completa</string>
+    <string name="romanization">Romanización</string>
+    <string name="romanization_desc">Mostrar romanización para letra japonesa, coreana, china, hindi, punjabi y idiomas cirílicos</string>
+    <string name="open_search">Búsqueda Abierta</string>
 </resources>
