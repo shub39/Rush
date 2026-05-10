@@ -25,7 +25,7 @@ object RomanizationUtils {
     private val japaneseTransliterator by lazy {
         Transliterator.getInstance("Any-Latin; Any-ASCII")
     }
-    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin; Any-ASCII") }
+    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
 
     // Hangul Romaja mapping
     private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =
@@ -1094,6 +1094,8 @@ object RomanizationUtils {
     }
 
     fun isChinese(text: String): Boolean {
+        // Exclude Japanese text (contains kana) — kanji are shared between CJK
+        if (isJapanese(text)) return false
         return text.any { it in '\u4E00'..'\u9FFF' }
     }
 
