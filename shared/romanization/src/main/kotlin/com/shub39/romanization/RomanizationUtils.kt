@@ -618,6 +618,8 @@ object RomanizationUtils {
             "ґ" to "g",
             "Є" to "Ye",
             "є" to "ye",
+            "И" to "Y",
+            "и" to "y",
             "І" to "I",
             "і" to "i",
             "Ї" to "Yi",
@@ -634,6 +636,7 @@ object RomanizationUtils {
             "Џ" to "Dž",
             "Ш" to "Š",
             "Х" to "H",
+            "Ј" to "J",
             "ж" to "ž",
             "љ" to "lj",
             "њ" to "nj",
@@ -642,6 +645,7 @@ object RomanizationUtils {
             "џ" to "dž",
             "ш" to "š",
             "х" to "h",
+            "ј" to "j",
         )
 
     private val BULGARIAN_ROMAJI_MAP: Map<String, String> =
@@ -666,8 +670,7 @@ object RomanizationUtils {
             "я" to "ya",
         )
 
-    private val BELARUSIAN_ROMAJI_MAP: Map<String, String> =
-        mapOf("Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w")
+    private val BELARUSIAN_ROMAJI_MAP: Map<String, String> = mapOf("Г" to "H", "г" to "h")
 
     private val KYRGYZ_ROMAJI_MAP: Map<String, String> =
         mapOf("Ү" to "Ü", "ү" to "ü", "Ы" to "Y", "ы" to "y")
@@ -831,9 +834,18 @@ object RomanizationUtils {
 
     private fun romanizeUkrainianInternal(text: String): String {
         val sb = StringBuilder()
-        for (char in text) {
+        for ((index, char) in text.withIndex()) {
             val str = char.toString()
-            sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            // ї → "yi" at word start, "i" elsewhere (e.g., київ → kyiv, not kyyiv)
+            if (str == "ї" && index > 0 && text[index - 1].let { it in '\u0400'..'\u04FF' }) {
+                sb.append("i")
+            } else if (
+                str == "Ї" && index > 0 && text[index - 1].let { it in '\u0400'..'\u04FF' }
+            ) {
+                sb.append("I")
+            } else {
+                sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            }
         }
         return sb.toString()
     }
