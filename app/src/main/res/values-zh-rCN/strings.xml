@@ -72,7 +72,7 @@
     <string name="no_folder_selected">未选择文件夹</string>
     <string name="export">导出</string>
     <string name="choose_file">选择文件</string>
-    <string name="rush_mode">Rush模式</string>
+    <string name="rush_mode">Rush 模式</string>
     <string name="look_and_feel">外观与风格</string>
     <string name="hypnotic_canvas">背景涟漪</string>
     <string name="hypnotic_canvas_desc">（实验功能）为歌词背景加入动态涟漪效果，可能会影响性能</string>
@@ -83,7 +83,7 @@
     <string name="center">居中</string>
     <string name="end">末端对齐</string>
     <string name="start">起始对齐</string>
-    <string name="font_size">字体尺寸</string>
+    <string name="font_size">字号</string>
     <string name="font_weight">字重</string>
     <string name="line_height">行高</string>
     <string name="seed_color_desc">选择颜色以生成调色板</string>
@@ -120,9 +120,9 @@
     <string name="rush_mode_desc">搜索通知中的当前播放歌曲并获取相应歌词。使歌词随音乐播放器同步更改。</string>
     <string name="font">选择应用程序字体</string>
     <string name="card_font">卡片字体</string>
-    <string name="bmc">请作者喝杯咖啡</string>
+    <string name="bmc">赞助</string>
     <string name="translate">翻译</string>
-    <string name="rate_on_play">前往Google Play评价</string>
+    <string name="rate_on_play">前往 Google Play 评价</string>
     <string name="foss">你正在使用FOSS版本</string>
     <string name="foss_desc">全部功能均已解锁。此版本应用无需内购。如果此软件帮助了你，请考虑通过以下途径支持作者：</string>
     <string name="rush_pro">Rush Pro</string>
@@ -144,4 +144,16 @@
     <string name="wave">波浪</string>
     <string name="gradient">梯度</string>
     <string name="curve">曲线</string>
+    <string name="line_synced_lyrics">行同步</string>
+    <string name="syllable_synced_lyrics">音节同步</string>
+    <string name="changelog">更新日志</string>
+    <string name="whats_changed">更新日志</string>
+    <string name="looks">外观</string>
+    <string name="text">文本</string>
+    <string name="others">其他</string>
+    <string name="show_app_branding">显示应用品牌</string>
+    <string name="full_screen_share">全屏分享</string>
+    <string name="romanization">罗马音</string>
+    <string name="romanization_desc">显示日语、韩语、中文、印地语、旁遮普语和西里尔语言的罗马化歌词</string>
+    <string name="open_search">打开搜索</string>
 </resources>
