@@ -32,4 +32,5 @@ data class GlobalState(
     val theme: Theme = Theme(),
     val onBoardingDone: Boolean = true,
     val notificationAccess: Boolean = false,
+    val fossWarningDaysLeft: Int? = null,
 )

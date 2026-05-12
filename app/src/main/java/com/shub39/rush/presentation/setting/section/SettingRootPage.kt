@@ -81,6 +81,7 @@ import com.shub39.rush.warning.WarningReminder
 @Composable
 fun SettingRootPage(
     notificationAccess: Boolean,
+    fossWarningDaysLeft: Int?,
     state: SettingsPageState,
     onShowPaywall: () -> Unit,
     onAction: (SettingsPageAction) -> Unit,
@@ -129,8 +130,8 @@ fun SettingRootPage(
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (BuildConfig.FLAVOR == "foss") {
-                item { WarningReminder() }
+            if (BuildConfig.FLAVOR == "foss" && fossWarningDaysLeft != null) {
+                item { WarningReminder(daysLeft = fossWarningDaysLeft) }
             }
 
             // about app
@@ -347,6 +348,7 @@ private fun Preview() {
     RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SettingRootPage(
             notificationAccess = false,
+            fossWarningDaysLeft = 112,
             state = SettingsPageState(),
             onAction = {},
             onNavigateBack = {},

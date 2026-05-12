@@ -64,14 +64,15 @@ class GlobalVM(
     private fun bootstrap() {
         observePreferences()
         checkSubscription()
+        updateFossWarningDays()
         checkChangelog()
+    }
 
-        val onboardingDone = _state.value.onBoardingDone
+    private fun updateFossWarningDays() {
+        if (BuildConfig.FLAVOR != "foss") return
 
-        if (!onboardingDone) {
-            viewModelScope.launch {
-                _globalEvents.send(GlobalEvent.NavigateToOnboarding)
-            }
+        _state.update {
+            it.copy(fossWarningDaysLeft = FossWarningCalculator.daysLeft())
         }
     }
 
@@ -196,9 +197,13 @@ class GlobalVM(
             }
         }.launchIn(viewModelScope)
 
-        otherPreferences.getOnboardingDoneFlow().onEach { completed ->
+        otherPreferences.getOnboardingDoneFlow().distinctUntilChanged().onEach { completed ->
             _state.update {
                 it.copy(onBoardingDone = completed)
+            }
+
+            if (!completed) {
+                _globalEvents.send(GlobalEvent.GoToOnboarding)
             }
         }.launchIn(viewModelScope)
     }

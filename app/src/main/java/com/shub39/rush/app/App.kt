@@ -24,28 +24,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.app.state.GlobalState
-import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.domain.util.pop
 import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.navigation.verticalTransitionMetadata
-import com.shub39.rush.presentation.lyrics.LyricsGraph
-import com.shub39.rush.presentation.onboarding.Onboarding
-import com.shub39.rush.presentation.saved.SavedPage
+import com.shub39.rush.presentation.lyrics.route.LyricsRoute
+import com.shub39.rush.presentation.onboarding.route.OnboardingRoute
+import com.shub39.rush.presentation.paywall.route.PaywallRoute
+import com.shub39.rush.presentation.saved.route.SavedRoute
 import com.shub39.rush.presentation.searchsheet.SearchSheet
-import com.shub39.rush.presentation.setting.SettingsGraph
-import com.shub39.rush.presentation.share.SharePage
-import com.shub39.rush.viewmodels.LyricsVM
-import com.shub39.rush.viewmodels.SavedVM
+import com.shub39.rush.presentation.setting.route.SettingsRoute
+import com.shub39.rush.presentation.share.route.ShareRoute
 import com.shub39.rush.viewmodels.SearchSheetVM
-import com.shub39.rush.viewmodels.SettingsVM
-import com.shub39.rush.viewmodels.ShareVM
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -70,16 +66,26 @@ data object PaywallPage : NavKey
 @Composable
 fun App(
     globalState: GlobalState,
+    globalEvents: Flow<GlobalEvent>,
     onGlobalAction: (GlobalAction) -> Unit,
 ) {
     val backStack = rememberNavBackStack(SavedPage)
-    val context = LocalContext.current
 
     val searchSheetVM: SearchSheetVM = koinViewModel()
     val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
     val searchSheetState = rememberModalBottomSheetState()
 
-    LaunchedEffect(Unit) { onGlobalAction(GlobalAction.OnCheckNotificationAccess(context)) }
+    LaunchedEffect(Unit) {
+        globalEvents.collect { event ->
+            when (event) {
+                GlobalEvent.GoToOnboarding -> {
+                    if (backStack.lastOrNull() != OnboardingPage) {
+                        backStack.add(OnboardingPage)
+                    }
+                }
+            }
+        }
+    }
 
     NavDisplay(
         modifier = Modifier
@@ -88,55 +94,32 @@ fun App(
         backStack = backStack,
         entryProvider = entryProvider {
             entry<SavedPage> {
-                val savedVM: SavedVM = koinViewModel()
-                val savedState by savedVM.state.collectAsStateWithLifecycle()
-
-                SavedPage(
-                    state = savedState,
+                SavedRoute(
                     notificationAccess = globalState.notificationAccess,
-                    onAction = savedVM::onAction,
                     onNavigateToLyrics = { backStack.add(LyricsGraph) },
                     onNavigateToSettings = { backStack.add(SettingsGraph) },
                 )
             }
 
             entry<LyricsGraph>(metadata = verticalTransitionMetadata()) {
-                val lyricsVM: LyricsVM = koinViewModel()
-                val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
-                val playbackInfo by lyricsVM.playbackInfo.collectAsStateWithLifecycle()
-
-                LyricsGraph(
+                LyricsRoute(
                     notificationAccess = globalState.notificationAccess,
-                    lyricsState = lyricsState,
-                    lyricsAction = lyricsVM::onAction,
-                    playbackInfo = playbackInfo,
                     onShare = { backStack.add(SharePage) },
                 )
             }
 
             entry<SharePage>(metadata = verticalTransitionMetadata()) {
-                val shareVM: ShareVM = koinViewModel()
-                val shareState by shareVM.state.collectAsStateWithLifecycle()
-
-                SharePage(
-                    onDismiss = {
-                        if (backStack.size != 1) backStack.removeLastOrNull()
-                    },
-                    state = shareState,
-                    onAction = shareVM::onAction,
+                ShareRoute(
+                    onDismiss = { backStack.pop() },
                     isProUser = globalState.isProUser,
                     onShowPaywall = { backStack.add(PaywallPage) },
                 )
             }
 
             entry<SettingsGraph>(metadata = horizontalTransitionMetadata()) {
-                val settingsVM: SettingsVM = koinViewModel()
-                val settingsState by settingsVM.state.collectAsStateWithLifecycle()
-
-                SettingsGraph(
+                SettingsRoute(
                     notificationAccess = globalState.notificationAccess,
-                    state = settingsState,
-                    action = settingsVM::onAction,
+                    fossWarningDaysLeft = globalState.fossWarningDaysLeft,
                     onNavigateBack = { backStack.pop() },
                     isProUser = globalState.isProUser,
                     onShowPaywall = { backStack.add(PaywallPage) },
@@ -144,26 +127,20 @@ fun App(
             }
 
             entry<OnboardingPage>(metadata = verticalTransitionMetadata()) {
-                Onboarding(
+                OnboardingRoute(
                     onDone = {
                         onGlobalAction(GlobalAction.OnUpdateOnboardingDone(true))
                         backStack.pop()
                     },
                     notificationAccess = globalState.notificationAccess,
-                    onUpdateNotificationAccess = {
-                        onGlobalAction(
-                            GlobalAction.OnCheckNotificationAccess(context)
-                        )
-                    },
+                    onGlobalAction = onGlobalAction,
                 )
             }
 
             entry<PaywallPage>(metadata = verticalTransitionMetadata()) {
-                PaywallPage(
+                PaywallRoute(
                     isProUser = globalState.isProUser,
-                    onDismissRequest = {
-                        if (backStack.size != 1) backStack.removeLastOrNull()
-                    },
+                    onDismissRequest = { backStack.pop() },
                 )
             }
         },

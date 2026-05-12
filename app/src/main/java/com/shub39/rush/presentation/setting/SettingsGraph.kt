@@ -45,6 +45,7 @@ import kotlinx.serialization.Serializable
 @Composable
 fun SettingsGraph(
     notificationAccess: Boolean,
+    fossWarningDaysLeft: Int?,
     state: SettingsPageState,
     isProUser: Boolean,
     action: (SettingsPageAction) -> Unit,
@@ -62,6 +63,7 @@ fun SettingsGraph(
                 entry<SettingRootPage> {
                     SettingRootPage(
                         notificationAccess = notificationAccess,
+                        fossWarningDaysLeft = fossWarningDaysLeft,
                         onAction = action,
                         onNavigateBack = onNavigateBack,
                         onNavigateToLookAndFeel = { backStack.add(LookAndFeelPage) },
@@ -106,6 +108,7 @@ private fun Preview() {
     RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
         SettingsGraph(
             notificationAccess = true,
+            fossWarningDaysLeft = 112,
             state = SettingsPageState(),
             action = {},
             onNavigateBack = {},

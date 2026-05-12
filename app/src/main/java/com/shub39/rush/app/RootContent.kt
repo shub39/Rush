@@ -50,6 +50,7 @@ fun RootContent(
 
             App(
                 globalState = globalState,
+                globalEvents = globalViewModel.globalEvents,
                 onGlobalAction = { globalViewModel.onAction(it) },
             )
         }

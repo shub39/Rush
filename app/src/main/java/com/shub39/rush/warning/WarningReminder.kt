@@ -38,7 +38,7 @@ import com.shub39.rush.presentation.theme.flexFontEmphasis
 
 @Composable
 fun WarningReminder(
-    daysLeft: Int = 112,
+    daysLeft: Int,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
@@ -93,5 +93,5 @@ fun WarningReminder(
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme()) { WarningReminder() }
+    RushTheme(theme = Theme()) { WarningReminder(daysLeft = 112) }
 }
