@@ -120,7 +120,6 @@ class GlobalVM(
     private fun checkNotificationAccess() {
         val hasAccess = permissionsHelper.hasNotificationAccess()
 
-
         _state.update {
             it.copy(notificationAccess = hasAccess)
         }

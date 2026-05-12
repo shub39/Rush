@@ -19,7 +19,6 @@ package com.shub39.rush.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.navigation.Navigator
 import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.request.CachePolicy

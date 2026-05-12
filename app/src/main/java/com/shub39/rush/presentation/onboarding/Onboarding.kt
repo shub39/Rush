@@ -17,7 +17,6 @@
 package com.shub39.rush.presentation.onboarding
 
 import android.content.Intent
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +47,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +62,6 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.presentation.onboarding.component.AnimatedAppIcon
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -83,21 +80,12 @@ private sealed interface OnboardingRoutes {
 fun Onboarding(
     onDone: () -> Unit,
     notificationAccess: Boolean,
-    onUpdateNotificationAccess: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val pagerState = rememberPagerState { OnboardingRoutes.routes.size }
 
-    LaunchedEffect(Unit) {
-        while (!notificationAccess) {
-            onUpdateNotificationAccess()
-            delay(1000)
-        }
-    }
-
-    BackHandler {}
 
     Surface {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -291,6 +279,6 @@ fun Onboarding(
 @Preview
 private fun Preview() {
     RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        Onboarding(onDone = {}, notificationAccess = false, onUpdateNotificationAccess = {})
+        Onboarding(onDone = {}, notificationAccess = false)
     }
 }

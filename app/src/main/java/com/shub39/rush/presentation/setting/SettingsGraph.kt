@@ -95,7 +95,7 @@ fun SettingsGraph(
                 entry<ChangelogPage>(metadata = horizontalTransitionMetadata()) {
                     Changelog(
                         changelog = state.changelog,
-                        onNavigateBack = onNavigateBack,
+                        onNavigateBack = { backStack.pop() },
                     )
                 }
             },

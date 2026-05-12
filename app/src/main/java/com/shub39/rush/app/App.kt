@@ -80,6 +80,7 @@ fun App(
             when (event) {
                 GlobalEvent.GoToOnboarding -> {
                     if (backStack.lastOrNull() != OnboardingPage) {
+                        backStack.clear()
                         backStack.add(OnboardingPage)
                     }
                 }
@@ -130,10 +131,10 @@ fun App(
                 OnboardingRoute(
                     onDone = {
                         onGlobalAction(GlobalAction.OnUpdateOnboardingDone(true))
-                        backStack.pop()
+                        backStack.clear()
+                        backStack.add(SavedPage)
                     },
                     notificationAccess = globalState.notificationAccess,
-                    onGlobalAction = onGlobalAction,
                 )
             }
 
