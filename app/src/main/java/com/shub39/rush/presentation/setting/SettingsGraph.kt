@@ -75,11 +75,7 @@ fun SettingsGraph(
                 }
 
                 entry<BackupPage>(metadata = horizontalTransitionMetadata()) {
-                    BackupPage(
-                        state = state,
-                        action = action,
-                        onNavigateBack = { backStack.pop() },
-                    )
+                    BackupPage(state = state, action = action, onNavigateBack = { backStack.pop() })
                 }
 
                 entry<LookAndFeelPage>(metadata = horizontalTransitionMetadata()) {
@@ -93,10 +89,7 @@ fun SettingsGraph(
                 }
 
                 entry<ChangelogPage>(metadata = horizontalTransitionMetadata()) {
-                    Changelog(
-                        changelog = state.changelog,
-                        onNavigateBack = { backStack.pop() },
-                    )
+                    Changelog(changelog = state.changelog, onNavigateBack = { backStack.pop() })
                 }
             },
     )

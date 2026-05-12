@@ -40,9 +40,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
 
-        globalViewModel.onAction(
-            GlobalAction.OnCheckNotificationAccess
-        )
+        globalViewModel.onAction(GlobalAction.OnCheckNotificationAccess)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -57,15 +55,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        setContent {
-            RootContent()
-        }
+        setContent { RootContent() }
     }
 
     override fun onResume() {
         super.onResume()
-        globalViewModel.onAction(
-            GlobalAction.OnCheckNotificationAccess
-        )
+        globalViewModel.onAction(GlobalAction.OnCheckNotificationAccess)
     }
 }

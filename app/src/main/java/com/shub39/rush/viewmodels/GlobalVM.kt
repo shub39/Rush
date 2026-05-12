@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -35,7 +51,7 @@ class GlobalVM(
     private val otherPreferences: OtherPreferences,
     private val changelogManager: ChangelogManager,
     private val datastore: OtherPreferences,
-    @Named("PermissionsHelper") private val permissionsHelper: PermissionsHelper
+    @Named("PermissionsHelper") private val permissionsHelper: PermissionsHelper,
 ) : ViewModel() {
 
     /**
@@ -44,8 +60,8 @@ class GlobalVM(
      * - survives configuration changes via ViewModel (koin ftw)
      * - replays to new collectors
      *
-     * stateIn() is only needed for cold flows (e.g. combine/map/repository flows).
-     * Using it here would add unnecessary sharing layers without benefits.
+     * stateIn() is only needed for cold flows (e.g. combine/map/repository flows). Using it here
+     * would add unnecessary sharing layers without benefits.
      */
     private val _state = MutableStateFlow(GlobalState())
     val state: StateFlow<GlobalState> = _state.asStateFlow()
@@ -58,8 +74,8 @@ class GlobalVM(
     }
 
     /**
-     * App-wide initialization work that should happen once
-     * during the ViewModel lifecycle (view model initialization).
+     * App-wide initialization work that should happen once during the ViewModel lifecycle (view
+     * model initialization).
      */
     private fun bootstrap() {
         observePreferences()
@@ -71,9 +87,7 @@ class GlobalVM(
     private fun updateFossWarningDays() {
         if (BuildConfig.FLAVOR != "foss") return
 
-        _state.update {
-            it.copy(fossWarningDaysLeft = FossWarningCalculator.daysLeft())
-        }
+        _state.update { it.copy(fossWarningDaysLeft = FossWarningCalculator.daysLeft()) }
     }
 
     private val _globalEvents = Channel<GlobalEvent>(Channel.BUFFERED)
@@ -96,15 +110,10 @@ class GlobalVM(
     }
 
     private fun updateOnboarding(status: Boolean) {
-        viewModelScope.launch {
-            otherPreferences.updateOnboardingDone(status)
-        }
+        viewModelScope.launch { otherPreferences.updateOnboardingDone(status) }
     }
 
-    /**
-     * Lifecycle-bound async operation.
-     * The caller should not care about coroutine management.
-     */
+    /** Lifecycle-bound async operation. The caller should not care about coroutine management. */
     private fun checkSubscription() {
         viewModelScope.launch {
             when (billingHandler.userResult()) {
@@ -120,14 +129,11 @@ class GlobalVM(
     private fun checkNotificationAccess() {
         val hasAccess = permissionsHelper.hasNotificationAccess()
 
-        _state.update {
-            it.copy(notificationAccess = hasAccess)
-        }
+        _state.update { it.copy(notificationAccess = hasAccess) }
     }
 
     private fun checkChangelog() {
         viewModelScope.launch {
-
             val changelog = changelogManager.changelogs.first().firstOrNull()
 
             val lastShown = datastore.getLastChangelogShown().first()
@@ -139,17 +145,11 @@ class GlobalVM(
             if (!shouldShow) return@launch
 
             _overlay.update {
-
                 if (BuildConfig.FLAVOR == "foss") {
-                    GlobalOverlay.FossWarning(
-                        daysLeft = FossWarningCalculator.daysLeft(),
-                    )
+                    GlobalOverlay.FossWarning(daysLeft = FossWarningCalculator.daysLeft())
                 } else {
-                    GlobalOverlay.Changelog(
-                        changelog = changelog,
-                    )
+                    GlobalOverlay.Changelog(changelog = changelog)
                 }
-
             }
         }
     }
@@ -163,44 +163,45 @@ class GlobalVM(
 
     private fun observePreferences() {
         combine(
-            otherPreferences.getFontFlow(),
-            otherPreferences.getPaletteStyle(),
-            otherPreferences.getSeedColorFlow(),
-            otherPreferences.getAmoledPrefFlow(),
-            otherPreferences.getAppThemePrefFlow(),
-        ) { font, style, seedColor, withAmoled, appTheme ->
-
-            _state.update {
-                it.copy(
-                    theme = it.theme.copy(
-                        appTheme = appTheme,
-                        font = font,
-                        style = style,
-                        seedColor = seedColor,
-                        withAmoled = withAmoled,
+                otherPreferences.getFontFlow(),
+                otherPreferences.getPaletteStyle(),
+                otherPreferences.getSeedColorFlow(),
+                otherPreferences.getAmoledPrefFlow(),
+                otherPreferences.getAppThemePrefFlow(),
+            ) { font, style, seedColor, withAmoled, appTheme ->
+                _state.update {
+                    it.copy(
+                        theme =
+                            it.theme.copy(
+                                appTheme = appTheme,
+                                font = font,
+                                style = style,
+                                seedColor = seedColor,
+                                withAmoled = withAmoled,
+                            )
                     )
-                )
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
 
-        otherPreferences.getMaterialYouFlow().distinctUntilChanged().onEach { enabled ->
-            _state.update {
-                it.copy(
-                    theme = it.theme.copy(
-                        materialTheme = enabled
-                    )
-                )
+        otherPreferences
+            .getMaterialYouFlow()
+            .distinctUntilChanged()
+            .onEach { enabled ->
+                _state.update { it.copy(theme = it.theme.copy(materialTheme = enabled)) }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
 
-        otherPreferences.getOnboardingDoneFlow().distinctUntilChanged().onEach { completed ->
-            _state.update {
-                it.copy(onBoardingDone = completed)
-            }
+        otherPreferences
+            .getOnboardingDoneFlow()
+            .distinctUntilChanged()
+            .onEach { completed ->
+                _state.update { it.copy(onBoardingDone = completed) }
 
-            if (!completed) {
-                _globalEvents.send(GlobalEvent.GoToOnboarding)
+                if (!completed) {
+                    _globalEvents.send(GlobalEvent.GoToOnboarding)
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
     }
 }

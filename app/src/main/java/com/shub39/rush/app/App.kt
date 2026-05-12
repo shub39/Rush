@@ -45,23 +45,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
-@Serializable
-data object SavedPage : NavKey
+@Serializable data object SavedPage : NavKey
 
-@Serializable
-data object LyricsGraph : NavKey
+@Serializable data object LyricsGraph : NavKey
 
-@Serializable
-data object SettingsGraph : NavKey
+@Serializable data object SettingsGraph : NavKey
 
-@Serializable
-data object SharePage : NavKey
+@Serializable data object SharePage : NavKey
 
-@Serializable
-data object OnboardingPage : NavKey
+@Serializable data object OnboardingPage : NavKey
 
-@Serializable
-data object PaywallPage : NavKey
+@Serializable data object PaywallPage : NavKey
 
 @Composable
 fun App(
@@ -89,64 +83,62 @@ fun App(
     }
 
     NavDisplay(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
         backStack = backStack,
-        entryProvider = entryProvider {
-            entry<SavedPage> {
-                SavedRoute(
-                    notificationAccess = globalState.notificationAccess,
-                    onNavigateToLyrics = { backStack.add(LyricsGraph) },
-                    onNavigateToSettings = { backStack.add(SettingsGraph) },
-                )
-            }
+        entryProvider =
+            entryProvider {
+                entry<SavedPage> {
+                    SavedRoute(
+                        notificationAccess = globalState.notificationAccess,
+                        onNavigateToLyrics = { backStack.add(LyricsGraph) },
+                        onNavigateToSettings = { backStack.add(SettingsGraph) },
+                    )
+                }
 
-            entry<LyricsGraph>(metadata = verticalTransitionMetadata()) {
-                LyricsRoute(
-                    notificationAccess = globalState.notificationAccess,
-                    onShare = { backStack.add(SharePage) },
-                )
-            }
+                entry<LyricsGraph>(metadata = verticalTransitionMetadata()) {
+                    LyricsRoute(
+                        notificationAccess = globalState.notificationAccess,
+                        onShare = { backStack.add(SharePage) },
+                    )
+                }
 
-            entry<SharePage>(metadata = verticalTransitionMetadata()) {
-                ShareRoute(
-                    onDismiss = { backStack.pop() },
-                    isProUser = globalState.isProUser,
-                    onShowPaywall = { backStack.add(PaywallPage) },
-                )
-            }
+                entry<SharePage>(metadata = verticalTransitionMetadata()) {
+                    ShareRoute(
+                        onDismiss = { backStack.pop() },
+                        isProUser = globalState.isProUser,
+                        onShowPaywall = { backStack.add(PaywallPage) },
+                    )
+                }
 
-            entry<SettingsGraph>(metadata = horizontalTransitionMetadata()) {
-                SettingsRoute(
-                    notificationAccess = globalState.notificationAccess,
-                    fossWarningDaysLeft = globalState.fossWarningDaysLeft,
-                    onNavigateBack = { backStack.pop() },
-                    isProUser = globalState.isProUser,
-                    onShowPaywall = { backStack.add(PaywallPage) },
-                )
-            }
+                entry<SettingsGraph>(metadata = horizontalTransitionMetadata()) {
+                    SettingsRoute(
+                        notificationAccess = globalState.notificationAccess,
+                        fossWarningDaysLeft = globalState.fossWarningDaysLeft,
+                        onNavigateBack = { backStack.pop() },
+                        isProUser = globalState.isProUser,
+                        onShowPaywall = { backStack.add(PaywallPage) },
+                    )
+                }
 
-            entry<OnboardingPage>(metadata = verticalTransitionMetadata()) {
-                OnboardingRoute(
-                    onDone = {
-                        onGlobalAction(GlobalAction.OnUpdateOnboardingDone(true))
-                        backStack.clear()
-                        backStack.add(SavedPage)
-                    },
-                    notificationAccess = globalState.notificationAccess,
-                )
-            }
+                entry<OnboardingPage>(metadata = verticalTransitionMetadata()) {
+                    OnboardingRoute(
+                        onDone = {
+                            onGlobalAction(GlobalAction.OnUpdateOnboardingDone(true))
+                            backStack.clear()
+                            backStack.add(SavedPage)
+                        },
+                        notificationAccess = globalState.notificationAccess,
+                    )
+                }
 
-            entry<PaywallPage>(metadata = verticalTransitionMetadata()) {
-                PaywallRoute(
-                    isProUser = globalState.isProUser,
-                    onDismissRequest = { backStack.pop() },
-                )
-            }
-        },
+                entry<PaywallPage>(metadata = verticalTransitionMetadata()) {
+                    PaywallRoute(
+                        isProUser = globalState.isProUser,
+                        onDismissRequest = { backStack.pop() },
+                    )
+                }
+            },
     )
-
 
     SearchSheet(
         state = searchState,

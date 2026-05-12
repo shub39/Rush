@@ -37,10 +37,7 @@ import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 
 @Composable
-fun WarningReminder(
-    daysLeft: Int,
-    modifier: Modifier = Modifier
-) {
+fun WarningReminder(daysLeft: Int, modifier: Modifier = Modifier) {
     Card(modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
         Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),

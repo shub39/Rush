@@ -16,20 +16,15 @@
  */
 package com.shub39.rush.warning
 
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 
 object FossWarningCalculator {
 
-    private val targetDate =
-        LocalDate(
-            year = 2026,
-            month = 9,
-            day = 1,
-        )
+    private val targetDate = LocalDate(year = 2026, month = 9, day = 1)
 
     fun daysLeft(): Int {
         return Clock.System.now()

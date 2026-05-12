@@ -31,6 +31,7 @@ import com.shub39.rush.presentation.lyrics.SearchState
 import com.shub39.rush.presentation.lyrics.toSongUi
 import com.shub39.rush.presentation.searchsheet.SearchSheetAction
 import com.shub39.rush.presentation.searchsheet.SearchSheetState
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -49,7 +50,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import kotlin.time.Duration.Companion.milliseconds
 
 @KoinViewModel
 class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
@@ -183,9 +183,10 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
     private suspend fun fetchLyrics(songId: Long) {
         if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
-        val song = _state.value.searchResults.find { it.id == songId }
-            ?: _state.value.localSearchResults.find { it.id == songId }
-            ?: return
+        val song =
+            _state.value.searchResults.find { it.id == songId }
+                ?: _state.value.localSearchResults.find { it.id == songId }
+                ?: return
 
         stateLayer.lyricsState.update {
             it.copy(

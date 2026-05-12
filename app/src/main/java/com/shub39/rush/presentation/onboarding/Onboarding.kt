@@ -77,15 +77,11 @@ private sealed interface OnboardingRoutes {
 }
 
 @Composable
-fun Onboarding(
-    onDone: () -> Unit,
-    notificationAccess: Boolean,
-) {
+fun Onboarding(onDone: () -> Unit, notificationAccess: Boolean) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val pagerState = rememberPagerState { OnboardingRoutes.routes.size }
-
 
     Surface {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
