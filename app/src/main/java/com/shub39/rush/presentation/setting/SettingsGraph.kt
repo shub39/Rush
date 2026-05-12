@@ -78,7 +78,7 @@ fun SettingsGraph(
                     BackupPage(
                         state = state,
                         action = action,
-                        onNavigateBack = onNavigateBack,
+                        onNavigateBack = { backStack.pop() },
                     )
                 }
 
@@ -86,7 +86,7 @@ fun SettingsGraph(
                     LookAndFeelPage(
                         state = state,
                         onAction = action,
-                        onNavigateBack = onNavigateBack,
+                        onNavigateBack = { backStack.pop() },
                         onShowPaywall = onShowPaywall,
                         isProUser = isProUser,
                     )
