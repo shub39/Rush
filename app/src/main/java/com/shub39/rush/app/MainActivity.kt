@@ -21,7 +21,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.viewmodels.GlobalVM
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -34,8 +41,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         globalViewModel.onAction(
-            GlobalAction.OnCheckNotificationAccess(this)
+            GlobalAction.OnCheckNotificationAccess
         )
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                globalViewModel.state
+                    .map { it.notificationAccess }
+                    .distinctUntilChanged()
+                    .collect { hasAccess ->
+                        if (hasAccess) {
+                            MediaListenerImpl.startListening(applicationContext)
+                        }
+                    }
+            }
+        }
 
         setContent {
             RootContent()
@@ -45,7 +65,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         globalViewModel.onAction(
-            GlobalAction.OnCheckNotificationAccess(this)
+            GlobalAction.OnCheckNotificationAccess
         )
     }
 }

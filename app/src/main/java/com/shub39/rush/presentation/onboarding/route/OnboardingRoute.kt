@@ -11,13 +11,11 @@ fun OnboardingRoute(
     onDone: () -> Unit,
     onGlobalAction: (GlobalAction) -> Unit,
 ) {
-    val context = LocalContext.current
-
     Onboarding(
         onDone = onDone,
         notificationAccess = notificationAccess,
         onUpdateNotificationAccess = {
-            onGlobalAction(GlobalAction.OnCheckNotificationAccess(context))
+            onGlobalAction(GlobalAction.OnCheckNotificationAccess)
         },
     )
 }

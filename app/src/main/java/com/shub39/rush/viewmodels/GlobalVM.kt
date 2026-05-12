@@ -1,6 +1,5 @@
 package com.shub39.rush.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.BuildConfig
@@ -11,8 +10,7 @@ import com.shub39.rush.app.state.GlobalState
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
 import com.shub39.rush.data.ChangelogManager
-import com.shub39.rush.data.listener.MediaListenerImpl
-import com.shub39.rush.data.listener.NotificationListener
+import com.shub39.rush.domain.PermissionsHelper
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.warning.FossWarningCalculator
 import kotlinx.coroutines.channels.Channel
@@ -29,6 +27,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 
 @KoinViewModel
 class GlobalVM(
@@ -36,6 +35,7 @@ class GlobalVM(
     private val otherPreferences: OtherPreferences,
     private val changelogManager: ChangelogManager,
     private val datastore: OtherPreferences,
+    @Named("PermissionsHelper") private val permissionsHelper: PermissionsHelper
 ) : ViewModel() {
 
     /**
@@ -86,7 +86,7 @@ class GlobalVM(
             }
 
             is GlobalAction.OnCheckNotificationAccess -> {
-                checkNotificationAccess(action.context)
+                checkNotificationAccess()
             }
 
             GlobalAction.DismissChangelog -> {
@@ -117,12 +117,9 @@ class GlobalVM(
         }
     }
 
-    private fun checkNotificationAccess(context: Context) {
-        val hasAccess = NotificationListener.canAccessNotifications(context)
+    private fun checkNotificationAccess() {
+        val hasAccess = permissionsHelper.hasNotificationAccess()
 
-        if (hasAccess) {
-            MediaListenerImpl.startListening(context)
-        }
 
         _state.update {
             it.copy(notificationAccess = hasAccess)
