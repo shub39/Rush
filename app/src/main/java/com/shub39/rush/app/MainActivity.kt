@@ -41,4 +41,11 @@ class MainActivity : ComponentActivity() {
             RootContent()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        globalViewModel.onAction(
+            GlobalAction.OnCheckNotificationAccess(this)
+        )
+    }
 }
