@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 /*
  * Copyright (C) 2026  Shubham Gorai
  *
