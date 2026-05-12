@@ -25,6 +25,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.domain.util.pop
 import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.presentation.setting.section.BackupPage
 import com.shub39.rush.presentation.setting.section.Changelog
@@ -75,7 +76,7 @@ fun SettingsGraph(
                     BackupPage(
                         state = state,
                         action = action,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = onNavigateBack,
                     )
                 }
 
@@ -83,7 +84,7 @@ fun SettingsGraph(
                     LookAndFeelPage(
                         state = state,
                         onAction = action,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = onNavigateBack,
                         onShowPaywall = onShowPaywall,
                         isProUser = isProUser,
                     )
@@ -92,7 +93,7 @@ fun SettingsGraph(
                 entry<ChangelogPage>(metadata = horizontalTransitionMetadata()) {
                     Changelog(
                         changelog = state.changelog,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = onNavigateBack,
                     )
                 }
             },

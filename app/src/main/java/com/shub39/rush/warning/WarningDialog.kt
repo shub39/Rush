@@ -49,21 +49,25 @@ import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 
 @Composable
-fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
+fun WarningDialog(
+    daysLeft: Int, onDismissRequest: () -> Unit, modifier: Modifier = Modifier
+) {
     BasicAlertDialog(modifier = modifier, onDismissRequest = onDismissRequest) {
         Card(shape = MaterialTheme.shapes.extraLarge) {
             Column(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier.size(48.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.errorContainer,
-                                shape = MaterialShapes.Pill.toShape(),
-                            ),
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = MaterialShapes.Pill.toShape(),
+                        ),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.warning),
@@ -74,16 +78,14 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Important Warning",
-                    style =
-                        MaterialTheme.typography.headlineSmall.copy(
-                            fontFamily = flexFontEmphasis(),
-                            color = MaterialTheme.colorScheme.error,
-                        ),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontFamily = flexFontEmphasis(),
+                        color = MaterialTheme.colorScheme.error,
+                    ),
                 )
                 Text(
                     text = "Your phone is about to stop being yours.",
-                    style =
-                        MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontRounded()),
+                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontRounded()),
                 )
 
                 Row(
@@ -91,32 +93,26 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Text(
-                        text = WarningManager.getDaysLeft().toString(),
-                        style =
-                            MaterialTheme.typography.displayLarge.copy(
-                                fontFamily = flexFontEmphasis(),
-                                color = MaterialTheme.colorScheme.error,
-                            ),
+                        text = daysLeft.toString(),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontFamily = flexFontEmphasis(),
+                            color = MaterialTheme.colorScheme.error,
+                        ),
                     )
                     Text(text = "DAYS UNTIL LOCKDOWN", style = MaterialTheme.typography.titleMedium)
                 }
 
                 Text(
-                    text =
-                        "Starting September 2026, a silent update" +
-                            " will block every Android app whose developer hasn't" +
-                            " registered with Google, signed their contract, paid up," +
-                            " and handed over government ID.",
+                    text = "Starting September 2026, a silent update" + " will block every Android app whose developer hasn't" + " registered with Google, signed their contract, paid up," + " and handed over government ID.",
                     style = MaterialTheme.typography.bodyMedium,
                 )
 
                 Text(
                     text = "Every app and every device, worldwide, with no opt-out.",
-                    style =
-                        MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.error,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.error,
+                    ),
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -140,5 +136,9 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) { WarningDialog(onDismissRequest = {}) }
+    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
+        WarningDialog(
+            onDismissRequest = {}, daysLeft = 67
+        )
+    }
 }

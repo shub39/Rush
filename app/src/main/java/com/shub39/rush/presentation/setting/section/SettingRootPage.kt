@@ -58,6 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
@@ -74,7 +75,6 @@ import com.shub39.rush.presentation.setting.component.AboutApp
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
-import com.shub39.rush.warning.WarningManager
 import com.shub39.rush.warning.WarningReminder
 
 // topmost settings page
@@ -129,7 +129,7 @@ fun SettingRootPage(
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (WarningManager.showWarning()) {
+            if (BuildConfig.FLAVOR == "foss") {
                 item { WarningReminder() }
             }
 

@@ -16,32 +16,26 @@
  */
 package com.shub39.rush.warning
 
-import com.shub39.rush.BuildConfig
-import kotlin.time.Clock
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 
-object WarningManager {
-    fun showWarning(): Boolean = BuildConfig.FLAVOR == "foss"
+object FossWarningCalculator {
 
-    private val _showWarningDialog = MutableStateFlow(showWarning())
+    private val targetDate =
+        LocalDate(
+            year = 2026,
+            month = 9,
+            day = 1,
+        )
 
-    val showWarningDialog = _showWarningDialog.asStateFlow()
-
-    fun updateWarningDialog(newValue: Boolean) {
-        _showWarningDialog.update { newValue }
-    }
-
-    fun getDaysLeft(): Int {
+    fun daysLeft(): Int {
         return Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .date
-            .daysUntil(LocalDate(year = 2026, month = 9, day = 1))
+            .daysUntil(targetDate)
             .coerceAtLeast(0)
     }
 }

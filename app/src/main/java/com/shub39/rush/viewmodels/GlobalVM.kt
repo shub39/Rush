@@ -1,42 +1,31 @@
-/*
- * Copyright (C) 2026  Shubham Gorai
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 package com.shub39.rush.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.app.GlobalAction
-import com.shub39.rush.app.GlobalState
+import com.shub39.rush.app.GlobalEvent
+import com.shub39.rush.app.state.GlobalOverlay
+import com.shub39.rush.app.state.GlobalState
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
 import com.shub39.rush.data.ChangelogManager
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.data.listener.NotificationListener
 import com.shub39.rush.domain.interfaces.OtherPreferences
-import kotlinx.coroutines.Job
+import com.shub39.rush.warning.FossWarningCalculator
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -48,112 +37,169 @@ class GlobalVM(
     private val changelogManager: ChangelogManager,
     private val datastore: OtherPreferences,
 ) : ViewModel() {
-    private var syncJob: Job? = null
 
+    /**
+     * MutableStateFlow is already hot and stateful
+     * - keeps latest value
+     * - survives configuration changes via ViewModel (koin ftw)
+     * - replays to new collectors
+     *
+     * stateIn() is only needed for cold flows (e.g. combine/map/repository flows).
+     * Using it here would add unnecessary sharing layers without benefits.
+     */
     private val _state = MutableStateFlow(GlobalState())
-    val state =
-        _state
-            .asStateFlow()
-            .onStart {
-                checkSubscription()
-                checkChangelog()
-                startSync()
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = _state.value,
-            )
+    val state: StateFlow<GlobalState> = _state.asStateFlow()
 
-    fun onAction(action: GlobalAction) {
-        when (action) {
-            is GlobalAction.OnUpdateOnboardingDone ->
-                viewModelScope.launch { otherPreferences.updateOnboardingDone(action.status) }
+    private val _overlay = MutableStateFlow<GlobalOverlay>(GlobalOverlay.None)
+    val overlay: StateFlow<GlobalOverlay> = _overlay.asStateFlow()
 
-            is GlobalAction.OnCheckNotificationAccess -> {
-                val access = NotificationListener.canAccessNotifications(action.context)
+    init {
+        bootstrap()
+    }
 
-                if (access) MediaListenerImpl.startListening(action.context)
+    /**
+     * App-wide initialization work that should happen once
+     * during the ViewModel lifecycle (view model initialization).
+     */
+    private fun bootstrap() {
+        observePreferences()
+        checkSubscription()
+        checkChangelog()
 
-                _state.update { it.copy(notificationAccess = access) }
-            }
+        val onboardingDone = _state.value.onBoardingDone
 
-            GlobalAction.DismissChangelog -> {
-                _state.update { it.copy(currentChangelog = null) }
-                viewModelScope.launch {
-                    datastore.updateLastChangelogShown(BuildConfig.VERSION_NAME)
-                }
+        if (!onboardingDone) {
+            viewModelScope.launch {
+                _globalEvents.send(GlobalEvent.NavigateToOnboarding)
             }
         }
     }
 
-    private suspend fun checkSubscription() {
-        val isSubscribed = billingHandler.userResult()
+    private val _globalEvents = Channel<GlobalEvent>(Channel.BUFFERED)
+    val globalEvents: Flow<GlobalEvent> = _globalEvents.receiveAsFlow()
 
-        when (isSubscribed) {
-            SubscriptionResult.Subscribed -> {
-                _state.update { it.copy(isProUser = true) }
+    fun onAction(action: GlobalAction) {
+        when (action) {
+            is GlobalAction.OnUpdateOnboardingDone -> {
+                updateOnboarding(action.status)
             }
 
-            else -> {}
+            is GlobalAction.OnCheckNotificationAccess -> {
+                checkNotificationAccess(action.context)
+            }
+
+            GlobalAction.DismissChangelog -> {
+                dismissOverlay()
+            }
+        }
+    }
+
+    private fun updateOnboarding(status: Boolean) {
+        viewModelScope.launch {
+            otherPreferences.updateOnboardingDone(status)
+        }
+    }
+
+    /**
+     * Lifecycle-bound async operation.
+     * The caller should not care about coroutine management.
+     */
+    private fun checkSubscription() {
+        viewModelScope.launch {
+            when (billingHandler.userResult()) {
+                SubscriptionResult.Subscribed -> {
+                    _state.update { it.copy(isProUser = true) }
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+    private fun checkNotificationAccess(context: Context) {
+        val hasAccess = NotificationListener.canAccessNotifications(context)
+
+        if (hasAccess) {
+            MediaListenerImpl.startListening(context)
+        }
+
+        _state.update {
+            it.copy(notificationAccess = hasAccess)
         }
     }
 
     private fun checkChangelog() {
         viewModelScope.launch {
-            val changeLogs = changelogManager.changelogs.first()
-            val lastShownChangelog = datastore.getLastChangelogShown().first()
 
-            if (BuildConfig.DEBUG || lastShownChangelog != BuildConfig.VERSION_NAME) {
-                _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
+            val changelog = changelogManager.changelogs.first().firstOrNull()
+
+            val lastShown = datastore.getLastChangelogShown().first()
+
+            if (changelog == null) return@launch
+
+            val shouldShow = BuildConfig.DEBUG || lastShown != BuildConfig.VERSION_NAME
+
+            if (!shouldShow) return@launch
+
+            _overlay.update {
+
+                if (BuildConfig.FLAVOR == "foss") {
+                    GlobalOverlay.FossWarning(
+                        daysLeft = FossWarningCalculator.daysLeft(),
+                    )
+                } else {
+                    GlobalOverlay.Changelog(
+                        changelog = changelog,
+                    )
+                }
+
             }
         }
     }
 
-    private fun startSync() {
-        syncJob?.cancel()
-        syncJob =
-            viewModelScope.launch {
-                combine(
-                        otherPreferences.getFontFlow(),
-                        otherPreferences.getPaletteStyle(),
-                        otherPreferences.getSeedColorFlow(),
-                        otherPreferences.getAmoledPrefFlow(),
-                        otherPreferences.getAppThemePrefFlow(),
-                    ) { font, style, seedColor, withAmoled, theme ->
-                        _state.update {
-                            it.copy(
-                                theme =
-                                    it.theme.copy(
-                                        appTheme = theme,
-                                        font = font,
-                                        style = style,
-                                        seedColor = seedColor,
-                                        withAmoled = withAmoled,
-                                    )
-                            )
-                        }
-                    }
-                    .launchIn(this)
+    private fun dismissOverlay() {
+        viewModelScope.launch {
+            datastore.updateLastChangelogShown(BuildConfig.VERSION_NAME)
+            _overlay.update { GlobalOverlay.None }
+        }
+    }
 
-                otherPreferences
-                    .getMaterialYouFlow()
-                    .onEach { pref ->
-                        _state.update { it.copy(theme = it.theme.copy(materialTheme = pref)) }
-                    }
-                    .launchIn(this)
+    private fun observePreferences() {
+        combine(
+            otherPreferences.getFontFlow(),
+            otherPreferences.getPaletteStyle(),
+            otherPreferences.getSeedColorFlow(),
+            otherPreferences.getAmoledPrefFlow(),
+            otherPreferences.getAppThemePrefFlow(),
+        ) { font, style, seedColor, withAmoled, appTheme ->
 
-                otherPreferences
-                    .getSeedColorFlow()
-                    .onEach { pref ->
-                        _state.update { it.copy(theme = it.theme.copy(seedColor = pref)) }
-                    }
-                    .launchIn(this)
-
-                otherPreferences
-                    .getOnboardingDoneFlow()
-                    .onEach { pref -> _state.update { it.copy(onBoardingDone = pref) } }
-                    .launchIn(this)
+            _state.update {
+                it.copy(
+                    theme = it.theme.copy(
+                        appTheme = appTheme,
+                        font = font,
+                        style = style,
+                        seedColor = seedColor,
+                        withAmoled = withAmoled,
+                    )
+                )
             }
+        }.launchIn(viewModelScope)
+
+        otherPreferences.getMaterialYouFlow().distinctUntilChanged().onEach { enabled ->
+            _state.update {
+                it.copy(
+                    theme = it.theme.copy(
+                        materialTheme = enabled
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
+
+        otherPreferences.getOnboardingDoneFlow().onEach { completed ->
+            _state.update {
+                it.copy(onBoardingDone = completed)
+            }
+        }.launchIn(viewModelScope)
     }
 }

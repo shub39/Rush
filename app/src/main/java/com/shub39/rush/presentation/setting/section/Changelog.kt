@@ -41,8 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.app.Changelog
-import com.shub39.rush.app.VersionEntry
+import com.shub39.rush.app.state.Changelog
+import com.shub39.rush.app.state.VersionEntry
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape

@@ -19,6 +19,7 @@ package com.shub39.rush.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.navigation.Navigator
 import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.request.CachePolicy
@@ -30,11 +31,14 @@ import com.shub39.rush.data.datastore.DatastoreFactory
 import com.shub39.rush.data.datastore.LyricsPagePreferencesImpl
 import com.shub39.rush.data.datastore.OtherPreferencesImpl
 import com.shub39.rush.data.datastore.SharePagePreferencesImpl
+import com.shub39.rush.data.listener.PermissionsHelperImpl
+import com.shub39.rush.domain.PermissionsHelper
 import com.shub39.rush.domain.interfaces.LyricsPagePreferences
 import com.shub39.rush.domain.interfaces.OtherPreferences
 import com.shub39.rush.domain.interfaces.SharePagePreferences
 import okio.Path.Companion.toOkioPath
 import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
@@ -42,9 +46,11 @@ import org.koin.core.annotation.Single
 @Module
 @ComponentScan("com.shub39.rush")
 class RushModules {
-    @Single fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
+    @Single
+    fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
 
-    @Single fun provideSongDao(db: SongDatabase): SongDao = db.songDao()
+    @Single
+    fun provideSongDao(db: SongDatabase): SongDao = db.songDao()
 
     @Single
     fun provideImageLoader(context: Context): ImageLoader {
@@ -60,6 +66,11 @@ class RushModules {
             }
             .build()
     }
+
+    @Factory
+    @Named("PermissionsHelper")
+    fun providePermissionsHelper(context: Context): PermissionsHelper =
+        PermissionsHelperImpl(context)
 
     @Single
     @Named("LyricsPage")

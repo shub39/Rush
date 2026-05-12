@@ -18,7 +18,7 @@ package com.shub39.rush.presentation.setting
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.shub39.rush.app.Changelog
+import com.shub39.rush.app.state.Changelog
 import com.shub39.rush.domain.backup.ExportState
 import com.shub39.rush.domain.backup.RestoreState
 import com.shub39.rush.domain.dataclasses.Theme

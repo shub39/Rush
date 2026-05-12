@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.app.state
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -32,5 +32,4 @@ data class GlobalState(
     val theme: Theme = Theme(),
     val onBoardingDone: Boolean = true,
     val notificationAccess: Boolean = false,
-    val currentChangelog: VersionEntry? = null,
 )

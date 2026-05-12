@@ -18,7 +18,7 @@ package com.shub39.rush.data
 
 import android.content.Context
 import android.util.Log
-import com.shub39.rush.app.Changelog
+import com.shub39.rush.app.state.Changelog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart

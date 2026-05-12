@@ -29,6 +29,8 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
 
-        setContent { App() }
+        setContent {
+            RootContent()
+        }
     }
 }
