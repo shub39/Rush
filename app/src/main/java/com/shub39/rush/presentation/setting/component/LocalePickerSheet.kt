@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,40 +45,49 @@ fun LocalePickerSheet(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val currentLocales = if (Build.VERSION.SDK_INT >= 33) {
-        context
-            .getSystemService(LocaleManager::class.java)
-            .applicationLocales
-    } else LocaleList.getEmptyLocaleList()
-
-    val supportedLocales = remember {
+    val currentLocales = remember {
         if (Build.VERSION.SDK_INT >= 33) {
-            LocaleConfig(context).supportedLocales
-        } else null
+            context.getSystemService(LocaleManager::class.java).applicationLocales
+        } else LocaleList.getEmptyLocaleList()
     }
-    val supportedLocalesSize = supportedLocales?.size() ?: 0
 
     val supportedLocaleList: List<AppLocale>? = remember {
-        if (supportedLocales != null) {
-            buildList {
-                for (i in 0 until supportedLocalesSize) {
-                    add(AppLocale(supportedLocales.get(i), supportedLocales.get(i).displayName))
-                }
-                sortWith(compareBy { it.name })
-            }
+        if (Build.VERSION.SDK_INT >= 33) {
+            val supportedLocales = LocaleConfig(context).supportedLocales
+            if (supportedLocales != null) {
+                buildList {
+                    for (i in 0 until supportedLocales.size()) {
+                        val locale = supportedLocales.get(i)
+                        add(
+                            AppLocale(
+                                locale,
+                                locale.getDisplayName(locale)
+                                    .replaceFirstChar { it.uppercase() }
+                            )
+                        )
+                    }
+                }.sortedBy { it.name }
+            } else null
         } else null
     }
+
+    val supportedLocalesSize = supportedLocaleList?.size ?: 0
 
     RushBottomSheet(
         onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
         modifier = modifier,
         padding = 16.dp
     ) {
         if (supportedLocaleList != null) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
-                contentPadding = PaddingValues(bottom = 60.dp)
+                contentPadding = PaddingValues(bottom = 60.dp),
+                modifier = Modifier
+                    .heightIn(max = 600.dp)
+                    .clip(shapes.large)
             ) {
                 item {
                     SegmentedListItem(
@@ -86,6 +99,7 @@ fun LocalePickerSheet(
                                             .getSystemService(LocaleManager::class.java)
                                             .applicationLocales = LocaleList()
                                     }
+                                    sheetState.hide()
                                 }
                                 .invokeOnCompletion { onDismissRequest() }
                         },
@@ -124,6 +138,7 @@ fun LocalePickerSheet(
                                             .applicationLocales =
                                             LocaleList(it.locale)
                                     }
+                                    sheetState.hide()
                                 }
                                 .invokeOnCompletion {
                                     onDismissRequest()
