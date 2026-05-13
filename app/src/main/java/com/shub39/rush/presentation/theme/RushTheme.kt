@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.presentation.theme
 
-import android.R
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialExpressiveTheme
@@ -45,7 +44,7 @@ fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
         rememberDynamicColorScheme(
             seedColor =
                 if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-                    colorResource(R.color.system_accent1_900)
+                    colorResource(android.R.color.system_accent1_900)
                 } else {
                     Color(theme.seedColor)
                 },

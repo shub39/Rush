@@ -37,7 +37,7 @@ private data class AppLocale(
     val name: String
 )
 
-// yeeted from nsh04/Tomato
+// yeeted from nsh07/Tomato
 @Composable
 fun LocalePickerSheet(
     onDismissRequest: () -> Unit,
