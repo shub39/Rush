@@ -41,6 +41,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+    packaging {
+        resources {
+            excludes +=
+                listOf(
+                    "META-INF/CONTRIBUTORS.md",
+                    "META-INF/DEPENDENCIES",
+                    "META-INF/LICENSE",
+                    "META-INF/LICENSE.md",
+                    "META-INF/NOTICE",
+                    "META-INF/NOTICE.md",
+                )
+        }
+    }
 }
 
 dependencies {
