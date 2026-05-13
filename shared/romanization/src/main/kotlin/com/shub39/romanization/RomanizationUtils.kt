@@ -808,10 +808,33 @@ object RomanizationUtils {
                 reading = matchedReading
                 i += surface.length
             } else {
-                // Single character — no dictionary match
-                surface = ch.toString()
+                // No dictionary match — group consecutive characters of same type
+                val end =
+                    when {
+                        ch in '\u3040'..'\u309F' || ch in '\u30A0'..'\u30FF' -> {
+                            // Group consecutive kana (hiragana/katakana)
+                            var j = i + 1
+                            while (j < text.length) {
+                                val c = text[j]
+                                if (c in '\u3040'..'\u309F' || c in '\u30A0'..'\u30FF') j++
+                                else break
+                            }
+                            j
+                        }
+                        ch in 'a'..'z' || ch in 'A'..'Z' -> {
+                            // Group consecutive Latin letters
+                            var j = i + 1
+                            while (j < text.length) {
+                                val c = text[j]
+                                if (c in 'a'..'z' || c in 'A'..'Z') j++ else break
+                            }
+                            j
+                        }
+                        else -> i + 1 // single character (kanji, punctuation, etc.)
+                    }
+                surface = text.substring(i, end)
                 reading = null
-                i++
+                i = end
             }
 
             val romanized =
