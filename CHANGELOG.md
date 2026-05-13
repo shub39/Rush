@@ -2,7 +2,7 @@
 
 ## 6.1.14
 - Updated Translations
-- Added Language Picker in Settings
+- (Android 13+) Added Language Picker in Settings
 
 ## 6.1.13
 - Fixed local search results not loading Lyrics
