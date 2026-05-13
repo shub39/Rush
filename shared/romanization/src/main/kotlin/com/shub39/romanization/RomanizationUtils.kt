@@ -1240,12 +1240,7 @@ object RomanizationUtils {
 
     // Language detection
     fun isJapanese(text: String): Boolean {
-        return text.any {
-            it in '\u3040'..'\u309F' || // hiragana
-                it in '\u30A0'..'\u30FF' || // katakana
-                it in '\u4E00'..'\u9FFF' || // CJK Unified Ideographs (kanji)
-                it in '\u3400'..'\u4DBF' // CJK Extension A
-        }
+        return text.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' }
     }
 
     fun isKorean(text: String): Boolean {
@@ -1352,8 +1347,15 @@ object RomanizationUtils {
             ),
     ): String? {
         return when {
+            // Japanese text with kana → always treat as Japanese
             "Japanese" in enabledLanguages && isJapanese(text) -> romanizeJapanese(text)
             "Korean" in enabledLanguages && isKorean(text) -> romanizeKorean(text)
+            // Pure CJK (no kana): route to Japanese first. The IPADIC reading
+            // dictionary covers common Japanese kanji words. Chinese text that
+            // is not in the dictionary falls through to romanizeChinese below.
+            "Japanese" in enabledLanguages &&
+                text.any { it in '\u4E00'..'\u9FFF' || it in '\u3400'..'\u4DBF' } ->
+                romanizeJapanese(text)
             "Chinese" in enabledLanguages && isChinese(text) -> romanizeChinese(text)
             "Hindi" in enabledLanguages && isHindi(text) -> romanizeHindi(text)
             "Punjabi" in enabledLanguages && isPunjabi(text) -> romanizePunjabi(text)
