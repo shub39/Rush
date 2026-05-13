@@ -155,4 +155,6 @@
     <string name="romanization">Romanization</string>
     <string name="romanization_desc">Show romanized lyrics for Japanese, Korean, Chinese, Hindi, Punjabi, and Cyrillic languages</string>
     <string name="open_search">Open Search</string>
+    <string name="system_default">System Default</string>
+    <string name="language">Language</string>
 </resources>

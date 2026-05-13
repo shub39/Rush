@@ -19,7 +19,9 @@ package com.shub39.rush.presentation
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
@@ -57,3 +59,22 @@ fun endItemShape(): Shape =
     )
 
 fun detachedItemShape(): Shape = RoundedCornerShape(endCornerRadius.dp)
+
+@Composable
+fun segmentedListItemShapes(
+    index: Int,
+    count: Int,
+    singleElement: Boolean = count == 1
+): ListItemShapes =
+    ListItemDefaults.segmentedShapes(
+        index,
+        count,
+        ListItemDefaults.shapes(
+            shape = if (singleElement) shapes.large else shapes.extraSmall,
+            selectedShape = shapes.extraLargeIncreased,
+            pressedShape = shapes.extraLargeIncreased,
+            focusedShape = shapes.large,
+            hoveredShape = shapes.extraLarge,
+            draggedShape = shapes.extraLargeIncreased
+        )
+    )
