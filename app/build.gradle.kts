@@ -53,6 +53,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+        androidResources { generateLocaleConfig = true }
     }
 
     buildTypes {
