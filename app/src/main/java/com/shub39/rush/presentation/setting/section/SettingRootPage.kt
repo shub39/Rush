@@ -17,6 +17,7 @@
 package com.shub39.rush.presentation.setting.section
 
 import android.content.Intent
+import android.os.Build
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -71,6 +73,7 @@ import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
 import com.shub39.rush.presentation.setting.component.AboutApp
+import com.shub39.rush.presentation.setting.component.LocalePickerSheet
 import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
@@ -90,6 +93,7 @@ fun SettingRootPage(
     onNavigateToChangelog: () -> Unit,
 ) = PageFill {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
+    var showLocalePicker by remember { mutableStateOf(false) }
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
@@ -268,6 +272,42 @@ fun SettingRootPage(
                 }
             }
 
+            // pick app language
+            if (Build.VERSION.SDK_INT >= 33) {
+                item {
+                    ListItem(
+                        colors = listItemColors(),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.language),
+                                contentDescription = null
+                            )
+                        },
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.language)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = LocalLocale.current.platformLocale.displayLanguage
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_forward_ios),
+                                contentDescription = "Navigate",
+                            )
+                        },
+                        modifier =
+                            Modifier.clip(detachedItemShape()).clickable {
+                                showLocalePicker = true
+                            },
+                    )
+                }
+            }
+
+            // navigate to changelog
             item {
                 ListItem(
                     colors = listItemColors(),
@@ -279,7 +319,7 @@ fun SettingRootPage(
                     },
                     trailingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.arrow_forward),
+                            painter = painterResource(R.drawable.arrow_forward_ios),
                             contentDescription = "Navigate",
                         )
                     },
@@ -315,6 +355,13 @@ fun SettingRootPage(
                 )
             }
         }
+    }
+
+    // locale picker
+    if (showLocalePicker) {
+        LocalePickerSheet(
+            onDismissRequest = { showLocalePicker = false }
+        )
     }
 
     // dialog to confirm nuking

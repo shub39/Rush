@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search">Tìm kiếm lời bài hát</string>
+    <string name="saved">Đã lưu</string>
+    <string name="settings">Cài đặt</string>
+    <string name="empty">Ở đây không có gì cả</string>
+    <string name="share">Chia sẻ</string>
+    <string name="save">Lưu</string>
+    <string name="delete_confirmation">Bạn có chắc bạn muốn xóa tất cả lời bài hát đã lưu?</string>
+    <string name="no_lyrics">Có thể không lấy được lời bài hát từ LRCLIB</string>
+    <string name="suggestion">Bạn có thấy biểu tượng tìm kiếm phía dưới không?</string>
+    <string name="downloaded">Các lời bài hát đã lưu</string>
+    <string name="delete_all">Xóa tất cả lời bài hát</string>
+    <string name="track">đoạn nhạc</string>
+    <string name="artist">nghệ sĩ</string>
+    <string name="width">Chiều dài (? Width)</string>
+    <string name="colors">Màu sắc tùy chỉnh</string>
+    <string name="done">Xong</string>
+    <string name="backup">Sao lưu</string>
+    <string name="bmc">Mua một cốc cà phê giúp tôi</string>
+    <string name="rate_on_play">Đánh giá trong Cửa Hàng Play</string>
+    <string name="export">Xuất dữ liệu</string>
+    <string name="restore">Khôi phục</string>
+    <string name="choose_file">Chọn tệp tin</string>
+    <string name="look_and_feel">Giao diện và cảm nhận</string>
+    <string name="palette_style">Kiểu bảng màu</string>
+    <string name="material_theme">Giao diện Material You</string>
+    <string name="material_theme_desc">Sử dụng các màu sắc dựa trên hình nền</string>
+    <string name="font">Phông chữ</string>
+    <string name="system">Hệ thống</string>
+    <string name="light">Sáng</string>
+    <string name="dark">Tối</string>
+    <string name="foss">Bạn đang sử dụng ứng dụng miễn phí và mã nguồn mở</string>
+    <string name="foss_desc">Tất cả tính năng đã được mở khóa. Ứng dụng này không hỗ trợ giao dịch mua trong ứng dụng. Nếu ứng dụng này hữu ích cho cuộc đời của bạn, hỗ trợ tôi bằng cách quyên góp cho tôi tại</string>
+    <string name="amoled">Bảng màu Amoled</string>
+    <string name="amoled_desc">Trải nghiệm tốt nhất cho các màn hình AMOLED</string>
+    <string name="seed_color">Chọn màu gốc</string>
+    <string name="seed_color_desc">Chọn màu để tạo bảng màu từ đó</string>
+    <string name="look_and_feel_info">Tùy chỉnh ứng dụng theo các phong cách khác nhau</string>
+    <string name="theme">Giao diện ứng dụng</string>
+    <string name="translate">Dịch</string>
+    <string name="changelog">Nhật kí sửa đổi</string>
+    <string name="whats_changed">Điểm mới</string>
+</resources>
