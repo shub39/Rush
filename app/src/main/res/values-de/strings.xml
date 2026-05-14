@@ -48,7 +48,7 @@
     <string name="card_corners">Kartenecken</string>
     <string name="vibrant_colors_info">Verwenden Sie lebendigere Farben für die Liedtextseite</string>
     <string name="backup">Sicherung</string>
-    <string name="backup_info">Importieren oder Exportieren Sie die Datenbank der gesicherten Liedtexte</string>
+    <string name="backup_info">Importieren oder exportieren Sie die Datenbank der gesicherten Liedtexte</string>
     <string name="batch_download_info">Laden Sie Liedtexte für Ihre lokal gespeicherten Lieder auf einmal herunter.</string>
     <string name="sort_date_added">Zuletzt hinzugefügt</string>
     <string name="rush_branding">Rush-Branding</string>
@@ -122,7 +122,7 @@
     <string name="fullscreen_desc">Systemleisten auf der Liedtextseite ausblenden</string>
     <string name="end">Ende</string>
     <string name="messy">Chaotisch</string>
-    <string name="bmc">Kauf mir einen Kaffe</string>
+    <string name="bmc">Kauf mir einen Kaffee</string>
     <string name="blurred_art">Verschwommmendes Cover</string>
     <string name="foss">Sie benutzen die FOSS Variante</string>
     <string name="foss_desc">Alle Funktionen sind freigeschaltet. Diese App-Variante unterstützt keine In-App-Käufe. Wenn diese App Ihr Leben bereichert hat, unterstützen Sie mich bitte mit einer Spende auf</string>
@@ -156,4 +156,6 @@
     <string name="romanization">Romanisierung</string>
     <string name="romanization_desc">Romanisierte Liedtexte für Japanisch, Koreanisch, Chinesisch, Hindi, Panjabi und kyrillische Sprachen anzeigen</string>
     <string name="open_search">Suche öffnen</string>
+    <string name="system_default">Systemstandard</string>
+    <string name="language">Sprache</string>
 </resources>
