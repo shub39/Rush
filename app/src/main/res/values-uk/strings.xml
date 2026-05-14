@@ -15,7 +15,7 @@
     <string name="notification">Служба Трекінгу Сповіщень</string>
     <string name="unknown_album">Невідомий альбом</string>
     <string name="track">трек</string>
-    <string name="artist">артист</string>
+    <string name="artist">виконавець</string>
     <string name="width">Ширина</string>
     <string name="colors">Кольори</string>
     <string name="grant_permission">Надати доступ до сповіщень</string>
@@ -51,7 +51,7 @@
     <string name="backup_info">Імпортувати або Експортувати базу даних збережених текстів</string>
     <string name="batch_download_info">Завантажити тексти ваших локально збережених пісень разом.</string>
     <string name="sort_date_added">Нещодавно додані</string>
-    <string name="rush_branding">Брендинг Rush</string>
+    <string name="rush_branding">Rush</string>
     <string name="exporting">Експортуємо</string>
     <string name="exported">Експортовано</string>
     <string name="restoring">Відновлення пісень</string>
