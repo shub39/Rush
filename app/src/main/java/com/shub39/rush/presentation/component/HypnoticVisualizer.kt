@@ -31,8 +31,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.hypnoticAvailable
 
 /**
@@ -109,6 +111,7 @@ private fun getSksl(colorCount: Int): String =
     }
 """
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {

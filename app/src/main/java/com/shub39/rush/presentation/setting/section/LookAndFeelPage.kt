@@ -17,10 +17,7 @@
 package com.shub39.rush.presentation.setting.section
 
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -47,7 +44,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -143,7 +139,7 @@ fun LookAndFeelPage(
             item {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(2.dp),
-                    modifier = Modifier.animateContentSize()
+                    modifier = Modifier.animateContentSize(),
                 ) {
                     // appTheme picker
                     Column(modifier = Modifier.clip(leadingItemShape())) {
@@ -240,14 +236,15 @@ fun LookAndFeelPage(
 
                     // font picker
                     Column(
-                        modifier = Modifier.clip(
-                            when {
-                                state.theme.materialTheme && !isProUser -> detachedItemShape()
-                                state.theme.materialTheme -> endItemShape()
-                                isProUser -> middleItemShape()
-                                else -> leadingItemShape()
-                            }
-                        )
+                        modifier =
+                            Modifier.clip(
+                                when {
+                                    state.theme.materialTheme && !isProUser -> detachedItemShape()
+                                    state.theme.materialTheme -> endItemShape()
+                                    isProUser -> middleItemShape()
+                                    else -> leadingItemShape()
+                                }
+                            )
                     ) {
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.font)) },
@@ -291,7 +288,9 @@ fun LookAndFeelPage(
                         // amoled switch
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.amoled)) },
-                            supportingContent = { Text(text = stringResource(R.string.amoled_desc)) },
+                            supportingContent = {
+                                Text(text = stringResource(R.string.amoled_desc))
+                            },
                             trailingContent = {
                                 Switch(
                                     checked = state.theme.withAmoled,
@@ -341,11 +340,16 @@ fun LookAndFeelPage(
                                 supportingContent = {
                                     Text(
                                         text =
-                                            state.theme.style.toString().lowercase().replaceFirstChar {
-                                                if (it.isLowerCase())
-                                                    it.titlecase(LocalLocale.current.platformLocale)
-                                                else it.toString()
-                                            }
+                                            state.theme.style
+                                                .toString()
+                                                .lowercase()
+                                                .replaceFirstChar {
+                                                    if (it.isLowerCase())
+                                                        it.titlecase(
+                                                            LocalLocale.current.platformLocale
+                                                        )
+                                                    else it.toString()
+                                                }
                                     )
                                 },
                                 colors = listItemColors(),
@@ -371,9 +375,12 @@ fun LookAndFeelPage(
                                             primary =
                                                 if (
                                                     state.theme.materialTheme &&
-                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                                        Build.VERSION.SDK_INT >=
+                                                            Build.VERSION_CODES.S
                                                 ) {
-                                                    colorResource(android.R.color.system_accent1_900)
+                                                    colorResource(
+                                                        android.R.color.system_accent1_900
+                                                    )
                                                 } else Color(state.theme.seedColor),
                                             isDark =
                                                 when (state.theme.appTheme) {
@@ -394,7 +401,9 @@ fun LookAndFeelPage(
                                                     else CircleShape
                                                 )
                                                 .clickable(enabled = isProUser) {
-                                                    onAction(SettingsPageAction.OnPaletteChange(style))
+                                                    onAction(
+                                                        SettingsPageAction.OnPaletteChange(style)
+                                                    )
                                                 },
                                         contentAlignment = Alignment.Center,
                                     ) {

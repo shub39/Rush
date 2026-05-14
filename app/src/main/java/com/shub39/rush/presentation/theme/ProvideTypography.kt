@@ -25,7 +25,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.R
+import com.shub39.rush.presentation.RushPreviewWrapper
 
 val TYPOGRAPHY = Typography()
 
@@ -83,6 +85,7 @@ fun provideTypography(font: Int? = R.font.poppins_regular): Typography {
     )
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 private fun TypographyPreview() {

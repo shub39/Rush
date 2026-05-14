@@ -40,14 +40,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.middleItemShape
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontRounded
 
 @Composable
@@ -202,8 +202,9 @@ fun AboutApp() {
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @PreviewLightDark
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme()) { AboutApp() }
+    AboutApp()
 }

@@ -43,16 +43,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardFit
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.RushBranding
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 
@@ -140,27 +139,26 @@ fun QuoteShareCard(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        QuoteShareCard(
-            modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
-            song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
-            sortedLines =
-                mapOf(0 to "This is a simple line")
-                    .plus(
-                        0 to
-                            "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
-                    ),
-            cardColors =
-                CardDefaults.cardColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.primary,
+    QuoteShareCard(
+        modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
+        song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
+        sortedLines =
+            mapOf(0 to "This is a simple line")
+                .plus(
+                    0 to
+                        "Hello this is a very very very very very the quick browm fox jumps over the lazy dog"
                 ),
-            cardCorners = RoundedCornerShape(pxToDp(48)),
-            fit = CardFit.FIT,
-            rushBranding = true,
-        )
-    }
+        cardColors =
+            CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+        cardCorners = RoundedCornerShape(pxToDp(48)),
+        fit = CardFit.FIT,
+        rushBranding = true,
+    )
 }

@@ -65,19 +65,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Song
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.domain.enums.SortOrder
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.Empty
 import com.shub39.rush.presentation.component.simpleVerticalScrollbar
 import com.shub39.rush.presentation.saved.component.SavedPageActions
 import com.shub39.rush.presentation.saved.component.SongCard
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toStringRes
@@ -310,6 +308,7 @@ fun SavedPage(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(device = "spec:width=411dp,height=891dp")
 @Composable
 private fun Preview() {
@@ -340,20 +339,17 @@ private fun Preview() {
         )
     }
 
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK, style = PaletteStyle.TONALSPOT)) {
-        SavedPage(
-            state = state,
-            notificationAccess = true,
-            onAction = {
-                when (it) {
-                    is SavedPageAction.UpdateSortOrder ->
-                        state = state.copy(sortOrder = it.sortOrder)
+    SavedPage(
+        state = state,
+        notificationAccess = true,
+        onAction = {
+            when (it) {
+                is SavedPageAction.UpdateSortOrder -> state = state.copy(sortOrder = it.sortOrder)
 
-                    else -> {}
-                }
-            },
-            onNavigateToLyrics = {},
-            onNavigateToSettings = {},
-        )
-    }
+                else -> {}
+            }
+        },
+        onNavigateToLyrics = {},
+        onNavigateToSettings = {},
+    )
 }

@@ -40,11 +40,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 
@@ -137,8 +136,9 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) { WarningDialog(onDismissRequest = {}) }
+    WarningDialog(onDismissRequest = {})
 }

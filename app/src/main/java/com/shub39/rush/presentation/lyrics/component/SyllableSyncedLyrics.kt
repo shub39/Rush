@@ -64,13 +64,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.domain.dataclasses.ParsedLine
 import com.shub39.rush.domain.dataclasses.ParsedWord
 import com.shub39.rush.domain.dataclasses.SongUi
-import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
@@ -78,7 +79,6 @@ import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
@@ -466,6 +466,7 @@ private fun SyllableWord(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(showBackground = true, backgroundColor = 0xAB89)
 @Composable
 fun SyllableSyncedLyricsPreview() {
@@ -576,16 +577,14 @@ fun SyllableSyncedLyricsPreview() {
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
-    RushTheme(theme = Theme()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            SyllableSyncedLyrics(
-                state = state,
-                lazyListState = rememberLazyListState(),
-                cardContent = Color.White,
-                action = {},
-                modifier = Modifier.fillMaxSize(),
-                playbackInfo = PlaybackInfo(position = position, speed = 1f),
-            )
-        }
+    Box(modifier = Modifier.fillMaxSize()) {
+        SyllableSyncedLyrics(
+            state = state,
+            lazyListState = rememberLazyListState(),
+            cardContent = Color.White,
+            action = {},
+            modifier = Modifier.fillMaxSize(),
+            playbackInfo = PlaybackInfo(position = position, speed = 1f),
+        )
     }
 }

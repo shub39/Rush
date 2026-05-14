@@ -59,10 +59,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.PageFill
 import com.shub39.rush.presentation.component.RushDialog
 import com.shub39.rush.presentation.detachedItemShape
@@ -74,7 +74,6 @@ import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
 import com.shub39.rush.presentation.setting.component.AboutApp
 import com.shub39.rush.presentation.setting.component.LocalePickerSheet
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.warning.WarningManager
@@ -280,18 +279,12 @@ fun SettingRootPage(
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.language),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         },
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.language)
-                            )
-                        },
+                        headlineContent = { Text(text = stringResource(R.string.language)) },
                         supportingContent = {
-                            Text(
-                                text = LocalLocale.current.platformLocale.displayLanguage
-                            )
+                            Text(text = LocalLocale.current.platformLocale.displayLanguage)
                         },
                         trailingContent = {
                             Icon(
@@ -300,9 +293,7 @@ fun SettingRootPage(
                             )
                         },
                         modifier =
-                            Modifier.clip(detachedItemShape()).clickable {
-                                showLocalePicker = true
-                            },
+                            Modifier.clip(detachedItemShape()).clickable { showLocalePicker = true },
                     )
                 }
             }
@@ -359,9 +350,7 @@ fun SettingRootPage(
 
     // locale picker
     if (showLocalePicker) {
-        LocalePickerSheet(
-            onDismissRequest = { showLocalePicker = false }
-        )
+        LocalePickerSheet(onDismissRequest = { showLocalePicker = false })
     }
 
     // dialog to confirm nuking
@@ -388,19 +377,18 @@ fun SettingRootPage(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SettingRootPage(
-            notificationAccess = false,
-            state = SettingsPageState(),
-            onAction = {},
-            onNavigateBack = {},
-            onNavigateToLookAndFeel = {},
-            onNavigateToBackup = {},
-            onShowPaywall = {},
-            onNavigateToChangelog = {},
-        )
-    }
+    SettingRootPage(
+        notificationAccess = false,
+        state = SettingsPageState(),
+        onAction = {},
+        onNavigateBack = {},
+        onNavigateToLookAndFeel = {},
+        onNavigateToBackup = {},
+        onShowPaywall = {},
+        onNavigateToChangelog = {},
+    )
 }

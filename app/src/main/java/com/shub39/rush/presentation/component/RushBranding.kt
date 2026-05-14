@@ -28,7 +28,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.R
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
 import com.shub39.rush.presentation.theme.flexFontEmphasis
@@ -63,6 +65,7 @@ fun RushBranding(modifier: Modifier = Modifier, color: Color = MaterialTheme.col
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {

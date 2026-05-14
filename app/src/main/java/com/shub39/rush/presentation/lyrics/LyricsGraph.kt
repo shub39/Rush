@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -35,11 +36,10 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.navigation.horizontalTransitionMetadata
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.presentation.lyrics.section.LyricsPage
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.updateSystemBars
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
@@ -108,18 +108,17 @@ fun LyricsGraph(
     )
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
     var state by remember { mutableStateOf(LyricsPageState()) }
 
-    RushTheme(theme = Theme()) {
-        LyricsGraph(
-            notificationAccess = true,
-            lyricsState = state,
-            lyricsAction = {},
-            onShare = {},
-            playbackInfo = PlaybackInfo(),
-        )
-    }
+    LyricsGraph(
+        notificationAccess = true,
+        lyricsState = state,
+        lyricsAction = {},
+        onShare = {},
+        playbackInfo = PlaybackInfo(),
+    )
 }

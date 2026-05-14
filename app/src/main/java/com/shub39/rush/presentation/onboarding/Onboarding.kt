@@ -57,12 +57,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.onboarding.component.AnimatedAppIcon
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -288,9 +287,8 @@ fun Onboarding(
 }
 
 @Composable
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        Onboarding(onDone = {}, notificationAccess = false, onUpdateNotificationAccess = {})
-    }
+    Onboarding(onDone = {}, notificationAccess = false, onUpdateNotificationAccess = {})
 }

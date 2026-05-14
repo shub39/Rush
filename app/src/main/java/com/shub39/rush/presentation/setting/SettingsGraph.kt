@@ -19,18 +19,17 @@ package com.shub39.rush.presentation.setting
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.navigation.horizontalTransitionMetadata
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.setting.section.BackupPage
 import com.shub39.rush.presentation.setting.section.Changelog
 import com.shub39.rush.presentation.setting.section.LookAndFeelPage
 import com.shub39.rush.presentation.setting.section.SettingRootPage
-import com.shub39.rush.presentation.theme.RushTheme
 import kotlinx.serialization.Serializable
 
 @Serializable data object SettingRootPage : NavKey
@@ -99,17 +98,16 @@ fun SettingsGraph(
     )
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SettingsGraph(
-            notificationAccess = true,
-            state = SettingsPageState(),
-            action = {},
-            onNavigateBack = {},
-            isProUser = true,
-            onShowPaywall = {},
-        )
-    }
+    SettingsGraph(
+        notificationAccess = true,
+        state = SettingsPageState(),
+        action = {},
+        onNavigateBack = {},
+        isProUser = true,
+        onShowPaywall = {},
+    )
 }

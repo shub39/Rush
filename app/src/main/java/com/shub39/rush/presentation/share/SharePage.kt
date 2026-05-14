@@ -69,7 +69,6 @@ import com.materialkolor.ktx.blend
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
@@ -196,37 +195,37 @@ private fun SharePageContent(
     var editTarget by remember { mutableStateOf("content") }
 
     val cornerRadius by
-    animateDpAsState(
-        targetValue =
-            when (state.cardRoundness) {
-                CornerRadius.DEFAULT -> pxToDp(0)
-                CornerRadius.ROUNDED -> pxToDp(32)
-            },
-        label = "corners",
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-    )
+        animateDpAsState(
+            targetValue =
+                when (state.cardRoundness) {
+                    CornerRadius.DEFAULT -> pxToDp(0)
+                    CornerRadius.ROUNDED -> pxToDp(32)
+                },
+            label = "corners",
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        )
     val containerColor by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-                CardColors.CUSTOM -> Color(state.cardBackground)
-            },
-        label = "container",
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CardColors.CUSTOM -> Color(state.cardBackground)
+                },
+            label = "container",
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        )
     val contentColor by
-    animateColorAsState(
-        targetValue =
-            when (state.cardColors) {
-                CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-                CardColors.CUSTOM -> Color(state.cardContent)
-            },
-        label = "content",
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-    )
+        animateColorAsState(
+            targetValue =
+                when (state.cardColors) {
+                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
+                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                    CardColors.CUSTOM -> Color(state.cardContent)
+                },
+            label = "content",
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        )
     val cardColor =
         CardDefaults.cardColors(containerColor = containerColor, contentColor = contentColor)
     val cardCorners = RoundedCornerShape(cornerRadius)
@@ -260,26 +259,19 @@ private fun SharePageContent(
         },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zoomable(zoomState),
+                modifier = Modifier.fillMaxSize().zoomable(zoomState),
                 contentAlignment = Alignment.Center,
             ) {
                 Surface(
                     modifier =
-                        Modifier
-                            .fillMaxWidth(0.8f)
-                            .aspectRatio(9f / 16f)
-                            .drawWithContent {
-                                fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
-                                drawLayer(fullScreenGraphicsLayer)
-                            },
+                        Modifier.fillMaxWidth(0.8f).aspectRatio(9f / 16f).drawWithContent {
+                            fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
+                            drawLayer(fullScreenGraphicsLayer)
+                        },
                     color =
                         if (state.fullScreen)
                             containerColor.blend(MaterialTheme.colorScheme.surface)
@@ -417,8 +409,7 @@ private fun SharePageContent(
                     }
                 },
                 modifier =
-                    Modifier
-                        .align(
+                    Modifier.align(
                             if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
                                 Alignment.BottomCenter
                             } else {

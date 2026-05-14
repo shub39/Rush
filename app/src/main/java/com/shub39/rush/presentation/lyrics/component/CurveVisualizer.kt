@@ -35,7 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.domain.dataclasses.WaveColors
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.hypnoticAvailable
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
@@ -169,6 +171,7 @@ vec4 main(vec2 fragCoord) {
 }
 """
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {

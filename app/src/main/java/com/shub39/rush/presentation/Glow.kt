@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.nativePaint
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -84,6 +85,7 @@ fun Modifier.glowBackground(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(showBackground = true)
 @Composable
 private fun PreviewGlowText() {

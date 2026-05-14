@@ -31,9 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 
 @Composable
@@ -87,8 +87,9 @@ fun WarningReminder(modifier: Modifier = Modifier) {
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme()) { WarningReminder() }
+    WarningReminder()
 }

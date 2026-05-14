@@ -64,7 +64,7 @@ fun detachedItemShape(): Shape = RoundedCornerShape(endCornerRadius.dp)
 fun segmentedListItemShapes(
     index: Int,
     count: Int,
-    singleElement: Boolean = count == 1
+    singleElement: Boolean = count == 1,
 ): ListItemShapes =
     ListItemDefaults.segmentedShapes(
         index,
@@ -75,6 +75,6 @@ fun segmentedListItemShapes(
             pressedShape = shapes.extraLargeIncreased,
             focusedShape = shapes.large,
             hoveredShape = shapes.extraLarge,
-            draggedShape = shapes.extraLargeIncreased
-        )
+            draggedShape = shapes.extraLargeIncreased,
+        ),
     )

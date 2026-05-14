@@ -65,16 +65,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.ExtractedColors
 import com.shub39.rush.domain.dataclasses.Lyric
 import com.shub39.rush.domain.dataclasses.SongUi
-import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
 import com.shub39.rush.presentation.KeepScreenOn
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.Empty
@@ -100,7 +101,6 @@ import com.shub39.rush.presentation.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.presentation.lyrics.getCardColors
 import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toAlignment
@@ -610,6 +610,7 @@ fun LyricsPage(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(
     device = "spec:width=411dp,height=891dp",
     showSystemUi = false,
@@ -618,47 +619,44 @@ fun LyricsPage(
 )
 @Composable
 fun LyricsPagePreview() {
-    RushTheme(theme = Theme()) {
-        LyricsPage(
-            onNavigateToCustomisations = {},
-            onShare = {},
-            action = {},
-            state =
-                LyricsPageState(
-                    syncedAvailable = true,
-                    sync = true,
-                    autoChange = true,
-                    searchState = SearchState.UserPrompt,
-                    extractedColors =
-                        ExtractedColors(
-                            cardContentMuted = Color.White.toArgb(),
-                            cardContentDominant = Color.White.toArgb(),
-                            cardBackgroundMuted = Color.Cyan.toArgb(),
-                            cardBackgroundDominant = Color.Blue.toArgb(),
-                        ),
-                    cardColors = CardColors.VIBRANT,
-                    textPrefs = TextPrefs(lyricsAlignment = LyricsAlignment.START),
-                    lyricsBackground = LyricsBackground.HYPNOTIC,
-                    lyricsState =
-                        LyricsState.Loaded(
-                            SongUi(
-                                id = 0L,
-                                title = "Sample Title",
-                                artists = "Sample Artist",
-                                album = "Sample Album",
-                                sourceUrl = "",
-                                artUrl = "",
-                                lyrics =
-                                    (0..100).associateWith { "Line No : $it" }.entries.toList(),
-                                syncedLyrics = (0..100).map { Lyric(it.toLong(), "Line No : $it") },
-                                geniusLyrics = null,
-                                ttmlLyrics = null,
-                            )
-                        ),
-                ),
-            waveData = null,
-            notificationAccess = true,
-            playbackInfo = PlaybackInfo(),
-        )
-    }
+    LyricsPage(
+        onNavigateToCustomisations = {},
+        onShare = {},
+        action = {},
+        state =
+            LyricsPageState(
+                syncedAvailable = true,
+                sync = true,
+                autoChange = true,
+                searchState = SearchState.UserPrompt,
+                extractedColors =
+                    ExtractedColors(
+                        cardContentMuted = Color.White.toArgb(),
+                        cardContentDominant = Color.White.toArgb(),
+                        cardBackgroundMuted = Color.Cyan.toArgb(),
+                        cardBackgroundDominant = Color.Blue.toArgb(),
+                    ),
+                cardColors = CardColors.VIBRANT,
+                textPrefs = TextPrefs(lyricsAlignment = LyricsAlignment.START),
+                lyricsBackground = LyricsBackground.HYPNOTIC,
+                lyricsState =
+                    LyricsState.Loaded(
+                        SongUi(
+                            id = 0L,
+                            title = "Sample Title",
+                            artists = "Sample Artist",
+                            album = "Sample Album",
+                            sourceUrl = "",
+                            artUrl = "",
+                            lyrics = (0..100).associateWith { "Line No : $it" }.entries.toList(),
+                            syncedLyrics = (0..100).map { Lyric(it.toLong(), "Line No : $it") },
+                            geniusLyrics = null,
+                            ttmlLyrics = null,
+                        )
+                    ),
+            ),
+        waveData = null,
+        notificationAccess = true,
+        playbackInfo = PlaybackInfo(),
+    )
 }

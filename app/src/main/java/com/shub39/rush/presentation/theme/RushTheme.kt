@@ -25,7 +25,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
@@ -43,11 +42,12 @@ import com.shub39.rush.presentation.toMPaletteStyle
  */
 @Composable
 fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
-    val isDark = when (theme.appTheme) {
-        AppTheme.SYSTEM -> isSystemInDarkTheme()
-        AppTheme.LIGHT -> false
-        AppTheme.DARK -> true
-    }
+    val isDark =
+        when (theme.appTheme) {
+            AppTheme.SYSTEM -> isSystemInDarkTheme()
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
+        }
 
     val dynamicColorScheme =
         rememberDynamicColorScheme(
@@ -57,14 +57,15 @@ fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
             style = theme.style.toMPaletteStyle(),
         )
 
-    val colorScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && theme.materialTheme -> {
-            val context = LocalContext.current
-            if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colorScheme =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && theme.materialTheme -> {
+                val context = LocalContext.current
+                if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
 
-        else -> dynamicColorScheme
-    }
+            else -> dynamicColorScheme
+        }
 
     MaterialExpressiveTheme(
         colorScheme = colorScheme,

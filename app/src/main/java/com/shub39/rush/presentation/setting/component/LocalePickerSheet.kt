@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.presentation.setting.component
 
 import android.app.LocaleConfig
@@ -29,20 +45,14 @@ import com.shub39.rush.R
 import com.shub39.rush.presentation.component.RushBottomSheet
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.segmentedListItemShapes
-import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlinx.coroutines.launch
 
-private data class AppLocale(
-    val locale: Locale,
-    val name: String
-)
+private data class AppLocale(val locale: Locale, val name: String)
 
 // yeeted from nsh07/Tomato
 @Composable
-fun LocalePickerSheet(
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun LocalePickerSheet(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -58,17 +68,19 @@ fun LocalePickerSheet(
             val supportedLocales = LocaleConfig(context).supportedLocales
             if (supportedLocales != null) {
                 buildList {
-                    for (i in 0 until supportedLocales.size()) {
-                        val locale = supportedLocales.get(i)
-                        add(
-                            AppLocale(
-                                locale,
-                                locale.getDisplayName(locale)
-                                    .replaceFirstChar { it.uppercase() }
+                        for (i in 0 until supportedLocales.size()) {
+                            val locale = supportedLocales.get(i)
+                            add(
+                                AppLocale(
+                                    locale,
+                                    locale.getDisplayName(locale).replaceFirstChar {
+                                        it.uppercase()
+                                    },
+                                )
                             )
-                        )
+                        }
                     }
-                }.sortedBy { it.name }
+                    .sortedBy { it.name }
             } else null
         } else null
     }
@@ -79,15 +91,13 @@ fun LocalePickerSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         modifier = modifier,
-        padding = 16.dp
+        padding = 16.dp,
     ) {
         if (supportedLocaleList != null) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 contentPadding = PaddingValues(bottom = 60.dp),
-                modifier = Modifier
-                    .heightIn(max = 600.dp)
-                    .clip(shapes.large)
+                modifier = Modifier.heightIn(max = 600.dp).clip(shapes.large),
             ) {
                 item {
                     SegmentedListItem(
@@ -106,26 +116,22 @@ fun LocalePickerSheet(
                         selected = currentLocales.isEmpty,
                         colors = listItemColors(),
                         shapes = segmentedListItemShapes(0, 1),
-                        content = {
-                            Text(text = stringResource(R.string.system_default))
-                        },
+                        content = { Text(text = stringResource(R.string.system_default)) },
                         trailingContent = {
                             if (currentLocales.isEmpty)
                                 Icon(
                                     painter = painterResource(R.drawable.check),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                         },
                     )
                 }
 
-                item {
-                    Spacer(Modifier.height(12.dp))
-                }
+                item { Spacer(Modifier.height(12.dp)) }
 
                 itemsIndexed(
                     items = supportedLocaleList,
-                    key = { _: Int, it: AppLocale -> it.name }
+                    key = { _: Int, it: AppLocale -> it.name },
                 ) { index, it ->
                     val selected = !currentLocales.isEmpty && it.locale == currentLocales.get(0)
 
@@ -134,20 +140,18 @@ fun LocalePickerSheet(
                             scope
                                 .launch {
                                     if (Build.VERSION.SDK_INT >= 33) {
-                                        context.getSystemService(LocaleManager::class.java)
-                                            .applicationLocales =
-                                            LocaleList(it.locale)
+                                        context
+                                            .getSystemService(LocaleManager::class.java)
+                                            .applicationLocales = LocaleList(it.locale)
                                     }
                                     sheetState.hide()
                                 }
-                                .invokeOnCompletion {
-                                    onDismissRequest()
-                                }
+                                .invokeOnCompletion { onDismissRequest() }
                         },
                         selected = selected,
                         content = { Text(text = it.name) },
                         shapes = segmentedListItemShapes(index, supportedLocalesSize),
-                        colors = listItemColors()
+                        colors = listItemColors(),
                     )
                 }
             }

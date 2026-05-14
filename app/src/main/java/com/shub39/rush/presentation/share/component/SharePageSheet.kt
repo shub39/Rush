@@ -50,16 +50,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AlbumArtShape
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.domain.enums.Fonts
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ListItemCard
 import com.shub39.rush.presentation.component.ListSelect
 import com.shub39.rush.presentation.endItemShape
@@ -68,7 +68,6 @@ import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.share.SharePageAction
 import com.shub39.rush.presentation.share.SharePageState
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.toFontRes
 import com.shub39.rush.presentation.toFullName
 import com.shub39.rush.presentation.toShape
@@ -285,18 +284,17 @@ fun SharePageSheet(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SharePageSheet(
-            state = SharePageState(cardColors = CardColors.CUSTOM),
-            onAction = {},
-            onDismissRequest = {},
-            sheetState = rememberStandardBottomSheetState(),
-            onLaunchColorPicker = {},
-            isProUser = true,
-            onShowPaywall = {},
-        )
-    }
+    SharePageSheet(
+        state = SharePageState(cardColors = CardColors.CUSTOM),
+        onAction = {},
+        onDismissRequest = {},
+        sheetState = rememberStandardBottomSheetState(),
+        onLaunchColorPicker = {},
+        isProUser = true,
+        onShowPaywall = {},
+    )
 }

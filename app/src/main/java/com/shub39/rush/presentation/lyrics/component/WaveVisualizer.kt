@@ -29,9 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
-import com.shub39.rush.domain.dataclasses.Theme
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.domain.dataclasses.WaveColors
-import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.bassBucket
@@ -118,6 +118,7 @@ fun WaveVisualizer(waveData: VisualizerData?, colors: WaveColors, modifier: Modi
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
@@ -128,15 +129,13 @@ private fun Preview() {
             state.fft
         }
 
-    RushTheme(theme = Theme()) {
-        WaveVisualizer(
-            waveData = waveData,
-            colors =
-                WaveColors(
-                    cardBackground = MaterialTheme.colorScheme.background.toArgb(),
-                    cardWaveBackground = MaterialTheme.colorScheme.primary.toArgb(),
-                ),
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    WaveVisualizer(
+        waveData = waveData,
+        colors =
+            WaveColors(
+                cardBackground = MaterialTheme.colorScheme.background.toArgb(),
+                cardWaveBackground = MaterialTheme.colorScheme.primary.toArgb(),
+            ),
+        modifier = Modifier.fillMaxSize(),
+    )
 }
