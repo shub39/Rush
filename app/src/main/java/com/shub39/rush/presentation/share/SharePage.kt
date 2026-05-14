@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.materialkolor.ktx.blend
@@ -73,6 +74,7 @@ import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
@@ -194,37 +196,37 @@ private fun SharePageContent(
     var editTarget by remember { mutableStateOf("content") }
 
     val cornerRadius by
-        animateDpAsState(
-            targetValue =
-                when (state.cardRoundness) {
-                    CornerRadius.DEFAULT -> pxToDp(0)
-                    CornerRadius.ROUNDED -> pxToDp(32)
-                },
-            label = "corners",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        )
+    animateDpAsState(
+        targetValue =
+            when (state.cardRoundness) {
+                CornerRadius.DEFAULT -> pxToDp(0)
+                CornerRadius.ROUNDED -> pxToDp(32)
+            },
+        label = "corners",
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+    )
     val containerColor by
-        animateColorAsState(
-            targetValue =
-                when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-                    CardColors.CUSTOM -> Color(state.cardBackground)
-                },
-            label = "container",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        )
+    animateColorAsState(
+        targetValue =
+            when (state.cardColors) {
+                CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                CardColors.CUSTOM -> Color(state.cardBackground)
+            },
+        label = "container",
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+    )
     val contentColor by
-        animateColorAsState(
-            targetValue =
-                when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-                    CardColors.CUSTOM -> Color(state.cardContent)
-                },
-            label = "content",
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        )
+    animateColorAsState(
+        targetValue =
+            when (state.cardColors) {
+                CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
+                CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                CardColors.CUSTOM -> Color(state.cardContent)
+            },
+        label = "content",
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+    )
     val cardColor =
         CardDefaults.cardColors(containerColor = containerColor, contentColor = contentColor)
     val cardCorners = RoundedCornerShape(cornerRadius)
@@ -258,19 +260,26 @@ private fun SharePageContent(
         },
     ) { paddingValues ->
         Box(
-            modifier = Modifier.padding(paddingValues).fillMaxSize(),
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().zoomable(zoomState),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zoomable(zoomState),
                 contentAlignment = Alignment.Center,
             ) {
                 Surface(
                     modifier =
-                        Modifier.fillMaxWidth(0.8f).aspectRatio(9f / 16f).drawWithContent {
-                            fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
-                            drawLayer(fullScreenGraphicsLayer)
-                        },
+                        Modifier
+                            .fillMaxWidth(0.8f)
+                            .aspectRatio(9f / 16f)
+                            .drawWithContent {
+                                fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
+                                drawLayer(fullScreenGraphicsLayer)
+                            },
                     color =
                         if (state.fullScreen)
                             containerColor.blend(MaterialTheme.colorScheme.surface)
@@ -408,7 +417,8 @@ private fun SharePageContent(
                     }
                 },
                 modifier =
-                    Modifier.align(
+                    Modifier
+                        .align(
                             if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
                                 Alignment.BottomCenter
                             } else {
@@ -495,6 +505,7 @@ private fun SharePageContent(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(
     device = "spec:width=1080px,height=2340px,dpi=480",
     showSystemUi = false,
@@ -513,19 +524,17 @@ private fun Preview() {
         )
     }
 
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SharePageContent(
-            state = state,
-            onDismiss = {},
-            selectedImage = null,
-            onAction = {},
-            onSaveImage = {},
-            onLaunchImagePicker = {},
-            onShareImage = {},
-            cardGraphicsLayer = rememberGraphicsLayer(),
-            fullScreenGraphicsLayer = rememberGraphicsLayer(),
-            isProUser = true,
-            onShowPaywall = {},
-        )
-    }
+    SharePageContent(
+        state = state,
+        onDismiss = {},
+        selectedImage = null,
+        onAction = {},
+        onSaveImage = {},
+        onLaunchImagePicker = {},
+        onShareImage = {},
+        cardGraphicsLayer = rememberGraphicsLayer(),
+        fullScreenGraphicsLayer = rememberGraphicsLayer(),
+        isProUser = true,
+        onShowPaywall = {},
+    )
 }
