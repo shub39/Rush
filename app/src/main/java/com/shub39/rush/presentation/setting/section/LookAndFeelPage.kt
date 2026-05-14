@@ -18,6 +18,7 @@ package com.shub39.rush.presentation.setting.section
 
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
@@ -82,6 +83,7 @@ import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.component.PageFill
+import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
@@ -139,8 +141,11 @@ fun LookAndFeelPage(
                 ),
         ) {
             item {
-                // appTheme picker
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                    modifier = Modifier.animateContentSize()
+                ) {
+                    // appTheme picker
                     Column(modifier = Modifier.clip(leadingItemShape())) {
                         ListItem(
                             leadingContent = {
@@ -235,8 +240,14 @@ fun LookAndFeelPage(
 
                     // font picker
                     Column(
-                        modifier =
-                            Modifier.clip(if (isProUser) middleItemShape() else leadingItemShape())
+                        modifier = Modifier.clip(
+                            when {
+                                state.theme.materialTheme && !isProUser -> detachedItemShape()
+                                state.theme.materialTheme -> endItemShape()
+                                isProUser -> middleItemShape()
+                                else -> leadingItemShape()
+                            }
+                        )
                     ) {
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.font)) },
@@ -276,27 +287,25 @@ fun LookAndFeelPage(
                         }
                     }
 
-                    ListItem(
-                        headlineContent = { Text(text = stringResource(R.string.amoled)) },
-                        supportingContent = { Text(text = stringResource(R.string.amoled_desc)) },
-                        trailingContent = {
-                            Switch(
-                                checked = state.theme.withAmoled,
-                                enabled = isProUser,
-                                onCheckedChange = {
-                                    onAction(SettingsPageAction.OnAmoledSwitch(it))
-                                },
-                            )
-                        },
-                        colors = listItemColors(),
-                        modifier = Modifier.clip(middleItemShape()),
-                    )
+                    if (!state.theme.materialTheme) {
+                        // amoled switch
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(R.string.amoled)) },
+                            supportingContent = { Text(text = stringResource(R.string.amoled_desc)) },
+                            trailingContent = {
+                                Switch(
+                                    checked = state.theme.withAmoled,
+                                    enabled = isProUser,
+                                    onCheckedChange = {
+                                        onAction(SettingsPageAction.OnAmoledSwitch(it))
+                                    },
+                                )
+                            },
+                            colors = listItemColors(),
+                            modifier = Modifier.clip(middleItemShape()),
+                        )
 
-                    AnimatedVisibility(
-                        visible = !state.theme.materialTheme,
-                        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    ) {
+                        // seed color picker
                         ListItem(
                             headlineContent = { Text(text = stringResource(R.string.seed_color)) },
                             supportingContent = {
@@ -322,112 +331,112 @@ fun LookAndFeelPage(
                             colors = listItemColors(),
                             modifier = Modifier.clip(middleItemShape()),
                         )
-                    }
 
-                    // palette style picker
-                    Column(modifier = Modifier.clip(endItemShape())) {
-                        ListItem(
-                            headlineContent = {
-                                Text(text = stringResource(R.string.palette_style))
-                            },
-                            supportingContent = {
-                                Text(
-                                    text =
-                                        state.theme.style.toString().lowercase().replaceFirstChar {
-                                            if (it.isLowerCase())
-                                                it.titlecase(LocalLocale.current.platformLocale)
-                                            else it.toString()
-                                        }
-                                )
-                            },
-                            colors = listItemColors(),
-                            leadingContent = {
-                                Icon(
-                                    painter = painterResource(R.drawable.palette),
-                                    contentDescription = null,
-                                )
-                            },
-                        )
-
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier =
-                                Modifier.fillParentMaxWidth()
-                                    .background(listItemColors().containerColor)
-                                    .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            PaletteStyle.entries.toList().forEach { style ->
-                                val scheme =
-                                    rememberDynamicColorScheme(
-                                        primary =
-                                            if (
-                                                state.theme.materialTheme &&
-                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                                            ) {
-                                                colorResource(android.R.color.system_accent1_900)
-                                            } else Color(state.theme.seedColor),
-                                        isDark =
-                                            when (state.theme.appTheme) {
-                                                AppTheme.SYSTEM -> isSystemInDarkTheme()
-                                                AppTheme.DARK -> true
-                                                AppTheme.LIGHT -> false
-                                            },
-                                        isAmoled = state.theme.withAmoled,
-                                        style = style.toMPaletteStyle(),
+                        // palette style picker
+                        Column(modifier = Modifier.clip(endItemShape())) {
+                            ListItem(
+                                headlineContent = {
+                                    Text(text = stringResource(R.string.palette_style))
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text =
+                                            state.theme.style.toString().lowercase().replaceFirstChar {
+                                                if (it.isLowerCase())
+                                                    it.titlecase(LocalLocale.current.platformLocale)
+                                                else it.toString()
+                                            }
                                     )
-                                val selected = state.theme.style == style
+                                },
+                                colors = listItemColors(),
+                                leadingContent = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.palette),
+                                        contentDescription = null,
+                                    )
+                                },
+                            )
 
-                                Box(
-                                    modifier =
-                                        Modifier.size(50.dp)
-                                            .clip(
-                                                if (selected) MaterialShapes.VerySunny.toShape()
-                                                else CircleShape
-                                            )
-                                            .clickable(enabled = isProUser) {
-                                                onAction(SettingsPageAction.OnPaletteChange(style))
-                                            },
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Canvas(modifier = Modifier.matchParentSize()) {
-                                        val colors =
-                                            listOf(
-                                                scheme.primary,
-                                                scheme.primaryContainer,
-                                                scheme.secondary,
-                                                scheme.secondaryContainer,
-                                                scheme.tertiary,
-                                                scheme.tertiaryContainer,
-                                            )
-                                        val sweepAngle = 360f / colors.size
-                                        colors.forEachIndexed { index, color ->
-                                            drawArc(
-                                                color = color,
-                                                startAngle = index * sweepAngle,
-                                                sweepAngle = sweepAngle,
-                                                useCenter = true,
-                                            )
-                                        }
-                                    }
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier =
+                                    Modifier.fillParentMaxWidth()
+                                        .background(listItemColors().containerColor)
+                                        .padding(start = 52.dp, end = 16.dp, bottom = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                PaletteStyle.entries.toList().forEach { style ->
+                                    val scheme =
+                                        rememberDynamicColorScheme(
+                                            primary =
+                                                if (
+                                                    state.theme.materialTheme &&
+                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                                ) {
+                                                    colorResource(android.R.color.system_accent1_900)
+                                                } else Color(state.theme.seedColor),
+                                            isDark =
+                                                when (state.theme.appTheme) {
+                                                    AppTheme.SYSTEM -> isSystemInDarkTheme()
+                                                    AppTheme.DARK -> true
+                                                    AppTheme.LIGHT -> false
+                                                },
+                                            isAmoled = state.theme.withAmoled,
+                                            style = style.toMPaletteStyle(),
+                                        )
+                                    val selected = state.theme.style == style
 
                                     Box(
                                         modifier =
-                                            Modifier.matchParentSize()
-                                                .background(
-                                                    color =
-                                                        scheme.primary.copy(
-                                                            alpha = if (selected) 0.7f else 0f
-                                                        )
+                                            Modifier.size(50.dp)
+                                                .clip(
+                                                    if (selected) MaterialShapes.VerySunny.toShape()
+                                                    else CircleShape
                                                 )
-                                    )
+                                                .clickable(enabled = isProUser) {
+                                                    onAction(SettingsPageAction.OnPaletteChange(style))
+                                                },
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Canvas(modifier = Modifier.matchParentSize()) {
+                                            val colors =
+                                                listOf(
+                                                    scheme.primary,
+                                                    scheme.primaryContainer,
+                                                    scheme.secondary,
+                                                    scheme.secondaryContainer,
+                                                    scheme.tertiary,
+                                                    scheme.tertiaryContainer,
+                                                )
+                                            val sweepAngle = 360f / colors.size
+                                            colors.forEachIndexed { index, color ->
+                                                drawArc(
+                                                    color = color,
+                                                    startAngle = index * sweepAngle,
+                                                    sweepAngle = sweepAngle,
+                                                    useCenter = true,
+                                                )
+                                            }
+                                        }
 
-                                    if (selected) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.check),
-                                            contentDescription = null,
-                                            tint = scheme.onPrimary,
+                                        Box(
+                                            modifier =
+                                                Modifier.matchParentSize()
+                                                    .background(
+                                                        color =
+                                                            scheme.primary.copy(
+                                                                alpha = if (selected) 0.7f else 0f
+                                                            )
+                                                    )
                                         )
+
+                                        if (selected) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.check),
+                                                contentDescription = null,
+                                                tint = scheme.onPrimary,
+                                            )
+                                        }
                                     }
                                 }
                             }
