@@ -21,9 +21,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
-import android.view.WindowManager
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
@@ -35,7 +33,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -43,21 +40,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
 fun blurAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-@Composable
-fun KeepScreenOn() {
-    val context = LocalContext.current
-
-    DisposableEffect(Unit) {
-        context.findActivity()?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        onDispose {
-            context
-                .findActivity()
-                ?.window
-                ?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-    }
-}
 
 suspend fun Clipboard.copyToClipboard(text: String) {
     setClipEntry(ClipEntry(ClipData.newPlainText("lyrics", text)))
@@ -72,19 +54,25 @@ fun Context.findActivity(): Activity? {
     return null
 }
 
-fun updateSystemBars(context: Context, show: Boolean) {
-    val window = context.findActivity()?.window ?: return
-    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+fun updateSystemBars(view: View, fullscreen: Boolean) {
+    val window = view.context.findActivity()?.window ?: return
+    val controller = WindowCompat.getInsetsController(window, view)
 
-    insetsController.apply {
-        if (show) {
-            show(WindowInsetsCompat.Type.systemBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-        } else {
-            hide(WindowInsetsCompat.Type.systemBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
+    if (fullscreen) {
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    } else {
+        controller.show(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
     }
+}
+
+fun resetSystemBars(view: View) {
+    val window = view.context.findActivity()?.window ?: return
+    val controller = WindowCompat.getInsetsController(window, view)
+    controller.show(WindowInsetsCompat.Type.systemBars())
+    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
 }
 
 fun sortMapByKeys(map: Map<Int, String>): Map<Int, String> {

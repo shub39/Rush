@@ -53,7 +53,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -166,8 +165,8 @@ fun LyricsCustomisationsPage(
                         .animateContentSize(),
                 contentPadding =
                     PaddingValues(
-                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
+                        start = 16.dp,
+                        end = 16.dp,
                         bottom = paddingValues.calculateBottomPadding() + 60.dp,
                     ),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -263,11 +262,7 @@ fun LyricsCustomisationsPage(
         ) { paddingValues ->
             Row(
                 modifier =
-                    Modifier.padding(
-                            start =
-                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                            end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
-                        )
+                    Modifier.padding(paddingValues)
                         .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
@@ -275,11 +270,7 @@ fun LyricsCustomisationsPage(
                     modifier =
                         Modifier.weight(1f)
                             .verticalScroll(rememberScrollState())
-                            .padding(
-                                top = paddingValues.calculateTopPadding() + 16.dp,
-                                start = 16.dp,
-                                bottom = paddingValues.calculateBottomPadding() + 16.dp,
-                            ),
+                            .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (notificationAccess) {
@@ -321,9 +312,9 @@ fun LyricsCustomisationsPage(
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                     contentPadding =
                         PaddingValues(
-                            top = paddingValues.calculateTopPadding() + 16.dp,
+                            top = 16.dp,
                             end = 16.dp,
-                            bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                            bottom = 60.dp,
                         ),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {

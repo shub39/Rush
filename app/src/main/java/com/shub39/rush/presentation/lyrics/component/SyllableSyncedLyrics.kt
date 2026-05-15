@@ -17,30 +17,25 @@
 package com.shub39.rush.presentation.lyrics.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,8 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -78,12 +71,12 @@ import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
+import com.shub39.rush.presentation.lyrics.rememberLineProgress
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlin.math.abs
 import kotlinx.coroutines.delay
 
 @Composable
@@ -95,127 +88,84 @@ fun SyllableSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isUserScrolling by lazyListState.interactionSource.collectIsDraggedAsState()
-    var pauseAutoScroll by remember { mutableStateOf(false) }
-
-    val itemHeights = remember { mutableStateMapOf<Int, Int>() }
-
-    val ttmlLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.ttmlLyrics ?: return
+    val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
+    val ttmlLyrics = song.ttmlLyrics ?: return
 
     val currentPlayingIndex =
-        ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
-
-    // updater for synced lyrics
-    LaunchedEffect(currentPlayingIndex, pauseAutoScroll) {
-        if (currentPlayingIndex >= 0 && !pauseAutoScroll) {
-            val viewportHeight =
-                lazyListState.layoutInfo.viewportEndOffset -
-                    lazyListState.layoutInfo.viewportStartOffset
-            val itemHeight = itemHeights[currentPlayingIndex] ?: 0
-            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
-            lazyListState.animateScrollToItem(
-                index = currentPlayingIndex,
-                scrollOffset = -centerOffset,
-            )
+        remember(playbackInfo.position, ttmlLyrics) {
+            ttmlLyrics.indexOfLast { (it.startTime * 1000).toLong() <= playbackInfo.position }
         }
-    }
 
-    // scroll interaction
-    LaunchedEffect(isUserScrolling) {
-        if (!isUserScrolling) {
-            delay(3000)
-            pauseAutoScroll = false
-        } else {
-            pauseAutoScroll = true
+    val romanizedTtml =
+        remember(state.romanizationEnabled, song) {
+            if (state.romanizationEnabled) song.romanizedTtmlLyrics else emptyMap()
         }
-    }
 
-    // Synced Lyrics
-    LazyColumn(
+    BaseSyncedLyrics(
+        state = state,
+        playbackInfo = playbackInfo,
+        lazyListState = lazyListState,
+        items = ttmlLyrics,
+        currentPlayingIndex = currentPlayingIndex,
+        itemKey = { _, line -> line.startTime },
         modifier = modifier,
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 256.dp),
-        verticalArrangement =
-            Arrangement.spacedBy(
-                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
-            ),
-        state = lazyListState,
-    ) {
-        itemsIndexed(items = ttmlLyrics, key = { it, _ -> it }) { index, line ->
-            val currentTime = playbackInfo.position
-            val isCurrent = index == currentPlayingIndex
+    ) { index, line, blur ->
+        val currentTime = playbackInfo.position
+        val isCurrent = index == currentPlayingIndex
 
-            val nextTime = ttmlLyrics.getOrNull(index + 1)?.startTime
-            val progress =
-                nextTime?.let { nt ->
-                    val startTime = line.startTime
-                    val currentSecs = currentTime / 1000.0
-                    val denom = (nt - startTime).toFloat()
-                    if (denom <= 0f) 1f
-                    else ((currentSecs - startTime).toFloat() / denom).coerceIn(0f, 1f)
-                } ?: 1f
+        val nextTime = ttmlLyrics.getOrNull(index + 1)?.startTime
+        val progress = rememberLineProgress(
+            currentTime = currentTime,
+            startTime = line.startTime,
+            nextTime = nextTime
+        )
 
-            val animatedProgress by
-                animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "loadingProgress",
-                )
+        val animatedProgress by
+        animateFloatAsState(
+            targetValue = progress,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "loadingProgress",
+        )
 
-            val underTextAlpha by
-                animateFloatAsState(
-                    targetValue = if (isCurrent) 0.5f else 0.2f,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "underTextAlpha",
-                )
+        val underTextAlpha by
+        animateFloatAsState(
+            targetValue = if (isCurrent) 0.5f else 0.2f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "underTextAlpha",
+        )
 
-            val blur by
-                animateDpAsState(
-                    targetValue =
-                        if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
-                        else (abs(index - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                )
+        val scale by
+        animateFloatAsState(
+            targetValue = if (isCurrent) 1f else 0.8f,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "scale",
+        )
 
-            val scale by
-                animateFloatAsState(
-                    targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                )
+        val textColor by
+        animateColorAsState(
+            targetValue =
+                when {
+                    (line.startTime * 1000).toLong() <= currentTime -> cardContent
+                    else -> cardContent.copy(0.3f)
+                },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "textColor",
+        )
 
-            val textColor by
-                animateColorAsState(
-                    targetValue =
-                        when {
-                            (line.startTime * 1000).toLong() <= currentTime -> cardContent
-                            else -> cardContent.copy(0.3f)
-                        },
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "textColor",
-                )
-
-            SyllableLine(
-                textPrefs = state.textPrefs,
-                blur = blur,
-                action = action,
-                line = line,
-                romanizedText =
-                    if (state.romanizationEnabled)
-                        state.lyricsState.song.romanizedTtmlLyrics[line.startTime]
-                    else null,
-                textColor = textColor,
-                scale = scale,
-                currentTime = currentTime,
-                animatedProgress = animatedProgress,
-                underTextAlpha = underTextAlpha,
-                isCurrent = isCurrent,
-                expressiveSyllables = state.expressiveSyllables,
-                modifier =
-                    Modifier.onGloballyPositioned { layoutCoordinates ->
-                        val height = layoutCoordinates.size.height
-                        itemHeights[index] = height
-                    },
-            )
-        }
+        SyllableLine(
+            textPrefs = state.textPrefs,
+            blur = blur,
+            action = action,
+            line = line,
+            romanizedText = romanizedTtml[line.startTime],
+            textColor = textColor,
+            scale = scale,
+            currentTime = currentTime,
+            animatedProgress = animatedProgress,
+            underTextAlpha = underTextAlpha,
+            isCurrent = isCurrent,
+            expressiveSyllables = state.expressiveSyllables,
+        )
     }
 }
 
@@ -243,7 +193,8 @@ fun SyllableLine(
     ) {
         Box(
             modifier =
-                Modifier.graphicsLayer {
+                Modifier
+                    .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -348,43 +299,58 @@ private fun SyllableWord(
             }
         }
 
-    val wordProgress =
-        if (currentTime >= wordEndTimeMs) 1f
-        else if (currentTime < wordStartTimeMs) 0f
-        else (currentTime - wordStartTimeMs).toFloat() / duration
+    val wordProgress by remember(currentTime, wordStartTimeMs, wordEndTimeMs) {
+        mutableFloatStateOf(
+            when {
+                currentTime < wordStartTimeMs -> 0f
+                currentTime > wordEndTimeMs -> 1f
+                else -> (currentTime - wordStartTimeMs).toFloat() / duration
+            }
+        )
+    }
 
     val animatedProgress by
-        animateFloatAsState(
-            targetValue = wordProgress,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            label = "wordProgress",
-        )
+    animateFloatAsState(
+        targetValue = wordProgress,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+        label = "wordProgress",
+    )
 
     val currentWeight =
         remember(animatedProgress, maxWordWeight) {
-                ((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10
-            }
-            .coerceIn(200, maxWordWeight)
+            mutableIntStateOf(
+                (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
+                    200,
+                    maxWordWeight
+                )
+            )
+
+        }
+
     val currentWidth =
         remember(animatedProgress, maxWordWidth) {
-                ((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f
-            }
-            .coerceIn(100f, maxWordWidth)
+            mutableFloatStateOf(
+                (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
+                    100f,
+                    maxWordWidth
+                )
+            )
+        }
 
     // word highlighting design
     val isHighlighted = currentTime >= wordStartTimeMs
     val wordScale by
-        animateFloatAsState(
-            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            label = "wordScale",
-        )
+    animateFloatAsState(
+        targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+        label = "wordScale",
+    )
     val glowAlpha by
-        animateFloatAsState(
-            targetValue = if (isHighlighted) 2f else 0f,
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            label = "glowAlpha",
-        )
+    animateFloatAsState(
+        targetValue = if (isHighlighted) 2f else 0f,
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+        label = "glowAlpha",
+    )
 
     val textStyle =
         remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
@@ -396,14 +362,21 @@ private fun SyllableWord(
                 fontWeight = FontWeight.Bold,
                 fontFamily =
                     if (expressiveSyllables) {
-                        flexFontEmphasis(fontWeight = currentWeight, fontWidth = currentWidth)
+                        flexFontEmphasis(
+                            fontWeight = currentWeight.intValue,
+                            fontWidth = currentWidth.floatValue
+                        )
                     } else {
                         fontFamily
                     },
             )
         }
 
-    Box(modifier = Modifier.padding(horizontal = 4.dp).scale(wordScale)) {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+            .graphicsLayer { scaleX = wordScale; scaleY = wordScale }
+    ) {
         // Ghost text for layout consistency
         Text(
             text = word.text,
@@ -430,7 +403,8 @@ private fun SyllableWord(
             style = textStyle,
             color = textColor.copy(alpha = underTextAlpha),
             modifier =
-                Modifier.matchParentSize()
+                Modifier
+                    .matchParentSize()
                     .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
         )
 
@@ -440,7 +414,8 @@ private fun SyllableWord(
             style = textStyle,
             color = textColor,
             modifier =
-                Modifier.matchParentSize()
+                Modifier
+                    .matchParentSize()
                     .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
                     .drawWithContent {
                         if (animatedProgress > 0f) {
@@ -453,7 +428,7 @@ private fun SyllableWord(
                                         Brush.horizontalGradient(
                                             0f to Color.Black,
                                             ((x - feather) / size.width).coerceIn(0f, 1f) to
-                                                Color.Black,
+                                                    Color.Black,
                                             (x / size.width).coerceIn(0f, 1f) to Color.Transparent,
                                             1f to Color.Transparent,
                                         ),

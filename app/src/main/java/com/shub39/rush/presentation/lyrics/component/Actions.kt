@@ -22,6 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,16 +33,26 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
+import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.enums.Sources
 import com.shub39.rush.presentation.copyToClipboard
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.presentation.lyrics.LyricsPageState
-import com.shub39.rush.presentation.lyrics.LyricsState
 import kotlinx.coroutines.launch
+
+@Immutable
+@Stable
+data class ActionsState(
+    val song: SongUi?,
+    val selectedLines: Map<Int, String>,
+    val source: Sources,
+    val syncedAvailable: Boolean,
+    val sync: Boolean,
+    val autoChange: Boolean,
+)
 
 @Composable
 fun Actions(
-    state: LyricsPageState,
+    state: ActionsState,
     action: (LyricsPageAction) -> Unit,
     notificationAccess: Boolean,
     cardBackground: Color,
@@ -57,22 +69,17 @@ fun Actions(
 
     IconButton(
         onClick = {
-            if (state.lyricsState is LyricsState.Loaded) {
+            if (state.song != null) {
                 coroutineScope.launch {
                     clipboardManager.copyToClipboard(
                         if (state.selectedLines.isEmpty()) {
                                 buildAnnotatedString {
                                     append(
                                         if (state.source == Sources.LRCLIB) {
-                                            state.lyricsState.song.lyrics.joinToString("\n") {
-                                                it.value
-                                            }
+                                            state.song.lyrics.joinToString("\n") { it.value }
                                         } else {
-                                            state.lyricsState.song.geniusLyrics?.joinToString(
-                                                "\n"
-                                            ) {
-                                                it.value
-                                            } ?: ""
+                                            state.song.geniusLyrics?.joinToString("\n") { it.value }
+                                                ?: ""
                                         }
                                     )
                                 }
@@ -176,15 +183,15 @@ fun Actions(
     if (state.selectedLines.isNotEmpty()) {
         IconButton(
             onClick = {
-                if (state.lyricsState is LyricsState.Loaded) {
+                if (state.song != null) {
                     action(
                         LyricsPageAction.OnUpdateShareLines(
                             songDetails =
                                 SongDetails(
-                                    title = state.lyricsState.song.title,
-                                    artist = state.lyricsState.song.artists,
-                                    album = state.lyricsState.song.album,
-                                    artUrl = state.lyricsState.song.artUrl ?: "",
+                                    title = state.song.title,
+                                    artist = state.song.artists,
+                                    album = state.song.album,
+                                    artUrl = state.song.artUrl ?: "",
                                 )
                         )
                     )
