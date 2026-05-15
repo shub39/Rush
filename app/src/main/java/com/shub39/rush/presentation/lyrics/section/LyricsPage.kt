@@ -140,7 +140,8 @@ fun LyricsPage(
             animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         )
 
-    val glowCardBackground by remember { mutableFloatStateOf((24 * glowMultiplier)) }
+    val glowCardBackground by
+        remember(glowMultiplier) { mutableFloatStateOf((24 * glowMultiplier)) }
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
