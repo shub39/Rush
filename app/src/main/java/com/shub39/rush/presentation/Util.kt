@@ -166,6 +166,17 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     return rotate then adjustBounds
 }
 
+fun Modifier.conditional(
+    condition: Boolean,
+    modifier: Modifier.() -> Modifier
+): Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}
+
 // very important
 private val brainrots =
     listOf(
