@@ -22,8 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,8 +37,6 @@ import com.shub39.rush.presentation.copyToClipboard
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import kotlinx.coroutines.launch
 
-@Immutable
-@Stable
 data class ActionsState(
     val song: SongUi?,
     val selectedLines: Map<Int, String>,

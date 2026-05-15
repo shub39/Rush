@@ -297,15 +297,13 @@ private fun SyllableWord(
             }
         }
 
-    val wordProgress by
+    val wordProgress =
         remember(currentTime, wordStartTimeMs, wordEndTimeMs) {
-            mutableFloatStateOf(
-                when {
-                    currentTime < wordStartTimeMs -> 0f
-                    currentTime > wordEndTimeMs -> 1f
-                    else -> (currentTime - wordStartTimeMs).toFloat() / duration
-                }
-            )
+            when {
+                currentTime < wordStartTimeMs -> 0f
+                currentTime > wordEndTimeMs -> 1f
+                else -> (currentTime - wordStartTimeMs).toFloat() / duration
+            }
         }
 
     val animatedProgress by
