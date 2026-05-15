@@ -261,16 +261,12 @@ fun LyricsCustomisationsPage(
             modifier = modifier,
         ) { paddingValues ->
             Row(
-                modifier =
-                    Modifier.padding(paddingValues)
-                        .fillMaxSize(),
+                modifier = Modifier.padding(paddingValues).fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Column(
                     modifier =
-                        Modifier.weight(1f)
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
+                        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (notificationAccess) {
@@ -310,12 +306,7 @@ fun LyricsCustomisationsPage(
 
                 LazyColumn(
                     modifier = Modifier.weight(1f).fillMaxHeight(),
-                    contentPadding =
-                        PaddingValues(
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = 60.dp,
-                        ),
+                    contentPadding = PaddingValues(top = 16.dp, end = 16.dp, bottom = 60.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     lyricsCustomisationSettings(

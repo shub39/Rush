@@ -52,7 +52,7 @@ fun <T> BaseSyncedLyrics(
     currentPlayingIndex: Int,
     modifier: Modifier = Modifier,
     itemKey: ((Int, T) -> Any)? = null,
-    itemContent: @Composable LazyItemScope.(index: Int, item: T, blur: Dp) -> Unit
+    itemContent: @Composable LazyItemScope.(index: Int, item: T, blur: Dp) -> Unit,
 ) {
     val isUserScrolling by lazyListState.interactionSource.collectIsDraggedAsState()
     var pauseAutoScroll by remember { mutableStateOf(false) }
@@ -73,7 +73,12 @@ fun <T> BaseSyncedLyrics(
         playbackInfo.speed,
         itemHeights[currentPlayingIndex],
     ) {
-        if (currentPlayingIndex < 0 || pauseAutoScroll || isUserScrolling || playbackInfo.speed == 0f) {
+        if (
+            currentPlayingIndex < 0 ||
+                pauseAutoScroll ||
+                isUserScrolling ||
+                playbackInfo.speed == 0f
+        ) {
             return@LaunchedEffect
         }
 
@@ -136,9 +141,10 @@ private fun BaseSyncedItemWrapper(
     content: @Composable () -> Unit,
 ) {
     androidx.compose.foundation.layout.Box(
-        modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
-            onHeightMeasured(layoutCoordinates.size.height)
-        }
+        modifier =
+            Modifier.onGloballyPositioned { layoutCoordinates ->
+                onHeightMeasured(layoutCoordinates.size.height)
+            }
     ) {
         content()
     }

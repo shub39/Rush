@@ -18,11 +18,11 @@ package com.shub39.rush.presentation.lyrics.section
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.togetherWith
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -135,23 +135,19 @@ fun LyricsPage(
     val waveColors = getWaveColors(state)
 
     val glowMultiplier by
-    animateFloatAsState(
-        targetValue = calculateGlowMultiplier(waveData),
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-    )
+        animateFloatAsState(
+            targetValue = calculateGlowMultiplier(waveData),
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+        )
 
-    val glowCardBackground by remember {
-        mutableFloatStateOf((24 * glowMultiplier))
-    }
+    val glowCardBackground by remember { mutableFloatStateOf((24 * glowMultiplier)) }
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
     val songId = (state.lyricsState as? LyricsState.Loaded)?.song?.id
     val loadedSong = (state.lyricsState as? LyricsState.Loaded)?.song
     val lyricsAlignment =
-        remember(state.textPrefs.lyricsAlignment) {
-            state.textPrefs.lyricsAlignment.toAlignment()
-        }
+        remember(state.textPrefs.lyricsAlignment) { state.textPrefs.lyricsAlignment.toAlignment() }
     val actionsState =
         remember(
             loadedSong,
@@ -179,11 +175,7 @@ fun LyricsPage(
     }
 
     // Content Start
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .keepScreenOn()
-    ) {
+    Box(modifier = Modifier.fillMaxSize().keepScreenOn()) {
         Card(
             modifier = Modifier.fillMaxSize(),
             colors =
@@ -244,17 +236,16 @@ fun LyricsPage(
                                         AnimatedVisibility(
                                             visible =
                                                 !state.sync &&
-                                                        top > 2 &&
-                                                        state.lyricsBackground !=
-                                                        LyricsBackground.ALBUM_ART,
+                                                    top > 2 &&
+                                                    state.lyricsBackground !=
+                                                        LyricsBackground.ALBUM_ART
                                         ) {
                                             ArtFromUrl(
                                                 imageUrl = lyricsState.song.artUrl!!,
                                                 highlightColor = cardContent,
                                                 baseColor = Color.Transparent,
                                                 modifier =
-                                                    Modifier
-                                                        .fillMaxWidth()
+                                                    Modifier.fillMaxWidth()
                                                         .height(120.dp)
                                                         .fadeBottomToTop(),
                                             )
@@ -262,8 +253,7 @@ fun LyricsPage(
 
                                         Column(
                                             modifier =
-                                                Modifier
-                                                    .fillMaxWidth()
+                                                Modifier.fillMaxWidth()
                                                     .statusBarsPadding()
                                                     .displayCutoutPadding()
                                                     .padding(horizontal = 16.dp),
@@ -278,32 +268,25 @@ fun LyricsPage(
                                                     baseColor = Color.Transparent,
                                                     contentScale = ContentScale.Crop,
                                                     modifier =
-                                                        Modifier
-                                                            .size(80.dp)
+                                                        Modifier.size(80.dp)
                                                             .aspectRatio(1f)
-                                                            .clip(
-                                                                MaterialTheme.shapes.small
-                                                            ),
+                                                            .clip(MaterialTheme.shapes.small),
                                                 )
                                             }
 
                                             Text(
                                                 text = lyricsState.song.title,
-                                                style =
-                                                    MaterialTheme.typography.headlineMedium,
+                                                style = MaterialTheme.typography.headlineMedium,
                                                 fontFamily = flexFontEmphasis(),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier =
-                                                    Modifier
-                                                        .padding(top = 8.dp)
-                                                        .basicMarquee(),
+                                                    Modifier.padding(top = 8.dp).basicMarquee(),
                                             )
 
                                             Text(
                                                 text = lyricsState.song.artists,
-                                                style =
-                                                    MaterialTheme.typography.titleMedium,
+                                                style = MaterialTheme.typography.titleMedium,
                                                 fontFamily = flexFontRounded(),
                                                 fontWeight = FontWeight.Bold,
                                                 maxLines = 1,
@@ -314,9 +297,8 @@ fun LyricsPage(
                                             // Actions Row
                                             Row(
                                                 modifier =
-                                                    Modifier
-                                                        .padding(vertical = 8.dp)
-                                                        .animateContentSize(),
+                                                    Modifier.padding(vertical = 8.dp)
+                                                        .animateContentSize()
                                             ) {
                                                 Actions(
                                                     state = actionsState,
@@ -336,9 +318,7 @@ fun LyricsPage(
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .fadeTopToBottom(),
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
                                             )
                                         } else if (lyricsState.song.ttmlLyrics != null) {
                                             SyllableSyncedLyrics(
@@ -347,9 +327,7 @@ fun LyricsPage(
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .fadeTopToBottom(),
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
                                             )
                                         } else if (lyricsState.song.syncedLyrics != null) {
                                             LineSyncedLyrics(
@@ -358,9 +336,7 @@ fun LyricsPage(
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .fadeTopToBottom(),
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
                                             )
                                         }
                                     }
@@ -368,8 +344,7 @@ fun LyricsPage(
                                     // landscape UI
                                     Row(
                                         modifier =
-                                            Modifier
-                                                .fillMaxSize()
+                                            Modifier.fillMaxSize()
                                                 .safeDrawingPadding()
                                                 .padding(horizontal = 16.dp),
                                         verticalAlignment = Alignment.CenterVertically,
@@ -377,9 +352,7 @@ fun LyricsPage(
                                     ) {
                                         Column(
                                             modifier =
-                                                Modifier
-                                                    .widthIn(max = 320.dp)
-                                                    .animateContentSize(),
+                                                Modifier.widthIn(max = 320.dp).animateContentSize(),
                                             horizontalAlignment = Alignment.Start,
                                         ) {
                                             ArtFromUrl(
@@ -388,8 +361,7 @@ fun LyricsPage(
                                                 baseColor = Color.Transparent,
                                                 contentScale = ContentScale.Fit,
                                                 modifier =
-                                                    Modifier
-                                                        .size(120.dp)
+                                                    Modifier.size(120.dp)
                                                         .clip(MaterialTheme.shapes.small),
                                             )
 
@@ -435,8 +407,7 @@ fun LyricsPage(
                                                 cardContent = cardContent,
                                                 action = action,
                                                 modifier =
-                                                    Modifier
-                                                        .weight(1f)
+                                                    Modifier.weight(1f)
                                                         .fillMaxHeight()
                                                         .fadeTopToBottom(),
                                             )
@@ -448,8 +419,7 @@ fun LyricsPage(
                                                 cardContent = cardContent,
                                                 action = action,
                                                 modifier =
-                                                    Modifier
-                                                        .weight(1f)
+                                                    Modifier.weight(1f)
                                                         .fillMaxHeight()
                                                         .fadeTopToBottom(),
                                             )
@@ -461,8 +431,7 @@ fun LyricsPage(
                                                 cardContent = cardContent,
                                                 action = action,
                                                 modifier =
-                                                    Modifier
-                                                        .weight(1f)
+                                                    Modifier.weight(1f)
                                                         .fillMaxHeight()
                                                         .fadeTopToBottom(),
                                             )
@@ -477,31 +446,29 @@ fun LyricsPage(
         }
 
         Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 32.dp),
+            modifier =
+                Modifier.align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val autoChangeAlpha by animateFloatAsState(
-                targetValue = if (state.autoChange) 1f else 0f,
-                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                label = "autoChangeAlpha"
-            )
+            val autoChangeAlpha by
+                animateFloatAsState(
+                    targetValue = if (state.autoChange) 1f else 0f,
+                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    label = "autoChangeAlpha",
+                )
 
             if (autoChangeAlpha > 0f) {
                 Box(
-                    modifier = Modifier
-                        .widthIn(max = 150.dp)
-                        .graphicsLayer { alpha = autoChangeAlpha }
+                    modifier =
+                        Modifier.widthIn(max = 150.dp).graphicsLayer { alpha = autoChangeAlpha }
                 ) {
                     AnimatedContent(
                         targetState = state.searchState,
-                        transitionSpec = {
-                            fadeIn() togetherWith fadeOut()
-                        },
-                        label = "searchState"
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        label = "searchState",
                     ) { searchState ->
                         when (searchState) {
                             SearchState.Idle -> {}
@@ -555,8 +522,7 @@ fun LyricsPage(
                                         Column {
                                             Text(
                                                 text = stringResource(R.string.not_found),
-                                                style =
-                                                    MaterialTheme.typography.bodySmall,
+                                                style = MaterialTheme.typography.bodySmall,
                                                 fontWeight = FontWeight.Bold,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
@@ -617,15 +583,10 @@ fun LyricsPage(
                             ),
                         onClick = { action(LyricsPageAction.OnPauseOrResume) },
                         modifier =
-                            Modifier
-                                .conditional(
+                            Modifier.conditional(
                                     state.lyricsBackground in audioDependentBackgrounds
                                 ) {
-                                    glowBackground(
-                                        glowCardBackground.dp,
-                                        CircleShape,
-                                        cardContent,
-                                    )
+                                    glowBackground(glowCardBackground.dp, CircleShape, cardContent)
                                 }
                                 .height(60.dp)
                                 .width(120.dp),

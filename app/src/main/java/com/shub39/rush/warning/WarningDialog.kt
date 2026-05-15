@@ -73,16 +73,14 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Important Warning",
-                    style =
-                        MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.error,
-                    fontFamily = flexFontEmphasis()
+                    fontFamily = flexFontEmphasis(),
                 )
                 Text(
                     text = "Your phone is about to stop being yours.",
-                    style =
-                        MaterialTheme.typography.titleMedium,
-                    fontFamily = flexFontRounded()
+                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = flexFontRounded(),
                 )
 
                 Row(
@@ -91,8 +89,7 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = WarningManager.getDaysLeft().toString(),
-                        style =
-                            MaterialTheme.typography.displayLarge,
+                        style = MaterialTheme.typography.displayLarge,
                         fontFamily = flexFontEmphasis(),
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -110,8 +107,7 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Every app and every device, worldwide, with no opt-out.",
-                    style =
-                        MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error,
                 )

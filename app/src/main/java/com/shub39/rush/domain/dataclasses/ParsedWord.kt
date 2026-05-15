@@ -18,5 +18,4 @@ package com.shub39.rush.domain.dataclasses
 
 import androidx.compose.runtime.Immutable
 
-@Immutable
-data class ParsedWord(val text: String, val startTime: Double, val endTime: Double)
+@Immutable data class ParsedWord(val text: String, val startTime: Double, val endTime: Double)

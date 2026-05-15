@@ -85,8 +85,7 @@ fun PlainLyrics(
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
-    val nonEmptyItems =
-        remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
+    val nonEmptyItems = remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
     val shouldAutoScrape =
         state.source == Sources.GENIUS &&
             nonEmptyItems.isEmpty() &&

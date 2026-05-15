@@ -104,11 +104,12 @@ fun LineSyncedLyrics(
         val currentTime = playbackInfo.position
         val isCurrent = index == currentPlayingIndex
 
-        val progress = rememberLineProgress(
-            currentTime = currentTime,
-            startTime = lyric.time / 1000.0,
-            nextTime = nextTime?.toDouble()?.div(1000.0)
-        )
+        val progress =
+            rememberLineProgress(
+                currentTime = currentTime,
+                startTime = lyric.time / 1000.0,
+                nextTime = nextTime?.toDouble()?.div(1000.0),
+            )
 
         val animatedProgress by
             animateFloatAsState(
