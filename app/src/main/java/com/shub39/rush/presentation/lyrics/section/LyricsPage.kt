@@ -660,7 +660,7 @@ fun LyricsPage(
     fontScale = 1.0f,
 )
 @Composable
-fun LyricsPagePreview() {
+private fun LyricsPagePreview() {
     LyricsPage(
         onNavigateToCustomisations = {},
         onShare = {},

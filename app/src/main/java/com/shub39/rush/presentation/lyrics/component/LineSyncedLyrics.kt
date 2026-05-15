@@ -259,7 +259,7 @@ fun SyncedLyric(
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
-fun LineSyncedLyricsPreview() {
+private fun LineSyncedLyricsPreview() {
     var position by remember { mutableLongStateOf(0L) }
     val lyrics = remember {
         listOf(
