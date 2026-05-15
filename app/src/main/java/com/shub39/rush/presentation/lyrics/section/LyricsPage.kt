@@ -18,6 +18,7 @@ package com.shub39.rush.presentation.lyrics.section
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -64,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
@@ -482,77 +484,90 @@ fun LyricsPage(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AnimatedVisibility(
-                visible = state.autoChange,
-                modifier = Modifier.widthIn(max = 150.dp),
-                enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()),
-            ) {
-                AnimatedContent(targetState = state.searchState) {
-                    when (it) {
-                        SearchState.Idle -> {}
-                        is SearchState.Searching -> {
-                            Card(
-                                shape = RoundedCornerShape(100.dp),
-                                colors =
-                                    CardDefaults.cardColors(
-                                        contentColor = cardBackground,
-                                        containerColor = cardContent,
-                                    ),
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
+            val autoChangeAlpha by animateFloatAsState(
+                targetValue = if (state.autoChange) 1f else 0f,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "autoChangeAlpha"
+            )
+
+            if (autoChangeAlpha > 0f) {
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = 150.dp)
+                        .graphicsLayer { alpha = autoChangeAlpha }
+                ) {
+                    AnimatedContent(
+                        targetState = state.searchState,
+                        transitionSpec = {
+                            fadeIn() togetherWith fadeOut()
+                        },
+                        label = "searchState"
+                    ) { searchState ->
+                        when (searchState) {
+                            SearchState.Idle -> {}
+                            is SearchState.Searching -> {
+                                Card(
+                                    shape = RoundedCornerShape(100.dp),
+                                    colors =
+                                        CardDefaults.cardColors(
+                                            contentColor = cardBackground,
+                                            containerColor = cardContent,
+                                        ),
                                 ) {
-                                    LoadingIndicator(
-                                        color = cardBackground,
-                                        modifier = Modifier.size(20.dp),
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = it.query,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        LoadingIndicator(
+                                            color = cardBackground,
+                                            modifier = Modifier.size(20.dp),
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = searchState.query,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
                                 }
                             }
-                        }
 
-                        SearchState.UserPrompt -> {
-                            Card(
-                                shape = RoundedCornerShape(100.dp),
-                                colors =
-                                    CardDefaults.cardColors(
-                                        contentColor = cardBackground,
-                                        containerColor = cardContent,
-                                    ),
-                                onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
+                            SearchState.UserPrompt -> {
+                                Card(
+                                    shape = RoundedCornerShape(100.dp),
+                                    colors =
+                                        CardDefaults.cardColors(
+                                            contentColor = cardBackground,
+                                            containerColor = cardContent,
+                                        ),
+                                    onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
                                 ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.search_off),
-                                        contentDescription = "No exact match found",
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Column {
-                                        Text(
-                                            text = stringResource(R.string.not_found),
-                                            style =
-                                                MaterialTheme.typography.bodySmall,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.search_off),
+                                            contentDescription = "No exact match found",
                                         )
-                                        Text(
-                                            text = stringResource(R.string.open_search),
-                                            style = MaterialTheme.typography.labelSmall,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Column {
+                                            Text(
+                                                text = stringResource(R.string.not_found),
+                                                style =
+                                                    MaterialTheme.typography.bodySmall,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                            Text(
+                                                text = stringResource(R.string.open_search),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
                                     }
                                 }
                             }
