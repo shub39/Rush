@@ -29,12 +29,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -54,6 +58,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,6 +86,7 @@ import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.Empty
 import com.shub39.rush.presentation.component.PageFill
+import com.shub39.rush.presentation.conditional
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
 import com.shub39.rush.presentation.glowBackground
@@ -132,7 +138,12 @@ fun LyricsPage(
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
     )
 
+    val glowCardBackground by remember {
+        mutableFloatStateOf((24 * glowMultiplier))
+    }
+
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
     val songId = (state.lyricsState as? LyricsState.Loaded)?.song?.id
     val loadedSong = (state.lyricsState as? LyricsState.Loaded)?.song
     val lyricsAlignment =
@@ -251,6 +262,8 @@ fun LyricsPage(
                                             modifier =
                                                 Modifier
                                                     .fillMaxWidth()
+                                                    .statusBarsPadding()
+                                                    .displayCutoutPadding()
                                                     .padding(horizontal = 16.dp),
                                             horizontalAlignment = lyricsAlignment,
                                         ) {
@@ -275,9 +288,8 @@ fun LyricsPage(
                                             Text(
                                                 text = lyricsState.song.title,
                                                 style =
-                                                    MaterialTheme.typography.headlineMedium.copy(
-                                                        fontFamily = flexFontEmphasis()
-                                                    ),
+                                                    MaterialTheme.typography.headlineMedium,
+                                                fontFamily = flexFontEmphasis(),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier =
@@ -289,9 +301,8 @@ fun LyricsPage(
                                             Text(
                                                 text = lyricsState.song.artists,
                                                 style =
-                                                    MaterialTheme.typography.titleMedium.copy(
-                                                        fontFamily = flexFontRounded()
-                                                    ),
+                                                    MaterialTheme.typography.titleMedium,
+                                                fontFamily = flexFontRounded(),
                                                 fontWeight = FontWeight.Bold,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
@@ -357,6 +368,7 @@ fun LyricsPage(
                                         modifier =
                                             Modifier
                                                 .fillMaxSize()
+                                                .safeDrawingPadding()
                                                 .padding(horizontal = 16.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -465,6 +477,7 @@ fun LyricsPage(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
                 .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -529,9 +542,8 @@ fun LyricsPage(
                                         Text(
                                             text = stringResource(R.string.not_found),
                                             style =
-                                                MaterialTheme.typography.bodySmall.copy(
-                                                    fontWeight = FontWeight.Bold
-                                                ),
+                                                MaterialTheme.typography.bodySmall,
+                                            fontWeight = FontWeight.Bold,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                         )
@@ -567,7 +579,7 @@ fun LyricsPage(
                             ),
                         shapes =
                             IconButtonShapes(
-                                shape = RoundedCornerShape(1000.dp),
+                                shape = CircleShape,
                                 pressedShape = RoundedCornerShape(16.dp),
                             ),
                     ) {
@@ -585,22 +597,20 @@ fun LyricsPage(
                             ),
                         shapes =
                             IconButtonShapes(
-                                shape = RoundedCornerShape(1000.dp),
+                                shape = CircleShape,
                                 pressedShape = RoundedCornerShape(16.dp),
                             ),
                         onClick = { action(LyricsPageAction.OnPauseOrResume) },
                         modifier =
                             Modifier
-                                .run {
-                                    if (state.lyricsBackground in audioDependentBackgrounds) {
-                                        glowBackground(
-                                            (24 * glowMultiplier).dp,
-                                            CircleShape,
-                                            cardContent,
-                                        )
-                                    } else {
-                                        this
-                                    }
+                                .conditional(
+                                    state.lyricsBackground in audioDependentBackgrounds
+                                ) {
+                                    glowBackground(
+                                        glowCardBackground.dp,
+                                        CircleShape,
+                                        cardContent,
+                                    )
                                 }
                                 .height(60.dp)
                                 .width(120.dp),
@@ -622,7 +632,7 @@ fun LyricsPage(
                         onClick = { action(LyricsPageAction.OnPlayNext) },
                         shapes =
                             IconButtonShapes(
-                                shape = RoundedCornerShape(1000.dp),
+                                shape = CircleShape,
                                 pressedShape = RoundedCornerShape(16.dp),
                             ),
                         colors =
