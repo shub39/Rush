@@ -16,6 +16,9 @@
  */
 package com.shub39.rush.domain.dataclasses
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class ParsedLine(
     val text: String,
     val startTime: Double,

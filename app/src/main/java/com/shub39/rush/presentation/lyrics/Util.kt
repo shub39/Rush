@@ -114,6 +114,17 @@ fun getCurrentLyricIndex(playbackPosition: Long, lyrics: List<Lyric>): Int {
     }
 }
 
+@Composable
+fun rememberLineProgress(currentTime: Long, startTime: Double, nextTime: Double?): Float {
+    return androidx.compose.runtime.remember(currentTime, startTime, nextTime) {
+        nextTime?.let { nt ->
+            val currentSecs = currentTime / 1000.0
+            val denom = (nt - startTime).toFloat()
+            if (denom <= 0f) 1f else ((currentSecs - startTime).toFloat() / denom).coerceIn(0f, 1f)
+        } ?: 1f
+    }
+}
+
 fun getNextLyricTime(index: Int, lyrics: List<Lyric>): Long? {
     return lyrics.getOrNull(index + 1)?.time
 }

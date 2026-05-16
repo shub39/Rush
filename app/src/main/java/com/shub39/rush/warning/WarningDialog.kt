@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -52,7 +54,8 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     BasicAlertDialog(modifier = modifier, onDismissRequest = onDismissRequest) {
         Card(shape = MaterialTheme.shapes.extraLarge) {
             Column(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                modifier =
+                    Modifier.padding(16.dp).fillMaxWidth().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
