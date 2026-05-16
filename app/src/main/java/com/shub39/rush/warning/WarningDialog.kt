@@ -54,10 +54,8 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
     BasicAlertDialog(modifier = modifier, onDismissRequest = onDismissRequest) {
         Card(shape = MaterialTheme.shapes.extraLarge) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier.padding(16.dp).fillMaxWidth().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
@@ -78,16 +76,16 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Important Warning",
-                    style =  MaterialTheme.typography.headlineSmall.copy(
-                        fontFamily = flexFontEmphasis(),
-                        color = MaterialTheme.colorScheme.error,
-                    ),
+                    style =
+                        MaterialTheme.typography.headlineSmall.copy(
+                            fontFamily = flexFontEmphasis(),
+                            color = MaterialTheme.colorScheme.error,
+                        ),
                 )
                 Text(
                     text = "Your phone is about to stop being yours.",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontFamily = flexFontRounded()
-                    ),
+                    style =
+                        MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontRounded()),
                 )
 
                 Row(
@@ -96,10 +94,11 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = WarningManager.getDaysLeft().toString(),
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontFamily = flexFontEmphasis(),
-                            color = MaterialTheme.colorScheme.error,
-                        ),
+                        style =
+                            MaterialTheme.typography.displayLarge.copy(
+                                fontFamily = flexFontEmphasis(),
+                                color = MaterialTheme.colorScheme.error,
+                            ),
                     )
                     Text(text = "DAYS UNTIL LOCKDOWN", style = MaterialTheme.typography.titleMedium)
                 }
@@ -115,10 +114,11 @@ fun WarningDialog(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Every app and every device, worldwide, with no opt-out.",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error,
-                    ),
+                    style =
+                        MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.error,
+                        ),
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

@@ -68,8 +68,8 @@ import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun LineSyncedLyrics(

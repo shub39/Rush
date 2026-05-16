@@ -116,8 +116,8 @@ import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toAlignment
 import io.gitlab.bpavuk.viz.VisualizerData
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun LyricsPage(
@@ -353,9 +353,7 @@ fun LyricsPage(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                                     ) {
-                                        Column(
-                                            modifier = Modifier.animateContentSize()
-                                        ) {
+                                        Column(modifier = Modifier.animateContentSize()) {
                                             Actions(
                                                 state = actionsState,
                                                 action = action,

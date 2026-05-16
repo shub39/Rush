@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.sp
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import kotlin.math.abs
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun <T> BaseSyncedLyrics(

@@ -75,8 +75,8 @@ import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun SyllableSyncedLyrics(
