@@ -74,6 +74,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -116,6 +117,7 @@ import com.shub39.rush.presentation.theme.flexFontRounded
 import com.shub39.rush.presentation.toAlignment
 import io.gitlab.bpavuk.viz.VisualizerData
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LyricsPage(
@@ -170,7 +172,7 @@ fun LyricsPage(
 
     LaunchedEffect(songId) {
         if (songId == null) return@LaunchedEffect
-        delay(100)
+        delay(100.milliseconds)
         lazyListState.animateScrollToItem(0)
         action(LyricsPageAction.OnSetPosition(0))
     }
@@ -349,11 +351,25 @@ fun LyricsPage(
                                                 .safeDrawingPadding()
                                                 .padding(horizontal = 16.dp),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                                     ) {
                                         Column(
+                                            modifier = Modifier.animateContentSize()
+                                        ) {
+                                            Actions(
+                                                state = actionsState,
+                                                action = action,
+                                                notificationAccess = notificationAccess,
+                                                cardBackground = cardBackground,
+                                                cardContent = cardContent,
+                                                onShare = onShare,
+                                                onEdit = onNavigateToCustomisations,
+                                            )
+                                        }
+
+                                        Column(
                                             modifier =
-                                                Modifier.widthIn(max = 320.dp).animateContentSize(),
+                                                Modifier.fillMaxWidth(0.3f).animateContentSize(),
                                             horizontalAlignment = Alignment.Start,
                                         ) {
                                             ArtFromUrl(
@@ -385,20 +401,6 @@ fun LyricsPage(
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier = Modifier.basicMarquee(),
                                             )
-
-                                            Spacer(modifier = Modifier.height(8.dp))
-
-                                            Row {
-                                                Actions(
-                                                    state = actionsState,
-                                                    action = action,
-                                                    notificationAccess = notificationAccess,
-                                                    cardBackground = cardBackground,
-                                                    cardContent = cardContent,
-                                                    onShare = onShare,
-                                                    onEdit = onNavigateToCustomisations,
-                                                )
-                                            }
                                         }
 
                                         if (!state.sync) {
@@ -640,6 +642,7 @@ fun LyricsPage(
 }
 
 @PreviewWrapper(RushPreviewWrapper::class)
+@PreviewScreenSizes
 @Preview(
     device = "spec:width=411dp,height=891dp",
     showSystemUi = false,

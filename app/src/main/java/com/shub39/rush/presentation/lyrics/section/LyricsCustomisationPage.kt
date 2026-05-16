@@ -53,10 +53,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
@@ -160,13 +163,12 @@ fun LyricsCustomisationsPage(
         ) { paddingValues ->
             LazyColumn(
                 modifier =
-                    Modifier.padding(top = paddingValues.calculateTopPadding())
+                    Modifier
+                        .padding(top = paddingValues.calculateTopPadding())
                         .fillMaxSize()
                         .animateContentSize(),
                 contentPadding =
                     PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
                         bottom = paddingValues.calculateBottomPadding() + 60.dp,
                     ),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -181,14 +183,18 @@ fun LyricsCustomisationsPage(
                     ) {
                         if (notificationAccess) {
                             Row(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
                                 horizontalArrangement =
                                     Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                             ) {
                                 ToggleButton(
                                     checked = !isShowingSynced,
                                     onCheckedChange = { isShowingSynced = false },
-                                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(vertical = 8.dp),
                                 ) {
                                     Text(text = stringResource(R.string.plain_lyrics))
                                 }
@@ -196,7 +202,9 @@ fun LyricsCustomisationsPage(
                                 ToggleButton(
                                     checked = isShowingSynced,
                                     onCheckedChange = { isShowingSynced = true },
-                                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(vertical = 8.dp),
                                 ) {
                                     Text(text = stringResource(R.string.synced_lyrics))
                                 }
@@ -261,23 +269,39 @@ fun LyricsCustomisationsPage(
             modifier = modifier,
         ) { paddingValues ->
             Row(
-                modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                modifier = Modifier
+                    .padding(
+                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
+                    )
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Column(
                     modifier =
-                        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
+                        Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                            .padding(
+                                top = paddingValues.calculateTopPadding() + 16.dp,
+                                start = 16.dp,
+                                bottom = 16.dp
+                            ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (notificationAccess) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             ToggleButton(
                                 checked = !isShowingSynced,
                                 onCheckedChange = { isShowingSynced = false },
-                                modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 8.dp),
                             ) {
                                 Text(text = stringResource(R.string.plain_lyrics))
                             }
@@ -285,7 +309,9 @@ fun LyricsCustomisationsPage(
                             ToggleButton(
                                 checked = isShowingSynced,
                                 onCheckedChange = { isShowingSynced = true },
-                                modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 8.dp),
                             ) {
                                 Text(text = stringResource(R.string.synced_lyrics))
                             }
@@ -305,8 +331,14 @@ fun LyricsCustomisationsPage(
                 }
 
                 LazyColumn(
-                    modifier = Modifier.weight(1f).fillMaxHeight(),
-                    contentPadding = PaddingValues(top = 16.dp, end = 16.dp, bottom = 60.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentPadding = PaddingValues(
+                        top = paddingValues.calculateTopPadding() + 16.dp,
+                        end = 16.dp,
+                        bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                    ),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     lyricsCustomisationSettings(
@@ -370,7 +402,8 @@ private fun AudioPermissionDialog(
 }
 
 @PreviewWrapper(RushPreviewWrapper::class)
-@Preview
+@PreviewLightDark
+@PreviewScreenSizes
 @Composable
 private fun Preview() {
     var state by remember {

@@ -19,6 +19,7 @@ package com.shub39.rush.presentation.lyrics.component
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -42,6 +43,7 @@ import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import kotlin.math.abs
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun <T> BaseSyncedLyrics(
@@ -102,7 +104,7 @@ fun <T> BaseSyncedLyrics(
     // scroll interaction
     LaunchedEffect(isUserScrolling) {
         if (!isUserScrolling) {
-            delay(3000)
+            delay(3000.milliseconds)
             pauseAutoScroll = false
         } else {
             pauseAutoScroll = true
@@ -126,7 +128,6 @@ fun <T> BaseSyncedLyrics(
                 )
 
             BaseSyncedItemWrapper(
-                index = index,
                 onHeightMeasured = { itemHeights[index] = it },
                 content = { itemContent(index, item, blur) },
             )
@@ -136,11 +137,10 @@ fun <T> BaseSyncedLyrics(
 
 @Composable
 private fun BaseSyncedItemWrapper(
-    index: Int,
     onHeightMeasured: (Int) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    androidx.compose.foundation.layout.Box(
+    Box(
         modifier =
             Modifier.onGloballyPositioned { layoutCoordinates ->
                 onHeightMeasured(layoutCoordinates.size.height)

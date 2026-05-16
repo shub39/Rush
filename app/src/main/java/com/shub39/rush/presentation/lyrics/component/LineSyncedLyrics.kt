@@ -69,6 +69,7 @@ import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LineSyncedLyrics(
@@ -281,7 +282,7 @@ private fun LineSyncedLyricsPreview() {
         while (true) {
             val elapsed = System.currentTimeMillis() - startTime
             position = elapsed % 27000
-            delay(16)
+            delay(16.milliseconds)
         }
     }
 
