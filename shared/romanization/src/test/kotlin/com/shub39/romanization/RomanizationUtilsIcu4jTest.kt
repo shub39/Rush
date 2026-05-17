@@ -580,6 +580,12 @@ class RomanizationUtilsIcu4jTest {
     }
 
     @Test
+    fun testHindi_nuktaFormInherentVowel() = runTest {
+        val result = RomanizationUtils.romanizeHindi("ज़मीन")
+        assertEquals("zameen", result)
+    }
+
+    @Test
     fun testHindi_latinOnlyPassthrough() = runTest {
         val result = RomanizationUtils.romanizeHindi("hello")
         assertEquals("hello", result)

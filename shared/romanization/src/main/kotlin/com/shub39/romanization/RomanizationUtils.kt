@@ -1164,8 +1164,9 @@ object RomanizationUtils {
 
                             // Inherent 'a' after consonant-ending conjunct
                             // (e.g. क्षमा → kshamaa, not kshmaa)
-                            val lastChar = substr.last().toString()
-                            if (lastChar in DEVANAGARI_CONSONANTS) {
+                            // Use first char: last char is Nukta (़) for 2-char forms
+                            val firstChar = substr.first().toString()
+                            if (firstChar in DEVANAGARI_CONSONANTS) {
                                 val nextChar =
                                     if (i < text.length) text[i].toString() else null
                                 if (
