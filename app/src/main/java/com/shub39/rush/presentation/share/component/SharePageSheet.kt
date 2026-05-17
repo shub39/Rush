@@ -35,7 +35,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -60,6 +59,7 @@ import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
 import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.presentation.RushPreviewWrapper
+import com.shub39.rush.presentation.component.ExpressiveSwitch
 import com.shub39.rush.presentation.component.ListItemCard
 import com.shub39.rush.presentation.component.ListSelect
 import com.shub39.rush.presentation.endItemShape
@@ -247,7 +247,7 @@ fun SharePageSheet(
                         )
                     },
                     trailingContent = {
-                        Switch(
+                        ExpressiveSwitch(
                             checked = state.fullScreen,
                             onCheckedChange = { onAction(SharePageAction.OnToggleFullScreen(it)) },
                         )
@@ -267,7 +267,7 @@ fun SharePageSheet(
                         )
                     },
                     trailingContent = {
-                        Switch(
+                        ExpressiveSwitch(
                             checked = state.rushBranding,
                             onCheckedChange = {
                                 if (isProUser) {

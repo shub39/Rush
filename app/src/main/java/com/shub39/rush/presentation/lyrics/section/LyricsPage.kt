@@ -235,23 +235,28 @@ fun LyricsPage(
                             Column {
                                 if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
                                     // portrait ui
-                                    Column(modifier = Modifier.fillMaxSize()) {
-                                        AnimatedVisibility(
-                                            visible =
-                                                !state.sync &&
-                                                    top > 2 &&
-                                                    state.lyricsBackground !=
-                                                        LyricsBackground.ALBUM_ART
-                                        ) {
-                                            ArtFromUrl(
-                                                imageUrl = lyricsState.song.artUrl!!,
-                                                highlightColor = cardContent,
-                                                baseColor = Color.Transparent,
-                                                modifier =
-                                                    Modifier.fillMaxWidth()
-                                                        .height(120.dp)
-                                                        .fadeBottomToTop(),
-                                            )
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
+                                            AnimatedVisibility(
+                                                visible =
+                                                    !state.sync &&
+                                                        top > 2 &&
+                                                        state.lyricsBackground !=
+                                                            LyricsBackground.ALBUM_ART
+                                            ) {
+                                                ArtFromUrl(
+                                                    imageUrl = lyricsState.song.artUrl!!,
+                                                    highlightColor = cardContent,
+                                                    baseColor = Color.Transparent,
+                                                    modifier =
+                                                        Modifier.fillMaxWidth()
+                                                            .height(120.dp)
+                                                            .fadeBottomToTop(),
+                                                )
+                                            }
                                         }
 
                                         Column(
@@ -314,34 +319,34 @@ fun LyricsPage(
                                                 )
                                             }
                                         }
+                                    }
 
-                                        if (!state.sync) {
-                                            PlainLyrics(
-                                                state = state,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                            )
-                                        } else if (lyricsState.song.ttmlLyrics != null) {
-                                            SyllableSyncedLyrics(
-                                                state = state,
-                                                playbackInfo = playbackInfo,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                            )
-                                        } else if (lyricsState.song.syncedLyrics != null) {
-                                            LineSyncedLyrics(
-                                                state = state,
-                                                playbackInfo = playbackInfo,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                            )
-                                        }
+                                    if (!state.sync) {
+                                        PlainLyrics(
+                                            state = state,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                        )
+                                    } else if (lyricsState.song.ttmlLyrics != null) {
+                                        SyllableSyncedLyrics(
+                                            state = state,
+                                            playbackInfo = playbackInfo,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                        )
+                                    } else if (lyricsState.song.syncedLyrics != null) {
+                                        LineSyncedLyrics(
+                                            state = state,
+                                            playbackInfo = playbackInfo,
+                                            lazyListState = lazyListState,
+                                            cardContent = cardContent,
+                                            action = action,
+                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                        )
                                     }
                                 } else {
                                     // landscape UI

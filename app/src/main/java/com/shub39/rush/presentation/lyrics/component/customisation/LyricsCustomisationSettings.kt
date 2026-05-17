@@ -33,7 +33,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +47,7 @@ import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.presentation.allBackgrounds
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.blurAvailable
+import com.shub39.rush.presentation.component.ExpressiveSwitch
 import com.shub39.rush.presentation.component.ListItemCard
 import com.shub39.rush.presentation.component.ListSelect
 import com.shub39.rush.presentation.component.SettingSlider
@@ -109,7 +109,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                         )
                     },
                     trailingContent = {
-                        Switch(
+                        ExpressiveSwitch(
                             checked = state.expressiveSyllables,
                             onCheckedChange = {
                                 onAction(LyricsPageAction.OnExpressiveLyricsChange(it))
@@ -125,7 +125,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     modifier = Modifier.clip(middleItemShape()),
                     headlineContent = { Text(text = stringResource(R.string.blur_synced)) },
                     trailingContent = {
-                        Switch(
+                        ExpressiveSwitch(
                             checked = state.blurSyncedLyrics,
                             onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
                         )
@@ -278,7 +278,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 headlineContent = { Text(text = stringResource(R.string.fullscreen)) },
                 supportingContent = { Text(text = stringResource(R.string.fullscreen_desc)) },
                 trailingContent = {
-                    Switch(
+                    ExpressiveSwitch(
                         checked = state.fullscreen,
                         onCheckedChange = { onAction(LyricsPageAction.OnFullscreenChange(it)) },
                     )
@@ -302,7 +302,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 headlineContent = { Text(text = stringResource(R.string.romanization)) },
                 supportingContent = { Text(text = stringResource(R.string.romanization_desc)) },
                 trailingContent = {
-                    Switch(
+                    ExpressiveSwitch(
                         checked = state.romanizationEnabled,
                         onCheckedChange = { onAction(LyricsPageAction.OnRomanizationToggle(it)) },
                     )

@@ -46,7 +46,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
@@ -78,6 +77,7 @@ import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.Fonts
 import com.shub39.rush.domain.enums.PaletteStyle
 import com.shub39.rush.presentation.component.ColorPickerDialog
+import com.shub39.rush.presentation.component.ExpressiveSwitch
 import com.shub39.rush.presentation.component.PageFill
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
@@ -204,7 +204,7 @@ fun LookAndFeelPage(
                                 Text(text = stringResource(R.string.material_theme_desc))
                             },
                             trailingContent = {
-                                Switch(
+                                ExpressiveSwitch(
                                     checked = state.theme.materialTheme,
                                     onCheckedChange = {
                                         onAction(SettingsPageAction.OnMaterialThemeToggle(it))
@@ -292,7 +292,7 @@ fun LookAndFeelPage(
                                 Text(text = stringResource(R.string.amoled_desc))
                             },
                             trailingContent = {
-                                Switch(
+                                ExpressiveSwitch(
                                     checked = state.theme.withAmoled,
                                     enabled = isProUser,
                                     onCheckedChange = {
