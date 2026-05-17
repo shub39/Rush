@@ -765,9 +765,8 @@ object RomanizationUtils {
             if (text.isEmpty()) return@withContext ""
 
             val index = tokenizerIndex
-            val dict = readingDictionary
             if (index != null && !index.isEmpty()) {
-                romanizeJapaneseWithTokenizer(text, index, dict)
+                romanizeJapaneseWithTokenizer(text, index)
             } else {
                 romanizeJapaneseFallback(text)
             }
@@ -784,7 +783,6 @@ object RomanizationUtils {
     private fun romanizeJapaneseWithTokenizer(
         text: String,
         index: Map<Char, List<Pair<String, String>>>,
-        dict: Map<String, String>?,
     ): String {
         val parts = mutableListOf<String>()
         var i = 0
