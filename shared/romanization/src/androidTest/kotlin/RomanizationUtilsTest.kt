@@ -298,8 +298,7 @@ class RomanizationUtilsTest {
     @Test
     fun testHindi_conjunctKsh() = runTest {
         val result = RomanizationUtils.romanizeHindi("क्षमा")
-        assertTrue(result.contains("ksh"))
-        assertTrue(result.contains("maa"))
+        assertEquals("kshamaa", result)
     }
 
     @Test

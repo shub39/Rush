@@ -1152,6 +1152,26 @@ object RomanizationUtils {
                             sb.append(DEVANAGARI_ROMAJI_MAP[substr])
                             i += len
                             consumed = true
+
+                            // Inherent 'a' after consonant-ending conjunct
+                            // (e.g. क्षमा → kshamaa, not kshmaa)
+                            val lastChar = substr.last().toString()
+                            if (lastChar in DEVANAGARI_CONSONANTS) {
+                                val nextChar =
+                                    if (i < text.length) text[i].toString() else null
+                                if (
+                                    nextChar != null &&
+                                        nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
+                                        nextChar != DEVANAGARI_VIRAMA &&
+                                        (nextChar in DEVANAGARI_CONSONANTS ||
+                                            nextChar == "ं" ||
+                                            nextChar == "ः" ||
+                                            nextChar == "ँ")
+                                ) {
+                                    sb.append("a")
+                                }
+                            }
+
                             break
                         }
                     }
