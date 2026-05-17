@@ -76,8 +76,6 @@ import com.shub39.rush.presentation.setting.component.AboutApp
 import com.shub39.rush.presentation.setting.component.LocalePickerSheet
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
-import com.shub39.rush.warning.WarningManager
-import com.shub39.rush.warning.WarningReminder
 
 // topmost settings page
 @Composable
@@ -132,10 +130,6 @@ fun SettingRootPage(
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (WarningManager.showWarning()) {
-                item { WarningReminder() }
-            }
-
             // about app
             item { AboutApp() }
 
