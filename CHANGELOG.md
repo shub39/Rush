@@ -3,6 +3,7 @@
 ## 6.1.15
 - (Android 12+) Fixed Material Theme not respecting System Colors
 - Updated Translations
+- Fixed Hebrew Translations not applying
 - Miscellaneous UI improvements
 
 ## 6.1.14
