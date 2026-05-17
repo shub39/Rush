@@ -40,40 +40,35 @@ object RomanizationUtils {
      */
     fun loadReadingDictionary(context: Context) {
         if (readingDictionary != null) return
-        try {
-            val startMs = System.currentTimeMillis()
 
-            // 1. Read TSV into map
-            val lines =
-                context.assets.open("ja_readings.tsv").bufferedReader(Charsets.UTF_8).readLines()
-            val map = HashMap<String, String>(lines.size)
-            for (line in lines) {
-                val tab = line.indexOf('\t')
-                if (tab > 0) {
-                    map[line.substring(0, tab)] = line.substring(tab + 1)
-                }
-            }
-            readingDictionary = map
+        val startMs = System.currentTimeMillis()
 
-            // 2. Build longest-match index
-            val grouped = HashMap<Char, MutableList<Pair<String, String>>>()
-            for ((surface, reading) in map) {
-                if (surface.isEmpty()) continue
-                grouped.getOrPut(surface[0]) { mutableListOf() }.add(surface to reading)
+        // 1. Read TSV into map
+        val lines =
+            context.assets.open("ja_readings.tsv").bufferedReader(Charsets.UTF_8).readLines()
+        val map = HashMap<String, String>(lines.size)
+        for (line in lines) {
+            val tab = line.indexOf('\t')
+            if (tab > 0) {
+                map[line.substring(0, tab)] = line.substring(tab + 1)
             }
-            // Sort each bucket by length descending (longest match first)
-            for (list in grouped.values) {
-                list.sortByDescending { it.first.length }
-            }
-            tokenizerIndex = grouped
-
-            val elapsed = System.currentTimeMillis() - startMs
-            Log.d("RomanizationUtils", "Loaded ${map.size} readings + index in ${elapsed}ms")
-        } catch (e: Exception) {
-            Log.e("RomanizationUtils", "Failed to load reading dictionary", e)
-            readingDictionary = emptyMap()
-            tokenizerIndex = emptyMap()
         }
+        readingDictionary = map
+
+        // 2. Build longest-match index
+        val grouped = HashMap<Char, MutableList<Pair<String, String>>>()
+        for ((surface, reading) in map) {
+            if (surface.isEmpty()) continue
+            grouped.getOrPut(surface[0]) { mutableListOf() }.add(surface to reading)
+        }
+        // Sort each bucket by length descending (longest match first)
+        for (list in grouped.values) {
+            list.sortByDescending { it.first.length }
+        }
+        tokenizerIndex = grouped
+
+        val elapsed = System.currentTimeMillis() - startMs
+        Log.d("RomanizationUtils", "Loaded ${map.size} readings + index in ${elapsed}ms")
     }
 
     /**
