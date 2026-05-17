@@ -1243,7 +1243,6 @@ object RomanizationUtils {
             "ਜ਼",
             "ਫ਼",
             "ਲ਼",
-            "਼",
         )
     private val GURMUKHI_VIRAMA = "੍"
 
@@ -1259,6 +1258,25 @@ object RomanizationUtils {
                         sb.append(GURMUKHI_ROMAJI_MAP[twoChar])
                         i += 2
                         consumed = true
+
+                        // Inherent 'a' after nukta-combined consonant
+                        // (e.g. ਸ਼ਕ → shak, not shk)
+                        val firstChar = twoChar.first().toString()
+                        if (firstChar in GURMUKHI_CONSONANTS) {
+                            val nextChar =
+                                if (i < text.length) text[i].toString() else null
+                            if (
+                                nextChar != null &&
+                                    nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
+                                    nextChar != GURMUKHI_VIRAMA &&
+                                    (nextChar in GURMUKHI_CONSONANTS ||
+                                        nextChar == "ੰ" ||
+                                        nextChar == "ਂ" ||
+                                        nextChar == "ਁ")
+                            ) {
+                                sb.append("a")
+                            }
+                        }
                     }
                 }
                 if (!consumed) {
