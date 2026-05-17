@@ -16,11 +16,22 @@
  */
 package com.shub39.romanization
 
+import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
+import org.junit.BeforeClass
 import org.junit.Test
 
 class RomanizationUtilsTest {
+
+    companion object {
+        @BeforeClass @JvmStatic
+        fun setUp() {
+            RomanizationUtils.loadReadingDictionary(
+                InstrumentationRegistry.getInstrumentation().targetContext
+            )
+        }
+    }
 
     // Japanese corner cases (ICU-only)
 
