@@ -1282,7 +1282,8 @@ object RomanizationUtils {
                                     (nextChar in GURMUKHI_CONSONANTS ||
                                         nextChar == "ੰ" ||
                                         nextChar == "ਂ" ||
-                                        nextChar == "ਁ")
+                                        nextChar == "ਁ" ||
+                                        nextChar == "ੱ")
                             ) {
                                 sb.append("a")
                             }
@@ -1303,7 +1304,8 @@ object RomanizationUtils {
                                 (nextChar in GURMUKHI_CONSONANTS ||
                                     nextChar == "ੰ" ||
                                     nextChar == "ਂ" ||
-                                    nextChar == "ਁ")
+                                    nextChar == "ਁ" ||
+                                    nextChar == "ੱ")
                         ) {
                             sb.append("a")
                         }

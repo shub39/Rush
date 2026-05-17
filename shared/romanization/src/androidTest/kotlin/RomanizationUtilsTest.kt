@@ -407,6 +407,13 @@ class RomanizationUtilsTest {
         assertEquals("shakal", result)
     }
 
+    @Test
+    fun testPunjabi_addakInherentVowel() = runTest {
+        val result = RomanizationUtils.romanizePunjabi("ਸੱਚ")
+        // Addak (ੱ) geminates the next consonant; inherent 'a' must not be dropped
+        assertTrue(result.contains("sa"))
+    }
+
     // Cyrillic corner cases
 
     @Test
