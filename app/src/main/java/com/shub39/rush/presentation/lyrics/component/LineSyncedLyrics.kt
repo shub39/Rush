@@ -61,9 +61,9 @@ import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
+import com.shub39.rush.presentation.lyrics.calculateLineProgress
 import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
 import com.shub39.rush.presentation.lyrics.getNextLyricTime
-import com.shub39.rush.presentation.lyrics.rememberLineProgress
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
@@ -106,7 +106,7 @@ fun LineSyncedLyrics(
         val isCurrent = index == currentPlayingIndex
 
         val progress =
-            rememberLineProgress(
+            calculateLineProgress(
                 currentTime = currentTime,
                 startTime = lyric.time / 1000.0,
                 nextTime = nextTime?.toDouble()?.div(1000.0),
@@ -265,7 +265,7 @@ private fun LineSyncedLyricsPreview() {
     var position by remember { mutableLongStateOf(0L) }
     val lyrics = remember {
         listOf(
-            Lyric(0, "Welcome to Rush Music Player"),
+            Lyric(0, "Welcome to Rush Lyrics App"),
             Lyric(3000, "This is a per-word highlight animation"),
             Lyric(6000, "It looks much better than a top-down mask"),
             Lyric(9000, "Words highlight sequentially as the song plays"),
