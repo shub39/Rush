@@ -137,7 +137,7 @@ class RomanizationUtilsTest {
     fun testChinese_pureKanjiDetectedAsChinese() = runTest {
         val result = RomanizationUtils.romanize("花鳥風月", enabledLanguages = listOf("Chinese"))
         assertNotNull(result)
-        assertTrue(result.isNotEmpty())
+        assertTrue(result!!.contains("huā"))
     }
 
     @Test
@@ -146,7 +146,7 @@ class RomanizationUtilsTest {
             RomanizationUtils.romanize("食べる", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // Detected as Japanese due to kana
-        assertTrue(result.contains("taberu") || result.contains("食"))
+        assertTrue(result!!.contains("taberu") || result!!.contains("食"))
     }
 
     // Korean corner cases
@@ -488,7 +488,6 @@ class RomanizationUtilsTest {
     @Test
     fun testCyrillic_generalFallback() = runTest {
         val result = RomanizationUtils.romanizeCyrillic("привет", null)
-        assertNotNull(result)
         assertEquals("privet", result)
     }
 
