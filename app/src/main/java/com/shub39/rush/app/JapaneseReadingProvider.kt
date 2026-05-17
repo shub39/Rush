@@ -68,6 +68,7 @@ object JapaneseReadingProvider {
     suspend fun reload(context: Context) {
         initMutex.withLock {
             isInitialized = false
+            RomanizationUtils.resetReadingDictionary()
         }
         initialize(context)
     }

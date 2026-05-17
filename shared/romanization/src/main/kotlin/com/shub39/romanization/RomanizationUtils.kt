@@ -76,6 +76,15 @@ object RomanizationUtils {
         }
     }
 
+    /**
+     * Reset the reading dictionary so the next call to [loadReadingDictionary] reloads from assets.
+     * Used by [com.shub39.rush.app.JapaneseReadingProvider.reload] after a dictionary update.
+     */
+    fun resetReadingDictionary() {
+        readingDictionary = null
+        tokenizerIndex = null
+    }
+
     // ICU transliterators for Japanese→romaji conversion
     // Katakana-Latin: used when we have an explicit katakana reading from a dictionary
     private val katakanaTransliterator by lazy { Transliterator.getInstance("Katakana-Latin") }
