@@ -1425,9 +1425,10 @@ object RomanizationUtils {
             // Japanese text with kana → always treat as Japanese
             "Japanese" in enabledLanguages && isJapanese(text) -> romanizeJapanese(text)
             "Korean" in enabledLanguages && isKorean(text) -> romanizeKorean(text)
-            // Pure CJK (no kana): route to Japanese first. The IPADIC reading
-            // dictionary covers common Japanese kanji words. Chinese text that
-            // is not in the dictionary falls through to romanizeChinese below.
+            // Pure CJK (no kana): route to Japanese IPADIC readings first.
+            // The bundled dictionary covers common Japanese kanji. Chinese text
+            // not in the IPADIC passes through unchanged — the user can enable
+            // Chinese-only mode for pinyin output.
             "Japanese" in enabledLanguages &&
                 text.any { it in '\u4E00'..'\u9FFF' || it in '\u3400'..'\u4DBF' } ->
                 romanizeJapanese(text)

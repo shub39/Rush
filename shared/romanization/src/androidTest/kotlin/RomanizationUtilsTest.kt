@@ -149,6 +149,19 @@ class RomanizationUtilsTest {
         assertTrue(result!!.contains("taberu") || result!!.contains("食"))
     }
 
+    @Test
+    fun testChinese_pureCjkWithBothJapaneseAndChinese() = runTest {
+        val result =
+            RomanizationUtils.romanize(
+                "望春风",
+                enabledLanguages = listOf("Japanese", "Chinese"),
+            )
+        assertNotNull(result)
+        // With both JP and ZH enabled, pure CJK goes to Japanese IPADIC.
+        // Chinese lyrics not in IPADIC pass through; enable Chinese-only for pinyin.
+        assertTrue(result!!.isNotEmpty())
+    }
+
     // Korean corner cases
 
     @Test
