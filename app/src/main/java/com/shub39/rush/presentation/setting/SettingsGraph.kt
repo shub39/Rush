@@ -26,6 +26,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.navigation.horizontalTransitionMetadata
 import com.shub39.rush.presentation.RushPreviewWrapper
+import com.shub39.rush.presentation.setting.section.About
 import com.shub39.rush.presentation.setting.section.BackupPage
 import com.shub39.rush.presentation.setting.section.Changelog
 import com.shub39.rush.presentation.setting.section.LookAndFeelPage
@@ -39,6 +40,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object LookAndFeelPage : NavKey
 
 @Serializable data object ChangelogPage : NavKey
+
+@Serializable data object About : NavKey
 
 @Composable
 fun SettingsGraph(
@@ -65,6 +68,7 @@ fun SettingsGraph(
                         onNavigateToLookAndFeel = { backStack.add(LookAndFeelPage) },
                         onNavigateToBackup = { backStack.add(BackupPage) },
                         onNavigateToChangelog = { backStack.add(ChangelogPage) },
+                        onNavigateToAppInfo = { backStack.add(About) },
                         state = state,
                         onShowPaywall = onShowPaywall,
                     )
@@ -91,6 +95,13 @@ fun SettingsGraph(
                 entry<ChangelogPage>(metadata = horizontalTransitionMetadata()) {
                     Changelog(
                         changelog = state.changelog,
+                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                    )
+                }
+
+                entry<About>(metadata = horizontalTransitionMetadata()) {
+                    About(
+                        versionName = state.changelog.firstOrNull()?.version ?: "1.0.00",
                         onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
                     )
                 }

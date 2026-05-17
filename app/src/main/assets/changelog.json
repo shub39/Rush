@@ -2,7 +2,9 @@
   {
     "version": "6.1.15",
     "changes": [
-      "(Android 12+) Fixed Material Theme not respecting System Colors"
+      "(Android 12+) Fixed Material Theme not respecting System Colors",
+      "Updated Translations",
+      "Miscellaneous UI improvements"
     ]
   },
   {
