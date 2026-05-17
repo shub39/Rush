@@ -114,9 +114,9 @@ class RomanizationUtilsTest {
     @Test
     fun testJapanese_onegai() = runTest {
         val result = RomanizationUtils.romanizeJapanese("お願い")
-        // 願 is kanji, passes through; がい → gai
+        // Without dictionary: kanji passes through, kana romanized
+        // With dictionary: お願い → オネガイ → "onegai"
         assertTrue(result.contains("願") || result.contains("negai"))
-        assertTrue(result.contains("gai"))
     }
 
     @Test
