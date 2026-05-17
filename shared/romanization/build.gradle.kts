@@ -46,6 +46,11 @@ android {
 dependencies {
     implementation(libs.kotlinx.coroutines)
 
+    testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation("com.ibm.icu:icu4j:75.1")
+
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.junit)
