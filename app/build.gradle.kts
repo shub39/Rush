@@ -26,8 +26,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "6.1.14"
-val appVersionCode = 6114
+val appVersionName = "6.1.15"
+val appVersionCode = 6115
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
@@ -53,6 +53,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+        androidResources { generateLocaleConfig = true }
     }
 
     buildTypes {

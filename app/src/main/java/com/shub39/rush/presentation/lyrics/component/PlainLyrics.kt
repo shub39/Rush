@@ -42,6 +42,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,6 +85,18 @@ fun PlainLyrics(
 
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
+    val nonEmptyItems = remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
+    val shouldAutoScrape =
+        state.source == Sources.GENIUS &&
+            nonEmptyItems.isEmpty() &&
+            !state.scraping.first &&
+            state.scraping.second == null
+
+    LaunchedEffect(song.id, state.source, shouldAutoScrape) {
+        if (shouldAutoScrape) {
+            action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
+        }
+    }
 
     LazyColumn(
         modifier = modifier,
@@ -95,60 +108,53 @@ fun PlainLyrics(
         state = lazyListState,
     ) {
         // plain lyrics with logic
-        if (!items.isNullOrEmpty()) {
-            items(items = items, key = { it.key }) {
-                if (it.value.isNotBlank()) {
-                    val isSelected = state.selectedLines.contains(it.key)
-                    val containerColor by
-                        animateColorAsState(
-                            targetValue =
-                                when (!isSelected) {
-                                    true -> Color.Transparent
-                                    else -> cardContent.copy(alpha = 0.3f)
-                                },
-                            label = "container",
-                            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                        )
+        if (nonEmptyItems.isNotEmpty()) {
+            items(items = nonEmptyItems, key = { it.key }, contentType = { "lyric" }) {
+                val isSelected = state.selectedLines.contains(it.key)
+                val containerColor by
+                    animateColorAsState(
+                        targetValue =
+                            when (!isSelected) {
+                                true -> Color.Transparent
+                                else -> cardContent.copy(alpha = 0.3f)
+                            },
+                        label = "container",
+                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    )
 
-                    PlainLyric(
-                        entry = it.toPair(),
-                        romanizedText =
-                            if (state.romanizationEnabled)
-                                if (state.source == Sources.GENIUS)
-                                    state.lyricsState.song.romanizedGeniusLyrics[it.key]
-                                else state.lyricsState.song.romanizedLyrics[it.key]
-                            else null,
-                        containerColor = containerColor,
-                        textPrefs = state.textPrefs,
-                        cardContent = cardContent,
-                        onClick = {
-                            action(
-                                LyricsPageAction.OnChangeSelectedLines(
-                                    updateSelectedLines(
-                                        state.selectedLines,
-                                        it.key,
-                                        it.value,
-                                        state.maxLines,
-                                    )
+                PlainLyric(
+                    entry = it.toPair(),
+                    romanizedText =
+                        if (state.romanizationEnabled)
+                            if (state.source == Sources.GENIUS)
+                                state.lyricsState.song.romanizedGeniusLyrics[it.key]
+                            else state.lyricsState.song.romanizedLyrics[it.key]
+                        else null,
+                    containerColor = containerColor,
+                    textPrefs = state.textPrefs,
+                    cardContent = cardContent,
+                    onClick = {
+                        action(
+                            LyricsPageAction.OnChangeSelectedLines(
+                                updateSelectedLines(
+                                    state.selectedLines,
+                                    it.key,
+                                    it.value,
+                                    state.maxLines,
                                 )
                             )
+                        )
 
-                            if (!isSelected) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-                        },
-                    )
-                }
+                        if (!isSelected) {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
+                    },
+                )
             }
         } else {
             when (state.source) {
                 Sources.GENIUS -> {
-                    item {
-                        // start scraping
-                        LaunchedEffect(Unit) {
-                            action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
-                        }
-
+                    item(key = "genius_empty", contentType = "empty_state") {
                         AnimatedContent(targetState = state.scraping) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -213,7 +219,7 @@ fun PlainLyrics(
                 }
 
                 Sources.LRCLIB -> {
-                    item {
+                    item(key = "lrclib_empty", contentType = "empty_state") {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -236,7 +242,7 @@ fun PlainLyrics(
         }
 
         // Bottom Actions Row
-        item {
+        item(key = "bottom_actions", contentType = "actions") {
             Row(
                 modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,

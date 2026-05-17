@@ -62,17 +62,18 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.materialkolor.ktx.blend
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.SongDetails
 import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
@@ -495,6 +496,7 @@ private fun SharePageContent(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview(
     device = "spec:width=1080px,height=2340px,dpi=480",
     showSystemUi = false,
@@ -513,19 +515,17 @@ private fun Preview() {
         )
     }
 
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SharePageContent(
-            state = state,
-            onDismiss = {},
-            selectedImage = null,
-            onAction = {},
-            onSaveImage = {},
-            onLaunchImagePicker = {},
-            onShareImage = {},
-            cardGraphicsLayer = rememberGraphicsLayer(),
-            fullScreenGraphicsLayer = rememberGraphicsLayer(),
-            isProUser = true,
-            onShowPaywall = {},
-        )
-    }
+    SharePageContent(
+        state = state,
+        onDismiss = {},
+        selectedImage = null,
+        onAction = {},
+        onSaveImage = {},
+        onLaunchImagePicker = {},
+        onShareImage = {},
+        cardGraphicsLayer = rememberGraphicsLayer(),
+        fullScreenGraphicsLayer = rememberGraphicsLayer(),
+        isProUser = true,
+        onShowPaywall = {},
+    )
 }

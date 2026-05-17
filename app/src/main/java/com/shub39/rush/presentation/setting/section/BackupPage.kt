@@ -52,19 +52,18 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.backup.ExportState
 import com.shub39.rush.domain.backup.RestoreState
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.PageFill
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.setting.SettingsPageAction
 import com.shub39.rush.presentation.setting.SettingsPageState
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
@@ -291,17 +290,16 @@ private fun BackupPageContent(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        BackupPageContent(
-            onNavigateBack = {},
-            onSaveFile = {},
-            state = SettingsPageState(),
-            restoreFile = PlatformFile(""),
-            onPickFile = {},
-            action = {},
-        )
-    }
+    BackupPageContent(
+        onNavigateBack = {},
+        onSaveFile = {},
+        state = SettingsPageState(),
+        restoreFile = PlatformFile(""),
+        onPickFile = {},
+        action = {},
+    )
 }

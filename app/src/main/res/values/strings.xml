@@ -52,7 +52,9 @@
     <string name="sort_date_added">Last added</string>
     <string name="rush_branding">Rush</string>
     <string name="bmc">Buy me a Coffee</string>
+    <string name="bmc_desc">Support me by making a small donation</string>
     <string name="translate">Translate</string>
+    <string name="translate_desc">Translate Rush in your language</string>
     <string name="rate_on_play">Rate on Google Play</string>
     <string name="exporting">Exporting</string>
     <string name="exported">Exported</string>

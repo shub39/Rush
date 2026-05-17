@@ -16,14 +16,15 @@
  */
 package com.shub39.rush.presentation.theme
 
-import android.R
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.domain.enums.AppTheme
@@ -41,26 +42,33 @@ import com.shub39.rush.presentation.toMPaletteStyle
  */
 @Composable
 fun RushTheme(theme: Theme, content: @Composable () -> Unit) {
+    val isDark =
+        when (theme.appTheme) {
+            AppTheme.SYSTEM -> isSystemInDarkTheme()
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
+        }
+
     val dynamicColorScheme =
         rememberDynamicColorScheme(
-            seedColor =
-                if (theme.materialTheme && Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-                    colorResource(R.color.system_accent1_900)
-                } else {
-                    Color(theme.seedColor)
-                },
-            isDark =
-                when (theme.appTheme) {
-                    AppTheme.SYSTEM -> isSystemInDarkTheme()
-                    AppTheme.LIGHT -> false
-                    AppTheme.DARK -> true
-                },
+            seedColor = Color(theme.seedColor),
+            isDark = isDark,
             isAmoled = theme.withAmoled,
             style = theme.style.toMPaletteStyle(),
         )
 
+    val colorScheme =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && theme.materialTheme -> {
+                val context = LocalContext.current
+                if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+
+            else -> dynamicColorScheme
+        }
+
     MaterialExpressiveTheme(
-        colorScheme = dynamicColorScheme,
+        colorScheme = colorScheme,
         motionScheme = MotionScheme.expressive(),
         typography = provideTypography(theme.font.toFontRes()),
         content = content,

@@ -16,29 +16,35 @@
  */
 package com.shub39.rush.billing
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
+import com.shub39.rush.presentation.theme.flexFontRounded
 
 @Composable
 fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
@@ -52,36 +58,58 @@ fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modi
             Column(
                 modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.warning),
-                    contentDescription = "Warning",
-                    modifier = Modifier.size(48.dp),
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier.size(100.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                shape = MaterialShapes.VerySunny.toShape(),
+                            ),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.warning),
+                        contentDescription = "Warning",
+                        modifier = Modifier.size(50.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
 
-                Text(
-                    text = stringResource(R.string.foss),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.foss),
+                        style =
+                            MaterialTheme.typography.titleLarge.copy(
+                                textAlign = TextAlign.Center,
+                                fontFamily = flexFontRounded(),
+                            ),
+                    )
 
-                Text(text = stringResource(R.string.foss_desc), textAlign = TextAlign.Center)
+                    Text(
+                        text = stringResource(R.string.foss_desc),
+                        style =
+                            MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+                    )
+                }
 
-                Button(onClick = { uriHandler.openUri("https://buymeacoffee.com/shub39") }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.buymeacoffee),
-                            contentDescription = "Buy me a coffee",
-                            modifier = Modifier.size(24.dp),
-                        )
+                FilledTonalButton(
+                    onClick = { uriHandler.openUri("https://buymeacoffee.com/shub39") },
+                    modifier = Modifier.height(ButtonDefaults.MediumContainerHeight),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.buymeacoffee),
+                        contentDescription = "Buy me a coffee",
+                        modifier = Modifier.size(ButtonDefaults.MediumIconSize),
+                    )
 
-                        Text(text = stringResource(R.string.bmc))
-                    }
+                    Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+
+                    Text(
+                        text = stringResource(R.string.bmc),
+                        style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
+                    )
                 }
             }
         }

@@ -39,17 +39,17 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.app.Changelog
 import com.shub39.rush.app.VersionEntry
-import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.listItemColors
 import com.shub39.rush.presentation.middleItemShape
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 
@@ -121,23 +121,22 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun ChangelogPreview() {
-    RushTheme(theme = Theme()) {
-        Changelog(
-            changelog =
-                listOf(
-                    VersionEntry(
-                        version = "1.0.0",
-                        changes = listOf("Initial release", "Added new feature"),
-                    ),
-                    VersionEntry(
-                        version = "1.1.0",
-                        changes = listOf("Bug fixes", "Improved performance"),
-                    ),
+    Changelog(
+        changelog =
+            listOf(
+                VersionEntry(
+                    version = "1.0.0",
+                    changes = listOf("Initial release", "Added new feature"),
                 ),
-            onNavigateBack = {},
-        )
-    }
+                VersionEntry(
+                    version = "1.1.0",
+                    changes = listOf("Bug fixes", "Improved performance"),
+                ),
+            ),
+        onNavigateBack = {},
+    )
 }

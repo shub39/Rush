@@ -68,11 +68,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.SourceError
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.errorStringRes
@@ -80,7 +80,6 @@ import com.shub39.rush.presentation.leadingItemShape
 import com.shub39.rush.presentation.lyrics.component.ErrorCard
 import com.shub39.rush.presentation.middleItemShape
 import com.shub39.rush.presentation.searchsheet.component.SearchResultCard
-import com.shub39.rush.presentation.theme.RushTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -251,6 +250,7 @@ fun SearchSheet(
 }
 
 @Composable
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 private fun Preview() {
     var state by remember {
@@ -259,12 +259,10 @@ private fun Preview() {
         )
     }
 
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        SearchSheet(
-            state = state,
-            onAction = {},
-            onNavigateToLyrics = {},
-            sheetState = rememberStandardBottomSheetState(),
-        )
-    }
+    SearchSheet(
+        state = state,
+        onAction = {},
+        onNavigateToLyrics = {},
+        sheetState = rememberStandardBottomSheetState(),
+    )
 }

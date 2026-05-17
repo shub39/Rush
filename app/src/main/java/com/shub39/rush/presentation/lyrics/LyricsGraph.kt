@@ -25,8 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -35,11 +36,11 @@ import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.shub39.rush.domain.dataclasses.Theme
 import com.shub39.rush.navigation.horizontalTransitionMetadata
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.presentation.lyrics.section.LyricsPage
-import com.shub39.rush.presentation.theme.RushTheme
+import com.shub39.rush.presentation.resetSystemBars
 import com.shub39.rush.presentation.updateSystemBars
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
@@ -58,7 +59,6 @@ fun LyricsGraph(
     lyricsAction: (LyricsPageAction) -> Unit,
     onShare: () -> Unit,
 ) {
-    val context = LocalContext.current
     val backStack = rememberNavBackStack(LyricsPage)
 
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
@@ -74,9 +74,11 @@ fun LyricsGraph(
         entryProvider =
             entryProvider {
                 entry<LyricsPage> {
-                    DisposableEffect(Unit) {
-                        updateSystemBars(context, show = !lyricsState.fullscreen)
-                        onDispose { updateSystemBars(context, show = true) }
+                    val view = LocalView.current
+
+                    DisposableEffect(view, lyricsState.fullscreen) {
+                        updateSystemBars(view, lyricsState.fullscreen)
+                        onDispose { resetSystemBars(view) }
                     }
 
                     LyricsPage(
@@ -108,18 +110,17 @@ fun LyricsGraph(
     )
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
     var state by remember { mutableStateOf(LyricsPageState()) }
 
-    RushTheme(theme = Theme()) {
-        LyricsGraph(
-            notificationAccess = true,
-            lyricsState = state,
-            lyricsAction = {},
-            onShare = {},
-            playbackInfo = PlaybackInfo(),
-        )
-    }
+    LyricsGraph(
+        notificationAccess = true,
+        lyricsState = state,
+        lyricsAction = {},
+        onShare = {},
+        playbackInfo = PlaybackInfo(),
+    )
 }

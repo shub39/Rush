@@ -1,5 +1,14 @@
 [
   {
+    "version": "6.1.15",
+    "changes": [
+      "(Android 12+) Fixed Material Theme not respecting System Colors",
+      "Updated Translations",
+      "Fixed Hebrew Translations not applying",
+      "Miscellaneous UI improvements"
+    ]
+  },
+  {
     "version": "6.1.14",
     "changes": [
       "Updated Translations",
@@ -68,12 +77,6 @@
     "changes": [
       "Added Expressive motion scheme to animations",
       "Updated Translations"
-    ]
-  },
-  {
-    "version": "5.7.3",
-    "changes": [
-      "Improved App Navigation Experience"
     ]
   }
 ]

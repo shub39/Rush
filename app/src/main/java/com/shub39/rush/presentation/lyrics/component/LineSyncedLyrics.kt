@@ -20,18 +20,13 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,8 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,29 +45,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.domain.dataclasses.Lyric
 import com.shub39.rush.domain.dataclasses.SongUi
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
+import com.shub39.rush.presentation.lyrics.calculateLineProgress
 import com.shub39.rush.presentation.lyrics.getCurrentLyricIndex
 import com.shub39.rush.presentation.lyrics.getNextLyricTime
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.toAlignment
 import com.shub39.rush.presentation.toArrangement
 import com.shub39.rush.presentation.toTextAlignment
-import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 @Composable
@@ -86,125 +80,89 @@ fun LineSyncedLyrics(
     action: (LyricsPageAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isUserScrolling by lazyListState.interactionSource.collectIsDraggedAsState()
-    var pauseAutoScroll by remember { mutableStateOf(false) }
-
-    val itemHeights = remember { mutableStateMapOf<Int, Int>() }
-
-    val syncedLyrics = (state.lyricsState as? LyricsState.Loaded)?.song?.syncedLyrics ?: return
-
-    // updater for synced lyrics
-    LaunchedEffect(playbackInfo.position, pauseAutoScroll) {
-        if (!pauseAutoScroll) {
-            val currentIndex =
-                getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
-            val viewportHeight =
-                lazyListState.layoutInfo.viewportEndOffset -
-                    lazyListState.layoutInfo.viewportStartOffset
-            val itemHeight = itemHeights[currentIndex] ?: 0
-            val centerOffset = (viewportHeight / 4) - (itemHeight / 2)
-            lazyListState.animateScrollToItem(index = currentIndex, scrollOffset = -centerOffset)
+    val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
+    val syncedLyrics = song.syncedLyrics ?: return
+    val currentPlayingIndex =
+        remember(playbackInfo.position, syncedLyrics) {
+            getCurrentLyricIndex(playbackInfo.position, syncedLyrics).coerceAtLeast(0)
         }
-    }
 
-    // scroll interaction
-    LaunchedEffect(isUserScrolling) {
-        if (!isUserScrolling) {
-            delay(3000)
-            pauseAutoScroll = false
-        } else {
-            pauseAutoScroll = true
+    val romanizedSynced =
+        remember(state.romanizationEnabled, song) {
+            if (state.romanizationEnabled) song.romanizedSyncedLyrics else emptyMap()
         }
-    }
 
-    // Synced Lyrics
-    LazyColumn(
+    BaseSyncedLyrics(
+        state = state,
+        playbackInfo = playbackInfo,
+        lazyListState = lazyListState,
+        items = syncedLyrics,
+        currentPlayingIndex = currentPlayingIndex,
+        itemKey = { _, lyric -> lyric.time },
         modifier = modifier,
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 64.dp, bottom = 256.dp),
-        verticalArrangement =
-            Arrangement.spacedBy(
-                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
-            ),
-        state = lazyListState,
-    ) {
-        itemsIndexed(items = syncedLyrics, key = { index, _ -> index }) { index, lyric ->
-            val nextTime = getNextLyricTime(index, syncedLyrics)
-            val currentTime = playbackInfo.position
-            val lyricIndex = syncedLyrics.indexOf(lyric)
-            val currentPlayingIndex = getCurrentLyricIndex(playbackInfo.position, syncedLyrics)
-            val isCurrent = lyricIndex == currentPlayingIndex
+    ) { index, lyric, blur ->
+        val nextTime = getNextLyricTime(index, syncedLyrics)
+        val currentTime = playbackInfo.position
+        val isCurrent = index == currentPlayingIndex
 
-            val progress =
-                nextTime?.let { nt ->
-                    val denom = (nt - lyric.time).toFloat()
-                    if (denom <= 0f) 1f
-                    else ((currentTime - lyric.time).toFloat() / denom).coerceIn(0f, 1f)
-                } ?: 1f
-
-            val animatedProgress by
-                animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                )
-
-            val underTextAlpha by
-                animateFloatAsState(
-                    targetValue = if (isCurrent) 0.5f else 0.2f,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                )
-
-            val blur by
-                animateDpAsState(
-                    targetValue =
-                        if (!state.blurSyncedLyrics || pauseAutoScroll) 0.dp
-                        else (abs(lyricIndex - currentPlayingIndex) * 3).coerceIn(0..10).dp,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                )
-
-            val scale by
-                animateFloatAsState(
-                    targetValue = if (isCurrent) 1f else 0.8f,
-                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                )
-
-            val textColor by
-                animateColorAsState(
-                    targetValue =
-                        when {
-                            lyric.time <= playbackInfo.position -> cardContent
-                            else -> cardContent.copy(0.3f)
-                        },
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "textColor",
-                )
-
-            val glowAlpha by
-                animateDpAsState(
-                    targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0.dp else 2.dp,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                )
-
-            SyncedLyric(
-                textPrefs = state.textPrefs,
-                blur = blur,
-                action = action,
-                lyric = lyric,
-                romanizedText =
-                    if (state.romanizationEnabled)
-                        state.lyricsState.song.romanizedSyncedLyrics[lyric.time]
-                    else null,
-                underTextAlpha = underTextAlpha,
-                glowAlpha = glowAlpha,
-                textColor = textColor,
-                scale = scale,
-                animatedProgress = animatedProgress,
-                modifier =
-                    Modifier.onGloballyPositioned { layoutCoordinates ->
-                        val height = layoutCoordinates.size.height
-                        itemHeights[index] = height
-                    },
+        val progress =
+            calculateLineProgress(
+                currentTime = currentTime,
+                startTime = lyric.time / 1000.0,
+                nextTime = nextTime?.toDouble()?.div(1000.0),
             )
-        }
+
+        val animatedProgress by
+            animateFloatAsState(
+                targetValue = progress,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "animatedProgress",
+            )
+
+        val underTextAlpha by
+            animateFloatAsState(
+                targetValue = if (isCurrent) 0.5f else 0.2f,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "underTextAlpha",
+            )
+
+        val scale by
+            animateFloatAsState(
+                targetValue = if (isCurrent) 1f else 0.8f,
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                label = "scale",
+            )
+
+        val textColor by
+            animateColorAsState(
+                targetValue =
+                    when {
+                        lyric.time <= playbackInfo.position -> cardContent
+                        else -> cardContent.copy(0.3f)
+                    },
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "textColor",
+            )
+
+        val glowAlpha by
+            animateDpAsState(
+                targetValue = if (!state.blurSyncedLyrics || !isCurrent) 0.dp else 2.dp,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "glowAlpha",
+            )
+
+        SyncedLyric(
+            textPrefs = state.textPrefs,
+            blur = blur,
+            action = action,
+            lyric = lyric,
+            romanizedText = romanizedSynced[lyric.time],
+            underTextAlpha = underTextAlpha,
+            glowAlpha = glowAlpha,
+            textColor = textColor,
+            scale = scale,
+            animatedProgress = animatedProgress,
+        )
     }
 }
 
@@ -300,13 +258,14 @@ fun SyncedLyric(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
-fun LineSyncedLyricsPreview() {
+private fun LineSyncedLyricsPreview() {
     var position by remember { mutableLongStateOf(0L) }
     val lyrics = remember {
         listOf(
-            Lyric(0, "Welcome to Rush Music Player"),
+            Lyric(0, "Welcome to Rush Lyrics App"),
             Lyric(3000, "This is a per-word highlight animation"),
             Lyric(6000, "It looks much better than a top-down mask"),
             Lyric(9000, "Words highlight sequentially as the song plays"),
@@ -323,7 +282,7 @@ fun LineSyncedLyricsPreview() {
         while (true) {
             val elapsed = System.currentTimeMillis() - startTime
             position = elapsed % 27000
-            delay(16)
+            delay(16.milliseconds)
         }
     }
 

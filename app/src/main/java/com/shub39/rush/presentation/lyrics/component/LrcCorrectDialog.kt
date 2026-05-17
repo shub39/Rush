@@ -49,17 +49,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.interfaces.CorrectionSearchResult
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.RushDialog
 import com.shub39.rush.presentation.lyrics.LrcCorrect
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.LyricsState
-import com.shub39.rush.presentation.theme.RushTheme
 
 @Composable
 fun LrcCorrectDialog(
@@ -208,43 +207,42 @@ fun LrcCorrectDialog(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        LrcCorrectDialog(
-            track = "Track Name",
-            artist = "Artist Name",
-            action = {},
-            state =
-                LyricsPageState(
-                    lrcCorrect =
-                        LrcCorrect(
-                            searchResults =
+    LrcCorrectDialog(
+        track = "Track Name",
+        artist = "Artist Name",
+        action = {},
+        state =
+            LyricsPageState(
+                lrcCorrect =
+                    LrcCorrect(
+                        searchResults =
+                            (0..3).map {
+                                CorrectionSearchResult.PlainLyricsSearchResult(
+                                    plainLyrics = "TODO()",
+                                    title = "Song One",
+                                    artist = "GABsdjhgva",
+                                )
+                            } +
                                 (0..3).map {
-                                    CorrectionSearchResult.PlainLyricsSearchResult(
-                                        plainLyrics = "TODO()",
-                                        title = "Song One",
-                                        artist = "GABsdjhgva",
+                                    CorrectionSearchResult.LineSyncedLyricsSearchResult(
+                                        lineSyncedLyrics = "TODO",
+                                        plainLyrics = "TODO",
+                                        title = "Synced Song",
+                                        artist = "Sync Joe",
                                     )
                                 } +
-                                    (0..3).map {
-                                        CorrectionSearchResult.LineSyncedLyricsSearchResult(
-                                            lineSyncedLyrics = "TODO",
-                                            plainLyrics = "TODO",
-                                            title = "Synced Song",
-                                            artist = "Sync Joe",
-                                        )
-                                    } +
-                                    (0..3).map {
-                                        CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
-                                            syllableSyncedLyrics = "TODO()",
-                                            title = "Syllable Search",
-                                            artist = "ligma",
-                                        )
-                                    }
-                        )
-                ),
-        )
-    }
+                                (0..3).map {
+                                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
+                                        syllableSyncedLyrics = "TODO()",
+                                        title = "Syllable Search",
+                                        artist = "ligma",
+                                    )
+                                }
+                    )
+            ),
+    )
 }

@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.domain.dataclasses
+package com.shub39.rush.presentation
 
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
+import com.shub39.rush.domain.dataclasses.Theme
+import com.shub39.rush.presentation.theme.RushTheme
 
-@Stable
-data class ParsedLine(
-    val text: String,
-    val startTime: Double,
-    val words: List<ParsedWord>,
-    val agent: String? = null,
-    val isBackground: Boolean = false,
-    val backgroundLines: List<ParsedLine> = emptyList(),
-)
+class RushPreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable (() -> Unit)) {
+        RushTheme(theme = Theme(), content = content)
+    }
+}

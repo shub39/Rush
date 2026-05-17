@@ -44,15 +44,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.domain.dataclasses.SongDetails
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardFit
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.RushBranding
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 import io.github.vinceglb.filekit.PlatformFile
@@ -118,22 +117,21 @@ fun AlbumArt(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun Preview() {
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK)) {
-        AlbumArt(
-            modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
-            song = SongDetails(title = "Test Song", artist = "Eminem", null, "as"),
-            cardColors =
-                CardDefaults.cardColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                ),
-            cardCorners = RoundedCornerShape(pxToDp(32)),
-            fit = CardFit.FIT,
-            albumArtShape = VerySunny.toShape(),
-            rushBranding = true,
-        )
-    }
+    AlbumArt(
+        modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
+        song = SongDetails(title = "Test Song", artist = "Eminem", null, "as"),
+        cardColors =
+            CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+        cardCorners = RoundedCornerShape(pxToDp(32)),
+        fit = CardFit.FIT,
+        albumArtShape = VerySunny.toShape(),
+        rushBranding = true,
+    )
 }

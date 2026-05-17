@@ -58,12 +58,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.domain.dataclasses.Theme
-import com.shub39.rush.domain.enums.AppTheme
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsBackground
+import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.component.RushDialog
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
@@ -73,7 +75,6 @@ import com.shub39.rush.presentation.lyrics.component.customisation.lyricsCustomi
 import com.shub39.rush.presentation.lyrics.getCardColors
 import com.shub39.rush.presentation.lyrics.getHypnoticColors
 import com.shub39.rush.presentation.lyrics.getWaveColors
-import com.shub39.rush.presentation.theme.RushTheme
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import io.gitlab.bpavuk.viz.VisualizerData
 import io.gitlab.bpavuk.viz.VisualizerState
@@ -166,11 +167,7 @@ fun LyricsCustomisationsPage(
                         .fillMaxSize()
                         .animateContentSize(),
                 contentPadding =
-                    PaddingValues(
-                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
-                        bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                    ),
+                    PaddingValues(bottom = paddingValues.calculateBottomPadding() + 60.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 stickyHeader {
@@ -279,7 +276,7 @@ fun LyricsCustomisationsPage(
                             .padding(
                                 top = paddingValues.calculateTopPadding() + 16.dp,
                                 start = 16.dp,
-                                bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                                bottom = 16.dp,
                             ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -345,6 +342,7 @@ fun LyricsCustomisationsPage(
     }
 }
 
+@PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
 private fun AudioPermissionDialog(
@@ -387,7 +385,9 @@ private fun AudioPermissionDialog(
     }
 }
 
-@Preview
+@PreviewWrapper(RushPreviewWrapper::class)
+@PreviewLightDark
+@PreviewScreenSizes
 @Composable
 private fun Preview() {
     var state by remember {
@@ -403,15 +403,13 @@ private fun Preview() {
     val waveData =
         rememberVisualizerState().let { if (it is VisualizerState.Ready) it.fft else null }
 
-    RushTheme(theme = Theme(appTheme = AppTheme.DARK, seedColor = Color.Red.toArgb())) {
-        LyricsCustomisationsPage(
-            onNavigateBack = {},
-            state = state,
-            onAction = {},
-            notificationAccess = true,
-            microphonePermission = true,
-            requestMicrophonePermission = {},
-            waveData = waveData,
-        )
-    }
+    LyricsCustomisationsPage(
+        onNavigateBack = {},
+        state = state,
+        onAction = {},
+        notificationAccess = true,
+        microphonePermission = true,
+        requestMicrophonePermission = {},
+        waveData = waveData,
+    )
 }
