@@ -229,10 +229,8 @@ object RomanizationUtils {
 
     // Cho override map for Korean: when a context-dependent jong+cho combination
     // changes the cho sound, this map provides the overridden cho value.
-    // Absent keys mean: use normal cho value from HANGUL_ROMAJA_MAP["cho"].
     private val CHO_OVERRIDE: Map<String, String> =
         mapOf(
-            // Liquid assimilation: ᄂ/ᄅ → "l" after ᆫ/ᆯ
             "ᆫᄅ" to "l",
             "ᆯᄂ" to "l",
             "ᆯᄅ" to "l",
@@ -240,8 +238,6 @@ object RomanizationUtils {
             "ᆭᄅ" to "l",
             "ᆶᄂ" to "l",
             "ᆶᄅ" to "l",
-
-            // ᄅ → "n" after nasal jong
             "ᆨᄅ" to "n",
             "ᆩᄅ" to "n",
             "ᆪᄅ" to "n",
@@ -263,8 +259,6 @@ object RomanizationUtils {
             "ᇀᄅ" to "n",
             "ᇁᄅ" to "n",
             "ᇂᄅ" to "n",
-
-            // Consonant resurfaces before ᄋ (jong moves to next syllable)
             "ᆨᄋ" to "g",
             "ᆩᄋ" to "g",
             "ᆪᄋ" to "s",
@@ -287,8 +281,6 @@ object RomanizationUtils {
             "ᇀᄋ" to "d",
             "ᇁᄋ" to "p",
             "ᇂᄋ" to "h",
-
-            // Aspiration: jong + ᄒ → aspirated cho (jong is empty, cho is aspirated)
             "ᆨᄒ" to "kh",
             "ᆩᄒ" to "kh",
             "ᆪᄒ" to "kh",
@@ -313,8 +305,6 @@ object RomanizationUtils {
             "ᆭᄒ" to "ch",
             "ᇂᄒ" to "",
             "ᇂᄀ" to "k",
-
-            // Nasal assimilation: ᄂ after nasal jong stays "n"
             "ᆨᄂ" to "n",
             "ᆩᄂ" to "n",
             "ᆪᄂ" to "n",
@@ -329,8 +319,6 @@ object RomanizationUtils {
             "ᆿᄂ" to "n",
             "ᇀᄂ" to "n",
             "ᇂᄂ" to "n",
-
-            // ᄆ after nasal jong
             "ᆨᄆ" to "m",
             "ᆩᄆ" to "m",
             "ᆪᄆ" to "m",
@@ -345,8 +333,6 @@ object RomanizationUtils {
             "ᆿᄆ" to "m",
             "ᇀᄆ" to "m",
             "ᇂᄆ" to "m",
-
-            // ᄂ after ᆫ stays "n"
             "ᆬᄂ" to "n",
             "ᆶᄆ" to "m",
         )
@@ -737,7 +723,6 @@ object RomanizationUtils {
                             contextJong ?: HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
                         romajaBuilder.append(jong)
 
-                        // When a context key matched, check if cho should be overridden
                         val cho =
                             if (contextJong != null) {
                                 CHO_OVERRIDE[contextKey]
@@ -836,7 +821,6 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for ((index, char) in text.withIndex()) {
             val str = char.toString()
-            // ї → "yi" at word start, "i" elsewhere (e.g., київ → kyiv, not kyyiv)
             if (str == "ї" && index > 0 && text[index - 1].let { it in '\u0400'..'\u04FF' }) {
                 sb.append("i")
             } else if (
@@ -896,8 +880,6 @@ object RomanizationUtils {
     }
 
     // Hindi romanization
-    // Inherent vowel 'a' is added after consonants unless followed by a replacing
-    // vowel sign (that replaces inherent 'a'), virama, or end of word.
     private val DEVANAGARI_REPLACING_VOWEL_SIGNS =
         setOf("ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ")
     private val DEVANAGARI_CONSONANTS =
@@ -962,12 +944,6 @@ object RomanizationUtils {
                     val str = char.toString()
                     val mapped = DEVANAGARI_ROMAJI_MAP[str] ?: str
                     sb.append(mapped)
-                    // Add inherent 'a' after a consonant unless followed by:
-                    // - a replacing vowel sign (that replaces inherent 'a')
-                    // - virama (kills inherent 'a')
-                    // - end of word (space, punctuation, end of string)
-                    // Nasalization marks (ं, ँ) and visarga (ः) modify the inherent vowel, not
-                    // replace it
                     if (str in DEVANAGARI_CONSONANTS) {
                         val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
                         if (
@@ -989,8 +965,6 @@ object RomanizationUtils {
         }
 
     // Punjabi romanization
-    // Inherent vowel 'a' is added after consonants unless followed by a replacing
-    // vowel sign (that replaces inherent 'a'), virama, or end of word.
     private val GURMUKHI_REPLACING_VOWEL_SIGNS = setOf("ਾ", "ਿ", "ੀ", "ੁ", "ੂ", "ੇ", "ੈ", "ੋ", "ੌ")
     private val GURMUKHI_CONSONANTS =
         setOf(
@@ -1055,12 +1029,6 @@ object RomanizationUtils {
                     val str = char.toString()
                     val mapped = GURMUKHI_ROMAJI_MAP[str] ?: str
                     sb.append(mapped)
-                    // Add inherent 'a' after a consonant unless followed by:
-                    // - a replacing vowel sign (that replaces inherent 'a')
-                    // - virama (kills inherent 'a')
-                    // - end of word (space, punctuation, end of string)
-                    // Nasalization marks (ੰ, ਂ) and chandrabindu (ਁ) modify the inherent vowel, not
-                    // replace it
                     if (str in GURMUKHI_CONSONANTS) {
                         val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
                         if (
@@ -1093,7 +1061,6 @@ object RomanizationUtils {
     }
 
     fun isChinese(text: String): Boolean {
-        // Exclude Japanese text (contains kana) — kanji are shared between CJK
         if (isJapanese(text)) return false
         return text.any { it in '\u4E00'..'\u9FFF' }
     }
