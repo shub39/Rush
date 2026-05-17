@@ -1143,12 +1143,17 @@ object RomanizationUtils {
             var i = 0
             while (i < text.length) {
                 var consumed = false
-                if (i + 1 < text.length) {
-                    val twoChar = text.substring(i, i + 2)
-                    if (DEVANAGARI_ROMAJI_MAP.containsKey(twoChar)) {
-                        sb.append(DEVANAGARI_ROMAJI_MAP[twoChar])
-                        i += 2
-                        consumed = true
+                // Try multi-char match first: 3-char conjuncts (क्ष, त्र, ज्ञ, श्र),
+                // then 2-char Nukta forms. Fall through to single-char for inherent vowel.
+                for (len in 3 downTo 2) {
+                    if (i + len <= text.length) {
+                        val substr = text.substring(i, i + len)
+                        if (DEVANAGARI_ROMAJI_MAP.containsKey(substr)) {
+                            sb.append(DEVANAGARI_ROMAJI_MAP[substr])
+                            i += len
+                            consumed = true
+                            break
+                        }
                     }
                 }
                 if (!consumed) {

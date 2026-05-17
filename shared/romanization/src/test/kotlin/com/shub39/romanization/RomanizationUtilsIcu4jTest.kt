@@ -559,8 +559,7 @@ class RomanizationUtilsIcu4jTest {
     @Test
     fun testHindi_conjunctGy() = runTest {
         val result = RomanizationUtils.romanizeHindi("ज्ञान")
-        assertNotNull(result)
-        assertTrue(result.isNotEmpty())
+        assertEquals("gyaan", result)
     }
 
     @Test
