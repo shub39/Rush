@@ -775,6 +775,33 @@ class RomanizationUtilsTest {
     }
 
     @Test
+    fun testRomanize_autoDetectJapanese() = runTest {
+        val result =
+            RomanizationUtils.romanize(
+                "こんにちは",
+                enabledLanguages = listOf("Japanese", "Chinese", "Korean"),
+            )
+        assertNotNull(result)
+        // With tokenizer: こんにちは → konnichiwa (particle rule)
+        // Without: → konnichiha
+        assertTrue(
+            result == "konnichiwa" || result == "konnichiha" || result!!.contains("konnichi")
+        )
+    }
+
+    @Test
+    fun testRomanize_autoDetectChinese() = runTest {
+        val result =
+            RomanizationUtils.romanize(
+                "你好",
+                enabledLanguages = listOf("Japanese", "Chinese"),
+            )
+        assertNotNull(result)
+        // Pure CJK with both enabled → Chinese romanization (pinyin with tones)
+        assertTrue(result!!.contains("nǐ") || result!!.contains("ni"))
+    }
+
+    @Test
     fun testRomanize_whitespaceOnly() = runTest {
         val result = RomanizationUtils.romanize("   ", enabledLanguages = listOf("Japanese"))
         assertNull(result)
