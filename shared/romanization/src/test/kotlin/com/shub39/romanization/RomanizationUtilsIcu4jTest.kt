@@ -625,6 +625,12 @@ class RomanizationUtilsIcu4jTest {
         assertEquals("", result)
     }
 
+    @Test
+    fun testPunjabi_nuktaFormInherentVowel() = runTest {
+        val result = RomanizationUtils.romanizePunjabi("ਸ਼ਕਲ")
+        assertEquals("shakal", result)
+    }
+
     // ============================================================
     // Cyrillic romanization — pure Kotlin, no ICU needed
     // ============================================================

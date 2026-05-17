@@ -94,8 +94,8 @@ class RomanizationUtilsTest {
     @Test
     fun testJapanese_particleWa() = runTest {
         val result = RomanizationUtils.romanizeJapanese("わたしは")
-        // Without morphological analyzer, は is romanized as "ha"
-        assertEquals("watashiha", result)
+        // Without tokenizer: は → ha; with tokenizer: particle rule → wa
+        assertTrue(result == "watashiha" || result == "watashiwa")
     }
 
     @Test
@@ -380,6 +380,12 @@ class RomanizationUtilsTest {
     fun testPunjabi_emptyString() = runTest {
         val result = RomanizationUtils.romanizePunjabi("")
         assertEquals("", result)
+    }
+
+    @Test
+    fun testPunjabi_nuktaFormInherentVowel() = runTest {
+        val result = RomanizationUtils.romanizePunjabi("ਸ਼ਕਲ")
+        assertEquals("shakal", result)
     }
 
     // Cyrillic corner cases
