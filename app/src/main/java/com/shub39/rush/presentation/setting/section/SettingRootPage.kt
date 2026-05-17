@@ -281,7 +281,7 @@ fun SettingRootPage(
                             )
                         },
                         supportingContent = {
-                            Text(text = "Grit ${state.changelog.firstOrNull()?.version ?: "x.x.x"}")
+                            Text(text = "Rush ${state.changelog.firstOrNull()?.version ?: "x.x.x"}")
                         },
                         trailingContent = {
                             Icon(
