@@ -258,6 +258,12 @@ class RomanizationUtilsTest {
     }
 
     @Test
+    fun testKorean_jongNhBeforeVowel() = runTest {
+        val result = RomanizationUtils.romanizeKorean("앉아")
+        assertEquals("anja", result)
+    }
+
+    @Test
     fun testKorean_punctuationPassthrough() = runTest {
         val result = RomanizationUtils.romanizeKorean("안녕!")
         assertTrue(result.contains("annyeong"))
