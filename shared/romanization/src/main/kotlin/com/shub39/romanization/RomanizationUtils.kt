@@ -16,16 +16,74 @@
  */
 package com.shub39.romanization
 
+import android.content.Context
 import android.icu.text.Transliterator
+import android.util.Log
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
-    private val japaneseTransliterator by lazy {
-        Transliterator.getInstance("Any-Latin; Any-ASCII")
+
+    // Japanese tokenizer (longest-match over the reading dictionary)
+
+    // Reading dictionary: surface form → katakana reading
+    @Volatile private var readingDictionary: Map<String, String>? = null
+
+    // Fast longest-match index: first-char → (surface, reading) sorted by length desc
+    @Volatile private var tokenizerIndex: Map<Char, List<Pair<String, String>>>? = null
+
+    /**
+     * Load the reading dictionary and build the tokenizer index.
+     *
+     * @param context Application context for accessing assets
+     */
+    fun loadReadingDictionary(context: Context) {
+        if (readingDictionary != null) return
+        try {
+            val startMs = System.currentTimeMillis()
+
+            // 1. Read TSV into map
+            val lines =
+                context.assets.open("ja_readings.tsv").bufferedReader(Charsets.UTF_8).readLines()
+            val map = HashMap<String, String>(lines.size)
+            for (line in lines) {
+                val tab = line.indexOf('\t')
+                if (tab > 0) {
+                    map[line.substring(0, tab)] = line.substring(tab + 1)
+                }
+            }
+            readingDictionary = map
+
+            // 2. Build longest-match index
+            val grouped = HashMap<Char, MutableList<Pair<String, String>>>()
+            for ((surface, reading) in map) {
+                if (surface.isEmpty()) continue
+                grouped.getOrPut(surface[0]) { mutableListOf() }.add(surface to reading)
+            }
+            // Sort each bucket by length descending (longest match first)
+            for (list in grouped.values) {
+                list.sortByDescending { it.first.length }
+            }
+            tokenizerIndex = grouped
+
+            val elapsed = System.currentTimeMillis() - startMs
+            Log.d("RomanizationUtils", "Loaded ${map.size} readings + index in ${elapsed}ms")
+        } catch (e: Exception) {
+            Log.e("RomanizationUtils", "Failed to load reading dictionary", e)
+            readingDictionary = emptyMap()
+            tokenizerIndex = emptyMap()
+        }
     }
-    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
+
+    // ICU transliterators for Japanese→romaji conversion
+    // Katakana-Latin: used when we have an explicit katakana reading from a dictionary
+    private val katakanaTransliterator by lazy { Transliterator.getInstance("Katakana-Latin") }
+
+    // Note: We intentionally do NOT use Any-Latin or similar transliterators
+    // for kanji because they give Chinese pinyin readings (e.g. 日本語 → rì běn yǔ)
+    // instead of Japanese readings. The bundled reading dictionary (ja_readings.tsv)
+    // provides proper Japanese readings.
 
     // Hangul Romaja mapping
     private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =
@@ -692,10 +750,139 @@ object RomanizationUtils {
         )
 
     // Japanese romanization
+
     suspend fun romanizeJapanese(text: String): String =
         withContext(Dispatchers.Default) {
-            japaneseTransliterator.transliterate(text).lowercase(Locale.ROOT)
+            if (text.isEmpty()) return@withContext ""
+
+            val index = tokenizerIndex
+            val dict = readingDictionary
+            if (index != null && !index.isEmpty()) {
+                romanizeJapaneseWithTokenizer(text, index, dict)
+            } else {
+                romanizeJapaneseFallback(text)
+            }
         }
+
+    /**
+     * Tokenize Japanese text using longest-match over the reading dictionary.
+     *
+     * For each token:
+     * 1. If the surface is a particle (は/へ/を) → special mapping.
+     * 2. If the surface has a reading in the dictionary → transliterate reading (katakana→romaji).
+     * 3. Otherwise → transliterate any kana in the surface, leave kanji unchanged.
+     */
+    private fun romanizeJapaneseWithTokenizer(
+        text: String,
+        index: Map<Char, List<Pair<String, String>>>,
+        dict: Map<String, String>?,
+    ): String {
+        val parts = mutableListOf<String>()
+        var i = 0
+
+        while (i < text.length) {
+            val ch = text[i]
+            val candidates = index[ch]
+            var matchedSurface: String? = null
+            var matchedReading: String? = null
+
+            // Longest-match lookup
+            if (candidates != null) {
+                for ((surface, reading) in candidates) {
+                    if (
+                        i + surface.length <= text.length &&
+                            text.regionMatches(i, surface, 0, surface.length)
+                    ) {
+                        matchedSurface = surface
+                        matchedReading = reading
+                        break
+                    }
+                }
+            }
+
+            val surface: String
+            val reading: String?
+
+            if (matchedSurface != null) {
+                surface = matchedSurface
+                reading = matchedReading
+                i += surface.length
+            } else {
+                // Single character — no dictionary match
+                surface = ch.toString()
+                reading = null
+                i++
+            }
+
+            val romanized =
+                when {
+                    // Particles with special pronunciations
+                    surface == "は" && surface.length == 1 -> "wa"
+                    surface == "へ" && surface.length == 1 -> "e"
+                    surface == "を" && surface.length == 1 -> "o"
+                    // Reading from dictionary (katakana → romaji)
+                    reading != null && reading.isNotEmpty() -> {
+                        katakanaTransliterator.transliterate(reading).lowercase(Locale.ROOT)
+                    }
+                    // Fallback: transliterate any kana in surface, leave kanji
+                    else -> {
+                        val hasKana =
+                            surface.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' }
+                        if (hasKana) {
+                            val katakanaSurface =
+                                surface
+                                    .map { c ->
+                                        if (c in '\u3040'..'\u309F') (c.code + 0x60).toChar() else c
+                                    }
+                                    .joinToString("")
+                            katakanaTransliterator
+                                .transliterate(katakanaSurface)
+                                .lowercase(Locale.ROOT)
+                        } else {
+                            surface
+                        }
+                    }
+                }
+
+            if (romanized.isNotEmpty()) {
+                parts.add(romanized)
+            }
+        }
+
+        return parts
+            .joinToString(" ")
+            .replace(Regex("\\s+([。、？！.,!?;:：；)])"), "$1")
+            .replace(Regex("([「『(（])\\s+"), "$1")
+            .replace(Regex("\\s{2,}"), " ")
+            .trim()
+    }
+
+    // ICU-only fallback: kana → romaji, kanji passes through
+    // Uses the reading dictionary if available for kanji tokens.
+    // Does NOT use Any-Latin/Japanese-Latin transliterators in this path
+    // because they give Chinese pinyin for kanji which is wrong for Japanese.
+    private fun romanizeJapaneseFallback(text: String): String {
+        val sb = StringBuilder()
+        for (char in text) {
+            when {
+                char in '\u3040'..'\u309F' -> {
+                    val katakana = (char.code + 0x60).toChar()
+                    sb.append(
+                        katakanaTransliterator
+                            .transliterate(katakana.toString())
+                            .lowercase(Locale.ROOT)
+                    )
+                }
+                char in '\u30A0'..'\u30FF' -> {
+                    sb.append(
+                        katakanaTransliterator.transliterate(char.toString()).lowercase(Locale.ROOT)
+                    )
+                }
+                else -> sb.append(char)
+            }
+        }
+        return sb.toString().trim()
+    }
 
     // Korean romanization
     suspend fun romanizeKorean(text: String): String =
@@ -756,6 +943,8 @@ object RomanizationUtils {
 
             romajaBuilder.toString()
         }
+
+    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
 
     // Chinese romanization
     suspend fun romanizeChinese(text: String): String =
@@ -1051,7 +1240,12 @@ object RomanizationUtils {
 
     // Language detection
     fun isJapanese(text: String): Boolean {
-        return text.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' }
+        return text.any {
+            it in '\u3040'..'\u309F' || // hiragana
+                it in '\u30A0'..'\u30FF' || // katakana
+                it in '\u4E00'..'\u9FFF' || // CJK Unified Ideographs (kanji)
+                it in '\u3400'..'\u4DBF' // CJK Extension A
+        }
     }
 
     fun isKorean(text: String): Boolean {
