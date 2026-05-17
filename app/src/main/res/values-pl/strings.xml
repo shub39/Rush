@@ -156,4 +156,8 @@
     <string name="romanization">Transkrypcja</string>
     <string name="romanization_desc">Pokazuj transkrypcję tekstów piosenek dla Japońskiego, Koreańskiego, Chińskiego, Hindi, Punjabi i Cyrylicy</string>
     <string name="open_search">Otwórz wyszukiwanie</string>
+    <string name="bmc_desc">Wspomórz mnie robiąc małą wpłatę</string>
+    <string name="translate_desc">Przetłumacz Rush na twój język</string>
+    <string name="system_default">Domyślny Systemowy</string>
+    <string name="language">Język</string>
 </resources>
