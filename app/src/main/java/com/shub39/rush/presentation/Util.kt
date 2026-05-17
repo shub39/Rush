@@ -173,20 +173,3 @@ fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier):
         this
     }
 }
-
-// very important
-private val brainrots =
-    listOf(
-        "Bombardino Crocodilo",
-        "Brr Brr Patapim",
-        "Lirili Larila",
-        "Trippi Troppi",
-        "Capucino Assassaino",
-        "Trulimero Trulichina",
-        "Tung Tung Tung Sahur",
-        "Chimpanzini Bananini",
-        "Giraffa Celeste",
-        "Tralalero Tralala",
-    )
-
-fun getRandomLine(): String = brainrots.random()

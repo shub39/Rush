@@ -33,8 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,7 +67,7 @@ import com.shub39.rush.presentation.lyrics.LyricsState
 import com.shub39.rush.presentation.lyrics.PlaybackInfo
 import com.shub39.rush.presentation.lyrics.PlayingSong
 import com.shub39.rush.presentation.lyrics.TextPrefs
-import com.shub39.rush.presentation.lyrics.rememberLineProgress
+import com.shub39.rush.presentation.lyrics.calculateLineProgress
 import com.shub39.rush.presentation.lyrics.toTransformOrigin
 import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.toAlignment
@@ -114,7 +112,7 @@ fun SyllableSyncedLyrics(
 
         val nextTime = ttmlLyrics.getOrNull(index + 1)?.startTime
         val progress =
-            rememberLineProgress(
+            calculateLineProgress(
                 currentTime = currentTime,
                 startTime = line.startTime,
                 nextTime = nextTime,
@@ -316,21 +314,17 @@ private fun SyllableWord(
 
     val currentWeight =
         remember(animatedProgress, maxWordWeight) {
-            mutableIntStateOf(
-                (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
-                    200,
-                    maxWordWeight,
-                )
+            (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
+                200,
+                maxWordWeight,
             )
         }
 
     val currentWidth =
         remember(animatedProgress, maxWordWidth) {
-            mutableFloatStateOf(
-                (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
-                    100f,
-                    maxWordWidth,
-                )
+            (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
+                100f,
+                maxWordWidth,
             )
         }
 
@@ -359,10 +353,7 @@ private fun SyllableWord(
                 fontWeight = FontWeight.Bold,
                 fontFamily =
                     if (expressiveSyllables) {
-                        flexFontEmphasis(
-                            fontWeight = currentWeight.intValue,
-                            fontWidth = currentWidth.floatValue,
-                        )
+                        flexFontEmphasis(fontWeight = currentWeight, fontWidth = currentWidth)
                     } else {
                         fontFamily
                     },

@@ -59,7 +59,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -141,9 +140,6 @@ fun LyricsPage(
             targetValue = calculateGlowMultiplier(waveData),
             animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         )
-
-    val glowCardBackground by
-        remember(glowMultiplier) { mutableFloatStateOf((24 * glowMultiplier)) }
 
     val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
 
@@ -592,7 +588,11 @@ fun LyricsPage(
                             Modifier.conditional(
                                     state.lyricsBackground in audioDependentBackgrounds
                                 ) {
-                                    glowBackground(glowCardBackground.dp, CircleShape, cardContent)
+                                    glowBackground(
+                                        (24 * glowMultiplier).dp,
+                                        CircleShape,
+                                        cardContent,
+                                    )
                                 }
                                 .height(60.dp)
                                 .width(120.dp),
