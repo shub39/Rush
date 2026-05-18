@@ -50,8 +50,8 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.lerp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
@@ -269,8 +269,6 @@ private fun SyllableWord(
     underTextAlpha: Float,
     scale: Float,
 ) {
-    val fontFamily = MaterialTheme.typography.bodyLarge.fontFamily
-
     val wordStartTimeMs = remember(word) { (word.startTime * 1000).toLong() }
     val wordEndTimeMs = remember(word) { (word.endTime * 1000).toLong() }
     val duration = remember(word) { (wordEndTimeMs - wordStartTimeMs).coerceAtLeast(1) }
@@ -312,21 +310,21 @@ private fun SyllableWord(
             label = "wordProgress",
         )
 
-    val currentWeight =
-        remember(animatedProgress, maxWordWeight) {
-            (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
-                200,
-                maxWordWeight,
-            )
-        }
-
-    val currentWidth =
-        remember(animatedProgress, maxWordWidth) {
-            (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
-                100f,
-                maxWordWidth,
-            )
-        }
+    //    val currentWeight =
+    //        remember(animatedProgress, maxWordWeight) {
+    //            (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
+    //                200,
+    //                maxWordWeight,
+    //            )
+    //        }
+    //
+    //    val currentWidth =
+    //        remember(animatedProgress, maxWordWidth) {
+    //            (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
+    //                100f,
+    //                maxWordWidth,
+    //            )
+    //        }
 
     // word highlighting design
     val isHighlighted = currentTime >= wordStartTimeMs
@@ -343,22 +341,26 @@ private fun SyllableWord(
             label = "glowAlpha",
         )
 
-    val textStyle =
-        remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
-            TextStyle(
-                fontSize = textPrefs.fontSize.sp,
-                letterSpacing = textPrefs.letterSpacing.sp,
-                lineHeight = textPrefs.lineHeight.sp,
-                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                fontWeight = FontWeight.Bold,
-                fontFamily =
-                    if (expressiveSyllables) {
-                        flexFontEmphasis(fontWeight = currentWeight, fontWidth = currentWidth)
-                    } else {
-                        fontFamily
-                    },
+    val baseTextStyle =
+        MaterialTheme.typography.bodyLarge.copy(
+            fontSize = textPrefs.fontSize.sp,
+            letterSpacing = textPrefs.letterSpacing.sp,
+            lineHeight = textPrefs.lineHeight.sp,
+            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+        )
+    val textStyle1 =
+        if (expressiveSyllables) {
+            baseTextStyle.copy(fontFamily = flexFontEmphasis(fontWeight = 200, fontWidth = 100f))
+        } else baseTextStyle
+    val textStyle2 =
+        if (expressiveSyllables) {
+            textStyle1.copy(
+                fontFamily = flexFontEmphasis(fontWeight = maxWordWeight, fontWidth = maxWordWidth)
             )
-        }
+        } else textStyle1
+
+    val textStyleAnim by animateFloatAsState(targetValue = if (isHighlighted) 1f else 0f)
+    val animatedTextStyle = lerp(textStyle1, textStyle2, textStyleAnim)
 
     Box(
         modifier =
@@ -368,29 +370,12 @@ private fun SyllableWord(
             }
     ) {
         // Ghost text for layout consistency
-        Text(
-            text = word.text,
-            style =
-                remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
-                    textStyle.copy(
-                        fontFamily =
-                            if (expressiveSyllables) {
-                                flexFontEmphasis(
-                                    fontWeight = maxWordWeight,
-                                    fontWidth = maxWordWidth,
-                                )
-                            } else {
-                                fontFamily
-                            }
-                    )
-                },
-            modifier = Modifier.alpha(0f),
-        )
+        Text(text = word.text, style = textStyle2, modifier = Modifier.alpha(0f))
 
         // Undertext + Glow
         Text(
             text = word.text,
-            style = textStyle,
+            style = animatedTextStyle,
             color = textColor.copy(alpha = underTextAlpha),
             modifier =
                 Modifier.matchParentSize()
@@ -400,7 +385,7 @@ private fun SyllableWord(
         // Main Highlight Layer with Mask
         Text(
             text = word.text,
-            style = textStyle,
+            style = animatedTextStyle,
             color = textColor,
             modifier =
                 Modifier.matchParentSize()
@@ -536,7 +521,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
-            expressiveSyllables = false,
+            expressiveSyllables = true,
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
