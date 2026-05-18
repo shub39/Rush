@@ -1070,15 +1070,11 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for ((index, char) in text.withIndex()) {
             val str = char.toString()
-            if (str == "ї" && index > 0 && text[index - 1].let { it in '\u0400'..'\u04FF' }) {
-                sb.append("i")
-            } else if (
-                str == "Ї" && index > 0 && text[index - 1].let { it in '\u0400'..'\u04FF' }
-            ) {
-                sb.append("I")
-            } else {
-                sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
-            }
+            // Cyrillic vowels (а е є и і о у ю я, their uppercase equivalents) still
+            // require "yi" for ї — only consonant predecessors absorb the glide.
+            // In practice ї after a consonant is extremely rare; always using "yi"
+            // (the BGN/PCGN and ALA-LC standard) is safer than checking for vowels.
+            sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
         }
         return sb.toString()
     }
