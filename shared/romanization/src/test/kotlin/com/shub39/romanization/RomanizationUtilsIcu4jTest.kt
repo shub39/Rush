@@ -1099,13 +1099,10 @@ class RomanizationUtilsIcu4jTest {
 
     @Test
     fun testKorean_palatalization() = runTest {
-        // ㄷ + 이 → ㅈ, ㅌ + 이 → ㅊ palatalization is not yet implemented
-        // Currently 같이 → "gati", 굳이 → "gudi"
-        // (Standard RR: gachi, guji)
-        val result1 = RomanizationUtils.romanizeKorean("같이")
-        assertNotNull(result1)
-        val result2 = RomanizationUtils.romanizeKorean("굳이")
-        assertNotNull(result2)
+        // ㄷ + 이 → ㅈ, ㅌ + 이 → ㅊ palatalization across syllable boundary
+        // 굳이 → guji, 같이 → gachi
+        assertEquals("guji", RomanizationUtils.romanizeKorean("굳이"))
+        assertEquals("gachi", RomanizationUtils.romanizeKorean("같이"))
     }
 
     @Test
@@ -1130,10 +1127,10 @@ class RomanizationUtilsIcu4jTest {
     fun testKorean_complexLinking() = runTest {
         // 백마 → baengma (ㄱ + ㅁ → ㅇ + ㅁ, nasalization)
         assertEquals("baengma", RomanizationUtils.romanizeKorean("백마"))
-        // 독립 → dongnip but with verb: independent
-        assertNotNull(RomanizationUtils.romanizeKorean("독립"))
-        // 종로 → currently "jongro" (ㄹ→ㄴ after ng not yet implemented)
-        assertNotNull(RomanizationUtils.romanizeKorean("종로"))
+        // 독립 → dongnip (ㄱ + ㄹ → ㅇ + ㄴ)
+        assertEquals("dongnip", RomanizationUtils.romanizeKorean("독립"))
+        // 종로 → jongno (ㅇ + ㄹ → ㅇ + ㄴ, nasalization of ㄹ after ng)
+        assertEquals("jongno", RomanizationUtils.romanizeKorean("종로"))
     }
 
     // ── Japanese (Hepburn-based JVM ICU tests) ──

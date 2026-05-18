@@ -292,6 +292,7 @@ object RomanizationUtils {
                     "ᆻᄆ" to "n",
                     "ᆻᄒ" to "",
                     "ᆼ" to "ng",
+                    "ᆼᄅ" to "ng",
                     "ᆽ" to "t",
                     "ᆽᄋ" to "",
                     "ᆽᄂ" to "n",
@@ -377,6 +378,9 @@ object RomanizationUtils {
             "ᆬᄋ" to "j",
             "ᆭᄋ" to "h",
             "ᆮᄋ" to "d",
+            "ᇀᄋ" to "t",
+            "ᆼᄅ" to "n",
+            "ᆷᄅ" to "n",
             "ᆯᄋ" to "r",
             "ᆰᄋ" to "g",
             "ᆱᄋ" to "m",
@@ -1027,7 +1031,20 @@ object RomanizationUtils {
                                 HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
                             }
                         val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
-                        romajaBuilder.append(cho).append(jung)
+                        // Palatalization across syllable boundary: ㄷ(d)+ㅣ(i) → ㅈ(j), ㅌ(t)+ㅣ(i) →
+                        // ㅊ(ch)
+                        // e.g., 굳이 → guji, 같이 → gachi
+                        val finalCho =
+                            if (contextJong != null && jung == "i") {
+                                when (cho) {
+                                    "d" -> "j"
+                                    "t" -> "ch"
+                                    else -> cho
+                                }
+                            } else {
+                                cho
+                            }
+                        romajaBuilder.append(finalCho).append(jung)
                     } else {
                         val cho = HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
                         val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
