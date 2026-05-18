@@ -1134,10 +1134,6 @@ object RomanizationUtils {
             "स",
             "ह",
             "ळ",
-            "क्ष",
-            "त्र",
-            "ज्ञ",
-            "श्र",
         )
     private val DEVANAGARI_VIRAMA = "्"
 
@@ -1242,12 +1238,6 @@ object RomanizationUtils {
             "ਲ",
             "ਵ",
             "ੜ",
-            "ਸ਼",
-            "ਖ਼",
-            "ਗ਼",
-            "ਜ਼",
-            "ਫ਼",
-            "ਲ਼",
         )
     private val GURMUKHI_VIRAMA = "੍"
 
