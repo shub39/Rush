@@ -118,36 +118,36 @@ fun SyllableSyncedLyrics(
             )
 
         val animatedProgress by
-        animateFloatAsState(
-            targetValue = progress,
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            label = "loadingProgress",
-        )
+            animateFloatAsState(
+                targetValue = progress,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "loadingProgress",
+            )
 
         val underTextAlpha by
-        animateFloatAsState(
-            targetValue = if (isCurrent) 0.5f else 0.2f,
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            label = "underTextAlpha",
-        )
+            animateFloatAsState(
+                targetValue = if (isCurrent) 0.5f else 0.2f,
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "underTextAlpha",
+            )
 
         val scale by
-        animateFloatAsState(
-            targetValue = if (isCurrent) 1f else 0.8f,
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-            label = "scale",
-        )
+            animateFloatAsState(
+                targetValue = if (isCurrent) 1f else 0.8f,
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                label = "scale",
+            )
 
         val textColor by
-        animateColorAsState(
-            targetValue =
-                when {
-                    (line.startTime * 1000).toLong() <= currentTime -> cardContent
-                    else -> cardContent.copy(0.3f)
-                },
-            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-            label = "textColor",
-        )
+            animateColorAsState(
+                targetValue =
+                    when {
+                        (line.startTime * 1000).toLong() <= currentTime -> cardContent
+                        else -> cardContent.copy(0.3f)
+                    },
+                animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                label = "textColor",
+            )
 
         SyllableLine(
             textPrefs = state.textPrefs,
@@ -190,8 +190,7 @@ fun SyllableLine(
     ) {
         Box(
             modifier =
-                Modifier
-                    .graphicsLayer {
+                Modifier.graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = textPrefs.lyricsAlignment.toTransformOrigin()
@@ -304,26 +303,26 @@ private fun SyllableWord(
         }
 
     val animatedProgress by
-    animateFloatAsState(
-        targetValue = wordProgress,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        label = "wordProgress",
-    )
+        animateFloatAsState(
+            targetValue = wordProgress,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordProgress",
+        )
 
     // word highlighting design
     val isHighlighted = currentTime >= wordStartTimeMs
     val wordScale by
-    animateFloatAsState(
-        targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        label = "wordScale",
-    )
+        animateFloatAsState(
+            targetValue = if (isHighlighted || scale != 1f) 1f else 0.95f,
+            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+            label = "wordScale",
+        )
     val glowAlpha by
-    animateFloatAsState(
-        targetValue = if (isHighlighted) 2f else 0f,
-        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-        label = "glowAlpha",
-    )
+        animateFloatAsState(
+            targetValue = if (isHighlighted) 2f else 0f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "glowAlpha",
+        )
 
     val baseTextStyle =
         MaterialTheme.typography.bodyLarge.copy(
@@ -332,90 +331,91 @@ private fun SyllableWord(
             lineHeight = textPrefs.lineHeight.sp,
             textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
         )
-    val textStyle1 = remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
-        if (expressiveSyllables) {
-            baseTextStyle.copy(fontFamily = flexFontEmphasis(fontWeight = 300, fontWidth = 100f))
-        } else baseTextStyle
-    }
-    val textStyle2 = remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
-        if (expressiveSyllables) {
-            textStyle1.copy(
-                fontFamily = flexFontEmphasis(fontWeight = maxWordWeight, fontWidth = maxWordWidth)
-            )
-        } else textStyle1
-    }
+    val textStyle1 =
+        remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
+            if (expressiveSyllables) {
+                baseTextStyle.copy(
+                    fontFamily = flexFontEmphasis(fontWeight = 300, fontWidth = 100f)
+                )
+            } else baseTextStyle
+        }
+    val textStyle2 =
+        remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
+            if (expressiveSyllables) {
+                textStyle1.copy(
+                    fontFamily =
+                        flexFontEmphasis(fontWeight = maxWordWeight, fontWidth = maxWordWidth)
+                )
+            } else textStyle1
+        }
 
     Box(
         modifier =
-            Modifier
-                .padding(horizontal = 4.dp)
-                .graphicsLayer {
-                    scaleX = wordScale
-                    scaleY = wordScale
-                }
+            Modifier.padding(horizontal = 4.dp).graphicsLayer {
+                scaleX = wordScale
+                scaleY = wordScale
+            }
     ) {
         // skeleton
         Text(text = word.text, style = textStyle2, modifier = Modifier.alpha(0f))
 
         Box(
-            modifier = Modifier
-                .matchParentSize()
-                .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-
-        ) {
-            Text(
-                text = word.text,
-                style = textStyle1,
-                color = textColor.copy(alpha = underTextAlpha),
-                modifier = Modifier.alpha(1 - animatedProgress)
-            )
-
-            Text(
-                text = word.text,
-                style = textStyle2,
-                color = textColor.copy(alpha = underTextAlpha),
-                modifier = Modifier.alpha(animatedProgress)
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                .drawWithContent {
-                    if (animatedProgress > 0f) {
+            modifier =
+                Modifier.matchParentSize()
+                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                    .drawWithContent {
                         drawContent()
-                        if (animatedProgress < 1f) {
+                        if (animatedProgress > 0f) {
                             val feather = 16.dp.toPx()
                             val x = (size.width + feather) * animatedProgress
                             drawRect(
                                 brush =
                                     Brush.horizontalGradient(
-                                        0f to Color.Black,
+                                        0f to Color.Transparent,
                                         ((x - feather) / size.width).coerceIn(0f, 1f) to
-                                                Color.Black,
-                                        (x / size.width).coerceIn(0f, 1f) to Color.Transparent,
-                                        1f to Color.Transparent,
+                                            Color.Transparent,
+                                        (x / size.width).coerceIn(0f, 1f) to Color.Black,
+                                        1f to Color.Black,
                                     ),
                                 blendMode = BlendMode.DstIn,
                             )
                         }
                     }
-                }
         ) {
             Text(
                 text = word.text,
                 style = textStyle1,
-                color = textColor,
-                modifier = Modifier.alpha(1 - animatedProgress)
+                color = textColor.copy(alpha = underTextAlpha),
             )
+        }
 
-            Text(
-                text = word.text,
-                style = textStyle2,
-                color = textColor,
-                modifier = Modifier.alpha(animatedProgress)
-            )
+        Box(
+            modifier =
+                Modifier.matchParentSize()
+                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                    .drawWithContent {
+                        if (animatedProgress > 0f) {
+                            drawContent()
+                            if (animatedProgress < 1f) {
+                                val feather = 16.dp.toPx()
+                                val x = (size.width + feather) * animatedProgress
+                                drawRect(
+                                    brush =
+                                        Brush.horizontalGradient(
+                                            0f to Color.Black,
+                                            ((x - feather) / size.width).coerceIn(0f, 1f) to
+                                                Color.Black,
+                                            (x / size.width).coerceIn(0f, 1f) to Color.Transparent,
+                                            1f to Color.Transparent,
+                                        ),
+                                    blendMode = BlendMode.DstIn,
+                                )
+                            }
+                        }
+                    }
+        ) {
+            Text(text = word.text, style = textStyle2, color = textColor)
         }
     }
 }
