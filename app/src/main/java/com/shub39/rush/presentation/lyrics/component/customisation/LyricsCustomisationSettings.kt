@@ -99,7 +99,9 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = { Text(text = stringResource(R.string.expressive_syllables)) },
+                    headlineContent = {
+                        Text(text = stringResource(R.string.expressive_syllables))
+                    },
                     supportingContent = {
                         Text(
                             text = stringResource(R.string.expressive_syllables_desc),
