@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.2.0
+- Fixed Expressive Syllables causing crashes
+- Fixed UI inconsistencies
+
 ## 6.1.15
 - (Android 12+) Fixed Material Theme not respecting System Colors
 - Updated Translations
