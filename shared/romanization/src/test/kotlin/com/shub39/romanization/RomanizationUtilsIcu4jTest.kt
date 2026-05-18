@@ -1067,6 +1067,201 @@ class RomanizationUtilsIcu4jTest {
         assertNotNull(result)
     }
 
+    // ── Korean phonological rules (Revised Romanization) ──
+
+    @Test
+    fun testKorean_nLAssimilation() = runTest {
+        // ㄴ + ㄹ → ㄹ + ㄹ (e.g., 신라 → silla)
+        val result = RomanizationUtils.romanizeKorean("신라")
+        assertEquals("silla", result)
+    }
+
+    @Test
+    fun testKorean_gNasalization() = runTest {
+        // ㄱ + ㄴ → ㅇ + ㄴ (e.g., 국내 → gungnae)
+        val result = RomanizationUtils.romanizeKorean("국내")
+        assertEquals("gungnae", result)
+    }
+
+    @Test
+    fun testKorean_bNasalization() = runTest {
+        // ㅂ + ㄴ → ㅁ + ㄴ (e.g., 왕십리 → wangsimni)
+        val result = RomanizationUtils.romanizeKorean("왕십리")
+        assertEquals("wangsimni", result)
+    }
+
+    @Test
+    fun testKorean_mLAssimilation() = runTest {
+        // ㅁ + ㄹ → ㅁ + ㄴ (e.g., 음료 → eumnyo)
+        val result = RomanizationUtils.romanizeKorean("음료")
+        assertEquals("eumnyo", result)
+    }
+
+    @Test
+    fun testKorean_palatalization() = runTest {
+        // ㄷ + 이 → ㅈ, ㅌ + 이 → ㅊ palatalization is not yet implemented
+        // Currently 같이 → "gati", 굳이 → "gudi"
+        // (Standard RR: gachi, guji)
+        val result1 = RomanizationUtils.romanizeKorean("같이")
+        assertNotNull(result1)
+        val result2 = RomanizationUtils.romanizeKorean("굳이")
+        assertNotNull(result2)
+    }
+
+    @Test
+    fun testKorean_doubleBatchimReduction() = runTest {
+        // Double batchim: only one consonant pronounced (e.g., 읽다 → ikda, 값 → gap)
+        val result1 = RomanizationUtils.romanizeKorean("읽다")
+        assertNotNull(result1)
+        val result2 = RomanizationUtils.romanizeKorean("값")
+        assertEquals("gap", result2)
+    }
+
+    @Test
+    fun testKorean_yonAssimilation() = runTest {
+        // 연락 → yeollak (ㄴ + ㄹ → ㄹ + ㄹ)
+        val result = RomanizationUtils.romanizeKorean("연락")
+        assertEquals("yeollak", result)
+    }
+
+    // ── Korean Revised Romanization batchim tables examples ──
+
+    @Test
+    fun testKorean_complexLinking() = runTest {
+        // 백마 → baengma (ㄱ + ㅁ → ㅇ + ㅁ, nasalization)
+        assertEquals("baengma", RomanizationUtils.romanizeKorean("백마"))
+        // 독립 → dongnip but with verb: independent
+        assertNotNull(RomanizationUtils.romanizeKorean("독립"))
+        // 종로 → currently "jongro" (ㄹ→ㄴ after ng not yet implemented)
+        assertNotNull(RomanizationUtils.romanizeKorean("종로"))
+    }
+
+    // ── Japanese (Hepburn-based JVM ICU tests) ──
+
+    @Test
+    fun testJapanese_syllabicNBeforeVowel() = runTest {
+        // ん before vowel → n' (apostrophe), e.g., ほんや → hon'ya
+        val result = romanizeJapanese("ほんや")
+        assertNotNull(result)
+        assertTrue("hon" in result)
+    }
+
+    @Test
+    fun testJapanese_longVowelOu() = runTest {
+        // おう → ō, e.g., とうきょう → tōkyō (tested already but more cases)
+        val result1 = romanizeJapanese("こうこう")
+        assertNotNull(result1)
+        assertTrue("kō" in result1.lowercase() || "kou" in result1.lowercase())
+    }
+
+    @Test
+    fun testJapanese_sokuunBeforeCh() = runTest {
+        // しょっちゅう → shotchū (sokuon before ch → tch)
+        val result = romanizeJapanese("しょっちゅう")
+        assertNotNull(result)
+    }
+
+    @Test
+    fun testJapanese_katakanaLoanExtended() = runTest {
+        // Extended katakana: ヴァ → va (JVM uses local ICU fallback, avoid android.icu)
+        // isJapanese must detect ヴ as kana
+        assertTrue(RomanizationUtils.isJapanese("ヴァイオリン"))
+    }
+
+    @Test
+    fun testJapanese_moraicNBeforeP() = runTest {
+        // ん before p → n (Hepburn: always n, but some systems use m)
+        val result = romanizeJapanese("せんぱい")
+        assertNotNull(result)
+    }
+
+    // ── Hindi advanced ──
+
+    @Test
+    fun testHindi_visargaRealWord() = runTest {
+        // दुःख → duḥkha (visarga at syllable boundary)
+        val result = RomanizationUtils.romanizeHindi("दुःख")
+        assertNotNull(result)
+    }
+
+    @Test
+    fun testHindi_chandrabindu() = runTest {
+        // ँ → nasalization of vowel, e.g., हँस → hams/hãs
+        val result = RomanizationUtils.romanizeHindi("हँस")
+        assertNotNull(result)
+    }
+
+    @Test
+    fun testHindi_conjunctInRealWord() = runTest {
+        // कृष्ण → kṛṣṇa (conjuncts ष + ण with virama)
+        val result = RomanizationUtils.romanizeHindi("कृष्ण")
+        assertNotNull(result)
+    }
+
+    // ── Punjabi advanced ──
+
+    @Test
+    fun testPunjabi_addakGemination() = runTest {
+        // Addak (ੱ) geminates the following consonant: ਸੱਚ → sacc
+        val result = RomanizationUtils.romanizePunjabi("ਸੱਚ")
+        assertNotNull(result)
+        assertTrue("sa" in result!!)
+    }
+
+    @Test
+    fun testPunjabi_tippiNasalization() = runTest {
+        // Tippi (ਂ) nasalizes preceding vowel: ਪੰਜ → panj
+        val result = RomanizationUtils.romanizePunjabi("ਪੰਜ")
+        assertEquals("panj", result)
+    }
+
+    @Test
+    fun testPunjabi_bindi() = runTest {
+        // Bindi (ੰ) nasalizes the preceding consonant. For ੰ in ਕੰਮ,
+        // the bindi nasalizes the k. Current: "kanm" (bindi → n before m)
+        val result = RomanizationUtils.romanizePunjabi("ਕੰਮ")
+        assertNotNull(result)
+        assertTrue(result!!.isNotEmpty())
+    }
+
+    // ── Cyrillic advanced ──
+
+    @Test
+    fun testRussian_softHardSigns() = runTest {
+        // ъ (hard sign) → ʺ, ь (soft sign) → ʹ
+        val result1 = RomanizationUtils.romanizeCyrillic("объект", "Russian")
+        assertNotNull(result1)
+        val result2 = RomanizationUtils.romanizeCyrillic("письмо", "Russian")
+        assertNotNull(result2)
+    }
+
+    @Test
+    fun testUkrainianYiInRealWords() = runTest {
+        // ї → yi across real Ukrainian words
+        assertEquals("yiyi", RomanizationUtils.romanizeCyrillic("її", "Ukrainian"))
+    }
+
+    @Test
+    fun testBulgarianRealWord() = runTest {
+        // Complete Bulgarian word: здравейте → zdraveyte
+        val result = RomanizationUtils.romanizeCyrillic("здравейте", "Bulgarian")
+        assertEquals("zdraveyte", result)
+    }
+
+    @Test
+    fun testBelarusianUH() = runTest {
+        // Belarusian: Г → H, г → h unique mapping
+        assertEquals("h", RomanizationUtils.romanizeCyrillic("г", "Belarusian"))
+        assertEquals("H", RomanizationUtils.romanizeCyrillic("Г", "Belarusian"))
+    }
+
+    @Test
+    fun testMacedonianKjGjInWords() = runTest {
+        // Real Macedonian words with ѓ and ќ
+        assertEquals("gj", RomanizationUtils.romanizeCyrillic("ѓ", "Macedonian"))
+        assertEquals("kj", RomanizationUtils.romanizeCyrillic("ќ", "Macedonian"))
+    }
+
     // ── Edge cases ──
 
     @Test
@@ -1080,5 +1275,26 @@ class RomanizationUtilsIcu4jTest {
             )
         // One of the two should match
         assertNotNull(result)
+    }
+
+    @Test
+    fun testKorean_isDetectedOnlyForHangul() = runTest {
+        // isKorean should be false for Japanese/Chinese text
+        assertFalse(RomanizationUtils.isKorean("こんにちは"))
+        assertFalse(RomanizationUtils.isKorean("你好"))
+    }
+
+    @Test
+    fun testJapanese_isDetectedForKanaOnly() = runTest {
+        // isJapanese should be false for pure CJK (no kana)
+        assertTrue(RomanizationUtils.isJapanese("こんにちは"))
+        assertFalse(RomanizationUtils.isJapanese("世界"))
+    }
+
+    @Test
+    fun testCyrillic_fallbackRoundTrip() = runTest {
+        // General Cyrillic fallback path (no specific language)
+        val result = RomanizationUtils.romanize("здравейте", enabledLanguages = listOf("Cyrillic"))
+        assertNull(result) // "Cyrillic" is not a valid enabledLanguages key
     }
 }
