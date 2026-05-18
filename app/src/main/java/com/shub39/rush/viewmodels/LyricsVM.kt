@@ -16,11 +16,9 @@
  */
 package com.shub39.rush.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.romanization.RomanizationUtils
-import com.shub39.rush.app.JapaneseReadingProvider
 import com.shub39.rush.data.PaletteGenerator
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.domain.Result
@@ -57,7 +55,6 @@ import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class LyricsVM(
-    private val appContext: Context,
     private val stateLayer: SharedStates,
     private val repo: SongRepository,
     private val lyricsPrefs: LyricsPagePreferences,
@@ -296,9 +293,6 @@ class LyricsVM(
         romanizationJob =
             viewModelScope.launch(Dispatchers.Default) {
                 if (!_state.value.romanizationEnabled) return@launch
-
-                // Load IPADIC reading dictionary for kanji romanization
-                JapaneseReadingProvider.initialize(appContext)
 
                 val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
 

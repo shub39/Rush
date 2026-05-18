@@ -33,6 +33,31 @@ object RomanizationUtils {
     // Fast longest-match index: first-char → (surface, reading) sorted by length desc
     @Volatile private var tokenizerIndex: Map<Char, List<Pair<String, String>>>? = null
 
+    // Application context for lazy reading dictionary loading
+    @Volatile private var appContext: Context? = null
+
+    /**
+     * Initialize with application context. Stores context for on-demand loading
+     * of the reading dictionary when romanizeJapanese() is first called.
+     * Safe to call multiple times — only the first call stores the context.
+     */
+    fun init(context: Context) {
+        if (appContext != null) return
+        appContext = context.applicationContext
+    }
+
+    /**
+     * Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load.
+     * Uses the stored app context from [init]. Falls back gracefully if not initialized.
+     */
+    private suspend fun ensureReadingDictionary() {
+        if (readingDictionary != null) return
+        val ctx = appContext ?: return
+        withContext(Dispatchers.IO) {
+            loadReadingDictionary(ctx)
+        }
+    }
+
     /**
      * Load the reading dictionary and build the tokenizer index.
      *
@@ -73,7 +98,6 @@ object RomanizationUtils {
 
     /**
      * Reset the reading dictionary so the next call to [loadReadingDictionary] reloads from assets.
-     * Used by [com.shub39.rush.app.JapaneseReadingProvider.reload] after a dictionary update.
      */
     fun resetReadingDictionary() {
         readingDictionary = null
@@ -757,8 +781,9 @@ object RomanizationUtils {
 
     // Japanese romanization
 
-    suspend fun romanizeJapanese(text: String): String =
-        withContext(Dispatchers.Default) {
+    suspend fun romanizeJapanese(text: String): String {
+        ensureReadingDictionary()
+        return withContext(Dispatchers.Default) {
             if (text.isEmpty()) return@withContext ""
 
             val index = tokenizerIndex
@@ -768,6 +793,7 @@ object RomanizationUtils {
                 romanizeJapaneseFallback(text)
             }
         }
+    }
 
     /**
      * Tokenize Japanese text using longest-match over the reading dictionary.
