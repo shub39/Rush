@@ -21,6 +21,8 @@ import android.icu.text.Transliterator
 import android.util.Log
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
@@ -35,6 +37,7 @@ object RomanizationUtils {
 
     // Application context for lazy reading dictionary loading
     @Volatile private var appContext: Context? = null
+    private val initMutex = Mutex()
 
     /**
      * Initialize with application context. Stores context for on-demand loading
@@ -53,8 +56,12 @@ object RomanizationUtils {
     private suspend fun ensureReadingDictionary() {
         if (readingDictionary != null) return
         val ctx = appContext ?: return
-        withContext(Dispatchers.IO) {
-            loadReadingDictionary(ctx)
+
+        initMutex.withLock {
+            if (readingDictionary != null) return@withLock
+            withContext(Dispatchers.IO) {
+                loadReadingDictionary(ctx)
+            }
         }
     }
 
