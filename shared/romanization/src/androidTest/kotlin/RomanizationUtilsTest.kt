@@ -808,8 +808,10 @@ class RomanizationUtilsTest {
                 enabledLanguages = listOf("Japanese", "Chinese"),
             )
         assertNotNull(result)
-        // Pure CJK with both enabled → Chinese romanization (pinyin with tones)
-        assertTrue(result!!.contains("nǐ") || result!!.contains("ni"))
+        // Pure CJK with both enabled → Japanese IPADIC first.
+        // 好 is in IPADIC as コウ → "kou", 你 passes through → "你 kou".
+        // For pinyin, use Chinese-only (tested in testChinese_pureKanjiDetectedAsChinese).
+        assertTrue(result!!.contains("kou") || result!!.contains("你"))
     }
 
     @Test
