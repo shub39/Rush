@@ -92,7 +92,8 @@ fun LyricsCustomisationPreview(
                     ParsedWord("an", 3.6, 3.8),
                     ParsedWord("example", 3.8, 4.5),
                     ParsedWord("of", 4.5, 4.7),
-                    ParsedWord("Syllable-Synced", 4.7, 6.0),
+                    ParsedWord("Syllable", 4.7, 5.2),
+                    ParsedWord("Synced", 5.2, 6.0),
                     ParsedWord("Lyrics", 6.0, 6.5),
                 ),
         )

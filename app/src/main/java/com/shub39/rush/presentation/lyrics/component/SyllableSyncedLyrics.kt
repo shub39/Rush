@@ -50,7 +50,6 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -269,8 +268,6 @@ private fun SyllableWord(
     underTextAlpha: Float,
     scale: Float,
 ) {
-    val fontFamily = MaterialTheme.typography.bodyLarge.fontFamily
-
     val wordStartTimeMs = remember(word) { (word.startTime * 1000).toLong() }
     val wordEndTimeMs = remember(word) { (word.endTime * 1000).toLong() }
     val duration = remember(word) { (wordEndTimeMs - wordStartTimeMs).coerceAtLeast(1) }
@@ -312,22 +309,6 @@ private fun SyllableWord(
             label = "wordProgress",
         )
 
-    val currentWeight =
-        remember(animatedProgress, maxWordWeight) {
-            (((200 + (animatedProgress * (maxWordWeight - 200))) / 10).toInt() * 10).coerceIn(
-                200,
-                maxWordWeight,
-            )
-        }
-
-    val currentWidth =
-        remember(animatedProgress, maxWordWidth) {
-            (((100f + (animatedProgress * (maxWordWidth - 100f))) * 2).toInt() / 2f).coerceIn(
-                100f,
-                maxWordWidth,
-            )
-        }
-
     // word highlighting design
     val isHighlighted = currentTime >= wordStartTimeMs
     val wordScale by
@@ -343,21 +324,29 @@ private fun SyllableWord(
             label = "glowAlpha",
         )
 
-    val textStyle =
-        remember(currentWeight, currentWidth, textPrefs, expressiveSyllables) {
-            TextStyle(
-                fontSize = textPrefs.fontSize.sp,
-                letterSpacing = textPrefs.letterSpacing.sp,
-                lineHeight = textPrefs.lineHeight.sp,
-                textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                fontWeight = FontWeight.Bold,
-                fontFamily =
-                    if (expressiveSyllables) {
-                        flexFontEmphasis(fontWeight = currentWeight, fontWidth = currentWidth)
-                    } else {
-                        fontFamily
-                    },
-            )
+    val baseTextStyle =
+        MaterialTheme.typography.bodyLarge.copy(
+            fontSize = textPrefs.fontSize.sp,
+            letterSpacing = textPrefs.letterSpacing.sp,
+            lineHeight = textPrefs.lineHeight.sp,
+            textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+        )
+    val textStyle1 =
+        remember(baseTextStyle, expressiveSyllables) {
+            if (expressiveSyllables) {
+                baseTextStyle.copy(
+                    fontFamily = flexFontEmphasis(fontWeight = 300, fontWidth = 100f)
+                )
+            } else baseTextStyle
+        }
+    val textStyle2 =
+        remember(textStyle1, maxWordWidth, maxWordWeight, expressiveSyllables) {
+            if (expressiveSyllables) {
+                textStyle1.copy(
+                    fontFamily =
+                        flexFontEmphasis(fontWeight = maxWordWeight, fontWidth = maxWordWidth)
+                )
+            } else textStyle1
         }
 
     Box(
@@ -367,41 +356,41 @@ private fun SyllableWord(
                 scaleY = wordScale
             }
     ) {
-        // Ghost text for layout consistency
-        Text(
-            text = word.text,
-            style =
-                remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
-                    textStyle.copy(
-                        fontFamily =
-                            if (expressiveSyllables) {
-                                flexFontEmphasis(
-                                    fontWeight = maxWordWeight,
-                                    fontWidth = maxWordWidth,
-                                )
-                            } else {
-                                fontFamily
-                            }
-                    )
-                },
-            modifier = Modifier.alpha(0f),
-        )
+        // skeleton
+        Text(text = word.text, style = textStyle2, modifier = Modifier.alpha(0f))
 
-        // Undertext + Glow
-        Text(
-            text = word.text,
-            style = textStyle,
-            color = textColor.copy(alpha = underTextAlpha),
+        Box(
             modifier =
                 Modifier.matchParentSize()
-                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded),
-        )
+                    .blur(radius = glowAlpha.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                    .drawWithContent {
+                        drawContent()
+                        if (animatedProgress > 0f) {
+                            val feather = 16.dp.toPx()
+                            val x = (size.width + feather) * animatedProgress
+                            drawRect(
+                                brush =
+                                    Brush.horizontalGradient(
+                                        0f to Color.Transparent,
+                                        ((x - feather) / size.width).coerceIn(0f, 1f) to
+                                            Color.Transparent,
+                                        (x / size.width).coerceIn(0f, 1f) to Color.Black,
+                                        1f to Color.Black,
+                                    ),
+                                blendMode = BlendMode.DstIn,
+                            )
+                        }
+                    }
+        ) {
+            Text(
+                text = word.text,
+                style = textStyle1,
+                color = textColor.copy(alpha = underTextAlpha),
+            )
+        }
 
-        // Main Highlight Layer with Mask
-        Text(
-            text = word.text,
-            style = textStyle,
-            color = textColor,
+        Box(
             modifier =
                 Modifier.matchParentSize()
                     .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
@@ -424,8 +413,10 @@ private fun SyllableWord(
                                 )
                             }
                         }
-                    },
-        )
+                    }
+        ) {
+            Text(text = word.text, style = textStyle2, color = textColor)
+        }
     }
 }
 
@@ -536,7 +527,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
-            expressiveSyllables = false,
+            expressiveSyllables = true,
             playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 

@@ -99,12 +99,12 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = { Text(text = "Enable Expressive Syllables") },
+                    headlineContent = {
+                        Text(text = stringResource(R.string.expressive_syllables))
+                    },
                     supportingContent = {
                         Text(
-                            text =
-                                "[Experimental] Font weight and Font Width are animated based" +
-                                    " on duration of the word. Might cause stutters and glitches",
+                            text = stringResource(R.string.expressive_syllables_desc),
                             modifier = Modifier.basicMarquee(),
                         )
                     },

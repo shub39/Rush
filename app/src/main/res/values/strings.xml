@@ -159,4 +159,6 @@
     <string name="open_search">Open Search</string>
     <string name="system_default">System Default</string>
     <string name="language">Language</string>
+    <string name="expressive_syllables">Expressive Syllables</string>
+    <string name="expressive_syllables_desc">Font style changes based on word duration</string>
 </resources>

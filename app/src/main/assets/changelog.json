@@ -1,5 +1,12 @@
 [
   {
+    "version": "6.2.0",
+    "changes": [
+      "Fixed Expressive Syllables causing crashes",
+      "Fixed UI inconsistencies"
+    ]
+  },
+  {
     "version": "6.1.15",
     "changes": [
       "(Android 12+) Fixed Material Theme not respecting System Colors",
@@ -70,13 +77,6 @@
     "version": "5.8.1",
     "changes": [
       "Miscellaneous updates and fixes"
-    ]
-  },
-  {
-    "version": "5.8.0",
-    "changes": [
-      "Added Expressive motion scheme to animations",
-      "Updated Translations"
     ]
   }
 ]
