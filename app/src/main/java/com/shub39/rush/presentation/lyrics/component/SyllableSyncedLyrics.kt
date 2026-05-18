@@ -332,7 +332,7 @@ private fun SyllableWord(
             textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
         )
     val textStyle1 =
-        remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
+        remember(baseTextStyle, expressiveSyllables) {
             if (expressiveSyllables) {
                 baseTextStyle.copy(
                     fontFamily = flexFontEmphasis(fontWeight = 300, fontWidth = 100f)
@@ -340,7 +340,7 @@ private fun SyllableWord(
             } else baseTextStyle
         }
     val textStyle2 =
-        remember(maxWordWeight, maxWordWidth, textPrefs, expressiveSyllables) {
+        remember(textStyle1, maxWordWidth, maxWordWeight, expressiveSyllables) {
             if (expressiveSyllables) {
                 textStyle1.copy(
                     fontFamily =
