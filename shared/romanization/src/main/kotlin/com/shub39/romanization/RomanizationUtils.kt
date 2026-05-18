@@ -40,9 +40,9 @@ object RomanizationUtils {
     private val initMutex = Mutex()
 
     /**
-     * Initialize with application context. Stores context for on-demand loading
-     * of the reading dictionary when romanizeJapanese() is first called.
-     * Safe to call multiple times — only the first call stores the context.
+     * Initialize with application context. Stores context for on-demand loading of the reading
+     * dictionary when romanizeJapanese() is first called. Safe to call multiple times — only the
+     * first call stores the context.
      */
     fun init(context: Context) {
         if (appContext != null) return
@@ -50,8 +50,8 @@ object RomanizationUtils {
     }
 
     /**
-     * Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load.
-     * Uses the stored app context from [init]. Falls back gracefully if not initialized.
+     * Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load. Uses the
+     * stored app context from [init]. Falls back gracefully if not initialized.
      */
     private suspend fun ensureReadingDictionary() {
         if (readingDictionary != null) return
@@ -59,9 +59,7 @@ object RomanizationUtils {
 
         initMutex.withLock {
             if (readingDictionary != null) return@withLock
-            withContext(Dispatchers.IO) {
-                loadReadingDictionary(ctx)
-            }
+            withContext(Dispatchers.IO) { loadReadingDictionary(ctx) }
         }
     }
 
@@ -201,6 +199,13 @@ object RomanizationUtils {
                     "ᆭᄋ" to "n",
                     "ᆭᄒ" to "n",
                     "ᆭᄅ" to "n",
+                    "ᆭᄃ" to "n",
+                    "ᆭᄇ" to "n",
+                    "ᆭᄌ" to "n",
+                    "ᆭᄎ" to "n",
+                    "ᆭᄏ" to "n",
+                    "ᆭᄐ" to "n",
+                    "ᆭᄑ" to "n",
                     "ᆮ" to "t",
                     "ᆮᄋ" to "",
                     "ᆮᄂ" to "n",
@@ -253,6 +258,13 @@ object RomanizationUtils {
                     "ᆶᄅ" to "l",
                     "ᆶᄆ" to "l",
                     "ᆶᄒ" to "l",
+                    "ᆶᄃ" to "l",
+                    "ᆶᄇ" to "l",
+                    "ᆶᄌ" to "l",
+                    "ᆶᄎ" to "l",
+                    "ᆶᄏ" to "l",
+                    "ᆶᄐ" to "l",
+                    "ᆶᄑ" to "l",
                     "ᆷ" to "m",
                     "ᆷᄅ" to "m",
                     "ᆸ" to "p",
@@ -317,6 +329,13 @@ object RomanizationUtils {
                     "ᇂᄆ" to "m",
                     "ᇂᄒ" to "",
                     "ᇂᄀ" to "",
+                    "ᇂᄃ" to "",
+                    "ᇂᄇ" to "",
+                    "ᇂᄌ" to "",
+                    "ᇂᄎ" to "",
+                    "ᇂᄏ" to "",
+                    "ᇂᄐ" to "",
+                    "ᇂᄑ" to "",
                 ),
         )
 
@@ -387,6 +406,13 @@ object RomanizationUtils {
             "ᆴᄒ" to "th",
             "ᆵᄒ" to "ph",
             "ᆶᄒ" to "h",
+            "ᆶᄃ" to "t",
+            "ᆶᄇ" to "p",
+            "ᆶᄌ" to "ch",
+            "ᆶᄎ" to "ch",
+            "ᆶᄏ" to "k",
+            "ᆶᄐ" to "t",
+            "ᆶᄑ" to "p",
             "ᆸᄒ" to "ph",
             "ᆹᄒ" to "s",
             "ᆺᄒ" to "s",
@@ -398,8 +424,22 @@ object RomanizationUtils {
             "ᇁᄒ" to "ph",
             "ᆬᄒ" to "ch",
             "ᆭᄒ" to "ch",
+            "ᆭᄃ" to "t",
+            "ᆭᄇ" to "p",
+            "ᆭᄌ" to "ch",
+            "ᆭᄎ" to "ch",
+            "ᆭᄏ" to "k",
+            "ᆭᄐ" to "t",
+            "ᆭᄑ" to "p",
             "ᇂᄒ" to "",
             "ᇂᄀ" to "k",
+            "ᇂᄃ" to "t",
+            "ᇂᄇ" to "p",
+            "ᇂᄌ" to "ch",
+            "ᇂᄎ" to "ch",
+            "ᇂᄏ" to "k",
+            "ᇂᄐ" to "t",
+            "ᇂᄑ" to "p",
             "ᆨᄂ" to "n",
             "ᆩᄂ" to "n",
             "ᆪᄂ" to "n",
@@ -474,6 +514,7 @@ object RomanizationUtils {
             "य" to "y",
             "र" to "r",
             "ल" to "l",
+            "ळ" to "l",
             "व" to "v",
             "श" to "sh",
             "ष" to "sh",
@@ -689,7 +730,14 @@ object RomanizationUtils {
         )
 
     private val RUSSIAN_ROMAJI_MAP: Map<String, String> =
-        mapOf("ого" to "ovo", "Ого" to "Ovo", "его" to "evo", "Его" to "Evo")
+        mapOf(
+            "ого" to "ovo",
+            "Ого" to "Ovo",
+            "ОГО" to "OVO",
+            "его" to "evo",
+            "Его" to "Evo",
+            "ЕГО" to "EVO",
+        )
 
     private val UKRAINIAN_ROMAJI_MAP: Map<String, String> =
         mapOf(
@@ -1187,8 +1235,7 @@ object RomanizationUtils {
                             // Use first char: last char is Nukta (़) for 2-char forms
                             val firstChar = substr.first().toString()
                             if (firstChar in DEVANAGARI_CONSONANTS) {
-                                val nextChar =
-                                    if (i < text.length) text[i].toString() else null
+                                val nextChar = if (i < text.length) text[i].toString() else null
                                 if (
                                     nextChar != null &&
                                         nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
@@ -1287,8 +1334,7 @@ object RomanizationUtils {
                         // (e.g. ਸ਼ਕ → shak, not shk)
                         val firstChar = twoChar.first().toString()
                         if (firstChar in GURMUKHI_CONSONANTS) {
-                            val nextChar =
-                                if (i < text.length) text[i].toString() else null
+                            val nextChar = if (i < text.length) text[i].toString() else null
                             if (
                                 nextChar != null &&
                                     nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
