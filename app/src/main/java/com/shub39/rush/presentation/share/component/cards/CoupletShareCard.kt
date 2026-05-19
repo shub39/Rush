@@ -122,7 +122,7 @@ fun CoupletShareCard(
                                 text = song.title,
                                 style =
                                     MaterialTheme.typography.titleMedium
-                                        .copy(fontFamily = flexFontEmphasis())
+                                        .copy(fontFamily = flexFontRounded())
                                         .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,

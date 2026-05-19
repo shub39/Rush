@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.2.01",
+    "changes": [
+      "Fixed UI bug in share cards"
+    ]
+  },
+  {
     "version": "6.2.0",
     "changes": [
       "Fixed Expressive Syllables causing crashes",
@@ -71,12 +77,6 @@
       "Fixed misleading Syllable Synced Lyrics for some tracks",
       "Removed word by word highlight from line synced lyrics",
       "Updated Translations"
-    ]
-  },
-  {
-    "version": "5.8.1",
-    "changes": [
-      "Miscellaneous updates and fixes"
     ]
   }
 ]

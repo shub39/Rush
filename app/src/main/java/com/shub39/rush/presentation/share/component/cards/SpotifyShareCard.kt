@@ -52,7 +52,6 @@ import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.RushBranding
 import com.shub39.rush.presentation.share.fromPx
 import com.shub39.rush.presentation.share.pxToDp
-import com.shub39.rush.presentation.theme.flexFontEmphasis
 import com.shub39.rush.presentation.theme.flexFontRounded
 
 @Composable
@@ -87,7 +86,7 @@ fun SpotifyShareCard(
                         text = song.title,
                         style =
                             MaterialTheme.typography.titleMedium
-                                .copy(fontFamily = flexFontEmphasis())
+                                .copy(fontFamily = flexFontRounded())
                                 .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

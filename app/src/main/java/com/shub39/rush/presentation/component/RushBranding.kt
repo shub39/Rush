@@ -17,14 +17,15 @@
 package com.shub39.rush.presentation.component
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,8 +53,10 @@ fun RushBranding(modifier: Modifier = Modifier, color: Color = MaterialTheme.col
             painter = painterResource(R.drawable.app_icon),
             contentDescription = null,
             tint = color,
-            modifier = Modifier.scale(2.5f).size(pxToDp(60)),
+            modifier = Modifier.size(pxToDp(48)),
         )
+
+        Spacer(modifier = Modifier.width(pxToDp(8)))
 
         Text(
             text = "Rush",
