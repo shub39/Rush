@@ -51,7 +51,7 @@
     <string name="backup_info">Importieren oder exportieren Sie die Datenbank der gesicherten Liedtexte</string>
     <string name="batch_download_info">Laden Sie Liedtexte für Ihre lokal gespeicherten Lieder auf einmal herunter.</string>
     <string name="sort_date_added">Zuletzt hinzugefügt</string>
-    <string name="rush_branding">Rush-Branding</string>
+    <string name="rush_branding">Rush</string>
     <string name="exporting">Exportiere</string>
     <string name="exported">Exportiert</string>
     <string name="restoring">Wiederherstellung der Lieder</string>
@@ -115,7 +115,7 @@
     <string name="vertical">Vertikal</string>
     <string name="quote">Zitat</string>
     <string name="card_font">Kartenschriftart</string>
-    <string name="couplet">Couplet</string>
+    <string name="couplet">Zwei zeilig</string>
     <string name="chat">Chat</string>
     <string name="fullscreen">Vollbildansicht</string>
     <string name="customisations">Liedtext-Anpassungen</string>
@@ -158,4 +158,8 @@
     <string name="open_search">Suche öffnen</string>
     <string name="system_default">Systemstandard</string>
     <string name="language">Sprache</string>
+    <string name="bmc_desc">Unterstützen Sie mich mit einer kleinen Spende</string>
+    <string name="translate_desc">Übersetzen Sie Rush in Ihrer Sprache</string>
+    <string name="expressive_syllables_desc">Die Schriftart ändert sich basierend auf der Wortdauer</string>
+    <string name="expressive_syllables">Betonte Silben</string>
 </resources>
