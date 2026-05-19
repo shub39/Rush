@@ -158,4 +158,8 @@
     <string name="open_search">Abrir búsqueda</string>
     <string name="system_default">Por defecto del sistema</string>
     <string name="language">Idioma</string>
+    <string name="bmc_desc">Apoyame con una pequeña donación</string>
+    <string name="translate_desc">Traduce Rush a tu idioma</string>
+    <string name="expressive_syllables">Sílabas expresivas</string>
+    <string name="expressive_syllables_desc">El estilo de la tipografía cambia según la duración de la palabra</string>
 </resources>
