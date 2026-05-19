@@ -25,8 +25,16 @@ import org.junit.Test
 /**
  * Unit tests for RomanizationUtils.
  *
- * Japanese romanization uses ICU4J Katakana-Latin for kana→romaji conversion. Kanji characters pass
- * through unchanged (no morphological analyzer).
+ * Official standards referenced: Korean — Revised Romanization (RR, 2000)
+ * https://www.korean.go.kr/front_eng/roman/roman_01.do Japanese— Modified Hepburn (BGN/PCGN 1976)
+ * https://assets.publishing.service.gov.uk/media/5ab4e1e3ed915d78b9a459de/ROMANIZATION_OF_JAPANESE_KANA.pdf
+ * Chinese — ISO 7098:2015 / ICU Han-Latin https://www.loc.gov/catdir/cpso/romanization/chinese.pdf
+ * Hindi — ISO 15919:2001 / ALA-LC https://www.loc.gov/catdir/cpso/romanization/hindi.pdf Punjabi —
+ * ISO 15919:2001 (Gurmukhi framework) https://www.iso.org/standard/28333.html Cyrillic— BGN/PCGN
+ * per language https://geonames.nga.mil/geonames/GNSSearch/GNSDocs/romanization/
+ *
+ * JVM tests use ICU4J Katakana-Latin for kana→romaji. The Android instrumented tests
+ * (RomanizationUtilsTest) use the real reading dictionary and Android ICU.
  */
 class RomanizationUtilsIcu4jTest {
 

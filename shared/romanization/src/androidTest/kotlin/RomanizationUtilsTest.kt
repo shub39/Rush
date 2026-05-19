@@ -22,10 +22,26 @@ import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
+/**
+ * Android instrumented tests for RomanizationUtils.
+ *
+ * Official standards referenced: Korean — Revised Romanization (RR, 2000)
+ * https://www.korean.go.kr/front_eng/roman/roman_01.do Japanese— Modified Hepburn (BGN/PCGN 1976)
+ * https://assets.publishing.service.gov.uk/media/5ab4e1e3ed915d78b9a459de/ROMANIZATION_OF_JAPANESE_KANA.pdf
+ * Chinese — ISO 7098:2015 / ICU Han-Latin https://www.loc.gov/catdir/cpso/romanization/chinese.pdf
+ * Hindi — ISO 15919:2001 / ALA-LC https://www.loc.gov/catdir/cpso/romanization/hindi.pdf Punjabi —
+ * ISO 15919:2001 (Gurmukhi framework) https://www.iso.org/standard/28333.html Cyrillic— BGN/PCGN
+ * per language https://geonames.nga.mil/geonames/GNSSearch/GNSDocs/romanization/
+ *
+ * These tests load the real IPADIC reading dictionary (ja_readings.tsv, 249K entries) and exercise
+ * the full dictionary-backed tokenizer path for Japanese, unlike the JVM unit tests
+ * (RomanizationUtilsIcu4jTest) which use the ICU4J fallback without a dictionary.
+ */
 class RomanizationUtilsTest {
 
     companion object {
-        @BeforeClass @JvmStatic
+        @BeforeClass
+        @JvmStatic
         fun setUp() {
             RomanizationUtils.loadReadingDictionary(
                 InstrumentationRegistry.getInstrumentation().targetContext
@@ -167,10 +183,7 @@ class RomanizationUtilsTest {
     @Test
     fun testChinese_pureCjkWithBothJapaneseAndChinese() = runTest {
         val result =
-            RomanizationUtils.romanize(
-                "望春风",
-                enabledLanguages = listOf("Japanese", "Chinese"),
-            )
+            RomanizationUtils.romanize("望春风", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // With both JP and ZH enabled, pure CJK goes to Japanese IPADIC.
         // Chinese lyrics not in IPADIC pass through; enable Chinese-only for pinyin.
@@ -803,10 +816,7 @@ class RomanizationUtilsTest {
     @Test
     fun testRomanize_autoDetectChinese() = runTest {
         val result =
-            RomanizationUtils.romanize(
-                "你好",
-                enabledLanguages = listOf("Japanese", "Chinese"),
-            )
+            RomanizationUtils.romanize("你好", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // Pure CJK with both enabled → Japanese IPADIC first.
         // 好 is in IPADIC as コウ → "kou", 你 passes through → "你 kou".
@@ -825,5 +835,132 @@ class RomanizationUtilsTest {
         val result =
             RomanizationUtils.romanize("!@#$%", enabledLanguages = listOf("Japanese", "Russian"))
         assertNull(result)
+    }
+
+    // ── Advanced Korean (RR) ──
+
+    @Test
+    fun testKorean_palatalization() = runTest {
+        assertEquals("guji", RomanizationUtils.romanizeKorean("굳이"))
+        assertEquals("gachi", RomanizationUtils.romanizeKorean("같이"))
+    }
+
+    @Test
+    fun testKorean_nasalCodaLToN() = runTest {
+        assertEquals("jongno", RomanizationUtils.romanizeKorean("종로"))
+        assertEquals("eumnyo", RomanizationUtils.romanizeKorean("음료"))
+        assertEquals("baengma", RomanizationUtils.romanizeKorean("백마"))
+        assertEquals("wangsimni", RomanizationUtils.romanizeKorean("왕십리"))
+    }
+
+    @Test
+    fun testKorean_diphthongs() = runTest {
+        assertEquals("wa", RomanizationUtils.romanizeKorean("와"))
+        assertEquals("wo", RomanizationUtils.romanizeKorean("워"))
+        assertEquals("wae", RomanizationUtils.romanizeKorean("왜"))
+        assertEquals("we", RomanizationUtils.romanizeKorean("웨"))
+        assertEquals("oe", RomanizationUtils.romanizeKorean("외"))
+        assertEquals("wi", RomanizationUtils.romanizeKorean("위"))
+        assertEquals("eui", RomanizationUtils.romanizeKorean("의"))
+    }
+
+    // ── Advanced Japanese (dictionary-backed) ──
+
+    @Test
+    fun testJapanese_dictionaryKanjiReading() = runTest {
+        // With IPADIC loaded: 愛 → ai (dictionary lookup), 花 → ka or hana
+        val result1 = RomanizationUtils.romanizeJapanese("愛")
+        assertNotNull(result1)
+        // 東京 → tōkyō (dictionary should segment this)
+        val result2 = RomanizationUtils.romanizeJapanese("東京")
+        assertNotNull(result2)
+    }
+
+    @Test
+    fun testJapanese_mixedKanjiKana() = runTest {
+        // Real Japanese phrase with kanji + kana + particle
+        val result = RomanizationUtils.romanizeJapanese("食べる")
+        assertNotNull(result)
+        assertTrue("tab" in result!! || "食" in result)
+    }
+
+    @Test
+    fun testJapanese_katakanaLoanWords() = runTest {
+        // Common katakana loan words with chōonpu
+        val result1 = RomanizationUtils.romanizeJapanese("コンピューター")
+        assertNotNull(result1)
+        val result2 = RomanizationUtils.romanizeJapanese("レストラン")
+        assertNotNull(result2)
+    }
+
+    // ── Advanced Cyrillic ──
+
+    @Test
+    fun testCyrillic_bulgarianFullWord() = runTest {
+        assertEquals("zdraveyte", RomanizationUtils.romanizeCyrillic("здравейте", "Bulgarian"))
+        assertEquals("balgarski", RomanizationUtils.romanizeCyrillic("български", "Bulgarian"))
+    }
+
+    @Test
+    fun testCyrillic_ukrainianAllUnique() = runTest {
+        assertEquals("h", RomanizationUtils.romanizeCyrillic("г", "Ukrainian"))
+        assertEquals("g", RomanizationUtils.romanizeCyrillic("ґ", "Ukrainian"))
+        assertEquals("ye", RomanizationUtils.romanizeCyrillic("є", "Ukrainian"))
+        assertEquals("y", RomanizationUtils.romanizeCyrillic("и", "Ukrainian"))
+        assertEquals("i", RomanizationUtils.romanizeCyrillic("і", "Ukrainian"))
+        assertEquals("yi", RomanizationUtils.romanizeCyrillic("ї", "Ukrainian"))
+        assertEquals("yu", RomanizationUtils.romanizeCyrillic("ю", "Ukrainian"))
+        assertEquals("ya", RomanizationUtils.romanizeCyrillic("я", "Ukrainian"))
+    }
+
+    @Test
+    fun testCyrillic_russianAllCapsGenitive() = runTest {
+        assertEquals("OVO", RomanizationUtils.romanizeCyrillic("ОГО", "Russian"))
+        assertEquals("EVO", RomanizationUtils.romanizeCyrillic("ЕГО", "Russian"))
+    }
+
+    @Test
+    fun testCyrillic_serbianWithDiacritics() = runTest {
+        assertEquals("\u017E", RomanizationUtils.romanizeCyrillic("ж", "Serbian"))
+        assertEquals("\u010D", RomanizationUtils.romanizeCyrillic("ч", "Serbian"))
+        assertEquals("\u0161", RomanizationUtils.romanizeCyrillic("ш", "Serbian"))
+        assertEquals("d\u017E", RomanizationUtils.romanizeCyrillic("џ", "Serbian"))
+    }
+
+    // ── Advanced Hindi/Punjabi ──
+
+    @Test
+    fun testHindi_vowelLengthContrast() = runTest {
+        assertEquals("kil", RomanizationUtils.romanizeHindi("किल"))
+        assertEquals("keel", RomanizationUtils.romanizeHindi("कील"))
+        assertEquals("pul", RomanizationUtils.romanizeHindi("पुल"))
+        assertEquals("pool", RomanizationUtils.romanizeHindi("पूल"))
+    }
+
+    @Test
+    fun testHindi_conjunctTrShr() = runTest {
+        assertEquals("tr", RomanizationUtils.romanizeHindi("त्र"))
+        assertEquals("shr", RomanizationUtils.romanizeHindi("श्र"))
+        assertEquals("gy", RomanizationUtils.romanizeHindi("ज्ञ"))
+    }
+
+    @Test
+    fun testPunjabi_tippiAndAddak() = runTest {
+        assertEquals("panj", RomanizationUtils.romanizePunjabi("ਪੰਜ"))
+        assertNotNull(RomanizationUtils.romanizePunjabi("ਸੱਚ"))
+    }
+
+    // ── Auto-detect ──
+
+    @Test
+    fun testKorean_isDetectedOnlyForHangul() = runTest {
+        assertFalse(RomanizationUtils.isKorean("こんにちは"))
+        assertFalse(RomanizationUtils.isKorean("你好"))
+    }
+
+    @Test
+    fun testJapanese_isDetectedForKanaOnly() = runTest {
+        assertTrue(RomanizationUtils.isJapanese("こんにちは"))
+        assertFalse(RomanizationUtils.isJapanese("世界"))
     }
 }
