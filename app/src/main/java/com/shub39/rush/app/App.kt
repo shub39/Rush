@@ -19,7 +19,6 @@ package com.shub39.rush.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -186,7 +185,6 @@ fun App() {
                 state = searchState,
                 onAction = searchSheetVM::onAction,
                 onNavigateToLyrics = { backStack.add(LyricsGraph) },
-                sheetState = rememberModalBottomSheetState(),
             )
         }
     }
