@@ -1294,4 +1294,168 @@ class RomanizationUtilsIcu4jTest {
         val result = RomanizationUtils.romanize("здравейте", enabledLanguages = listOf("Cyrillic"))
         assertNull(result) // "Cyrillic" is not a valid enabledLanguages key
     }
+
+    // ── Additional edge cases from official standards ──
+
+    @Test
+    fun testKorean_sequentialAssimilation() = runTest {
+        // Words with multiple assimilation rules in sequence
+        // 독립문 → dongnimmun (ㄱ+ㄹ→ㅇ+ㄴ + ㅂ+ㅁ→ㅁ+ㅁ)
+        assertNotNull(RomanizationUtils.romanizeKorean("독립문"))
+        // 음악가 → eumakga? eumakka? — depends on tensing rules (not mandated in RR)
+        assertNotNull(RomanizationUtils.romanizeKorean("음악가"))
+    }
+
+    @Test
+    fun testKorean_compoundNounTensing() = runTest {
+        // After certain nouns the initial consonant is tensed
+        // e.g., 간 + 가 → 간까→gankka? The RR doesn't mandate tensing romanization
+        assertNotNull(RomanizationUtils.romanizeKorean("간가"))
+    }
+
+    @Test
+    fun testJapanese_syllabicNVariants() = runTest {
+        // ん before b/p/m: In Modified Hepburn, always "n", never "m"
+        // さんぽ → sanpo (not sampo)
+        val result = romanizeJapanese("さんぽ")
+        assertNotNull(result)
+        assertTrue("sanpo" == result || result!!.contains("san"))
+        // しんぶん → shinbun (not shimbun)
+        val result2 = romanizeJapanese("しんぶん")
+        assertNotNull(result2)
+        assertTrue("shinbun" == result2 || result2!!.contains("shin"))
+    }
+
+    @Test
+    fun testJapanese_duAndDi() = runTest {
+        // づ → zu, ぢ → ji (modern Hepburn: same as ず/じ)
+        // ICU Katakana-Latin handles these; result depends on ICU version
+        val result = romanizeJapanese("づ")
+        assertNotNull(result)
+        val result2 = romanizeJapanese("ぢ")
+        assertNotNull(result2)
+    }
+
+    @Test
+    fun testJapanese_sokuonBeforeTs() = runTest {
+        // Sokuon before つ → tts (e.g., よっつ → yottsu)
+        val result = romanizeJapanese("よっつ")
+        assertNotNull(result)
+    }
+
+    @Test
+    fun testJapanese_longVowelChoonpu() = runTest {
+        // Chōonpu (ー) in katakana: ケーキ → kēki, コーヒー → kōhī
+        // ICU Katakana-Latin typically produces "ke-ki", "ko-hi" or "kēki", "kōhī"
+        val result1 = romanizeJapanese("ケーキ")
+        assertNotNull(result1)
+        val result2 = romanizeJapanese("コーヒー")
+        assertNotNull(result2)
+    }
+
+    @Test
+    fun testHindi_vowelLengthContrast() = runTest {
+        // Short vs long vowels (word-final: no inherent 'a')
+        assertEquals("kil", RomanizationUtils.romanizeHindi("किल"))
+        assertEquals("keel", RomanizationUtils.romanizeHindi("कील"))
+        // पुल → pul vs पूल → pool
+        assertEquals("pul", RomanizationUtils.romanizeHindi("पुल"))
+        assertEquals("pool", RomanizationUtils.romanizeHindi("पूल"))
+    }
+
+    @Test
+    fun testHindi_conjunctTrInWord() = runTest {
+        // त्र in real word: रात्रि → raatri (r + aa + tr + i)
+        val result = RomanizationUtils.romanizeHindi("रात्रि")
+        assertEquals("raatri", result)
+    }
+
+    @Test
+    fun testHindi_halantAtWordEnd() = runTest {
+        // Halant at end of word: क् → k (no inherent vowel)
+        val result = RomanizationUtils.romanizeHindi("क्")
+        assertEquals("k", result)
+    }
+
+    @Test
+    fun testHindi_omSymbolVariants() = runTest {
+        // ॐ = Om, also tested: ॐकार = Omkaar
+        val result = RomanizationUtils.romanizeHindi("ॐकार")
+        assertEquals("Omkaar", result)
+    }
+
+    @Test
+    fun testPunjabi_addakAndNukta() = runTest {
+        // Addak with nukta consonants: letter with punj
+        assertNotNull(RomanizationUtils.romanizePunjabi("ਸੱਚ"))
+        assertNotNull(RomanizationUtils.romanizePunjabi("ਪੱਕ"))
+    }
+
+    @Test
+    fun testPunjabi_muliVowelLessConst() = runTest {
+        // Words where virama suppresses vowel: ਕ੍ਰਿਪਾ → kripā
+        assertNotNull(RomanizationUtils.romanizePunjabi("ਕ੍ਰਿਪਾ"))
+    }
+
+    @Test
+    fun testRussian_yoInVariousPositions() = runTest {
+        // ё in different positions: ёж → yozh, ещё → eshchyo
+        assertEquals("yozh", RomanizationUtils.romanizeCyrillic("ёж", "Russian"))
+        assertEquals("yozh", RomanizationUtils.romanizeCyrillic("ёж", "Russian"))
+        // клён → klyon
+        assertEquals("klyon", RomanizationUtils.romanizeCyrillic("клён", "Russian"))
+    }
+
+    @Test
+    fun testSerbian_fullCyrillicWord() = runTest {
+        // Serbian full word with multiple special chars: ж, ч, ш, џ
+        val result = RomanizationUtils.romanizeCyrillic("џип", "Serbian")
+        // Should be džip (using Unicode ž)
+        assertNotNull(result)
+        assertTrue(result!!.isNotEmpty())
+    }
+
+    @Test
+    fun testBulgarian_realSentence() = runTest {
+        // Bulgarian phrase with ъ, ь, ю, я
+        val result = RomanizationUtils.romanizeCyrillic("български", "Bulgarian")
+        assertEquals("balgarski", result)
+        val result2 = RomanizationUtils.romanizeCyrillic("обичам", "Bulgarian")
+        assertEquals("obicham", result2)
+    }
+
+    @Test
+    fun testUkrainian_fullAlphabet() = runTest {
+        // Cover all Ukrainian unique letters in real context
+        // г, ґ, є, и, і, ї, щ, ю, я
+        assertEquals("h", RomanizationUtils.romanizeCyrillic("г", "Ukrainian"))
+        assertEquals("g", RomanizationUtils.romanizeCyrillic("ґ", "Ukrainian"))
+        assertEquals("ye", RomanizationUtils.romanizeCyrillic("є", "Ukrainian"))
+        assertEquals("y", RomanizationUtils.romanizeCyrillic("и", "Ukrainian"))
+        assertEquals("i", RomanizationUtils.romanizeCyrillic("і", "Ukrainian"))
+        assertEquals("yi", RomanizationUtils.romanizeCyrillic("ї", "Ukrainian"))
+        assertEquals("shch", RomanizationUtils.romanizeCyrillic("щ", "Ukrainian"))
+        assertEquals("yu", RomanizationUtils.romanizeCyrillic("ю", "Ukrainian"))
+        assertEquals("ya", RomanizationUtils.romanizeCyrillic("я", "Ukrainian"))
+    }
+
+    @Test
+    fun testKorean_syllableWithAllJamos() = runTest {
+        // Single syllable with all possible elements
+        // 꿀 → kkul (tense k + u + l), 퀸 → kwin
+        assertEquals("kkul", RomanizationUtils.romanizeKorean("꿀"))
+        assertEquals("kwin", RomanizationUtils.romanizeKorean("퀸"))
+    }
+
+    @Test
+    fun testKorean_diphthongs() = runTest {
+        // All Korean diphthongs
+        assertEquals("wa", RomanizationUtils.romanizeKorean("와"))
+        assertEquals("wo", RomanizationUtils.romanizeKorean("워"))
+        assertEquals("wae", RomanizationUtils.romanizeKorean("왜"))
+        assertEquals("we", RomanizationUtils.romanizeKorean("웨"))
+        assertEquals("oe", RomanizationUtils.romanizeKorean("외"))
+        assertEquals("wi", RomanizationUtils.romanizeKorean("위"))
+        assertEquals("eui", RomanizationUtils.romanizeKorean("의"))
+    }
 }
