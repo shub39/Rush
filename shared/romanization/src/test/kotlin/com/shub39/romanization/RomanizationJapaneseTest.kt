@@ -22,6 +22,13 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * Japanese romanization tests — Modified Hepburn (BGN/PCGN 1976).
+ *
+ * Standard: https://assets.publishing.service.gov.uk/media/5ab4e1e3ed915d78b9a459de/ROMANIZATION_OF_JAPANESE_KANA.pdf
+ * ALA-LC:   https://www.loc.gov/catdir/cpso/romanization/japanese.pdf
+ * Wikipedia: https://en.wikipedia.org/wiki/Hepburn_romanization
+ */
 class RomanizationJapaneseTest {
 
     private val katakanaTransliterator by lazy { Transliterator.getInstance("Katakana-Latin") }

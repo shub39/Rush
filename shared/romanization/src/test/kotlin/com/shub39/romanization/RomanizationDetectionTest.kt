@@ -20,6 +20,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * Language detection tests — covers all supported scripts.
+ *
+ * References:
+ *   Korean — RR: https://www.korean.go.kr/front_eng/roman/roman_01.do
+ *   Japanese — Hepburn: https://assets.publishing.service.gov.uk/media/5ab4e1e3ed915d78b9a459de/ROMANIZATION_OF_JAPANESE_KANA.pdf
+ *   Chinese — ISO 7098: https://www.loc.gov/catdir/cpso/romanization/chinese.pdf
+ *   Hindi/Punjabi — ISO 15919: https://www.iso.org/standard/28333.html
+ *   Cyrillic — BGN/PCGN: https://geonames.nga.mil/geonames/GNSSearch/GNSDocs/romanization/
+ */
 class RomanizationDetectionTest {
 
     // ============================================================

@@ -22,6 +22,14 @@ import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
+/**
+ * Hindi romanization tests — ISO 15919:2001 / ALA-LC.
+ *
+ * ISO:          https://www.iso.org/standard/28333.html
+ * ALA-LC:       https://www.loc.gov/catdir/cpso/romanization/hindi.pdf
+ * Conjuncts:    https://en.wikipedia.org/wiki/Devanagari_conjuncts
+ * Transliteration: https://en.wikipedia.org/wiki/Devanagari_transliteration
+ */
 class RomanizationHindiTest {
 
     companion object {

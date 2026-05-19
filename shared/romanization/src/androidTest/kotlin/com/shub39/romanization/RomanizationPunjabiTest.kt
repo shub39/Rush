@@ -22,6 +22,12 @@ import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
+/**
+ * Punjabi romanization tests — ISO 15919:2001 (Gurmukhi framework).
+ *
+ * ISO: https://www.iso.org/standard/28333.html
+ * Uses same ISO 15919 framework as Hindi for Gurmukhi script.
+ */
 class RomanizationPunjabiTest {
 
     companion object {

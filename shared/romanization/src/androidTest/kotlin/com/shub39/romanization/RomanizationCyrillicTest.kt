@@ -22,6 +22,13 @@ import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
+/**
+ * Cyrillic romanization tests — BGN/PCGN per language.
+ *
+ * BGN/PCGN: https://geonames.nga.mil/geonames/GNSSearch/GNSDocs/romanization/
+ * Russian genitive rule documented in BGN/PCGN agreements.
+ * Serbian uses Unicode diacritics (ž, č, š, lj, nj, dž) per standard.
+ */
 class RomanizationCyrillicTest {
 
     companion object {

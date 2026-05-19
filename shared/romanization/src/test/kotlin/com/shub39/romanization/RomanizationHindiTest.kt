@@ -21,13 +21,12 @@ import org.junit.Assert.*
 import org.junit.Test
 
 /**
- * Unit tests for Hindi romanization (ISO 15919:2001 / ALA-LC).
+ * Hindi romanization tests — ISO 15919:2001 / ALA-LC.
  *
- * Official standards referenced:
- * https://www.loc.gov/catdir/cpso/romanization/hindi.pdf
- * https://www.iso.org/standard/28333.html
- *
- * JVM tests — pure Kotlin, no ICU needed.
+ * ISO:          https://www.iso.org/standard/28333.html
+ * ALA-LC:       https://www.loc.gov/catdir/cpso/romanization/hindi.pdf
+ * Conjuncts:    https://en.wikipedia.org/wiki/Devanagari_conjuncts
+ * Transliteration: https://en.wikipedia.org/wiki/Devanagari_transliteration
  */
 class RomanizationHindiTest {
 

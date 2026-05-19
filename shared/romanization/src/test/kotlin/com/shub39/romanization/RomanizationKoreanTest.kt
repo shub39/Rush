@@ -20,6 +20,13 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * Korean romanization tests — Revised Romanization (RR, 2000).
+ *
+ * Standard: https://www.korean.go.kr/front_eng/roman/roman_01.do
+ * BGN/PCGN: https://assets.publishing.service.gov.uk/media/6329b09f8fa8f53cb8a85db8/ROMANIZATION_OF_KOREAN-__MOCT_for_ROK.pdf
+ * Wikipedia: https://en.wikipedia.org/wiki/Revised_Romanization_of_Korean
+ */
 class RomanizationKoreanTest {
 
     // ============================================================

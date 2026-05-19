@@ -21,12 +21,10 @@ import org.junit.Assert.*
 import org.junit.Test
 
 /**
- * Unit tests for Punjabi romanization (ISO 15919:2001, Gurmukhi framework).
+ * Punjabi romanization tests — ISO 15919:2001 (Gurmukhi framework).
  *
- * Official standards referenced:
- * https://www.iso.org/standard/28333.html
- *
- * JVM tests — pure Kotlin, no ICU needed.
+ * ISO: https://www.iso.org/standard/28333.html
+ * Uses same ISO 15919 framework as Hindi for Gurmukhi script.
  */
 class RomanizationPunjabiTest {
 
