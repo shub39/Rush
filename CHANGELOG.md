@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.2.01
+- Fixed UI bug in share cards
+
 ## 6.2.0
 - Fixed Expressive Syllables causing crashes
 - Fixed UI inconsistencies

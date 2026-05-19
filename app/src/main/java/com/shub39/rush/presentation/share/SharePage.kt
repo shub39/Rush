@@ -145,7 +145,7 @@ fun SharePage(
             saveImage = it
             imageSaver.launch(
                 suggestedName = "${state.songDetails.title} - ${state.songDetails.artist}",
-                extension = "png",
+                defaultExtension = "png",
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },

@@ -102,7 +102,7 @@ fun BackupPage(
     BackupPageContent(
         onNavigateBack = onNavigateBack,
         onSaveFile = {
-            fileSaverLauncher.launch(suggestedName = "Rush Export", extension = "json")
+            fileSaverLauncher.launch(suggestedName = "Rush Export", defaultExtension = "json")
         },
         state = state,
         restoreFile = restoreFile,

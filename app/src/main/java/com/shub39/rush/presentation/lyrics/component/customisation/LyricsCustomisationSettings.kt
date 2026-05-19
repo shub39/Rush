@@ -16,9 +16,7 @@
  */
 package com.shub39.rush.presentation.lyrics.component.customisation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -133,7 +131,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
-            ListItemCard(shape = endItemShape()) {
+            ListItemCard(shape = endItemShape(), modifier = Modifier.animateContentSize()) {
                 ListSelect(
                     title = stringResource(R.string.card_color),
                     options = CardColors.entries.toList(),
@@ -142,12 +140,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     labelProvider = { Text(text = stringResource(it.toStringRes())) },
                 )
 
-                AnimatedVisibility(
-                    visible = state.cardColors == CardColors.CUSTOM,
-                    modifier = Modifier.fillMaxWidth(),
-                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-                ) {
+                if (state.cardColors == CardColors.CUSTOM) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
