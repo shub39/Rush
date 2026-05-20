@@ -13,7 +13,7 @@
     <string name="backup_info">Импорт или экспорт сохраненных текстов</string>
     <string name="batch_download_info">Загрузите слова для ваших локально сохраненных песен.</string>
     <string name="rush_mode_desc">Искать ваши уведомления для текущей песни и получать текст для нее. Меняйте текст автоматически с вашим музыкальным плейером.</string>
-    <string name="default_">Обычный</string>
+    <string name="default_">По умолчанию</string>
     <string name="loading_genius">Загружаю текст из Genius</string>
     <string name="rounded">Скругленный</string>
     <string name="seed_color_desc">Выбрать цвет для создания палитры</string>
@@ -66,7 +66,7 @@
     <string name="restore_failed">Восстановление не удалось</string>
     <string name="about">О приложении</string>
     <string name="no_audio_files">Нет аудио файлов</string>
-    <string name="export_info">Сохранить тексты в папку Загрузки/Rush</string>
+    <string name="export_info">Экспорт песен в выбранную папку</string>
     <string name="restore">Восстановить</string>
     <string name="choose_file">Выбрать файл</string>
     <string name="rush_mode">Режим Rush</string>
@@ -126,7 +126,7 @@
     <string name="rush_branding">Rush</string>
     <string name="bmc">Купи мне кофе</string>
     <string name="restore_info">Восстановить из выбранного экспортированного файла</string>
-    <string name="spotify">Обычный</string>
+    <string name="spotify">Общий</string>
     <string name="rushed">Стиль \"Rush\"</string>
     <string name="messy">Беспорядочный</string>
     <string name="album_art">Только Обложка</string>
@@ -140,4 +140,25 @@
     <string name="wave">Волна</string>
     <string name="gradient">Градиент</string>
     <string name="audio_permission">Требуется разрешение на запись аудио</string>
+    <string name="bmc_desc">Поддержите меня, сделав небольшое пожертвование</string>
+    <string name="translate_desc">Перевести Rush на ваш язык</string>
+    <string name="audio_permission_info">Этот фон визуализирует вашу текущую воспроизводимую песню</string>
+    <string name="curve">Кривая</string>
+    <string name="copy_error">Копировать ошибку</string>
+    <string name="not_found">Не найдено</string>
+    <string name="line_synced_lyrics">Синхронизированная линия</string>
+    <string name="syllable_synced_lyrics">Синхронизированный слог</string>
+    <string name="changelog">Журнал изменений</string>
+    <string name="whats_changed">Что изменилось</string>
+    <string name="looks">Выглядит</string>
+    <string name="text">Текст</string>
+    <string name="others">Остальные</string>
+    <string name="show_app_branding">Показать бренд приложения</string>
+    <string name="romanization_desc">Показывать латинизированные тексты песен на японском, корейском, китайском, хинди, пенджабском и кириллическом языках</string>
+    <string name="open_search">Открыть поиск</string>
+    <string name="system_default">По умолчанию системы</string>
+    <string name="language">Язык</string>
+    <string name="expressive_syllables">Выразительные слоги</string>
+    <string name="expressive_syllables_desc">Стиль шрифта меняется в зависимости от длительности слова</string>
+    <string name="romanization">Латинизация</string>
 </resources>
