@@ -16,16 +16,107 @@
  */
 package com.shub39.romanization
 
+import android.content.Context
 import android.icu.text.Transliterator
+import android.util.Log
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 object RomanizationUtils {
-    private val japaneseTransliterator by lazy {
-        Transliterator.getInstance("Any-Latin; Any-ASCII")
+
+    // Japanese tokenizer (longest-match over the reading dictionary)
+
+    // Reading dictionary: surface form → katakana reading
+    @Volatile private var readingDictionary: Map<String, String>? = null
+
+    // Fast longest-match index: first-char → (surface, reading) sorted by length desc
+    @Volatile private var tokenizerIndex: Map<Char, List<Pair<String, String>>>? = null
+
+    // Application context for lazy reading dictionary loading
+    @Volatile private var appContext: Context? = null
+    private val initMutex = Mutex()
+
+    /**
+     * Initialize with application context. Stores context for on-demand loading of the reading
+     * dictionary when romanizeJapanese() is first called. Safe to call multiple times — only the
+     * first call stores the context.
+     */
+    fun init(context: Context) {
+        if (appContext != null) return
+        appContext = context.applicationContext
     }
-    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin; Any-ASCII") }
+
+    /**
+     * Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load. Uses the
+     * stored app context from [init]. Falls back gracefully if not initialized.
+     */
+    private suspend fun ensureReadingDictionary() {
+        if (readingDictionary != null) return
+        val ctx = appContext ?: return
+
+        initMutex.withLock {
+            if (readingDictionary != null) return@withLock
+            withContext(Dispatchers.IO) { loadReadingDictionary(ctx) }
+        }
+    }
+
+    /**
+     * Load the reading dictionary and build the tokenizer index.
+     *
+     * @param context Application context for accessing assets
+     */
+    fun loadReadingDictionary(context: Context) {
+        if (readingDictionary != null) return
+
+        val startMs = System.currentTimeMillis()
+
+        // 1. Read TSV into map
+        val lines =
+            context.assets.open("ja_readings.tsv").bufferedReader(Charsets.UTF_8).readLines()
+        val map = HashMap<String, String>(lines.size)
+        for (line in lines) {
+            val tab = line.indexOf('\t')
+            if (tab > 0) {
+                map[line.substring(0, tab)] = line.substring(tab + 1)
+            }
+        }
+        readingDictionary = map
+
+        // 2. Build longest-match index
+        val grouped = HashMap<Char, MutableList<Pair<String, String>>>()
+        for ((surface, reading) in map) {
+            if (surface.isEmpty()) continue
+            grouped.getOrPut(surface[0]) { mutableListOf() }.add(surface to reading)
+        }
+        // Sort each bucket by length descending (longest match first)
+        for (list in grouped.values) {
+            list.sortByDescending { it.first.length }
+        }
+        tokenizerIndex = grouped
+
+        val elapsed = System.currentTimeMillis() - startMs
+        Log.d("RomanizationUtils", "Loaded ${map.size} readings + index in ${elapsed}ms")
+    }
+
+    /**
+     * Reset the reading dictionary so the next call to [loadReadingDictionary] reloads from assets.
+     */
+    fun resetReadingDictionary() {
+        readingDictionary = null
+        tokenizerIndex = null
+    }
+
+    // ICU transliterators for Japanese→romaji conversion
+    // Katakana-Latin: used when we have an explicit katakana reading from a dictionary
+    private val katakanaTransliterator by lazy { Transliterator.getInstance("Katakana-Latin") }
+
+    // Note: We intentionally do NOT use Any-Latin or similar transliterators
+    // for kanji because they give Chinese pinyin readings (e.g. 日本語 → rì běn yǔ)
+    // instead of Japanese readings. The bundled reading dictionary (ja_readings.tsv)
+    // provides proper Japanese readings.
 
     // Hangul Romaja mapping
     private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =
@@ -79,151 +170,310 @@ object RomanizationUtils {
             "jong" to
                 mapOf(
                     "ᆨ" to "k",
-                    "ᆨᄋ" to "g",
-                    "ᆨᄂ" to "ngn",
-                    "ᆨᄅ" to "ngn",
-                    "ᆨᄆ" to "ngm",
-                    "ᆨᄒ" to "kh",
+                    "ᆨᄋ" to "",
+                    "ᆨᄂ" to "ng",
+                    "ᆨᄅ" to "ng",
+                    "ᆨᄆ" to "ng",
+                    "ᆨᄒ" to "",
                     "ᆩ" to "kk",
-                    "ᆩᄋ" to "kg",
-                    "ᆩᄂ" to "ngn",
-                    "ᆩᄅ" to "ngn",
-                    "ᆩᄆ" to "ngm",
-                    "ᆩᄒ" to "kh",
+                    "ᆩᄋ" to "",
+                    "ᆩᄂ" to "ng",
+                    "ᆩᄅ" to "ng",
+                    "ᆩᄆ" to "ng",
+                    "ᆩᄒ" to "",
                     "ᆪ" to "k",
-                    "ᆪᄋ" to "ks",
-                    "ᆪᄂ" to "ngn",
-                    "ᆪᄅ" to "ngn",
-                    "ᆪᄆ" to "ngm",
-                    "ᆪᄒ" to "kch",
+                    "ᆪᄋ" to "k",
+                    "ᆪᄂ" to "ng",
+                    "ᆪᄅ" to "ng",
+                    "ᆪᄆ" to "ng",
+                    "ᆪᄒ" to "k",
                     "ᆫ" to "n",
-                    "ᆫᄅ" to "ll",
+                    "ᆫᄅ" to "l",
                     "ᆬ" to "n",
-                    "ᆬᄋ" to "nj",
-                    "ᆬᄂ" to "nn",
-                    "ᆬᄅ" to "nn",
-                    "ᆬᄆ" to "nm",
-                    "ᆬㅎ" to "nch",
+                    "ᆬᄋ" to "n",
+                    "ᆬᄂ" to "n",
+                    "ᆬᄅ" to "l",
+                    "ᆬᄆ" to "n",
+                    "ᆬᄒ" to "n",
                     "ᆭ" to "n",
-                    "ᆭᄋ" to "nh",
-                    "ᆭᄅ" to "nn",
+                    "ᆭᄋ" to "n",
+                    "ᆭᄒ" to "n",
+                    "ᆭᄅ" to "n",
+                    "ᆭᄃ" to "n",
+                    "ᆭᄇ" to "n",
+                    "ᆭᄌ" to "n",
+                    "ᆭᄎ" to "n",
+                    "ᆭᄏ" to "n",
+                    "ᆭᄐ" to "n",
+                    "ᆭᄑ" to "n",
                     "ᆮ" to "t",
-                    "ᆮᄋ" to "d",
-                    "ᆮᄂ" to "nn",
-                    "ᆮᄅ" to "nn",
-                    "ᆮᄆ" to "nm",
-                    "ᆮᄒ" to "th",
+                    "ᆮᄋ" to "",
+                    "ᆮᄂ" to "n",
+                    "ᆮᄅ" to "n",
+                    "ᆮᄆ" to "n",
+                    "ᆮᄒ" to "",
                     "ᆯ" to "l",
-                    "ᆯᄋ" to "r",
-                    "ᆯᄂ" to "ll",
-                    "ᆯᄅ" to "ll",
+                    "ᆯᄋ" to "",
+                    "ᆯᄂ" to "l",
+                    "ᆯᄅ" to "l",
                     "ᆰ" to "k",
-                    "ᆰᄋ" to "lg",
-                    "ᆰᄂ" to "ngn",
-                    "ᆰᄅ" to "ngn",
-                    "ᆰᄆ" to "ngm",
-                    "ᆰᄒ" to "lkh",
+                    "ᆰᄋ" to "l",
+                    "ᆰᄂ" to "ng",
+                    "ᆰᄅ" to "ng",
+                    "ᆰᄆ" to "ng",
+                    "ᆰᄒ" to "l",
                     "ᆱ" to "m",
-                    "ᆱᄋ" to "lm",
-                    "ᆱᄂ" to "mn",
-                    "ᆱᄅ" to "mn",
-                    "ᆱᄆ" to "mm",
-                    "ᆱᄒ" to "lmh",
+                    "ᆱᄋ" to "l",
+                    "ᆱᄂ" to "m",
+                    "ᆱᄅ" to "m",
+                    "ᆱᄆ" to "m",
+                    "ᆱᄒ" to "l",
                     "ᆲ" to "p",
-                    "ᆲᄋ" to "lb",
-                    "ᆲᄂ" to "mn",
-                    "ᆲᄅ" to "mn",
-                    "ᆲᄆ" to "mm",
-                    "ᆲᄒ" to "lph",
+                    "ᆲᄋ" to "l",
+                    "ᆲᄂ" to "m",
+                    "ᆲᄅ" to "m",
+                    "ᆲᄆ" to "m",
+                    "ᆲᄒ" to "l",
                     "ᆳ" to "t",
-                    "ᆳᄋ" to "ls",
-                    "ᆳᄂ" to "nn",
-                    "ᆳᄅ" to "nn",
-                    "ᆳᄆ" to "nm",
-                    "ᆳᄒ" to "lsh",
+                    "ᆳᄋ" to "l",
+                    "ᆳᄂ" to "n",
+                    "ᆳᄅ" to "n",
+                    "ᆳᄆ" to "n",
+                    "ᆳᄒ" to "l",
                     "ᆴ" to "t",
-                    "ᆴᄋ" to "lt",
-                    "ᆴᄂ" to "nn",
-                    "ᆴᄅ" to "nn",
-                    "ᆴᄆ" to "nm",
-                    "ᆴᄒ" to "lth",
+                    "ᆴᄋ" to "l",
+                    "ᆴᄂ" to "n",
+                    "ᆴᄅ" to "n",
+                    "ᆴᄆ" to "n",
+                    "ᆴᄒ" to "l",
                     "ᆵ" to "p",
-                    "ᆵᄋ" to "lp",
-                    "ᆵᄂ" to "mn",
-                    "ᆵᄅ" to "mn",
-                    "ᆵᄆ" to "mm",
-                    "ᆵᄒ" to "lph",
+                    "ᆵᄋ" to "l",
+                    "ᆵᄂ" to "m",
+                    "ᆵᄅ" to "m",
+                    "ᆵᄆ" to "m",
+                    "ᆵᄒ" to "l",
                     "ᆶ" to "l",
-                    "ᆶᄋ" to "lh",
-                    "ᆶᄂ" to "ll",
-                    "ᆶᄅ" to "ll",
-                    "ᆶᄆ" to "lm",
-                    "ᆶᄒ" to "lh",
+                    "ᆶᄋ" to "l",
+                    "ᆶᄂ" to "l",
+                    "ᆶᄅ" to "l",
+                    "ᆶᄆ" to "l",
+                    "ᆶᄒ" to "l",
+                    "ᆶᄃ" to "l",
+                    "ᆶᄇ" to "l",
+                    "ᆶᄌ" to "l",
+                    "ᆶᄎ" to "l",
+                    "ᆶᄏ" to "l",
+                    "ᆶᄐ" to "l",
+                    "ᆶᄑ" to "l",
                     "ᆷ" to "m",
-                    "ᆷᄅ" to "mn",
+                    "ᆷᄅ" to "m",
                     "ᆸ" to "p",
-                    "ᆸᄋ" to "b",
-                    "ᆸᄂ" to "mn",
-                    "ᆸᄅ" to "mn",
-                    "ᆸᄆ" to "mm",
-                    "ᆸᄒ" to "ph",
+                    "ᆸᄋ" to "",
+                    "ᆸᄂ" to "m",
+                    "ᆸᄅ" to "m",
+                    "ᆸᄆ" to "m",
+                    "ᆸᄒ" to "",
                     "ᆹ" to "p",
-                    "ᆹᄋ" to "ps",
-                    "ᆹᄂ" to "mn",
-                    "ᆹᄅ" to "mn",
-                    "ᆹᄆ" to "mm",
-                    "ᆹᄒ" to "psh",
+                    "ᆹᄋ" to "p",
+                    "ᆹᄂ" to "m",
+                    "ᆹᄅ" to "m",
+                    "ᆹᄆ" to "m",
+                    "ᆹᄒ" to "p",
                     "ᆺ" to "t",
-                    "ᆺᄋ" to "s",
-                    "ᆺᄂ" to "nn",
-                    "ᆺᄅ" to "nn",
-                    "ᆺᄆ" to "nm",
-                    "ᆺᄒ" to "sh",
+                    "ᆺᄋ" to "",
+                    "ᆺᄂ" to "n",
+                    "ᆺᄅ" to "n",
+                    "ᆺᄆ" to "n",
+                    "ᆺᄒ" to "",
                     "ᆻ" to "t",
-                    "ᆻᄋ" to "ss",
-                    "ᆻᄂ" to "tn",
-                    "ᆻᄅ" to "tn",
-                    "ᆻᄆ" to "nm",
-                    "ᆻᄒ" to "th",
+                    "ᆻᄋ" to "",
+                    "ᆻᄂ" to "n",
+                    "ᆻᄅ" to "n",
+                    "ᆻᄆ" to "n",
+                    "ᆻᄒ" to "",
                     "ᆼ" to "ng",
+                    "ᆼᄅ" to "ng",
                     "ᆽ" to "t",
-                    "ᆽᄋ" to "j",
-                    "ᆽᄂ" to "nn",
-                    "ᆽᄅ" to "nn",
-                    "ᆽᄆ" to "nm",
-                    "ᆽᄒ" to "ch",
+                    "ᆽᄋ" to "",
+                    "ᆽᄂ" to "n",
+                    "ᆽᄅ" to "n",
+                    "ᆽᄆ" to "n",
+                    "ᆽᄒ" to "",
                     "ᆾ" to "t",
-                    "ᆾᄋ" to "ch",
-                    "ᆾᄂ" to "nn",
-                    "ᆾᄅ" to "nn",
-                    "ᆾᄆ" to "nm",
-                    "ᆾᄒ" to "ch",
+                    "ᆾᄋ" to "",
+                    "ᆾᄂ" to "n",
+                    "ᆾᄅ" to "n",
+                    "ᆾᄆ" to "n",
+                    "ᆾᄒ" to "",
                     "ᆿ" to "k",
-                    "ᆿᄋ" to "k",
-                    "ᆿᄂ" to "ngn",
-                    "ᆿᄅ" to "ngn",
-                    "ᆿᄆ" to "ngm",
-                    "ᆿᄒ" to "kh",
+                    "ᆿᄋ" to "",
+                    "ᆿᄂ" to "ng",
+                    "ᆿᄅ" to "ng",
+                    "ᆿᄆ" to "ng",
+                    "ᆿᄒ" to "",
                     "ᇀ" to "t",
-                    "ᇀᄋ" to "t",
-                    "ᇀᄂ" to "nn",
-                    "ᇀᄅ" to "nn",
-                    "ᇀᄆ" to "nm",
-                    "ᇀᄒ" to "th",
+                    "ᇀᄋ" to "",
+                    "ᇀᄂ" to "n",
+                    "ᇀᄅ" to "n",
+                    "ᇀᄆ" to "n",
+                    "ᇀᄒ" to "",
                     "ᇁ" to "p",
-                    "ᇁᄋ" to "p",
-                    "ᇁᄂ" to "mn",
-                    "ᇁᄅ" to "mn",
-                    "ᇁᄆ" to "mm",
-                    "ᇁᄒ" to "ph",
+                    "ᇁᄋ" to "",
+                    "ᇁᄂ" to "m",
+                    "ᇁᄅ" to "m",
+                    "ᇁᄆ" to "m",
+                    "ᇁᄒ" to "",
                     "ᇂ" to "t",
-                    "ᇂᄋ" to "h",
-                    "ᇂᄂ" to "nn",
-                    "ᇂᄅ" to "nn",
-                    "ᇂᄆ" to "mm",
-                    "ᇂᄒ" to "t",
-                    "ᇂᄀ" to "k",
+                    "ᇂᄋ" to "",
+                    "ᇂᄂ" to "n",
+                    "ᇂᄅ" to "n",
+                    "ᇂᄆ" to "m",
+                    "ᇂᄒ" to "",
+                    "ᇂᄀ" to "",
+                    "ᇂᄃ" to "",
+                    "ᇂᄇ" to "",
+                    "ᇂᄌ" to "",
+                    "ᇂᄎ" to "",
+                    "ᇂᄏ" to "",
+                    "ᇂᄐ" to "",
+                    "ᇂᄑ" to "",
                 ),
+        )
+
+    // Cho override map for Korean: when a context-dependent jong+cho combination
+    // changes the cho sound, this map provides the overridden cho value.
+    private val CHO_OVERRIDE: Map<String, String> =
+        mapOf(
+            "ᆫᄅ" to "l",
+            "ᆯᄂ" to "l",
+            "ᆯᄅ" to "l",
+            "ᆬᄅ" to "l",
+            "ᆭᄅ" to "l",
+            "ᆶᄂ" to "l",
+            "ᆶᄅ" to "l",
+            "ᆨᄅ" to "n",
+            "ᆩᄅ" to "n",
+            "ᆪᄅ" to "n",
+            "ᆮᄅ" to "n",
+            "ᆰᄅ" to "n",
+            "ᆱᄅ" to "n",
+            "ᆲᄅ" to "n",
+            "ᆳᄅ" to "n",
+            "ᆴᄅ" to "n",
+            "ᆵᄅ" to "n",
+            "ᆷᄅ" to "n",
+            "ᆸᄅ" to "n",
+            "ᆹᄅ" to "n",
+            "ᆺᄅ" to "n",
+            "ᆻᄅ" to "n",
+            "ᆽᄅ" to "n",
+            "ᆾᄅ" to "n",
+            "ᆿᄅ" to "n",
+            "ᇀᄅ" to "n",
+            "ᇁᄅ" to "n",
+            "ᇂᄅ" to "n",
+            "ᆨᄋ" to "g",
+            "ᆩᄋ" to "g",
+            "ᆪᄋ" to "s",
+            "ᆬᄋ" to "j",
+            "ᆭᄋ" to "h",
+            "ᆮᄋ" to "d",
+            "ᇀᄋ" to "t",
+            "ᆼᄅ" to "n",
+            "ᆷᄅ" to "n",
+            "ᆯᄋ" to "r",
+            "ᆰᄋ" to "g",
+            "ᆱᄋ" to "m",
+            "ᆲᄋ" to "b",
+            "ᆳᄋ" to "s",
+            "ᆴᄋ" to "t",
+            "ᆵᄋ" to "p",
+            "ᆶᄋ" to "h",
+            "ᆸᄋ" to "b",
+            "ᆹᄋ" to "s",
+            "ᆺᄋ" to "s",
+            "ᆻᄋ" to "s",
+            "ᆽᄋ" to "j",
+            "ᆾᄋ" to "ch",
+            "ᆿᄋ" to "k",
+            "ᇀᄋ" to "t",
+            "ᇁᄋ" to "p",
+            "ᇂᄋ" to "h",
+            "ᆨᄒ" to "kh",
+            "ᆩᄒ" to "kh",
+            "ᆪᄒ" to "kh",
+            "ᆮᄒ" to "th",
+            "ᆰᄒ" to "kh",
+            "ᆱᄒ" to "mh",
+            "ᆲᄒ" to "ph",
+            "ᆳᄒ" to "sh",
+            "ᆴᄒ" to "th",
+            "ᆵᄒ" to "ph",
+            "ᆶᄒ" to "h",
+            "ᆶᄃ" to "t",
+            "ᆶᄇ" to "p",
+            "ᆶᄌ" to "ch",
+            "ᆶᄎ" to "ch",
+            "ᆶᄏ" to "k",
+            "ᆶᄐ" to "t",
+            "ᆶᄑ" to "p",
+            "ᆸᄒ" to "ph",
+            "ᆹᄒ" to "s",
+            "ᆺᄒ" to "s",
+            "ᆻᄒ" to "th",
+            "ᆽᄒ" to "ch",
+            "ᆾᄒ" to "ch",
+            "ᆿᄒ" to "kh",
+            "ᇀᄒ" to "th",
+            "ᇁᄒ" to "ph",
+            "ᆬᄒ" to "ch",
+            "ᆭᄒ" to "ch",
+            "ᆭᄃ" to "t",
+            "ᆭᄇ" to "p",
+            "ᆭᄌ" to "ch",
+            "ᆭᄎ" to "ch",
+            "ᆭᄏ" to "k",
+            "ᆭᄐ" to "t",
+            "ᆭᄑ" to "p",
+            "ᇂᄒ" to "",
+            "ᇂᄀ" to "k",
+            "ᇂᄃ" to "t",
+            "ᇂᄇ" to "p",
+            "ᇂᄌ" to "ch",
+            "ᇂᄎ" to "ch",
+            "ᇂᄏ" to "k",
+            "ᇂᄐ" to "t",
+            "ᇂᄑ" to "p",
+            "ᆨᄂ" to "n",
+            "ᆩᄂ" to "n",
+            "ᆪᄂ" to "n",
+            "ᆮᄂ" to "n",
+            "ᆰᄂ" to "n",
+            "ᆳᄂ" to "n",
+            "ᆴᄂ" to "n",
+            "ᆺᄂ" to "n",
+            "ᆻᄂ" to "n",
+            "ᆽᄂ" to "n",
+            "ᆾᄂ" to "n",
+            "ᆿᄂ" to "n",
+            "ᇀᄂ" to "n",
+            "ᇂᄂ" to "n",
+            "ᆨᄆ" to "m",
+            "ᆩᄆ" to "m",
+            "ᆪᄆ" to "m",
+            "ᆮᄆ" to "m",
+            "ᆰᄆ" to "m",
+            "ᆳᄆ" to "m",
+            "ᆴᄆ" to "m",
+            "ᆺᄆ" to "m",
+            "ᆻᄆ" to "m",
+            "ᆽᄆ" to "m",
+            "ᆾᄆ" to "m",
+            "ᆿᄆ" to "m",
+            "ᇀᄆ" to "m",
+            "ᇂᄆ" to "m",
+            "ᆬᄂ" to "n",
+            "ᆶᄆ" to "m",
         )
 
     // Devanagari (Hindi) mapping
@@ -268,6 +518,7 @@ object RomanizationUtils {
             "य" to "y",
             "र" to "r",
             "ल" to "l",
+            "ळ" to "l",
             "व" to "v",
             "श" to "sh",
             "ष" to "sh",
@@ -304,14 +555,14 @@ object RomanizationUtils {
             "९" to "9",
             "ॐ" to "Om",
             "ऽ" to "",
-            "क़" to "q",
-            "ख़" to "kh",
-            "ग़" to "g",
-            "ज़" to "z",
-            "ड़" to "r",
-            "ढ़" to "rh",
-            "फ़" to "f",
-            "य़" to "y",
+            "क़" to "q",
+            "ख़" to "kh",
+            "ग़" to "g",
+            "ज़" to "z",
+            "ड़" to "r",
+            "ढ़" to "rh",
+            "फ़" to "f",
+            "य़" to "y",
         )
 
     // Gurmukhi (Punjabi) mapping
@@ -352,12 +603,12 @@ object RomanizationUtils {
             "ਲ" to "l",
             "ਵ" to "v",
             "ੜ" to "r",
-            "ਸ਼" to "sh",
-            "ਖ਼" to "kh",
-            "ਗ਼" to "g",
-            "ਜ਼" to "z",
-            "ਫ਼" to "f",
-            "ਲ਼" to "l",
+            "ਸ਼" to "sh",
+            "ਖ਼" to "kh",
+            "ਗ਼" to "g",
+            "ਜ਼" to "z",
+            "ਫ਼" to "f",
+            "ਲ਼" to "l",
             "ਾ" to "aa",
             "ਿ" to "i",
             "ੀ" to "ee",
@@ -394,7 +645,7 @@ object RomanizationUtils {
             "Г" to "G",
             "Ґ" to "G",
             "Д" to "D",
-            "Ѓ" to "Ǵ",
+            "Ѓ" to "Ǵ",
             "Ђ" to "Đ",
             "Е" to "E",
             "Ё" to "Yo",
@@ -440,7 +691,7 @@ object RomanizationUtils {
             "г" to "g",
             "ґ" to "g",
             "д" to "d",
-            "ѓ" to "ǵ",
+            "ѓ" to "ǵ",
             "ђ" to "đ",
             "е" to "e",
             "ё" to "yo",
@@ -483,7 +734,14 @@ object RomanizationUtils {
         )
 
     private val RUSSIAN_ROMAJI_MAP: Map<String, String> =
-        mapOf("ого" to "ovo", "Ого" to "Ovo", "его" to "evo", "Его" to "Evo")
+        mapOf(
+            "ого" to "ovo",
+            "Ого" to "Ovo",
+            "ОГО" to "OVO",
+            "его" to "evo",
+            "Его" to "Evo",
+            "ЕГО" to "EVO",
+        )
 
     private val UKRAINIAN_ROMAJI_MAP: Map<String, String> =
         mapOf(
@@ -493,6 +751,8 @@ object RomanizationUtils {
             "ґ" to "g",
             "Є" to "Ye",
             "є" to "ye",
+            "И" to "Y",
+            "и" to "y",
             "І" to "I",
             "і" to "i",
             "Ї" to "Yi",
@@ -509,6 +769,7 @@ object RomanizationUtils {
             "Џ" to "Dž",
             "Ш" to "Š",
             "Х" to "H",
+            "Ј" to "J",
             "ж" to "ž",
             "љ" to "lj",
             "њ" to "nj",
@@ -517,6 +778,7 @@ object RomanizationUtils {
             "џ" to "dž",
             "ш" to "š",
             "х" to "h",
+            "ј" to "j",
         )
 
     private val BULGARIAN_ROMAJI_MAP: Map<String, String> =
@@ -541,8 +803,7 @@ object RomanizationUtils {
             "я" to "ya",
         )
 
-    private val BELARUSIAN_ROMAJI_MAP: Map<String, String> =
-        mapOf("Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w")
+    private val BELARUSIAN_ROMAJI_MAP: Map<String, String> = mapOf("Г" to "H", "г" to "h")
 
     private val KYRGYZ_ROMAJI_MAP: Map<String, String> =
         mapOf("Ү" to "Ü", "ү" to "ü", "Ы" to "Y", "ы" to "y")
@@ -578,10 +839,162 @@ object RomanizationUtils {
         )
 
     // Japanese romanization
-    suspend fun romanizeJapanese(text: String): String =
-        withContext(Dispatchers.Default) {
-            japaneseTransliterator.transliterate(text).lowercase(Locale.ROOT)
+
+    suspend fun romanizeJapanese(text: String): String {
+        ensureReadingDictionary()
+        return withContext(Dispatchers.Default) {
+            if (text.isEmpty()) return@withContext ""
+
+            val index = tokenizerIndex
+            if (index != null && !index.isEmpty()) {
+                romanizeJapaneseWithTokenizer(text, index)
+            } else {
+                romanizeJapaneseFallback(text)
+            }
         }
+    }
+
+    /**
+     * Tokenize Japanese text using longest-match over the reading dictionary.
+     *
+     * For each token:
+     * 1. If the surface is a particle (は/へ/を) → special mapping.
+     * 2. If the surface has a reading in the dictionary → transliterate reading (katakana→romaji).
+     * 3. Otherwise → transliterate any kana in the surface, leave kanji unchanged.
+     */
+    private fun romanizeJapaneseWithTokenizer(
+        text: String,
+        index: Map<Char, List<Pair<String, String>>>,
+    ): String {
+        val parts = mutableListOf<String>()
+        var i = 0
+
+        while (i < text.length) {
+            val ch = text[i]
+            val candidates = index[ch]
+            var matchedSurface: String? = null
+            var matchedReading: String? = null
+
+            // Longest-match lookup
+            if (candidates != null) {
+                for ((surface, reading) in candidates) {
+                    if (
+                        i + surface.length <= text.length &&
+                            text.regionMatches(i, surface, 0, surface.length)
+                    ) {
+                        matchedSurface = surface
+                        matchedReading = reading
+                        break
+                    }
+                }
+            }
+
+            val surface: String
+            val reading: String?
+
+            if (matchedSurface != null) {
+                surface = matchedSurface
+                reading = matchedReading
+                i += surface.length
+            } else {
+                // No dictionary match — group consecutive characters of same type
+                val end =
+                    when {
+                        ch in '\u3040'..'\u309F' || ch in '\u30A0'..'\u30FF' -> {
+                            // Group consecutive kana (hiragana/katakana)
+                            var j = i + 1
+                            while (j < text.length) {
+                                val c = text[j]
+                                if (c in '\u3040'..'\u309F' || c in '\u30A0'..'\u30FF') j++
+                                else break
+                            }
+                            j
+                        }
+                        ch in 'a'..'z' || ch in 'A'..'Z' -> {
+                            // Group consecutive Latin letters
+                            var j = i + 1
+                            while (j < text.length) {
+                                val c = text[j]
+                                if (c in 'a'..'z' || c in 'A'..'Z') j++ else break
+                            }
+                            j
+                        }
+                        else -> i + 1 // single character (kanji, punctuation, etc.)
+                    }
+                surface = text.substring(i, end)
+                reading = null
+                i = end
+            }
+
+            val romanized =
+                when {
+                    // Particles with special pronunciations
+                    surface == "は" && surface.length == 1 -> "wa"
+                    surface == "へ" && surface.length == 1 -> "e"
+                    surface == "を" && surface.length == 1 -> "o"
+                    // Reading from dictionary (katakana → romaji)
+                    reading != null && reading.isNotEmpty() -> {
+                        katakanaTransliterator.transliterate(reading).lowercase(Locale.ROOT)
+                    }
+                    // Fallback: transliterate any kana in surface, leave kanji
+                    else -> {
+                        val hasKana =
+                            surface.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' }
+                        if (hasKana) {
+                            val katakanaSurface =
+                                surface
+                                    .map { c ->
+                                        if (c in '\u3040'..'\u309F') (c.code + 0x60).toChar() else c
+                                    }
+                                    .joinToString("")
+                            katakanaTransliterator
+                                .transliterate(katakanaSurface)
+                                .lowercase(Locale.ROOT)
+                        } else {
+                            surface
+                        }
+                    }
+                }
+
+            if (romanized.isNotEmpty()) {
+                parts.add(romanized)
+            }
+        }
+
+        return parts
+            .joinToString(" ")
+            .replace(Regex("\\s+([。、？！.,!?;:：；)])"), "$1")
+            .replace(Regex("([「『(（])\\s+"), "$1")
+            .replace(Regex("\\s{2,}"), " ")
+            .trim()
+    }
+
+    // ICU-only fallback: kana → romaji, kanji passes through
+    // Uses the reading dictionary if available for kanji tokens.
+    // Does NOT use Any-Latin/Japanese-Latin transliterators in this path
+    // because they give Chinese pinyin for kanji which is wrong for Japanese.
+    private fun romanizeJapaneseFallback(text: String): String {
+        val sb = StringBuilder()
+        for (char in text) {
+            when {
+                char in '\u3040'..'\u309F' -> {
+                    val katakana = (char.code + 0x60).toChar()
+                    sb.append(
+                        katakanaTransliterator
+                            .transliterate(katakana.toString())
+                            .lowercase(Locale.ROOT)
+                    )
+                }
+                char in '\u30A0'..'\u30FF' -> {
+                    sb.append(
+                        katakanaTransliterator.transliterate(char.toString()).lowercase(Locale.ROOT)
+                    )
+                }
+                else -> sb.append(char)
+            }
+        }
+        return sb.toString().trim()
+    }
 
     // Korean romanization
     suspend fun romanizeKorean(text: String): String =
@@ -604,16 +1017,39 @@ object RomanizationUtils {
 
                     if (prevFinal != null) {
                         val contextKey = prevFinal + choChar
+                        val contextJong = HANGUL_ROMAJA_MAP["jong"]?.get(contextKey)
                         val jong =
-                            HANGUL_ROMAJA_MAP["jong"]?.get(contextKey)
-                                ?: HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal)
-                                ?: prevFinal
+                            contextJong ?: HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
                         romajaBuilder.append(jong)
-                    }
 
-                    val cho = HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
-                    val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
-                    romajaBuilder.append(cho).append(jung)
+                        val cho =
+                            if (contextJong != null) {
+                                CHO_OVERRIDE[contextKey]
+                                    ?: HANGUL_ROMAJA_MAP["cho"]?.get(choChar)
+                                    ?: choChar
+                            } else {
+                                HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
+                            }
+                        val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
+                        // Palatalization across syllable boundary: ㄷ(d)+ㅣ(i) → ㅈ(j), ㅌ(t)+ㅣ(i) →
+                        // ㅊ(ch)
+                        // e.g., 굳이 → guji, 같이 → gachi
+                        val finalCho =
+                            if (contextJong != null && jung == "i") {
+                                when (cho) {
+                                    "d" -> "j"
+                                    "t" -> "ch"
+                                    else -> cho
+                                }
+                            } else {
+                                cho
+                            }
+                        romajaBuilder.append(finalCho).append(jung)
+                    } else {
+                        val cho = HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
+                        val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
+                        romajaBuilder.append(cho).append(jung)
+                    }
                     prevFinal = jongChar
                 } else {
                     if (prevFinal != null) {
@@ -632,6 +1068,8 @@ object RomanizationUtils {
 
             romajaBuilder.toString()
         }
+
+    private val chineseTransliterator by lazy { Transliterator.getInstance("Han-Latin") }
 
     // Chinese romanization
     suspend fun romanizeChinese(text: String): String =
@@ -695,8 +1133,12 @@ object RomanizationUtils {
 
     private fun romanizeUkrainianInternal(text: String): String {
         val sb = StringBuilder()
-        for (char in text) {
+        for ((index, char) in text.withIndex()) {
             val str = char.toString()
+            // Cyrillic vowels (а е є и і о у ю я, their uppercase equivalents) still
+            // require "yi" for ї — only consonant predecessors absorb the glide.
+            // In practice ї after a consonant is extremely rare; always using "yi"
+            // (the BGN/PCGN and ALA-LC standard) is safer than checking for vowels.
             sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
         }
         return sb.toString()
@@ -748,24 +1190,105 @@ object RomanizationUtils {
     }
 
     // Hindi romanization
+    private val DEVANAGARI_REPLACING_VOWEL_SIGNS =
+        setOf("ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ")
+    private val DEVANAGARI_CONSONANTS =
+        setOf(
+            "क",
+            "ख",
+            "ग",
+            "घ",
+            "ङ",
+            "च",
+            "छ",
+            "ज",
+            "झ",
+            "ञ",
+            "ट",
+            "ठ",
+            "ड",
+            "ढ",
+            "ण",
+            "त",
+            "थ",
+            "द",
+            "ध",
+            "न",
+            "प",
+            "फ",
+            "ब",
+            "भ",
+            "म",
+            "य",
+            "र",
+            "ल",
+            "व",
+            "श",
+            "ष",
+            "स",
+            "ह",
+            "ळ",
+        )
+    private val DEVANAGARI_VIRAMA = "्"
+
     suspend fun romanizeHindi(text: String): String =
         withContext(Dispatchers.Default) {
             val sb = StringBuilder()
             var i = 0
             while (i < text.length) {
                 var consumed = false
-                if (i + 1 < text.length) {
-                    val twoChar = text.substring(i, i + 2)
-                    if (DEVANAGARI_ROMAJI_MAP.containsKey(twoChar)) {
-                        sb.append(DEVANAGARI_ROMAJI_MAP[twoChar])
-                        i += 2
-                        consumed = true
+                // Try multi-char match first: 3-char conjuncts (क्ष, त्र, ज्ञ, श्र),
+                // then 2-char Nukta forms. Fall through to single-char for inherent vowel.
+                for (len in 3 downTo 2) {
+                    if (i + len <= text.length) {
+                        val substr = text.substring(i, i + len)
+                        if (DEVANAGARI_ROMAJI_MAP.containsKey(substr)) {
+                            sb.append(DEVANAGARI_ROMAJI_MAP[substr])
+                            i += len
+                            consumed = true
+
+                            // Inherent 'a' after consonant-ending conjunct
+                            // (e.g. क्षमा → kshamaa, not kshmaa)
+                            // Use first char: last char is Nukta (़) for 2-char forms
+                            val firstChar = substr.first().toString()
+                            if (firstChar in DEVANAGARI_CONSONANTS) {
+                                val nextChar = if (i < text.length) text[i].toString() else null
+                                if (
+                                    nextChar != null &&
+                                        nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
+                                        nextChar != DEVANAGARI_VIRAMA &&
+                                        (nextChar in DEVANAGARI_CONSONANTS ||
+                                            nextChar == "ं" ||
+                                            nextChar == "ः" ||
+                                            nextChar == "ँ")
+                                ) {
+                                    sb.append("a")
+                                }
+                            }
+
+                            break
+                        }
                     }
                 }
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    sb.append(DEVANAGARI_ROMAJI_MAP[str] ?: str)
+                    val mapped = DEVANAGARI_ROMAJI_MAP[str] ?: str
+                    sb.append(mapped)
+                    if (str in DEVANAGARI_CONSONANTS) {
+                        val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
+                        if (
+                            nextChar != null &&
+                                nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
+                                nextChar != DEVANAGARI_VIRAMA &&
+                                (nextChar in DEVANAGARI_CONSONANTS ||
+                                    nextChar == "ं" ||
+                                    nextChar == "ः" ||
+                                    nextChar == "ँ")
+                        ) {
+                            sb.append("a")
+                        }
+                    }
                     i++
                 }
             }
@@ -773,6 +1296,44 @@ object RomanizationUtils {
         }
 
     // Punjabi romanization
+    private val GURMUKHI_REPLACING_VOWEL_SIGNS = setOf("ਾ", "ਿ", "ੀ", "ੁ", "ੂ", "ੇ", "ੈ", "ੋ", "ੌ")
+    private val GURMUKHI_CONSONANTS =
+        setOf(
+            "ਸ",
+            "ਹ",
+            "ਕ",
+            "ਖ",
+            "ਗ",
+            "ਘ",
+            "ਙ",
+            "ਚ",
+            "ਛ",
+            "ਜ",
+            "ਝ",
+            "ਞ",
+            "ਟ",
+            "ਠ",
+            "ਡ",
+            "ਢ",
+            "ਣ",
+            "ਤ",
+            "ਥ",
+            "ਦ",
+            "ਧ",
+            "ਨ",
+            "ਪ",
+            "ਫ",
+            "ਬ",
+            "ਭ",
+            "ਮ",
+            "ਯ",
+            "ਰ",
+            "ਲ",
+            "ਵ",
+            "ੜ",
+        )
+    private val GURMUKHI_VIRAMA = "੍"
+
     suspend fun romanizePunjabi(text: String): String =
         withContext(Dispatchers.Default) {
             val sb = StringBuilder()
@@ -785,12 +1346,47 @@ object RomanizationUtils {
                         sb.append(GURMUKHI_ROMAJI_MAP[twoChar])
                         i += 2
                         consumed = true
+
+                        // Inherent 'a' after nukta-combined consonant
+                        // (e.g. ਸ਼ਕ → shak, not shk)
+                        val firstChar = twoChar.first().toString()
+                        if (firstChar in GURMUKHI_CONSONANTS) {
+                            val nextChar = if (i < text.length) text[i].toString() else null
+                            if (
+                                nextChar != null &&
+                                    nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
+                                    nextChar != GURMUKHI_VIRAMA &&
+                                    (nextChar in GURMUKHI_CONSONANTS ||
+                                        nextChar == "ੰ" ||
+                                        nextChar == "ਂ" ||
+                                        nextChar == "ਁ" ||
+                                        nextChar == "ੱ")
+                            ) {
+                                sb.append("a")
+                            }
+                        }
                     }
                 }
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    sb.append(GURMUKHI_ROMAJI_MAP[str] ?: str)
+                    val mapped = GURMUKHI_ROMAJI_MAP[str] ?: str
+                    sb.append(mapped)
+                    if (str in GURMUKHI_CONSONANTS) {
+                        val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
+                        if (
+                            nextChar != null &&
+                                nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
+                                nextChar != GURMUKHI_VIRAMA &&
+                                (nextChar in GURMUKHI_CONSONANTS ||
+                                    nextChar == "ੰ" ||
+                                    nextChar == "ਂ" ||
+                                    nextChar == "ਁ" ||
+                                    nextChar == "ੱ")
+                        ) {
+                            sb.append("a")
+                        }
+                    }
                     i++
                 }
             }
@@ -809,6 +1405,7 @@ object RomanizationUtils {
     }
 
     fun isChinese(text: String): Boolean {
+        if (isJapanese(text)) return false
         return text.any { it in '\u4E00'..'\u9FFF' }
     }
 
@@ -905,8 +1502,16 @@ object RomanizationUtils {
             ),
     ): String? {
         return when {
+            // Japanese text with kana → always treat as Japanese
             "Japanese" in enabledLanguages && isJapanese(text) -> romanizeJapanese(text)
             "Korean" in enabledLanguages && isKorean(text) -> romanizeKorean(text)
+            // Pure CJK (no kana): route to Japanese IPADIC readings first.
+            // The bundled dictionary covers common Japanese kanji. Chinese text
+            // not in the IPADIC passes through unchanged — the user can enable
+            // Chinese-only mode for pinyin output.
+            "Japanese" in enabledLanguages &&
+                text.any { it in '\u4E00'..'\u9FFF' || it in '\u3400'..'\u4DBF' } ->
+                romanizeJapanese(text)
             "Chinese" in enabledLanguages && isChinese(text) -> romanizeChinese(text)
             "Hindi" in enabledLanguages && isHindi(text) -> romanizeHindi(text)
             "Punjabi" in enabledLanguages && isPunjabi(text) -> romanizePunjabi(text)

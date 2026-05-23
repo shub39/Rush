@@ -21,6 +21,7 @@ import com.shub39.rush.BuildConfig
 import com.shub39.rush.billing.BillingInitializerImpl
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.di.RushModules
+import com.shub39.romanization.RomanizationUtils
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.plugin.module.dsl.startKoin
@@ -37,5 +38,8 @@ class RushApplication : Application() {
 
         BillingInitializerImpl().initialize(this)
         MediaListenerImpl.startListening(this)
+
+        // Initialize RomanizationUtils with app context for lazy dictionary loading
+        RomanizationUtils.init(this)
     }
 }
