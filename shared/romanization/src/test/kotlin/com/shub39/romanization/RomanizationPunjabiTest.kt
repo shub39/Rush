@@ -23,8 +23,8 @@ import org.junit.Test
 /**
  * Punjabi romanization tests — ISO 15919:2001 (Gurmukhi framework).
  *
- * ISO: https://www.iso.org/standard/28333.html
- * Uses same ISO 15919 framework as Hindi for Gurmukhi script.
+ * ISO: https://www.iso.org/standard/28333.html Uses same ISO 15919 framework as Hindi for Gurmukhi
+ * script.
  */
 class RomanizationPunjabiTest {
 
@@ -94,7 +94,7 @@ class RomanizationPunjabiTest {
         // Addak (ੱ) geminates the following consonant: ਸੱਚ → sacc
         val result = RomanizationUtils.romanizePunjabi("ਸੱਚ")
         assertNotNull(result)
-        assertTrue("sa" in result!!)
+        assertTrue("sa" in result)
     }
 
     @Test
@@ -110,7 +110,7 @@ class RomanizationPunjabiTest {
         // the bindi nasalizes the k. Current: "kanm" (bindi → n before m)
         val result = RomanizationUtils.romanizePunjabi("ਕੰਮ")
         assertNotNull(result)
-        assertTrue(result!!.isNotEmpty())
+        assertTrue(result.isNotEmpty())
     }
 
     // ── Punjabi additional edge cases ──

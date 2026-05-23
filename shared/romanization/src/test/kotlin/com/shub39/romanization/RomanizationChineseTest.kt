@@ -25,8 +25,8 @@ import org.junit.Test
 /**
  * Chinese romanization tests — ISO 7098:2015 (Pinyin).
  *
- * ISO:  https://www.iso.org/standard/61461.html
- * ALA-LC: https://www.loc.gov/catdir/cpso/romanization/chinese.pdf
+ * ISO: https://www.iso.org/standard/61461.html ALA-LC:
+ * https://www.loc.gov/catdir/cpso/romanization/chinese.pdf
  */
 class RomanizationChineseTest {
 
