@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -33,40 +33,39 @@ import org.junit.Test
  */
 class RomanizationDetectionTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Language detection tests
 
     @Test
     fun testIsJapanese() {
-        assertTrue(RomanizationUtils.isJapanese("こんにちは"))
-        assertTrue(RomanizationUtils.isJapanese("カタカナ"))
-        assertTrue(RomanizationUtils.isJapanese("食べる"))
-        assertFalse(RomanizationUtils.isJapanese("hello"))
-        assertFalse(RomanizationUtils.isJapanese("안녕하세요"))
-        assertFalse(RomanizationUtils.isJapanese("你好"))
+        assertTrue(romanizationUtils.isJapanese("こんにちは"))
+        assertTrue(romanizationUtils.isJapanese("カタカナ"))
+        assertTrue(romanizationUtils.isJapanese("食べる"))
+        assertFalse(romanizationUtils.isJapanese("hello"))
+        assertFalse(romanizationUtils.isJapanese("안녕하세요"))
+        assertFalse(romanizationUtils.isJapanese("你好"))
     }
 
     @Test
     fun testIsKorean() {
-        assertTrue(RomanizationUtils.isKorean("안녕하세요"))
-        assertTrue(RomanizationUtils.isKorean("한글"))
-        assertFalse(RomanizationUtils.isKorean("hello"))
-        assertFalse(RomanizationUtils.isKorean("こんにちは"))
+        assertTrue(romanizationUtils.isKorean("안녕하세요"))
+        assertTrue(romanizationUtils.isKorean("한글"))
+        assertFalse(romanizationUtils.isKorean("hello"))
+        assertFalse(romanizationUtils.isKorean("こんにちは"))
     }
 
     @Test
     fun testIsChinese() {
-        assertTrue(RomanizationUtils.isChinese("你好"))
-        assertTrue(RomanizationUtils.isChinese("世界"))
+        assertTrue(romanizationUtils.isChinese("你好"))
+        assertTrue(romanizationUtils.isChinese("世界"))
         assertFalse(RomanizationUtils.isChinese("hello"))
         assertFalse(RomanizationUtils.isChinese("안녕하세요"))
     }

@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -31,93 +31,92 @@ import org.junit.Test
  */
 class RomanizationCyrillicTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Cyrillic corner cases
 
     @Test
     fun testRussian_ryba() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("рыба", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("рыба", "Russian")
         assertEquals("ryba", result)
     }
 
     @Test
     fun testRussian_moskva() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("москва", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("москва", "Russian")
         assertEquals("moskva", result)
     }
 
     @Test
     fun testRussian_ego_evo() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("его", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("его", "Russian")
         assertEquals("evo", result)
     }
 
     @Test
     fun testRussian_ogo_ovo() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("ого", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("ого", "Russian")
         assertEquals("ovo", result)
     }
 
     @Test
     fun testRussian_capitalizedOgo() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("Ого", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("Ого", "Russian")
         assertEquals("Ovo", result)
     }
 
     @Test
     fun testRussian_capitalizedEgo() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("Его", "Russian")
+        val result = romanizationUtils.romanizeCyrillic("Его", "Russian")
         assertEquals("Evo", result)
     }
 
     @Test
     fun testUkrainian_kyiv() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("київ", "Ukrainian")
+        val result = romanizationUtils.romanizeCyrillic("київ", "Ukrainian")
         assertEquals("kyiv", result)
     }
 
     @Test
     fun testUkrainian_hryvnia() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("гривня", "Ukrainian")
+        val result = romanizationUtils.romanizeCyrillic("гривня", "Ukrainian")
         assertEquals("hryvnya", result)
     }
 
     @Test
     fun testSerbian_cirilica() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("ћирилица", "Serbian")
+        val result = romanizationUtils.romanizeCyrillic("ћирилица", "Serbian")
         assertEquals("ćirilica", result)
     }
 
     @Test
     fun testSerbian_jToJ() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("југ", "Serbian")
+        val result = romanizationUtils.romanizeCyrillic("југ", "Serbian")
         assertEquals("jug", result)
     }
 
     @Test
     fun testBulgarian_balgariya() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("българия", "Bulgarian")
+        val result = romanizationUtils.romanizeCyrillic("българия", "Bulgarian")
         assertEquals("balgariya", result)
     }
 
     @Test
     fun testBulgarian_sht() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("щастие", "Bulgarian")!!
+        val result = romanizationUtils.romanizeCyrillic("щастие", "Bulgarian")!!
         assertTrue(result.contains("sht"))
     }
 
     @Test
     fun testBulgarian_shwaVowel() = runTest {
-        val result = RomanizationUtils.romanizeCyrillic("къща", "Bulgarian")
+        val result = romanizationUtils.romanizeCyrillic("къща", "Bulgarian")
         assertEquals("kashta", result)
     }
 

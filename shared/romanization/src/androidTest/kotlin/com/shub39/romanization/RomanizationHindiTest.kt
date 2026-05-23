@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -32,87 +32,86 @@ import org.junit.Test
  */
 class RomanizationHindiTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Hindi corner cases
 
     @Test
     fun testHindi_namaste() = runTest {
-        val result = RomanizationUtils.romanizeHindi("नमस्ते")
+        val result = romanizationUtils.romanizeHindi("नमस्ते")
         assertEquals("namaste", result)
     }
 
     @Test
     fun testHindi_hindi() = runTest {
-        val result = RomanizationUtils.romanizeHindi("हिंदी")
+        val result = romanizationUtils.romanizeHindi("हिंदी")
         assertEquals("hindee", result)
     }
 
     @Test
     fun testHindi_pyar() = runTest {
-        val result = RomanizationUtils.romanizeHindi("प्यार")
+        val result = romanizationUtils.romanizeHindi("प्यार")
         assertEquals("pyaar", result)
     }
 
     @Test
     fun testHindi_duniya() = runTest {
-        val result = RomanizationUtils.romanizeHindi("दुनिया")
+        val result = romanizationUtils.romanizeHindi("दुनिया")
         assertEquals("duniyaa", result)
     }
 
     @Test
     fun testHindi_numbers() = runTest {
-        val result = RomanizationUtils.romanizeHindi("१२३")
+        val result = romanizationUtils.romanizeHindi("१२३")
         assertEquals("123", result)
     }
 
     @Test
     fun testHindi_conjunctKsh() = runTest {
-        val result = RomanizationUtils.romanizeHindi("क्षमा")
+        val result = romanizationUtils.romanizeHindi("क्षमा")
         assertEquals("kshamaa", result)
     }
 
     @Test
     fun testHindi_conjunctGy() = runTest {
-        val result = RomanizationUtils.romanizeHindi("ज्ञान")
+        val result = romanizationUtils.romanizeHindi("ज्ञान")
         assertEquals("gyaan", result)
     }
 
     @Test
     fun testHindi_anusvara() = runTest {
-        val result = RomanizationUtils.romanizeHindi("हिंदी")
+        val result = romanizationUtils.romanizeHindi("हिंदी")
         assertEquals("hindee", result)
     }
 
     @Test
     fun testHindi_om() = runTest {
-        val result = RomanizationUtils.romanizeHindi("ॐ")
+        val result = romanizationUtils.romanizeHindi("ॐ")
         assertEquals("Om", result)
     }
 
     @Test
     fun testHindi_emptyString() = runTest {
-        val result = RomanizationUtils.romanizeHindi("")
+        val result = romanizationUtils.romanizeHindi("")
         assertEquals("", result)
     }
 
     @Test
     fun testHindi_nuktaFormInherentVowel() = runTest {
-        val result = RomanizationUtils.romanizeHindi("ज़मीन")
+        val result = romanizationUtils.romanizeHindi("ज़मीन")
         assertEquals("zameen", result)
     }
 
     @Test
     fun testHindi_latinOnlyPassthrough() = runTest {
-        val result = RomanizationUtils.romanizeHindi("hello")
+        val result = romanizationUtils.romanizeHindi("hello")
         assertEquals("hello", result)
     }
 
@@ -120,16 +119,16 @@ class RomanizationHindiTest {
 
     @Test
     fun testHindi_vowelLengthContrast() = runTest {
-        assertEquals("kil", RomanizationUtils.romanizeHindi("किल"))
-        assertEquals("keel", RomanizationUtils.romanizeHindi("कील"))
-        assertEquals("pul", RomanizationUtils.romanizeHindi("पुल"))
-        assertEquals("pool", RomanizationUtils.romanizeHindi("पूल"))
+        assertEquals("kil", romanizationUtils.romanizeHindi("किल"))
+        assertEquals("keel", romanizationUtils.romanizeHindi("कील"))
+        assertEquals("pul", romanizationUtils.romanizeHindi("पुल"))
+        assertEquals("pool", romanizationUtils.romanizeHindi("पूल"))
     }
 
     @Test
     fun testHindi_conjunctTrShr() = runTest {
-        assertEquals("tr", RomanizationUtils.romanizeHindi("त्र"))
-        assertEquals("shr", RomanizationUtils.romanizeHindi("श्र"))
-        assertEquals("gy", RomanizationUtils.romanizeHindi("ज्ञ"))
+        assertEquals("tr", romanizationUtils.romanizeHindi("त्र"))
+        assertEquals("shr", romanizationUtils.romanizeHindi("श्र"))
+        assertEquals("gy", romanizationUtils.romanizeHindi("ज्ञ"))
     }
 }

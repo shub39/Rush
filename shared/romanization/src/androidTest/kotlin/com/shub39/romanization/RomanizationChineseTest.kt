@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -30,21 +30,20 @@ import org.junit.Test
  */
 class RomanizationChineseTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Chinese corner cases
 
     @Test
     fun testChinese_pureKanjiDetectedAsChinese() = runTest {
-        val result = RomanizationUtils.romanize("花鳥風月", enabledLanguages = listOf("Chinese"))
+        val result = romanizationUtils.romanize("花鳥風月", enabledLanguages = listOf("Chinese"))
         assertNotNull(result)
         assertTrue(result!!.contains("huā"))
     }
@@ -52,7 +51,7 @@ class RomanizationChineseTest {
     @Test
     fun testChinese_mixedWithKana() = runTest {
         val result =
-            RomanizationUtils.romanize("食べる", enabledLanguages = listOf("Japanese", "Chinese"))
+            romanizationUtils.romanize("食べる", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // Detected as Japanese due to kana
         assertTrue(result!!.contains("taberu") || result!!.contains("食"))
@@ -61,7 +60,7 @@ class RomanizationChineseTest {
     @Test
     fun testChinese_pureCjkWithBothJapaneseAndChinese() = runTest {
         val result =
-            RomanizationUtils.romanize("望春风", enabledLanguages = listOf("Japanese", "Chinese"))
+            romanizationUtils.romanize("望春风", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // With both JP and ZH enabled, pure CJK goes to Japanese IPADIC.
         // Chinese lyrics not in IPADIC pass through; enable Chinese-only for pinyin.

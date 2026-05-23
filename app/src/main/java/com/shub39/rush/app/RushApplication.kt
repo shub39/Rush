@@ -17,7 +17,6 @@
 package com.shub39.rush.app
 
 import android.app.Application
-import com.shub39.romanization.RomanizationUtils
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.billing.BillingInitializerImpl
 import com.shub39.rush.data.listener.MediaListenerImpl
@@ -38,8 +37,5 @@ class RushApplication : Application() {
 
         BillingInitializerImpl().initialize(this)
         MediaListenerImpl.startListening(this)
-
-        // Initialize RomanizationUtils with app context for lazy dictionary loading
-        RomanizationUtils.init(this)
     }
 }

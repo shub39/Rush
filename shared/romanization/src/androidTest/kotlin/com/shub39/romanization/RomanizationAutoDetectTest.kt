@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -33,14 +33,13 @@ import org.junit.Test
  */
 class RomanizationAutoDetectTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // romanize() auto-detect
@@ -48,7 +47,7 @@ class RomanizationAutoDetectTest {
     @Test
     fun testRomanize_noMatch() = runTest {
         val result =
-            RomanizationUtils.romanize(
+            romanizationUtils.romanize(
                 "hello world",
                 enabledLanguages = listOf("Japanese", "Korean", "Chinese", "Russian"),
             )
@@ -57,20 +56,20 @@ class RomanizationAutoDetectTest {
 
     @Test
     fun testRomanize_emptyString() = runTest {
-        val result = RomanizationUtils.romanize("", enabledLanguages = listOf("Japanese"))
+        val result = romanizationUtils.romanize("", enabledLanguages = listOf("Japanese"))
         assertNull(result)
     }
 
     @Test
     fun testRomanize_disabledLanguage() = runTest {
-        val result = RomanizationUtils.romanize("こんにちは", enabledLanguages = emptyList())
+        val result = romanizationUtils.romanize("こんにちは", enabledLanguages = emptyList())
         assertNull(result)
     }
 
     @Test
     fun testRomanize_autoDetectKorean() = runTest {
         val result =
-            RomanizationUtils.romanize(
+            romanizationUtils.romanize(
                 "안녕하세요",
                 enabledLanguages = listOf("Japanese", "Korean", "Chinese"),
             )
@@ -81,14 +80,14 @@ class RomanizationAutoDetectTest {
     @Test
     fun testRomanize_autoDetectRussian() = runTest {
         val result =
-            RomanizationUtils.romanize("рыба", enabledLanguages = listOf("Russian", "Japanese"))
+            romanizationUtils.romanize("рыба", enabledLanguages = listOf("Russian", "Japanese"))
         assertNotNull(result)
         assertEquals("ryba", result)
     }
 
     @Test
     fun testRomanize_autoDetectHindi() = runTest {
-        val result = RomanizationUtils.romanize("नमस्ते", enabledLanguages = listOf("Hindi"))
+        val result = romanizationUtils.romanize("नमस्ते", enabledLanguages = listOf("Hindi"))
         assertNotNull(result)
         assertEquals("namaste", result)
     }
@@ -96,7 +95,7 @@ class RomanizationAutoDetectTest {
     @Test
     fun testRomanize_autoDetectPunjabi() = runTest {
         val result =
-            RomanizationUtils.romanize("ਸਤ ਸ੍ਰੀ ਅਕਾਲ", enabledLanguages = listOf("Punjabi"))
+            romanizationUtils.romanize("ਸਤ ਸ੍ਰੀ ਅਕਾਲ", enabledLanguages = listOf("Punjabi"))
         assertNotNull(result)
         assertEquals("sat sree akaal", result)
     }
@@ -104,7 +103,7 @@ class RomanizationAutoDetectTest {
     @Test
     fun testRomanize_autoDetectJapanese() = runTest {
         val result =
-            RomanizationUtils.romanize(
+            romanizationUtils.romanize(
                 "こんにちは",
                 enabledLanguages = listOf("Japanese", "Chinese", "Korean"),
             )
@@ -119,7 +118,7 @@ class RomanizationAutoDetectTest {
     @Test
     fun testRomanize_autoDetectChinese() = runTest {
         val result =
-            RomanizationUtils.romanize("你好", enabledLanguages = listOf("Japanese", "Chinese"))
+            romanizationUtils.romanize("你好", enabledLanguages = listOf("Japanese", "Chinese"))
         assertNotNull(result)
         // Pure CJK with both enabled → Japanese IPADIC first.
         // 好 is in IPADIC as コウ → "kou", 你 passes through → "你 kou".
@@ -129,14 +128,14 @@ class RomanizationAutoDetectTest {
 
     @Test
     fun testRomanize_whitespaceOnly() = runTest {
-        val result = RomanizationUtils.romanize("   ", enabledLanguages = listOf("Japanese"))
+        val result = romanizationUtils.romanize("   ", enabledLanguages = listOf("Japanese"))
         assertNull(result)
     }
 
     @Test
     fun testRomanize_specialCharactersOnly() = runTest {
         val result =
-            RomanizationUtils.romanize("!@#$%", enabledLanguages = listOf("Japanese", "Russian"))
+            romanizationUtils.romanize("!@#$%", enabledLanguages = listOf("Japanese", "Russian"))
         assertNull(result)
     }
 }

@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -32,46 +32,45 @@ import org.junit.Test
  */
 class RomanizationJapaneseTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Japanese corner cases (ICU-only)
 
     @Test
     fun testJapanese_hiragana_konnichiwa() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("こんにちは")
+        val result = romanizationUtils.romanizeJapanese("こんにちは")
         assertTrue(result.contains("kon"))
         assertTrue(result.contains("nichi"))
     }
 
     @Test
     fun testJapanese_hiragana_sakura() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("さくら")
+        val result = romanizationUtils.romanizeJapanese("さくら")
         assertEquals("sakura", result)
     }
 
     @Test
     fun testJapanese_katakana_cafe() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("カフェ")
+        val result = romanizationUtils.romanizeJapanese("カフェ")
         assertEquals("kafe", result)
     }
 
     @Test
     fun testJapanese_katakana_test() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("テスト")
+        val result = romanizationUtils.romanizeJapanese("テスト")
         assertEquals("tesuto", result)
     }
 
     @Test
     fun testJapanese_katakanaLove() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("アイシテル")
+        val result = romanizationUtils.romanizeJapanese("アイシテル")
         assertEquals("aishiteru", result)
     }
 
@@ -79,7 +78,7 @@ class RomanizationJapaneseTest {
     fun testJapanese_kanjiStripped() = runTest {
         // Without dictionary: kanji passes through (愛 → 愛)
         // With dictionary: kanji has reading (愛 → アイ → ai)
-        val result = RomanizationUtils.romanizeJapanese("愛")
+        val result = romanizationUtils.romanizeJapanese("愛")
         assertTrue(result == "愛" || result == "ai")
     }
 
@@ -87,27 +86,27 @@ class RomanizationJapaneseTest {
     fun testJapanese_pureKanjiStripped() = runTest {
         // Without dictionary: kanji passes through
         // With dictionary: may be tokenized via IPADIC
-        val result = RomanizationUtils.romanizeJapanese("花鳥風月")
+        val result = romanizationUtils.romanizeJapanese("花鳥風月")
         assertTrue(result == "花鳥風月" || result.contains("ka") || result.contains("fu"))
     }
 
     @Test
     fun testJapanese_longVowels() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("とうきょう")
+        val result = romanizationUtils.romanizeJapanese("とうきょう")
         assertTrue(result.contains("tou"))
         assertTrue(result.contains("kyou"))
     }
 
     @Test
     fun testJapanese_smallTsu() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("まって")
+        val result = romanizationUtils.romanizeJapanese("まって")
         // ICU produces "ma~tsu" for small tsu
         assertTrue(result.contains("ma"))
     }
 
     @Test
     fun testJapanese_smallYaYuYo() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("きゃしゃちょ")
+        val result = romanizationUtils.romanizeJapanese("きゃしゃちょ")
         assertTrue(result.contains("kya"))
         assertTrue(result.contains("sha"))
         assertTrue(result.contains("cho"))
@@ -115,20 +114,20 @@ class RomanizationJapaneseTest {
 
     @Test
     fun testJapanese_particleWa() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("わたしは")
+        val result = romanizationUtils.romanizeJapanese("わたしは")
         // Without tokenizer: は → ha; with tokenizer: particle rule → wa
         assertTrue(result == "watashiha" || result == "watashiwa")
     }
 
     @Test
     fun testJapanese_particleHe() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("へや")
+        val result = romanizationUtils.romanizeJapanese("へや")
         assertTrue(result.contains("heya"))
     }
 
     @Test
     fun testJapanese_particleO() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("それを")
+        val result = romanizationUtils.romanizeJapanese("それを")
         // Without tokenizer: を → wo (char-by-char)
         // With tokenizer grouping: all kana grouped → still "sorewo"
         // With per-char tokenization: particle rule → "o"
@@ -137,7 +136,7 @@ class RomanizationJapaneseTest {
 
     @Test
     fun testJapanese_onegai() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("お願い")
+        val result = romanizationUtils.romanizeJapanese("お願い")
         // Without dictionary: kanji passes through, kana romanized
         // With dictionary: お願い → オネガイ → "onegai"
         assertTrue(result.contains("願") || result.contains("negai"))
@@ -145,13 +144,13 @@ class RomanizationJapaneseTest {
 
     @Test
     fun testJapanese_emptyString() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("")
+        val result = romanizationUtils.romanizeJapanese("")
         assertEquals("", result)
     }
 
     @Test
     fun testJapanese_latinOnlyPassthrough() = runTest {
-        val result = RomanizationUtils.romanizeJapanese("hello")
+        val result = romanizationUtils.romanizeJapanese("hello")
         assertEquals("hello", result)
     }
 
@@ -160,17 +159,17 @@ class RomanizationJapaneseTest {
     @Test
     fun testJapanese_dictionaryKanjiReading() = runTest {
         // With IPADIC loaded: 愛 → ai (dictionary lookup), 花 → ka or hana
-        val result1 = RomanizationUtils.romanizeJapanese("愛")
+        val result1 = romanizationUtils.romanizeJapanese("愛")
         assertNotNull(result1)
         // 東京 → tōkyō (dictionary should segment this)
-        val result2 = RomanizationUtils.romanizeJapanese("東京")
+        val result2 = romanizationUtils.romanizeJapanese("東京")
         assertNotNull(result2)
     }
 
     @Test
     fun testJapanese_mixedKanjiKana() = runTest {
         // Real Japanese phrase with kanji + kana + particle
-        val result = RomanizationUtils.romanizeJapanese("食べる")
+        val result = romanizationUtils.romanizeJapanese("食べる")
         assertNotNull(result)
         assertTrue("tab" in result!! || "食" in result)
     }
@@ -178,9 +177,9 @@ class RomanizationJapaneseTest {
     @Test
     fun testJapanese_katakanaLoanWords() = runTest {
         // Common katakana loan words with chōonpu
-        val result1 = RomanizationUtils.romanizeJapanese("コンピューター")
+        val result1 = romanizationUtils.romanizeJapanese("コンピューター")
         assertNotNull(result1)
-        val result2 = RomanizationUtils.romanizeJapanese("レストラン")
+        val result2 = romanizationUtils.romanizeJapanese("レストラン")
         assertNotNull(result2)
     }
 }

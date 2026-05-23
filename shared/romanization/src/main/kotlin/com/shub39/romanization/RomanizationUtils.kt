@@ -25,41 +25,25 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-object RomanizationUtils {
+class RomanizationUtils(private val context: Context) {
 
     // Japanese tokenizer (longest-match over the reading dictionary)
 
-    // Reading dictionary: surface form → katakana reading
-    @Volatile private var readingDictionary: Map<String, String>? = null
+    private data class JapaneseDictionary(
+        val readings: Map<String, String>,
+        val index: Map<Char, List<Pair<String, String>>>,
+    )
 
-    // Fast longest-match index: first-char → (surface, reading) sorted by length desc
-    @Volatile private var tokenizerIndex: Map<Char, List<Pair<String, String>>>? = null
+    private var japaneseDictionary: JapaneseDictionary? = null
 
-    // Application context for lazy reading dictionary loading
-    @Volatile private var appContext: Context? = null
     private val initMutex = Mutex()
 
-    /**
-     * Initialize with application context. Stores context for on-demand loading of the reading
-     * dictionary when romanizeJapanese() is first called. Safe to call multiple times — only the
-     * first call stores the context.
-     */
-    fun init(context: Context) {
-        if (appContext != null) return
-        appContext = context.applicationContext
-    }
-
-    /**
-     * Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load. Uses the
-     * stored app context from [init]. Falls back gracefully if not initialized.
-     */
+    /** Ensure the IPADIC reading dictionary is loaded. Idempotent — no-op after first load. */
     private suspend fun ensureReadingDictionary() {
-        if (readingDictionary != null) return
-        val ctx = appContext ?: return
-
         initMutex.withLock {
-            if (readingDictionary != null) return@withLock
-            withContext(Dispatchers.IO) { loadReadingDictionary(ctx) }
+            if (japaneseDictionary == null) {
+                withContext(Dispatchers.IO) { loadReadingDictionary(context) }
+            }
         }
     }
 
@@ -69,7 +53,7 @@ object RomanizationUtils {
      * @param context Application context for accessing assets
      */
     fun loadReadingDictionary(context: Context) {
-        if (readingDictionary != null) return
+        if (japaneseDictionary != null) return
 
         val startMs = System.currentTimeMillis()
 
@@ -83,7 +67,6 @@ object RomanizationUtils {
                 map[line.substring(0, tab)] = line.substring(tab + 1)
             }
         }
-        readingDictionary = map
 
         // 2. Build longest-match index
         val grouped = HashMap<Char, MutableList<Pair<String, String>>>()
@@ -95,18 +78,11 @@ object RomanizationUtils {
         for (list in grouped.values) {
             list.sortByDescending { it.first.length }
         }
-        tokenizerIndex = grouped
+
+        japaneseDictionary = JapaneseDictionary(readings = map, index = grouped)
 
         val elapsed = System.currentTimeMillis() - startMs
         Log.d("RomanizationUtils", "Loaded ${map.size} readings + index in ${elapsed}ms")
-    }
-
-    /**
-     * Reset the reading dictionary so the next call to [loadReadingDictionary] reloads from assets.
-     */
-    fun resetReadingDictionary() {
-        readingDictionary = null
-        tokenizerIndex = null
     }
 
     // ICU transliterators for Japanese→romaji conversion
@@ -119,7 +95,7 @@ object RomanizationUtils {
     // provides proper Japanese readings.
 
     // Hangul Romaja mapping
-    private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> =
+    private val hangulRomajaMap: Map<String, Map<String, String>> =
         mapOf(
             "cho" to
                 mapOf(
@@ -342,7 +318,7 @@ object RomanizationUtils {
 
     // Cho override map for Korean: when a context-dependent jong+cho combination
     // changes the cho sound, this map provides the overridden cho value.
-    private val CHO_OVERRIDE: Map<String, String> =
+    private val choOverride: Map<String, String> =
         mapOf(
             "ᆫᄅ" to "l",
             "ᆯᄂ" to "l",
@@ -477,7 +453,7 @@ object RomanizationUtils {
         )
 
     // Devanagari (Hindi) mapping
-    private val DEVANAGARI_ROMAJI_MAP: Map<String, String> =
+    private val devanagariRomajiMap: Map<String, String> =
         mapOf(
             "अ" to "a",
             "आ" to "aa",
@@ -566,7 +542,7 @@ object RomanizationUtils {
         )
 
     // Gurmukhi (Punjabi) mapping
-    private val GURMUKHI_ROMAJI_MAP: Map<String, String> =
+    private val gurumukhiRomajiMap: Map<String, String> =
         mapOf(
             "ੳ" to "o",
             "ਅ" to "a",
@@ -584,8 +560,8 @@ object RomanizationUtils {
             "ਝ" to "jh",
             "ਞ" to "ny",
             "ਟ" to "t",
-            "ਠ" to "th",
-            "ਡ" to "d",
+            "ठ" to "th",
+            "ड" to "d",
             "ਢ" to "dh",
             "ਣ" to "n",
             "ਤ" to "t",
@@ -599,7 +575,7 @@ object RomanizationUtils {
             "ਭ" to "bh",
             "ਮ" to "m",
             "ਯ" to "y",
-            "ਰ" to "r",
+            "र" to "r",
             "ਲ" to "l",
             "ਵ" to "v",
             "ੜ" to "r",
@@ -637,7 +613,7 @@ object RomanizationUtils {
         )
 
     // Cyrillic mappings
-    private val GENERAL_CYRILLIC_ROMAJI_MAP: Map<String, String> =
+    private val generalCyrillicRomajiMap: Map<String, String> =
         mapOf(
             "А" to "A",
             "Б" to "B",
@@ -733,7 +709,7 @@ object RomanizationUtils {
             "я" to "ya",
         )
 
-    private val RUSSIAN_ROMAJI_MAP: Map<String, String> =
+    private val russianRomajiMap: Map<String, String> =
         mapOf(
             "ого" to "ovo",
             "Ого" to "Ovo",
@@ -743,7 +719,7 @@ object RomanizationUtils {
             "ЕГО" to "EVO",
         )
 
-    private val UKRAINIAN_ROMAJI_MAP: Map<String, String> =
+    private val ukrainianRomajiMap: Map<String, String> =
         mapOf(
             "Г" to "H",
             "г" to "h",
@@ -759,7 +735,7 @@ object RomanizationUtils {
             "ї" to "yi",
         )
 
-    private val SERBIAN_ROMAJI_MAP: Map<String, String> =
+    private val serbianRomajiMap: Map<String, String> =
         mapOf(
             "Ж" to "Ž",
             "Љ" to "Lj",
@@ -781,7 +757,7 @@ object RomanizationUtils {
             "ј" to "j",
         )
 
-    private val BULGARIAN_ROMAJI_MAP: Map<String, String> =
+    private val bulgarianRomajiMap: Map<String, String> =
         mapOf(
             "Ж" to "Zh",
             "Ц" to "Ts",
@@ -803,12 +779,12 @@ object RomanizationUtils {
             "я" to "ya",
         )
 
-    private val BELARUSIAN_ROMAJI_MAP: Map<String, String> = mapOf("Г" to "H", "г" to "h")
+    private val belarusianRomajiMap: Map<String, String> = mapOf("Г" to "H", "г" to "h")
 
-    private val KYRGYZ_ROMAJI_MAP: Map<String, String> =
+    private val kyrgyzRomajiMap: Map<String, String> =
         mapOf("Ү" to "Ü", "ү" to "ü", "Ы" to "Y", "ы" to "y")
 
-    private val MACEDONIAN_ROMAJI_MAP: Map<String, String> =
+    private val macedonianRomajiMap: Map<String, String> =
         mapOf(
             "Ѓ" to "Gj",
             "Ѕ" to "Dz",
@@ -845,9 +821,9 @@ object RomanizationUtils {
         return withContext(Dispatchers.Default) {
             if (text.isEmpty()) return@withContext ""
 
-            val index = tokenizerIndex
-            if (index != null && !index.isEmpty()) {
-                romanizeJapaneseWithTokenizer(text, index)
+            val dictionary = japaneseDictionary
+            if (dictionary != null) {
+                romanizeJapaneseWithTokenizer(text, dictionary.index)
             } else {
                 romanizeJapaneseFallback(text)
             }
@@ -899,8 +875,8 @@ object RomanizationUtils {
             } else {
                 // No dictionary match — group consecutive characters of same type
                 val end =
-                    when {
-                        ch in '\u3040'..'\u309F' || ch in '\u30A0'..'\u30FF' -> {
+                    when (ch) {
+                        in '\u3040'..'\u309F', in '\u30A0'..'\u30FF' -> {
                             // Group consecutive kana (hiragana/katakana)
                             var j = i + 1
                             while (j < text.length) {
@@ -910,7 +886,8 @@ object RomanizationUtils {
                             }
                             j
                         }
-                        ch in 'a'..'z' || ch in 'A'..'Z' -> {
+
+                        in 'a'..'z', in 'A'..'Z' -> {
                             // Group consecutive Latin letters
                             var j = i + 1
                             while (j < text.length) {
@@ -919,6 +896,7 @@ object RomanizationUtils {
                             }
                             j
                         }
+
                         else -> i + 1 // single character (kanji, punctuation, etc.)
                     }
                 surface = text.substring(i, end)
@@ -929,11 +907,11 @@ object RomanizationUtils {
             val romanized =
                 when {
                     // Particles with special pronunciations
-                    surface == "は" && surface.length == 1 -> "wa"
-                    surface == "へ" && surface.length == 1 -> "e"
-                    surface == "を" && surface.length == 1 -> "o"
+                    surface == "は" -> "wa"
+                    surface == "へ" -> "e"
+                    surface == "を" -> "o"
                     // Reading from dictionary (katakana → romaji)
-                    reading != null && reading.isNotEmpty() -> {
+                    !reading.isNullOrEmpty() -> {
                         katakanaTransliterator.transliterate(reading).lowercase(Locale.ROOT)
                     }
                     // Fallback: transliterate any kana in surface, leave kanji
@@ -976,8 +954,8 @@ object RomanizationUtils {
     private fun romanizeJapaneseFallback(text: String): String {
         val sb = StringBuilder()
         for (char in text) {
-            when {
-                char in '\u3040'..'\u309F' -> {
+            when (char) {
+                in '\u3040'..'\u309F' -> {
                     val katakana = (char.code + 0x60).toChar()
                     sb.append(
                         katakanaTransliterator
@@ -985,7 +963,7 @@ object RomanizationUtils {
                             .lowercase(Locale.ROOT)
                     )
                 }
-                char in '\u30A0'..'\u30FF' -> {
+                in '\u30A0'..'\u30FF' -> {
                     sb.append(
                         katakanaTransliterator.transliterate(char.toString()).lowercase(Locale.ROOT)
                     )
@@ -1017,20 +995,20 @@ object RomanizationUtils {
 
                     if (prevFinal != null) {
                         val contextKey = prevFinal + choChar
-                        val contextJong = HANGUL_ROMAJA_MAP["jong"]?.get(contextKey)
+                        val contextJong = hangulRomajaMap["jong"]?.get(contextKey)
                         val jong =
-                            contextJong ?: HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
+                            contextJong ?: hangulRomajaMap["jong"]?.get(prevFinal) ?: prevFinal
                         romajaBuilder.append(jong)
 
                         val cho =
                             if (contextJong != null) {
-                                CHO_OVERRIDE[contextKey]
-                                    ?: HANGUL_ROMAJA_MAP["cho"]?.get(choChar)
+                                choOverride[contextKey]
+                                    ?: hangulRomajaMap["cho"]?.get(choChar)
                                     ?: choChar
                             } else {
-                                HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
+                                hangulRomajaMap["cho"]?.get(choChar) ?: choChar
                             }
-                        val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
+                        val jung = hangulRomajaMap["jung"]?.get(jungChar) ?: jungChar
                         // Palatalization across syllable boundary: ㄷ(d)+ㅣ(i) → ㅈ(j), ㅌ(t)+ㅣ(i) →
                         // ㅊ(ch)
                         // e.g., 굳이 → guji, 같이 → gachi
@@ -1046,14 +1024,14 @@ object RomanizationUtils {
                             }
                         romajaBuilder.append(finalCho).append(jung)
                     } else {
-                        val cho = HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
-                        val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
+                        val cho = hangulRomajaMap["cho"]?.get(choChar) ?: choChar
+                        val jung = hangulRomajaMap["jung"]?.get(jungChar) ?: jungChar
                         romajaBuilder.append(cho).append(jung)
                     }
                     prevFinal = jongChar
                 } else {
                     if (prevFinal != null) {
-                        val jong = HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
+                        val jong = hangulRomajaMap["jong"]?.get(prevFinal) ?: prevFinal
                         romajaBuilder.append(jong)
                         prevFinal = null
                     }
@@ -1062,7 +1040,7 @@ object RomanizationUtils {
             }
 
             if (prevFinal != null) {
-                val jong = HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
+                val jong = hangulRomajaMap["jong"]?.get(prevFinal) ?: prevFinal
                 romajaBuilder.append(jong)
             }
 
@@ -1104,7 +1082,7 @@ object RomanizationUtils {
                     val sb = StringBuilder()
                     for (char in text) {
                         val str = char.toString()
-                        sb.append(GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+                        sb.append(generalCyrillicRomajiMap[str] ?: str)
                     }
                     sb.toString()
                 }
@@ -1117,15 +1095,15 @@ object RomanizationUtils {
         while (i < text.length) {
             if (i + 2 <= text.length) {
                 val threeChar = text.substring(i, minOf(i + 3, text.length))
-                if (RUSSIAN_ROMAJI_MAP.containsKey(threeChar)) {
-                    sb.append(RUSSIAN_ROMAJI_MAP[threeChar])
+                if (russianRomajiMap.containsKey(threeChar)) {
+                    sb.append(russianRomajiMap[threeChar])
                     i += 3
                     continue
                 }
             }
             val char = text[i]
             val str = char.toString()
-            sb.append(GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(generalCyrillicRomajiMap[str] ?: str)
             i++
         }
         return sb.toString()
@@ -1133,13 +1111,13 @@ object RomanizationUtils {
 
     private fun romanizeUkrainianInternal(text: String): String {
         val sb = StringBuilder()
-        for ((index, char) in text.withIndex()) {
+        for ((_, char) in text.withIndex()) {
             val str = char.toString()
             // Cyrillic vowels (а е є и і о у ю я, their uppercase equivalents) still
             // require "yi" for ї — only consonant predecessors absorb the glide.
             // In practice ї after a consonant is extremely rare; always using "yi"
             // (the BGN/PCGN and ALA-LC standard) is safer than checking for vowels.
-            sb.append(UKRAINIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(ukrainianRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
@@ -1148,7 +1126,7 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for (char in text) {
             val str = char.toString()
-            sb.append(SERBIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(serbianRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
@@ -1157,7 +1135,7 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for (char in text) {
             val str = char.toString()
-            sb.append(BULGARIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(bulgarianRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
@@ -1166,7 +1144,7 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for (char in text) {
             val str = char.toString()
-            sb.append(BELARUSIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(belarusianRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
@@ -1175,7 +1153,7 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for (char in text) {
             val str = char.toString()
-            sb.append(KYRGYZ_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(kyrgyzRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
@@ -1184,15 +1162,15 @@ object RomanizationUtils {
         val sb = StringBuilder()
         for (char in text) {
             val str = char.toString()
-            sb.append(MACEDONIAN_ROMAJI_MAP[str] ?: GENERAL_CYRILLIC_ROMAJI_MAP[str] ?: str)
+            sb.append(macedonianRomajiMap[str] ?: generalCyrillicRomajiMap[str] ?: str)
         }
         return sb.toString()
     }
 
     // Hindi romanization
-    private val DEVANAGARI_REPLACING_VOWEL_SIGNS =
+    private val devanagariReplacingRomajiStrings =
         setOf("ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ")
-    private val DEVANAGARI_CONSONANTS =
+    private val devanagariConsonants =
         setOf(
             "क",
             "ख",
@@ -1229,7 +1207,7 @@ object RomanizationUtils {
             "ह",
             "ळ",
         )
-    private val DEVANAGARI_VIRAMA = "्"
+    private val devanagariVirama = "्"
 
     suspend fun romanizeHindi(text: String): String =
         withContext(Dispatchers.Default) {
@@ -1242,8 +1220,8 @@ object RomanizationUtils {
                 for (len in 3 downTo 2) {
                     if (i + len <= text.length) {
                         val substr = text.substring(i, i + len)
-                        if (DEVANAGARI_ROMAJI_MAP.containsKey(substr)) {
-                            sb.append(DEVANAGARI_ROMAJI_MAP[substr])
+                        if (devanagariRomajiMap.containsKey(substr)) {
+                            sb.append(devanagariRomajiMap[substr])
                             i += len
                             consumed = true
 
@@ -1251,13 +1229,13 @@ object RomanizationUtils {
                             // (e.g. क्षमा → kshamaa, not kshmaa)
                             // Use first char: last char is Nukta (़) for 2-char forms
                             val firstChar = substr.first().toString()
-                            if (firstChar in DEVANAGARI_CONSONANTS) {
+                            if (firstChar in devanagariConsonants) {
                                 val nextChar = if (i < text.length) text[i].toString() else null
                                 if (
                                     nextChar != null &&
-                                        nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
-                                        nextChar != DEVANAGARI_VIRAMA &&
-                                        (nextChar in DEVANAGARI_CONSONANTS ||
+                                        nextChar !in devanagariReplacingRomajiStrings &&
+                                        nextChar != devanagariVirama &&
+                                        (nextChar in devanagariConsonants ||
                                             nextChar == "ं" ||
                                             nextChar == "ः" ||
                                             nextChar == "ँ")
@@ -1273,15 +1251,15 @@ object RomanizationUtils {
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    val mapped = DEVANAGARI_ROMAJI_MAP[str] ?: str
+                    val mapped = devanagariRomajiMap[str] ?: str
                     sb.append(mapped)
-                    if (str in DEVANAGARI_CONSONANTS) {
+                    if (str in devanagariConsonants) {
                         val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
                         if (
                             nextChar != null &&
-                                nextChar !in DEVANAGARI_REPLACING_VOWEL_SIGNS &&
-                                nextChar != DEVANAGARI_VIRAMA &&
-                                (nextChar in DEVANAGARI_CONSONANTS ||
+                                nextChar !in devanagariReplacingRomajiStrings &&
+                                nextChar != devanagariVirama &&
+                                (nextChar in devanagariConsonants ||
                                     nextChar == "ं" ||
                                     nextChar == "ः" ||
                                     nextChar == "ँ")
@@ -1296,8 +1274,8 @@ object RomanizationUtils {
         }
 
     // Punjabi romanization
-    private val GURMUKHI_REPLACING_VOWEL_SIGNS = setOf("ਾ", "ਿ", "ੀ", "ੁ", "ੂ", "ੇ", "ੈ", "ੋ", "ੌ")
-    private val GURMUKHI_CONSONANTS =
+    private val gurmukhiReplacingVowelStrings = setOf("ਾ", "ਿ", "ੀ", "ੁ", "ੂ", "ੇ", "ੈ", "ੋ", "ੌ")
+    private val gurmukhiConsonant =
         setOf(
             "ਸ",
             "ਹ",
@@ -1332,7 +1310,7 @@ object RomanizationUtils {
             "ਵ",
             "ੜ",
         )
-    private val GURMUKHI_VIRAMA = "੍"
+    private val gurmukhiVirama = "੍"
 
     suspend fun romanizePunjabi(text: String): String =
         withContext(Dispatchers.Default) {
@@ -1342,21 +1320,21 @@ object RomanizationUtils {
                 var consumed = false
                 if (i + 1 < text.length) {
                     val twoChar = text.substring(i, i + 2)
-                    if (GURMUKHI_ROMAJI_MAP.containsKey(twoChar)) {
-                        sb.append(GURMUKHI_ROMAJI_MAP[twoChar])
+                    if (gurumukhiRomajiMap.containsKey(twoChar)) {
+                        sb.append(gurumukhiRomajiMap[twoChar])
                         i += 2
                         consumed = true
 
                         // Inherent 'a' after nukta-combined consonant
                         // (e.g. ਸ਼ਕ → shak, not shk)
                         val firstChar = twoChar.first().toString()
-                        if (firstChar in GURMUKHI_CONSONANTS) {
+                        if (firstChar in gurmukhiConsonant) {
                             val nextChar = if (i < text.length) text[i].toString() else null
                             if (
                                 nextChar != null &&
-                                    nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
-                                    nextChar != GURMUKHI_VIRAMA &&
-                                    (nextChar in GURMUKHI_CONSONANTS ||
+                                    nextChar !in gurmukhiReplacingVowelStrings &&
+                                    nextChar != gurmukhiVirama &&
+                                    (nextChar in gurmukhiConsonant ||
                                         nextChar == "ੰ" ||
                                         nextChar == "ਂ" ||
                                         nextChar == "ਁ" ||
@@ -1370,15 +1348,15 @@ object RomanizationUtils {
                 if (!consumed) {
                     val char = text[i]
                     val str = char.toString()
-                    val mapped = GURMUKHI_ROMAJI_MAP[str] ?: str
+                    val mapped = gurumukhiRomajiMap[str] ?: str
                     sb.append(mapped)
-                    if (str in GURMUKHI_CONSONANTS) {
+                    if (str in gurmukhiConsonant) {
                         val nextChar = if (i + 1 < text.length) text[i + 1].toString() else null
                         if (
                             nextChar != null &&
-                                nextChar !in GURMUKHI_REPLACING_VOWEL_SIGNS &&
-                                nextChar != GURMUKHI_VIRAMA &&
-                                (nextChar in GURMUKHI_CONSONANTS ||
+                                nextChar !in gurmukhiReplacingVowelStrings &&
+                                nextChar != gurmukhiVirama &&
+                                (nextChar in gurmukhiConsonant ||
                                     nextChar == "ੰ" ||
                                     nextChar == "ਂ" ||
                                     nextChar == "ਁ" ||
@@ -1417,69 +1395,65 @@ object RomanizationUtils {
         return text.any { it in '\u0A00'..'\u0A7F' }
     }
 
-    fun isCyrillic(text: String): Boolean {
-        return text.any { it in '\u0400'..'\u04FF' }
-    }
-
-    private val UKRAINIAN_UNIQUE_LETTERS = setOf('Ґ', 'ґ', 'Є', 'є', 'Ї', 'ї')
-    private val SERBIAN_UNIQUE_LETTERS = setOf('Ђ', 'ђ', 'Ћ', 'ћ', 'Џ', 'џ')
-    private val BELARUSIAN_UNIQUE_LETTERS = setOf('Ў', 'ў')
-    private val KYRGYZ_UNIQUE_LETTERS = setOf('Ң', 'ң', 'Ү', 'ү')
-    private val MACEDONIAN_UNIQUE_LETTERS = setOf('Ѓ', 'ѓ', 'Ѕ', 'ѕ', 'Ќ', 'ќ')
-    private val RUSSIAN_SPECIFIC_LETTERS = setOf('Ы', 'ы', 'Э', 'э', 'Ё', 'ё')
+    private val ukrainianUniqueLetters = setOf('Ґ', 'ґ', 'Є', 'є', 'Ї', 'ї')
+    private val serbianUniqueLetters = setOf('Ђ', 'ђ', 'Ћ', 'ћ', 'Џ', 'џ')
+    private val belarusianUniqueLetters = setOf('Ў', 'ў')
+    private val kyrgyzUniqueLetters = setOf('Ң', 'ң', 'Ү', 'ү')
+    private val macedonianUniqueLetters = setOf('Ѓ', 'ѓ', 'Ѕ', 'ѕ', 'Ќ', 'ќ')
+    private val russianSpecificLetters = setOf('Ы', 'ы', 'Э', 'э', 'Ё', 'ё')
 
     fun isRussian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        if (cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.none { it in RUSSIAN_SPECIFIC_LETTERS }) return false
+        if (cyrillicChars.any { it in ukrainianUniqueLetters }) return false
+        if (cyrillicChars.any { it in serbianUniqueLetters }) return false
+        if (cyrillicChars.any { it in belarusianUniqueLetters }) return false
+        if (cyrillicChars.any { it in kyrgyzUniqueLetters }) return false
+        if (cyrillicChars.any { it in macedonianUniqueLetters }) return false
+        if (cyrillicChars.none { it in russianSpecificLetters }) return false
         return true
     }
 
     fun isUkrainian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        return cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }
+        return cyrillicChars.any { it in ukrainianUniqueLetters }
     }
 
     fun isSerbian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        return cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }
+        return cyrillicChars.any { it in serbianUniqueLetters }
     }
 
     fun isBulgarian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        if (cyrillicChars.any { it in UKRAINIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in SERBIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }) return false
-        if (cyrillicChars.any { it in RUSSIAN_SPECIFIC_LETTERS }) return false
+        if (cyrillicChars.any { it in ukrainianUniqueLetters }) return false
+        if (cyrillicChars.any { it in serbianUniqueLetters }) return false
+        if (cyrillicChars.any { it in belarusianUniqueLetters }) return false
+        if (cyrillicChars.any { it in kyrgyzUniqueLetters }) return false
+        if (cyrillicChars.any { it in macedonianUniqueLetters }) return false
+        if (cyrillicChars.any { it in russianSpecificLetters }) return false
         return true
     }
 
     fun isBelarusian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        return cyrillicChars.any { it in BELARUSIAN_UNIQUE_LETTERS }
+        return cyrillicChars.any { it in belarusianUniqueLetters }
     }
 
     fun isKyrgyz(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        return cyrillicChars.any { it in KYRGYZ_UNIQUE_LETTERS }
+        return cyrillicChars.any { it in kyrgyzUniqueLetters }
     }
 
     fun isMacedonian(text: String): Boolean {
         val cyrillicChars = text.filter { it in '\u0400'..'\u04FF' }
         if (cyrillicChars.isEmpty()) return false
-        return cyrillicChars.any { it in MACEDONIAN_UNIQUE_LETTERS }
+        return cyrillicChars.any { it in macedonianUniqueLetters }
     }
 
     // Main romanization function

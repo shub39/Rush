@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -31,133 +31,131 @@ import org.junit.Test
  */
 class RomanizationKoreanTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        romanizationUtils =
+            RomanizationUtils(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     // Korean corner cases
 
     @Test
     fun testKorean_annyeonghaseyo() = runTest {
-        val result = RomanizationUtils.romanizeKorean("안녕하세요")
+        val result = romanizationUtils.romanizeKorean("안녕하세요")
         assertEquals("annyeonghaseyo", result)
     }
 
     @Test
     fun testKorean_hangeul() = runTest {
-        val result = RomanizationUtils.romanizeKorean("한글")
+        val result = romanizationUtils.romanizeKorean("한글")
         assertEquals("hangeul", result)
     }
 
     @Test
     fun testKorean_sarang() = runTest {
-        val result = RomanizationUtils.romanizeKorean("사랑")
+        val result = romanizationUtils.romanizeKorean("사랑")
         assertEquals("sarang", result)
     }
 
     @Test
     fun testKorean_gamsahamnida() = runTest {
-        val result = RomanizationUtils.romanizeKorean("감사합니다")
+        val result = romanizationUtils.romanizeKorean("감사합니다")
         assertEquals("gamsahamnida", result)
     }
 
     @Test
     fun testKorean_naneun() = runTest {
-        val result = RomanizationUtils.romanizeKorean("나는")
+        val result = romanizationUtils.romanizeKorean("나는")
         assertEquals("naneun", result)
     }
 
     @Test
     fun testKorean_mixedWithLatin() = runTest {
-        val result = RomanizationUtils.romanizeKorean("OK안녕")
+        val result = romanizationUtils.romanizeKorean("OK안녕")
         assertTrue(result.contains("OK"))
         assertTrue(result.contains("annyeong"))
     }
 
     @Test
     fun testKorean_batchimBeforeNonHangul() = runTest {
-        val result = RomanizationUtils.romanizeKorean("을 다")
+        val result = romanizationUtils.romanizeKorean("을 다")
         assertTrue(result.contains("eul"))
         assertTrue(result.contains("da"))
     }
 
     @Test
     fun testKorean_doubleConsonantBatchim() = runTest {
-        val result = RomanizationUtils.romanizeKorean("삶은")
+        val result = romanizationUtils.romanizeKorean("삶은")
         assertEquals("salmeun", result)
     }
 
     @Test
     fun testKorean_llAssimilation() = runTest {
-        val result = RomanizationUtils.romanizeKorean("설날")
+        val result = romanizationUtils.romanizeKorean("설날")
         assertEquals("seollal", result)
     }
 
     @Test
     fun testKorean_tenseConsonants() = runTest {
-        val result = RomanizationUtils.romanizeKorean("빵")
+        val result = romanizationUtils.romanizeKorean("빵")
         assertEquals("ppang", result)
     }
 
     @Test
     fun testKorean_compoundVowels() = runTest {
-        val result = RomanizationUtils.romanizeKorean("왜")
+        val result = romanizationUtils.romanizeKorean("왜")
         assertEquals("wae", result)
     }
 
     @Test
     fun testKorean_euiVowel() = runTest {
-        val result = RomanizationUtils.romanizeKorean("의")
+        val result = romanizationUtils.romanizeKorean("의")
         assertEquals("eui", result)
     }
 
     @Test
     fun testKorean_batchim_gBeforeHangul() = runTest {
-        val result = RomanizationUtils.romanizeKorean("먹어")
+        val result = romanizationUtils.romanizeKorean("먹어")
         assertTrue(result.contains("meog"))
         assertTrue(result.contains("eo"))
     }
 
     @Test
     fun testKorean_batchim_hBeforeHangul() = runTest {
-        val result = RomanizationUtils.romanizeKorean("좋아")
+        val result = romanizationUtils.romanizeKorean("좋아")
         assertEquals("joha", result)
     }
 
     @Test
     fun testKorean_jongNhBeforeH() = runTest {
-        val result = RomanizationUtils.romanizeKorean("앉히다")
+        val result = romanizationUtils.romanizeKorean("앉히다")
         assertEquals("anchida", result)
     }
 
     @Test
     fun testKorean_jongNhBeforeVowel() = runTest {
-        val result = RomanizationUtils.romanizeKorean("앉아")
+        val result = romanizationUtils.romanizeKorean("앉아")
         assertEquals("anja", result)
     }
 
     @Test
     fun testKorean_punctuationPassthrough() = runTest {
-        val result = RomanizationUtils.romanizeKorean("안녕!")
+        val result = romanizationUtils.romanizeKorean("안녕!")
         assertTrue(result.contains("annyeong"))
         assertTrue(result.contains("!"))
     }
 
     @Test
     fun testKorean_emptyString() = runTest {
-        val result = RomanizationUtils.romanizeKorean("")
+        val result = romanizationUtils.romanizeKorean("")
         assertEquals("", result)
     }
 
     @Test
     fun testKorean_latinOnlyPassthrough() = runTest {
-        val result = RomanizationUtils.romanizeKorean("hello")
+        val result = romanizationUtils.romanizeKorean("hello")
         assertEquals("hello", result)
     }
 
@@ -165,26 +163,26 @@ class RomanizationKoreanTest {
 
     @Test
     fun testKorean_palatalization() = runTest {
-        assertEquals("guji", RomanizationUtils.romanizeKorean("굳이"))
-        assertEquals("gachi", RomanizationUtils.romanizeKorean("같이"))
+        assertEquals("guji", romanizationUtils.romanizeKorean("굳이"))
+        assertEquals("gachi", romanizationUtils.romanizeKorean("같이"))
     }
 
     @Test
     fun testKorean_nasalCodaLToN() = runTest {
-        assertEquals("jongno", RomanizationUtils.romanizeKorean("종로"))
-        assertEquals("eumnyo", RomanizationUtils.romanizeKorean("음료"))
-        assertEquals("baengma", RomanizationUtils.romanizeKorean("백마"))
-        assertEquals("wangsimni", RomanizationUtils.romanizeKorean("왕십리"))
+        assertEquals("jongno", romanizationUtils.romanizeKorean("종로"))
+        assertEquals("eumnyo", romanizationUtils.romanizeKorean("음료"))
+        assertEquals("baengma", romanizationUtils.romanizeKorean("백마"))
+        assertEquals("wangsimni", romanizationUtils.romanizeKorean("왕십리"))
     }
 
     @Test
     fun testKorean_diphthongs() = runTest {
-        assertEquals("wa", RomanizationUtils.romanizeKorean("와"))
-        assertEquals("wo", RomanizationUtils.romanizeKorean("워"))
-        assertEquals("wae", RomanizationUtils.romanizeKorean("왜"))
-        assertEquals("we", RomanizationUtils.romanizeKorean("웨"))
-        assertEquals("oe", RomanizationUtils.romanizeKorean("외"))
-        assertEquals("wi", RomanizationUtils.romanizeKorean("위"))
-        assertEquals("eui", RomanizationUtils.romanizeKorean("의"))
+        assertEquals("wa", romanizationUtils.romanizeKorean("와"))
+        assertEquals("wo", romanizationUtils.romanizeKorean("워"))
+        assertEquals("wae", romanizationUtils.romanizeKorean("왜"))
+        assertEquals("we", romanizationUtils.romanizeKorean("웨"))
+        assertEquals("oe", romanizationUtils.romanizeKorean("외"))
+        assertEquals("wi", romanizationUtils.romanizeKorean("위"))
+        assertEquals("eui", romanizationUtils.romanizeKorean("의"))
     }
 }

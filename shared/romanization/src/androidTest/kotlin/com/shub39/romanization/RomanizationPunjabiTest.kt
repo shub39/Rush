@@ -19,7 +19,7 @@ package com.shub39.romanization
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -30,57 +30,56 @@ import org.junit.Test
  */
 class RomanizationPunjabiTest {
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setUp() {
-            RomanizationUtils.loadReadingDictionary(
-                InstrumentationRegistry.getInstrumentation().targetContext
-            )
-        }
+    private lateinit var romanizationUtils: RomanizationUtils
+
+    @Before
+    fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        romanizationUtils = RomanizationUtils(context)
+        romanizationUtils.loadReadingDictionary(context)
     }
 
     // Punjabi corner cases
 
     @Test
     fun testPunjabi_satSriAkal() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("ਸਤ ਸ੍ਰੀ ਅਕਾਲ")
+        val result = romanizationUtils.romanizePunjabi("ਸਤ ਸ੍ਰੀ ਅਕਾਲ")
         assertEquals("sat sree akaal", result)
     }
 
     @Test
     fun testPunjabi_punjab() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("ਪੰਜਾਬ")
+        val result = romanizationUtils.romanizePunjabi("ਪੰਜਾਬ")
         assertEquals("panjaab", result)
     }
 
     @Test
     fun testPunjabi_numbers() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("੧੨੩")
+        val result = romanizationUtils.romanizePunjabi("੧੨੩")
         assertEquals("123", result)
     }
 
     @Test
     fun testPunjabi_ekOnkar() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("ੴ")
+        val result = romanizationUtils.romanizePunjabi("ੴ")
         assertEquals("Ek Onkar", result)
     }
 
     @Test
     fun testPunjabi_emptyString() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("")
+        val result = romanizationUtils.romanizePunjabi("")
         assertEquals("", result)
     }
 
     @Test
     fun testPunjabi_nuktaFormInherentVowel() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("ਸ਼ਕਲ")
+        val result = romanizationUtils.romanizePunjabi("ਸ਼ਕਲ")
         assertEquals("shakal", result)
     }
 
     @Test
     fun testPunjabi_addakInherentVowel() = runTest {
-        val result = RomanizationUtils.romanizePunjabi("ਸੱਚ")
+        val result = romanizationUtils.romanizePunjabi("ਸੱਚ")
         // Addak (ੱ) geminates the next consonant; inherent 'a' must not be dropped
         assertTrue(result.contains("sa"))
     }
@@ -89,7 +88,7 @@ class RomanizationPunjabiTest {
 
     @Test
     fun testPunjabi_tippiAndAddak() = runTest {
-        assertEquals("panj", RomanizationUtils.romanizePunjabi("ਪੰਜ"))
-        assertNotNull(RomanizationUtils.romanizePunjabi("ਸੱਚ"))
+        assertEquals("panj", romanizationUtils.romanizePunjabi("ਪੰਜ"))
+        assertNotNull(romanizationUtils.romanizePunjabi("ਸੱਚ"))
     }
 }
