@@ -876,7 +876,8 @@ class RomanizationUtils(private val context: Context) {
                 // No dictionary match — group consecutive characters of same type
                 val end =
                     when (ch) {
-                        in '\u3040'..'\u309F', in '\u30A0'..'\u30FF' -> {
+                        in '\u3040'..'\u309F',
+                        in '\u30A0'..'\u30FF' -> {
                             // Group consecutive kana (hiragana/katakana)
                             var j = i + 1
                             while (j < text.length) {
@@ -887,7 +888,8 @@ class RomanizationUtils(private val context: Context) {
                             j
                         }
 
-                        in 'a'..'z', in 'A'..'Z' -> {
+                        in 'a'..'z',
+                        in 'A'..'Z' -> {
                             // Group consecutive Latin letters
                             var j = i + 1
                             while (j < text.length) {

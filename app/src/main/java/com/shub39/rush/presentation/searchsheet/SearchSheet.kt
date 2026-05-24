@@ -89,7 +89,7 @@ fun SearchSheet(
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -100,7 +100,7 @@ fun SearchSheet(
         modifier = modifier.imePadding(),
         padding = 0.dp,
         onDismissRequest = onDismissRequest,
-        sheetState = rememberModalBottomSheetState()
+        sheetState = rememberModalBottomSheetState(),
     ) {
         val isImeVisible = WindowInsets.isImeVisible
 
@@ -161,8 +161,7 @@ fun SearchSheet(
                 shape = MaterialTheme.shapes.extraLarge,
                 placeholder = { Text(stringResource(R.string.search)) },
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
+                    Modifier.fillMaxWidth()
                         .imePadding()
                         .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         .focusRequester(focusRequester),
@@ -172,8 +171,7 @@ fun SearchSheet(
 
             LazyColumn(
                 modifier =
-                    Modifier
-                        .padding(horizontal = 16.dp)
+                    Modifier.padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -210,12 +208,10 @@ fun SearchSheet(
                         result = it,
                         downloaded = true,
                         modifier =
-                            Modifier
-                                .clip(shape)
-                                .clickable {
-                                    onAction(SearchSheetAction.OnCardClicked(it.id))
-                                    onNavigateToLyrics()
-                                },
+                            Modifier.clip(shape).clickable {
+                                onAction(SearchSheetAction.OnCardClicked(it.id))
+                                onNavigateToLyrics()
+                            },
                     )
                 }
 
@@ -224,8 +220,8 @@ fun SearchSheet(
                 }
 
                 if (!state.isSearching) {
-                    itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index,
-                                                                                          it ->
+                    itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index, it
+                        ->
                         val shape =
                             when {
                                 state.searchResults.size == 1 -> detachedItemShape()
@@ -237,12 +233,10 @@ fun SearchSheet(
                         SearchResultCard(
                             result = it,
                             modifier =
-                                Modifier
-                                    .clip(shape)
-                                    .clickable {
-                                        onAction(SearchSheetAction.OnCardClicked(it.id))
-                                        onNavigateToLyrics()
-                                    },
+                                Modifier.clip(shape).clickable {
+                                    onAction(SearchSheetAction.OnCardClicked(it.id))
+                                    onNavigateToLyrics()
+                                },
                         )
                     }
                 } else {
@@ -263,10 +257,5 @@ private fun Preview() {
         )
     }
 
-    SearchSheet(
-        state = state,
-        onAction = {},
-        onNavigateToLyrics = {},
-        onDismissRequest = { },
-    )
+    SearchSheet(state = state, onAction = {}, onNavigateToLyrics = {}, onDismissRequest = {})
 }

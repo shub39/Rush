@@ -27,7 +27,7 @@
 - [x] Share Lyrics
 - [x] Customisations
 - [x] Autofill current playing song in search 
-- [x] Synced Lyrics
+- [x] Synced Lyrics (Line-Synced, Syllable-Synced)
 - [x] Import and Export saved lyrics
 - [x] Romanizations for Japanese, Chinese, Korean, Hindi, Punjabi and other Cyrillic Languages
 

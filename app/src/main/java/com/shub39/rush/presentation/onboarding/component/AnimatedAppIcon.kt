@@ -19,6 +19,7 @@ package com.shub39.rush.presentation.onboarding.component
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,8 +35,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AnimatedAppIcon() {
-    Box(modifier = Modifier.size(300.dp)) {
+fun AnimatedAppIcon(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.padding(16.dp).size(200.dp)) {
         val offsetX = remember { Animatable(300f) }
         val offsetY = remember { Animatable(-300f) }
         val scale = remember { Animatable(0.2f) }
@@ -76,7 +77,7 @@ fun AnimatedAppIcon() {
                         scaleY = scale.value
                         this.alpha = alpha.value
                     }
-                    .size(300.dp),
+                    .size(180.dp),
         )
     }
 }

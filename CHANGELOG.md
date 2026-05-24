@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.2.10
+- Improved Romanization accuracy. Thanks to @rbelem
+- Updated Translations
+- Fixed Search Sheet UI overlapping
+- Added angles and more variations to messy card. 
+- Added Refresh button to regenerate Messy Card
+- Miscellaneous UI fixes
+
 ## 6.2.01
 - Fixed UI bug in share cards
 
