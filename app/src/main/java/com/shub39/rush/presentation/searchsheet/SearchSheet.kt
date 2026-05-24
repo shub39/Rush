@@ -32,10 +32,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,11 +45,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -73,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.SourceError
 import com.shub39.rush.presentation.RushPreviewWrapper
+import com.shub39.rush.presentation.component.RushBottomSheet
 import com.shub39.rush.presentation.detachedItemShape
 import com.shub39.rush.presentation.endItemShape
 import com.shub39.rush.presentation.errorStringRes
@@ -89,160 +88,165 @@ fun SearchSheet(
     state: SearchSheetState,
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
-    sheetState: SheetState,
     modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    if (state.visible) {
-        ModalBottomSheet(
-            sheetState = sheetState,
-            modifier = modifier.widthIn(max = 800.dp),
-            onDismissRequest = { onAction(SearchSheetAction.OnToggleSearchSheet) },
+    RushBottomSheet(
+        modifier = modifier.imePadding(),
+        padding = 0.dp,
+        onDismissRequest = onDismissRequest,
+        sheetState = rememberModalBottomSheetState()
+    ) {
+        val isImeVisible = WindowInsets.isImeVisible
+
+        BackHandler(enabled = isImeVisible) {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+
+        LaunchedEffect(Unit) {
+            delay(400)
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
         ) {
-            val isImeVisible = WindowInsets.isImeVisible
-
-            BackHandler(enabled = isImeVisible) {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            }
-
-            LaunchedEffect(Unit) {
-                delay(400)
-                focusRequester.requestFocus()
-                keyboardController?.show()
-            }
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-            ) {
-                OutlinedTextField(
-                    value = state.searchQuery,
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.search),
-                            contentDescription = "Search",
-                            modifier = Modifier.padding(2.dp),
-                        )
-                    },
-                    trailingIcon = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(2.dp),
+            OutlinedTextField(
+                value = state.searchQuery,
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.search),
+                        contentDescription = "Search",
+                        modifier = Modifier.padding(2.dp),
+                    )
+                },
+                trailingIcon = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(2.dp),
+                    ) {
+                        AnimatedVisibility(
+                            visible = state.searchQuery.isNotBlank(),
+                            enter = fadeIn(animationSpec = tween(200)),
+                            exit = fadeOut(animationSpec = tween(200)),
                         ) {
-                            AnimatedVisibility(
-                                visible = state.searchQuery.isNotBlank(),
-                                enter = fadeIn(animationSpec = tween(200)),
-                                exit = fadeOut(animationSpec = tween(200)),
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        onAction(SearchSheetAction.OnQueryChange(""))
-                                        coroutineScope.launch {
-                                            focusRequester.requestFocus()
-                                            keyboardController?.show()
-                                        }
+                            IconButton(
+                                onClick = {
+                                    onAction(SearchSheetAction.OnQueryChange(""))
+                                    coroutineScope.launch {
+                                        focusRequester.requestFocus()
+                                        keyboardController?.show()
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.delete),
-                                        contentDescription = "Delete",
-                                    )
                                 }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.delete),
+                                    contentDescription = "Delete",
+                                )
                             }
                         }
-                    },
-                    onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
-                    shape = MaterialTheme.shapes.extraLarge,
-                    placeholder = { Text(stringResource(R.string.search)) },
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                            .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-                )
-
-                LazyColumn(
-                    modifier =
-                        Modifier.padding(horizontal = 16.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
-                ) {
-                    state.error?.let { error ->
-                        item {
-                            ErrorCard(
-                                error = error,
-                                debugMessage = null,
-                                colors =
-                                    Pair(
-                                        MaterialTheme.colorScheme.onSurface,
-                                        MaterialTheme.colorScheme.background,
-                                    ),
-                            )
-                        }
                     }
+                },
+                onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
+                shape = MaterialTheme.shapes.extraLarge,
+                placeholder = { Text(stringResource(R.string.search)) },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .imePadding()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                        .focusRequester(focusRequester),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
+            )
 
-                    itemsIndexed(
-                        items = state.localSearchResults,
-                        key = { _, it -> "Saved_${it.id}" },
-                    ) { index, it ->
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+            ) {
+                state.error?.let { error ->
+                    item {
+                        ErrorCard(
+                            error = error,
+                            debugMessage = null,
+                            colors =
+                                Pair(
+                                    MaterialTheme.colorScheme.onSurface,
+                                    MaterialTheme.colorScheme.background,
+                                ),
+                        )
+                    }
+                }
+
+                itemsIndexed(
+                    items = state.localSearchResults,
+                    key = { _, it -> "Saved_${it.id}" },
+                ) { index, it ->
+                    val shape =
+                        when {
+                            state.localSearchResults.size == 1 -> detachedItemShape()
+                            index == 0 -> leadingItemShape()
+                            index == state.localSearchResults.lastIndex -> endItemShape()
+                            else -> middleItemShape()
+                        }
+
+                    SearchResultCard(
+                        result = it,
+                        downloaded = true,
+                        modifier =
+                            Modifier
+                                .clip(shape)
+                                .clickable {
+                                    onAction(SearchSheetAction.OnCardClicked(it.id))
+                                    onNavigateToLyrics()
+                                },
+                    )
+                }
+
+                if (state.localSearchResults.isNotEmpty()) {
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                }
+
+                if (!state.isSearching) {
+                    itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index,
+                                                                                          it ->
                         val shape =
                             when {
-                                state.localSearchResults.size == 1 -> detachedItemShape()
+                                state.searchResults.size == 1 -> detachedItemShape()
                                 index == 0 -> leadingItemShape()
-                                index == state.localSearchResults.lastIndex -> endItemShape()
+                                index == state.searchResults.lastIndex -> endItemShape()
                                 else -> middleItemShape()
                             }
 
                         SearchResultCard(
                             result = it,
-                            downloaded = true,
                             modifier =
-                                Modifier.clip(shape).clickable {
-                                    onAction(SearchSheetAction.OnCardClicked(it.id))
-                                    onNavigateToLyrics()
-                                },
-                        )
-                    }
-
-                    if (state.localSearchResults.isNotEmpty()) {
-                        item { Spacer(modifier = Modifier.height(16.dp)) }
-                    }
-
-                    if (!state.isSearching) {
-                        itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) {
-                            index,
-                            it ->
-                            val shape =
-                                when {
-                                    state.searchResults.size == 1 -> detachedItemShape()
-                                    index == 0 -> leadingItemShape()
-                                    index == state.searchResults.lastIndex -> endItemShape()
-                                    else -> middleItemShape()
-                                }
-
-                            SearchResultCard(
-                                result = it,
-                                modifier =
-                                    Modifier.clip(shape).clickable {
+                                Modifier
+                                    .clip(shape)
+                                    .clickable {
                                         onAction(SearchSheetAction.OnCardClicked(it.id))
                                         onNavigateToLyrics()
                                     },
-                            )
-                        }
-                    } else {
-                        item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
+                        )
                     }
+                } else {
+                    item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
                 }
             }
         }
@@ -263,6 +267,6 @@ private fun Preview() {
         state = state,
         onAction = {},
         onNavigateToLyrics = {},
-        sheetState = rememberStandardBottomSheetState(),
+        onDismissRequest = { },
     )
 }

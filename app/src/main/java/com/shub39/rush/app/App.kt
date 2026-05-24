@@ -40,6 +40,7 @@ import com.shub39.rush.presentation.lyrics.LyricsGraph
 import com.shub39.rush.presentation.onboarding.Onboarding
 import com.shub39.rush.presentation.saved.SavedPage
 import com.shub39.rush.presentation.searchsheet.SearchSheet
+import com.shub39.rush.presentation.searchsheet.SearchSheetAction
 import com.shub39.rush.presentation.setting.SettingsGraph
 import com.shub39.rush.presentation.share.SharePage
 import com.shub39.rush.presentation.theme.RushTheme
@@ -182,12 +183,16 @@ fun App() {
 
             val searchSheetVM: SearchSheetVM = koinViewModel()
             val searchState by searchSheetVM.state.collectAsStateWithLifecycle()
-            SearchSheet(
-                state = searchState,
-                onAction = searchSheetVM::onAction,
-                onNavigateToLyrics = { backStack.add(LyricsGraph) },
-                sheetState = rememberModalBottomSheetState(),
-            )
+            if (searchState.visible) {
+                SearchSheet(
+                    state = searchState,
+                    onAction = searchSheetVM::onAction,
+                    onNavigateToLyrics = { backStack.add(LyricsGraph) },
+                    onDismissRequest = {
+                        searchSheetVM.onAction(SearchSheetAction.OnToggleSearchSheet)
+                    }
+                )
+            }
         }
     }
 }
