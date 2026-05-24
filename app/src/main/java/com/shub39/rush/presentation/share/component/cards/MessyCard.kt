@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +61,7 @@ private data class Word(
     val fontWeight: Int,
     val fontSize: Int,
     val fontWidth: Float,
+    val angle: Int,
 )
 
 @Composable
@@ -72,18 +74,24 @@ fun MessyCard(
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
     rushBranding: Boolean,
+    seed: Long,
 ) {
     val firstLine = sortedLines.values.firstOrNull() ?: "Woah..."
-    val words = remember {
-        firstLine.split(" ").map {
-            Word(
-                text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
-                fontWeight = Random.nextInt(500, 1000),
-                fontSize = Random.nextInt(50, 100),
-                fontWidth = Random.nextInt(100, 120).toFloat(),
-            )
+    val words =
+        remember(seed, firstLine) {
+            firstLine
+                .split(Regex("\\s+"))
+                .filter { it.isNotBlank() }
+                .map {
+                    Word(
+                        text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
+                        fontWeight = Random.nextInt(300, 1000),
+                        fontSize = Random.nextInt(30, 100),
+                        fontWidth = Random.nextInt(50, 120).toFloat(),
+                        angle = Random.nextInt(-10, 10),
+                    )
+                }
         }
-    }
 
     Card(modifier = modifier, colors = cardColors, shape = cardCorners) {
         Column(
@@ -114,10 +122,14 @@ fun MessyCard(
                                 fontFamily =
                                     flexFontEmphasis(
                                         fontWeight = word.fontWeight,
-                                        fontWidth = word.fontWidth,
+                                        fontWidth =
+                                            if (word.text.length > 10) {
+                                                100f
+                                            } else word.fontWidth,
                                     ),
                                 fontSize = pxToSp(word.fontSize),
                             ),
+                        modifier = Modifier.rotate(word.angle.toFloat()),
                     )
                 }
             }
@@ -180,5 +192,6 @@ private fun Preview() {
         cardCorners = RoundedCornerShape(pxToDp(48)),
         fit = CardFit.FIT,
         rushBranding = true,
+        seed = 0,
     )
 }

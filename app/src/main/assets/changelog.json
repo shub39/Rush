@@ -1,5 +1,16 @@
 [
   {
+    "version": "6.2.10",
+    "changes": [
+      "Improved Romanization accuracy. Thanks to @rbelem",
+      "Updated Translations",
+      "Fixed Search Sheet UI overlapping",
+      "Added angles and more variations to messy card.",
+      "Added Refresh button to regenerate Messy Card",
+      "Miscellaneous UI fixes"
+    ]
+  },
+  {
     "version": "6.2.01",
     "changes": [
       "Fixed UI bug in share cards"
@@ -69,14 +80,6 @@
       "[Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations",
       "Translation Updates",
       "Misc UI Improvements in bottom sheets"
-    ]
-  },
-  {
-    "version": "5.8.2",
-    "changes": [
-      "Fixed misleading Syllable Synced Lyrics for some tracks",
-      "Removed word by word highlight from line synced lyrics",
-      "Updated Translations"
     ]
   }
 ]

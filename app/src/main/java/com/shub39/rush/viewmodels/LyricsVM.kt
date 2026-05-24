@@ -59,6 +59,7 @@ class LyricsVM(
     private val repo: SongRepository,
     private val lyricsPrefs: LyricsPagePreferences,
     private val paletteGenerator: PaletteGenerator,
+    private val romanizationUtils: RomanizationUtils,
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -299,7 +300,7 @@ class LyricsVM(
                 // Plain lyrics (LRCLIB)
                 val romanizedLyrics =
                     song.lyrics.associate { entry ->
-                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                        romanizationUtils.romanize(entry.value)?.let { romanized ->
                             entry.key to romanized
                         } ?: (entry.key to "")
                     }
@@ -307,7 +308,7 @@ class LyricsVM(
                 // Genius lyrics — offset to avoid collision with LRCLIB keys
                 val romanizedGeniusLyrics =
                     song.geniusLyrics?.associate { entry ->
-                        RomanizationUtils.romanize(entry.value)?.let { romanized ->
+                        romanizationUtils.romanize(entry.value)?.let { romanized ->
                             entry.key to romanized
                         } ?: (entry.key to "")
                     } ?: emptyMap()
@@ -315,7 +316,7 @@ class LyricsVM(
                 // Synced lyrics — time-based keys
                 val romanizedSyncedLyrics =
                     song.syncedLyrics?.associate { lyric ->
-                        RomanizationUtils.romanize(lyric.text)?.let { romanized ->
+                        romanizationUtils.romanize(lyric.text)?.let { romanized ->
                             lyric.time to romanized
                         } ?: (lyric.time to "")
                     } ?: emptyMap()
@@ -323,7 +324,7 @@ class LyricsVM(
                 // TTML lyrics — startTime in ms as key
                 val romanizedTTMLLyrics =
                     song.ttmlLyrics?.associate { parsedLine ->
-                        RomanizationUtils.romanize(parsedLine.text)?.let { romanized ->
+                        romanizationUtils.romanize(parsedLine.text)?.let { romanized ->
                             parsedLine.startTime to romanized
                         } ?: (parsedLine.startTime to "")
                     } ?: emptyMap()

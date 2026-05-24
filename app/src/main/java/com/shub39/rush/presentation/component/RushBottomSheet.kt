@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RushBottomSheet(
     onDismissRequest: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     modifier: Modifier = Modifier,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     padding: Dp = 32.dp,
     content: @Composable (ColumnScope.() -> Unit),
 ) {

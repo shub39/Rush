@@ -160,4 +160,6 @@
     <string name="translate_desc">Przetłumacz Rush na twój język</string>
     <string name="system_default">Domyślny Systemowy</string>
     <string name="language">Język</string>
+    <string name="expressive_syllables">Ekspresyjne sylaby</string>
+    <string name="expressive_syllables_desc">Styl czcionki zmienia się na podstawie długości słów</string>
 </resources>

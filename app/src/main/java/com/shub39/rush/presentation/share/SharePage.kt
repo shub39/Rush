@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -190,9 +191,12 @@ private fun SharePageContent(
 ) {
     val scope = rememberCoroutineScope()
     val zoomState = rememberZoomState(initialScale = 1f)
+
     var editSheet by remember { mutableStateOf(false) }
     var colorPicker by remember { mutableStateOf(false) }
     var editTarget by remember { mutableStateOf("content") }
+
+    var messyCardSeed by remember { mutableLongStateOf(0) }
 
     val cornerRadius by
         animateDpAsState(
@@ -362,6 +366,7 @@ private fun SharePageContent(
                                         fit = state.cardFit,
                                         albumArtShape = state.albumArtShape.toShape(),
                                         rushBranding = state.rushBranding,
+                                        seed = messyCardSeed,
                                     )
 
                                 CardTheme.CHAT ->
@@ -456,6 +461,20 @@ private fun SharePageContent(
                     IconButton(onClick = onLaunchImagePicker) {
                         Icon(
                             painter = painterResource(R.drawable.image),
+                            contentDescription = "Image",
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = state.cardTheme == CardTheme.MESSY,
+                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+                ) {
+                    IconButton(onClick = { messyCardSeed += 1 }) {
+                        Icon(
+                            painter = painterResource(R.drawable.refresh),
                             contentDescription = "Image",
                             modifier = Modifier.size(24.dp),
                         )
