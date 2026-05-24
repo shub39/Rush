@@ -162,7 +162,6 @@ fun SearchSheet(
                 placeholder = { Text(stringResource(R.string.search)) },
                 modifier =
                     Modifier.fillMaxWidth()
-                        .imePadding()
                         .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                         .focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),

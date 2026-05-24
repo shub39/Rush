@@ -78,16 +78,19 @@ fun MessyCard(
 ) {
     val firstLine = sortedLines.values.firstOrNull() ?: "Woah..."
     val words =
-        remember(seed) {
-            firstLine.split(" ").map {
-                Word(
-                    text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
-                    fontWeight = Random.nextInt(300, 1000),
-                    fontSize = Random.nextInt(30, 100),
-                    fontWidth = Random.nextInt(50, 120).toFloat(),
-                    angle = Random.nextInt(-10, 10),
-                )
-            }
+        remember(seed, firstLine) {
+            firstLine
+                .split(Regex("\\s+"))
+                .filter { it.isNotBlank() }
+                .map {
+                    Word(
+                        text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
+                        fontWeight = Random.nextInt(300, 1000),
+                        fontSize = Random.nextInt(30, 100),
+                        fontWidth = Random.nextInt(50, 120).toFloat(),
+                        angle = Random.nextInt(-10, 10),
+                    )
+                }
         }
 
     Card(modifier = modifier, colors = cardColors, shape = cardCorners) {
@@ -120,7 +123,7 @@ fun MessyCard(
                                     flexFontEmphasis(
                                         fontWeight = word.fontWeight,
                                         fontWidth =
-                                            if (word.fontSize > 10) {
+                                            if (word.text.length > 10) {
                                                 100f
                                             } else word.fontWidth,
                                     ),

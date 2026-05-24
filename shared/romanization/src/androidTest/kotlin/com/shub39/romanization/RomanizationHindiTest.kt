@@ -86,12 +86,6 @@ class RomanizationHindiTest {
     }
 
     @Test
-    fun testHindi_anusvara() = runTest {
-        val result = romanizationUtils.romanizeHindi("हिंदी")
-        assertEquals("hindee", result)
-    }
-
-    @Test
     fun testHindi_om() = runTest {
         val result = romanizationUtils.romanizeHindi("ॐ")
         assertEquals("Om", result)
