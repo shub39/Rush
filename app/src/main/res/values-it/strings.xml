@@ -156,4 +156,10 @@
     <string name="romanization">Romanizzazione</string>
     <string name="romanization_desc">Mostra i testi in caratteri latini per le lingue giapponese, coreana, cinese, hindi, punjabi e cirillica</string>
     <string name="open_search">Apri Ricerca</string>
+    <string name="bmc_desc">Sostienimi con una piccola donazione</string>
+    <string name="translate_desc">Traduci Rush nella tua lingua</string>
+    <string name="system_default">Predefinito di Sistema</string>
+    <string name="language">Lingua</string>
+    <string name="expressive_syllables">Sillabe espressive</string>
+    <string name="expressive_syllables_desc">Lo stile del carattere cambia in base alla durata della parola</string>
 </resources>
