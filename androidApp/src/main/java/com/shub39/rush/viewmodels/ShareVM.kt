@@ -18,9 +18,9 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.domain.interfaces.SharePagePreferences
-import com.shub39.rush.presentation.share.SharePageAction
-import com.shub39.rush.presentation.share.SharePageState
+import com.shub39.rush.shared.core.interfaces.SharePagePreferences
+import com.shub39.rush.shared.ui.share.SharePageAction
+import com.shub39.rush.shared.ui.share.SharePageState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow

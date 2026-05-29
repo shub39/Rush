@@ -17,8 +17,8 @@
 package com.shub39.rush.data.mappers
 
 import com.shub39.rush.data.database.SongEntity
-import com.shub39.rush.domain.backup.SongSchema
-import com.shub39.rush.domain.dataclasses.Song
+import com.shub39.rush.shared.core.backup.SongSchema
+import com.shub39.rush.shared.core.dataclasses.Song
 
 fun SongEntity.toSong(): Song {
     return Song(

@@ -44,7 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
-import com.shub39.rush.presentation.theme.flexFontRounded
+import com.shub39.rush.shared.ui.theme.flexFontRounded
 
 @Composable
 fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {

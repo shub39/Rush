@@ -18,9 +18,9 @@ package com.shub39.rush.data.backup
 
 import android.util.Log
 import com.shub39.rush.data.mappers.toSongSchema
-import com.shub39.rush.domain.backup.ExportRepo
-import com.shub39.rush.domain.backup.ExportSchema
-import com.shub39.rush.domain.interfaces.SongRepository
+import com.shub39.rush.shared.core.backup.ExportRepo
+import com.shub39.rush.shared.core.backup.ExportSchema
+import com.shub39.rush.shared.core.interfaces.SongRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json

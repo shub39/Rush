@@ -1,6 +1,19 @@
-@file:OptIn(ExperimentalWasmDsl::class)
-
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -11,20 +24,19 @@ plugins {
 }
 
 kotlin {
-    android {
-        namespace = "com.shub39.rush.shared.ui"
-        compileSdk {
-            version = release(libs.versions.compileSdk.get().toInt())
-        }
-        minSdk {
-            version = release(libs.versions.minSdk.get().toInt())
-        }
-        androidResources { enable = true }
+    compilerOptions {
+        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+        optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
+        optIn.add(
+            "androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
+        )
     }
 
-    wasmJs {
-        browser()
-        binaries.executable()
+    android {
+        namespace = "com.shub39.rush.shared.ui"
+        compileSdk { version = release(libs.versions.compileSdk.get().toInt()) }
+        minSdk { version = release(libs.versions.minSdk.get().toInt()) }
+        androidResources { enable = true }
     }
 
     jvm()
@@ -41,8 +53,31 @@ kotlin {
             implementation(libs.compose.windowsizeclass)
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.jetbrains.navigation3.ui)
-
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.materialkolor)
+            implementation(libs.zoomable)
+            implementation(libs.landscapist.coil)
+            implementation(libs.landscapist.placeholder)
+            implementation(libs.colorpicker.compose)
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.dialogs.compose)
         }
+
+        androidMain.dependencies {
+            implementation(projects.androidLibs.visualizerHelper)
+            implementation(libs.accompanist.permissions)
+        }
+    }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
+    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.res?.addStaticSourceDirectory("src/commonMain/composeResources")
     }
 }

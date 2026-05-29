@@ -21,19 +21,17 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.romanization.RomanizationUtils
 import com.shub39.rush.data.PaletteGenerator
 import com.shub39.rush.data.listener.MediaListenerImpl
-import com.shub39.rush.domain.Result
-import com.shub39.rush.domain.interfaces.LyricsPagePreferences
-import com.shub39.rush.domain.interfaces.SongRepository
-import com.shub39.rush.presentation.errorStringRes
-import com.shub39.rush.presentation.lyrics.LyricsPageAction
-import com.shub39.rush.presentation.lyrics.LyricsPageState
-import com.shub39.rush.presentation.lyrics.LyricsState
-import com.shub39.rush.presentation.lyrics.LyricsState.Loaded
-import com.shub39.rush.presentation.lyrics.LyricsState.LyricsError
-import com.shub39.rush.presentation.lyrics.PlaybackInfo
-import com.shub39.rush.presentation.lyrics.breakLyrics
-import com.shub39.rush.presentation.lyrics.toSongUi
-import com.shub39.rush.presentation.sortMapByKeys
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
+import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.ui.errorStringRes
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
+import com.shub39.rush.shared.ui.lyrics.LyricsState
+import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
+import com.shub39.rush.shared.ui.lyrics.breakLyrics
+import com.shub39.rush.shared.ui.lyrics.toSongUi
+import com.shub39.rush.shared.ui.sortMapByKeys
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -126,7 +124,7 @@ class LyricsVM(
                     stateLayer.sharePageState.update {
                         it.copy(
                             songDetails = action.songDetails,
-                            selectedLines = sortMapByKeys(_state.value.selectedLines),
+                            selectedLines = _state.value.selectedLines.sortMapByKeys(),
                         )
                     }
                 }
@@ -139,7 +137,7 @@ class LyricsVM(
                     _state.update {
                         it.copy(
                             syncedAvailable = song.syncedLyrics != null || song.ttmlLyrics != null,
-                            lyricsState = Loaded(song = song),
+                            lyricsState = LyricsState.Loaded(song = song),
                         )
                     }
 
@@ -199,7 +197,7 @@ class LyricsVM(
                                     scraping =
                                         Pair(
                                             false,
-                                            LyricsError(
+                                            LyricsState.LyricsError(
                                                 errorCode = errorStringRes(result.error),
                                                 debugMessage = result.message,
                                             ),
@@ -209,16 +207,18 @@ class LyricsVM(
                         }
 
                         is Result.Success -> {
-                            _state.update {
-                                it.copy(
+                            _state.update { lyricsPageState ->
+                                lyricsPageState.copy(
                                     scraping = Pair(false, null),
                                     lyricsState =
-                                        (it.lyricsState as? Loaded)?.copy(
-                                            song =
-                                                it.lyricsState.song.copy(
-                                                    geniusLyrics = breakLyrics(result.data)
-                                                )
-                                        ) ?: LyricsState.Idle,
+                                        (lyricsPageState.lyricsState as? LyricsState.Loaded)?.let {
+                                            it.copy(
+                                                song =
+                                                    it.song.copy(
+                                                        geniusLyrics = breakLyrics(result.data)
+                                                    )
+                                            )
+                                        } ?: LyricsState.Idle,
                                 )
                             }
 
@@ -267,12 +267,13 @@ class LyricsVM(
                     } else {
                         romanizationJob?.cancel()
 
-                        val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
+                        val song =
+                            (_state.value.lyricsState as? LyricsState.Loaded)?.song ?: return@launch
 
                         _state.update {
                             it.copy(
                                 lyricsState =
-                                    Loaded(
+                                    LyricsState.Loaded(
                                         song =
                                             song.copy(
                                                 romanizedLyrics = emptyMap(),
@@ -295,7 +296,7 @@ class LyricsVM(
             viewModelScope.launch(Dispatchers.Default) {
                 if (!_state.value.romanizationEnabled) return@launch
 
-                val song = (_state.value.lyricsState as? Loaded)?.song ?: return@launch
+                val song = (_state.value.lyricsState as? LyricsState.Loaded)?.song ?: return@launch
 
                 // Plain lyrics (LRCLIB)
                 val romanizedLyrics =
@@ -332,7 +333,7 @@ class LyricsVM(
                 _state.update {
                     it.copy(
                         lyricsState =
-                            Loaded(
+                            LyricsState.Loaded(
                                 song =
                                     song.copy(
                                         romanizedLyrics = romanizedLyrics,
@@ -434,7 +435,7 @@ class LyricsVM(
 
                 // Watch for song changes and regenerate romanization if enabled
                 _state
-                    .map { (it.lyricsState as? Loaded)?.song?.id }
+                    .map { (it.lyricsState as? LyricsState.Loaded)?.song?.id }
                     .distinctUntilChanged()
                     .onEach {
                         if (_state.value.romanizationEnabled) {

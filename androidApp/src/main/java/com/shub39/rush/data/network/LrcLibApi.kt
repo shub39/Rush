@@ -18,10 +18,10 @@ package com.shub39.rush.data.network
 
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.data.network.dto.lrclib.LrcGetDto
-import com.shub39.rush.domain.Result
-import com.shub39.rush.domain.SourceError
-import com.shub39.rush.domain.getMainArtist
-import com.shub39.rush.domain.getMainTitle
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.SourceError
+import com.shub39.rush.shared.core.getMainArtist
+import com.shub39.rush.shared.core.getMainTitle
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp

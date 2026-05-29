@@ -31,9 +31,9 @@ import com.shub39.rush.data.datastore.DatastoreFactory
 import com.shub39.rush.data.datastore.LyricsPagePreferencesImpl
 import com.shub39.rush.data.datastore.OtherPreferencesImpl
 import com.shub39.rush.data.datastore.SharePagePreferencesImpl
-import com.shub39.rush.domain.interfaces.LyricsPagePreferences
-import com.shub39.rush.domain.interfaces.OtherPreferences
-import com.shub39.rush.domain.interfaces.SharePagePreferences
+import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
+import com.shub39.rush.shared.core.interfaces.OtherPreferences
+import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import okio.Path.Companion.toOkioPath
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module

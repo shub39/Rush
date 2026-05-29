@@ -16,10 +16,10 @@
  */
 package com.shub39.rush.viewmodels
 
-import com.shub39.rush.presentation.lyrics.LyricsPageState
-import com.shub39.rush.presentation.saved.SavedPageState
-import com.shub39.rush.presentation.searchsheet.SearchSheetState
-import com.shub39.rush.presentation.share.SharePageState
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
+import com.shub39.rush.shared.ui.saved.SavedPageState
+import com.shub39.rush.shared.ui.searchsheet.SearchSheetState
+import com.shub39.rush.shared.ui.share.SharePageState
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Single
 

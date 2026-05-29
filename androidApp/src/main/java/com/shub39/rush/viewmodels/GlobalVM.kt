@@ -26,7 +26,7 @@ import com.shub39.rush.billing.SubscriptionResult
 import com.shub39.rush.data.ChangelogManager
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.data.listener.NotificationListener
-import com.shub39.rush.domain.interfaces.OtherPreferences
+import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

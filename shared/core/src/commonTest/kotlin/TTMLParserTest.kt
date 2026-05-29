@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.shared.core.util
 
 import kotlin.test.Test
@@ -7,7 +23,8 @@ import kotlin.test.assertTrue
 
 class TTMLParserTest {
 
-    private val sampleTTML = """
+    private val sampleTTML =
+        """
         <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata">
           <body>
             <div>
@@ -25,7 +42,8 @@ class TTMLParserTest {
             </div>
           </body>
         </tt>
-    """.trimIndent()
+        """
+            .trimIndent()
 
     @Test
     fun testIsValidTTML() {
@@ -37,12 +55,17 @@ class TTMLParserTest {
     @Test
     fun testParseTTML() {
         val lines = TTMLParser.parseTTML(sampleTTML)
-        
-        // Check if leading empty line was added (since first line starts at 1.0s, it shouldn't be added as it's < 5.0s)
+
+        // Check if leading empty line was added (since first line starts at 1.0s, it shouldn't be
+        // added as it's < 5.0s)
         // Wait, the logic in TTMLParser.kt:
-        // if (lines.firstOrNull()?.let { it.startTime > 5.0 } == true) { add(ParsedLine(text = "", startTime = 0.0, words = emptyList())) }
-        
-        assertEquals(4, lines.size) // 3 original lines + 1 empty line for the gap between 10s and 20s
+        // if (lines.firstOrNull()?.let { it.startTime > 5.0 } == true) { add(ParsedLine(text = "",
+        // startTime = 0.0, words = emptyList())) }
+
+        assertEquals(
+            4,
+            lines.size,
+        ) // 3 original lines + 1 empty line for the gap between 10s and 20s
 
         // First line
         val firstLine = lines[0]
@@ -79,7 +102,7 @@ class TTMLParserTest {
     @Test
     fun testToLRC() {
         val lrc = TTMLParser.toLRC(sampleTTML)
-        
+
         assertTrue(lrc.contains("[00:01.00]Hello world"))
         assertTrue(lrc.contains("<Hello:1.0:1.5|world:1.6:2.0>"))
         assertTrue(lrc.contains("[00:07.00]{bg}background"))
@@ -90,14 +113,16 @@ class TTMLParserTest {
     fun testParseTime() {
         // Since parseTime is private, we test it through parseTTML or toLRC
         // But we can check various time formats in a sample TTML
-        val ttml = """
+        val ttml =
+            """
             <tt><body><div>
                 <p begin="1:02:03.45">H</p>
                 <p begin="02:03.45">M</p>
                 <p begin="3.45">S</p>
             </div></body></tt>
-        """.trimIndent()
-        
+            """
+                .trimIndent()
+
         val lines = TTMLParser.parseTTML(ttml)
         // Since 3723.45 > 5.0, a leading empty line is added at 0.0s
         assertEquals(4, lines.size)
@@ -105,7 +130,7 @@ class TTMLParserTest {
         assertEquals("", lines[0].text)
 
         assertEquals(3723.45, lines[1].startTime) // 3600 + 120 + 3.45
-        assertEquals(123.45, lines[2].startTime)   // 120 + 3.45
+        assertEquals(123.45, lines[2].startTime) // 120 + 3.45
         assertEquals(3.45, lines[3].startTime)
     }
 }

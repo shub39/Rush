@@ -20,8 +20,8 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.TextNode
 import com.shub39.rush.BuildConfig
-import com.shub39.rush.domain.Result
-import com.shub39.rush.domain.SourceError
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.SourceError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -81,9 +81,7 @@ class GeniusScraper {
     }
 
     suspend fun geniusScrape(songUrl: String): Result<String, SourceError> {
-        val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }
-
-        when (response) {
+        when (val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }) {
             is Result.Success -> {
                 val lyricsElements =
                     Ksoup.parse(response.data.body<String>())
@@ -136,9 +134,7 @@ class GeniusScraper {
     }
 
     suspend fun dumbScrape(songUrl: String): Result<String, SourceError> {
-        val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }
-
-        return when (response) {
+        return when (val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }) {
             is Result.Success -> {
                 val lyricsElements = Ksoup.parse(response.data.body<String>()).select("#lyrics")
 

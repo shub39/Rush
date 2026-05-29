@@ -23,11 +23,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.domain.enums.AppTheme
-import com.shub39.rush.domain.enums.Fonts
-import com.shub39.rush.domain.enums.PaletteStyle
-import com.shub39.rush.domain.enums.SortOrder
-import com.shub39.rush.domain.interfaces.OtherPreferences
+import com.shub39.rush.shared.core.enums.AppTheme
+import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.core.enums.PaletteStyle
+import com.shub39.rush.shared.core.enums.SortOrder
+import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

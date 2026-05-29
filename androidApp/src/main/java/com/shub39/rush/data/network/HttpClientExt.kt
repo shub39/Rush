@@ -16,8 +16,8 @@
  */
 package com.shub39.rush.data.network
 
-import com.shub39.rush.domain.Result
-import com.shub39.rush.domain.SourceError
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.SourceError
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException

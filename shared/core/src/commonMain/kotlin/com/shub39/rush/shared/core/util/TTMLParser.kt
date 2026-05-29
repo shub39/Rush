@@ -47,7 +47,8 @@ object TTMLParser {
         val lines = mutableListOf<ParsedLine>()
 
         try {
-            // Using (?s) flag for DOT_MATCHES_ALL as it's more cross-platform compatible in some Kotlin versions
+            // Using (?s) flag for DOT_MATCHES_ALL as it's more cross-platform compatible in some
+            // Kotlin versions
             val pRegex = Regex("""(?s)<p\s+([^>]*)>(.*?)</p>""")
             val pMatches = pRegex.findAll(ttml)
 
@@ -78,12 +79,14 @@ object TTMLParser {
 
                         when (role) {
                             "x-bg" -> {
-                                val bgLine = parseBackgroundSpan(spanAttributes, spanContent, startTime)
+                                val bgLine =
+                                    parseBackgroundSpan(spanAttributes, spanContent, startTime)
                                 if (bgLine != null) {
                                     backgroundLines.add(bgLine)
                                 }
                             }
-                            "x-translation", "x-roman" -> {
+                            "x-translation",
+                            "x-roman" -> {
                                 // Skip
                             }
                             else -> {
@@ -91,16 +94,21 @@ object TTMLParser {
                                 val wordEnd = spanAttributes["end"] ?: ""
                                 val wordText = spanContent.trim()
 
-                                if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
+                                if (
+                                    wordText.isNotEmpty() &&
+                                        wordBegin.isNotEmpty() &&
+                                        wordEnd.isNotEmpty()
+                                ) {
                                     val nextPart = pContent.substring(child.range.last + 1)
-                                    val hasTrailingSpace = nextPart.takeWhile { it != '<' }.contains(Regex("\\s"))
+                                    val hasTrailingSpace =
+                                        nextPart.takeWhile { it != '<' }.contains(Regex("\\s"))
 
                                     spanInfos.add(
                                         SpanInfo(
                                             text = wordText,
                                             startTime = parseTime(wordBegin),
                                             endTime = parseTime(wordEnd),
-                                            hasTrailingSpace = hasTrailingSpace
+                                            hasTrailingSpace = hasTrailingSpace,
                                         )
                                     )
                                 }
@@ -148,7 +156,11 @@ object TTMLParser {
         }
     }
 
-    private fun parseBackgroundSpan(attributes: Map<String, String>, content: String, parentStartTime: Double): ParsedLine? {
+    private fun parseBackgroundSpan(
+        attributes: Map<String, String>,
+        content: String,
+        parentStartTime: Double,
+    ): ParsedLine? {
         val bgBegin = attributes["begin"] ?: ""
         val bgStartTime = if (bgBegin.isNotEmpty()) parseTime(bgBegin) else parentStartTime
 
@@ -179,7 +191,7 @@ object TTMLParser {
                             text = wordText,
                             startTime = parseTime(wordBegin),
                             endTime = parseTime(wordEnd),
-                            hasTrailingSpace = hasTrailingSpace
+                            hasTrailingSpace = hasTrailingSpace,
                         )
                     )
                 }
@@ -208,12 +220,12 @@ object TTMLParser {
         var lastIndex = 0
         spanRegex.findAll(content).forEach { match ->
             sb.append(content.substring(lastIndex, match.range.first))
-            
+
             val attrStr = match.groupValues[1]
             val spanContent = match.groupValues[2]
             val attrs = parseAttributes(attrStr)
             val role = attrs.getAttributeByLocalName("role")
-            
+
             if (role != "x-bg" && role != "x-translation" && role != "x-roman") {
                 sb.append(getDirectTextContent(spanContent))
             }
@@ -281,7 +293,9 @@ object TTMLParser {
                 val seconds = (timeMs % 60000) / 1000
                 val centiseconds = (timeMs % 1000) / 10
 
-                appendLine("[${minutes.pad(2)}:${seconds.pad(2)}.${centiseconds.pad(2)}]${line.text}")
+                appendLine(
+                    "[${minutes.pad(2)}:${seconds.pad(2)}.${centiseconds.pad(2)}]${line.text}"
+                )
 
                 if (line.words.isNotEmpty()) {
                     val wordsData =
@@ -297,7 +311,9 @@ object TTMLParser {
                     val bgSeconds = (bgTimeMs % 60000) / 1000
                     val bgCentiseconds = (bgTimeMs % 1000) / 10
 
-                    appendLine("[${bgMinutes.pad(2)}:${bgSeconds.pad(2)}.${bgCentiseconds.pad(2)}]{bg}${bgLine.text}")
+                    appendLine(
+                        "[${bgMinutes.pad(2)}:${bgSeconds.pad(2)}.${bgCentiseconds.pad(2)}]{bg}${bgLine.text}"
+                    )
 
                     if (bgLine.words.isNotEmpty()) {
                         val bgWordsData =

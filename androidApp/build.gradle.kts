@@ -130,6 +130,17 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+
+    sourceSets {
+        getByName("main") {
+            res.directories.addAll(
+                listOf(
+                    "src/main/res",
+                    "${project(":shared:ui").projectDir}/src/commonMain/composeResources",
+                )
+            )
+        }
+    }
 }
 
 kotlin {
@@ -145,6 +156,8 @@ kotlin {
 dependencies {
     implementation(projects.androidLibs.visualizerHelper)
     implementation(projects.androidLibs.romanization)
+    implementation(projects.shared.core)
+    implementation(projects.shared.ui)
 
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)

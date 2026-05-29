@@ -27,7 +27,7 @@ import coil3.request.allowConversionToBitmap
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.kmpalette.palette.graphics.Palette
-import com.shub39.rush.domain.dataclasses.ExtractedColors
+import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import org.koin.core.annotation.Single
 
 @Single

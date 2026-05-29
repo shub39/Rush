@@ -24,13 +24,13 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.domain.enums.AlbumArtShape
-import com.shub39.rush.domain.enums.CardColors
-import com.shub39.rush.domain.enums.CardFit
-import com.shub39.rush.domain.enums.CardTheme
-import com.shub39.rush.domain.enums.CornerRadius
-import com.shub39.rush.domain.enums.Fonts
-import com.shub39.rush.domain.interfaces.SharePagePreferences
+import com.shub39.rush.shared.core.enums.AlbumArtShape
+import com.shub39.rush.shared.core.enums.CardColors
+import com.shub39.rush.shared.core.enums.CardFit
+import com.shub39.rush.shared.core.enums.CardTheme
+import com.shub39.rush.shared.core.enums.CornerRadius
+import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

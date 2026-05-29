@@ -26,10 +26,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.domain.enums.CardColors
-import com.shub39.rush.domain.enums.LyricsAlignment
-import com.shub39.rush.domain.enums.LyricsBackground
-import com.shub39.rush.domain.interfaces.LyricsPagePreferences
+import com.shub39.rush.shared.core.enums.CardColors
+import com.shub39.rush.shared.core.enums.LyricsAlignment
+import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
