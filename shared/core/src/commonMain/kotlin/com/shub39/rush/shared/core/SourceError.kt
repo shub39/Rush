@@ -14,37 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-rootProject.name = "Rush"
+package com.shub39.rush.shared.core
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+sealed interface SourceError : Error {
+    enum class Network : SourceError {
+        NO_INTERNET,
+        REQUEST_FAILED,
+    }
 
-pluginManagement {
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
+    enum class Data : SourceError {
+        NO_RESULTS,
+        PARSE_ERROR,
+        IO_ERROR,
+        UNKNOWN,
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
-include(":shared:core")
-
-include(":androidApp")
-
-include(":androidLibs:romanization")
-
-include(":androidLibs:visualizer-helper")
