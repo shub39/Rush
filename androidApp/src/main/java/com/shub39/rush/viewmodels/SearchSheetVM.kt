@@ -1,0 +1,284 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.rush.viewmodels
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.shub39.rush.data.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.dataclasses.ExtractedColors
+import com.shub39.rush.shared.core.dataclasses.SearchResult
+import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.core.getMainTitle
+import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.ui.errorStringRes
+import com.shub39.rush.shared.ui.lyrics.LyricsState
+import com.shub39.rush.shared.ui.lyrics.SearchState
+import com.shub39.rush.shared.ui.lyrics.toSongUi
+import com.shub39.rush.shared.ui.searchsheet.SearchSheetAction
+import com.shub39.rush.shared.ui.searchsheet.SearchSheetState
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
+
+@KoinViewModel
+class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
+    ViewModel() {
+    private var lyricsSearchStateJob: Job? = null
+
+    private val _state = stateLayer.searchSheetState
+    private val _lastSearched = MutableStateFlow("")
+
+    val state =
+        _state
+            .asStateFlow()
+            .onStart {
+                observeSearchSheet()
+                observeSongInfo()
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SearchSheetState())
+
+    private fun observeSongInfo() {
+        viewModelScope.launch {
+            MediaListenerImpl.songInfoFlow.collect { songInfo ->
+                stateLayer.lyricsState.update {
+                    it.copy(
+                        playingSong =
+                            it.playingSong.copy(title = songInfo.first, artist = songInfo.second)
+                    )
+                }
+
+                if (stateLayer.lyricsState.value.autoChange) {
+                    searchSong("${songInfo.first} ${songInfo.second}".trim())
+                }
+            }
+        }
+    }
+
+    fun onAction(action: SearchSheetAction) {
+        when (action) {
+            is SearchSheetAction.OnCardClicked ->
+                viewModelScope.launch {
+                    _state.update { it.copy(visible = !it.visible) }
+
+                    fetchLyrics(action.id)
+
+                    _state.update { it.copy(searchQuery = "", error = null) }
+                }
+
+            is SearchSheetAction.OnQueryChange -> {
+                _state.update { it.copy(searchQuery = action.query) }
+            }
+
+            SearchSheetAction.OnToggleSearchSheet -> {
+                _state.update { it.copy(visible = !it.visible, searchQuery = "", error = null) }
+            }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeSearchSheet() {
+        state
+            .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(500.milliseconds)
+            .onEach { query ->
+                when {
+                    query.isBlank() -> {
+                        _state.update { it.copy(error = null) }
+                    }
+
+                    query.length >= 3 -> {
+                        _state.update { it.copy(localSearchResults = localSearch(query)) }
+
+                        searchSong(query, false)
+                    }
+                }
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
+
+    private suspend fun searchSong(
+        query: String,
+        fetch: Boolean = stateLayer.lyricsState.value.autoChange,
+    ) {
+        if (query.isEmpty() || query == _lastSearched.value || _state.value.isSearching) return
+
+        _state.update { it.copy(isSearching = true, error = null) }
+
+        stateLayer.lyricsState.update { it.copy(searchState = SearchState.Searching(query)) }
+
+        try {
+            when (val result = repo.searchGenius(query)) {
+                is Result.Error -> {
+                    _state.update { it.copy(error = errorStringRes(result.error)) }
+                }
+
+                is Result.Success -> {
+                    _state.update { it.copy(searchResults = result.data, error = null) }
+                }
+            }
+        } finally {
+            _state.update { it.copy(isSearching = false) }
+            stateLayer.lyricsState.update { it.copy(searchState = SearchState.Idle) }
+            _lastSearched.update { query }
+        }
+
+        if (
+            fetch &&
+                _state.value.searchResults.isNotEmpty() &&
+                query.contains(_state.value.searchResults.first().title.trim(), ignoreCase = true)
+        ) {
+            fetchLyrics(_state.value.searchResults.first().id)
+        } else {
+            stateLayer.lyricsState.update {
+                it.copy(searchState = SearchState.UserPrompt, sync = false)
+            }
+
+            lyricsSearchStateJob?.cancel()
+            lyricsSearchStateJob =
+                viewModelScope.launch {
+                    delay(5000.milliseconds)
+
+                    stateLayer.lyricsState.update {
+                        if (it.searchState == SearchState.UserPrompt)
+                            it.copy(searchState = SearchState.Idle)
+                        else it
+                    }
+                }
+        }
+    }
+
+    private suspend fun fetchLyrics(songId: Long) {
+        if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
+
+        val song =
+            _state.value.searchResults.find { it.id == songId }
+                ?: _state.value.localSearchResults.find { it.id == songId }
+                ?: return
+
+        stateLayer.lyricsState.update {
+            it.copy(
+                lyricsState = LyricsState.Fetching("${song.title} - ${song.artist}"),
+                extractedColors = ExtractedColors(),
+                searchState = SearchState.Idle,
+                sync = false,
+            )
+        }
+
+        if (songId in stateLayer.savedPageState.value.songsAsc.map { it.id }) {
+            val result = repo.getSong(songId).toSongUi()
+
+            stateLayer.lyricsState.update {
+                it.copy(
+                    lyricsState = LyricsState.Loaded(song = result),
+                    source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
+                    syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
+                    sync =
+                        (result.syncedLyrics != null || result.ttmlLyrics != null) &&
+                            (getMainTitle(it.playingSong.title)
+                                .trim()
+                                .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
+                    selectedLines = emptyMap(),
+                )
+            }
+
+            stateLayer.savedPageState.update { it.copy(currentSong = result) }
+        } else {
+            when (val result = repo.fetchSong(song)) {
+                is Result.Error -> {
+                    stateLayer.lyricsState.update {
+                        it.copy(
+                            lyricsState =
+                                LyricsState.LyricsError(
+                                    errorCode = errorStringRes(result.error),
+                                    debugMessage = result.message,
+                                )
+                        )
+                    }
+                }
+
+                is Result.Success -> {
+                    val retrievedSong = result.data.toSongUi()
+
+                    stateLayer.lyricsState.update {
+                        it.copy(
+                            lyricsState = LyricsState.Loaded(song = retrievedSong),
+                            source =
+                                if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB
+                                else Sources.GENIUS,
+                            syncedAvailable =
+                                retrievedSong.syncedLyrics != null ||
+                                    retrievedSong.ttmlLyrics != null,
+                            sync =
+                                (retrievedSong.syncedLyrics != null ||
+                                    retrievedSong.ttmlLyrics != null) &&
+                                    (getMainTitle(it.playingSong.title)
+                                        .trim()
+                                        .equals(
+                                            getMainTitle(retrievedSong.title).trim(),
+                                            ignoreCase = true,
+                                        )),
+                            selectedLines = emptyMap(),
+                        )
+                    }
+
+                    stateLayer.savedPageState.update { it.copy(currentSong = retrievedSong) }
+                }
+            }
+        }
+    }
+
+    private suspend fun localSearch(query: String): List<SearchResult> {
+        if (query.isEmpty()) return emptyList()
+
+        val songs = repo.getSong(query)
+        val searchResults = mutableListOf<SearchResult>()
+
+        for (song in songs) {
+            searchResults.add(
+                SearchResult(
+                    title = song.title,
+                    artist = song.artists,
+                    album = song.album,
+                    artUrl = song.artUrl ?: "",
+                    url = song.sourceUrl,
+                    id = song.id,
+                )
+            )
+        }
+
+        return searchResults
+    }
+}
