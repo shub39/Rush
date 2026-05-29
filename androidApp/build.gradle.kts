@@ -160,8 +160,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.jetbrains.navigation3.ui)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     ksp(libs.androidx.room.compiler)

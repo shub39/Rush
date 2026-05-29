@@ -41,10 +41,8 @@ dependencyResolutionManagement {
     }
 }
 
-include(":shared:core")
+include(":shared:core", ":shared:ui")
+
+include(":androidLibs:romanization", ":androidLibs:visualizer-helper")
 
 include(":androidApp")
-
-include(":androidLibs:romanization")
-
-include(":androidLibs:visualizer-helper")

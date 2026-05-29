@@ -19,7 +19,7 @@ kotlin = "2.3.21"
 ksp = "2.3.6"
 landscapist = "2.9.8"
 activity-compose = "1.13.0"
-navigation = "1.1.2"
+navigation = "1.1.1"
 kmpalette = "3.1.0"
 room3 = "3.0.0-alpha05"
 serialization = "1.11.0"
@@ -57,8 +57,7 @@ androidx-room-compiler = { module = "androidx.room3:room3-compiler", version.ref
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation" }
+jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation" }
 
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
