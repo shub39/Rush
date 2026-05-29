@@ -27,6 +27,9 @@ kotlin {
     jvm()
 
     sourceSets {
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
         commonMain.dependencies {
             implementation(libs.compose.ui)
             implementation(libs.kotlinx.serialization.json)
