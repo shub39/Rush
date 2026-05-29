@@ -38,13 +38,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven("https://maven.aliyun.com/repository/public")
-        maven { url = uri("https://jitpack.io") }
     }
 }
 
-include(":app")
+include(":androidApp")
 
-include(":shared:romanization")
+include(":androidLibs:romanization")
 
-include(":visualizer-helper")
+include(":androidLibs:visualizer-helper")

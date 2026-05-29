@@ -30,7 +30,7 @@ plugins {
 allprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     configure<SpotlessExtension> {
-        if (project.path != ":visualizer-helper") {
+        if (project.path != ":androidLibs:visualizer-helper") {
             kotlin {
                 ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
                 target("src/**/*.kt")
