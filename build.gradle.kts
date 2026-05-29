@@ -25,12 +25,15 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.koin.compiler) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
 }
 
 allprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     configure<SpotlessExtension> {
-        if (project.path != ":visualizer-helper") {
+        if (project.path != ":androidLibs:visualizer-helper") {
             kotlin {
                 ktfmt(libs.versions.ktfmt.get()).kotlinlangStyle()
                 target("src/**/*.kt")

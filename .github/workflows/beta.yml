@@ -37,7 +37,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew assembleFossBeta \
+          ./gradlew :androidApp:assembleFossBeta \
           -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=key0 \

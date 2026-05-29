@@ -1,0 +1,331 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.rush.shared.ui.lyrics.component
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.ui.copyToClipboard
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
+import com.shub39.rush.shared.ui.lyrics.LyricsState
+import com.shub39.rush.shared.ui.lyrics.TextPrefs
+import com.shub39.rush.shared.ui.lyrics.updateSelectedLines
+import com.shub39.rush.shared.ui.toAlignment
+import com.shub39.rush.shared.ui.toArrangement
+import com.shub39.rush.shared.ui.toTextAlignment
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import rush.shared.ui.generated.resources.*
+
+@Composable
+fun PlainLyrics(
+    state: LyricsPageState,
+    lazyListState: LazyListState,
+    cardContent: Color,
+    action: (LyricsPageAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val hapticFeedback = LocalHapticFeedback.current
+    val uriHandler = LocalUriHandler.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+
+    val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
+    val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
+    val nonEmptyItems = remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
+    val shouldAutoScrape =
+        state.source == Sources.GENIUS &&
+            nonEmptyItems.isEmpty() &&
+            !state.scraping.first &&
+            state.scraping.second == null
+
+    LaunchedEffect(song.id, state.source, shouldAutoScrape) {
+        if (shouldAutoScrape) {
+            action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
+        }
+    }
+
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 64.dp),
+        verticalArrangement =
+            Arrangement.spacedBy(
+                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
+            ),
+        state = lazyListState,
+    ) {
+        // plain lyrics with logic
+        if (nonEmptyItems.isNotEmpty()) {
+            items(items = nonEmptyItems, key = { it.key }, contentType = { "lyric" }) {
+                val isSelected = state.selectedLines.contains(it.key)
+                val containerColor by
+                    animateColorAsState(
+                        targetValue =
+                            when (!isSelected) {
+                                true -> Color.Transparent
+                                else -> cardContent.copy(alpha = 0.3f)
+                            },
+                        label = "container",
+                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                    )
+
+                PlainLyric(
+                    entry = it.toPair(),
+                    romanizedText =
+                        if (state.romanizationEnabled)
+                            if (state.source == Sources.GENIUS)
+                                state.lyricsState.song.romanizedGeniusLyrics[it.key]
+                            else state.lyricsState.song.romanizedLyrics[it.key]
+                        else null,
+                    containerColor = containerColor,
+                    textPrefs = state.textPrefs,
+                    cardContent = cardContent,
+                    onClick = {
+                        action(
+                            LyricsPageAction.OnChangeSelectedLines(
+                                updateSelectedLines(
+                                    state.selectedLines,
+                                    it.key,
+                                    it.value,
+                                    state.maxLines,
+                                )
+                            )
+                        )
+
+                        if (!isSelected) {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
+                    },
+                )
+            }
+        } else {
+            when (state.source) {
+                Sources.GENIUS -> {
+                    item(key = "genius_empty", contentType = "empty_state") {
+                        AnimatedContent(targetState = state.scraping) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                if (it.first) {
+                                    CircularProgressIndicator(
+                                        color = cardContent,
+                                        modifier = Modifier.padding(16.dp),
+                                    )
+
+                                    Text(stringResource(Res.string.loading_genius))
+                                } else if (it.second != null) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.warning),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(100.dp),
+                                    )
+
+                                    Text(stringResource(it.second!!.errorCode))
+
+                                    TextButton(
+                                        onClick = {
+                                            action(
+                                                LyricsPageAction.OnScrapeGeniusLyrics(
+                                                    song.id,
+                                                    song.sourceUrl,
+                                                )
+                                            )
+                                        },
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                contentColor = cardContent,
+                                                containerColor = Color.Transparent,
+                                            ),
+                                        modifier = Modifier.padding(vertical = 4.dp),
+                                    ) {
+                                        Text(stringResource(Res.string.retry))
+                                    }
+
+                                    TextButton(
+                                        onClick = {
+                                            scope.launch {
+                                                clipboard.copyToClipboard(
+                                                    it.second!!.debugMessage ?: "i am dumb"
+                                                )
+                                            }
+                                        },
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                contentColor = cardContent,
+                                                containerColor = Color.Transparent,
+                                            ),
+                                        modifier = Modifier.padding(vertical = 4.dp),
+                                    ) {
+                                        Text(stringResource(Res.string.copy_error))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Sources.LRCLIB -> {
+                    item(key = "lrclib_empty", contentType = "empty_state") {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Spacer(modifier = Modifier.padding(10.dp))
+
+                            Icon(
+                                painter = painterResource(Res.drawable.warning),
+                                contentDescription = null,
+                                modifier = Modifier.size(100.dp),
+                            )
+
+                            Spacer(modifier = Modifier.padding(10.dp))
+
+                            Text(text = stringResource(Res.string.no_lyrics))
+                        }
+                    }
+                }
+            }
+        }
+
+        // Bottom Actions Row
+        item(key = "bottom_actions", contentType = "actions") {
+            Row(
+                modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                IconButton(
+                    onClick = { scope.launch { lazyListState.scrollToItem(0) } },
+                    enabled =
+                        if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty()
+                        else !song.geniusLyrics.isNullOrEmpty(),
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.arrow_warm_up),
+                        contentDescription = "Move To Top",
+                    )
+                }
+
+                Button(
+                    onClick = { uriHandler.openUri(song.sourceUrl) },
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = cardContent.copy(alpha = 0.3f),
+                            contentColor = cardContent,
+                        ),
+                ) {
+                    Text(text = stringResource(Res.string.source))
+                }
+
+                IconButton(onClick = { action(LyricsPageAction.OnToggleSearchSheet) }) {
+                    Icon(
+                        painter = painterResource(Res.drawable.search),
+                        contentDescription = "Search",
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PlainLyric(
+    textPrefs: TextPrefs,
+    entry: Pair<Int, String>,
+    romanizedText: String?,
+    onClick: () -> Unit,
+    containerColor: Color,
+    cardContent: Color,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = textPrefs.lyricsAlignment.toArrangement(),
+    ) {
+        Card(
+            onClick = onClick,
+            shape = MaterialTheme.shapes.small,
+            colors =
+                CardDefaults.cardColors(containerColor = containerColor, contentColor = cardContent),
+        ) {
+            Column(
+                horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
+                modifier = Modifier.padding(6.dp),
+            ) {
+                Text(
+                    text = entry.second,
+                    fontSize = textPrefs.fontSize.sp,
+                    letterSpacing = textPrefs.letterSpacing.sp,
+                    lineHeight = textPrefs.lineHeight.sp,
+                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                    fontWeight = FontWeight.Bold,
+                )
+                if (!romanizedText.isNullOrBlank()) {
+                    Text(
+                        text = romanizedText,
+                        fontSize = (textPrefs.fontSize * 0.75f).sp,
+                        letterSpacing = (textPrefs.letterSpacing * 0.75f).sp,
+                        lineHeight = (textPrefs.lineHeight * 0.75f).sp,
+                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
+                        fontWeight = FontWeight.Normal,
+                        color = cardContent.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
+        }
+    }
+}
