@@ -54,7 +54,6 @@ import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -83,6 +82,7 @@ import com.shub39.rush.domain.dataclasses.SongUi
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsAlignment
 import com.shub39.rush.domain.enums.LyricsBackground
+import com.shub39.rush.presentation.LocalWindowSizeClass
 import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.audioDependentBackgrounds
 import com.shub39.rush.presentation.component.ArtFromUrl
@@ -92,6 +92,7 @@ import com.shub39.rush.presentation.conditional
 import com.shub39.rush.presentation.fadeBottomToTop
 import com.shub39.rush.presentation.fadeTopToBottom
 import com.shub39.rush.presentation.glowBackground
+import com.shub39.rush.presentation.isExpanded
 import com.shub39.rush.presentation.lyrics.ApplyLyricsBackground
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
@@ -129,7 +130,7 @@ fun LyricsPage(
     notificationAccess: Boolean,
 ) {
     val lazyListState = rememberLazyListState()
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val windowSizeClass = LocalWindowSizeClass.current
 
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -229,7 +230,7 @@ fun LyricsPage(
                             )
 
                             Column {
-                                if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                                if (!windowSizeClass.isExpanded()) {
                                     // portrait ui
                                     Box(
                                         modifier = Modifier.fillMaxWidth(),

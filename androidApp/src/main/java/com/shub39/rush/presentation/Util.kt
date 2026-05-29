@@ -22,6 +22,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
 import android.view.View
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
@@ -40,6 +42,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 fun hypnoticAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
 fun blurAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+fun WindowSizeClass.isExpanded(): Boolean = this.widthSizeClass == WindowWidthSizeClass.Expanded
 
 suspend fun Clipboard.copyToClipboard(text: String) {
     setClipEntry(ClipEntry(ClipData.newPlainText("lyrics", text)))

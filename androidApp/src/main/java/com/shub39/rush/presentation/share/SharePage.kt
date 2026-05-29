@@ -42,7 +42,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -74,8 +73,10 @@ import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.CardFit
 import com.shub39.rush.domain.enums.CardTheme
 import com.shub39.rush.domain.enums.CornerRadius
+import com.shub39.rush.presentation.LocalWindowSizeClass
 import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ColorPickerDialog
+import com.shub39.rush.presentation.isExpanded
 import com.shub39.rush.presentation.premiumCards
 import com.shub39.rush.presentation.share.component.SharePageSheet
 import com.shub39.rush.presentation.share.component.cards.AlbumArt
@@ -398,7 +399,7 @@ private fun SharePageContent(
                 }
             }
 
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val windowSizeClass = LocalWindowSizeClass.current
             HorizontalFloatingToolbar(
                 expanded = true,
                 floatingActionButton = {
@@ -415,7 +416,7 @@ private fun SharePageContent(
                 },
                 modifier =
                     Modifier.align(
-                            if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+                            if (!windowSizeClass.isExpanded()) {
                                 Alignment.BottomCenter
                             } else {
                                 Alignment.BottomEnd

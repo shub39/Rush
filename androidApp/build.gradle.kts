@@ -136,6 +136,9 @@ kotlin {
     compilerOptions {
         optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
         optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
+        optIn.add(
+            "androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
+        )
     }
 }
 
@@ -146,13 +149,15 @@ dependencies {
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)
 
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material3.windowsizeclass)
-    implementation(libs.androidx.material3.adaptive)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.components.resources)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.windowsizeclass)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.navigation3.runtime)

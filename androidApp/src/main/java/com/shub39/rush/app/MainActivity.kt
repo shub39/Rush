@@ -20,15 +20,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.shub39.rush.presentation.LocalWindowSizeClass
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
 
-        setContent { App() }
+        setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
+
+            CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) { App() }
+        }
     }
 }

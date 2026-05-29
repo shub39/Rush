@@ -32,8 +32,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
 }

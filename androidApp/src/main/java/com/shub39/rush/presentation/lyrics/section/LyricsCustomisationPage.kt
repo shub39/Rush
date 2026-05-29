@@ -42,7 +42,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,9 +64,11 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.enums.CardColors
 import com.shub39.rush.domain.enums.LyricsBackground
+import com.shub39.rush.presentation.LocalWindowSizeClass
 import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ColorPickerDialog
 import com.shub39.rush.presentation.component.RushDialog
+import com.shub39.rush.presentation.isExpanded
 import com.shub39.rush.presentation.lyrics.LyricsPageAction
 import com.shub39.rush.presentation.lyrics.LyricsPageState
 import com.shub39.rush.presentation.lyrics.component.customisation.LyricsCustomisationPreview
@@ -100,7 +101,7 @@ fun LyricsCustomisationsPage(
     var editTarget by remember { mutableStateOf("content") }
     var isShowingSynced by rememberSaveable { mutableStateOf(state.sync) }
 
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val windowSizeClass = LocalWindowSizeClass.current
 
     AudioPermissionDialog(
         show = audioPermissionDialog,
@@ -125,7 +126,7 @@ fun LyricsCustomisationsPage(
         )
     }
 
-    if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+    if (!windowSizeClass.isExpanded()) {
         Scaffold(
             topBar = {
                 TopAppBar(

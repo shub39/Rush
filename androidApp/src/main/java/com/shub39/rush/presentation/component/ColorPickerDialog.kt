@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +42,8 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.R
+import com.shub39.rush.presentation.LocalWindowSizeClass
+import com.shub39.rush.presentation.isExpanded
 
 /**
  * A composable dialog that allows the user to select a color. to provide a rich color selection
@@ -62,7 +63,7 @@ fun ColorPickerDialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val windowSizeClass = LocalWindowSizeClass.current
     val controller = rememberColorPickerController()
 
     RushDialog(
@@ -70,7 +71,7 @@ fun ColorPickerDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = modifier.padding(horizontal = 32.dp),
     ) {
-        if (!windowSizeClass.isWidthAtLeastBreakpoint(840)) {
+        if (!windowSizeClass.isExpanded()) {
             Column(
                 modifier = Modifier.wrapContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

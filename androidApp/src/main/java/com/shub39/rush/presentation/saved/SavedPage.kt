@@ -49,7 +49,6 @@ import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,10 +69,12 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.R
 import com.shub39.rush.domain.dataclasses.Song
 import com.shub39.rush.domain.enums.SortOrder
+import com.shub39.rush.presentation.LocalWindowSizeClass
 import com.shub39.rush.presentation.RushPreviewWrapper
 import com.shub39.rush.presentation.component.ArtFromUrl
 import com.shub39.rush.presentation.component.Empty
 import com.shub39.rush.presentation.component.simpleVerticalScrollbar
+import com.shub39.rush.presentation.isExpanded
 import com.shub39.rush.presentation.saved.component.SavedPageActions
 import com.shub39.rush.presentation.saved.component.SongCard
 import com.shub39.rush.presentation.theme.flexFontEmphasis
@@ -89,14 +90,13 @@ fun SavedPage(
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val isLandscape = windowSizeClass.isWidthAtLeastBreakpoint(840)
+    val windowSizeClass = LocalWindowSizeClass.current
 
     Scaffold(
         modifier = modifier,
         topBar = {
             Column {
-                if (!isLandscape) {
+                if (!windowSizeClass.isExpanded()) {
                     LargeFlexibleTopAppBar(
                         title = {
                             Text(
@@ -204,7 +204,7 @@ fun SavedPage(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = state.currentSong != null && !isLandscape,
+                visible = state.currentSong != null && !windowSizeClass.isExpanded(),
                 enter = slideInVertically { it / 2 },
                 exit = slideOutVertically { it / 2 },
             ) {
