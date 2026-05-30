@@ -28,11 +28,13 @@ import coil3.request.allowHardware
 import coil3.toBitmap
 import com.kmpalette.palette.graphics.Palette
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
+import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import org.koin.core.annotation.Single
 
-@Single
-class PaletteGenerator(private val context: Context, private val imageLoader: ImageLoader) {
-    suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
+@Single(binds = [PaletteGenerator::class])
+class PaletteGeneratorImpl(private val context: Context, private val imageLoader: ImageLoader)
+    : PaletteGenerator {
+    override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
         val request =
             ImageRequest.Builder(context)
                 .data(url)

@@ -23,9 +23,9 @@ import com.shub39.rush.app.GlobalAction
 import com.shub39.rush.app.GlobalState
 import com.shub39.rush.billing.BillingHandler
 import com.shub39.rush.billing.SubscriptionResult
-import com.shub39.rush.data.ChangelogManager
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.data.listener.NotificationListener
+import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
