@@ -14,14 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.shared.core.interfaces
 
-import android.content.Context
-
-sealed interface GlobalAction {
-    data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
-
-    data class OnCheckNotificationAccess(val context: Context) : GlobalAction
-
-    data object DismissChangelog : GlobalAction
+interface MediaAccessChecker {
+    fun canAccessMediaInfo(): Boolean
 }

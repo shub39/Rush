@@ -16,6 +16,8 @@
  */
 package com.shub39.rush.billing
 
+import com.shub39.rush.shared.core.interfaces.BillingHandler
+import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import org.koin.core.annotation.Single
 
 @Single(binds = [BillingHandler::class])

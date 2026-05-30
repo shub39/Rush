@@ -14,10 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.billing
+package com.shub39.rush.data
 
-interface BillingHandler {
-    suspend fun isProUser(): Boolean
+import android.content.Context
+import androidx.core.app.NotificationManagerCompat
+import com.shub39.rush.data.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
+import org.koin.core.annotation.Single
 
-    suspend fun userResult(): SubscriptionResult
+@Single(binds = [MediaAccessChecker::class])
+class MediaAccessCheckerImpl(private val context: Context) : MediaAccessChecker {
+    override fun canAccessMediaInfo(): Boolean {
+        val enabled =
+            NotificationManagerCompat.getEnabledListenerPackages(context)
+                .contains(context.packageName)
+
+        if (enabled) MediaListenerImpl.startListening(context)
+
+        return enabled
+    }
 }

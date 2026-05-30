@@ -23,7 +23,6 @@ import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.request.CachePolicy
 import coil3.request.crossfade
-import com.shub39.romanization.RomanizationUtils
 import com.shub39.rush.data.database.DatabaseFactory
 import com.shub39.rush.data.database.SongDao
 import com.shub39.rush.data.database.SongDatabase
@@ -43,9 +42,6 @@ import org.koin.core.annotation.Single
 @Module
 @ComponentScan("com.shub39.rush")
 class RushModules {
-    @Single
-    fun provideRomanizationUtils(context: Context): RomanizationUtils = RomanizationUtils(context)
-
     @Single fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
 
     @Single fun provideSongDao(db: SongDatabase): SongDao = db.songDao()

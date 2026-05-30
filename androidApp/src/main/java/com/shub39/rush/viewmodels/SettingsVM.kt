@@ -18,7 +18,6 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.data.ChangelogManagerImpl
 import com.shub39.rush.data.repository.RushRepository
 import com.shub39.rush.shared.core.backup.ExportRepo
 import com.shub39.rush.shared.core.backup.ExportState

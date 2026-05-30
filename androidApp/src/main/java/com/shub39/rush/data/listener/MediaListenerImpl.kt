@@ -77,7 +77,7 @@ object MediaListenerImpl {
 
     fun startListening(context: Context) {
         try {
-            if (NotificationListener.canAccessNotifications(context) && !initialised) {
+            if (!initialised) {
 
                 initialised = true
 

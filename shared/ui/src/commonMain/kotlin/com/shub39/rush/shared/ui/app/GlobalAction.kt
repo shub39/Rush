@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.data.listener
+package com.shub39.rush.shared.ui.app
 
-import android.service.notification.NotificationListenerService
+sealed interface GlobalAction {
+    data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
 
-class NotificationListener : NotificationListenerService() {}
+    data object OnCheckNotificationAccess : GlobalAction
+
+    data object DismissChangelog : GlobalAction
+}

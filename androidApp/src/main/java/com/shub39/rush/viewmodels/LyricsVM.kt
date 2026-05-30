@@ -18,12 +18,11 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.romanization.RomanizationUtils
-import com.shub39.rush.data.PaletteGeneratorImpl
 import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import com.shub39.rush.shared.core.interfaces.PaletteGenerator
+import com.shub39.rush.shared.core.interfaces.RomanizationProvider
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.errorStringRes
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
@@ -58,7 +57,7 @@ class LyricsVM(
     private val repo: SongRepository,
     private val lyricsPrefs: LyricsPagePreferences,
     private val paletteGenerator: PaletteGenerator,
-    private val romanizationUtils: RomanizationUtils,
+    private val romanization: RomanizationProvider,
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -302,7 +301,7 @@ class LyricsVM(
                 // Plain lyrics (LRCLIB)
                 val romanizedLyrics =
                     song.lyrics.associate { entry ->
-                        romanizationUtils.romanize(entry.value)?.let { romanized ->
+                        romanization.romanize(entry.value)?.let { romanized ->
                             entry.key to romanized
                         } ?: (entry.key to "")
                     }
@@ -310,7 +309,7 @@ class LyricsVM(
                 // Genius lyrics — offset to avoid collision with LRCLIB keys
                 val romanizedGeniusLyrics =
                     song.geniusLyrics?.associate { entry ->
-                        romanizationUtils.romanize(entry.value)?.let { romanized ->
+                        romanization.romanize(entry.value)?.let { romanized ->
                             entry.key to romanized
                         } ?: (entry.key to "")
                     } ?: emptyMap()
@@ -318,7 +317,7 @@ class LyricsVM(
                 // Synced lyrics — time-based keys
                 val romanizedSyncedLyrics =
                     song.syncedLyrics?.associate { lyric ->
-                        romanizationUtils.romanize(lyric.text)?.let { romanized ->
+                        romanization.romanize(lyric.text)?.let { romanized ->
                             lyric.time to romanized
                         } ?: (lyric.time to "")
                     } ?: emptyMap()
@@ -326,7 +325,7 @@ class LyricsVM(
                 // TTML lyrics — startTime in ms as key
                 val romanizedTTMLLyrics =
                     song.ttmlLyrics?.associate { parsedLine ->
-                        romanizationUtils.romanize(parsedLine.text)?.let { romanized ->
+                        romanization.romanize(parsedLine.text)?.let { romanized ->
                             parsedLine.startTime to romanized
                         } ?: (parsedLine.startTime to "")
                     } ?: emptyMap()

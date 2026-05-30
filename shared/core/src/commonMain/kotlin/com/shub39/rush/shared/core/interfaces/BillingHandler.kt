@@ -14,19 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.shared.core.interfaces
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import com.shub39.rush.shared.core.dataclasses.Theme
-import com.shub39.rush.shared.core.dataclasses.VersionEntry
+interface BillingHandler {
+    suspend fun isProUser(): Boolean
 
-@Stable
-@Immutable
-data class GlobalState(
-    val isProUser: Boolean = false,
-    val theme: Theme = Theme(),
-    val onBoardingDone: Boolean = true,
-    val notificationAccess: Boolean = false,
-    val currentChangelog: VersionEntry? = null,
-)
+    suspend fun userResult(): SubscriptionResult
+}

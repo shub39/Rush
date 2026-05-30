@@ -62,7 +62,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(kotlin("test"))
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("com.ibm.icu:icu4j:75.1")
+    testImplementation("com.ibm.icu:icu4j:78.3")
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.runner)

@@ -32,8 +32,8 @@ import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import org.koin.core.annotation.Single
 
 @Single(binds = [PaletteGenerator::class])
-class PaletteGeneratorImpl(private val context: Context, private val imageLoader: ImageLoader)
-    : PaletteGenerator {
+class PaletteGeneratorImpl(private val context: Context, private val imageLoader: ImageLoader) :
+    PaletteGenerator {
     override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
         val request =
             ImageRequest.Builder(context)

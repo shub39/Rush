@@ -28,7 +28,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single(binds = [ChangelogManager::class])
-class ChangelogManagerImpl(private val context: Context): ChangelogManager {
+class ChangelogManagerImpl(private val context: Context) : ChangelogManager {
     private val _changelogs: MutableStateFlow<Changelog> = MutableStateFlow(emptyList())
     override val changelogs = _changelogs.asStateFlow().onStart { getChangelogs() }
 

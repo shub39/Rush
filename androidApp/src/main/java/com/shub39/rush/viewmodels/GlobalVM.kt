@@ -19,14 +19,13 @@ package com.shub39.rush.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.BuildConfig
-import com.shub39.rush.app.GlobalAction
-import com.shub39.rush.app.GlobalState
-import com.shub39.rush.billing.BillingHandler
-import com.shub39.rush.billing.SubscriptionResult
-import com.shub39.rush.data.listener.MediaListenerImpl
-import com.shub39.rush.data.listener.NotificationListener
+import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
+import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
+import com.shub39.rush.shared.core.interfaces.SubscriptionResult
+import com.shub39.rush.shared.ui.app.GlobalAction
+import com.shub39.rush.shared.ui.app.GlobalState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,6 +46,7 @@ class GlobalVM(
     private val otherPreferences: OtherPreferences,
     private val changelogManager: ChangelogManager,
     private val datastore: OtherPreferences,
+    private val mediaAccessChecker: MediaAccessChecker,
 ) : ViewModel() {
     private var syncJob: Job? = null
 
@@ -71,11 +71,9 @@ class GlobalVM(
                 viewModelScope.launch { otherPreferences.updateOnboardingDone(action.status) }
 
             is GlobalAction.OnCheckNotificationAccess -> {
-                val access = NotificationListener.canAccessNotifications(action.context)
-
-                if (access) MediaListenerImpl.startListening(action.context)
-
-                _state.update { it.copy(notificationAccess = access) }
+                _state.update {
+                    it.copy(notificationAccess = mediaAccessChecker.canAccessMediaInfo())
+                }
             }
 
             GlobalAction.DismissChangelog -> {

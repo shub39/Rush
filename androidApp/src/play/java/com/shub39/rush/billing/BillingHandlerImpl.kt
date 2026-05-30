@@ -19,6 +19,8 @@ package com.shub39.rush.billing
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.awaitCustomerInfo
+import com.shub39.rush.shared.core.interfaces.BillingHandler
+import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single

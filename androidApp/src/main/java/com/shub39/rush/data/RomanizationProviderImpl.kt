@@ -14,8 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.data.listener
+package com.shub39.rush.data
 
-import android.service.notification.NotificationListenerService
+import android.content.Context
+import com.shub39.romanization.RomanizationUtils
+import com.shub39.rush.shared.core.interfaces.RomanizationProvider
+import org.koin.core.annotation.Single
 
-class NotificationListener : NotificationListenerService() {}
+@Single(binds = [RomanizationProvider::class])
+class RomanizationProviderImpl(context: Context) : RomanizationProvider {
+    private val utils = RomanizationUtils(context)
+
+    override suspend fun romanize(text: String): String? = utils.romanize(text)
+}
