@@ -24,7 +24,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -32,6 +31,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
+import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.component.ChangelogSheet
 import com.shub39.rush.shared.ui.lyrics.LyricsGraph
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
@@ -43,42 +43,44 @@ import com.shub39.rush.shared.ui.searchsheet.SearchSheetAction
 import com.shub39.rush.shared.ui.setting.SettingsGraph
 import com.shub39.rush.shared.ui.share.SharePage
 import com.shub39.rush.shared.ui.theme.RushTheme
-import com.shub39.rush.viewmodels.GlobalVM
-import com.shub39.rush.viewmodels.LyricsVM
-import com.shub39.rush.viewmodels.SavedVM
-import com.shub39.rush.viewmodels.SearchSheetVM
-import com.shub39.rush.viewmodels.SettingsVM
-import com.shub39.rush.viewmodels.ShareVM
+import com.shub39.rush.shared.ui.viewmodels.GlobalVM
+import com.shub39.rush.shared.ui.viewmodels.LyricsVM
+import com.shub39.rush.shared.ui.viewmodels.SavedVM
+import com.shub39.rush.shared.ui.viewmodels.SearchSheetVM
+import com.shub39.rush.shared.ui.viewmodels.SettingsVM
+import com.shub39.rush.shared.ui.viewmodels.ShareVM
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-@Serializable data object SavedPage : NavKey
+@Serializable
+private sealed interface Routes : NavKey {
+    @Serializable data object SavedPage : Routes
 
-@Serializable data object LyricsGraph : NavKey
+    @Serializable data object LyricsGraph : Routes
 
-@Serializable data object SettingsGraph : NavKey
+    @Serializable data object SettingsGraph : Routes
 
-@Serializable data object SharePage : NavKey
+    @Serializable data object SharePage : Routes
 
-@Serializable data object OnboardingPage : NavKey
+    @Serializable data object OnboardingPage : Routes
 
-@Serializable data object PaywallPage : NavKey
+    @Serializable data object PaywallPage : Routes
+}
 
 @Composable
 fun App() {
     val globalVM: GlobalVM = koinViewModel()
     val globalState by globalVM.state.collectAsStateWithLifecycle()
 
-    val backStack = rememberNavBackStack(SavedPage)
-    val context = LocalContext.current
+    val backStack = rememberNavBackStack(Routes.SavedPage)
 
-    LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess(context)) }
+    LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess) }
 
     LaunchedEffect(globalState.onBoardingDone) {
         if (!globalState.onBoardingDone) {
-            backStack.add(OnboardingPage)
+            backStack.add(Routes.OnboardingPage)
         }
     }
 
@@ -96,7 +98,7 @@ fun App() {
                 backStack = backStack,
                 entryProvider =
                     entryProvider {
-                        entry<SavedPage> {
+                        entry<Routes.SavedPage> {
                             val savedVM: SavedVM = koinViewModel()
                             val savedState by savedVM.state.collectAsStateWithLifecycle()
 
@@ -104,12 +106,12 @@ fun App() {
                                 state = savedState,
                                 notificationAccess = globalState.notificationAccess,
                                 onAction = savedVM::onAction,
-                                onNavigateToLyrics = { backStack.add(LyricsGraph) },
-                                onNavigateToSettings = { backStack.add(SettingsGraph) },
+                                onNavigateToLyrics = { backStack.add(Routes.LyricsGraph) },
+                                onNavigateToSettings = { backStack.add(Routes.SettingsGraph) },
                             )
                         }
 
-                        entry<LyricsGraph>(metadata = verticalTransitionMetadata()) {
+                        entry<Routes.LyricsGraph>(metadata = verticalTransitionMetadata()) {
                             val lyricsVM: LyricsVM = koinViewModel()
                             val lyricsState by lyricsVM.state.collectAsStateWithLifecycle()
                             val playbackInfo by lyricsVM.playbackInfo.collectAsStateWithLifecycle()
@@ -119,11 +121,11 @@ fun App() {
                                 lyricsState = lyricsState,
                                 lyricsAction = lyricsVM::onAction,
                                 playbackInfo = playbackInfo,
-                                onShare = { backStack.add(SharePage) },
+                                onShare = { backStack.add(Routes.SharePage) },
                             )
                         }
 
-                        entry<SharePage>(metadata = verticalTransitionMetadata()) {
+                        entry<Routes.SharePage>(metadata = verticalTransitionMetadata()) {
                             val shareVM: ShareVM = koinViewModel()
                             val shareState by shareVM.state.collectAsStateWithLifecycle()
 
@@ -134,11 +136,11 @@ fun App() {
                                 state = shareState,
                                 onAction = shareVM::onAction,
                                 isProUser = globalState.isProUser,
-                                onShowPaywall = { backStack.add(PaywallPage) },
+                                onShowPaywall = { backStack.add(Routes.PaywallPage) },
                             )
                         }
 
-                        entry<SettingsGraph>(metadata = horizontalTransitionMetadata()) {
+                        entry<Routes.SettingsGraph>(metadata = horizontalTransitionMetadata()) {
                             val settingsVM: SettingsVM = koinViewModel()
                             val settingsState by settingsVM.state.collectAsStateWithLifecycle()
 
@@ -150,11 +152,14 @@ fun App() {
                                     if (backStack.size != 1) backStack.removeLastOrNull()
                                 },
                                 isProUser = globalState.isProUser,
-                                onShowPaywall = { backStack.add(PaywallPage) },
+                                onShowPaywall = { backStack.add(Routes.PaywallPage) },
+                                onUpdateNotificationAccess = {
+                                    globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
+                                },
                             )
                         }
 
-                        entry<OnboardingPage>(metadata = verticalTransitionMetadata()) {
+                        entry<Routes.OnboardingPage>(metadata = verticalTransitionMetadata()) {
                             Onboarding(
                                 onDone = {
                                     globalVM.onAction(GlobalAction.OnUpdateOnboardingDone(true))
@@ -162,14 +167,12 @@ fun App() {
                                 },
                                 notificationAccess = globalState.notificationAccess,
                                 onUpdateNotificationAccess = {
-                                    globalVM.onAction(
-                                        GlobalAction.OnCheckNotificationAccess(context)
-                                    )
+                                    globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
                                 },
                             )
                         }
 
-                        entry<PaywallPage>(metadata = verticalTransitionMetadata()) {
+                        entry<Routes.PaywallPage>(metadata = verticalTransitionMetadata()) {
                             PaywallPage(
                                 isProUser = globalState.isProUser,
                                 onDismissRequest = {
@@ -186,7 +189,7 @@ fun App() {
                 SearchSheet(
                     state = searchState,
                     onAction = searchSheetVM::onAction,
-                    onNavigateToLyrics = { backStack.add(LyricsGraph) },
+                    onNavigateToLyrics = { backStack.add(Routes.LyricsGraph) },
                     onDismissRequest = {
                         searchSheetVM.onAction(SearchSheetAction.OnToggleSearchSheet)
                     },

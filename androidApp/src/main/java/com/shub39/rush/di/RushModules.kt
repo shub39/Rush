@@ -16,82 +16,14 @@
  */
 package com.shub39.rush.di
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import coil3.ImageLoader
-import coil3.disk.DiskCache
-import coil3.request.CachePolicy
-import coil3.request.crossfade
-import com.shub39.romanization.RomanizationUtils
-import com.shub39.rush.data.database.DatabaseFactory
-import com.shub39.rush.data.database.SongDao
-import com.shub39.rush.data.database.SongDatabase
-import com.shub39.rush.data.datastore.DatastoreFactory
-import com.shub39.rush.data.datastore.LyricsPagePreferencesImpl
-import com.shub39.rush.data.datastore.OtherPreferencesImpl
-import com.shub39.rush.data.datastore.SharePagePreferencesImpl
-import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
-import com.shub39.rush.shared.core.interfaces.OtherPreferences
-import com.shub39.rush.shared.core.interfaces.SharePagePreferences
-import okio.Path.Companion.toOkioPath
-import org.koin.core.annotation.ComponentScan
+import com.shub39.rush.billing.BillingHandlerImpl
+import com.shub39.rush.shared.core.interfaces.BillingHandler
+import com.shub39.rush.shared.logic.di.DataModule
+import com.shub39.rush.shared.ui.di.UIModule
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
 
-@Module
-@ComponentScan("com.shub39.rush")
+@Module(includes = [DataModule::class, UIModule::class])
 class RushModules {
-    @Single
-    fun provideRomanizationUtils(context: Context): RomanizationUtils = RomanizationUtils(context)
-
-    @Single fun provideAppDb(dbFactory: DatabaseFactory): SongDatabase = dbFactory.create().build()
-
-    @Single fun provideSongDao(db: SongDatabase): SongDao = db.songDao()
-
-    @Single
-    fun provideImageLoader(context: Context): ImageLoader {
-        return ImageLoader.Builder(context)
-            .crossfade(true)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(context.cacheDir.resolve("image_cache").toOkioPath())
-                    .maxSizePercent(0.02)
-                    .build()
-            }
-            .build()
-    }
-
-    @Single
-    @Named("LyricsPage")
-    fun provideLyricsPagePreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
-        datastoreFactory.getLyricsPagePreferencesDataStore()
-
-    @Single
-    @Named("SharePage")
-    fun provideSharePagePreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
-        datastoreFactory.getSharePagePreferencesDataStore()
-
-    @Single
-    @Named("Other")
-    fun provideOtherPreferences(datastoreFactory: DatastoreFactory): DataStore<Preferences> =
-        datastoreFactory.getOtherPreferencesDataStore()
-
-    @Single
-    fun provideOtherPreferencesImpl(
-        @Named("Other") dataStore: DataStore<Preferences>
-    ): OtherPreferences = OtherPreferencesImpl(dataStore)
-
-    @Single
-    fun provideSharePagePreferencesImpl(
-        @Named("SharePage") dataStore: DataStore<Preferences>
-    ): SharePagePreferences = SharePagePreferencesImpl(dataStore)
-
-    @Single
-    fun provideLyricsPagePreferencesImpl(
-        @Named("LyricsPage") dataStore: DataStore<Preferences>
-    ): LyricsPagePreferences = LyricsPagePreferencesImpl(dataStore)
+    @Single fun provideBillingHandler(): BillingHandler = BillingHandlerImpl()
 }

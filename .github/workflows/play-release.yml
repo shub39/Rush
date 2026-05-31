@@ -74,7 +74,7 @@ jobs:
           -Pandroid.injected.signing.key.alias=key0 \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
           
-          AAB_PATH=$(find app/build/outputs/ -name "*.aab" -print -quit)
+          AAB_PATH=$(find androidApp/build/outputs/ -name "*.aab" -print -quit)
           
           if [ -z "$AAB_PATH" ]; then
             echo "::error::Could not find AAB file."

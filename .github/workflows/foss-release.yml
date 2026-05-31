@@ -75,7 +75,7 @@ jobs:
           -Pandroid.injected.signing.key.alias=key0 \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
           
-          APK_PATH=$(find app/build/outputs/ -name "*.apk" -print -quit)
+          APK_PATH=$(find androidApp/build/outputs/ -name "*.apk" -print -quit)
           
           if [ -z "$APK_PATH" ]; then
             echo "::error::Could not find APK file."

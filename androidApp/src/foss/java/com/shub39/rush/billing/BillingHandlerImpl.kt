@@ -16,9 +16,9 @@
  */
 package com.shub39.rush.billing
 
-import org.koin.core.annotation.Single
+import com.shub39.rush.shared.core.interfaces.BillingHandler
+import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 
-@Single(binds = [BillingHandler::class])
 class BillingHandlerImpl : BillingHandler {
     override suspend fun isProUser(): Boolean = true
 

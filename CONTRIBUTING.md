@@ -5,9 +5,10 @@ Thank you for your interest in contributing to Rush! We appreciate your support.
 ## Project Structure
 Rush is organized into several modules to support Kotlin Multiplatform (KMP) and maintain a clean separation of concerns:
 
-- **`:androidApp`**: The main Android application module. It contains Android-specific configurations, dependency injection setup, and entry points.
-- **`:shared:core`**: A Kotlin Multiplatform module containing business logic, data models, networking, and utility functions shared across all platforms.
-- **`:shared:ui`**: A Compose Multiplatform module containing UI components, themes, and screens. Most UI-related changes should happen here.
+- **`:androidApp`**: The main Android application module. It contains Android-specific configurations, entry points, and orchestrates dependency injection.
+- **`:shared:core`**: A Kotlin Multiplatform module containing shared interfaces, data models, enums, and basic utility functions.
+- **`:shared:logic`**: A Kotlin Multiplatform module containing the core business logic, including repository implementations, networking, database management, and shared dependency injection.
+- **`:shared:ui`**: A Compose Multiplatform module containing UI components, themes, screens, and ViewModels. Most UI-related changes should happen here.
 - **`:androidLibs`**: Contains Android-specific libraries:
     - `:androidLibs:romanization`: Handles romanization of various languages.
     - `:androidLibs:visualizer-helper`: Helpers for audio visualization.
@@ -17,7 +18,7 @@ Rush is organized into several modules to support Kotlin Multiplatform (KMP) and
 2. **Create a Branch:** Create a new branch from `dev` for your feature or bug fix. Use a 
    descriptive name, such as `feat/add-new-feature` or `fix/resolve-issue-123`.
 3. **Make Your Changes:** 
-    - **Shared Code:** Prefer putting logic in `:shared:core` and UI in `:shared:ui` within `commonMain` to ensure they are available on all platforms.
+    - **Shared Code:** Prefer putting core definitions in `:shared:core`, business logic implementations in `:shared:logic`, and UI/ViewModels in `:shared:ui` within `commonMain` to ensure they are available on all platforms.
     - **Platform-Specific Code:** Only use platform-specific source sets (`androidMain`, `jvmMain`, etc.) when absolutely necessary using `expect`/`actual` or platform-specific APIs.
 4. **Submit a Pull Request:** Once you're ready, submit a pull request from your branch to the `dev`
    branch of the main repository. Please reference the issue you created in your pull request 

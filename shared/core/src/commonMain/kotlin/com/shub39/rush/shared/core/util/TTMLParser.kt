@@ -38,7 +38,7 @@ object TTMLParser {
         val attrs = mutableMapOf<String, String>()
         val attrRegex = Regex("""([\w:]+)="([^"]*)"""")
         attrRegex.findAll(attrStr).forEach { match ->
-            attrs[match.groupValues[1]] = match.groupValues[2]
+            attrs[match.groupValues[1]] = unescapeHtml(match.groupValues[2])
         }
         return attrs
     }
@@ -92,7 +92,7 @@ object TTMLParser {
                             else -> {
                                 val wordBegin = spanAttributes["begin"] ?: ""
                                 val wordEnd = spanAttributes["end"] ?: ""
-                                val wordText = spanContent.trim()
+                                val wordText = unescapeHtml(spanContent.trim())
 
                                 if (
                                     wordText.isNotEmpty() &&
@@ -180,7 +180,7 @@ object TTMLParser {
 
                 val wordBegin = spanAttributes["begin"] ?: ""
                 val wordEnd = spanAttributes["end"] ?: ""
-                val wordText = spanContent.trim()
+                val wordText = unescapeHtml(spanContent.trim())
 
                 if (wordText.isNotEmpty() && wordBegin.isNotEmpty() && wordEnd.isNotEmpty()) {
                     val nextPart = content.substring(child.range.last + 1)
@@ -232,7 +232,7 @@ object TTMLParser {
             lastIndex = match.range.last + 1
         }
         sb.append(content.substring(lastIndex))
-        return sb.toString().replace(Regex("""<[^>]+>"""), "")
+        return unescapeHtml(sb.toString().replace(Regex("""<[^>]+>"""), ""))
     }
 
     private fun mergeSpansIntoWords(spanInfos: List<SpanInfo>): List<ParsedWord> {
@@ -354,5 +354,17 @@ object TTMLParser {
         } catch (_: Exception) {
             0.0
         }
+    }
+
+    private fun unescapeHtml(text: String): String {
+        if (!text.contains('&')) return text
+        return text
+            .replace("&quot;", "\"")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&apos;", "'")
+            .replace("&#x27;", "'")
+            .replace("&#39;", "'")
+            .replace("&amp;", "&")
     }
 }

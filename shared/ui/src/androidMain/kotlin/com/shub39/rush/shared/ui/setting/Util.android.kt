@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.shared.core.dataclasses.Theme
 import com.shub39.rush.shared.core.enums.AppTheme
@@ -56,8 +58,7 @@ import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.toMPaletteStyle
-import kotlin.compareTo
-import kotlin.text.compareTo
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.Res
@@ -188,9 +189,20 @@ actual fun ColumnScope.PaletteStylePicker(
     }
 }
 
-actual fun LazyListScope.notificationToggle(notificationAccess: Boolean) {
+@OptIn(ExperimentalPermissionsApi::class)
+actual fun LazyListScope.notificationToggle(
+    notificationAccess: Boolean,
+    onUpdateNotificationAccess: () -> Unit,
+) {
     if (!notificationAccess) {
         item {
+            LaunchedEffect(Unit) {
+                while (!notificationAccess) {
+                    delay(500)
+                    onUpdateNotificationAccess()
+                }
+            }
+
             val context = LocalContext.current
             val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 

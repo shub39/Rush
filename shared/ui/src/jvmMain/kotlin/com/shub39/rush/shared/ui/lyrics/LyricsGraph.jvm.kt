@@ -18,6 +18,8 @@ package com.shub39.rush.shared.ui.lyrics
 
 import androidx.compose.runtime.Composable
 
+@Composable actual fun ManageSystemBars(fullscreen: Boolean) {}
+
 @Composable
 actual fun LyricsGraph(
     notificationAccess: Boolean,
