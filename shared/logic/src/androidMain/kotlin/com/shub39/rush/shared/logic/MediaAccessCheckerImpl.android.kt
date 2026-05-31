@@ -19,6 +19,7 @@ package com.shub39.rush.shared.logic
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
+import com.shub39.rush.shared.core.listener.MediaListener
 import org.koin.core.annotation.Single
 
 @Single(binds = [MediaAccessChecker::class])
@@ -28,7 +29,7 @@ actual class MediaAccessCheckerImpl(private val context: Context) : MediaAccessC
             NotificationManagerCompat.getEnabledListenerPackages(context)
                 .contains(context.packageName)
 
-        //        if (enabled) MediaListenerImpl.startListening(context) TODO Launch Medialistener
+        if (enabled) MediaListener.startListening(context.applicationContext)
 
         return enabled
     }

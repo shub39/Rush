@@ -153,6 +153,9 @@ fun App() {
                                 },
                                 isProUser = globalState.isProUser,
                                 onShowPaywall = { backStack.add(Routes.PaywallPage) },
+                                onUpdateNotificationAccess = {
+                                    globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
+                                }
                             )
                         }
 

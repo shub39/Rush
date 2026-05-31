@@ -78,6 +78,7 @@ fun SettingRootPage(
     onNavigateToBackup: () -> Unit,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
+    onUpdateNotificationAccess: () -> Unit
 ) = PageFill {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var showLocalePicker by remember { mutableStateOf(false) }
@@ -207,7 +208,7 @@ fun SettingRootPage(
             }
 
             // navigate to notification access permission page
-            notificationToggle(notificationAccess)
+            notificationToggle(notificationAccess, onUpdateNotificationAccess)
 
             // nuke everything
             item {
@@ -332,5 +333,6 @@ private fun Preview() {
         onShowPaywall = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
+        onUpdateNotificationAccess = {}
     )
 }

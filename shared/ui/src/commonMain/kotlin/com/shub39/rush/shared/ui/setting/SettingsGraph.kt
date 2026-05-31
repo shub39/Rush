@@ -69,6 +69,7 @@ fun SettingsGraph(
     action: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
     onShowPaywall: () -> Unit,
+    onUpdateNotificationAccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backStack = rememberNavBackStack(configuration, Routes.Root)
@@ -89,6 +90,7 @@ fun SettingsGraph(
                         onNavigateToAppInfo = { backStack.add(Routes.About) },
                         state = state,
                         onShowPaywall = onShowPaywall,
+                        onUpdateNotificationAccess = onUpdateNotificationAccess
                     )
                 }
 
@@ -138,5 +140,6 @@ private fun Preview() {
         onNavigateBack = {},
         isProUser = true,
         onShowPaywall = {},
+        onUpdateNotificationAccess = {}
     )
 }
