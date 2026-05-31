@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.viewmodels
+package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.BuildConfig
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
@@ -45,7 +44,6 @@ class GlobalVM(
     private val billingHandler: BillingHandler,
     private val otherPreferences: OtherPreferences,
     private val changelogManager: ChangelogManager,
-    private val datastore: OtherPreferences,
     private val mediaAccessChecker: MediaAccessChecker,
 ) : ViewModel() {
     private var syncJob: Job? = null
@@ -78,8 +76,11 @@ class GlobalVM(
 
             GlobalAction.DismissChangelog -> {
                 _state.update { it.copy(currentChangelog = null) }
-                viewModelScope.launch {
-                    datastore.updateLastChangelogShown(BuildConfig.VERSION_NAME)
+
+                _state.value.currentChangelog?.version?.let {
+                    viewModelScope.launch {
+                        otherPreferences.updateLastChangelogShown(it)
+                    }
                 }
             }
         }
@@ -100,9 +101,9 @@ class GlobalVM(
     private fun checkChangelog() {
         viewModelScope.launch {
             val changeLogs = changelogManager.changelogs.first()
-            val lastShownChangelog = datastore.getLastChangelogShown().first()
+            val lastShownChangelog = otherPreferences.getLastChangelogShown().first()
 
-            if (BuildConfig.DEBUG || lastShownChangelog != BuildConfig.VERSION_NAME) {
+            if (lastShownChangelog != changeLogs.firstOrNull()?.version) {
                 _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
             }
         }

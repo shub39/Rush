@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.viewmodels
+package com.shub39.rush.shared.ui.viewmodels
 
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.saved.SavedPageState

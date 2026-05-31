@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.viewmodels
+package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +25,7 @@ import com.shub39.rush.shared.core.backup.RestoreResult
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
-import com.shub39.rush.shared.logic.repository.RushRepository
+import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
 import kotlinx.coroutines.Job
@@ -44,7 +44,7 @@ import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class SettingsVM(
-    private val repo: RushRepository,
+    private val repo: SongRepository,
     private val datastore: OtherPreferences,
     private val exportRepo: ExportRepo,
     private val restoreRepo: RestoreRepo,

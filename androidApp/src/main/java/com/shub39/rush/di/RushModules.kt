@@ -19,12 +19,11 @@ package com.shub39.rush.di
 import com.shub39.rush.billing.BillingHandlerImpl
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.logic.di.DataModule
-import org.koin.core.annotation.ComponentScan
+import com.shub39.rush.shared.ui.di.UIModule
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
-@Module(includes = [DataModule::class])
-@ComponentScan("com.shub39.rush.viewmodels")
+@Module(includes = [DataModule::class, UIModule::class])
 class RushModules {
     @Single fun provideBillingHandler(): BillingHandler = BillingHandlerImpl()
 }

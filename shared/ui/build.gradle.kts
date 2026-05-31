@@ -21,6 +21,11 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.koin.compiler)
+}
+
+koinCompiler {
+    compileSafety = false
 }
 
 kotlin {
