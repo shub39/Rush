@@ -26,9 +26,9 @@ actual class DatabaseFactory {
         val useHome = System.getProperty("user.home")
         val appDataDir =
             when {
-                os.contains("win") -> File(System.getenv("APPDATA"), "Kovert")
-                os.contains("mac") -> File(useHome, "Library/Application Support/Kovert")
-                else -> File(useHome, ".local/share/Kovert")
+                os.contains("win") -> File(System.getenv("APPDATA"), "Rush")
+                os.contains("mac") -> File(useHome, "Library/Application Support/Rush")
+                else -> File(useHome, ".local/share/Rush")
             }
         if (!appDataDir.exists()) {
             appDataDir.mkdirs()

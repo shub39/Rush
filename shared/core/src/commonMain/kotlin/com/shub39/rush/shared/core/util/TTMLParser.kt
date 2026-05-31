@@ -360,11 +360,11 @@ object TTMLParser {
         if (!text.contains('&')) return text
         return text
             .replace("&quot;", "\"")
-            .replace("&amp;", "&")
             .replace("&lt;", "<")
             .replace("&gt;", ">")
             .replace("&apos;", "'")
             .replace("&#x27;", "'")
             .replace("&#39;", "'")
+            .replace("&amp;", "&")
     }
 }
