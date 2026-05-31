@@ -23,6 +23,8 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
+koinCompiler { compileSafety = true }
+
 val appName = "Rush"
 val appVersionName = "6.2.10"
 val appVersionCode = 6210

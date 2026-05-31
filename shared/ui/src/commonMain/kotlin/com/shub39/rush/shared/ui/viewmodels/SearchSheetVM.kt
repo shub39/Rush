@@ -50,10 +50,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class SearchSheetVM(private val stateLayer: SharedStates, private val repo: SongRepository) :
-    ViewModel() {
+class SearchSheetVM(
+    private val stateLayer: SharedStates,
+    @Provided private val repo: SongRepository,
+) : ViewModel() {
     private var lyricsSearchStateJob: Job? = null
 
     private val _state = stateLayer.searchSheetState

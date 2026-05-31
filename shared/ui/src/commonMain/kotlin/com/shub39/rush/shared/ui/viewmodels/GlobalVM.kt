@@ -38,13 +38,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class GlobalVM(
-    private val billingHandler: BillingHandler,
-    private val otherPreferences: OtherPreferences,
-    private val changelogManager: ChangelogManager,
-    private val mediaAccessChecker: MediaAccessChecker,
+    @Provided private val billingHandler: BillingHandler,
+    @Provided private val otherPreferences: OtherPreferences,
+    @Provided private val changelogManager: ChangelogManager,
+    @Provided private val mediaAccessChecker: MediaAccessChecker,
 ) : ViewModel() {
     private var syncJob: Job? = null
 
@@ -78,9 +79,7 @@ class GlobalVM(
                 _state.update { it.copy(currentChangelog = null) }
 
                 _state.value.currentChangelog?.version?.let {
-                    viewModelScope.launch {
-                        otherPreferences.updateLastChangelogShown(it)
-                    }
+                    viewModelScope.launch { otherPreferences.updateLastChangelogShown(it) }
                 }
             }
         }

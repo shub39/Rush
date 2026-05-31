@@ -24,10 +24,6 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
-koinCompiler {
-    compileSafety = false
-}
-
 kotlin {
     targets.all {
         compilations.all {

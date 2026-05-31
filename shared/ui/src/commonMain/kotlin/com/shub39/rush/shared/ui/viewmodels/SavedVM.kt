@@ -40,12 +40,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class SavedVM(
     private val stateLayer: SharedStates,
-    private val repo: SongRepository,
-    private val datastore: OtherPreferences,
+    @Provided private val repo: SongRepository,
+    @Provided private val datastore: OtherPreferences,
 ) : ViewModel() {
 
     private var savedJob: Job? = null

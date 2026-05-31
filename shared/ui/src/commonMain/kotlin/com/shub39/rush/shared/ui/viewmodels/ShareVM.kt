@@ -31,9 +31,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class ShareVM(stateLayer: SharedStates, private val datastore: SharePagePreferences) : ViewModel() {
+class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePagePreferences) :
+    ViewModel() {
 
     private var observeJob: Job? = null
 

@@ -50,14 +50,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class LyricsVM(
     private val stateLayer: SharedStates,
-    private val repo: SongRepository,
-    private val lyricsPrefs: LyricsPagePreferences,
-    private val paletteGenerator: PaletteGenerator,
-    private val romanization: RomanizationProvider,
+    @Provided private val repo: SongRepository,
+    @Provided private val lyricsPrefs: LyricsPagePreferences,
+    @Provided private val paletteGenerator: PaletteGenerator,
+    @Provided private val romanization: RomanizationProvider,
 ) : ViewModel() {
 
     private var observeJob: Job? = null

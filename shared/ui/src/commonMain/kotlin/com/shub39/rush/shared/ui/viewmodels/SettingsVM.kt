@@ -41,14 +41,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class SettingsVM(
-    private val repo: SongRepository,
-    private val datastore: OtherPreferences,
-    private val exportRepo: ExportRepo,
-    private val restoreRepo: RestoreRepo,
-    private val changelogManager: ChangelogManager,
+    @Provided private val repo: SongRepository,
+    @Provided private val datastore: OtherPreferences,
+    @Provided private val exportRepo: ExportRepo,
+    @Provided private val restoreRepo: RestoreRepo,
+    @Provided private val changelogManager: ChangelogManager,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
