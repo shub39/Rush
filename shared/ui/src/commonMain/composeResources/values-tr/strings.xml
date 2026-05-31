@@ -5,7 +5,7 @@
     <string name="settings">Ayarlar</string>
     <string name="empty">Burada hiçbir şey yok</string>
     <string name="delete_confirmation">Kaydedilen tüm şarkı sözlerini silmek istediğinizden emin misiniz?</string>
-    <string name="no_lyrics">LRCLIB\'den şarkı sözleri alınamadı</string>
+    <string name="no_lyrics">LRCLIB\u0027den şarkı sözleri alınamadı</string>
     <string name="suggestion">Aşağıdaki arama simgesini görüyor musunuz?</string>
     <string name="delete_all">Tüm şarkı sözlerini sil</string>
     <string name="track">parça</string>

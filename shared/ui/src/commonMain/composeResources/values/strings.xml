@@ -2,7 +2,7 @@
     <string name="search">Search lyrics</string>
     <string name="saved">Saved</string>
     <string name="settings">Settings</string>
-    <string name="empty">It\'s empty here</string>
+    <string name="empty">It\u0027s empty here</string>
     <string name="delete_confirmation">Are you sure you want to delete all saved lyrics?</string>
     <string name="no_lyrics">Could not get Lyrics from LRCLIB</string>
     <string name="suggestion">See the search icon below?</string>
@@ -105,7 +105,7 @@
     <string name="line_synced_lyrics">Line Synced</string>
     <string name="syllable_synced_lyrics">Syllable Synced</string>
     <string name="changelog">Changelog</string>
-    <string name="whats_changed">What\'s Changed</string>
+    <string name="whats_changed">What\u0027s Changed</string>
     <string name="looks">Looks</string>
     <string name="text">Text</string>
     <string name="others">Others</string>

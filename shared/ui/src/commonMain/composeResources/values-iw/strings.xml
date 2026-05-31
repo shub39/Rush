@@ -79,7 +79,7 @@
     <string name="loading_genius">טעינת מילות השיר גאוניות</string>
     <string name="fullscreen_desc">הסתר סרגלי מערכת בדף מילות השיר</string>
     <string name="messy">מבולגן</string>
-    <string name="chat">צ\'אט</string>
+    <string name="chat">צ\u0027אט</string>
     <string name="translate">תרגם</string>
     <string name="bmc">קנה לי קפה</string>
 </resources>

@@ -3,12 +3,12 @@
     <string name="search">Cerca testi</string>
     <string name="saved">Salvato/i</string>
     <string name="settings">Impostazioni</string>
-    <string name="empty">Non c\'è niente qui</string>
+    <string name="empty">Non c\u0027è niente qui</string>
     <string name="delete_confirmation">Sei sicuro di voler eliminare tutti i testi salvati?</string>
     <string name="no_lyrics">Non è stato possibile recuperare il testo da LRCLIB</string>
     <string name="delete_all">Rimuovi tutti i testi</string>
     <string name="grant_permission">Concedi autorizzazione</string>
-    <string name="notification_permission">L\'accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l\'app dopo aver concesso il permesso.</string>
+    <string name="notification_permission">L\u0027accesso alle notifiche è necessario per trovare automaticamente i testi delle canzoni che stai ascoltando. Riavvia l\u0027app dopo aver concesso il permesso.</string>
     <string name="max_lines">Righe massime condivisibili</string>
     <string name="sort_title_asc">Titolo (A-Z)</string>
     <string name="sort_title_desc">Titolo (Z-A)</string>
@@ -38,12 +38,12 @@
     <string name="restore_info">Ripristina dal file export selezionato</string>
     <string name="choose_file">Seleziona un file</string>
     <string name="look_and_feel">Aspetto e Personalità</string>
-    <string name="look_and_feel_info">Personalizza l\'app in vari modi</string>
+    <string name="look_and_feel_info">Personalizza l\u0027app in vari modi</string>
     <string name="amoled">Tavolozza AMOLED</string>
     <string name="amoled_desc">Esperienza migliore su schermi AMOLED</string>
     <string name="palette_style">Stile Palette</string>
     <string name="seed_color_desc">Seleziona il colore da cui generare la palette</string>
-    <string name="suggestion">Vedi l\'icona di ricerca qui sotto?</string>
+    <string name="suggestion">Vedi l\u0027icona di ricerca qui sotto?</string>
     <string name="card_corners">Angoli Card</string>
     <string name="muted">Smorzato</string>
     <string name="vibrant">Vivace</string>
@@ -89,7 +89,7 @@
     <string name="chat">Chat</string>
     <string name="couplet">Accoppiato</string>
     <string name="messy">Disordinato</string>
-    <string name="foss_desc">Tutte le funzionalità sono sbloccate. Questa variante dell\'app non supporta gli acquisti in-app. Se questa app ha aggiunto valore alla tua vida, sostienimi con una donazione su</string>
+    <string name="foss_desc">Tutte le funzionalità sono sbloccate. Questa variante dell\u0027app non supporta gli acquisti in-app. Se questa app ha aggiunto valore alla tua vida, sostienimi con una donazione su</string>
     <string name="rush_pro">Rush Pro</string>
     <string name="unlock_more_pro">Sblocca di più con Pro</string>
     <string name="plain_lyrics">Semplice</string>
@@ -108,7 +108,7 @@
     <string name="looks">Aspetto</string>
     <string name="text">Testo</string>
     <string name="others">Altri</string>
-    <string name="show_app_branding">Mostra Marchio dell\'App</string>
+    <string name="show_app_branding">Mostra Marchio dell\u0027App</string>
     <string name="full_screen_share">Condivisione a schermo intero</string>
     <string name="romanization">Romanizzazione</string>
     <string name="romanization_desc">Mostra i testi in caratteri latini per le lingue giapponese, coreana, cinese, hindi, punjabi e cirillica</string>
