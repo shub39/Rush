@@ -44,5 +44,6 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.kotlinx.serialization.json)
         }
+        jvmMain.dependencies { implementation(libs.kotlinx.coroutines.swing) }
     }
 }

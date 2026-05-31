@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -51,7 +50,6 @@ import com.shub39.rush.shared.ui.viewmodels.SearchSheetVM
 import com.shub39.rush.shared.ui.viewmodels.SettingsVM
 import com.shub39.rush.shared.ui.viewmodels.ShareVM
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
-import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

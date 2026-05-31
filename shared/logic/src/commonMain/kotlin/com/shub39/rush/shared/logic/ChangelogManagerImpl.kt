@@ -35,9 +35,7 @@ class ChangelogManagerImpl : ChangelogManager {
     override val changelogs = _changelogs.asStateFlow()
 
     init {
-        CoroutineScope(Dispatchers.IO).launch {
-            getChangelogs()
-        }
+        CoroutineScope(Dispatchers.IO).launch { getChangelogs() }
     }
 
     private suspend fun getChangelogs() {

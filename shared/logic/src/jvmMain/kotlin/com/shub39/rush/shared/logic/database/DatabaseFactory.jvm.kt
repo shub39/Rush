@@ -19,8 +19,8 @@ package com.shub39.rush.shared.logic.database
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import org.koin.core.annotation.Single
 import java.io.File
+import org.koin.core.annotation.Single
 
 @Single
 actual class DatabaseFactory {
