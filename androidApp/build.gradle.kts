@@ -19,7 +19,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -153,27 +152,21 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.jetbrains.navigation3.ui)
-    testImplementation(libs.junit)
-    testImplementation(libs.androidx.junit)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.kmpalette.core)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.datastore.preferences.core)
-    implementation(libs.datetime)
-    implementation(libs.bundles.ktor)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.landscapist.coil)
-    implementation(libs.ksoup)
+
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
     implementation(libs.koin.annotations)
-}
 
-room3 { schemaDirectory("$projectDir/schemas") }
+    implementation(libs.landscapist.coil)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+}
 
 fun execute(vararg command: String): String =
     providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()
