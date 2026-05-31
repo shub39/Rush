@@ -30,7 +30,7 @@ class TTMLParserTest {
             <div>
               <p begin="00:00:01.000" end="00:00:04.000" ttm:agent="v1">
                 <span begin="00:00:01.000" end="00:00:01.500">Hello</span>
-                <span begin="00:00:01.600" end="00:00:02.000">world</span>
+                <span begin="00:00:01.600" end="00:00:02.000">world&#x27;s</span>
               </p>
               <p begin="00:00:05.000" end="00:00:10.000">
                 <span begin="00:00:05.000" end="00:00:06.000">Testing</span>
@@ -69,7 +69,7 @@ class TTMLParserTest {
 
         // First line
         val firstLine = lines[0]
-        assertEquals("Hello world", firstLine.text)
+        assertEquals("Hello world's", firstLine.text)
         assertEquals(1.0, firstLine.startTime)
         assertEquals("v1", firstLine.agent)
         assertEquals(2, firstLine.words.size)
@@ -103,8 +103,8 @@ class TTMLParserTest {
     fun testToLRC() {
         val lrc = TTMLParser.toLRC(sampleTTML)
 
-        assertTrue(lrc.contains("[00:01.00]Hello world"))
-        assertTrue(lrc.contains("<Hello:1.0:1.5|world:1.6:2.0>"))
+        assertTrue(lrc.contains("[00:01.00]Hello world's"))
+        assertTrue(lrc.contains("<Hello:1.0:1.5|world's:1.6:2.0>"))
         assertTrue(lrc.contains("[00:07.00]{bg}background"))
         assertTrue(lrc.contains("[00:20.00]Long gap"))
     }
