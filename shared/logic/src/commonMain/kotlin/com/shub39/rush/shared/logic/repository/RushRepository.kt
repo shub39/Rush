@@ -1,0 +1,236 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.rush.shared.logic.repository
+
+import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.SourceError
+import com.shub39.rush.shared.core.dataclasses.SearchResult
+import com.shub39.rush.shared.core.dataclasses.Song
+import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
+import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.core.util.TTMLParser
+import com.shub39.rush.shared.logic.database.SongDao
+import com.shub39.rush.shared.logic.mappers.toSong
+import com.shub39.rush.shared.logic.mappers.toSongEntity
+import com.shub39.rush.shared.logic.network.GeniusApi
+import com.shub39.rush.shared.logic.network.GeniusScraper
+import com.shub39.rush.shared.logic.network.LrcLibApi
+import com.shub39.rush.shared.logic.network.LyricsPlusApi
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
+
+@Single
+class RushRepository(
+    private val localDao: SongDao,
+    private val geniusApi: GeniusApi,
+    private val lrcLibApi: LrcLibApi,
+    private val lyricsPlusApi: LyricsPlusApi,
+    private val geniusScraper: GeniusScraper,
+) : SongRepository {
+    @OptIn(ExperimentalTime::class)
+    override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
+        try {
+            val ttmlLyrics =
+                withContext(Dispatchers.IO) {
+                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
+                }
+            val lrcLibLyrics =
+                withContext(Dispatchers.IO) {
+                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                }
+            val geniusLyrics =
+                if (lrcLibLyrics == null && ttmlLyrics == null) {
+                    withContext(Dispatchers.IO) {
+                        (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
+                    }
+                } else null
+
+            return Result.Success<Song, SourceError>(
+                    Song(
+                        id = result.id,
+                        title = result.title,
+                        artists = result.artist,
+                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
+                        album = result.album,
+                        sourceUrl = result.url,
+                        artUrl = result.artUrl,
+                        geniusLyrics = geniusLyrics,
+                        syncedLyrics =
+                            lrcLibLyrics?.syncedLyrics ?: ttmlLyrics?.let { TTMLParser.toLRC(it) },
+                        ttmlLyrics = ttmlLyrics,
+                        dateAdded = Clock.System.now().epochSeconds,
+                    )
+                )
+                .also { localDao.insertSong(it.data.toSongEntity()) }
+        } catch (e: Exception) {
+            return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
+        }
+    }
+
+    override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
+        val request = withContext(Dispatchers.IO) { geniusScraper.geniusScrape(url) }
+
+        return when (request) {
+            is Result.Error -> {
+                Result.Error(error = request.error, message = request.message)
+            }
+
+            is Result.Success -> {
+                Result.Success<String, SourceError>(request.data.ifBlank { "[INSTRUMENTAL]" })
+                    .also { localDao.updateGeniusLyrics(id = id, lyrics = it.data) }
+            }
+        }
+    }
+
+    override suspend fun searchGenius(query: String): Result<List<SearchResult>, SourceError> {
+        val result = withContext(Dispatchers.IO) { geniusApi.geniusSearch(query) }
+
+        when (result) {
+            is Result.Success -> {
+                val results = result.data.response.hits.filter { it.type == "song" }
+                val searchResults =
+                    results
+                        .filter { it.type == "song" }
+                        .map { hit ->
+                            SearchResult(
+                                title = hit.result.title,
+                                artist = hit.result.artistNames,
+                                album = null,
+                                artUrl = hit.result.songArtImageURL,
+                                url = hit.result.url,
+                                id = hit.result.id,
+                            )
+                        }
+
+                return Result.Success(searchResults)
+            }
+
+            is Result.Error -> {
+                return Result.Error(error = result.error, message = result.message)
+            }
+        }
+    }
+
+    override suspend fun searchCorrections(
+        track: String,
+        artist: String,
+    ): Result<List<CorrectionSearchResult>, SourceError> {
+        val ttmlResult = withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
+        val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
+
+        var searchResults = listOf<CorrectionSearchResult>()
+
+        if (ttmlResult != null && TTMLParser.isValidTTML(ttmlResult)) {
+            searchResults =
+                searchResults.plus(
+                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
+                        title = track,
+                        artist = artist,
+                        syllableSyncedLyrics = ttmlResult,
+                    )
+                )
+        }
+
+        when (lrcResults) {
+            is Result.Success -> {
+                lrcResults.data
+                    .filter { it.instrumental == false }
+                    .forEach { dto ->
+                        if (dto.syncedLyrics != null) {
+                            searchResults =
+                                searchResults.plus(
+                                    CorrectionSearchResult.LineSyncedLyricsSearchResult(
+                                        title = track,
+                                        artist = artist,
+                                        plainLyrics = dto.plainLyrics ?: "",
+                                        lineSyncedLyrics = dto.syncedLyrics,
+                                    )
+                                )
+                        } else {
+                            searchResults =
+                                searchResults.plus(
+                                    CorrectionSearchResult.PlainLyricsSearchResult(
+                                        title = track,
+                                        artist = artist,
+                                        plainLyrics = dto.plainLyrics ?: "",
+                                    )
+                                )
+                        }
+                    }
+
+                return Result.Success(searchResults)
+            }
+
+            is Result.Error -> {
+                return if (searchResults.isNotEmpty()) {
+                    Result.Success(searchResults)
+                } else {
+                    Result.Error(error = lrcResults.error, message = lrcResults.message)
+                }
+            }
+        }
+    }
+
+    override suspend fun insertSong(song: Song) {
+        localDao.insertSong(song.toSongEntity())
+    }
+
+    override suspend fun getSongs(): Flow<List<Song>> {
+        return localDao.getAllSongs().map { entities -> entities.map { it.toSong() } }
+    }
+
+    override suspend fun getAllSongs(): List<Song> {
+        return localDao.getAllSongs().first().map { it.toSong() }
+    }
+
+    override suspend fun getSong(id: Long): Song {
+        return localDao.getSongById(id).toSong()
+    }
+
+    override suspend fun getSong(query: String): List<Song> {
+        return localDao.searchSong(query).map { it.toSong() }
+    }
+
+    override suspend fun deleteSong(id: Long) {
+        localDao.deleteSong(id)
+    }
+
+    override suspend fun correctLyrics(id: Long, searchResult: CorrectionSearchResult) {
+        when (searchResult) {
+            is CorrectionSearchResult.LineSyncedLyricsSearchResult -> {
+                localDao.updateSyncedLyricsById(id, searchResult.lineSyncedLyrics)
+                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
+            }
+
+            is CorrectionSearchResult.PlainLyricsSearchResult ->
+                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
+
+            is CorrectionSearchResult.SyllableSyncedLyricsSearchResult ->
+                localDao.updateTTMLLyricsById(id, searchResult.syllableSyncedLyrics)
+        }
+    }
+
+    override suspend fun deleteAllSongs() {
+        localDao.deleteAllSongs()
+    }
+}

@@ -1,0 +1,143 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.rush.shared.logic.datastore
+
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.shub39.rush.shared.core.RushLogger
+import com.shub39.rush.shared.core.enums.AppTheme
+import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.core.enums.PaletteStyle
+import com.shub39.rush.shared.core.enums.SortOrder
+import com.shub39.rush.shared.core.interfaces.OtherPreferences
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : OtherPreferences {
+
+    override suspend fun resetAppTheme() {
+        datastore.edit { preferences ->
+            preferences[seedColor] = 0xFFFFFF
+            preferences[amoledPref] = false
+            preferences[paletteStyle] = PaletteStyle.TONALSPOT.name
+            preferences[materialTheme] = false
+            preferences[selectedFont] = Fonts.FIGTREE.name
+        }
+    }
+
+    companion object {
+        private val seedColor = intPreferencesKey("seed_color")
+        private val appTheme = stringPreferencesKey("app_theme")
+        private val amoledPref = booleanPreferencesKey("with_amoled")
+        private val paletteStyle = stringPreferencesKey("palette_style")
+        private val materialTheme = booleanPreferencesKey("material_theme")
+        private val sortOrder = stringPreferencesKey("sort_order")
+        private val onboardingDone = booleanPreferencesKey("onboarding_done")
+        private val selectedFont = stringPreferencesKey("font")
+        private val lastChangelogShownKey = stringPreferencesKey("last_changelog_shown")
+    }
+
+    override fun getAppThemePrefFlow(): Flow<AppTheme> =
+        datastore.data.map { preferences ->
+            val theme = preferences[appTheme] ?: AppTheme.SYSTEM.name
+            AppTheme.valueOf(theme)
+        }
+
+    override suspend fun updateAppThemePref(pref: AppTheme) {
+        datastore.edit { it[appTheme] = pref.name }
+    }
+
+    override fun getSeedColorFlow(): Flow<Int> =
+        datastore.data.map { preferences ->
+            try {
+                preferences[seedColor] ?: 0xFFFFFF
+            } catch (e: Exception) {
+                RushLogger.e("OtherPreferencesImpl", "Error getting seed color: ${e.message}")
+                0xFFFFFF
+            }
+        }
+
+    override suspend fun updateSeedColor(newCardContent: Int) {
+        datastore.edit { settings -> settings[seedColor] = newCardContent }
+    }
+
+    override fun getAmoledPrefFlow(): Flow<Boolean> =
+        datastore.data.map { preferences -> preferences[amoledPref] == true }
+
+    override suspend fun updateAmoledPref(amoled: Boolean) {
+        datastore.edit { settings -> settings[amoledPref] = amoled }
+    }
+
+    override fun getPaletteStyle(): Flow<PaletteStyle> =
+        datastore.data.map { preferences ->
+            try {
+                PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TONALSPOT.name)
+            } catch (e: Exception) {
+                RushLogger.e("OtherPreferencesImpl", "Error getting palette style: ${e.message}")
+                PaletteStyle.TONALSPOT
+            }
+        }
+
+    override suspend fun updatePaletteStyle(style: PaletteStyle) {
+        datastore.edit { settings -> settings[paletteStyle] = style.name }
+    }
+
+    override fun getSortOrderFlow(): Flow<SortOrder> =
+        datastore.data.map { preferences ->
+            val order = preferences[sortOrder] ?: SortOrder.TITLE_ASC.name
+            SortOrder.valueOf(order.uppercase())
+        }
+
+    override suspend fun updateSortOrder(newSortOrder: SortOrder) {
+        datastore.edit { settings -> settings[sortOrder] = newSortOrder.name }
+    }
+
+    override fun getMaterialYouFlow(): Flow<Boolean> =
+        datastore.data.map { preferences -> preferences[materialTheme] == true }
+
+    override suspend fun updateMaterialTheme(pref: Boolean) {
+        datastore.edit { settings -> settings[materialTheme] = pref }
+    }
+
+    override fun getFontFlow(): Flow<Fonts> =
+        datastore.data.map { prefs ->
+            val font = prefs[selectedFont] ?: Fonts.FIGTREE.name
+            Fonts.valueOf(font)
+        }
+
+    override suspend fun updateFonts(font: Fonts) {
+        datastore.edit { settings -> settings[selectedFont] = font.name }
+    }
+
+    override fun getOnboardingDoneFlow(): Flow<Boolean> =
+        datastore.data.map { preferences -> preferences[onboardingDone] == true }
+
+    override suspend fun updateOnboardingDone(done: Boolean) {
+        datastore.edit { settings -> settings[onboardingDone] = done }
+    }
+
+    override fun getLastChangelogShown(): Flow<String> =
+        datastore.data.map { prefs -> prefs[lastChangelogShownKey] ?: "" }
+
+    override suspend fun updateLastChangelogShown(version: String) {
+        datastore.edit { settings -> settings[lastChangelogShownKey] = version }
+    }
+}

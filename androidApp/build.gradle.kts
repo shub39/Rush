@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -28,15 +26,6 @@ plugins {
 val appName = "Rush"
 val appVersionName = "6.2.10"
 val appVersionCode = 6210
-
-val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
-
-val localProperties = Properties()
-val localFile = rootProject.file("local.properties")
-
-if (localFile.exists()) {
-    localProperties.load(localFile.inputStream())
-}
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -93,16 +82,9 @@ android {
             dimension = "version"
             applicationIdSuffix = ".play"
             versionNameSuffix = "-play"
-
-            val privateToken = localProperties.getProperty("GENIUS_API_PRIVATE") ?: ""
-            if (privateToken.isEmpty()) {
-                println("WARNING: GENIUS_API_PRIVATE not found in local.properties")
-            }
-            buildConfigField("String", "GENIUS_API_TOKEN", "\"$privateToken\"")
         }
         create("foss") {
             dimension = "version"
-            buildConfigField("String", "GENIUS_API_TOKEN", publicGeniusApiToken)
         }
     }
 
@@ -154,10 +136,12 @@ kotlin {
 }
 
 dependencies {
-    implementation(projects.androidLibs.visualizerHelper)
-    implementation(projects.androidLibs.romanization)
     implementation(projects.shared.core)
     implementation(projects.shared.ui)
+    implementation(projects.shared.logic)
+
+    implementation(projects.androidLibs.visualizerHelper)
+    implementation(projects.androidLibs.romanization)
 
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)
@@ -180,7 +164,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.landscapist.coil) //
+    implementation(libs.landscapist.coil)
     implementation(libs.ksoup)
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
@@ -190,67 +174,6 @@ dependencies {
 }
 
 room3 { schemaDirectory("$projectDir/schemas") }
-
-val generateChangelogJson by
-    tasks.registering {
-        description = "Extract changelogs from CHANGELOG.md"
-        val inputFile = rootProject.file("CHANGELOG.md")
-        val outputDir = file("$projectDir/src/main/assets/")
-        val outputFile = File(outputDir, "changelog.json")
-
-        inputs.file(inputFile)
-        outputs.file(outputFile)
-
-        doLast {
-            if (!outputDir.exists()) outputDir.mkdirs()
-
-            val lines = inputFile.readLines()
-
-            val map = mutableMapOf<String, MutableList<String>>()
-            var currentVersion: String? = null
-
-            for (line in lines) {
-                when {
-                    line.startsWith("## ") -> {
-                        currentVersion = line.removePrefix("## ").trim()
-                        map[currentVersion] = mutableListOf()
-                    }
-
-                    line.startsWith("- ") && currentVersion != null -> {
-                        map[currentVersion]?.add(line.removePrefix("- ").trim())
-                    }
-                }
-            }
-
-            val json = buildString {
-                append("[\n")
-
-                map.entries.take(10).forEachIndexed { index, entry ->
-                    append("  {\n")
-                    append("    \"version\": \"${entry.key}\",\n")
-                    append("    \"changes\": [\n")
-
-                    entry.value.forEachIndexed { i, item ->
-                        append("      \"${item.replace("\"", "\\\"")}\"")
-                        if (i != entry.value.lastIndex) append(",")
-                        append("\n")
-                    }
-
-                    append("    ]\n")
-                    append("  }")
-
-                    if (index != 9) append(",")
-                    append("\n")
-                }
-
-                append("]")
-            }
-
-            outputFile.writeText(json)
-        }
-    }
-
-tasks.named("preBuild") { dependsOn(generateChangelogJson) }
 
 fun execute(vararg command: String): String =
     providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

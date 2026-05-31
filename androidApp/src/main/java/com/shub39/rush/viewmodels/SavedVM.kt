@@ -18,11 +18,11 @@ package com.shub39.rush.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.data.listener.MediaListenerImpl
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.logic.listener.MediaListenerImpl
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.SearchState
 import com.shub39.rush.shared.ui.lyrics.toSongUi

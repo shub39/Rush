@@ -23,9 +23,7 @@ import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Single
 
-@Single(binds = [BillingHandler::class])
 class BillingHandlerImpl : BillingHandler {
     private val purchases by lazy { Purchases.sharedInstance }
 
