@@ -18,8 +18,11 @@ package com.shub39.rush.shared.logic.database
 
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import org.koin.core.annotation.Single
 import java.io.File
 
+@Single
 actual class DatabaseFactory {
     actual fun create(): RoomDatabase.Builder<SongDatabase> {
         val os = System.getProperty("os.name").lowercase()
@@ -35,6 +38,7 @@ actual class DatabaseFactory {
         }
         val dbFile = File(appDataDir, SongDatabase.DB_NAME)
 
-        return Room.databaseBuilder(dbFile.absolutePath)
+        return Room.databaseBuilder<SongDatabase>(dbFile.absolutePath)
+            .setDriver(BundledSQLiteDriver())
     }
 }

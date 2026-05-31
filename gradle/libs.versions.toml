@@ -5,7 +5,7 @@ targetSdk = "37"
 compileSdk = "37"
 accompanist = "0.37.3"
 colorpicker = "1.1.4"
-compose-multiplatform = "1.11.0"
+compose-multiplatform = "1.12.0-alpha01"
 filekit = "0.14.1"
 materialkolor = "4.1.1"
 splashscreen = "1.2.0"
@@ -35,6 +35,7 @@ spotless = "8.6.0"
 ktfmt = "0.61"
 buildConfig = "6.0.9"
 sqlite = "2.6.2"
+kotlinx-coroutines = "1.11.0"
 
 [libraries]
 # CMP
@@ -61,6 +62,7 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
