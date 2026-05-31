@@ -25,7 +25,9 @@ import org.koin.core.annotation.Single
 @Single
 expect class DatastoreFactory {
     fun getLyricsPagePreferencesDataStore(): DataStore<Preferences>
+
     fun getOtherPreferencesDataStore(): DataStore<Preferences>
+
     fun getSharePagePreferencesDataStore(): DataStore<Preferences>
 }
 

@@ -19,5 +19,4 @@ package com.shub39.rush.shared.logic
 import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import org.koin.core.annotation.Single
 
-@Single(binds = [PaletteGenerator::class])
-expect class PaletteGeneratorImpl : PaletteGenerator
+@Single(binds = [PaletteGenerator::class]) expect class PaletteGeneratorImpl : PaletteGenerator

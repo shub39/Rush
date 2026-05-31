@@ -26,6 +26,5 @@ import org.koin.core.annotation.Single
 @Module(includes = [DataModule::class])
 @ComponentScan("com.shub39.rush.viewmodels")
 class RushModules {
-    @Single
-    fun provideBillingHandler(): BillingHandler = BillingHandlerImpl()
+    @Single fun provideBillingHandler(): BillingHandler = BillingHandlerImpl()
 }

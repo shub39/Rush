@@ -136,7 +136,10 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
                 val alignment = prefs[lyricAlignment] ?: LyricsAlignment.START.toString()
                 LyricsAlignment.entries.find { it.toString() == alignment } ?: LyricsAlignment.START
             } catch (e: Exception) {
-                RushLogger.e("LyricsPagePreferencesImpl", "Error getting lyric alignment: ${e.message}")
+                RushLogger.e(
+                    "LyricsPagePreferencesImpl",
+                    "Error getting lyric alignment: ${e.message}",
+                )
                 LyricsAlignment.START
             }
         }

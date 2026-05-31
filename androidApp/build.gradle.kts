@@ -83,9 +83,7 @@ android {
             applicationIdSuffix = ".play"
             versionNameSuffix = "-play"
         }
-        create("foss") {
-            dimension = "version"
-        }
+        create("foss") { dimension = "version" }
     }
 
     buildFeatures {

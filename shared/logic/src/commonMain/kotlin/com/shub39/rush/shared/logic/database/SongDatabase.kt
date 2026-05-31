@@ -38,6 +38,6 @@ abstract class SongDatabase : RoomDatabase() {
 }
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object DbConstructor: RoomDatabaseConstructor<SongDatabase> {
+expect object DbConstructor : RoomDatabaseConstructor<SongDatabase> {
     override fun initialize(): SongDatabase
 }

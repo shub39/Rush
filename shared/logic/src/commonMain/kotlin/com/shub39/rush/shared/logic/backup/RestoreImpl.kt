@@ -19,5 +19,4 @@ package com.shub39.rush.shared.logic.backup
 import com.shub39.rush.shared.core.backup.RestoreRepo
 import org.koin.core.annotation.Single
 
-@Single(binds = [RestoreRepo::class])
-expect class RestoreImpl : RestoreRepo
+@Single(binds = [RestoreRepo::class]) expect class RestoreImpl : RestoreRepo

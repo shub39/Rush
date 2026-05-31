@@ -20,7 +20,6 @@ import android.app.Application
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.billing.BillingInitializerImpl
 import com.shub39.rush.di.RushModules
-import com.shub39.rush.shared.logic.listener.MediaListenerImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.plugin.module.dsl.startKoin
@@ -36,6 +35,5 @@ class RushApplication : Application() {
         }
 
         BillingInitializerImpl().initialize(this)
-        MediaListenerImpl.startListening(this)
     }
 }

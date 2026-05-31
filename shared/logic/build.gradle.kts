@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 import java.util.Properties
 
 plugins {
@@ -55,22 +71,20 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.ksoup)
         }
-        androidMain.dependencies {
-            implementation(projects.androidLibs.romanization)
-        }
-        jvmMain.dependencies {
-            implementation(libs.androidx.sqlite.bundled)
-        }
+        androidMain.dependencies { implementation(projects.androidLibs.romanization) }
+        jvmMain.dependencies { implementation(libs.androidx.sqlite.bundled) }
     }
 }
 
 val localProperties = Properties()
 val localFile = rootProject.file("local.properties")
+
 if (localFile.exists()) localProperties.load(localFile.inputStream())
 
 val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
 
 val privateToken = localProperties.getProperty("GENIUS_API_PRIVATE") ?: ""
+
 if (privateToken.isBlank()) {
     println("WARNING: GENIUS_API_PRIVATE not found in local.properties")
 }
@@ -83,71 +97,70 @@ buildConfig {
     buildConfigField("GENIUS_API_TOKEN", privateToken.ifBlank { publicGeniusApiToken })
 }
 
-room3 {
-    schemaDirectory("$projectDir/schemas")
-}
+room3 { schemaDirectory("$projectDir/schemas") }
 
 dependencies {
     add("kspJvm", libs.androidx.room.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
 }
 
-val generateChangelogJson by tasks.registering {
-    description = "Extract changelogs from CHANGELOG.md"
-    val inputFile = rootProject.file("CHANGELOG.md")
-    val outputDir = file("$projectDir/src/commonMain/composeResources/files/")
-    val outputFile = File(outputDir, "changelog.json")
+val generateChangelogJson by
+    tasks.registering {
+        description = "Extract changelogs from CHANGELOG.md"
+        val inputFile = rootProject.file("CHANGELOG.md")
+        val outputDir = file("$projectDir/src/commonMain/composeResources/files/")
+        val outputFile = File(outputDir, "changelog.json")
 
-    inputs.file(inputFile)
-    outputs.file(outputFile)
+        inputs.file(inputFile)
+        outputs.file(outputFile)
 
-    doLast {
-        if (!outputDir.exists()) outputDir.mkdirs()
+        doLast {
+            if (!outputDir.exists()) outputDir.mkdirs()
 
-        val lines = inputFile.readLines()
+            val lines = inputFile.readLines()
 
-        val map = mutableMapOf<String, MutableList<String>>()
-        var currentVersion: String? = null
+            val map = mutableMapOf<String, MutableList<String>>()
+            var currentVersion: String? = null
 
-        for (line in lines) {
-            when {
-                line.startsWith("## ") -> {
-                    currentVersion = line.removePrefix("## ").trim()
-                    map[currentVersion] = mutableListOf()
-                }
+            for (line in lines) {
+                when {
+                    line.startsWith("## ") -> {
+                        currentVersion = line.removePrefix("## ").trim()
+                        map[currentVersion] = mutableListOf()
+                    }
 
-                line.startsWith("- ") && currentVersion != null -> {
-                    map[currentVersion]?.add(line.removePrefix("- ").trim())
+                    line.startsWith("- ") && currentVersion != null -> {
+                        map[currentVersion]?.add(line.removePrefix("- ").trim())
+                    }
                 }
             }
-        }
 
-        val json = buildString {
-            append("[\n")
+            val json = buildString {
+                append("[\n")
 
-            map.entries.take(10).forEachIndexed { index, entry ->
-                append("  {\n")
-                append("    \"version\": \"${entry.key}\",\n")
-                append("    \"changes\": [\n")
+                map.entries.take(10).forEachIndexed { index, entry ->
+                    append("  {\n")
+                    append("    \"version\": \"${entry.key}\",\n")
+                    append("    \"changes\": [\n")
 
-                entry.value.forEachIndexed { i, item ->
-                    append("      \"${item.replace("\"", "\\\"")}\"")
-                    if (i != entry.value.lastIndex) append(",")
+                    entry.value.forEachIndexed { i, item ->
+                        append("      \"${item.replace("\"", "\\\"")}\"")
+                        if (i != entry.value.lastIndex) append(",")
+                        append("\n")
+                    }
+
+                    append("    ]\n")
+                    append("  }")
+
+                    if (index != 9) append(",")
                     append("\n")
                 }
 
-                append("    ]\n")
-                append("  }")
-
-                if (index != 9) append(",")
-                append("\n")
+                append("]")
             }
 
-            append("]")
+            outputFile.writeText(json)
         }
-
-        outputFile.writeText(json)
     }
-}
 
 tasks.named("copyNonXmlValueResourcesForCommonMain") { dependsOn(generateChangelogJson) }
