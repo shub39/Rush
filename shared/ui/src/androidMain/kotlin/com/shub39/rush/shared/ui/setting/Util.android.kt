@@ -49,7 +49,6 @@ import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.materialkolor.rememberDynamicColorScheme
 import com.shub39.rush.shared.core.dataclasses.Theme
 import com.shub39.rush.shared.core.enums.AppTheme
@@ -60,8 +59,6 @@ import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.toMPaletteStyle
 import kotlinx.coroutines.delay
-import kotlin.compareTo
-import kotlin.text.compareTo
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.Res
@@ -128,7 +125,7 @@ actual fun ColumnScope.PaletteStylePicker(
                         primary =
                             if (
                                 theme.materialTheme &&
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                             ) {
                                 colorResource(android.R.color.system_accent1_900)
                             } else Color(theme.seedColor),
@@ -195,7 +192,7 @@ actual fun ColumnScope.PaletteStylePicker(
 @OptIn(ExperimentalPermissionsApi::class)
 actual fun LazyListScope.notificationToggle(
     notificationAccess: Boolean,
-    onUpdateNotificationAccess: () -> Unit
+    onUpdateNotificationAccess: () -> Unit,
 ) {
     if (!notificationAccess) {
         item {

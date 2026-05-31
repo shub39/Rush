@@ -59,10 +59,14 @@ actual object MediaListener {
                 val component = ComponentName(context, NotificationListener::class.java)
 
                 manager?.let {
-                    it.addOnActiveSessionsChangedListener({ controllers -> onActiveSessionsChanged(controllers) }, component)
+                    it.addOnActiveSessionsChangedListener(
+                        { controllers -> onActiveSessionsChanged(controllers) },
+                        component,
+                    )
 
                     val activeSessions = it.getActiveSessions(component)
-                    val activeSession = activeSessions.find { session -> isActive(session.playbackState) }
+                    val activeSession =
+                        activeSessions.find { session -> isActive(session.playbackState) }
                     activeMediaController = activeSession ?: activeSessions.firstOrNull()
 
                     msm = it

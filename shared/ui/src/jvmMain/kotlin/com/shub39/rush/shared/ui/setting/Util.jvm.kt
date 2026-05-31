@@ -155,7 +155,7 @@ actual fun ColumnScope.PaletteStylePicker(
 
 actual fun LazyListScope.notificationToggle(
     notificationAccess: Boolean,
-    onUpdateNotificationAccess: () -> Unit
+    onUpdateNotificationAccess: () -> Unit,
 ) {}
 
 actual fun LazyListScope.appLanguagePicker(onClick: () -> Unit) {}

@@ -40,7 +40,7 @@ expect fun ColumnScope.PaletteStylePicker(
 
 expect fun LazyListScope.notificationToggle(
     notificationAccess: Boolean,
-    onUpdateNotificationAccess: () -> Unit
+    onUpdateNotificationAccess: () -> Unit,
 )
 
 expect fun LazyListScope.appLanguagePicker(onClick: () -> Unit)

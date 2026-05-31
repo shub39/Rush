@@ -90,7 +90,7 @@ fun SettingsGraph(
                         onNavigateToAppInfo = { backStack.add(Routes.About) },
                         state = state,
                         onShowPaywall = onShowPaywall,
-                        onUpdateNotificationAccess = onUpdateNotificationAccess
+                        onUpdateNotificationAccess = onUpdateNotificationAccess,
                     )
                 }
 
@@ -140,6 +140,6 @@ private fun Preview() {
         onNavigateBack = {},
         isProUser = true,
         onShowPaywall = {},
-        onUpdateNotificationAccess = {}
+        onUpdateNotificationAccess = {},
     )
 }

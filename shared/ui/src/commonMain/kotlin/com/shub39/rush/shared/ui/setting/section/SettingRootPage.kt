@@ -78,7 +78,7 @@ fun SettingRootPage(
     onNavigateToBackup: () -> Unit,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
-    onUpdateNotificationAccess: () -> Unit
+    onUpdateNotificationAccess: () -> Unit,
 ) = PageFill {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var showLocalePicker by remember { mutableStateOf(false) }
@@ -333,6 +333,6 @@ private fun Preview() {
         onShowPaywall = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
-        onUpdateNotificationAccess = {}
+        onUpdateNotificationAccess = {},
     )
 }
