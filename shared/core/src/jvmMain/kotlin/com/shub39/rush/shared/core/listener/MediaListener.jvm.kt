@@ -14,24 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.core.interfaces
+package com.shub39.rush.shared.core.listener
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-interface MediaListener {
-    val playbackSpeedFlow: MutableSharedFlow<Float>
-    val songInfoFlow: MutableSharedFlow<Pair<String, String>>
-    val songPositionFlow: MutableSharedFlow<Long>
+// stub for now
+actual object MediaListener {
+    actual val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
+    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    actual val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
-    fun startListening(context: Any?)
+    actual fun startListening(context: Any?) {}
 
-    fun onSeekEagerly()
+    actual fun onSeekEagerly() {}
 
-    fun seek(timeStamp: Long)
+    actual fun seek(timeStamp: Long) {}
 
-    fun pauseOrResume(resume: Boolean)
+    actual fun pauseOrResume(resume: Boolean) {}
 
-    fun playNext()
+    actual fun playNext() {}
 
-    fun playPrevious()
+    actual fun playPrevious() {}
 }

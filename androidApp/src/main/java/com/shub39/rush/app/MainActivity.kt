@@ -23,7 +23,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.shub39.rush.shared.logic.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 
 class MainActivity : ComponentActivity() {
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
 
-        MediaListenerImpl.startListening(this)
+        MediaListener.startListening(this)
 
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
@@ -44,12 +44,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        MediaListenerImpl.startListening(this)
+        MediaListener.startListening(this)
     }
 
     override fun onRestart() {
         super.onRestart()
 
-        MediaListenerImpl.startListening(this)
+        MediaListener.startListening(this)
     }
 }

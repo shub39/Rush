@@ -24,7 +24,7 @@ import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.logic.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.SearchState
@@ -70,7 +70,7 @@ class SearchSheetVM(private val stateLayer: SharedStates, private val repo: Song
 
     private fun observeSongInfo() {
         viewModelScope.launch {
-            MediaListenerImpl.songInfoFlow.collect { songInfo ->
+            MediaListener.songInfoFlow.collect { songInfo ->
                 stateLayer.lyricsState.update {
                     it.copy(
                         playingSong =

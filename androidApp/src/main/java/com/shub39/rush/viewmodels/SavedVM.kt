@@ -22,7 +22,7 @@ import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.logic.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.SearchState
 import com.shub39.rush.shared.ui.lyrics.toSongUi
@@ -72,7 +72,7 @@ class SavedVM(
 
                     _state.update { it.copy(autoChange = newPref) }
 
-                    if (newPref) MediaListenerImpl.onSeekEagerly()
+                    if (newPref) MediaListener.onSeekEagerly()
                 }
 
                 SavedPageAction.OnToggleSearchSheet -> {

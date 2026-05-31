@@ -14,14 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.logic.listener
+package com.shub39.rush.shared.core.listener
 
-import com.shub39.rush.shared.core.interfaces.MediaListener
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-/**
- * Singleton object responsible for listening to and interacting with system-wide media sessions.
- *
- * To function correctly in android, the application must have Notification Access permission
- * granted by the user.
- */
-expect object MediaListenerImpl : MediaListener
+expect object MediaListener {
+    val playbackSpeedFlow: MutableSharedFlow<Float>
+
+    val songInfoFlow: MutableSharedFlow<Pair<String, String>>
+
+    val songPositionFlow: MutableSharedFlow<Long>
+
+    fun startListening(context: Any?)
+
+    fun onSeekEagerly()
+
+    fun seek(timeStamp: Long)
+
+    fun pauseOrResume(resume: Boolean)
+
+    fun playNext()
+
+    fun playPrevious()
+}

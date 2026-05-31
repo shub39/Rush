@@ -23,7 +23,7 @@ import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import com.shub39.rush.shared.core.interfaces.RomanizationProvider
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.logic.listener.MediaListenerImpl
+import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
@@ -113,7 +113,7 @@ class LyricsVM(
 
                     stateLayer.savedPageState.update { it.copy(autoChange = newPref) }
 
-                    if (newPref) MediaListenerImpl.onSeekEagerly()
+                    if (newPref) MediaListener.onSeekEagerly()
                 }
 
                 is LyricsPageAction.OnToggleSearchSheet -> {
@@ -245,10 +245,10 @@ class LyricsVM(
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
 
                 LyricsPageAction.OnPauseOrResume ->
-                    MediaListenerImpl.pauseOrResume(_playbackInfo.value.speed == 0f)
+                    MediaListener.pauseOrResume(_playbackInfo.value.speed == 0f)
 
                 is LyricsPageAction.OnSeek -> {
-                    MediaListenerImpl.seek(action.position)
+                    MediaListener.seek(action.position)
                     _playbackInfo.update { it.copy(position = action.position) }
                 }
 
@@ -257,8 +257,8 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
-                LyricsPageAction.OnPlayNext -> MediaListenerImpl.playNext()
-                LyricsPageAction.OnPlayPrevious -> MediaListenerImpl.playPrevious()
+                LyricsPageAction.OnPlayNext -> MediaListener.playNext()
+                LyricsPageAction.OnPlayPrevious -> MediaListener.playPrevious()
 
                 is LyricsPageAction.OnRomanizationToggle -> {
                     lyricsPrefs.updateRomanizationEnabled(action.enabled)
@@ -451,11 +451,7 @@ class LyricsVM(
         observePlaybackJob?.cancel()
         observePlaybackJob =
             viewModelScope.launch(Dispatchers.Default) {
-                combine(
-                        MediaListenerImpl.songPositionFlow,
-                        MediaListenerImpl.playbackSpeedFlow,
-                        ::Pair,
-                    )
+                combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair)
                     .collectLatest { (position, speed) ->
                         val start = System.currentTimeMillis()
 

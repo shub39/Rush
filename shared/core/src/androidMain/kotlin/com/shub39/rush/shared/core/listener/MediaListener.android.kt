@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.logic.listener
+package com.shub39.rush.shared.core.listener
 
 import android.content.ComponentName
 import android.content.Context
@@ -24,9 +24,7 @@ import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.os.Build
-import androidx.core.content.getSystemService
 import com.shub39.rush.shared.core.RushLogger
-import com.shub39.rush.shared.core.interfaces.MediaListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,7 +34,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-actual object MediaListenerImpl : MediaListener {
+actual object MediaListener {
     private var msm: MediaSessionManager? = null
     private var nls: ComponentName? = null
     private var activeMediaController: MediaController? = null
@@ -45,14 +43,14 @@ actual object MediaListenerImpl : MediaListener {
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
     private var positionUpdateJob: Job? = null
 
-    override val playbackSpeedFlow: MutableSharedFlow<Float> =
+    actual val playbackSpeedFlow: MutableSharedFlow<Float> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    override val songInfoFlow: MutableSharedFlow<Pair<String, String>> =
+    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    override val songPositionFlow: MutableSharedFlow<Long> =
+    actual val songPositionFlow: MutableSharedFlow<Long> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override fun startListening(context: Any?) {
+    actual fun startListening(context: Any?) {
         if (context !is Context) return
 
         try {
@@ -60,7 +58,7 @@ actual object MediaListenerImpl : MediaListener {
 
                 initialised = true
 
-                msm = context.getSystemService<MediaSessionManager>()
+                msm = context.getSystemService(MediaSessionManager::class.java)
                 nls = ComponentName(context, NotificationListener::class.java)
 
                 msm?.let { manager ->
@@ -78,19 +76,19 @@ actual object MediaListenerImpl : MediaListener {
         }
     }
 
-    override fun onSeekEagerly() {
+    actual fun onSeekEagerly() {
         if (!initialised) return
 
         activeMediaController?.let { updateMetadata(it, it.metadata) }
     }
 
-    override fun seek(timeStamp: Long) {
+    actual fun seek(timeStamp: Long) {
         activeMediaController?.transportControls?.seekTo(timeStamp)
         activeMediaController?.transportControls?.play()
         coroutineScope.launch { songPositionFlow.emit(timeStamp) }
     }
 
-    override fun pauseOrResume(resume: Boolean) {
+    actual fun pauseOrResume(resume: Boolean) {
         if (resume) {
             activeMediaController?.transportControls?.play()
         } else {
@@ -98,11 +96,11 @@ actual object MediaListenerImpl : MediaListener {
         }
     }
 
-    override fun playNext() {
+    actual fun playNext() {
         activeMediaController?.transportControls?.skipToNext()
     }
 
-    override fun playPrevious() {
+    actual fun playPrevious() {
         activeMediaController?.transportControls?.skipToPrevious()
     }
 
