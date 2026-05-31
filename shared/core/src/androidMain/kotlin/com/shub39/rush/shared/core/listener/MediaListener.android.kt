@@ -55,20 +55,22 @@ actual object MediaListener {
 
         try {
             if (!initialised) {
+                val manager = context.getSystemService(MediaSessionManager::class.java)
+                val component = ComponentName(context, NotificationListener::class.java)
 
-                initialised = true
+                manager?.let {
+                    it.addOnActiveSessionsChangedListener({ controllers -> onActiveSessionsChanged(controllers) }, component)
 
-                msm = context.getSystemService(MediaSessionManager::class.java)
-                nls = ComponentName(context, NotificationListener::class.java)
-
-                msm?.let { manager ->
-                    manager.addOnActiveSessionsChangedListener({ onActiveSessionsChanged(it) }, nls)
-
-                    val activeSessions = manager.getActiveSessions(nls!!)
-                    val activeSession = activeSessions.find { isActive(it.playbackState) }
+                    val activeSessions = it.getActiveSessions(component)
+                    val activeSession = activeSessions.find { session -> isActive(session.playbackState) }
                     activeMediaController = activeSession ?: activeSessions.firstOrNull()
+
+                    msm = it
+                    nls = component
+
                     onActiveSessionsChanged(activeSessions)
-                    RushLogger.d("MediaListener", "init $manager")
+                    RushLogger.d("MediaListener", "init $it")
+                    initialised = true
                 } ?: RushLogger.e("MediaListener", "MediaSessionManager is null")
             }
         } catch (e: Exception) {
