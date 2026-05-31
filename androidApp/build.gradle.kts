@@ -22,11 +22,9 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
-koinCompiler { compileSafety = true }
-
 val appName = "Rush"
-val appVersionName = "6.2.10"
-val appVersionCode = 6210
+val appVersionName = "6.3.0"
+val appVersionCode = 6300
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 

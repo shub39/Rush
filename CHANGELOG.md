@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.3.0
+- Updated Translations
+
 ## 6.2.10
 - Improved Romanization accuracy. Thanks to @rbelem
 - Updated Translations

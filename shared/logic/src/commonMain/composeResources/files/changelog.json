@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.3.0",
+    "changes": [
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "6.2.10",
     "changes": [
       "Improved Romanization accuracy. Thanks to @rbelem",
@@ -72,14 +78,6 @@
       "Redesigned Messy Share Card with Flex Fonts",
       "Added Animated Previews for Synced Lyrics",
       "Fixed SearchSheet UX issues with keyboard"
-    ]
-  },
-  {
-    "version": "5.9.0",
-    "changes": [
-      "[Experimental] Added Expressive Syllable highlighting, Enable it from Lyrics Customizations",
-      "Translation Updates",
-      "Misc UI Improvements in bottom sheets"
     ]
   }
 ]
