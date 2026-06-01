@@ -81,7 +81,7 @@ val localFile = rootProject.file("local.properties")
 
 if (localFile.exists()) localProperties.load(localFile.inputStream())
 
-val publicGeniusApiToken = "\"qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y\""
+val publicGeniusApiToken = "qLSDtgIqHgzGNjOFUmdOxJKGJOg5RIAPzOKTfrs7rNxqYXwfdSh9HTHMJUs2X27Y"
 
 val privateToken = localProperties.getProperty("GENIUS_API_PRIVATE") ?: ""
 
