@@ -14,26 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.di
 
-import android.app.Application
-import com.shub39.rush.BuildConfig
-import com.shub39.rush.billing.BillingInitializerImpl
-import com.shub39.rush.di.RushModules
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.plugin.module.dsl.startKoin
+import com.shub39.rush.shared.core.interfaces.BillingHandler
+import com.shub39.rush.shared.core.interfaces.SubscriptionResult
+import com.shub39.rush.shared.logic.di.DataModule
+import com.shub39.rush.shared.ui.di.UIModule
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-class RushApplication : Application() {
+@Module(includes = [DataModule::class, UIModule::class])
+class RushModules {
+    @Single
+    fun provideBillingHandler(): BillingHandler =
+        object : BillingHandler {
+            override suspend fun isProUser(): Boolean = true
 
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin<RushModules> {
-            if (BuildConfig.DEBUG) androidLogger()
-            androidContext(this@RushApplication)
+            override suspend fun userResult(): SubscriptionResult = SubscriptionResult.Subscribed
         }
-
-        BillingInitializerImpl().initialize(this)
-    }
 }

@@ -6,6 +6,7 @@ Thank you for your interest in contributing to Rush! We appreciate your support.
 Rush is organized into several modules to support Kotlin Multiplatform (KMP) and maintain a clean separation of concerns:
 
 - **`:androidApp`**: The main Android application module. It contains Android-specific configurations, entry points, and orchestrates dependency injection.
+- **`:desktopApp`**: The main Desktop (Linux) application module. Can also be used for hot-reload with `desktopApp:hotRunJvm --auto -PmainClass=com.shub39.rush.MainKt` 
 - **`:shared:core`**: A Kotlin Multiplatform module containing shared interfaces, data models, enums, and basic utility functions.
 - **`:shared:logic`**: A Kotlin Multiplatform module containing the core business logic, including repository implementations, networking, database management, and shared dependency injection.
 - **`:shared:ui`**: A Compose Multiplatform module containing UI components, themes, screens, and ViewModels. Most UI-related changes should happen here.

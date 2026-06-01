@@ -46,3 +46,5 @@ include(":shared:core", ":shared:ui", ":shared:logic")
 include(":androidLibs:romanization", ":androidLibs:visualizer-helper")
 
 include(":androidApp")
+
+include(":desktopApp")

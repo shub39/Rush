@@ -254,53 +254,7 @@ fun LazyListScope.lyricsCustomisationSettings(
         }
     }
 
-    item {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier.padding(horizontal = 16.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.others),
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = flexFontRounded()),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ListItem(
-                colors = listItemColors(),
-                modifier = Modifier.clip(leadingItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.fullscreen)) },
-                supportingContent = { Text(text = stringResource(Res.string.fullscreen_desc)) },
-                trailingContent = {
-                    ExpressiveSwitch(
-                        checked = state.fullscreen,
-                        onCheckedChange = { onAction(LyricsPageAction.OnFullscreenChange(it)) },
-                    )
-                },
-            )
-
-            ListItemCard(shape = middleItemShape()) {
-                SettingSlider(
-                    title = stringResource(Res.string.max_lines),
-                    value = state.maxLines.toFloat(),
-                    onValueChange = { onAction(LyricsPageAction.OnMaxLinesChange(it.toInt())) },
-                    valueToShow = state.maxLines.toString(),
-                    steps = 13,
-                    valueRange = 2f..16f,
-                )
-            }
-
-            ListItem(
-                colors = listItemColors(),
-                modifier = Modifier.clip(endItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.romanization)) },
-                supportingContent = { Text(text = stringResource(Res.string.romanization_desc)) },
-                trailingContent = {
-                    ExpressiveSwitch(
-                        checked = state.romanizationEnabled,
-                        onCheckedChange = { onAction(LyricsPageAction.OnRomanizationToggle(it)) },
-                    )
-                },
-            )
-        }
-    }
+    otherOptions(state, onAction)
 }
+
+expect fun LazyListScope.otherOptions(state: LyricsPageState, onAction: (LyricsPageAction) -> Unit)

@@ -57,26 +57,7 @@ fun LyricsBackground.toStringRes(): StringResource {
     }
 }
 
-val allBackgrounds =
-    if (hypnoticAvailable()) {
-        listOf(
-            LyricsBackground.SOLID_COLOR,
-            LyricsBackground.ALBUM_ART,
-            LyricsBackground.HYPNOTIC,
-            LyricsBackground.WAVE,
-            LyricsBackground.GRADIENT,
-            LyricsBackground.CURVE,
-        )
-    } else if (blurAvailable()) {
-        listOf(
-            LyricsBackground.SOLID_COLOR,
-            LyricsBackground.ALBUM_ART,
-            LyricsBackground.WAVE,
-            LyricsBackground.GRADIENT,
-        )
-    } else {
-        listOf(LyricsBackground.SOLID_COLOR, LyricsBackground.WAVE, LyricsBackground.GRADIENT)
-    }
+expect val allBackgrounds: List<LyricsBackground>
 
 val premiumCards =
     listOf(LyricsBackground.HYPNOTIC, CardTheme.MESSY, CardTheme.QUOTE, CardTheme.CHAT)

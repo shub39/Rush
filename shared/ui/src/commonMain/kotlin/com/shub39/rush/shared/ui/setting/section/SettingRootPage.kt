@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
@@ -124,27 +125,7 @@ fun SettingRootPage(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Pro
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(Res.string.rush_pro)) },
-                    colors = listItemColors(),
-                    modifier = Modifier.clip(detachedItemShape()).clickable { onShowPaywall() },
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_forward_ios),
-                            contentDescription = "Rush Pro",
-                        )
-                    },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.app_icon),
-                            contentDescription = null,
-                            modifier = Modifier.size(30.dp),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                )
-            }
+            rushProItem(onShowPaywall = onShowPaywall)
 
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -318,6 +299,8 @@ fun SettingRootPage(
         }
     }
 }
+
+expect fun LazyListScope.rushProItem(onShowPaywall: () -> Unit)
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview

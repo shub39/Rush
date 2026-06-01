@@ -25,13 +25,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import coil3.ImageLoader
 import com.shub39.rush.billing.PaywallPage
 import com.shub39.rush.shared.ui.app.GlobalAction
+import com.shub39.rush.shared.ui.app.Routes
 import com.shub39.rush.shared.ui.component.ChangelogSheet
 import com.shub39.rush.shared.ui.lyrics.LyricsGraph
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
@@ -50,24 +50,8 @@ import com.shub39.rush.shared.ui.viewmodels.SearchSheetVM
 import com.shub39.rush.shared.ui.viewmodels.SettingsVM
 import com.shub39.rush.shared.ui.viewmodels.ShareVM
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
-import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-
-@Serializable
-private sealed interface Routes : NavKey {
-    @Serializable data object SavedPage : Routes
-
-    @Serializable data object LyricsGraph : Routes
-
-    @Serializable data object SettingsGraph : Routes
-
-    @Serializable data object SharePage : Routes
-
-    @Serializable data object OnboardingPage : Routes
-
-    @Serializable data object PaywallPage : Routes
-}
 
 @Composable
 fun App() {
