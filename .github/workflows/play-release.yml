@@ -32,7 +32,7 @@ jobs:
 
       - name: Extract Version Name from Gradle
         run: |
-          GRADLE_FILE="androiApp/build.gradle.kts" 
+          GRADLE_FILE="androidApp/build.gradle.kts" 
           VERSION_NAME=$(grep -E 'val appVersionName' $GRADLE_FILE | head -n 1 | awk -F'"' '{print $2}')
 
           if [ -z "$VERSION_NAME" ]; then
