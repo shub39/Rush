@@ -78,6 +78,7 @@ jobs:
           ./gradlew :desktopApp:packageReleaseDistributionForCurrentOS
           
           APK_PATH=$(find androidApp/build/outputs/ -name "*.apk" -print -quit)
+          APPIMAGE_PATH=$(find desktopApp/build/compose/binaries/main-release/AppImage/ -name "*.AppImage" -print -quit)
           
           if [ -z "$APK_PATH" ]; then
             echo "::error::Could not find APK file."
@@ -85,6 +86,7 @@ jobs:
           fi
           
           echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+          echo "APPIMAGE_PATH" >> $GITHUB_ENV
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -103,7 +105,7 @@ jobs:
           body_path: commit.txt
           files: |
             ${{ env.APK_PATH }}
-            desktopApp/build/compose/binaries/main/appimage/*.AppImage
+            ${{ env.APPIMAGE_PATH }}
 
       - name: Notify on Discord
         shell: bash
