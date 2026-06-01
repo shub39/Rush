@@ -14,12 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import io.github.kdroidfilter.nucleus.desktop.application.dsl.AppImageCategory
+import io.github.kdroidfilter.nucleus.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.nucleus)
 }
 
 kotlin {
@@ -59,4 +63,69 @@ kotlin {
     }
 }
 
-compose.desktop { application { mainClass = "com.shub39.rush.MainKt" } }
+val appVersion = execute("awk", "/^## / {sub(/^## /, \"\"); print; exit}", "CHANGELOG.md")
+
+nucleus.application {
+    mainClass = "com.shub39.rush.MainKt"
+    jvmArgs += listOf("-Xmx512m")
+
+    buildTypes { release { proguard { isEnabled = false } } }
+
+    nativeDistributions {
+        targetFormats(TargetFormat.AppImage, TargetFormat.Flatpak)
+
+        appName = "Rush"
+        packageName = "Rush"
+        packageVersion = appVersion
+        description = "Save, Search and Share Lyrics like Spotify!"
+        vendor = "shub39"
+        copyright = "Copyright 2025 Shubham Gorai"
+        licenseFile.set(project.file("LICENSE"))
+
+        modules("java.sql", "java.net.http", "jdk.unsupported")
+
+        cleanupNativeLibs = true
+
+        linux {
+            iconFile.set(rootProject.file("fastlane/metadata/android/en-US/images/icon.png"))
+
+            shortcut = true
+            packageName = "rush"
+            appRelease = appVersion
+            appCategory = "Utility"
+            menuGroup = "Development"
+
+            appImage {
+                category = AppImageCategory.Utility
+                genericName = "Rush"
+                synopsis = "Save, Search and Share Lyrics like Spotify!"
+            }
+
+            flatpak {
+                // Freedesktop runtime
+                runtime = "org.freedesktop.Platform"
+                runtimeVersion = "23.08"
+                sdk = "org.freedesktop.Sdk"
+
+                // Application branch
+                branch = "master"
+
+                finishArgs =
+                    listOf(
+                        "--share=ipc",
+                        "--socket=x11",
+                        "--socket=wayland",
+                        "--socket=pipewire",
+                        "--device=dri",
+                        "--filesystem=home",
+                    )
+
+                // License file
+                license.set(rootProject.file("LICENSE"))
+            }
+        }
+    }
+}
+
+fun execute(vararg command: String): String =
+    providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

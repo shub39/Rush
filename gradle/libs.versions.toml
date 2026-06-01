@@ -33,6 +33,7 @@ spotless = "8.6.0"
 ktfmt = "0.61"
 build-config = "6.0.9"
 sqlite = "2.6.2"
+nucleus = "1.15.7"
 
 [libraries]
 # CMP
@@ -106,6 +107,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "build-config" }
+nucleus = { id = "io.github.kdroidfilter.nucleus", version.ref = "nucleus" }
 
 [bundles]
 ktor = [

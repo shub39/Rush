@@ -33,7 +33,11 @@ import org.koin.plugin.module.dsl.startKoin
 fun main() {
     startKoin<RushModules>()
 
-    singleWindowApplication(title = "Rush", state = WindowState(width = 400.dp, height = 900.dp)) {
+    singleWindowApplication(
+        title = "Rush",
+        state = WindowState(width = 450.dp, height = 1000.dp),
+        resizable = false,
+    ) {
         val windowSizeClass = calculateWindowSizeClass()
         val viewModelStoreOwner = remember {
             object : ViewModelStoreOwner {
