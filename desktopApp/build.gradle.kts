@@ -72,7 +72,7 @@ nucleus.application {
     buildTypes { release { proguard { isEnabled = false } } }
 
     nativeDistributions {
-        targetFormats(TargetFormat.AppImage, TargetFormat.Flatpak)
+        targetFormats(TargetFormat.AppImage)
 
         appName = "Rush"
         packageName = "Rush"
@@ -100,29 +100,6 @@ nucleus.application {
                 category = AppImageCategory.Utility
                 genericName = "Rush"
                 synopsis = "Save, Search and Share Lyrics like Spotify!"
-            }
-
-            flatpak {
-                // Freedesktop runtime
-                runtime = "org.freedesktop.Platform"
-                runtimeVersion = "23.08"
-                sdk = "org.freedesktop.Sdk"
-
-                // Application branch
-                branch = "master"
-
-                finishArgs =
-                    listOf(
-                        "--share=ipc",
-                        "--socket=x11",
-                        "--socket=wayland",
-                        "--socket=pipewire",
-                        "--device=dri",
-                        "--filesystem=home",
-                    )
-
-                // License file
-                license.set(rootProject.file("LICENSE"))
             }
         }
     }

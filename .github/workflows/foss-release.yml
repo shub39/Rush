@@ -25,9 +25,8 @@ jobs:
       - name: Setup Nucleus
         uses: kdroidFilter/Nucleus/.github/actions/setup-nucleus@main
         with:
-          jbr-version: '21'
+          jbr-version: '25.0.2b329.66'
           packaging-tools: 'true'
-          flatpak: 'true'
           setup-gradle: 'true'
 
       - name: Extract Version Name from Gradle
@@ -93,27 +92,24 @@ jobs:
           name: rush-release
           path: |
             androidApp/build/outputs/apk/foss/release/*.apk
-            desktopApp/build/compose/binaries/main/appimage/*.AppImage
-            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
+            desktopApp/build/compose/binaries/main-release/AppImage/*.AppImage
 
-# will be enabled after testing
-#      - name: Create Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          make_latest: true
-#          tag_name: ${{ env.VERSION_NAME }}
-#          name: ${{ env.VERSION_NAME }}
-#          body_path: commit.txt
-#          files: |
-#            ${{ env.APK_PATH }}
-#            desktopApp/build/compose/binaries/main/appimage/*.AppImage
-#            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
-#
-#      - name: Notify on Discord
-#        shell: bash
-#        env:
-#          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-#        run: |
-#          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \nhttps://github.com/shub39/Rush/releases")
-#          curl -F "payload_json={\"content\":\"${message}\"}" \
-#          ${{ env.WEBHOOK }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          make_latest: true
+          tag_name: ${{ env.VERSION_NAME }}
+          name: ${{ env.VERSION_NAME }}
+          body_path: commit.txt
+          files: |
+            ${{ env.APK_PATH }}
+            desktopApp/build/compose/binaries/main/appimage/*.AppImage
+
+      - name: Notify on Discord
+        shell: bash
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \nhttps://github.com/shub39/Rush/releases")
+          curl -F "payload_json={\"content\":\"${message}\"}" \
+          ${{ env.WEBHOOK }}
