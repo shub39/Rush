@@ -76,11 +76,11 @@ class GlobalVM(
             }
 
             GlobalAction.DismissChangelog -> {
-                _state.update { it.copy(currentChangelog = null) }
-
                 _state.value.currentChangelog?.version?.let {
                     viewModelScope.launch { otherPreferences.updateLastChangelogShown(it) }
                 }
+
+                _state.update { it.copy(currentChangelog = null) }
             }
         }
     }
