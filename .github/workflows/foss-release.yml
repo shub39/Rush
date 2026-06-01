@@ -93,7 +93,7 @@ jobs:
           name: rush-release
           path: |
             androidApp/build/outputs/apk/foss/release/*.apk
-            desktopApp/build/compose/binaries/main/appimage/*.AppImage
+            desktopApp/build/compose/binaries/main-release/AppImage/*.AppImage
 
 # will be enabled after testing
 #      - name: Create Release
