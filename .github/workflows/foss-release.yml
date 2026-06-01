@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dev
   workflow_dispatch: { }
 
 permissions:
@@ -25,7 +26,7 @@ jobs:
       - name: Setup Nucleus
         uses: kdroidFilter/Nucleus/.github/actions/setup-nucleus@main
         with:
-          jbr-version: '21'
+          jbr-version: '25.0.2b329.66'
           packaging-tools: 'true'
           flatpak: 'true'
           setup-gradle: 'true'
