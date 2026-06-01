@@ -22,16 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup JDK 21
-        uses: actions/setup-java@v4
+      - name: Setup Nucleus
+        uses: kdroidFilter/Nucleus/.github/actions/setup-nucleus@main
         with:
-          distribution: temurin
-          java-version: 21
-          cache: 'gradle'
+          jbr-version: '21'
+          packaging-tools: 'true'
+          flatpak: 'true'
+          setup-gradle: 'true'
 
       - name: Extract Version Name from Gradle
         run: |
-          GRADLE_FILE="app/build.gradle.kts" 
+          GRADLE_FILE="androidApp/build.gradle.kts" 
           VERSION_NAME=$(grep -E 'val appVersionName' $GRADLE_FILE | head -n 1 | awk -F'"' '{print $2}')
 
           if [ -z "$VERSION_NAME" ]; then
@@ -75,6 +76,8 @@ jobs:
           -Pandroid.injected.signing.key.alias=key0 \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
           
+          ./gradlew :desktopApp:packageReleaseDistributionForCurrentOS
+          
           APK_PATH=$(find androidApp/build/outputs/ -name "*.apk" -print -quit)
           
           if [ -z "$APK_PATH" ]; then
@@ -84,26 +87,33 @@ jobs:
           
           echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
 
-      - name: Upload APK
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: app/build/outputs/**/*.apk
+          name: rush-release
+          path: |
+            androidApp/build/outputs/apk/foss/release/*.apk
+            desktopApp/build/compose/binaries/main/appimage/*.AppImage
+            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          make_latest: true
-          tag_name: ${{ env.VERSION_NAME }}
-          name: ${{ env.VERSION_NAME }}
-          body_path: commit.txt
-          files: ${{ env.APK_PATH }}
-
-      - name: Notify on Discord
-        shell: bash
-        env:
-          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \nhttps://github.com/shub39/Rush/releases")
-          curl -F "payload_json={\"content\":\"${message}\"}" \
-          ${{ env.WEBHOOK }}
+# will be enabled after testing
+#      - name: Create Release
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          make_latest: true
+#          tag_name: ${{ env.VERSION_NAME }}
+#          name: ${{ env.VERSION_NAME }}
+#          body_path: commit.txt
+#          files: |
+#            ${{ env.APK_PATH }}
+#            desktopApp/build/compose/binaries/main/appimage/*.AppImage
+#            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
+#
+#      - name: Notify on Discord
+#        shell: bash
+#        env:
+#          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#        run: |
+#          message=$(echo "**New Rush Release** **${{ env.VERSION_NAME }}** \nhttps://github.com/shub39/Rush/releases")
+#          curl -F "payload_json={\"content\":\"${message}\"}" \
+#          ${{ env.WEBHOOK }}

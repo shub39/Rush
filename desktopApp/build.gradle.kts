@@ -85,6 +85,7 @@ nucleus.application {
         modules("java.sql", "java.net.http", "jdk.unsupported")
 
         cleanupNativeLibs = true
+        artifactName = $$"${name}-${version}-${os}-${arch}.${ext}"
 
         linux {
             iconFile.set(rootProject.file("fastlane/metadata/android/en-US/images/icon.png"))
