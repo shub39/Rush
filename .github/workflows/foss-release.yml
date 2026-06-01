@@ -28,7 +28,6 @@ jobs:
         with:
           jbr-version: '25.0.2b329.66'
           packaging-tools: 'true'
-          flatpak: 'true'
           setup-gradle: 'true'
 
       - name: Extract Version Name from Gradle
@@ -95,7 +94,6 @@ jobs:
           path: |
             androidApp/build/outputs/apk/foss/release/*.apk
             desktopApp/build/compose/binaries/main/appimage/*.AppImage
-            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
 
 # will be enabled after testing
 #      - name: Create Release
@@ -108,7 +106,6 @@ jobs:
 #          files: |
 #            ${{ env.APK_PATH }}
 #            desktopApp/build/compose/binaries/main/appimage/*.AppImage
-#            desktopApp/build/compose/binaries/main/flatpak/*.flatpak
 #
 #      - name: Notify on Discord
 #        shell: bash
