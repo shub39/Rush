@@ -86,7 +86,7 @@ jobs:
           fi
           
           echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
-          echo "APPIMAGE_PATH" >> $GITHUB_ENV
+          echo "APPIMAGE_PATH=$APPIMAGE_PATH" >> $GITHUB_ENV
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
