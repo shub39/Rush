@@ -21,10 +21,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFloatingActionButton
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +53,6 @@ fun SavedPageActions(
                         onNavigateToLyrics()
                     }
                 },
-                shape = MaterialShapes.Sunny.toShape(),
                 containerColor =
                     if (state.autoChange) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.onSecondary,
