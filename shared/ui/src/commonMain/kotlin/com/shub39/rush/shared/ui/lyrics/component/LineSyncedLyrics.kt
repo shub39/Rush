@@ -99,7 +99,7 @@ fun LineSyncedLyrics(
         lazyListState = lazyListState,
         items = syncedLyrics,
         currentPlayingIndex = currentPlayingIndex,
-        itemKey = { _, lyric -> lyric.time },
+        itemKey = { index, lyric -> "${index}_${lyric.time}" },
         modifier = modifier,
     ) { index, lyric, blur ->
         val nextTime = getNextLyricTime(index, syncedLyrics)

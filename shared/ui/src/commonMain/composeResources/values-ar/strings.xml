@@ -101,4 +101,16 @@
     <string name="curve">منحنى</string>
     <string name="copy_error">خطأ في النسخ</string>
     <string name="not_found">لا يوجد</string>
+    <string name="bmc_desc">ادعمني بتبرع صغير</string>
+    <string name="translate_desc">ترجم Rush الى لغتك</string>
+    <string name="line_synced_lyrics">متزامن مع الخط</string>
+    <string name="syllable_synced_lyrics">متزامن مع المقطع الصوتي</string>
+    <string name="changelog">التغيرات</string>
+    <string name="whats_changed">ما الذي تغير؟</string>
+    <string name="looks">المظهر</string>
+    <string name="text">الكتابة</string>
+    <string name="others">الآخرون</string>
+    <string name="show_app_branding">اظهر علامة التطبيق</string>
+    <string name="full_screen_share">مشاركة الشاشة الكاملة</string>
+    <string name="romanization">تحويل الى نظام كتابة اخر</string>
 </resources>
