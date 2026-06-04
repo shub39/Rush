@@ -136,7 +136,9 @@ fun LrcCorrectDialog(
                     Modifier.padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
             ) {
-                itemsIndexed(state.lrcCorrect.searchResults) { _, result ->
+                itemsIndexed(items = state.lrcCorrect.searchResults, key = { index, _ -> index }) {
+                    _,
+                    result ->
                     Card(
                         onClick = {
                             (state.lyricsState as? LyricsState.Loaded)?.song?.id?.let {

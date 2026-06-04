@@ -130,7 +130,7 @@ actual fun LocalePickerSheet(onDismissRequest: () -> Unit, modifier: Modifier) {
 
                 itemsIndexed(
                     items = supportedLocaleList,
-                    key = { _: Int, it: AppLocale -> it.name },
+                    key = { index: Int, locale: AppLocale -> "${index}_${locale.name}" },
                 ) { index, it ->
                     val selected = !currentLocales.isEmpty && it.locale == currentLocales.get(0)
 

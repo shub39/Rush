@@ -104,7 +104,7 @@ fun SyllableSyncedLyrics(
         lazyListState = lazyListState,
         items = ttmlLyrics,
         currentPlayingIndex = currentPlayingIndex,
-        itemKey = { _, line -> line.startTime },
+        itemKey = { index, line -> "${index}_${line.startTime}" },
         modifier = modifier,
     ) { index, line, blur ->
         val currentTime = playbackInfo.position

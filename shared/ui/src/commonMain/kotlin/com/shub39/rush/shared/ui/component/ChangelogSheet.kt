@@ -96,7 +96,9 @@ fun ChangelogSheet(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 contentPadding = PaddingValues(vertical = 16.dp),
             ) {
-                itemsIndexed(currentLog.changes) { index, change ->
+                itemsIndexed(items = currentLog.changes, key = { index, _ -> index }) {
+                    index,
+                    change ->
                     val shape =
                         when {
                             currentLog.changes.size == 1 -> detachedItemShape()
