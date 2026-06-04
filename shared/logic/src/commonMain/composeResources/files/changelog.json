@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.3.1",
+    "changes": [
+      "Fixed crashes in Synced Lyrics page"
+    ]
+  },
+  {
     "version": "6.3.0",
     "changes": [
       "Updated Translations"
@@ -68,16 +74,6 @@
       "Supported languages: Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages",
       "Enable Romanization from Lyrics Customizations",
       "Updated Translations"
-    ]
-  },
-  {
-    "version": "5.9.1",
-    "changes": [
-      "Improved Expressive Syllables, Enable it from Lyrics Customizations",
-      "Translation Updates",
-      "Redesigned Messy Share Card with Flex Fonts",
-      "Added Animated Previews for Synced Lyrics",
-      "Fixed SearchSheet UX issues with keyboard"
     ]
   }
 ]

@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.3.1
+- Fixed crashes in Synced Lyrics page
+
 ## 6.3.0
 - Updated Translations
 
