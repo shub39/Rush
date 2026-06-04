@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.2
+- Updated Translations
+- Fixed crashes while remaking Messy Card
+
 ## 6.3.1
 - Fixed crashes in Synced Lyrics page
 

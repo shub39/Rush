@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -54,6 +55,7 @@ import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.pxToSp
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 private data class Word(
@@ -63,6 +65,21 @@ private data class Word(
     val fontWidth: Float,
     val angle: Int,
 )
+
+private val fontCache = mutableMapOf<Pair<Int, Int>, FontFamily>()
+
+@Composable
+private fun flexFontEmphasisCached(
+    weight: Int,
+    width: Int,
+): FontFamily {
+    return fontCache.getOrPut(weight to width) {
+        flexFontEmphasis(
+            fontWeight = weight,
+            fontWidth = width.toFloat()
+        )
+    }
+}
 
 @Composable
 fun MessyCard(
@@ -85,9 +102,9 @@ fun MessyCard(
                 .map {
                     Word(
                         text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
-                        fontWeight = Random.nextInt(300, 1000),
-                        fontSize = Random.nextInt(30, 100),
-                        fontWidth = Random.nextInt(50, 120).toFloat(),
+                        fontWeight = Random.nextInt(3, 10) * 100,
+                        fontSize = Random.nextInt(3, 10) * 10,
+                        fontWidth = (Random.nextInt(5, 12) * 10).toFloat(),
                         angle = Random.nextInt(-10, 10),
                     )
                 }
@@ -120,12 +137,11 @@ fun MessyCard(
                         style =
                             TextStyle(
                                 fontFamily =
-                                    flexFontEmphasis(
-                                        fontWeight = word.fontWeight,
-                                        fontWidth =
-                                            if (word.text.length > 10) {
-                                                100f
-                                            } else word.fontWidth,
+                                    flexFontEmphasisCached(
+                                        weight = word.fontWeight,
+                                        width =
+                                            (if (word.text.length > 10) 100f else word.fontWidth)
+                                                .roundToInt(),
                                     ),
                                 fontSize = pxToSp(word.fontSize),
                             ),

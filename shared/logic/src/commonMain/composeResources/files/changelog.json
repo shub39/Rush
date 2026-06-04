@@ -1,5 +1,12 @@
 [
   {
+    "version": "6.3.2",
+    "changes": [
+      "Updated Translations",
+      "Fixed crashes while remaking Messy Card"
+    ]
+  },
+  {
     "version": "6.3.1",
     "changes": [
       "Fixed crashes in Synced Lyrics page"
@@ -64,15 +71,6 @@
       "Added ability to scroll while viewing Synced Lyrics. Auto-Scroll will resume in 3 seconds",
       "Optimised App size",
       "Fixed miscellaneous UI issues",
-      "Updated Translations"
-    ]
-  },
-  {
-    "version": "6.0.0",
-    "changes": [
-      "Added lyrics romanizations. Thanks to @rbelem.",
-      "Supported languages: Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic Languages",
-      "Enable Romanization from Lyrics Customizations",
       "Updated Translations"
     ]
   }
