@@ -19,6 +19,7 @@ package com.shub39.rush.shared.core.listener
 import com.shub39.rush.shared.core.RushLogger
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,7 +47,7 @@ actual object MediaListener {
             coroutineScope.launch {
                 while (isActive) {
                     updateMediaInfo()
-                    delay(1000)
+                    delay(500.milliseconds)
                 }
             }
     }

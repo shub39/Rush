@@ -85,250 +85,255 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 fun LookAndFeelPage(
+    modifier: Modifier = Modifier,
     state: SettingsPageState,
     isProUser: Boolean,
     onAction: (SettingsPageAction) -> Unit,
     onShowPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
-) = PageFill {
-    var colorPickerDialog by remember { mutableStateOf(false) }
+) =
+    PageFill(modifier = modifier) {
+        var colorPickerDialog by remember { mutableStateOf(false) }
 
-    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold(
-        topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(Res.string.look_and_feel),
-                        fontFamily = flexFontEmphasis(),
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Navigate Back",
+        val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        Scaffold(
+            topBar = {
+                MediumFlexibleTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.look_and_feel),
+                            fontFamily = flexFontEmphasis(),
                         )
-                    }
-                },
-                scrollBehavior = scrollBehaviour,
-            )
-        },
-        modifier =
-            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding =
-                PaddingValues(
-                    top = padding.calculateTopPadding() + 16.dp,
-                    bottom = padding.calculateBottomPadding() + 60.dp,
-                    start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                    end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                ),
-        ) {
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    modifier = Modifier.animateContentSize(),
-                ) {
-                    // appTheme picker
-                    Column(modifier = Modifier.clip(leadingItemShape())) {
-                        ListItem(
-                            leadingContent = {
-                                Icon(
-                                    painter =
-                                        painterResource(
-                                            when (state.theme.appTheme) {
-                                                AppTheme.SYSTEM -> {
-                                                    if (isSystemInDarkTheme())
-                                                        Res.drawable.dark_mode
-                                                    else Res.drawable.light_mode
-                                                }
-
-                                                AppTheme.DARK -> Res.drawable.dark_mode
-                                                AppTheme.LIGHT -> Res.drawable.light_mode
-                                            }
-                                        ),
-                                    contentDescription = null,
-                                )
-                            },
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.select_app_theme))
-                            },
-                            colors = listItemColors(),
-                        )
-
-                        Row(
-                            horizontalArrangement =
-                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                            modifier =
-                                Modifier.fillParentMaxWidth()
-                                    .background(listItemColors().containerColor)
-                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
-                        ) {
-                            AppTheme.entries.forEach { appTheme ->
-                                ToggleButton(
-                                    checked = appTheme == state.theme.appTheme,
-                                    onCheckedChange = {
-                                        onAction(SettingsPageAction.OnThemeSwitch(appTheme))
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                                ) {
-                                    Text(
-                                        text = stringResource(appTheme.toStringRes()),
-                                        modifier = Modifier.basicMarquee(),
-                                        maxLines = 1,
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // material theme
-                    MaterialYouToggle(
-                        checked = state.theme.materialTheme,
-                        onCheckedChange = {
-                            onAction(SettingsPageAction.OnMaterialThemeToggle(it))
-                        },
-                        modifier =
-                            Modifier.clip(if (isProUser) middleItemShape() else endItemShape()),
-                    )
-
-                    // plus redirect
-                    if (!isProUser) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillParentMaxWidth().height(60.dp),
-                        ) {
-                            LinearWavyProgressIndicator(
-                                progress = { 0.90f },
-                                modifier = Modifier.fillParentMaxWidth(),
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Navigate Back",
                             )
-
-                            Button(onClick = onShowPaywall) {
-                                Text(text = stringResource(Res.string.unlock_more_pro))
-                            }
                         }
-                    }
-
-                    // font picker
+                    },
+                    scrollBehavior = scrollBehaviour,
+                )
+            },
+            modifier =
+                Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding =
+                    PaddingValues(
+                        top = padding.calculateTopPadding() + 16.dp,
+                        bottom = padding.calculateBottomPadding() + 60.dp,
+                        start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                        end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                    ),
+            ) {
+                item {
                     Column(
-                        modifier =
-                            Modifier.clip(
-                                when {
-                                    state.theme.materialTheme && !isProUser -> detachedItemShape()
-                                    state.theme.materialTheme -> endItemShape()
-                                    isProUser -> middleItemShape()
-                                    else -> leadingItemShape()
-                                }
-                            )
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                        modifier = Modifier.animateContentSize(),
                     ) {
-                        ListItem(
-                            headlineContent = { Text(text = stringResource(Res.string.font)) },
-                            leadingContent = {
-                                Icon(
-                                    painter = painterResource(Res.drawable.font),
-                                    contentDescription = null,
-                                )
-                            },
-                            colors = listItemColors(),
-                        )
+                        // appTheme picker
+                        Column(modifier = Modifier.clip(leadingItemShape())) {
+                            ListItem(
+                                leadingContent = {
+                                    Icon(
+                                        painter =
+                                            painterResource(
+                                                when (state.theme.appTheme) {
+                                                    AppTheme.SYSTEM -> {
+                                                        if (isSystemInDarkTheme())
+                                                            Res.drawable.dark_mode
+                                                        else Res.drawable.light_mode
+                                                    }
 
-                        FlowRow(
-                            modifier =
-                                Modifier.fillParentMaxWidth()
-                                    .background(listItemColors().containerColor)
-                                    .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
-                            Fonts.entries.forEach { font ->
-                                ToggleButton(
-                                    checked = state.theme.font == font,
-                                    onCheckedChange = {
-                                        onAction(SettingsPageAction.OnFontChange(font))
-                                    },
-                                    enabled = isProUser,
-                                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                                ) {
-                                    Text(
-                                        text = font.toFullName(),
-                                        fontFamily =
-                                            font.toFontRes()?.let { FontFamily(Font(it)) }
-                                                ?: FontFamily.Default,
+                                                    AppTheme.DARK -> Res.drawable.dark_mode
+                                                    AppTheme.LIGHT -> Res.drawable.light_mode
+                                                }
+                                            ),
+                                        contentDescription = null,
                                     )
+                                },
+                                headlineContent = {
+                                    Text(text = stringResource(Res.string.select_app_theme))
+                                },
+                                colors = listItemColors(),
+                            )
+
+                            Row(
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                                modifier =
+                                    Modifier.fillParentMaxWidth()
+                                        .background(listItemColors().containerColor)
+                                        .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+                            ) {
+                                AppTheme.entries.forEach { appTheme ->
+                                    ToggleButton(
+                                        checked = appTheme == state.theme.appTheme,
+                                        onCheckedChange = {
+                                            onAction(SettingsPageAction.OnThemeSwitch(appTheme))
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                                    ) {
+                                        Text(
+                                            text = stringResource(appTheme.toStringRes()),
+                                            modifier = Modifier.basicMarquee(),
+                                            maxLines = 1,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (!state.theme.materialTheme) {
-                        // amoled switch
-                        ListItem(
-                            headlineContent = { Text(text = stringResource(Res.string.amoled)) },
-                            supportingContent = {
-                                Text(text = stringResource(Res.string.amoled_desc))
+                        // material theme
+                        MaterialYouToggle(
+                            checked = state.theme.materialTheme,
+                            onCheckedChange = {
+                                onAction(SettingsPageAction.OnMaterialThemeToggle(it))
                             },
-                            trailingContent = {
-                                ExpressiveSwitch(
-                                    checked = state.theme.withAmoled,
-                                    enabled = isProUser,
-                                    onCheckedChange = {
-                                        onAction(SettingsPageAction.OnAmoledSwitch(it))
-                                    },
+                            modifier =
+                                Modifier.clip(if (isProUser) middleItemShape() else endItemShape()),
+                        )
+
+                        // plus redirect
+                        if (!isProUser) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillParentMaxWidth().height(60.dp),
+                            ) {
+                                LinearWavyProgressIndicator(
+                                    progress = { 0.90f },
+                                    modifier = Modifier.fillParentMaxWidth(),
                                 )
-                            },
-                            colors = listItemColors(),
-                            modifier = Modifier.clip(middleItemShape()),
-                        )
 
-                        // seed color picker
-                        ListItem(
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.seed_color))
-                            },
-                            supportingContent = {
-                                Text(text = stringResource(Res.string.seed_color_desc))
-                            },
-                            trailingContent = {
-                                IconButton(
-                                    onClick = { colorPickerDialog = true },
-                                    colors =
-                                        IconButtonDefaults.iconButtonColors(
-                                            containerColor = Color(state.theme.seedColor),
-                                            contentColor =
-                                                contentColorFor(Color(state.theme.seedColor)),
-                                        ),
-                                    enabled = isProUser,
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.edit),
-                                        contentDescription = "Select Color",
-                                    )
+                                Button(onClick = onShowPaywall) {
+                                    Text(text = stringResource(Res.string.unlock_more_pro))
                                 }
-                            },
-                            colors = listItemColors(),
-                            modifier = Modifier.clip(middleItemShape()),
-                        )
+                            }
+                        }
 
-                        // palette style picker
-                        PaletteStylePicker(
-                            enabled = isProUser,
-                            theme = state.theme,
-                            onChange = { onAction(SettingsPageAction.OnPaletteChange(it)) },
-                        )
+                        // font picker
+                        Column(
+                            modifier =
+                                Modifier.clip(
+                                    when {
+                                        state.theme.materialTheme && !isProUser ->
+                                            detachedItemShape()
+                                        state.theme.materialTheme -> endItemShape()
+                                        isProUser -> middleItemShape()
+                                        else -> leadingItemShape()
+                                    }
+                                )
+                        ) {
+                            ListItem(
+                                headlineContent = { Text(text = stringResource(Res.string.font)) },
+                                leadingContent = {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.font),
+                                        contentDescription = null,
+                                    )
+                                },
+                                colors = listItemColors(),
+                            )
+
+                            FlowRow(
+                                modifier =
+                                    Modifier.fillParentMaxWidth()
+                                        .background(listItemColors().containerColor)
+                                        .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Fonts.entries.forEach { font ->
+                                    ToggleButton(
+                                        checked = state.theme.font == font,
+                                        onCheckedChange = {
+                                            onAction(SettingsPageAction.OnFontChange(font))
+                                        },
+                                        enabled = isProUser,
+                                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                                    ) {
+                                        Text(
+                                            text = font.toFullName(),
+                                            fontFamily =
+                                                font.toFontRes()?.let { FontFamily(Font(it)) }
+                                                    ?: FontFamily.Default,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!state.theme.materialTheme) {
+                            // amoled switch
+                            ListItem(
+                                headlineContent = {
+                                    Text(text = stringResource(Res.string.amoled))
+                                },
+                                supportingContent = {
+                                    Text(text = stringResource(Res.string.amoled_desc))
+                                },
+                                trailingContent = {
+                                    ExpressiveSwitch(
+                                        checked = state.theme.withAmoled,
+                                        enabled = isProUser,
+                                        onCheckedChange = {
+                                            onAction(SettingsPageAction.OnAmoledSwitch(it))
+                                        },
+                                    )
+                                },
+                                colors = listItemColors(),
+                                modifier = Modifier.clip(middleItemShape()),
+                            )
+
+                            // seed color picker
+                            ListItem(
+                                headlineContent = {
+                                    Text(text = stringResource(Res.string.seed_color))
+                                },
+                                supportingContent = {
+                                    Text(text = stringResource(Res.string.seed_color_desc))
+                                },
+                                trailingContent = {
+                                    IconButton(
+                                        onClick = { colorPickerDialog = true },
+                                        colors =
+                                            IconButtonDefaults.iconButtonColors(
+                                                containerColor = Color(state.theme.seedColor),
+                                                contentColor =
+                                                    contentColorFor(Color(state.theme.seedColor)),
+                                            ),
+                                        enabled = isProUser,
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.edit),
+                                            contentDescription = "Select Color",
+                                        )
+                                    }
+                                },
+                                colors = listItemColors(),
+                                modifier = Modifier.clip(middleItemShape()),
+                            )
+
+                            // palette style picker
+                            PaletteStylePicker(
+                                enabled = isProUser,
+                                theme = state.theme,
+                                onChange = { onAction(SettingsPageAction.OnPaletteChange(it)) },
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
-    if (colorPickerDialog) {
-        ColorPickerDialog(
-            initialColor = Color(state.theme.seedColor),
-            onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
-            onDismiss = { colorPickerDialog = false },
-        )
+        if (colorPickerDialog) {
+            ColorPickerDialog(
+                initialColor = Color(state.theme.seedColor),
+                onSelect = { onAction(SettingsPageAction.OnSeedColorChange(it.toArgb())) },
+                onDismiss = { colorPickerDialog = false },
+            )
+        }
     }
-}

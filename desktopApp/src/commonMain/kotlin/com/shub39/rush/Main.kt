@@ -19,6 +19,8 @@ package com.shub39.rush
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
@@ -33,19 +35,22 @@ import org.koin.plugin.module.dsl.startKoin
 fun main() {
     startKoin<RushModules>()
 
-    singleWindowApplication(
-        title = "Rush",
-        state = WindowState(width = 450.dp, height = 1000.dp),
-        resizable = false,
-    ) {
+    singleWindowApplication(title = "Rush", state = WindowState(width = 450.dp, height = 1000.dp)) {
         val windowSizeClass = calculateWindowSizeClass()
         val viewModelStoreOwner = remember {
             object : ViewModelStoreOwner {
                 override val viewModelStore: ViewModelStore = ViewModelStore()
             }
         }
+        val currentDensity = LocalDensity.current
+        val scaledDensity =
+            Density(
+                density = currentDensity.density * 1.1f,
+                fontScale = currentDensity.fontScale,
+            )
 
         CompositionLocalProvider(
+            LocalDensity provides scaledDensity,
             LocalViewModelStoreOwner provides viewModelStoreOwner,
             LocalWindowSizeClass provides windowSizeClass,
         ) {

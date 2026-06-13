@@ -32,6 +32,7 @@ import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 import com.shub39.rush.shared.ui.lyrics.breakLyrics
 import com.shub39.rush.shared.ui.lyrics.toSongUi
 import com.shub39.rush.shared.ui.sortMapByKeys
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -466,7 +467,7 @@ class LyricsVM(
                                 )
                             }
 
-                            delay(100)
+                            delay(100.milliseconds)
                         }
                     }
             }

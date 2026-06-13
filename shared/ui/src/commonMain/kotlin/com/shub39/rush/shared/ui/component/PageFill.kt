@@ -32,6 +32,6 @@ import androidx.compose.ui.Modifier
  *   placed within a [BoxScope], allowing for more complex layouts if needed.
  */
 @Composable
-fun PageFill(content: @Composable BoxScope.() -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center, content = content)
+fun PageFill(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center, content = content)
 }

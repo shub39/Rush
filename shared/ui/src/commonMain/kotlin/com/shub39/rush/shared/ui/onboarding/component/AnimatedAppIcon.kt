@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -55,14 +56,14 @@ fun AnimatedAppIcon(modifier: Modifier = Modifier) {
                 launch { scale.animateTo(1f, animationSpec = tween(1000)) }
                 alpha.animateTo(1f, animationSpec = tween(1000))
 
-                delay(2000)
+                delay(2000.milliseconds)
 
                 launch { offsetX.animateTo(-300f, animationSpec = tween(1000)) }
                 launch { offsetY.animateTo(300f, animationSpec = tween(1000)) }
                 launch { scale.animateTo(0.2f, animationSpec = tween(1000)) }
                 alpha.animateTo(0f, animationSpec = tween(1000))
 
-                delay(300)
+                delay(300.milliseconds)
             }
         }
 

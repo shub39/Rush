@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.3
+- Improved usability in Landscape and Desktop screen sizes
+- Miscellaneous UI Fixes
+
 ## 6.3.2
 - Updated Translations
 - Fixed crashes while remaking Messy Card

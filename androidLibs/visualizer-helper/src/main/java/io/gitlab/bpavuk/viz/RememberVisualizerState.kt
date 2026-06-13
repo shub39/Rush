@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalInspectionMode
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val TAG = "VisualizerState"
 
@@ -39,7 +40,7 @@ fun rememberVisualizerState(vararg keys: Any?): VisualizerState {
                 }
                 waveData = VisualizerState.Ready(waveform = waveform.toList(), fft = fft.toList())
                 // A realistic capture rate is way faster, but this is enough for a preview
-                delay(100)
+                delay(100.milliseconds)
             }
         }
     } else {

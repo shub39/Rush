@@ -58,6 +58,7 @@ import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.toMPaletteStyle
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -198,7 +199,7 @@ actual fun LazyListScope.notificationToggle(
         item {
             LaunchedEffect(Unit) {
                 while (!notificationAccess) {
-                    delay(500)
+                    delay(500.milliseconds)
                     onUpdateNotificationAccess()
                 }
             }

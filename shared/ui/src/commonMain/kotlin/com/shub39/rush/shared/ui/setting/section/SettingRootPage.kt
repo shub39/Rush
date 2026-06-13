@@ -70,6 +70,7 @@ import rush.shared.ui.generated.resources.*
 // topmost settings page
 @Composable
 fun SettingRootPage(
+    modifier: Modifier = Modifier,
     notificationAccess: Boolean,
     state: SettingsPageState,
     onShowPaywall: () -> Unit,
@@ -80,225 +81,240 @@ fun SettingRootPage(
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
-) = PageFill {
-    var deleteConfirmationDialog by remember { mutableStateOf(false) }
-    var showLocalePicker by remember { mutableStateOf(false) }
+) =
+    PageFill(modifier = modifier) {
+        var deleteConfirmationDialog by remember { mutableStateOf(false) }
+        var showLocalePicker by remember { mutableStateOf(false) }
 
-    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold(
-        modifier =
-            Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
-        topBar = {
-            LargeFlexibleTopAppBar(
-                scrollBehavior = scrollBehaviour,
-                title = {
-                    Text(
-                        text = stringResource(Res.string.settings),
-                        fontFamily = flexFontEmphasis(),
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Navigate Back",
-                        )
-                    }
-                },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        scrolledContainerColor = MaterialTheme.colorScheme.surface
-                    ),
-            )
-        },
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding =
-                PaddingValues(
-                    top = paddingValues.calculateTopPadding() + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                    start =
-                        paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                    end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                ),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            // Pro
-            rushProItem(onShowPaywall = onShowPaywall)
-
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    // navigate to look and feel
-                    ListItem(
-                        modifier =
-                            Modifier.clip(leadingItemShape()).clickable {
-                                onNavigateToLookAndFeel()
-                            },
-                        colors = listItemColors(),
-                        headlineContent = { Text(text = stringResource(Res.string.look_and_feel)) },
-                        supportingContent = {
-                            Text(
-                                text = stringResource(Res.string.look_and_feel_info),
-                                maxLines = 1,
-                                modifier = Modifier.basicMarquee(),
-                            )
-                        },
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.palette),
-                                contentDescription = "Navigate",
-                                modifier = Modifier.size(24.dp),
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.arrow_forward_ios),
-                                contentDescription = null,
-                            )
-                        },
-                    )
-
-                    // navigate to backup
-                    ListItem(
-                        modifier = Modifier.clip(endItemShape()).clickable { onNavigateToBackup() },
-                        colors = listItemColors(),
-                        headlineContent = { Text(text = stringResource(Res.string.backup)) },
-                        supportingContent = {
-                            Text(
-                                text = stringResource(Res.string.backup_info),
-                                maxLines = 1,
-                                modifier = Modifier.basicMarquee(),
-                            )
-                        },
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.upload_file),
-                                contentDescription = "Backup",
-                                modifier = Modifier.size(24.dp),
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.arrow_forward_ios),
-                                contentDescription = null,
-                            )
-                        },
-                    )
-                }
-            }
-
-            // navigate to notification access permission page
-            notificationToggle(notificationAccess, onUpdateNotificationAccess)
-
-            // nuke everything
-            item {
-                ListItem(
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.warning),
-                            contentDescription = "Caution",
+        val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        Scaffold(
+            modifier =
+                Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
+            topBar = {
+                LargeFlexibleTopAppBar(
+                    scrollBehavior = scrollBehaviour,
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.settings),
+                            fontFamily = flexFontEmphasis(),
                         )
                     },
-                    headlineContent = { Text(text = stringResource(Res.string.delete_all)) },
-                    colors = listItemColors(),
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_forward_ios),
-                            contentDescription = null,
-                        )
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Navigate Back",
+                            )
+                        }
                     },
-                    modifier =
-                        Modifier.clip(detachedItemShape()).clickable(
-                            enabled = state.deleteButtonEnabled
-                        ) {
-                            deleteConfirmationDialog = true
-                        },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface
+                        ),
                 )
-            }
+            },
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding =
+                    PaddingValues(
+                        top = paddingValues.calculateTopPadding() + 16.dp,
+                        bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                        start =
+                            paddingValues.calculateLeftPadding(LocalLayoutDirection.current) +
+                                16.dp,
+                        end =
+                            paddingValues.calculateRightPadding(LocalLayoutDirection.current) +
+                                16.dp,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // Pro
+                rushProItem(onShowPaywall = onShowPaywall)
 
-            // navigate to changelog
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    ListItem(
-                        colors = listItemColors(),
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.info),
-                                contentDescription = null,
-                            )
-                        },
-                        supportingContent = {
-                            Text(text = "Rush ${state.changelog.firstOrNull()?.version ?: "x.x.x"}")
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.arrow_forward_ios),
-                                contentDescription = "Navigate",
-                            )
-                        },
-                        headlineContent = { Text(text = stringResource(Res.string.about)) },
-                        modifier =
-                            Modifier.clip(leadingItemShape()).clickable { onNavigateToAppInfo() },
-                    )
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        // navigate to look and feel
+                        ListItem(
+                            modifier =
+                                Modifier.clip(leadingItemShape()).clickable {
+                                    onNavigateToLookAndFeel()
+                                },
+                            colors = listItemColors(),
+                            headlineContent = {
+                                Text(text = stringResource(Res.string.look_and_feel))
+                            },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.look_and_feel_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.palette),
+                                    contentDescription = "Navigate",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
 
-                    ListItem(
-                        colors = listItemColors(),
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.check_list),
-                                contentDescription = null,
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(Res.drawable.arrow_forward_ios),
-                                contentDescription = "Navigate",
-                            )
-                        },
-                        headlineContent = { Text(text = stringResource(Res.string.changelog)) },
-                        modifier =
-                            Modifier.clip(endItemShape()).clickable { onNavigateToChangelog() },
-                    )
-                }
-            }
-
-            // pick app language
-            appLanguagePicker { showLocalePicker = true }
-        }
-    }
-
-    // locale picker
-    if (showLocalePicker) {
-        LocalePickerSheet(onDismissRequest = { showLocalePicker = false })
-    }
-
-    // dialog to confirm nuking
-    if (deleteConfirmationDialog) {
-        RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
-            Icon(painter = painterResource(Res.drawable.warning), contentDescription = "Warning")
-            Text(
-                text = stringResource(Res.string.delete_all),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = stringResource(Res.string.delete_confirmation),
-                textAlign = TextAlign.Center,
-            )
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(
-                    onClick = {
-                        onAction(SettingsPageAction.OnDeleteSongs)
-                        deleteConfirmationDialog = false
+                        // navigate to backup
+                        ListItem(
+                            modifier =
+                                Modifier.clip(endItemShape()).clickable { onNavigateToBackup() },
+                            colors = listItemColors(),
+                            headlineContent = { Text(text = stringResource(Res.string.backup)) },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.backup_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.upload_file),
+                                    contentDescription = "Backup",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
                     }
-                ) {
-                    Text(text = stringResource(Res.string.delete_all))
+                }
+
+                // navigate to notification access permission page
+                notificationToggle(notificationAccess, onUpdateNotificationAccess)
+
+                // nuke everything
+                item {
+                    ListItem(
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.warning),
+                                contentDescription = "Caution",
+                            )
+                        },
+                        headlineContent = { Text(text = stringResource(Res.string.delete_all)) },
+                        colors = listItemColors(),
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_forward_ios),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier =
+                            Modifier.clip(detachedItemShape()).clickable(
+                                enabled = state.deleteButtonEnabled
+                            ) {
+                                deleteConfirmationDialog = true
+                            },
+                    )
+                }
+
+                // navigate to changelog
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.info),
+                                    contentDescription = null,
+                                )
+                            },
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        "Rush ${state.changelog.firstOrNull()?.version ?: "x.x.x"}"
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = "Navigate",
+                                )
+                            },
+                            headlineContent = { Text(text = stringResource(Res.string.about)) },
+                            modifier =
+                                Modifier.clip(leadingItemShape()).clickable {
+                                    onNavigateToAppInfo()
+                                },
+                        )
+
+                        ListItem(
+                            colors = listItemColors(),
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.check_list),
+                                    contentDescription = null,
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = "Navigate",
+                                )
+                            },
+                            headlineContent = { Text(text = stringResource(Res.string.changelog)) },
+                            modifier =
+                                Modifier.clip(endItemShape()).clickable { onNavigateToChangelog() },
+                        )
+                    }
+                }
+
+                // pick app language
+                appLanguagePicker { showLocalePicker = true }
+            }
+        }
+
+        // locale picker
+        if (showLocalePicker) {
+            LocalePickerSheet(onDismissRequest = { showLocalePicker = false })
+        }
+
+        // dialog to confirm nuking
+        if (deleteConfirmationDialog) {
+            RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
+                Icon(
+                    painter = painterResource(Res.drawable.warning),
+                    contentDescription = "Warning",
+                )
+                Text(
+                    text = stringResource(Res.string.delete_all),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text = stringResource(Res.string.delete_confirmation),
+                    textAlign = TextAlign.Center,
+                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(
+                        onClick = {
+                            onAction(SettingsPageAction.OnDeleteSongs)
+                            deleteConfirmationDialog = false
+                        }
+                    ) {
+                        Text(text = stringResource(Res.string.delete_all))
+                    }
                 }
             }
         }
     }
-}
 
 expect fun LazyListScope.rushProItem(onShowPaywall: () -> Unit)
 
