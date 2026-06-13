@@ -19,6 +19,8 @@ package com.shub39.rush
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
@@ -36,7 +38,6 @@ fun main() {
     singleWindowApplication(
         title = "Rush",
         state = WindowState(width = 450.dp, height = 1000.dp),
-        resizable = false,
     ) {
         val windowSizeClass = calculateWindowSizeClass()
         val viewModelStoreOwner = remember {
@@ -44,8 +45,15 @@ fun main() {
                 override val viewModelStore: ViewModelStore = ViewModelStore()
             }
         }
+        val currentDensity = LocalDensity.current
+        val scale = 1.1f
+        val scaledDensity = Density(
+            density = currentDensity.density * scale,
+            fontScale = currentDensity.fontScale * scale
+        )
 
         CompositionLocalProvider(
+            LocalDensity provides scaledDensity,
             LocalViewModelStoreOwner provides viewModelStoreOwner,
             LocalWindowSizeClass provides windowSizeClass,
         ) {

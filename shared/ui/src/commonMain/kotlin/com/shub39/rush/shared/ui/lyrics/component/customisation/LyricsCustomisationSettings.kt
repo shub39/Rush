@@ -238,7 +238,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     value = state.textPrefs.lineHeight,
                     onValueChange = { onAction(LyricsPageAction.OnLineHeightChange(it)) },
                     steps = 33,
-                    valueRange = 16f..50f,
+                    valueRange = 16f..55f,
                 )
             }
 

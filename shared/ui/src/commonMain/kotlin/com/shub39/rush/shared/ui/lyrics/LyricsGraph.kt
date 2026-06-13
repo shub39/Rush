@@ -108,7 +108,6 @@ fun LyricsGraphContent(
                         state = lyricsState,
                         onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
                         onAction = lyricsAction,
-                        modifier = Modifier.widthIn(max = 700.dp),
                         notificationAccess = notificationAccess,
                         microphonePermission = micPermission,
                         requestMicrophonePermission = onMicPermissionGranted,

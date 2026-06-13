@@ -85,12 +85,13 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 fun LookAndFeelPage(
+    modifier: Modifier = Modifier,
     state: SettingsPageState,
     isProUser: Boolean,
     onAction: (SettingsPageAction) -> Unit,
     onShowPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
-) = PageFill {
+) = PageFill(modifier = modifier) {
     var colorPickerDialog by remember { mutableStateOf(false) }
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()

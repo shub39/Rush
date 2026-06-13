@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -70,6 +71,7 @@ import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
+import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.simpleVerticalScrollbar
 import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.saved.component.SavedPageActions
@@ -89,11 +91,11 @@ fun SavedPage(
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+) = PageFill(modifier = modifier) {
     val windowSizeClass = LocalWindowSizeClass.current
 
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier.widthIn(max = 700.dp),
         topBar = {
             Column {
                 if (!windowSizeClass.isExpanded()) {

@@ -70,6 +70,7 @@ import rush.shared.ui.generated.resources.*
 // topmost settings page
 @Composable
 fun SettingRootPage(
+    modifier: Modifier = Modifier,
     notificationAccess: Boolean,
     state: SettingsPageState,
     onShowPaywall: () -> Unit,
@@ -80,7 +81,7 @@ fun SettingRootPage(
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
-) = PageFill {
+) = PageFill(modifier = modifier) {
     var deleteConfirmationDialog by remember { mutableStateOf(false) }
     var showLocalePicker by remember { mutableStateOf(false) }
 

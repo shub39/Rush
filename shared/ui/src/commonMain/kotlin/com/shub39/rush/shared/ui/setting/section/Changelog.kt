@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.Changelog
 import com.shub39.rush.shared.core.dataclasses.VersionEntry
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
@@ -54,10 +56,14 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
-fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBack: () -> Unit) {
+fun Changelog(
+    modifier: Modifier = Modifier,
+    changelog: Changelog,
+    onNavigateBack: () -> Unit,
+) = PageFill(modifier = modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumFlexibleTopAppBar(
                 scrollBehavior = scrollBehavior,
@@ -67,6 +73,9 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
                         fontFamily = flexFontEmphasis(),
                     )
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                ),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

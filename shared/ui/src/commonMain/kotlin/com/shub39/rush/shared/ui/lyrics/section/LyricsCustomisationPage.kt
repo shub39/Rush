@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -60,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
+import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
@@ -84,7 +86,7 @@ fun LyricsCustomisationsPage(
     requestMicrophonePermission: () -> Unit,
     waveData: List<Byte>?,
     modifier: Modifier = Modifier,
-) {
+) = PageFill(modifier = modifier) {
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
     val waveColors = getWaveColors(state)
@@ -153,7 +155,6 @@ fun LyricsCustomisationsPage(
                     },
                 )
             },
-            modifier = modifier,
         ) { paddingValues ->
             LazyColumn(
                 modifier =
@@ -251,7 +252,7 @@ fun LyricsCustomisationsPage(
                     },
                 )
             },
-            modifier = modifier,
+            modifier = Modifier.widthIn(max = 900.dp),
         ) { paddingValues ->
             Row(
                 modifier =

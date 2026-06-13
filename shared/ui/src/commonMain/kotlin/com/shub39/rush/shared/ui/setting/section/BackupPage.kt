@@ -79,7 +79,8 @@ fun BackupPage(
     state: SettingsPageState,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
-) = PageFill {
+    modifier: Modifier = Modifier
+) = PageFill(modifier = modifier) {
     val scope = rememberCoroutineScope()
 
     var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
