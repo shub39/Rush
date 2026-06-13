@@ -65,7 +65,7 @@ import com.shub39.rush.shared.ui.share.SharePageAction
 import com.shub39.rush.shared.ui.share.SharePageState
 import com.shub39.rush.shared.ui.toFontRes
 import com.shub39.rush.shared.ui.toFullName
-import com.shub39.rush.shared.ui.toShape
+import com.shub39.rush.shared.ui.toMaterialShape
 import com.shub39.rush.shared.ui.toStringRes
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -207,7 +207,7 @@ fun SharePageSheet(
                                                     ToggleButtonDefaults.tonalToggleButtonColors()
                                                         .contentColor
                                                 },
-                                            shape = it.toShape(),
+                                            shape = it.toMaterialShape(),
                                         )
                             )
                         },

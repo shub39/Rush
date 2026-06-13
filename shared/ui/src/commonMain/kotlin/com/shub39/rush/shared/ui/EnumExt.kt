@@ -40,170 +40,168 @@ import rush.shared.ui.generated.resources.*
 
 fun SortOrder.toStringRes(): StringResource {
     return when (this) {
-        SortOrder.DATE_ADDED -> Res.string.sort_date_added
-        SortOrder.TITLE_ASC -> Res.string.sort_title_asc
-        SortOrder.TITLE_DESC -> Res.string.sort_title_desc
+        DATE_ADDED -> Res.string.sort_date_added
+        TITLE_ASC -> Res.string.sort_title_asc
+        TITLE_DESC -> Res.string.sort_title_desc
     }
 }
 
 fun LyricsBackground.toStringRes(): StringResource {
     return when (this) {
-        LyricsBackground.HYPNOTIC -> Res.string.hypnotic
-        LyricsBackground.ALBUM_ART -> Res.string.blurred_art
-        LyricsBackground.SOLID_COLOR -> Res.string.solid_color
-        LyricsBackground.WAVE -> Res.string.wave
-        LyricsBackground.GRADIENT -> Res.string.gradient
-        LyricsBackground.CURVE -> Res.string.curve
+        HYPNOTIC -> Res.string.hypnotic
+        ALBUM_ART -> Res.string.blurred_art
+        SOLID_COLOR -> Res.string.solid_color
+        WAVE -> Res.string.wave
+        GRADIENT -> Res.string.gradient
+        CURVE -> Res.string.curve
     }
 }
 
 expect val allBackgrounds: List<LyricsBackground>
 
-val premiumCards =
-    listOf(LyricsBackground.HYPNOTIC, CardTheme.MESSY, CardTheme.QUOTE, CardTheme.CHAT)
+val premiumCards: List<CardTheme> = listOf(HYPNOTIC, MESSY, QUOTE, CHAT)
 
-val audioDependentBackgrounds =
-    listOf(LyricsBackground.WAVE, LyricsBackground.GRADIENT, LyricsBackground.CURVE)
+val audioDependentBackgrounds: List<LyricsBackground> = listOf(WAVE, GRADIENT, CURVE)
 
 fun PaletteStyle.toMPaletteStyle(): com.materialkolor.PaletteStyle {
     return when (this) {
-        PaletteStyle.TONALSPOT -> com.materialkolor.PaletteStyle.TonalSpot
-        PaletteStyle.NEUTRAL -> com.materialkolor.PaletteStyle.Neutral
-        PaletteStyle.VIBRANT -> com.materialkolor.PaletteStyle.Vibrant
-        PaletteStyle.EXPRESSIVE -> com.materialkolor.PaletteStyle.Expressive
-        PaletteStyle.RAINBOW -> com.materialkolor.PaletteStyle.Rainbow
-        PaletteStyle.FRUITSALAD -> com.materialkolor.PaletteStyle.FruitSalad
-        PaletteStyle.MONOCHROME -> com.materialkolor.PaletteStyle.Monochrome
-        PaletteStyle.FIDELITY -> com.materialkolor.PaletteStyle.Fidelity
-        PaletteStyle.CONTENT -> com.materialkolor.PaletteStyle.Content
+        TONALSPOT -> TonalSpot
+        NEUTRAL -> Neutral
+        VIBRANT -> Vibrant
+        EXPRESSIVE -> Expressive
+        RAINBOW -> Rainbow
+        FRUITSALAD -> FruitSalad
+        MONOCHROME -> Monochrome
+        FIDELITY -> Fidelity
+        CONTENT -> Content
     }
 }
 
 fun LyricsAlignment.toArrangement(): Arrangement.Horizontal {
     return when (this) {
-        LyricsAlignment.CENTER -> Arrangement.Center
-        LyricsAlignment.END -> Arrangement.End
-        LyricsAlignment.START -> Arrangement.Start
+        CENTER -> Arrangement.Center
+        END -> Arrangement.End
+        START -> Arrangement.Start
     }
 }
 
 fun LyricsAlignment.toTextAlignment(): TextAlign {
     return when (this) {
-        LyricsAlignment.CENTER -> TextAlign.Center
-        LyricsAlignment.END -> TextAlign.End
-        LyricsAlignment.START -> TextAlign.Start
+        CENTER -> TextAlign.Center
+        END -> TextAlign.End
+        START -> TextAlign.Start
     }
 }
 
 fun LyricsAlignment.toAlignment(): Alignment.Horizontal {
     return when (this) {
-        LyricsAlignment.CENTER -> Alignment.CenterHorizontally
-        LyricsAlignment.END -> Alignment.End
-        LyricsAlignment.START -> Alignment.Start
+        CENTER -> Alignment.CenterHorizontally
+        END -> Alignment.End
+        START -> Alignment.Start
     }
 }
 
 fun AppTheme.toStringRes(): StringResource {
     return when (this) {
-        AppTheme.SYSTEM -> Res.string.system
-        AppTheme.LIGHT -> Res.string.light
-        AppTheme.DARK -> Res.string.dark
+        SYSTEM -> Res.string.system
+        LIGHT -> Res.string.light
+        DARK -> Res.string.dark
     }
 }
 
 fun CardColors.toStringRes(): StringResource {
     return when (this) {
-        CardColors.MUTED -> Res.string.muted
-        CardColors.VIBRANT -> Res.string.vibrant
-        CardColors.CUSTOM -> Res.string.custom
+        MUTED -> Res.string.muted
+        VIBRANT -> Res.string.vibrant
+        CUSTOM -> Res.string.custom
     }
 }
 
 fun CardFit.toStringRes(): StringResource {
     return when (this) {
-        CardFit.FIT -> Res.string.fit
-        CardFit.STANDARD -> Res.string.standard
+        FIT -> Res.string.fit
+        STANDARD -> Res.string.standard
     }
 }
 
 fun CardTheme.toStringRes(): StringResource {
     return when (this) {
-        CardTheme.SPOTIFY -> Res.string.spotify
-        CardTheme.RUSHED -> Res.string.rushed
-        CardTheme.VERTICAL -> Res.string.vertical
-        CardTheme.COUPLET -> Res.string.couplet
-        CardTheme.ALBUM_ART -> Res.string.album_art
-        CardTheme.HYPNOTIC -> Res.string.hypnotic
-        CardTheme.QUOTE -> Res.string.quote
-        CardTheme.MESSY -> Res.string.messy
-        CardTheme.CHAT -> Res.string.chat
+        SPOTIFY -> Res.string.spotify
+        RUSHED -> Res.string.rushed
+        VERTICAL -> Res.string.vertical
+        COUPLET -> Res.string.couplet
+        ALBUM_ART -> Res.string.album_art
+        HYPNOTIC -> Res.string.hypnotic
+        QUOTE -> Res.string.quote
+        MESSY -> Res.string.messy
+        CHAT -> Res.string.chat
     }
 }
 
 fun CornerRadius.toStringRes(): StringResource {
     return when (this) {
-        CornerRadius.DEFAULT -> Res.string.default_
-        CornerRadius.ROUNDED -> Res.string.rounded
+        DEFAULT -> Res.string.default_
+        ROUNDED -> Res.string.rounded
     }
 }
 
 fun Fonts.toFullName(): String {
     return when (this) {
-        Fonts.SYSTEM_DEFAULT -> "System Default"
-        Fonts.FIGTREE -> "Figtree"
-        Fonts.INTER -> "Inter"
-        Fonts.MANROPE -> "Manrope"
-        Fonts.MONTSERRAT -> "Montserrat"
-        Fonts.OPEN_SANS -> "Open Sans"
-        Fonts.OUTFIT -> "Outfit"
-        Fonts.POPPINS -> "Poppins"
-        Fonts.DM_SANS -> "DM Sans"
-        Fonts.QUICKSAND -> "QuickSand"
-        Fonts.JOSH -> "Josh"
-        Fonts.GOOGLE_SANS -> "Google Sans"
+        SYSTEM_DEFAULT -> "System Default"
+        FIGTREE -> "Figtree"
+        INTER -> "Inter"
+        MANROPE -> "Manrope"
+        MONTSERRAT -> "Montserrat"
+        OPEN_SANS -> "Open Sans"
+        OUTFIT -> "Outfit"
+        POPPINS -> "Poppins"
+        DM_SANS -> "DM Sans"
+        QUICKSAND -> "QuickSand"
+        JOSH -> "Josh"
+        GOOGLE_SANS -> "Google Sans"
     }
 }
 
 fun Fonts.toFontRes(): FontResource? {
     return when (this) {
-        Fonts.SYSTEM_DEFAULT -> null
-        Fonts.POPPINS -> Res.font.poppins_regular
-        Fonts.DM_SANS -> Res.font.dm_sans
-        Fonts.FIGTREE -> Res.font.figtree
-        Fonts.INTER -> Res.font.inter
-        Fonts.MANROPE -> Res.font.manrope
-        Fonts.MONTSERRAT -> Res.font.montserrat
-        Fonts.OPEN_SANS -> Res.font.open_sans
-        Fonts.OUTFIT -> Res.font.outfit
-        Fonts.QUICKSAND -> Res.font.quicksand
-        Fonts.JOSH -> Res.font.jost
-        Fonts.GOOGLE_SANS -> Res.font.google_sans_flex
+        SYSTEM_DEFAULT -> null
+        POPPINS -> Res.font.poppins_regular
+        DM_SANS -> Res.font.dm_sans
+        FIGTREE -> Res.font.figtree
+        INTER -> Res.font.inter
+        MANROPE -> Res.font.manrope
+        MONTSERRAT -> Res.font.montserrat
+        OPEN_SANS -> Res.font.open_sans
+        OUTFIT -> Res.font.outfit
+        QUICKSAND -> Res.font.quicksand
+        JOSH -> Res.font.jost
+        GOOGLE_SANS -> Res.font.google_sans_flex
     }
 }
 
 @Composable
-fun AlbumArtShape.toShape(): Shape {
+fun AlbumArtShape.toMaterialShape(): Shape {
     return when (this) {
-        AlbumArtShape.CIRCLE -> MaterialShapes.Circle.toShape()
-        AlbumArtShape.SUNNY -> MaterialShapes.Sunny.toShape()
-        AlbumArtShape.VERY_SUNNY -> MaterialShapes.VerySunny.toShape()
-        AlbumArtShape.SQUARE -> MaterialShapes.Square.toShape()
-        AlbumArtShape.SLANTED -> MaterialShapes.Slanted.toShape()
-        AlbumArtShape.ARCH -> MaterialShapes.Arch.toShape()
-        AlbumArtShape.PILL -> MaterialShapes.Pill.toShape()
-        AlbumArtShape.PENTAGON -> MaterialShapes.Pentagon.toShape()
-        AlbumArtShape.GEM -> MaterialShapes.Gem.toShape()
-        AlbumArtShape.COOKIE_4 -> MaterialShapes.Cookie4Sided.toShape()
-        AlbumArtShape.COOKIE_6 -> MaterialShapes.Cookie6Sided.toShape()
-        AlbumArtShape.COOKIE_9 -> MaterialShapes.Cookie9Sided.toShape()
-        AlbumArtShape.COOKIE_12 -> MaterialShapes.Cookie12Sided.toShape()
-        AlbumArtShape.CLOVER_4 -> MaterialShapes.Clover4Leaf.toShape()
-        AlbumArtShape.CLOVER_8 -> MaterialShapes.Clover8Leaf.toShape()
-        AlbumArtShape.GHOSTISH -> MaterialShapes.Ghostish.toShape()
-        AlbumArtShape.FLOWER -> MaterialShapes.Flower.toShape()
-        AlbumArtShape.SOFT_BURST -> MaterialShapes.SoftBurst.toShape()
-        AlbumArtShape.PUFFY_DIAMOND -> MaterialShapes.PuffyDiamond.toShape()
-        AlbumArtShape.BUN -> MaterialShapes.Bun.toShape()
-        AlbumArtShape.HEART -> MaterialShapes.Heart.toShape()
-    }
+        CIRCLE -> MaterialShapes.Circle
+        SUNNY -> MaterialShapes.Sunny
+        VERY_SUNNY -> MaterialShapes.VerySunny
+        SQUARE -> MaterialShapes.Square
+        SLANTED -> MaterialShapes.Slanted
+        ARCH -> MaterialShapes.Arch
+        PILL -> MaterialShapes.Pill
+        PENTAGON -> MaterialShapes.Pentagon
+        GEM -> MaterialShapes.Gem
+        COOKIE_4 -> MaterialShapes.Cookie4Sided
+        COOKIE_6 -> MaterialShapes.Cookie6Sided
+        COOKIE_9 -> MaterialShapes.Cookie9Sided
+        COOKIE_12 -> MaterialShapes.Cookie12Sided
+        CLOVER_4 -> MaterialShapes.Clover4Leaf
+        CLOVER_8 -> MaterialShapes.Clover8Leaf
+        GHOSTISH -> MaterialShapes.Ghostish
+        FLOWER -> MaterialShapes.Flower
+        SOFT_BURST -> MaterialShapes.SoftBurst
+        PUFFY_DIAMOND -> MaterialShapes.PuffyDiamond
+        BUN -> MaterialShapes.Bun
+        HEART -> MaterialShapes.Heart
+    }.toShape()
 }

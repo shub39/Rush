@@ -21,12 +21,9 @@ plugins {
 }
 
 kotlin {
-    targets.all {
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-sensitive-resolution")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     android {

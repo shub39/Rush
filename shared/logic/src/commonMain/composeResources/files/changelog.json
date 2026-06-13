@@ -1,5 +1,13 @@
 [
   {
+    "version": "6.4.0",
+    "changes": [
+      "Added option to hide controls in Lyrics page after 5 seconds",
+      "Enable it from Lyrics Customizations",
+      "Miscellaneous UI Fixes"
+    ]
+  },
+  {
     "version": "6.3.3",
     "changes": [
       "Improved usability in Landscape and Desktop screen sizes",
@@ -63,12 +71,6 @@
     "changes": [
       "Updated Translations",
       "(Android 13+) Added Language Picker in Settings"
-    ]
-  },
-  {
-    "version": "6.1.13",
-    "changes": [
-      "Fixed local search results not loading Lyrics"
     ]
   }
 ]

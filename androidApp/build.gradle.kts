@@ -23,8 +23,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "6.3.3"
-val appVersionCode = 6330
+val appVersionName = "6.4.0"
+val appVersionCode = 6400
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -124,8 +124,8 @@ android {
 
 kotlin {
     compilerOptions {
-        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
-        optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
+        freeCompilerArgs.add("-Xcontext-sensitive-resolution")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add(
             "androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
         )

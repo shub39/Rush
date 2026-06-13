@@ -45,6 +45,7 @@ data class LyricsPageState(
     val source: Sources = Sources.LRCLIB,
     val selectedLines: Map<Int, String> = emptyMap(),
     val searchState: SearchState = SearchState.Idle,
+    val hideUI: Boolean = false,
 
     // datastore
     val expressiveSyllables: Boolean = false,

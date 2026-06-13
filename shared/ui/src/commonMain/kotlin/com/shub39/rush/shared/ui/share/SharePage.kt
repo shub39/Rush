@@ -84,7 +84,7 @@ import com.shub39.rush.shared.ui.share.component.cards.RushedShareCard
 import com.shub39.rush.shared.ui.share.component.cards.SpotifyShareCard
 import com.shub39.rush.shared.ui.share.component.cards.VerticalShareCard
 import com.shub39.rush.shared.ui.theme.RushTheme
-import com.shub39.rush.shared.ui.toShape
+import com.shub39.rush.shared.ui.toMaterialShape
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
@@ -212,7 +212,7 @@ fun SharePageContent(
                     Box(contentAlignment = Alignment.Center) {
                         RushTheme(theme = Theme(font = state.cardFont)) {
                             when (state.cardTheme) {
-                                CardTheme.SPOTIFY ->
+                                SPOTIFY ->
                                     SpotifyShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -220,11 +220,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.RUSHED ->
+                                RUSHED ->
                                     RushedShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -232,11 +232,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.HYPNOTIC ->
+                                HYPNOTIC ->
                                     HypnoticShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -244,11 +244,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.VERTICAL ->
+                                VERTICAL ->
                                     VerticalShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -256,11 +256,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.QUOTE ->
+                                QUOTE ->
                                     QuoteShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -268,11 +268,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.COUPLET ->
+                                COUPLET ->
                                     CoupletShareCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -280,11 +280,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.MESSY ->
+                                MESSY ->
                                     MessyCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -292,12 +292,12 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                         seed = messyCardSeed,
                                     )
 
-                                CardTheme.CHAT ->
+                                CHAT ->
                                     ChatCard(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -305,11 +305,11 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
-                                CardTheme.ALBUM_ART ->
+                                ALBUM_ART ->
                                     AlbumArt(
                                         modifier = cardModifier,
                                         song = state.songDetails,
@@ -317,7 +317,7 @@ fun SharePageContent(
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
                                         selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
                             }
