@@ -259,9 +259,11 @@ fun LyricsPage(
                                         Column(
                                             modifier =
                                                 Modifier.fillMaxWidth()
-                                                    .statusBarsPadding()
-                                                    .displayCutoutPadding()
-                                                    .padding(horizontal = 16.dp),
+                                                    .padding(
+                                                        start = 16.dp,
+                                                        end = 16.dp,
+                                                        top = 48.dp
+                                                    ),
                                             horizontalAlignment = lyricsAlignment,
                                         ) {
                                             Spacer(modifier = Modifier.height(20.dp))
@@ -350,8 +352,10 @@ fun LyricsPage(
                                     Row(
                                         modifier =
                                             Modifier.fillMaxSize()
-                                                .safeDrawingPadding()
-                                                .padding(horizontal = 16.dp),
+                                                .padding(
+                                                    start = 32.dp,
+                                                    end = 16.dp
+                                                ),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                                     ) {

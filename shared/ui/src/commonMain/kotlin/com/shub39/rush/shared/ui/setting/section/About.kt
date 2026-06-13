@@ -94,6 +94,9 @@ fun About(
                 title = {
                     Text(text = stringResource(Res.string.about), fontFamily = flexFontEmphasis())
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                ),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

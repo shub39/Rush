@@ -135,7 +135,7 @@ fun LyricsCustomisationsPage(
                     },
                     colors =
                         TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surface
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                         ),
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
