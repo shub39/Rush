@@ -43,11 +43,10 @@ fun main() {
             }
         }
         val currentDensity = LocalDensity.current
-        val scale = 1.1f
         val scaledDensity =
             Density(
-                density = currentDensity.density * scale,
-                fontScale = currentDensity.fontScale * scale,
+                density = currentDensity.density * 1.1f,
+                fontScale = currentDensity.fontScale,
             )
 
         CompositionLocalProvider(
