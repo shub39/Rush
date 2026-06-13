@@ -124,11 +124,8 @@ android {
 
 kotlin {
     compilerOptions {
-        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
-        optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
-        optIn.add(
-            "androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
-        )
+        freeCompilerArgs.add("-Xcontext-sensitive-resolution")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 

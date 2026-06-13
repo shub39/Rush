@@ -84,7 +84,7 @@ import com.shub39.rush.shared.ui.share.component.cards.RushedShareCard
 import com.shub39.rush.shared.ui.share.component.cards.SpotifyShareCard
 import com.shub39.rush.shared.ui.share.component.cards.VerticalShareCard
 import com.shub39.rush.shared.ui.theme.RushTheme
-import com.shub39.rush.shared.ui.toShape
+import com.shub39.rush.shared.ui.toMaterialShape
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
@@ -220,7 +220,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -232,7 +232,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -244,7 +244,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -256,7 +256,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -268,7 +268,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -280,7 +280,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -292,7 +292,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                         seed = messyCardSeed,
                                     )
@@ -305,7 +305,7 @@ fun SharePageContent(
                                         cardColors = cardColor,
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
 
@@ -317,7 +317,7 @@ fun SharePageContent(
                                         cardCorners = cardCorners,
                                         fit = state.cardFit,
                                         selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toShape(),
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
                                         rushBranding = state.rushBranding,
                                     )
                             }

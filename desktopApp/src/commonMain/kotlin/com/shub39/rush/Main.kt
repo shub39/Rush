@@ -44,10 +44,7 @@ fun main() {
         }
         val currentDensity = LocalDensity.current
         val scaledDensity =
-            Density(
-                density = currentDensity.density * 1.1f,
-                fontScale = currentDensity.fontScale,
-            )
+            Density(density = currentDensity.density * 1.1f, fontScale = currentDensity.fontScale)
 
         CompositionLocalProvider(
             LocalDensity provides scaledDensity,
