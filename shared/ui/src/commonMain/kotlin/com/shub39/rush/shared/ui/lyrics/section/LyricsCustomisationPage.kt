@@ -86,7 +86,7 @@ fun LyricsCustomisationsPage(
     requestMicrophonePermission: () -> Unit,
     waveData: List<Byte>?,
     modifier: Modifier = Modifier,
-) = PageFill(modifier = modifier) {
+) = PageFill(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
     val (cardBackground, cardContent) = getCardColors(state)
     val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
     val waveColors = getWaveColors(state)
@@ -135,7 +135,7 @@ fun LyricsCustomisationsPage(
                     },
                     colors =
                         TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            containerColor = MaterialTheme.colorScheme.surface
                         ),
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
@@ -232,7 +232,7 @@ fun LyricsCustomisationsPage(
                     title = { Text(stringResource(Res.string.customisations)) },
                     colors =
                         TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            containerColor = MaterialTheme.colorScheme.surface
                         ),
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
@@ -257,10 +257,10 @@ fun LyricsCustomisationsPage(
             Row(
                 modifier =
                     Modifier.padding(
-                            start =
-                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                            end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
-                        )
+                        start =
+                            paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                        end = paddingValues.calculateRightPadding(LocalLayoutDirection.current),
+                    )
                         .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {

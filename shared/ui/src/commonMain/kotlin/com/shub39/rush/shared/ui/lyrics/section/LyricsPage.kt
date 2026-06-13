@@ -120,6 +120,7 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 fun LyricsPage(
+    modifier: Modifier = Modifier,
     onNavigateToCustomisations: () -> Unit,
     onShare: () -> Unit,
     action: (LyricsPageAction) -> Unit,
@@ -127,7 +128,7 @@ fun LyricsPage(
     playbackInfo: PlaybackInfo,
     waveData: List<Byte>?,
     notificationAccess: Boolean,
-) {
+) = PageFill(modifier = modifier) {
     val lazyListState = rememberLazyListState()
     val windowSizeClass = LocalWindowSizeClass.current
 
@@ -228,7 +229,7 @@ fun LyricsPage(
                                 hypnoticColor2 = hypnoticColor2,
                             )
 
-                            Column {
+                            Column(modifier = Modifier.widthIn(max = 1100.dp)) {
                                 if (!windowSizeClass.isExpanded()) {
                                     // portrait ui
                                     Box(
@@ -377,16 +378,19 @@ fun LyricsPage(
                                                 baseColor = Color.Transparent,
                                                 contentScale = ContentScale.Fit,
                                                 modifier =
-                                                    Modifier.size(120.dp)
-                                                        .clip(MaterialTheme.shapes.small),
+                                                    Modifier
+                                                        .fillMaxWidth(0.8f)
+                                                        .aspectRatio(1f)
+                                                        .clip(MaterialTheme.shapes.large)
                                             )
 
                                             Spacer(modifier = Modifier.height(12.dp))
 
                                             Text(
                                                 text = lyricsState.song.title,
-                                                style = MaterialTheme.typography.titleLarge,
-                                                fontWeight = FontWeight.SemiBold,
+                                                style = MaterialTheme.typography.titleLarge.copy(
+                                                    fontFamily = flexFontEmphasis()
+                                                ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier = Modifier.basicMarquee(),
@@ -394,8 +398,9 @@ fun LyricsPage(
 
                                             Text(
                                                 text = lyricsState.song.artists,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                fontWeight = FontWeight.Bold,
+                                                style = MaterialTheme.typography.bodyMedium.copy(
+                                                    fontFamily = flexFontRounded()
+                                                ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier = Modifier.basicMarquee(),
