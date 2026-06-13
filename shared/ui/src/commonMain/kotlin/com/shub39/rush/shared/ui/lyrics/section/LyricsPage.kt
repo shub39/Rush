@@ -30,16 +30,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -128,185 +125,244 @@ fun LyricsPage(
     playbackInfo: PlaybackInfo,
     waveData: List<Byte>?,
     notificationAccess: Boolean,
-) = PageFill(modifier = modifier) {
-    val lazyListState = rememberLazyListState()
-    val windowSizeClass = LocalWindowSizeClass.current
+) =
+    PageFill(modifier = modifier) {
+        val lazyListState = rememberLazyListState()
+        val windowSizeClass = LocalWindowSizeClass.current
 
-    val (cardBackground, cardContent) = getCardColors(state)
-    val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
-    val waveColors = getWaveColors(state)
+        val (cardBackground, cardContent) = getCardColors(state)
+        val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
+        val waveColors = getWaveColors(state)
 
-    val glowMultiplier by
-        animateFloatAsState(
-            targetValue = calculateGlowMultiplier(waveData),
-            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-        )
-
-    val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
-
-    val songId = (state.lyricsState as? LyricsState.Loaded)?.song?.id
-    val loadedSong = (state.lyricsState as? LyricsState.Loaded)?.song
-    val lyricsAlignment =
-        remember(state.textPrefs.lyricsAlignment) { state.textPrefs.lyricsAlignment.toAlignment() }
-    val actionsState =
-        remember(
-            loadedSong,
-            state.selectedLines,
-            state.source,
-            state.syncedAvailable,
-            state.sync,
-            state.autoChange,
-        ) {
-            ActionsState(
-                song = loadedSong,
-                selectedLines = state.selectedLines,
-                source = state.source,
-                syncedAvailable = state.syncedAvailable,
-                sync = state.sync,
-                autoChange = state.autoChange,
+        val glowMultiplier by
+            animateFloatAsState(
+                targetValue = calculateGlowMultiplier(waveData),
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
             )
+
+        val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
+        val songId = (state.lyricsState as? LyricsState.Loaded)?.song?.id
+        val loadedSong = (state.lyricsState as? LyricsState.Loaded)?.song
+        val lyricsAlignment =
+            remember(state.textPrefs.lyricsAlignment) {
+                state.textPrefs.lyricsAlignment.toAlignment()
+            }
+        val actionsState =
+            remember(
+                loadedSong,
+                state.selectedLines,
+                state.source,
+                state.syncedAvailable,
+                state.sync,
+                state.autoChange,
+            ) {
+                ActionsState(
+                    song = loadedSong,
+                    selectedLines = state.selectedLines,
+                    source = state.source,
+                    syncedAvailable = state.syncedAvailable,
+                    sync = state.sync,
+                    autoChange = state.autoChange,
+                )
+            }
+
+        LaunchedEffect(songId) {
+            if (songId == null) return@LaunchedEffect
+            delay(100.milliseconds)
+            lazyListState.animateScrollToItem(0)
+            action(LyricsPageAction.OnSetPosition(0))
         }
 
-    LaunchedEffect(songId) {
-        if (songId == null) return@LaunchedEffect
-        delay(100.milliseconds)
-        lazyListState.animateScrollToItem(0)
-        action(LyricsPageAction.OnSetPosition(0))
-    }
-
-    // Content Start
-    Box(modifier = Modifier.fillMaxSize().keepScreenOn()) {
-        Card(
-            modifier = Modifier.fillMaxSize(),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = cardBackground,
-                    contentColor = cardContent,
-                ),
-            shape = RoundedCornerShape(0.dp),
-        ) {
-            AnimatedContent(
-                targetState = state.lyricsState,
+        // Content Start
+        Box(modifier = Modifier.fillMaxSize().keepScreenOn()) {
+            Card(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) { lyricsState ->
-                when (lyricsState) {
-                    LyricsState.Idle -> {
-                        Empty(suggestion = false, color = cardContent, icon = Res.drawable.music)
-                    }
-
-                    is LyricsState.Fetching -> {
-                        FetchingCard(
-                            fetching = lyricsState.name,
-                            colors = Pair(cardContent, cardBackground),
-                        )
-                    }
-
-                    is LyricsState.LyricsError -> {
-                        ErrorCard(
-                            error = lyricsState.errorCode,
-                            debugMessage = lyricsState.debugMessage,
-                            colors = Pair(cardContent, cardBackground),
-                        )
-                    }
-
-                    is LyricsState.Loaded -> {
-                        // Updating colors
-                        LaunchedEffect(lyricsState.song.artUrl) {
-                            lyricsState.song.artUrl?.let {
-                                action(LyricsPageAction.UpdateExtractedColors(it))
-                            }
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = cardBackground,
+                        contentColor = cardContent,
+                    ),
+                shape = RoundedCornerShape(0.dp),
+            ) {
+                AnimatedContent(
+                    targetState = state.lyricsState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) { lyricsState ->
+                    when (lyricsState) {
+                        LyricsState.Idle -> {
+                            Empty(
+                                suggestion = false,
+                                color = cardContent,
+                                icon = Res.drawable.music,
+                            )
                         }
 
-                        PageFill {
-                            ApplyLyricsBackground(
-                                background = state.lyricsBackground,
-                                artUrl = lyricsState.song.artUrl,
-                                cardBackground = cardBackground,
-                                waveData = waveData,
-                                waveColors = waveColors,
-                                hypnoticColor1 = hypnoticColor1,
-                                hypnoticColor2 = hypnoticColor2,
+                        is LyricsState.Fetching -> {
+                            FetchingCard(
+                                fetching = lyricsState.name,
+                                colors = Pair(cardContent, cardBackground),
                             )
+                        }
 
-                            Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                if (!windowSizeClass.isExpanded()) {
-                                    // portrait ui
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
-                                            AnimatedVisibility(
-                                                visible =
-                                                    !state.sync &&
-                                                        top > 2 &&
-                                                        state.lyricsBackground !=
-                                                            LyricsBackground.ALBUM_ART
+                        is LyricsState.LyricsError -> {
+                            ErrorCard(
+                                error = lyricsState.errorCode,
+                                debugMessage = lyricsState.debugMessage,
+                                colors = Pair(cardContent, cardBackground),
+                            )
+                        }
+
+                        is LyricsState.Loaded -> {
+                            // Updating colors
+                            LaunchedEffect(lyricsState.song.artUrl) {
+                                lyricsState.song.artUrl?.let {
+                                    action(LyricsPageAction.UpdateExtractedColors(it))
+                                }
+                            }
+
+                            PageFill {
+                                ApplyLyricsBackground(
+                                    background = state.lyricsBackground,
+                                    artUrl = lyricsState.song.artUrl,
+                                    cardBackground = cardBackground,
+                                    waveData = waveData,
+                                    waveColors = waveColors,
+                                    hypnoticColor1 = hypnoticColor1,
+                                    hypnoticColor2 = hypnoticColor2,
+                                )
+
+                                Column(modifier = Modifier.widthIn(max = 1100.dp)) {
+                                    if (!windowSizeClass.isExpanded()) {
+                                        // portrait ui
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            Column(modifier = Modifier.align(Alignment.TopCenter)) {
+                                                AnimatedVisibility(
+                                                    visible =
+                                                        !state.sync &&
+                                                            top > 2 &&
+                                                            state.lyricsBackground !=
+                                                                LyricsBackground.ALBUM_ART
+                                                ) {
+                                                    ArtFromUrl(
+                                                        imageUrl = lyricsState.song.artUrl!!,
+                                                        highlightColor = cardContent,
+                                                        baseColor = Color.Transparent,
+                                                        modifier =
+                                                            Modifier.fillMaxWidth()
+                                                                .height(120.dp)
+                                                                .fadeBottomToTop(),
+                                                    )
+                                                }
+                                            }
+
+                                            Column(
+                                                modifier =
+                                                    Modifier.fillMaxWidth()
+                                                        .padding(
+                                                            start = 16.dp,
+                                                            end = 16.dp,
+                                                            top = 48.dp,
+                                                        ),
+                                                horizontalAlignment = lyricsAlignment,
                                             ) {
-                                                ArtFromUrl(
-                                                    imageUrl = lyricsState.song.artUrl!!,
-                                                    highlightColor = cardContent,
-                                                    baseColor = Color.Transparent,
+                                                Spacer(modifier = Modifier.height(20.dp))
+
+                                                AnimatedVisibility(
+                                                    visible = top <= 2 && !state.sync
+                                                ) {
+                                                    ArtFromUrl(
+                                                        imageUrl = lyricsState.song.artUrl!!,
+                                                        highlightColor = cardContent,
+                                                        baseColor = Color.Transparent,
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier =
+                                                            Modifier.size(80.dp)
+                                                                .aspectRatio(1f)
+                                                                .clip(MaterialTheme.shapes.small),
+                                                    )
+                                                }
+
+                                                Text(
+                                                    text = lyricsState.song.title,
+                                                    style = MaterialTheme.typography.headlineMedium,
+                                                    fontFamily = flexFontEmphasis(),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.fillMaxWidth()
-                                                            .height(120.dp)
-                                                            .fadeBottomToTop(),
+                                                        Modifier.padding(top = 8.dp).basicMarquee(),
                                                 )
+
+                                                Text(
+                                                    text = lyricsState.song.artists,
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontFamily = flexFontRounded(),
+                                                    fontWeight = FontWeight.Bold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.basicMarquee(),
+                                                )
+
+                                                // Actions Row
+                                                Row(
+                                                    modifier =
+                                                        Modifier.padding(vertical = 8.dp)
+                                                            .animateContentSize()
+                                                ) {
+                                                    Actions(
+                                                        state = actionsState,
+                                                        action = action,
+                                                        notificationAccess = notificationAccess,
+                                                        cardBackground = cardBackground,
+                                                        cardContent = cardContent,
+                                                        onShare = onShare,
+                                                        onEdit = onNavigateToCustomisations,
+                                                    )
+                                                }
                                             }
                                         }
 
-                                        Column(
+                                        if (!state.sync) {
+                                            PlainLyrics(
+                                                state = state,
+                                                lazyListState = lazyListState,
+                                                cardContent = cardContent,
+                                                action = action,
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                            )
+                                        } else if (lyricsState.song.ttmlLyrics != null) {
+                                            SyllableSyncedLyrics(
+                                                state = state,
+                                                playbackInfo = playbackInfo,
+                                                lazyListState = lazyListState,
+                                                cardContent = cardContent,
+                                                action = action,
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                            )
+                                        } else if (lyricsState.song.syncedLyrics != null) {
+                                            LineSyncedLyrics(
+                                                state = state,
+                                                playbackInfo = playbackInfo,
+                                                lazyListState = lazyListState,
+                                                cardContent = cardContent,
+                                                action = action,
+                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                            )
+                                        }
+                                    } else {
+                                        // landscape UI
+                                        Row(
                                             modifier =
-                                                Modifier.fillMaxWidth()
-                                                    .padding(
-                                                        start = 16.dp,
-                                                        end = 16.dp,
-                                                        top = 48.dp
-                                                    ),
-                                            horizontalAlignment = lyricsAlignment,
+                                                Modifier.fillMaxSize()
+                                                    .padding(start = 32.dp, end = 16.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
-                                            Spacer(modifier = Modifier.height(20.dp))
-
-                                            AnimatedVisibility(visible = top <= 2 && !state.sync) {
-                                                ArtFromUrl(
-                                                    imageUrl = lyricsState.song.artUrl!!,
-                                                    highlightColor = cardContent,
-                                                    baseColor = Color.Transparent,
-                                                    contentScale = ContentScale.Crop,
-                                                    modifier =
-                                                        Modifier.size(80.dp)
-                                                            .aspectRatio(1f)
-                                                            .clip(MaterialTheme.shapes.small),
-                                                )
-                                            }
-
-                                            Text(
-                                                text = lyricsState.song.title,
-                                                style = MaterialTheme.typography.headlineMedium,
-                                                fontFamily = flexFontEmphasis(),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier =
-                                                    Modifier.padding(top = 8.dp).basicMarquee(),
-                                            )
-
-                                            Text(
-                                                text = lyricsState.song.artists,
-                                                style = MaterialTheme.typography.titleMedium,
-                                                fontFamily = flexFontRounded(),
-                                                fontWeight = FontWeight.Bold,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.basicMarquee(),
-                                            )
-
-                                            // Actions Row
-                                            Row(
-                                                modifier =
-                                                    Modifier.padding(vertical = 8.dp)
-                                                        .animateContentSize()
-                                            ) {
+                                            Column(modifier = Modifier.animateContentSize()) {
                                                 Actions(
                                                     state = actionsState,
                                                     action = action,
@@ -317,233 +373,85 @@ fun LyricsPage(
                                                     onEdit = onNavigateToCustomisations,
                                                 )
                                             }
-                                        }
-                                    }
 
-                                    if (!state.sync) {
-                                        PlainLyrics(
-                                            state = state,
-                                            lazyListState = lazyListState,
-                                            cardContent = cardContent,
-                                            action = action,
-                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                        )
-                                    } else if (lyricsState.song.ttmlLyrics != null) {
-                                        SyllableSyncedLyrics(
-                                            state = state,
-                                            playbackInfo = playbackInfo,
-                                            lazyListState = lazyListState,
-                                            cardContent = cardContent,
-                                            action = action,
-                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                        )
-                                    } else if (lyricsState.song.syncedLyrics != null) {
-                                        LineSyncedLyrics(
-                                            state = state,
-                                            playbackInfo = playbackInfo,
-                                            lazyListState = lazyListState,
-                                            cardContent = cardContent,
-                                            action = action,
-                                            modifier = Modifier.weight(1f).fadeTopToBottom(),
-                                        )
-                                    }
-                                } else {
-                                    // landscape UI
-                                    Row(
-                                        modifier =
-                                            Modifier.fillMaxSize()
-                                                .padding(
-                                                    start = 32.dp,
-                                                    end = 16.dp
-                                                ),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    ) {
-                                        Column(modifier = Modifier.animateContentSize()) {
-                                            Actions(
-                                                state = actionsState,
-                                                action = action,
-                                                notificationAccess = notificationAccess,
-                                                cardBackground = cardBackground,
-                                                cardContent = cardContent,
-                                                onShare = onShare,
-                                                onEdit = onNavigateToCustomisations,
-                                            )
-                                        }
-
-                                        Column(
-                                            modifier =
-                                                Modifier.fillMaxWidth(0.3f).animateContentSize(),
-                                            horizontalAlignment = Alignment.Start,
-                                        ) {
-                                            ArtFromUrl(
-                                                imageUrl = lyricsState.song.artUrl!!,
-                                                highlightColor = cardContent,
-                                                baseColor = Color.Transparent,
-                                                contentScale = ContentScale.Fit,
+                                            Column(
                                                 modifier =
-                                                    Modifier
-                                                        .fillMaxWidth(0.8f)
-                                                        .aspectRatio(1f)
-                                                        .clip(MaterialTheme.shapes.large)
-                                            )
+                                                    Modifier.fillMaxWidth(0.3f)
+                                                        .animateContentSize(),
+                                                horizontalAlignment = Alignment.Start,
+                                            ) {
+                                                ArtFromUrl(
+                                                    imageUrl = lyricsState.song.artUrl!!,
+                                                    highlightColor = cardContent,
+                                                    baseColor = Color.Transparent,
+                                                    contentScale = ContentScale.Fit,
+                                                    modifier =
+                                                        Modifier.fillMaxWidth(0.8f)
+                                                            .aspectRatio(1f)
+                                                            .clip(MaterialTheme.shapes.large),
+                                                )
 
-                                            Spacer(modifier = Modifier.height(12.dp))
+                                                Spacer(modifier = Modifier.height(12.dp))
 
-                                            Text(
-                                                text = lyricsState.song.title,
-                                                style = MaterialTheme.typography.titleLarge.copy(
-                                                    fontFamily = flexFontEmphasis()
-                                                ),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.basicMarquee(),
-                                            )
+                                                Text(
+                                                    text = lyricsState.song.title,
+                                                    style =
+                                                        MaterialTheme.typography.titleLarge.copy(
+                                                            fontFamily = flexFontEmphasis()
+                                                        ),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.basicMarquee(),
+                                                )
 
-                                            Text(
-                                                text = lyricsState.song.artists,
-                                                style = MaterialTheme.typography.bodyMedium.copy(
-                                                    fontFamily = flexFontRounded()
-                                                ),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.basicMarquee(),
-                                            )
-                                        }
+                                                Text(
+                                                    text = lyricsState.song.artists,
+                                                    style =
+                                                        MaterialTheme.typography.bodyMedium.copy(
+                                                            fontFamily = flexFontRounded()
+                                                        ),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.basicMarquee(),
+                                                )
+                                            }
 
-                                        if (!state.sync) {
-                                            PlainLyrics(
-                                                state = state,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier =
-                                                    Modifier.weight(1f)
-                                                        .fillMaxHeight()
-                                                        .fadeTopToBottom(),
-                                            )
-                                        } else if (lyricsState.song.ttmlLyrics != null) {
-                                            SyllableSyncedLyrics(
-                                                state = state,
-                                                playbackInfo = playbackInfo,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier =
-                                                    Modifier.weight(1f)
-                                                        .fillMaxHeight()
-                                                        .fadeTopToBottom(),
-                                            )
-                                        } else if (lyricsState.song.syncedLyrics != null) {
-                                            LineSyncedLyrics(
-                                                state = state,
-                                                playbackInfo = playbackInfo,
-                                                lazyListState = lazyListState,
-                                                cardContent = cardContent,
-                                                action = action,
-                                                modifier =
-                                                    Modifier.weight(1f)
-                                                        .fillMaxHeight()
-                                                        .fadeTopToBottom(),
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Column(
-            modifier =
-                Modifier.align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
-                    .padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            val autoChangeAlpha by
-                animateFloatAsState(
-                    targetValue = if (state.autoChange) 1f else 0f,
-                    animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                    label = "autoChangeAlpha",
-                )
-
-            if (autoChangeAlpha > 0f) {
-                Box(
-                    modifier =
-                        Modifier.widthIn(max = 150.dp).graphicsLayer { alpha = autoChangeAlpha }
-                ) {
-                    AnimatedContent(
-                        targetState = state.searchState,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        label = "searchState",
-                    ) { searchState ->
-                        when (searchState) {
-                            SearchState.Idle -> {}
-                            is SearchState.Searching -> {
-                                Card(
-                                    shape = RoundedCornerShape(100.dp),
-                                    colors =
-                                        CardDefaults.cardColors(
-                                            contentColor = cardBackground,
-                                            containerColor = cardContent,
-                                        ),
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(16.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        LoadingIndicator(
-                                            color = cardBackground,
-                                            modifier = Modifier.size(20.dp),
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        Text(
-                                            text = searchState.query,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    }
-                                }
-                            }
-
-                            SearchState.UserPrompt -> {
-                                Card(
-                                    shape = RoundedCornerShape(100.dp),
-                                    colors =
-                                        CardDefaults.cardColors(
-                                            contentColor = cardBackground,
-                                            containerColor = cardContent,
-                                        ),
-                                    onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(16.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.search_off),
-                                            contentDescription = "No exact match found",
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        Column {
-                                            Text(
-                                                text = stringResource(Res.string.not_found),
-                                                style = MaterialTheme.typography.bodySmall,
-                                                fontWeight = FontWeight.Bold,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
-                                            Text(
-                                                text = stringResource(Res.string.open_search),
-                                                style = MaterialTheme.typography.labelSmall,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
+                                            if (!state.sync) {
+                                                PlainLyrics(
+                                                    state = state,
+                                                    lazyListState = lazyListState,
+                                                    cardContent = cardContent,
+                                                    action = action,
+                                                    modifier =
+                                                        Modifier.weight(1f)
+                                                            .fillMaxHeight()
+                                                            .fadeTopToBottom(),
+                                                )
+                                            } else if (lyricsState.song.ttmlLyrics != null) {
+                                                SyllableSyncedLyrics(
+                                                    state = state,
+                                                    playbackInfo = playbackInfo,
+                                                    lazyListState = lazyListState,
+                                                    cardContent = cardContent,
+                                                    action = action,
+                                                    modifier =
+                                                        Modifier.weight(1f)
+                                                            .fillMaxHeight()
+                                                            .fadeTopToBottom(),
+                                                )
+                                            } else if (lyricsState.song.syncedLyrics != null) {
+                                                LineSyncedLyrics(
+                                                    state = state,
+                                                    playbackInfo = playbackInfo,
+                                                    lazyListState = lazyListState,
+                                                    cardContent = cardContent,
+                                                    action = action,
+                                                    modifier =
+                                                        Modifier.weight(1f)
+                                                            .fillMaxHeight()
+                                                            .fadeTopToBottom(),
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -553,105 +461,202 @@ fun LyricsPage(
                 }
             }
 
-            AnimatedVisibility(
-                visible = state.sync,
-                enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()),
-                exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()),
+            Column(
+                modifier =
+                    Modifier.align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(
-                        onClick = { action(LyricsPageAction.OnPlayPrevious) },
-                        colors =
-                            IconButtonDefaults.outlinedIconButtonColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent,
-                            ),
-                        shapes =
-                            IconButtonShapes(
-                                shape = CircleShape,
-                                pressedShape = RoundedCornerShape(16.dp),
-                            ),
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.skip_previous),
-                            contentDescription = "Skip Previous",
-                        )
-                    }
+                val autoChangeAlpha by
+                    animateFloatAsState(
+                        targetValue = if (state.autoChange) 1f else 0f,
+                        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+                        label = "autoChangeAlpha",
+                    )
 
-                    IconButton(
-                        colors =
-                            IconButtonDefaults.iconButtonColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent,
-                            ),
-                        shapes =
-                            IconButtonShapes(
-                                shape = CircleShape,
-                                pressedShape = RoundedCornerShape(16.dp),
-                            ),
-                        onClick = { action(LyricsPageAction.OnPauseOrResume) },
+                if (autoChangeAlpha > 0f) {
+                    Box(
                         modifier =
-                            Modifier.conditional(
-                                    state.lyricsBackground in audioDependentBackgrounds
-                                ) {
-                                    glowBackground(
-                                        (24 * glowMultiplier).dp,
-                                        CircleShape,
-                                        cardContent,
-                                    )
-                                }
-                                .height(60.dp)
-                                .width(120.dp),
+                            Modifier.widthIn(max = 150.dp).graphicsLayer { alpha = autoChangeAlpha }
                     ) {
-                        Icon(
-                            painter =
-                                painterResource(
-                                    if (playbackInfo.speed == 0f) {
-                                        Res.drawable.play
-                                    } else {
-                                        Res.drawable.pause
+                        AnimatedContent(
+                            targetState = state.searchState,
+                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                            label = "searchState",
+                        ) { searchState ->
+                            when (searchState) {
+                                SearchState.Idle -> {}
+                                is SearchState.Searching -> {
+                                    Card(
+                                        shape = RoundedCornerShape(100.dp),
+                                        colors =
+                                            CardDefaults.cardColors(
+                                                contentColor = cardBackground,
+                                                containerColor = cardContent,
+                                            ),
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(16.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            LoadingIndicator(
+                                                color = cardBackground,
+                                                modifier = Modifier.size(20.dp),
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = searchState.query,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
                                     }
-                                ),
-                            contentDescription = "Pause or Resume",
-                        )
-                    }
+                                }
 
-                    IconButton(
-                        onClick = { action(LyricsPageAction.OnPlayNext) },
-                        shapes =
-                            IconButtonShapes(
-                                shape = CircleShape,
-                                pressedShape = RoundedCornerShape(16.dp),
-                            ),
-                        colors =
-                            IconButtonDefaults.outlinedIconButtonColors(
-                                contentColor = cardBackground,
-                                containerColor = cardContent,
-                            ),
+                                SearchState.UserPrompt -> {
+                                    Card(
+                                        shape = RoundedCornerShape(100.dp),
+                                        colors =
+                                            CardDefaults.cardColors(
+                                                contentColor = cardBackground,
+                                                containerColor = cardContent,
+                                            ),
+                                        onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(16.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(Res.drawable.search_off),
+                                                contentDescription = "No exact match found",
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Column {
+                                                Text(
+                                                    text = stringResource(Res.string.not_found),
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    fontWeight = FontWeight.Bold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                )
+                                                Text(
+                                                    text = stringResource(Res.string.open_search),
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = state.sync,
+                    enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()),
+                    exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()),
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.skip_next),
-                            contentDescription = "Skip Next",
-                        )
+                        IconButton(
+                            onClick = { action(LyricsPageAction.OnPlayPrevious) },
+                            colors =
+                                IconButtonDefaults.outlinedIconButtonColors(
+                                    contentColor = cardBackground,
+                                    containerColor = cardContent,
+                                ),
+                            shapes =
+                                IconButtonShapes(
+                                    shape = CircleShape,
+                                    pressedShape = RoundedCornerShape(16.dp),
+                                ),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.skip_previous),
+                                contentDescription = "Skip Previous",
+                            )
+                        }
+
+                        IconButton(
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    contentColor = cardBackground,
+                                    containerColor = cardContent,
+                                ),
+                            shapes =
+                                IconButtonShapes(
+                                    shape = CircleShape,
+                                    pressedShape = RoundedCornerShape(16.dp),
+                                ),
+                            onClick = { action(LyricsPageAction.OnPauseOrResume) },
+                            modifier =
+                                Modifier.conditional(
+                                        state.lyricsBackground in audioDependentBackgrounds
+                                    ) {
+                                        glowBackground(
+                                            (24 * glowMultiplier).dp,
+                                            CircleShape,
+                                            cardContent,
+                                        )
+                                    }
+                                    .height(60.dp)
+                                    .width(120.dp),
+                        ) {
+                            Icon(
+                                painter =
+                                    painterResource(
+                                        if (playbackInfo.speed == 0f) {
+                                            Res.drawable.play
+                                        } else {
+                                            Res.drawable.pause
+                                        }
+                                    ),
+                                contentDescription = "Pause or Resume",
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { action(LyricsPageAction.OnPlayNext) },
+                            shapes =
+                                IconButtonShapes(
+                                    shape = CircleShape,
+                                    pressedShape = RoundedCornerShape(16.dp),
+                                ),
+                            colors =
+                                IconButtonDefaults.outlinedIconButtonColors(
+                                    contentColor = cardBackground,
+                                    containerColor = cardContent,
+                                ),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.skip_next),
+                                contentDescription = "Skip Next",
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
-    // Lyrics Correction from LRCLIB
-    if (state.lyricsCorrect) {
-        LrcCorrectDialog(
-            action = action,
-            state = state,
-            track = (state.lyricsState as? LyricsState.Loaded)?.song?.title ?: "",
-            artist = (state.lyricsState as? LyricsState.Loaded)?.song?.artists ?: "",
-        )
+        // Lyrics Correction from LRCLIB
+        if (state.lyricsCorrect) {
+            LrcCorrectDialog(
+                action = action,
+                state = state,
+                track = (state.lyricsState as? LyricsState.Loaded)?.song?.title ?: "",
+                artist = (state.lyricsState as? LyricsState.Loaded)?.song?.artists ?: "",
+            )
+        }
     }
-}
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @PreviewScreenSizes

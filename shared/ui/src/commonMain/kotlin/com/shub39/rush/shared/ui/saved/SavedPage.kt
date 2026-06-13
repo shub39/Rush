@@ -91,223 +91,232 @@ fun SavedPage(
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier,
-) = PageFill(modifier = modifier) {
-    val windowSizeClass = LocalWindowSizeClass.current
+) =
+    PageFill(modifier = modifier) {
+        val windowSizeClass = LocalWindowSizeClass.current
 
-    Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp),
-        topBar = {
-            Column {
-                if (!windowSizeClass.isExpanded()) {
-                    LargeFlexibleTopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(Res.string.rush_branding),
-                                fontFamily = flexFontEmphasis(),
-                            )
-                        },
-                        subtitle = {
-                            Text(
-                                text = "${state.songsAsc.size} " + stringResource(Res.string.saved),
-                                fontFamily = flexFontRounded(),
-                            )
-                        },
-                        actions = {
-                            IconButton(onClick = onNavigateToSettings) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.settings),
-                                    contentDescription = "Settings",
-                                )
-                            }
-                        },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                    )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(Res.string.rush_branding),
-                                fontFamily = flexFontEmphasis(),
-                            )
-                        },
-                        subtitle = {
-                            Text(
-                                text = "${state.songsAsc.size} " + stringResource(Res.string.saved),
-                                fontFamily = flexFontRounded(),
-                            )
-                        },
-                        actions = {
-                            IconButton(onClick = onNavigateToSettings) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.settings),
-                                    contentDescription = "Settings",
-                                )
-                            }
-                        },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                    )
-                }
-
-                Row(
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceContainer,
-                                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-                            )
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                    ) {
-                        SortOrder.entries.toList().forEach { order ->
-                            ToggleButton(
-                                checked = order == state.sortOrder,
-                                onCheckedChange = {
-                                    onAction(SavedPageAction.UpdateSortOrder(order))
-                                },
-                                colors =
-                                    ToggleButtonDefaults.toggleButtonColors(
-                                        containerColor =
-                                            MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor =
-                                            MaterialTheme.colorScheme.onSecondaryContainer,
-                                    ),
-                                modifier = Modifier.weight(1f),
-                                shapes =
-                                    when (order) {
-                                        SortOrder.DATE_ADDED ->
-                                            ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                        SortOrder.TITLE_ASC ->
-                                            ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                        SortOrder.TITLE_DESC ->
-                                            ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                    },
-                            ) {
+        Scaffold(
+            modifier = Modifier.widthIn(max = 700.dp),
+            topBar = {
+                Column {
+                    if (!windowSizeClass.isExpanded()) {
+                        LargeFlexibleTopAppBar(
+                            title = {
                                 Text(
-                                    text = stringResource(order.toStringRes()),
-                                    modifier = Modifier.basicMarquee(),
-                                    maxLines = 1,
+                                    text = stringResource(Res.string.rush_branding),
+                                    fontFamily = flexFontEmphasis(),
                                 )
-                            }
-                        }
+                            },
+                            subtitle = {
+                                Text(
+                                    text =
+                                        "${state.songsAsc.size} " +
+                                            stringResource(Res.string.saved),
+                                    fontFamily = flexFontRounded(),
+                                )
+                            },
+                            actions = {
+                                IconButton(onClick = onNavigateToSettings) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.settings),
+                                        contentDescription = "Settings",
+                                    )
+                                }
+                            },
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    scrolledContainerColor =
+                                        MaterialTheme.colorScheme.surfaceContainer,
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                ),
+                        )
+                    } else {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = stringResource(Res.string.rush_branding),
+                                    fontFamily = flexFontEmphasis(),
+                                )
+                            },
+                            subtitle = {
+                                Text(
+                                    text =
+                                        "${state.songsAsc.size} " +
+                                            stringResource(Res.string.saved),
+                                    fontFamily = flexFontRounded(),
+                                )
+                            },
+                            actions = {
+                                IconButton(onClick = onNavigateToSettings) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.settings),
+                                        contentDescription = "Settings",
+                                    )
+                                }
+                            },
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    scrolledContainerColor =
+                                        MaterialTheme.colorScheme.surfaceContainer,
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                ),
+                        )
                     }
-                }
-            }
-        },
-        bottomBar = {
-            AnimatedVisibility(
-                visible = state.currentSong != null && !windowSizeClass.isExpanded(),
-                enter = slideInVertically { it / 2 },
-                exit = slideOutVertically { it / 2 },
-            ) {
-                if (state.currentSong != null) {
-                    BottomAppBar(
-                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+
+                    Row(
                         modifier =
-                            Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                                .clickable { onNavigateToLyrics() },
-                        contentColor = Color(state.extractedColors.cardContentMuted),
-                        containerColor = Color(state.extractedColors.cardBackgroundMuted),
+                            Modifier.fillMaxWidth()
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceContainer,
+                                    shape =
+                                        RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
+                                )
                     ) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                         ) {
-                            ArtFromUrl(
-                                imageUrl = state.currentSong.artUrl,
-                                modifier = Modifier.size(50.dp).clip(MaterialTheme.shapes.small),
-                            )
-
-                            Column {
-                                Text(
-                                    text = state.currentSong.title,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-
-                                Text(
-                                    text = state.currentSong.artists,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
+                            SortOrder.entries.toList().forEach { order ->
+                                ToggleButton(
+                                    checked = order == state.sortOrder,
+                                    onCheckedChange = {
+                                        onAction(SavedPageAction.UpdateSortOrder(order))
+                                    },
+                                    colors =
+                                        ToggleButtonDefaults.toggleButtonColors(
+                                            containerColor =
+                                                MaterialTheme.colorScheme.secondaryContainer,
+                                            contentColor =
+                                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                        ),
+                                    modifier = Modifier.weight(1f),
+                                    shapes =
+                                        when (order) {
+                                            SortOrder.DATE_ADDED ->
+                                                ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                            SortOrder.TITLE_ASC ->
+                                                ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                            SortOrder.TITLE_DESC ->
+                                                ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                        },
+                                ) {
+                                    Text(
+                                        text = stringResource(order.toStringRes()),
+                                        modifier = Modifier.basicMarquee(),
+                                        maxLines = 1,
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-        },
-        floatingActionButton = {
-            SavedPageActions(
-                state = state,
-                notificationAccess = notificationAccess,
-                onAction = onAction,
-                onNavigateToLyrics = onNavigateToLyrics,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-        },
-    ) { paddingValues ->
-        Column(
-            modifier =
-                Modifier.padding(
-                        start = paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-                    )
-                    .fillMaxSize()
-        ) {
-            if (state.songsAsc.isEmpty()) {
-                Empty()
-            } else {
+            },
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = state.currentSong != null && !windowSizeClass.isExpanded(),
+                    enter = slideInVertically { it / 2 },
+                    exit = slideOutVertically { it / 2 },
+                ) {
+                    if (state.currentSong != null) {
+                        BottomAppBar(
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+                            modifier =
+                                Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                                    .clickable { onNavigateToLyrics() },
+                            contentColor = Color(state.extractedColors.cardContentMuted),
+                            containerColor = Color(state.extractedColors.cardBackgroundMuted),
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                ArtFromUrl(
+                                    imageUrl = state.currentSong.artUrl,
+                                    modifier = Modifier.size(50.dp).clip(MaterialTheme.shapes.small),
+                                )
 
-                AnimatedContent(targetState = state.sortOrder) { sortOrder ->
-                    val songs =
-                        when (sortOrder) {
-                            SortOrder.DATE_ADDED -> state.songsByTime
-                            SortOrder.TITLE_ASC -> state.songsAsc
-                            SortOrder.TITLE_DESC -> state.songsDesc
+                                Column {
+                                    Text(
+                                        text = state.currentSong.title,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+
+                                    Text(
+                                        text = state.currentSong.artists,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                            }
                         }
+                    }
+                }
+            },
+            floatingActionButton = {
+                SavedPageActions(
+                    state = state,
+                    notificationAccess = notificationAccess,
+                    onAction = onAction,
+                    onNavigateToLyrics = onNavigateToLyrics,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+            },
+        ) { paddingValues ->
+            Column(
+                modifier =
+                    Modifier.padding(
+                            start =
+                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                            end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+                        )
+                        .fillMaxSize()
+            ) {
+                if (state.songsAsc.isEmpty()) {
+                    Empty()
+                } else {
 
-                    val listState = rememberLazyListState()
-                    LazyColumn(
-                        state = listState,
-                        modifier =
-                            Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
-                                .animateContentSize(),
-                        contentPadding =
-                            PaddingValues(
-                                top = paddingValues.calculateTopPadding() + 16.dp,
-                                bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                            ),
-                    ) {
-                        items(items = songs, key = { it.id }) { song ->
-                            SongCard(
-                                song = song,
-                                onDelete = { onAction(SavedPageAction.OnDeleteSong(song)) },
-                                onClick = {
-                                    onAction(SavedPageAction.ChangeCurrentSong(song.id))
-                                    onNavigateToLyrics()
-                                },
-                            )
+                    AnimatedContent(targetState = state.sortOrder) { sortOrder ->
+                        val songs =
+                            when (sortOrder) {
+                                SortOrder.DATE_ADDED -> state.songsByTime
+                                SortOrder.TITLE_ASC -> state.songsAsc
+                                SortOrder.TITLE_DESC -> state.songsDesc
+                            }
+
+                        val listState = rememberLazyListState()
+                        LazyColumn(
+                            state = listState,
+                            modifier =
+                                Modifier.fillMaxSize()
+                                    .simpleVerticalScrollbar(listState)
+                                    .animateContentSize(),
+                            contentPadding =
+                                PaddingValues(
+                                    top = paddingValues.calculateTopPadding() + 16.dp,
+                                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                                ),
+                        ) {
+                            items(items = songs, key = { it.id }) { song ->
+                                SongCard(
+                                    song = song,
+                                    onDelete = { onAction(SavedPageAction.OnDeleteSong(song)) },
+                                    onClick = {
+                                        onAction(SavedPageAction.ChangeCurrentSong(song.id))
+                                        onNavigateToLyrics()
+                                    },
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview(device = "spec:width=411dp,height=891dp")

@@ -73,6 +73,7 @@ import com.shub39.rush.shared.ui.leadingItemShape
 import com.shub39.rush.shared.ui.lyrics.component.ErrorCard
 import com.shub39.rush.shared.ui.middleItemShape
 import com.shub39.rush.shared.ui.searchsheet.component.SearchResultCard
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -105,7 +106,7 @@ fun SearchSheet(
         }
 
         LaunchedEffect(Unit) {
-            delay(400)
+            delay(400.milliseconds)
             focusRequester.requestFocus()
             keyboardController?.show()
         }

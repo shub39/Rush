@@ -56,82 +56,81 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
-fun Changelog(
-    modifier: Modifier = Modifier,
-    changelog: Changelog,
-    onNavigateBack: () -> Unit,
-) = PageFill(modifier = modifier) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            MediumFlexibleTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = {
-                    Text(
-                        text = stringResource(Res.string.changelog),
-                        fontFamily = flexFontEmphasis(),
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                ),
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Navigate Back",
+fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBack: () -> Unit) =
+    PageFill(modifier = modifier) {
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        Scaffold(
+            modifier =
+                Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                MediumFlexibleTopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.changelog),
+                            fontFamily = flexFontEmphasis(),
+                        )
+                    },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface
+                        ),
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Navigate Back",
+                            )
+                        }
+                    },
+                )
+            },
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                contentPadding =
+                    PaddingValues(
+                        top = padding.calculateTopPadding() + 16.dp,
+                        bottom = padding.calculateBottomPadding() + 60.dp,
+                        start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                        end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                    ),
+            ) {
+                changelog.forEach { versionEntry ->
+                    item {
+                        Text(
+                            text = versionEntry.version,
+                            style =
+                                MaterialTheme.typography.headlineSmall.copy(
+                                    fontFamily = flexFontRounded()
+                                ),
                         )
                     }
-                },
-            )
-        },
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding =
-                PaddingValues(
-                    top = padding.calculateTopPadding() + 16.dp,
-                    bottom = padding.calculateBottomPadding() + 60.dp,
-                    start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                    end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                ),
-        ) {
-            changelog.forEach { versionEntry ->
-                item {
-                    Text(
-                        text = versionEntry.version,
-                        style =
-                            MaterialTheme.typography.headlineSmall.copy(
-                                fontFamily = flexFontRounded()
-                            ),
-                    )
+
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                    itemsIndexed(versionEntry.changes) { index, change ->
+                        val shape =
+                            when {
+                                versionEntry.changes.size == 1 -> detachedItemShape()
+                                index == 0 -> leadingItemShape()
+                                index == versionEntry.changes.size - 1 -> endItemShape()
+                                else -> middleItemShape()
+                            }
+
+                        ListItem(
+                            colors = listItemColors(),
+                            modifier = Modifier.clip(shape),
+                            headlineContent = { Text(text = change) },
+                        )
+                    }
+
+                    item { Spacer(modifier = Modifier.height(32.dp)) }
                 }
-
-                item { Spacer(modifier = Modifier.height(8.dp)) }
-
-                itemsIndexed(versionEntry.changes) { index, change ->
-                    val shape =
-                        when {
-                            versionEntry.changes.size == 1 -> detachedItemShape()
-                            index == 0 -> leadingItemShape()
-                            index == versionEntry.changes.size - 1 -> endItemShape()
-                            else -> middleItemShape()
-                        }
-
-                    ListItem(
-                        colors = listItemColors(),
-                        modifier = Modifier.clip(shape),
-                        headlineContent = { Text(text = change) },
-                    )
-                }
-
-                item { Spacer(modifier = Modifier.height(32.dp)) }
             }
         }
     }
-}
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview

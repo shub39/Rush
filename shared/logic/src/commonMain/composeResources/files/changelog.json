@@ -2,7 +2,8 @@
   {
     "version": "6.3.3",
     "changes": [
-      "Improved usability in Landscape and Desktop screen sizes"
+      "Improved usability in Landscape and Desktop screen sizes",
+      "Miscellaneous UI Fixes"
     ]
   },
   {

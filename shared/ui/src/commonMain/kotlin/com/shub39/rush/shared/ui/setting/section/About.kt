@@ -72,75 +72,77 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
-fun About(
-    versionName: String,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-) = PageFill(modifier = modifier) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val uriHandler = LocalUriHandler.current
+fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = Modifier) =
+    PageFill(modifier = modifier) {
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        val uriHandler = LocalUriHandler.current
 
-    var showLicenseBottomSheet by remember { mutableStateOf(false) }
+        var showLicenseBottomSheet by remember { mutableStateOf(false) }
 
-    if (showLicenseBottomSheet) {
-        LicenseBottomSheet(onDismissRequest = { showLicenseBottomSheet = false })
-    }
+        if (showLicenseBottomSheet) {
+            LicenseBottomSheet(onDismissRequest = { showLicenseBottomSheet = false })
+        }
 
-    Scaffold(
-        modifier = Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            MediumFlexibleTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = {
-                    Text(text = stringResource(Res.string.about), fontFamily = flexFontEmphasis())
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                ),
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Navigate Back",
-                        )
-                    }
-                },
-            )
-        },
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding =
-                PaddingValues(
-                    top = padding.calculateTopPadding() + 16.dp,
-                    bottom = padding.calculateBottomPadding() + 60.dp,
-                    start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                    end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                ),
-        ) {
-            aboutApp(versionName = versionName, uriHandler = uriHandler)
-            engagementLinks(uriHandler)
-            item {
-                ListItem(
-                    colors = listItemColors(),
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.license),
-                            contentDescription = null,
+        Scaffold(
+            modifier =
+                Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                MediumFlexibleTopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.about),
+                            fontFamily = flexFontEmphasis(),
                         )
                     },
-                    headlineContent = { Text(text = "License") },
-                    supportingContent = { Text(text = "GPL-3.0 License") },
-                    modifier =
-                        Modifier.clip(detachedItemShape()).clickable {
-                            showLicenseBottomSheet = true
-                        },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface
+                        ),
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_back),
+                                contentDescription = "Navigate Back",
+                            )
+                        }
+                    },
                 )
+            },
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding =
+                    PaddingValues(
+                        top = padding.calculateTopPadding() + 16.dp,
+                        bottom = padding.calculateBottomPadding() + 60.dp,
+                        start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
+                        end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
+                    ),
+            ) {
+                aboutApp(versionName = versionName, uriHandler = uriHandler)
+                engagementLinks(uriHandler)
+                item {
+                    ListItem(
+                        colors = listItemColors(),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.license),
+                                contentDescription = null,
+                            )
+                        },
+                        headlineContent = { Text(text = "License") },
+                        supportingContent = { Text(text = "GPL-3.0 License") },
+                        modifier =
+                            Modifier.clip(detachedItemShape()).clickable {
+                                showLicenseBottomSheet = true
+                            },
+                    )
+                }
             }
         }
     }
-}
 
 private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
     item {

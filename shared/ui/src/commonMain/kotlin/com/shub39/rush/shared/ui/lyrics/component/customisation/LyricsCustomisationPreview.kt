@@ -56,6 +56,7 @@ import com.shub39.rush.shared.ui.lyrics.component.SyllableLine
 import com.shub39.rush.shared.ui.lyrics.component.SyncedLyric
 import kotlin.math.abs
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 @Composable
@@ -104,7 +105,7 @@ fun LyricsCustomisationPreview(
             val startTime = Clock.System.now().toEpochMilliseconds()
             while (true) {
                 currentTime = (Clock.System.now().toEpochMilliseconds() - startTime) % 13000
-                delay(16)
+                delay(16.milliseconds)
             }
         }
     }

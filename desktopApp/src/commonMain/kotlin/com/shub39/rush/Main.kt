@@ -35,10 +35,7 @@ import org.koin.plugin.module.dsl.startKoin
 fun main() {
     startKoin<RushModules>()
 
-    singleWindowApplication(
-        title = "Rush",
-        state = WindowState(width = 450.dp, height = 1000.dp),
-    ) {
+    singleWindowApplication(title = "Rush", state = WindowState(width = 450.dp, height = 1000.dp)) {
         val windowSizeClass = calculateWindowSizeClass()
         val viewModelStoreOwner = remember {
             object : ViewModelStoreOwner {
@@ -47,10 +44,11 @@ fun main() {
         }
         val currentDensity = LocalDensity.current
         val scale = 1.1f
-        val scaledDensity = Density(
-            density = currentDensity.density * scale,
-            fontScale = currentDensity.fontScale * scale
-        )
+        val scaledDensity =
+            Density(
+                density = currentDensity.density * scale,
+                fontScale = currentDensity.fontScale * scale,
+            )
 
         CompositionLocalProvider(
             LocalDensity provides scaledDensity,

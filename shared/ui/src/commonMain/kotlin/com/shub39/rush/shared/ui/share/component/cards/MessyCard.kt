@@ -69,15 +69,9 @@ private data class Word(
 private val fontCache = mutableMapOf<Pair<Int, Int>, FontFamily>()
 
 @Composable
-private fun flexFontEmphasisCached(
-    weight: Int,
-    width: Int,
-): FontFamily {
+private fun flexFontEmphasisCached(weight: Int, width: Int): FontFamily {
     return fontCache.getOrPut(weight to width) {
-        flexFontEmphasis(
-            fontWeight = weight,
-            fontWidth = width.toFloat()
-        )
+        flexFontEmphasis(fontWeight = weight, fontWidth = width.toFloat())
     }
 }
 

@@ -80,38 +80,40 @@ fun BackupPage(
     state: SettingsPageState,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-) = PageFill(modifier = modifier) {
-    val scope = rememberCoroutineScope()
+    modifier: Modifier = Modifier,
+) =
+    PageFill(modifier = modifier) {
+        val scope = rememberCoroutineScope()
 
-    var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
-    val fileSaverLauncher =
-        rememberFileSaverLauncher(dialogSettings = FileKitDialogSettings()) { file ->
-            if (file != null && state.exportState is ExportState.ExportReady) {
-                scope.launch { file.writeString(state.exportState.data) }
+        var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
+        val fileSaverLauncher =
+            rememberFileSaverLauncher(dialogSettings = FileKitDialogSettings()) { file ->
+                if (file != null && state.exportState is ExportState.ExportReady) {
+                    scope.launch { file.writeString(state.exportState.data) }
+                }
             }
-        }
-    val filePickerLauncher =
-        rememberFilePickerLauncher(type = FileKitType.File(extensions = listOf("json"))) { file ->
-            restoreFile = file
+        val filePickerLauncher =
+            rememberFilePickerLauncher(type = FileKitType.File(extensions = listOf("json"))) { file
+                ->
+                restoreFile = file
+            }
+
+        LaunchedEffect(Unit) {
+            onAction(SettingsPageAction.ResetBackup)
+            onAction(SettingsPageAction.OnExportSongs)
         }
 
-    LaunchedEffect(Unit) {
-        onAction(SettingsPageAction.ResetBackup)
-        onAction(SettingsPageAction.OnExportSongs)
+        BackupPageContent(
+            onNavigateBack = onNavigateBack,
+            onSaveFile = {
+                fileSaverLauncher.launch(suggestedName = "Rush Export", defaultExtension = "json")
+            },
+            state = state,
+            restoreFile = restoreFile,
+            action = onAction,
+            onPickFile = { filePickerLauncher.launch() },
+        )
     }
-
-    BackupPageContent(
-        onNavigateBack = onNavigateBack,
-        onSaveFile = {
-            fileSaverLauncher.launch(suggestedName = "Rush Export", defaultExtension = "json")
-        },
-        state = state,
-        restoreFile = restoreFile,
-        action = onAction,
-        onPickFile = { filePickerLauncher.launch() },
-    )
-}
 
 @Composable
 private fun BackupPageContent(
@@ -131,9 +133,10 @@ private fun BackupPageContent(
                 title = {
                     Text(text = stringResource(Res.string.backup), fontFamily = flexFontEmphasis())
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    ),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

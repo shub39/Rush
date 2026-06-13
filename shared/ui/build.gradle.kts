@@ -78,7 +78,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.annotations)
         }
-
         androidMain.dependencies {
             implementation(projects.androidLibs.visualizerHelper)
             implementation(libs.accompanist.permissions)

@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.onboarding.component.AnimatedAppIcon
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -98,7 +99,7 @@ fun OnboardingContent(
     LaunchedEffect(Unit) {
         while (!notificationAccess) {
             onUpdateNotificationAccess()
-            delay(1000)
+            delay(1000.milliseconds)
         }
     }
 
