@@ -131,6 +131,19 @@ fun LazyListScope.lyricsCustomisationSettings(
                 )
             }
 
+            ListItem(
+                colors = listItemColors(),
+                modifier = Modifier.clip(middleItemShape()),
+                headlineContent = { Text(text = stringResource(Res.string.hide_ui)) },
+                supportingContent = { Text(text = stringResource(Res.string.hide_ui_desc)) },
+                trailingContent = {
+                    ExpressiveSwitch(
+                        checked = state.hideUI,
+                        onCheckedChange = { onAction(LyricsPageAction.OnHideUIToggle(it)) },
+                    )
+                },
+            )
+
             ListItemCard(shape = endItemShape(), modifier = Modifier.animateContentSize()) {
                 ListSelect(
                     title = stringResource(Res.string.card_color),

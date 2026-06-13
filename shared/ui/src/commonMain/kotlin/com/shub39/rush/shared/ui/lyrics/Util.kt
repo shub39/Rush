@@ -36,7 +36,6 @@ import com.shub39.rush.shared.core.dataclasses.Lyric
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.dataclasses.WaveColors
-import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.core.util.TTMLParser
@@ -128,9 +127,9 @@ fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.CUSTOM -> Color(state.mCardBackground)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CUSTOM -> Color(state.mCardBackground)
+                    VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 }.lighten(2f),
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "hypnotic color 1",
@@ -139,9 +138,9 @@ fun getHypnoticColors(state: LyricsPageState): Pair<Color, Color> {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.CUSTOM -> Color(state.mCardBackground)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CUSTOM -> Color(state.mCardBackground)
+                    VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 }.darken(2f),
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "hypnotic color 2",
@@ -155,9 +154,9 @@ fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.CUSTOM -> Color(state.mCardBackground)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    CUSTOM -> Color(state.mCardBackground)
+                    VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
                 },
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "cardBackground",
@@ -166,9 +165,9 @@ fun getCardColors(state: LyricsPageState): Pair<Color, Color> {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                    CardColors.CUSTOM -> Color(state.mCardContent)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                    MUTED -> Color(state.extractedColors.cardContentMuted)
+                    CUSTOM -> Color(state.mCardContent)
+                    VIBRANT -> Color(state.extractedColors.cardContentDominant)
                 },
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "cardContent",
@@ -182,9 +181,9 @@ fun getWaveColors(state: LyricsPageState): WaveColors {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-                    CardColors.CUSTOM -> Color(state.mCardBackground)
+                    MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CUSTOM -> Color(state.mCardBackground)
                 },
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
@@ -192,18 +191,17 @@ fun getWaveColors(state: LyricsPageState): WaveColors {
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED ->
+                    MUTED ->
                         Color(state.extractedColors.cardBackgroundMuted)
                             .blend(Color(state.extractedColors.cardBackgroundDominant), 0.25f)
                             .darken(1.5f)
 
-                    CardColors.VIBRANT ->
+                    VIBRANT ->
                         Color(state.extractedColors.cardBackgroundDominant)
                             .blend(Color(state.extractedColors.cardBackgroundMuted), 0.25f)
                             .lighten(1.5f)
 
-                    CardColors.CUSTOM ->
-                        Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
+                    CUSTOM -> Color(state.mCardBackground).blend(Color(state.mCardContent), 0.25f)
                 },
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
         )
@@ -216,9 +214,9 @@ fun getWaveColors(state: LyricsPageState): WaveColors {
 
 fun LyricsAlignment.toTransformOrigin(): TransformOrigin {
     return when (this) {
-        LyricsAlignment.START -> TransformOrigin(0f, 0.5f)
-        LyricsAlignment.CENTER -> TransformOrigin(0.5f, 0.5f)
-        LyricsAlignment.END -> TransformOrigin(1f, 0.5f)
+        START -> TransformOrigin(0f, 0.5f)
+        CENTER -> TransformOrigin(0.5f, 0.5f)
+        END -> TransformOrigin(1f, 0.5f)
     }
 }
 
@@ -233,7 +231,7 @@ fun BoxScope.ApplyLyricsBackground(
     hypnoticColor2: Color,
 ) {
     when (background) {
-        LyricsBackground.ALBUM_ART -> {
+        ALBUM_ART -> {
             ArtFromUrl(imageUrl = artUrl, modifier = Modifier.blur(80.dp).matchParentSize())
 
             Box(
@@ -242,7 +240,7 @@ fun BoxScope.ApplyLyricsBackground(
             )
         }
 
-        LyricsBackground.WAVE -> {
+        WAVE -> {
             WaveVisualizer(
                 waveData = waveData,
                 colors = waveColors,
@@ -250,7 +248,7 @@ fun BoxScope.ApplyLyricsBackground(
             )
         }
 
-        LyricsBackground.GRADIENT -> {
+        GRADIENT -> {
             GradientVisualizer(
                 waveData = waveData,
                 colors = waveColors,
@@ -258,18 +256,18 @@ fun BoxScope.ApplyLyricsBackground(
             )
         }
 
-        LyricsBackground.HYPNOTIC -> {
+        HYPNOTIC -> {
             HypnoticVisualizer(
                 modifier = Modifier.matchParentSize(),
                 colors = generateGradientColors(hypnoticColor1, hypnoticColor2),
             )
         }
 
-        LyricsBackground.SOLID_COLOR -> {
+        SOLID_COLOR -> {
             Box(modifier = Modifier.matchParentSize().background(cardBackground))
         }
 
-        LyricsBackground.CURVE -> {
+        CURVE -> {
             CurveVisualizer(
                 modifier = Modifier.matchParentSize(),
                 waveData = waveData,

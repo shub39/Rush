@@ -258,6 +258,10 @@ class LyricsVM(
                     _playbackInfo.update { it.copy(position = action.position) }
                 }
 
+                is LyricsPageAction.OnHideUIToggle -> {
+                    lyricsPrefs.updateHideUI(action.enabled)
+                }
+
                 is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
                 LyricsPageAction.OnPlayNext -> MediaListener.playNext()
                 LyricsPageAction.OnPlayPrevious -> MediaListener.playPrevious()
@@ -353,6 +357,11 @@ class LyricsVM(
         observeJob?.cancel()
         observeJob =
             viewModelScope.launch {
+                lyricsPrefs
+                    .getHideUIFlow()
+                    .onEach { pref -> _state.update { it.copy(hideUI = pref) } }
+                    .launchIn(this)
+
                 lyricsPrefs
                     .getBlurSynced()
                     .onEach { pref -> _state.update { it.copy(blurSyncedLyrics = pref) } }

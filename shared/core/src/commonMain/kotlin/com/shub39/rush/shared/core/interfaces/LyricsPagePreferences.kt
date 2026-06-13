@@ -79,4 +79,8 @@ interface LyricsPagePreferences {
     fun getRomanizationEnabledFlow(): Flow<Boolean>
 
     suspend fun updateRomanizationEnabled(enabled: Boolean)
+
+    fun getHideUIFlow(): Flow<Boolean>
+
+    suspend fun updateHideUI(enabled: Boolean)
 }

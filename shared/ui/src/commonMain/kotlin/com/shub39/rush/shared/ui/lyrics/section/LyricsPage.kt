@@ -24,6 +24,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,13 +55,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -133,6 +138,9 @@ fun LyricsPage(
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
         val waveColors = getWaveColors(state)
 
+        var controlsVisible by remember { mutableStateOf(true) }
+        val controlsAlpha by animateFloatAsState(targetValue = if (controlsVisible) 1f else 0f)
+
         val glowMultiplier by
             animateFloatAsState(
                 targetValue = calculateGlowMultiplier(waveData),
@@ -173,8 +181,20 @@ fun LyricsPage(
             action(LyricsPageAction.OnSetPosition(0))
         }
 
+        LaunchedEffect(controlsVisible, state.hideUI) {
+            if (controlsVisible && state.hideUI) {
+                delay(5000.milliseconds)
+                controlsVisible = false
+            }
+        }
+
         // Content Start
-        Box(modifier = Modifier.fillMaxSize().keepScreenOn()) {
+        Box(
+            modifier =
+                Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
+                    detectTapGestures { controlsVisible = true }
+                }
+        ) {
             Card(
                 modifier = Modifier.fillMaxSize(),
                 colors =
@@ -309,7 +329,8 @@ fun LyricsPage(
                                                 // Actions Row
                                                 Row(
                                                     modifier =
-                                                        Modifier.padding(vertical = 8.dp)
+                                                        Modifier.alpha(controlsAlpha)
+                                                            .padding(vertical = 8.dp)
                                                             .animateContentSize()
                                                 ) {
                                                     Actions(
@@ -361,7 +382,11 @@ fun LyricsPage(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
-                                            Column(modifier = Modifier.animateContentSize()) {
+                                            Column(
+                                                modifier =
+                                                    Modifier.alpha(controlsAlpha)
+                                                        .animateContentSize()
+                                            ) {
                                                 Actions(
                                                     state = actionsState,
                                                     action = action,
@@ -461,7 +486,10 @@ fun LyricsPage(
             }
 
             Column(
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
+                modifier =
+                    Modifier.alpha(controlsAlpha)
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -485,6 +513,8 @@ fun LyricsPage(
                             when (searchState) {
                                 SearchState.Idle -> {}
                                 is SearchState.Searching -> {
+                                    LaunchedEffect(Unit) { controlsVisible = true }
+
                                     Card(
                                         shape = RoundedCornerShape(100.dp),
                                         colors =
@@ -513,6 +543,8 @@ fun LyricsPage(
                                 }
 
                                 SearchState.UserPrompt -> {
+                                    LaunchedEffect(Unit) { controlsVisible = true }
+
                                     Card(
                                         shape = RoundedCornerShape(100.dp),
                                         colors =
