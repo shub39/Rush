@@ -15,11 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import java.util.Properties
+import org.gradle.api.plugins.ExtensionAware
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.build.config)
@@ -28,19 +29,45 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
+val desktopOnly = providers.gradleProperty("desktopOnly").orNull?.toBoolean() ?: false
+
+if (!desktopOnly) {
+    apply(plugin = rootProject.libs.plugins.android.kotlin.multiplatform.library.get().pluginId)
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-sensitive-resolution")
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    android {
-        namespace = "com.shub39.rush.shared.logic"
-        compileSdk { version = release(libs.versions.compileSdk.get().toInt()) }
-        minSdk { version = release(libs.versions.minSdk.get().toInt()) }
-        withHostTest {}
+    if (!desktopOnly) {
+        val androidExt = (this as ExtensionAware).extensions.getByName("android")
+        androidExt.javaClass
+            .getMethod("setNamespace", String::class.java)
+            .invoke(androidExt, "com.shub39.rush.shared.logic")
+        androidExt.javaClass
+            .getMethod("setCompileSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.compileSdk.get().toInt())
+        androidExt.javaClass
+            .getMethod("setMinSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.minSdk.get().toInt())
 
-        androidResources { enable = true }
+        val withHostTest =
+            androidExt.javaClass.getMethod("withHostTest", org.gradle.api.Action::class.java)
+        withHostTest.invoke(androidExt, org.gradle.api.Action<Any> {})
+
+        val androidResources =
+            androidExt.javaClass.getMethod("androidResources", org.gradle.api.Action::class.java)
+        androidResources.invoke(
+            androidExt,
+            org.gradle.api.Action<Any> {
+                val rc: Any = this
+                rc.javaClass
+                    .getMethod("setEnable", Boolean::class.javaPrimitiveType)
+                    .invoke(rc, true)
+            },
+        )
     }
 
     jvm()
@@ -68,7 +95,11 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.ksoup)
         }
-        androidMain.dependencies { implementation(projects.androidLibs.romanization) }
+        if (!desktopOnly) {
+            findByName("androidMain")?.dependencies {
+                implementation(project(":androidLibs:romanization"))
+            }
+        }
         jvmMain.dependencies { implementation(libs.androidx.sqlite.bundled) }
     }
 }
@@ -98,7 +129,9 @@ room3 { schemaDirectory("$projectDir/schemas") }
 
 dependencies {
     add("kspJvm", libs.androidx.room.compiler)
-    add("kspAndroid", libs.androidx.room.compiler)
+    if (!desktopOnly) {
+        add("kspAndroid", libs.androidx.room.compiler)
+    }
 }
 
 val generateChangelogJson by

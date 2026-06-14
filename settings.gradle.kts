@@ -41,10 +41,13 @@ dependencyResolutionManagement {
     }
 }
 
+val desktopOnly = providers.gradleProperty("desktopOnly").orNull?.toBoolean() ?: false
+
 include(":shared:core", ":shared:ui", ":shared:logic")
 
-include(":androidLibs:romanization", ":androidLibs:visualizer-helper")
-
-include(":androidApp")
+if (!desktopOnly) {
+    include(":androidLibs:romanization", ":androidLibs:visualizer-helper")
+    include(":androidApp")
+}
 
 include(":desktopApp")

@@ -14,10 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import org.gradle.api.plugins.ExtensionAware
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
+}
+
+val desktopOnly = providers.gradleProperty("desktopOnly").orNull?.toBoolean() ?: false
+
+if (!desktopOnly) {
+    apply(plugin = rootProject.libs.plugins.android.kotlin.multiplatform.library.get().pluginId)
 }
 
 kotlin {
@@ -26,11 +34,21 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    android {
-        namespace = "com.shub39.rush.shared.core"
-        compileSdk { version = release(libs.versions.compileSdk.get().toInt()) }
-        minSdk { version = release(libs.versions.minSdk.get().toInt()) }
-        withHostTest {}
+    if (!desktopOnly) {
+        val androidExt = (this as ExtensionAware).extensions.getByName("android")
+        androidExt.javaClass
+            .getMethod("setNamespace", String::class.java)
+            .invoke(androidExt, "com.shub39.rush.shared.core")
+        androidExt.javaClass
+            .getMethod("setCompileSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.compileSdk.get().toInt())
+        androidExt.javaClass
+            .getMethod("setMinSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.minSdk.get().toInt())
+
+        val withHostTest =
+            androidExt.javaClass.getMethod("withHostTest", org.gradle.api.Action::class.java)
+        withHostTest.invoke(androidExt, org.gradle.api.Action<Any> {})
     }
 
     jvm()

@@ -15,13 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import org.gradle.api.plugins.ExtensionAware
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.koin.compiler)
+}
+
+val desktopOnly = providers.gradleProperty("desktopOnly").orNull?.toBoolean() ?: false
+
+if (!desktopOnly) {
+    apply(plugin = rootProject.libs.plugins.android.kotlin.multiplatform.library.get().pluginId)
 }
 
 kotlin {
@@ -42,11 +50,29 @@ kotlin {
         )
     }
 
-    android {
-        namespace = "com.shub39.rush.shared.ui"
-        compileSdk { version = release(libs.versions.compileSdk.get().toInt()) }
-        minSdk { version = release(libs.versions.minSdk.get().toInt()) }
-        androidResources { enable = true }
+    if (!desktopOnly) {
+        val androidExt = (this as ExtensionAware).extensions.getByName("android")
+        androidExt.javaClass
+            .getMethod("setNamespace", String::class.java)
+            .invoke(androidExt, "com.shub39.rush.shared.ui")
+        androidExt.javaClass
+            .getMethod("setCompileSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.compileSdk.get().toInt())
+        androidExt.javaClass
+            .getMethod("setMinSdk", Int::class.javaObjectType)
+            .invoke(androidExt, libs.versions.minSdk.get().toInt())
+
+        val androidResources =
+            androidExt.javaClass.getMethod("androidResources", org.gradle.api.Action::class.java)
+        androidResources.invoke(
+            androidExt,
+            org.gradle.api.Action<Any> {
+                val rc: Any = this
+                rc.javaClass
+                    .getMethod("setEnable", Boolean::class.javaPrimitiveType)
+                    .invoke(rc, true)
+            },
+        )
     }
 
     jvm()
@@ -79,20 +105,44 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.annotations)
         }
-        androidMain.dependencies {
-            implementation(projects.androidLibs.visualizerHelper)
-            implementation(libs.accompanist.permissions)
+        if (!desktopOnly) {
+            findByName("androidMain")?.dependencies {
+                implementation(project(":androidLibs:visualizer-helper"))
+                implementation(libs.accompanist.permissions)
+            }
         }
     }
 }
 
 dependencies {
-    androidRuntimeClasspath(libs.compose.ui.tooling)
-    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+    if (!desktopOnly) {
+        add("androidRuntimeClasspath", libs.compose.ui.tooling)
+        add("androidRuntimeClasspath", libs.compose.ui.tooling.preview)
+    }
 }
 
-androidComponents {
-    onVariants { variant ->
-        variant.sources.res?.addStaticSourceDirectory("src/commonMain/composeResources")
-    }
+plugins.withId("com.android.kotlin.multiplatform.library") {
+    val componentsExt = extensions.getByName("androidComponents")
+    val selector = componentsExt.javaClass.getMethod("selector").invoke(componentsExt)
+    val allSelector = selector.javaClass.getMethod("all").invoke(selector)
+
+    val onVariantsMethod =
+        componentsExt.javaClass.methods.first {
+            it.name == "onVariants" &&
+                it.parameterCount == 2 &&
+                it.parameterTypes[1] == org.gradle.api.Action::class.java
+        }
+
+    onVariantsMethod.invoke(
+        componentsExt,
+        allSelector,
+        org.gradle.api.Action<Any> {
+            val variant = this
+            val sources = variant.javaClass.getMethod("getSources").invoke(variant)
+            val res = sources.javaClass.getMethod("getRes").invoke(sources)
+            res?.javaClass
+                ?.getMethod("addStaticSourceDirectory", String::class.java)
+                ?.invoke(res, "src/commonMain/composeResources")
+        },
+    )
 }
