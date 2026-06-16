@@ -119,4 +119,6 @@
     <string name="translate_desc">Übersetzen Sie Rush in Ihrer Sprache</string>
     <string name="expressive_syllables_desc">Die Schriftart ändert sich basierend auf der Wortdauer</string>
     <string name="expressive_syllables">Betonte Silben</string>
+    <string name="hide_ui">Steuerelemente ausblenden</string>
+    <string name="hide_ui_desc">Liedtext Steuerelemente nach 5 Sekunden ausblenden</string>
 </resources>
