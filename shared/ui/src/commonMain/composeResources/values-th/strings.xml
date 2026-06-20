@@ -101,4 +101,24 @@
     <string name="curve">โค้ง</string>
     <string name="copy_error">คัดลอก Error</string>
     <string name="not_found">ไม่พบ</string>
+    <string name="translate_desc">แปลภาษาใน rush ให้เป็นภาษาประเทศของคุณ</string>
+    <string name="syllable_synced_lyrics">ซิงค์ตามพยางค์แล้ว</string>
+    <string name="changelog">บันทึกการเปลี่ยนแปลง</string>
+    <string name="whats_changed">มีอะไรใหม่!</string>
+    <string name="looks">หน้าตา</string>
+    <string name="text">ข้อความ</string>
+    <string name="others">อื่นๆ</string>
+    <string name="show_app_branding">แสดงแบรนด์ของแอป</string>
+    <string name="full_screen_share">แชร์ทั้งหน้าจอ</string>
+    <string name="romanization">อักษรโรมัน</string>
+    <string name="romanization_desc">แสดงเนื้อเพลงแบบโรมาไนซ์สำหรับภาษาญี่ปุ่น เกาหลี จีน ฮินดี ปัญจาบ และซีริลลิก</string>
+    <string name="open_search">เปิดการค้นหา</string>
+    <string name="system_default">ค่าเริ่มต้นของระบบ</string>
+    <string name="language">ภาษา</string>
+    <string name="expressive_syllables">สัญญลักษณ์แสดงอารมณ์ !?</string>
+    <string name="expressive_syllables_desc">ขนาดฟอนต์เปลี่ยนตามความยาวของคำ</string>
+    <string name="hide_ui">ซ่อนหน้าต่างควบคุม</string>
+    <string name="hide_ui_desc">ซ่อนหน้าต่างควบคุมเมื่อผ่านไป 5 วินาที</string>
+    <string name="bmc_desc">สนับสนุนพวกเราด้วยการบริจาคเพียงเล็กน้อย</string>
+    <string name="line_synced_lyrics">ซิงค์บรรทัดแล้ว</string>
 </resources>
