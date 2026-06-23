@@ -25,5 +25,6 @@ class LyricsPlusTest {
     fun testApi() = runBlocking {
         val result = api.fetchTTML("DANCE...", "Slayyyter")
         println(result)
+        assert(result != null)
     }
 }

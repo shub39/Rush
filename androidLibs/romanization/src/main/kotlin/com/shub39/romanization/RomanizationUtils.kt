@@ -52,7 +52,7 @@ class RomanizationUtils(private val context: Context) {
      *
      * @param context Application context for accessing assets
      */
-    fun loadReadingDictionary(context: Context) {
+    private fun loadReadingDictionary(context: Context) {
         if (japaneseDictionary != null) return
 
         val startMs = System.currentTimeMillis()

@@ -2,7 +2,8 @@
   {
     "version": "6.4.1",
     "changes": [
-      "Updated Translations"
+      "Updated Translations",
+      "Fixed slow lyrics search faster"
     ]
   },
   {

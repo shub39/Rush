@@ -101,64 +101,63 @@ dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
 }
 
-val generateChangelogJson by
-    tasks.registering {
-        description = "Extract changelogs from CHANGELOG.md"
-        val inputFile = rootProject.file("CHANGELOG.md")
-        val outputDir = file("$projectDir/src/commonMain/composeResources/files/")
-        val outputFile = File(outputDir, "changelog.json")
+tasks.register("generateChangelog") {
+    description = "Extract changelogs from CHANGELOG.md"
+    val inputFile = rootProject.file("CHANGELOG.md")
+    val outputDir = file("$projectDir/src/commonMain/composeResources/files/")
+    val outputFile = File(outputDir, "changelog.json")
 
-        inputs.file(inputFile)
-        outputs.file(outputFile)
+    inputs.file(inputFile)
+    outputs.file(outputFile)
 
-        doLast {
-            if (!outputDir.exists()) outputDir.mkdirs()
+    doLast {
+        if (!outputDir.exists()) outputDir.mkdirs()
 
-            val lines = inputFile.readLines()
+        val lines = inputFile.readLines()
 
-            val map = mutableMapOf<String, MutableList<String>>()
-            var currentVersion: String? = null
+        val map = mutableMapOf<String, MutableList<String>>()
+        var currentVersion: String? = null
 
-            for (line in lines) {
-                when {
-                    line.startsWith("## ") -> {
-                        currentVersion = line.removePrefix("## ").trim()
-                        map[currentVersion] = mutableListOf()
-                    }
+        for (line in lines) {
+            when {
+                line.startsWith("## ") -> {
+                    currentVersion = line.removePrefix("## ").trim()
+                    map[currentVersion] = mutableListOf()
+                }
 
-                    line.startsWith("- ") && currentVersion != null -> {
-                        map[currentVersion]?.add(line.removePrefix("- ").trim())
-                    }
+                line.startsWith("- ") && currentVersion != null -> {
+                    map[currentVersion]?.add(line.removePrefix("- ").trim())
                 }
             }
+        }
 
-            val json = buildString {
-                append("[\n")
+        val json = buildString {
+            append("[\n")
 
-                val limitedEntries = map.entries.take(10)
-                limitedEntries.forEachIndexed { index, entry ->
-                    append("  {\n")
-                    append("    \"version\": \"${entry.key}\",\n")
-                    append("    \"changes\": [\n")
+            val limitedEntries = map.entries.take(10)
+            limitedEntries.forEachIndexed { index, entry ->
+                append("  {\n")
+                append("    \"version\": \"${entry.key}\",\n")
+                append("    \"changes\": [\n")
 
-                    entry.value.forEachIndexed { i, item ->
-                        append("      \"${item.replace("\"", "\\\"")}\"")
-                        if (i != entry.value.lastIndex) append(",")
-                        append("\n")
-                    }
-
-                    append("    ]\n")
-                    append("  }")
-
-                    if (index != limitedEntries.lastIndex) append(",")
+                entry.value.forEachIndexed { i, item ->
+                    append("      \"${item.replace("\"", "\\\"")}\"")
+                    if (i != entry.value.lastIndex) append(",")
                     append("\n")
                 }
 
-                append("]")
+                append("    ]\n")
+                append("  }")
+
+                if (index != limitedEntries.lastIndex) append(",")
+                append("\n")
             }
 
-            outputFile.writeText(json)
+            append("]")
         }
-    }
 
-tasks.named("copyNonXmlValueResourcesForCommonMain") { dependsOn(generateChangelogJson) }
+        outputFile.writeText(json)
+    }
+}
+
+tasks.named("copyNonXmlValueResourcesForCommonMain") { dependsOn("generateChangelog") }

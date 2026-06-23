@@ -2,6 +2,7 @@
 
 ## 6.4.1
 - Updated Translations
+- Fixed slow lyrics search faster
 
 ## 6.4.0
 - Added option to hide controls in Lyrics page after 5 seconds

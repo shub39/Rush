@@ -32,8 +32,8 @@ import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 import com.shub39.rush.shared.ui.lyrics.breakLyrics
 import com.shub39.rush.shared.ui.lyrics.toSongUi
 import com.shub39.rush.shared.ui.sortMapByKeys
-import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -465,12 +465,10 @@ class LyricsVM(
             viewModelScope.launch(Dispatchers.Default) {
                 combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair)
                     .collectLatest { (position, speed) ->
-                        val start = Clock.System.now().toEpochMilliseconds()
+                        val start = TimeSource.Monotonic.markNow()
 
                         while (isActive) {
-                            val elapsed =
-                                (speed * (Clock.System.now().toEpochMilliseconds() - start))
-                                    .toLong()
+                            val elapsed = (speed * start.elapsedNow().inWholeMilliseconds).toLong()
 
                             _playbackInfo.update {
                                 it.copy(

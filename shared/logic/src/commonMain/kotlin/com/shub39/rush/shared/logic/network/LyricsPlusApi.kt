@@ -28,6 +28,10 @@ import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
@@ -58,8 +62,8 @@ class LyricsPlusApi {
                 )
             }
             install(HttpTimeout) {
-                socketTimeoutMillis = 10_000
-                requestTimeoutMillis = 10_000
+                socketTimeoutMillis = 3_000
+                requestTimeoutMillis = 3_000
             }
 
             defaultRequest { contentType(ContentType.Application.Json) }
@@ -68,27 +72,35 @@ class LyricsPlusApi {
         }
     }
 
-    suspend fun fetchTTML(title: String, artist: String): String? {
-        servers.forEach {
-            val result =
-                safeCall<TTMLResponse> {
-                    client.get(urlString = "$it/v1/ttml/get") {
-                        parameter("title", title)
-                        parameter("artist", artist)
+    suspend fun fetchTTML(title: String, artist: String): String? = coroutineScope {
+        val resultChannel = Channel<String?>(servers.size)
+        servers.forEach { url ->
+            launch {
+                val result =
+                    safeCall<TTMLResponse> {
+                        client.get(urlString = "$url/v1/ttml/get") {
+                            parameter("title", title)
+                            parameter("artist", artist)
+                        }
                     }
-                }
 
-            when (result) {
-                is Result.Error -> {}
-                is Result.Success ->
-                    return if (TTMLParser.isValidTTML(result.data.ttml)) {
-                        result.data.ttml
-                    } else {
-                        null
+                val ttml =
+                    when (result) {
+                        is Result.Success ->
+                            if (TTMLParser.isValidTTML(result.data.ttml)) result.data.ttml else null
+                        else -> null
                     }
+                resultChannel.send(ttml)
             }
         }
 
-        return null
+        repeat(servers.size) {
+            val res = resultChannel.receive()
+            if (res != null) {
+                coroutineContext.cancelChildren()
+                return@coroutineScope res
+            }
+        }
+        null
     }
 }
