@@ -32,6 +32,7 @@ import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 import com.shub39.rush.shared.ui.lyrics.breakLyrics
 import com.shub39.rush.shared.ui.lyrics.toSongUi
 import com.shub39.rush.shared.ui.sortMapByKeys
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,7 +53,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
-import kotlin.time.Clock
 
 @KoinViewModel
 class LyricsVM(
