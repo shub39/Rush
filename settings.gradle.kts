@@ -41,6 +41,8 @@ dependencyResolutionManagement {
     }
 }
 
+plugins { id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0" }
+
 include(":shared:core", ":shared:ui", ":shared:logic")
 
 include(":androidLibs:romanization", ":androidLibs:visualizer-helper")

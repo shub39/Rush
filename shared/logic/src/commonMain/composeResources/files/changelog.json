@@ -1,5 +1,12 @@
 [
   {
+    "version": "6.4.1",
+    "changes": [
+      "Updated Translations",
+      "Fixed slow lyrics search faster"
+    ]
+  },
+  {
     "version": "6.4.0",
     "changes": [
       "Added option to hide controls in Lyrics page after 5 seconds",
@@ -64,13 +71,6 @@
       "Updated Translations",
       "Fixed Hebrew Translations not applying",
       "Miscellaneous UI improvements"
-    ]
-  },
-  {
-    "version": "6.1.14",
-    "changes": [
-      "Updated Translations",
-      "(Android 13+) Added Language Picker in Settings"
     ]
   }
 ]
