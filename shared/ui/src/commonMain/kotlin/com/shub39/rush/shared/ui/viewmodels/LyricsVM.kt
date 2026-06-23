@@ -52,6 +52,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
+import kotlin.time.Clock
 
 @KoinViewModel
 class LyricsVM(
@@ -464,10 +465,12 @@ class LyricsVM(
             viewModelScope.launch(Dispatchers.Default) {
                 combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair)
                     .collectLatest { (position, speed) ->
-                        val start = System.currentTimeMillis()
+                        val start = Clock.System.now().toEpochMilliseconds()
 
                         while (isActive) {
-                            val elapsed = (speed * (System.currentTimeMillis() - start)).toLong()
+                            val elapsed =
+                                (speed * (Clock.System.now().toEpochMilliseconds() - start))
+                                    .toLong()
 
                             _playbackInfo.update {
                                 it.copy(
