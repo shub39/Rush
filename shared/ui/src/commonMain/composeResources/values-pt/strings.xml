@@ -86,4 +86,27 @@
     <string name="foss_desc">Todas as funções estão desbloqueadas. Esta versão da app não apoia compras na app. Se esta app agregou valor na sua vida, apoie-me com uma doação</string>
     <string name="rush_pro">Funções Rush Pro</string>
     <string name="unlock_more_pro">Desbloqueie mais com o Rush Pro</string>
+    <string name="album_art">Apenas capa</string>
+    <string name="album_art_shape">Formato da capa do álbum</string>
+    <string name="blurred_art">Capa borrada</string>
+    <string name="solid_color">Sólida</string>
+    <string name="lyrics_background">Fundo das letras</string>
+    <string name="plain_lyrics">Simples</string>
+    <string name="synced_lyrics">Sincronizado</string>
+    <string name="blur_synced">Letras borradas e sincronizadas</string>
+    <string name="wave">Onda</string>
+    <string name="gradient">Gradiente</string>
+    <string name="audio_permission">Requer permissão para gravação de áudio</string>
+    <string name="audio_permission_info">Este plano de fundo visualiza a música a ser atualmente reproduzida</string>
+    <string name="curve">Curva</string>
+    <string name="copy_error">Erro ao copiar</string>
+    <string name="not_found">Não encontrado</string>
+    <string name="line_synced_lyrics">Linha sincronizada</string>
+    <string name="syllable_synced_lyrics">Sílaba sincronizada</string>
+    <string name="changelog">Histórico de alterações</string>
+    <string name="whats_changed">O que há de novo</string>
+    <string name="looks">Aparência</string>
+    <string name="text">Texto</string>
+    <string name="others">Outros</string>
+    <string name="show_app_branding">Mostrar logomarca da app</string>
 </resources>
