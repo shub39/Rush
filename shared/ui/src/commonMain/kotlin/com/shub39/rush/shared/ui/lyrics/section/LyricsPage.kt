@@ -24,7 +24,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,6 +54,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,6 +65,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
@@ -139,6 +140,7 @@ fun LyricsPage(
         val waveColors = getWaveColors(state)
 
         var controlsVisible by remember { mutableStateOf(true) }
+        var interactionCount by remember { mutableIntStateOf(0) }
         val controlsAlpha by animateFloatAsState(targetValue = if (controlsVisible) 1f else 0f)
 
         val glowMultiplier by
@@ -181,7 +183,7 @@ fun LyricsPage(
             action(LyricsPageAction.OnSetPosition(0))
         }
 
-        LaunchedEffect(controlsVisible, state.hideUI) {
+        LaunchedEffect(controlsVisible, state.hideUI, interactionCount) {
             if (controlsVisible && state.hideUI) {
                 delay(5000.milliseconds)
                 controlsVisible = false
@@ -192,7 +194,13 @@ fun LyricsPage(
         Box(
             modifier =
                 Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
-                    detectTapGestures { controlsVisible = true }
+                    awaitPointerEventScope {
+                        while (true) {
+                            awaitPointerEvent(pass = PointerEventPass.Initial)
+                            controlsVisible = true
+                            interactionCount++
+                        }
+                    }
                 }
         ) {
             Card(
