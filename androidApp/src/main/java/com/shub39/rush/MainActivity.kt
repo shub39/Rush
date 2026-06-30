@@ -21,19 +21,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.ComposeRuntimeFlags
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.shub39.rush.app.App
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
 
         MediaListener.startListening(this)
+        ComposeRuntimeFlags.isLinkBufferComposerEnabled = true
 
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)

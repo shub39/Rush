@@ -1,5 +1,13 @@
 [
   {
+    "version": "6.4.2",
+    "changes": [
+      "Updated Translations",
+      "Performance improvements",
+      "Fixed UI hiding issues in Lyrics Page"
+    ]
+  },
+  {
     "version": "6.4.1",
     "changes": [
       "Updated Translations",
@@ -62,15 +70,6 @@
     "changes": [
       "Fixed Expressive Syllables causing crashes",
       "Fixed UI inconsistencies"
-    ]
-  },
-  {
-    "version": "6.1.15",
-    "changes": [
-      "(Android 12+) Fixed Material Theme not respecting System Colors",
-      "Updated Translations",
-      "Fixed Hebrew Translations not applying",
-      "Miscellaneous UI improvements"
     ]
   }
 ]

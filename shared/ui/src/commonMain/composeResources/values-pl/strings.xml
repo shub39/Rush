@@ -119,4 +119,6 @@
     <string name="language">Język</string>
     <string name="expressive_syllables">Ekspresyjne sylaby</string>
     <string name="expressive_syllables_desc">Styl czcionki zmienia się na podstawie długości słów</string>
+    <string name="hide_ui">Ukryj kontrolki</string>
+    <string name="hide_ui_desc">Ukryj kontrolki tekstu utworu po 5 sekundach</string>
 </resources>

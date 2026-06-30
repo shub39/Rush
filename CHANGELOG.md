@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.4.2
+- Updated Translations
+- Performance improvements
+- Fixed UI hiding issues in Lyrics Page
+
 ## 6.4.1
 - Updated Translations
 - Fixed slow lyrics search faster
