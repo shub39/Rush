@@ -98,4 +98,22 @@
     <string name="not_found">未找到</string>
     <string name="chat">聊天</string>
     <string name="synced_lyrics">同步</string>
+    <string name="translate_desc">將Rush翻譯至你的語言</string>
+    <string name="solid_color">封面顏色</string>
+    <string name="plain_lyrics">僅歌詞</string>
+    <string name="line_synced_lyrics">行同步</string>
+    <string name="syllable_synced_lyrics">音節同步</string>
+    <string name="changelog">更新日誌</string>
+    <string name="whats_changed">變更內容</string>
+    <string name="looks">外觀</string>
+    <string name="text">文本</string>
+    <string name="others">其他</string>
+    <string name="show_app_branding">顯示應用品牌</string>
+    <string name="full_screen_share">全屏分享</string>
+    <string name="romanization">羅馬化</string>
+    <string name="romanization_desc">顯示日語、韓語、漢語、印地語、旁遮普語和西里爾語言的羅馬化歌詞</string>
+    <string name="open_search">打開檢索</string>
+    <string name="system_default">系統預設</string>
+    <string name="language">語言</string>
+    <string name="blur_synced">模糊已同步的歌詞</string>
 </resources>
