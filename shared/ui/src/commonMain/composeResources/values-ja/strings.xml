@@ -88,4 +88,9 @@
     <string name="unlock_more_pro">Proでさらに機能をアンロック</string>
     <string name="copy_error">コピーエラー</string>
     <string name="not_found">見つかりません</string>
+    <string name="text">テキスト</string>
+    <string name="others">その他</string>
+    <string name="romanization">ローマ字</string>
+    <string name="language">言語</string>
+    <string name="system_default">システムの言語</string>
 </resources>
