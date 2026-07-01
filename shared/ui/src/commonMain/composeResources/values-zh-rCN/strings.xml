@@ -93,7 +93,7 @@
     <string name="lyrics_background">歌词背景</string>
     <string name="plain_lyrics">仅歌词</string>
     <string name="synced_lyrics">歌词滚动</string>
-    <string name="blur_synced">已播放歌词模糊</string>
+    <string name="blur_synced">模糊已同步的歌词</string>
     <string name="not_found">未找到</string>
     <string name="copy_error">复制错误</string>
     <string name="audio_permission_info">此背景可视化当前播放的歌曲</string>
@@ -104,13 +104,16 @@
     <string name="line_synced_lyrics">行同步</string>
     <string name="syllable_synced_lyrics">音节同步</string>
     <string name="changelog">更新日志</string>
-    <string name="whats_changed">更新日志</string>
+    <string name="whats_changed">变更内容</string>
     <string name="looks">外观</string>
     <string name="text">文本</string>
     <string name="others">其他</string>
     <string name="show_app_branding">显示应用品牌</string>
     <string name="full_screen_share">全屏分享</string>
-    <string name="romanization">罗马音</string>
-    <string name="romanization_desc">显示日语、韩语、中文、印地语、旁遮普语和西里尔语言的罗马化歌词</string>
+    <string name="romanization">罗马化</string>
+    <string name="romanization_desc">显示日语、韩语、汉语、印地语、旁遮普语和西里尔语言的罗马化歌词</string>
     <string name="open_search">打开搜索</string>
+    <string name="system_default">系统默认</string>
+    <string name="language">语言</string>
+    <string name="translate_desc">将Rush翻译至你的语言</string>
 </resources>
