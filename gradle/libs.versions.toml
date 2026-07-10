@@ -6,6 +6,7 @@ compileSdk = "37"
 accompanist = "0.37.3"
 colorpicker = "1.2.0"
 compose-multiplatform = "1.12.0-beta01"
+material3 = "1.12.0-alpha03"
 filekit = "0.14.2"
 materialkolor = "4.1.1"
 splashscreen = "1.2.0"
@@ -39,7 +40,7 @@ nucleus = "1.15.7"
 # CMP
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
