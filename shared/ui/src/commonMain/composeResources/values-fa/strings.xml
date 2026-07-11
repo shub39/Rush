@@ -91,7 +91,7 @@
     <string name="blurred_art">تصویر محو</string>
     <string name="solid_color">جامد</string>
     <string name="lyrics_background">پس‌زمینه اشعار</string>
-    <string name="plain_lyrics">متن</string>
+    <string name="plain_lyrics">ساده</string>
     <string name="synced_lyrics">همگام شده</string>
     <string name="blur_synced">محو کردن اشعار همگام شده</string>
     <string name="wave">موج</string>
@@ -101,4 +101,24 @@
     <string name="curve">منحنی</string>
     <string name="copy_error">خطای کپی</string>
     <string name="not_found">پیدا نشد</string>
+    <string name="translate_desc">راش را به زبان خود ترجمه کنید</string>
+    <string name="line_synced_lyrics">همگام سازی خط</string>
+    <string name="syllable_synced_lyrics">هجی همگام سازی شده</string>
+    <string name="changelog">تغییرات</string>
+    <string name="whats_changed">چه چیز هایی تغییر کرده اند</string>
+    <string name="looks">ظاهر</string>
+    <string name="text">متن</string>
+    <string name="others">باقی</string>
+    <string name="show_app_branding">نمایش برند اپلیکیشن</string>
+    <string name="full_screen_share">اشتراک گذاری تمام صفحه</string>
+    <string name="romanization">لاتین سازی</string>
+    <string name="romanization_desc">نمایش متون لاتین شده برای زبان‌های ژاپنی، کره‌ای، چینی، هندی، پنجابی و سیریلیک</string>
+    <string name="open_search">جستجو را باز کنید</string>
+    <string name="system_default">پیشفرض</string>
+    <string name="language">زبان</string>
+    <string name="expressive_syllables">حرف های نشانه</string>
+    <string name="expressive_syllables_desc">تغییر سبک فونت بر اساس مدت زمان کلمه</string>
+    <string name="hide_ui">پنهان کردن کنترل‌ها</string>
+    <string name="hide_ui_desc">پنهان کردن کنترل‌های متن ترانه پس از ۵ ثانیه</string>
+    <string name="bmc_desc">با پرداخت مبلغی هرچند کم از من حمایت کنید</string>
 </resources>
