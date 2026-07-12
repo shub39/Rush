@@ -65,7 +65,6 @@ actual fun ColumnScope.MaterialYouToggle(
 @Composable
 actual fun ColumnScope.PaletteStylePicker(
     modifier: Modifier,
-    enabled: Boolean,
     theme: Theme,
     onChange: (PaletteStyle) -> Unit,
 ) {
@@ -108,7 +107,7 @@ actual fun ColumnScope.PaletteStylePicker(
                     modifier =
                         Modifier.size(50.dp)
                             .clip(if (selected) MaterialShapes.VerySunny.toShape() else CircleShape)
-                            .clickable(enabled = enabled) { onChange(style) },
+                            .clickable { onChange(style) },
                     contentAlignment = Alignment.Center,
                 ) {
                     Canvas(modifier = Modifier.matchParentSize()) {

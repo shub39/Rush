@@ -125,7 +125,6 @@ fun App() {
                             onNavigateBack = {
                                 if (backStack.size != 1) backStack.removeLastOrNull()
                             },
-                            isProUser = globalState.isProUser,
                             onShowPaywall = {},
                             onUpdateNotificationAccess = {
                                 globalVM.onAction(GlobalAction.OnCheckNotificationAccess)

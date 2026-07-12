@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.4.3
+- Updated Translations
+
 ## 6.4.2
 - Updated Translations
 - Performance improvements
