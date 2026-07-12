@@ -80,8 +80,6 @@ fun SharePageSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     onLaunchColorPicker: (String) -> Unit,
-    isProUser: Boolean,
-    onShowPaywall: () -> Unit,
     sheetState: SheetState =
         rememberBottomSheetState(
             initialValue = SheetValue.Hidden,
@@ -273,13 +271,7 @@ fun SharePageSheet(
                     trailingContent = {
                         ExpressiveSwitch(
                             checked = state.rushBranding,
-                            onCheckedChange = {
-                                if (isProUser) {
-                                    onAction(SharePageAction.OnToggleRushBranding(it))
-                                } else {
-                                    onShowPaywall()
-                                }
-                            },
+                            onCheckedChange = { onAction(SharePageAction.OnToggleRushBranding(it)) },
                         )
                     },
                 )
@@ -297,7 +289,5 @@ private fun Preview() {
         onAction = {},
         onDismissRequest = {},
         onLaunchColorPicker = {},
-        isProUser = true,
-        onShowPaywall = {},
     )
 }

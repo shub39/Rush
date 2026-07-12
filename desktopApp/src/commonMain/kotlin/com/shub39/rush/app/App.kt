@@ -111,8 +111,6 @@ fun App() {
                             onDismiss = { if (backStack.size != 1) backStack.removeLastOrNull() },
                             state = shareState,
                             onAction = shareVM::onAction,
-                            isProUser = globalState.isProUser,
-                            onShowPaywall = {},
                         )
                     }
 

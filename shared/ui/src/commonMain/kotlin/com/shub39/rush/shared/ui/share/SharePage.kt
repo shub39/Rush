@@ -71,7 +71,6 @@ import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.isExpanded
-import com.shub39.rush.shared.ui.premiumCards
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.share.component.SharePageSheet
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt
@@ -96,8 +95,6 @@ import rush.shared.ui.generated.resources.*
 expect fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
-    isProUser: Boolean,
-    onShowPaywall: () -> Unit,
     onAction: (SharePageAction) -> Unit,
 )
 
@@ -113,8 +110,6 @@ fun SharePageContent(
     onAction: (SharePageAction) -> Unit,
     onSaveImage: (ImageBitmap) -> Unit,
     onLaunchImagePicker: () -> Unit,
-    isProUser: Boolean,
-    onShowPaywall: () -> Unit,
     onShareImage: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -353,27 +348,15 @@ fun SharePageContent(
             ) {
                 IconButton(
                     onClick = {
-                        if (isProUser || !premiumCards.contains(state.cardTheme)) {
-                            val graphicsLayer =
-                                if (state.fullScreen) fullScreenGraphicsLayer else cardGraphicsLayer
-                            scope.launch { onSaveImage(graphicsLayer.toImageBitmap()) }
-                        } else {
-                            onShowPaywall()
-                        }
+                        val graphicsLayer =
+                            if (state.fullScreen) fullScreenGraphicsLayer else cardGraphicsLayer
+                        scope.launch { onSaveImage(graphicsLayer.toImageBitmap()) }
                     }
                 ) {
                     Icon(painter = painterResource(Res.drawable.save), contentDescription = "Save")
                 }
 
-                ShareButton(
-                    onClick = {
-                        if (isProUser || !premiumCards.contains(state.cardTheme)) {
-                            onShareImage()
-                        } else {
-                            onShowPaywall()
-                        }
-                    }
-                )
+                ShareButton(onClick = { onShareImage() })
 
                 AnimatedVisibility(
                     visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART),
@@ -415,8 +398,6 @@ fun SharePageContent(
                 editTarget = it
                 colorPicker = true
             },
-            isProUser = isProUser,
-            onShowPaywall = onShowPaywall,
         )
     }
 
@@ -466,7 +447,5 @@ private fun Preview() {
         onShareImage = {},
         cardGraphicsLayer = rememberGraphicsLayer(),
         fullScreenGraphicsLayer = rememberGraphicsLayer(),
-        isProUser = true,
-        onShowPaywall = {},
     )
 }

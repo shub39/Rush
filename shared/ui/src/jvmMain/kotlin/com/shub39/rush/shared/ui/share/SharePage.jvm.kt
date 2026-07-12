@@ -41,8 +41,6 @@ import kotlinx.coroutines.launch
 actual fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
-    isProUser: Boolean,
-    onShowPaywall: () -> Unit,
     onAction: (SharePageAction) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -79,8 +77,6 @@ actual fun SharePage(
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },
-        isProUser = isProUser,
-        onShowPaywall = onShowPaywall,
         onShareImage = {},
     )
 }

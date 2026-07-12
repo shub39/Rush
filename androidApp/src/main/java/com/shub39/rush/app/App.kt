@@ -119,8 +119,6 @@ fun App() {
                                 },
                                 state = shareState,
                                 onAction = shareVM::onAction,
-                                isProUser = globalState.isProUser,
-                                onShowPaywall = { backStack.add(Routes.PaywallPage) },
                             )
                         }
 

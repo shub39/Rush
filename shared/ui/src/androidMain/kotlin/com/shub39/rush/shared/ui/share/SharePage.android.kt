@@ -56,8 +56,6 @@ import rush.shared.ui.generated.resources.share
 actual fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
-    isProUser: Boolean,
-    onShowPaywall: () -> Unit,
     onAction: (SharePageAction) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -97,8 +95,6 @@ actual fun SharePage(
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },
-        isProUser = isProUser,
-        onShowPaywall = onShowPaywall,
         onShareImage = {
             coroutineScope.launch(Dispatchers.IO) {
                 val graphicsLayer =
