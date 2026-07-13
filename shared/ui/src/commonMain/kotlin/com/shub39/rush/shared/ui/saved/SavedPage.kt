@@ -23,23 +23,27 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
@@ -111,7 +115,7 @@ fun SavedPage(
                                 Text(
                                     text =
                                         "${state.songsAsc.size} " +
-                                            stringResource(Res.string.saved),
+                                                stringResource(Res.string.saved),
                                     fontFamily = flexFontRounded(),
                                 )
                             },
@@ -142,7 +146,7 @@ fun SavedPage(
                                 Text(
                                     text =
                                         "${state.songsAsc.size} " +
-                                            stringResource(Res.string.saved),
+                                                stringResource(Res.string.saved),
                                     fontFamily = flexFontRounded(),
                                 )
                             },
@@ -195,8 +199,10 @@ fun SavedPage(
                                         when (order) {
                                             SortOrder.DATE_ADDED ->
                                                 ButtonGroupDefaults.connectedLeadingButtonShapes()
+
                                             SortOrder.TITLE_ASC ->
                                                 ButtonGroupDefaults.connectedMiddleButtonShapes()
+
                                             SortOrder.TITLE_DESC ->
                                                 ButtonGroupDefaults.connectedTrailingButtonShapes()
                                         },
@@ -219,21 +225,34 @@ fun SavedPage(
                     exit = slideOutVertically { it / 2 },
                 ) {
                     if (state.currentSong != null) {
-                        BottomAppBar(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp),
+                        val insets = WindowInsets.systemBars.asPaddingValues()
+
+                        Card(
+                            onClick = { onNavigateToLyrics() },
+                            shape = CircleShape,
                             modifier =
-                                Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                                    .clickable { onNavigateToLyrics() },
-                            contentColor = Color(state.extractedColors.cardContentMuted),
-                            containerColor = Color(state.extractedColors.cardBackgroundMuted),
+                                Modifier
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = insets.calculateBottomPadding() + 8.dp
+                                    ),
+                            colors = CardDefaults.cardColors(
+                                contentColor = Color(state.extractedColors.cardContentMuted),
+                                containerColor = Color(state.extractedColors.cardBackgroundMuted)
+                            )
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
                             ) {
                                 ArtFromUrl(
                                     imageUrl = state.currentSong.artUrl,
-                                    modifier = Modifier.size(50.dp).clip(MaterialTheme.shapes.small),
+                                    modifier = Modifier.size(60.dp)
+                                        .clip(CircleShape),
                                 )
 
                                 Column {
@@ -270,10 +289,10 @@ fun SavedPage(
             Column(
                 modifier =
                     Modifier.padding(
-                            start =
-                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                            end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-                        )
+                        start =
+                            paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+                    )
                         .fillMaxSize()
             ) {
                 if (state.songsAsc.isEmpty()) {
@@ -283,9 +302,9 @@ fun SavedPage(
                     AnimatedContent(targetState = state.sortOrder) { sortOrder ->
                         val songs =
                             when (sortOrder) {
-                                SortOrder.DATE_ADDED -> state.songsByTime
-                                SortOrder.TITLE_ASC -> state.songsAsc
-                                SortOrder.TITLE_DESC -> state.songsDesc
+                                DATE_ADDED -> state.songsByTime
+                                TITLE_ASC -> state.songsAsc
+                                TITLE_DESC -> state.songsDesc
                             }
 
                         val listState = rememberLazyListState()
