@@ -111,7 +111,6 @@ import com.shub39.rush.shared.ui.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
-import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 import com.shub39.rush.shared.ui.toAlignment
 import kotlin.time.Duration.Companion.milliseconds
@@ -316,8 +315,9 @@ fun LyricsPage(
 
                                                 Text(
                                                     text = lyricsState.song.title,
-                                                    style = MaterialTheme.typography.headlineMedium,
-                                                    fontFamily = flexFontEmphasis(),
+                                                    style =
+                                                        MaterialTheme.typography.headlineMedium
+                                                            .copy(fontFamily = flexFontRounded()),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
@@ -328,7 +328,6 @@ fun LyricsPage(
                                                     text = lyricsState.song.artists,
                                                     style = MaterialTheme.typography.titleMedium,
                                                     fontFamily = flexFontRounded(),
-                                                    fontWeight = FontWeight.Bold,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier = Modifier.basicMarquee(),
@@ -429,7 +428,7 @@ fun LyricsPage(
                                                     text = lyricsState.song.title,
                                                     style =
                                                         MaterialTheme.typography.titleLarge.copy(
-                                                            fontFamily = flexFontEmphasis()
+                                                            fontFamily = flexFontRounded()
                                                         ),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,

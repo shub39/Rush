@@ -115,7 +115,7 @@ fun SavedPage(
                                 Text(
                                     text =
                                         "${state.songsAsc.size} " +
-                                                stringResource(Res.string.saved),
+                                            stringResource(Res.string.saved),
                                     fontFamily = flexFontRounded(),
                                 )
                             },
@@ -146,7 +146,7 @@ fun SavedPage(
                                 Text(
                                     text =
                                         "${state.songsAsc.size} " +
-                                                stringResource(Res.string.saved),
+                                            stringResource(Res.string.saved),
                                     fontFamily = flexFontRounded(),
                                 )
                             },
@@ -231,28 +231,26 @@ fun SavedPage(
                             onClick = { onNavigateToLyrics() },
                             shape = CircleShape,
                             modifier =
-                                Modifier
-                                    .padding(
-                                        start = 16.dp,
-                                        end = 16.dp,
-                                        bottom = insets.calculateBottomPadding() + 8.dp
-                                    ),
-                            colors = CardDefaults.cardColors(
-                                contentColor = Color(state.extractedColors.cardContentMuted),
-                                containerColor = Color(state.extractedColors.cardBackgroundMuted)
-                            )
+                                Modifier.padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    bottom = insets.calculateBottomPadding() + 8.dp,
+                                ),
+                            colors =
+                                CardDefaults.cardColors(
+                                    contentColor = Color(state.extractedColors.cardContentMuted),
+                                    containerColor =
+                                        Color(state.extractedColors.cardBackgroundMuted),
+                                ),
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth()
+                                modifier = Modifier.padding(8.dp).fillMaxWidth(),
                             ) {
                                 ArtFromUrl(
                                     imageUrl = state.currentSong.artUrl,
-                                    modifier = Modifier.size(60.dp)
-                                        .clip(CircleShape),
+                                    modifier = Modifier.size(60.dp).clip(CircleShape),
                                 )
 
                                 Column {
@@ -289,10 +287,10 @@ fun SavedPage(
             Column(
                 modifier =
                     Modifier.padding(
-                        start =
-                            paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-                    )
+                            start =
+                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
+                            end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+                        )
                         .fillMaxSize()
             ) {
                 if (state.songsAsc.isEmpty()) {
