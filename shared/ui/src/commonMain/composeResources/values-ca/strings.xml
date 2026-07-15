@@ -25,7 +25,6 @@
     <string name="unknown_error">S\u0027ha produït un error</string>
     <string name="card_theme">Tema de la targeta</string>
     <string name="card_color">Colors de la targeta</string>
-    <string name="card_size">Mida de la targeta</string>
     <string name="card_corners">Cantonades de la targeta</string>
     <string name="backup">Còpia de seguretat</string>
     <string name="backup_info">Importa o exporta la base de dades de lletres desades</string>
@@ -52,8 +51,6 @@
     <string name="muted">Apagat</string>
     <string name="vibrant">Viu</string>
     <string name="custom">Personalitzat</string>
-    <string name="fit">Ajusta</string>
-    <string name="standard">Estàndard</string>
     <string name="spotify">Genèric</string>
     <string name="rushed">Afanyat</string>
     <string name="hypnotic">Hipnòtic</string>
@@ -80,14 +77,11 @@
     <string name="letter_spacing">Espaiat entre lletres</string>
     <string name="vertical">Vertical</string>
     <string name="quote">Cita</string>
-    <string name="card_font">Font de la targeta</string>
     <string name="couplet">Estrofa</string>
     <string name="messy">Desordenat</string>
-    <string name="chat">Xat</string>
     <string name="foss">Estàs utilitzant la variant FOSS</string>
     <string name="foss_desc">Totes les funcions estan desbloquejades. Aquesta variant de l\u0027aplicació no admet compres integrades. Si aquesta aplicació t\u0027ha aportat valor, dona\u0027m suport fent una donació a</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Desbloqueja més amb Pro</string>
     <string name="album_art">Només portada</string>
     <string name="album_art_shape">Forma de la portada de l\u0027àlbum</string>
     <string name="blurred_art">Portada difuminada</string>
@@ -110,7 +104,6 @@
     <string name="looks">Aspecte</string>
     <string name="text">Text</string>
     <string name="others">Altres</string>
-    <string name="show_app_branding">Mostra la marca de l\u0027aplicació</string>
     <string name="full_screen_share">Compartició a pantalla completa</string>
     <string name="romanization">Romanització</string>
     <string name="romanization_desc">Mostra les lletres romanitzades per a japonès, coreà, xinès, hindi, panjabi i llengües ciríl·liques</string>

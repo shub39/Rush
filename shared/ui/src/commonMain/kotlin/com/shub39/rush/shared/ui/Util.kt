@@ -43,8 +43,8 @@ expect suspend fun Clipboard.copyToClipboard(text: String)
 
 fun WindowSizeClass.isExpanded(): Boolean = this.widthSizeClass == WindowWidthSizeClass.Expanded
 
-fun Map<Int, String>.sortMapByKeys(): Map<Int, String> {
-    val sortedEntries = this.entries.toList().sortedBy { it.key }
+fun Map<Int, String>.sortMapByKeys(take: Int = 16): Map<Int, String> {
+    val sortedEntries = this.entries.toList().sortedBy { it.key }.take(take)
     val sortedMap = LinkedHashMap<Int, String>()
     for (entry in sortedEntries) {
         sortedMap[entry.key] = entry.value

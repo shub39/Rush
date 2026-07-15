@@ -16,12 +16,10 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,27 +30,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
+import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
-import com.shub39.rush.shared.ui.theme.flexFontRounded
+import com.shub39.rush.shared.ui.toMaterialShape
+import org.jetbrains.compose.resources.Font
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.figtree
 
 @Composable
 fun SpotifyShareCard(
@@ -61,24 +60,16 @@ fun SpotifyShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
+    val font = FontFamily(Font(Res.font.figtree))
+
     Card(modifier = modifier, shape = cardCorners, colors = cardColors) {
-        Column(
-            modifier =
-                Modifier.padding(pxToDp(48)).let {
-                    if (fit == CardFit.STANDARD) {
-                        it.fillMaxHeight()
-                    } else it
-                },
-            verticalArrangement = Arrangement.Center,
-        ) {
+        Column(modifier = Modifier.padding(pxToDp(48)), verticalArrangement = Arrangement.Center) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ArtFromUrl(
                     imageUrl = song.artUrl,
-                    modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
+                    modifier = Modifier.size(pxToDp(140)).clip(albumArtShape),
                 )
 
                 Column(modifier = Modifier.padding(horizontal = pxToDp(16))) {
@@ -86,8 +77,13 @@ fun SpotifyShareCard(
                         text = song.title,
                         style =
                             MaterialTheme.typography.titleMedium
-                                .copy(fontFamily = flexFontRounded())
-                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
+                                .copy(fontFamily = font)
+                                .fromPx(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 32,
+                                    letterSpacing = 0,
+                                    lineHeight = 28,
+                                ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -96,7 +92,7 @@ fun SpotifyShareCard(
                         text = song.artist,
                         style =
                             MaterialTheme.typography.bodySmall
-                                .copy(fontFamily = flexFontRounded())
+                                .copy(fontFamily = font)
                                 .fromPx(fontSize = 26, letterSpacing = 0, lineHeight = 26),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -104,7 +100,7 @@ fun SpotifyShareCard(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(pxToDp(16)))
+            Spacer(modifier = Modifier.padding(pxToDp(32)))
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 sortedLines.forEach {
@@ -112,23 +108,20 @@ fun SpotifyShareCard(
                         Text(
                             text = it.value,
                             style =
-                                MaterialTheme.typography.bodyMedium.fromPx(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 42,
-                                    letterSpacing = 0,
-                                    lineHeight = 48,
-                                ),
+                                MaterialTheme.typography.bodyMedium
+                                    .copy(fontFamily = font)
+                                    .fromPx(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 42,
+                                        letterSpacing = 0,
+                                        lineHeight = 48,
+                                    ),
                         )
                     }
                 }
             }
 
-            AnimatedVisibility(visible = rushBranding) {
-                RushBranding(
-                    color = cardColors.contentColor,
-                    modifier = Modifier.padding(top = pxToDp(56)),
-                )
-            }
+            Spacer(modifier = Modifier.padding(pxToDp(8)))
         }
     }
 }
@@ -153,8 +146,6 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
-        albumArtShape = MaterialShapes.Square.toShape(),
-        rushBranding = false,
+        albumArtShape = AlbumArtShape.RECTANGLE.toMaterialShape(),
     )
 }

@@ -65,7 +65,6 @@ private val configuration = SavedStateConfiguration {
 fun SettingsGraph(
     notificationAccess: Boolean,
     state: SettingsPageState,
-    isProUser: Boolean,
     action: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
     onShowPaywall: () -> Unit,
@@ -107,8 +106,6 @@ fun SettingsGraph(
                         state = state,
                         onAction = action,
                         onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
-                        onShowPaywall = onShowPaywall,
-                        isProUser = isProUser,
                     )
                 }
 
@@ -138,7 +135,6 @@ private fun Preview() {
         state = SettingsPageState(),
         action = {},
         onNavigateBack = {},
-        isProUser = true,
         onShowPaywall = {},
         onUpdateNotificationAccess = {},
     )

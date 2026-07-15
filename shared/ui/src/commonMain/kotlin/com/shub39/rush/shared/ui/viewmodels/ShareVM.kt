@@ -16,11 +16,19 @@
  */
 package com.shub39.rush.shared.ui.viewmodels
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.enums.AlbumArtShape
+import com.shub39.rush.shared.core.enums.CardColors
+import com.shub39.rush.shared.core.enums.CardTheme
+import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import com.shub39.rush.shared.ui.share.SharePageAction
 import com.shub39.rush.shared.ui.share.SharePageState
+import kotlin.random.Random
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,11 +75,6 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
                     .launchIn(this)
 
                 datastore
-                    .getCardFitFlow()
-                    .onEach { fit -> _state.update { it.copy(cardFit = fit) } }
-                    .launchIn(this)
-
-                datastore
                     .getCardColorFlow()
                     .onEach { colors -> _state.update { it.copy(cardColors = colors) } }
                     .launchIn(this)
@@ -87,16 +90,6 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
                     .launchIn(this)
 
                 datastore
-                    .getCardFontFlow()
-                    .onEach { font -> _state.update { it.copy(cardFont = font) } }
-                    .launchIn(this)
-
-                datastore
-                    .showRushBranding()
-                    .onEach { pref -> _state.update { it.copy(rushBranding = pref) } }
-                    .launchIn(this)
-
-                datastore
                     .getFullscreenShare()
                     .onEach { fullScreen -> _state.update { it.copy(fullScreen = fullScreen) } }
                     .launchIn(this)
@@ -108,18 +101,47 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
             when (action) {
                 is SharePageAction.OnUpdateCardBackground ->
                     datastore.updateCardBackground(action.color)
+
                 is SharePageAction.OnUpdateCardColor -> datastore.updateCardColor(action.color)
                 is SharePageAction.OnUpdateCardContent -> datastore.updateCardContent(action.color)
-                is SharePageAction.OnUpdateCardFit -> datastore.updateCardFit(action.fit)
                 is SharePageAction.OnUpdateCardRoundness ->
                     datastore.updateCardRoundness(action.roundness)
+
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
-                is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
                 is SharePageAction.OnUpdateAlbumArtShape ->
                     datastore.updateAlbumArtShape(action.shape)
-                is SharePageAction.OnToggleRushBranding -> datastore.updateRushBranding(action.pref)
+
                 is SharePageAction.OnToggleFullScreen ->
                     datastore.updateFullscreenShare(action.fullScreen)
+
+                SharePageAction.OnRandomize -> {
+                    when (val newCardColor = CardColors.entries.random()) {
+                        CardColors.CUSTOM -> {
+                            datastore.updateCardColor(newCardColor)
+
+                            val newBackground =
+                                Color(
+                                    red = Random.nextFloat(),
+                                    blue = Random.nextFloat(),
+                                    green = Random.nextFloat(),
+                                    alpha = 1f,
+                                )
+                            val newContent =
+                                if (newBackground.luminance() >= 0.5) {
+                                    Color.Black
+                                } else {
+                                    Color.White
+                                }
+                            datastore.updateCardBackground(newBackground.toArgb())
+                            datastore.updateCardContent(newContent.toArgb())
+                        }
+                        else -> datastore.updateCardColor(newCardColor)
+                    }
+                    datastore.updateCardRoundness(CornerRadius.entries.random())
+                    datastore.updateCardTheme(CardTheme.entries.random())
+                    datastore.updateAlbumArtShape(AlbumArtShape.entries.random())
+                    datastore.updateFullscreenShare(Random.nextBoolean())
+                }
             }
         }
     }

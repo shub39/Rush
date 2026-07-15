@@ -28,7 +28,6 @@
     <string name="source">מקור</string>
     <string name="muted">מושתק</string>
     <string name="vibrant">מלא חיות</string>
-    <string name="fit">התאנה</string>
     <string name="hypnotic">מהפנטת</string>
     <string name="rounded">מעוגל</string>
     <string name="rushed">Rushed</string>
@@ -49,7 +48,6 @@
     <string name="couplet">זוגות</string>
     <string name="empty">זה ריק פה</string>
     <string name="no_lyrics">לא ניתן היה לקבל את המילים מ-LRCLIB</string>
-    <string name="card_size">גודל כרטיס</string>
     <string name="request_failed">בקשה נכשלה</string>
     <string name="track">רצועה</string>
     <string name="io_error">שגיאת רשת</string>
@@ -59,7 +57,6 @@
     <string name="rush_branding">Rush</string>
     <string name="no_internet">אין חיבור אינטרנט!</string>
     <string name="card_corners">קצוות כרטיס</string>
-    <string name="card_font">גופן כרטיס</string>
     <string name="export_info">ייצוא שירים אל הורדות/Rush</string>
     <string name="look_and_feel_info">התאמה אישית של האפליקציה בדרכים שונות</string>
     <string name="custom">מותאם אישית</string>
@@ -71,7 +68,6 @@
     <string name="choose_file">בחר קובץ</string>
     <string name="letter_spacing">ריווח אותיות</string>
     <string name="amoled">לוח צבעים Amoled</string>
-    <string name="standard">סטנדרטי</string>
     <string name="spotify">Spotify</string>
     <string name="default_">ברירת מחדל</string>
     <string name="material_theme">Material עיצוב</string>
@@ -79,7 +75,6 @@
     <string name="loading_genius">טעינת מילות השיר גאוניות</string>
     <string name="fullscreen_desc">הסתר סרגלי מערכת בדף מילות השיר</string>
     <string name="messy">מבולגן</string>
-    <string name="chat">צ\u0027אט</string>
     <string name="translate">תרגם</string>
     <string name="bmc">קנה לי קפה</string>
 </resources>

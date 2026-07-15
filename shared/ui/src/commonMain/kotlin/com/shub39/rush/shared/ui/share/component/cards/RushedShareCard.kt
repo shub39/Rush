@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,8 +39,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,11 +50,13 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 import io.github.vinceglb.filekit.PlatformFile
+import org.jetbrains.compose.resources.Font
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.google_sans_flex
 
 @Composable
 fun RushedShareCard(
@@ -64,46 +67,41 @@ fun RushedShareCard(
     cardCorners: RoundedCornerShape,
     selectedImage: PlatformFile?,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
+    val font = FontFamily(Font(Res.font.google_sans_flex))
+
     Box(modifier = modifier.clip(cardCorners)) {
         ArtFromUrl(
             imageUrl = selectedImage?.toString() ?: song.artUrl,
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier.matchParentSize().blur(pxToDp(10)),
         )
 
         Box(
             modifier =
                 Modifier.fillMaxWidth()
-                    .background(cardColors.containerColor.copy(0.8f))
+                    .background(cardColors.containerColor.copy(0.5f))
                     .matchParentSize()
         )
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(pxToDp(48)).align(Alignment.BottomStart)
         ) {
-            AnimatedVisibility(visible = rushBranding) {
-                RushBranding(
-                    color = cardColors.contentColor,
-                    modifier = Modifier.padding(bottom = pxToDp(42)),
-                )
-            }
-
             LazyColumn(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 items(sortedLines.values.toList()) {
-                    Card(colors = cardColors, shape = RoundedCornerShape(pxToDp(16))) {
+                    Card(colors = cardColors, shape = cardCorners) {
                         Text(
                             text = it,
                             color = cardColors.contentColor,
                             style =
-                                MaterialTheme.typography.bodyMedium.fromPx(
-                                    fontSize = 42,
-                                    letterSpacing = 0,
-                                    lineHeight = 48,
-                                    fontWeight = FontWeight.Bold,
-                                ),
-                            modifier =
-                                Modifier.padding(vertical = pxToDp(8), horizontal = pxToDp(16)),
+                                MaterialTheme.typography.bodyMedium
+                                    .copy(fontFamily = font)
+                                    .fromPx(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 42,
+                                        letterSpacing = 0,
+                                        lineHeight = 48,
+                                    ),
+                            modifier = Modifier.padding(pxToDp(16)),
                         )
                     }
                 }
@@ -134,7 +132,7 @@ fun RushedShareCard(
                         text = song.artist,
                         style =
                             MaterialTheme.typography.bodySmall
-                                .copy(fontFamily = flexFontRounded())
+                                .copy(fontFamily = font)
                                 .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 24),
                         color = cardColors.contentColor,
                         maxLines = 1,
@@ -167,6 +165,5 @@ private fun Preview() {
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
         selectedImage = null,
-        rushBranding = true,
     )
 }

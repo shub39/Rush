@@ -25,7 +25,6 @@
     <string name="unknown_error">發生錯誤</string>
     <string name="card_theme">卡片主題</string>
     <string name="card_color">卡片色彩</string>
-    <string name="card_size">卡片大小</string>
     <string name="card_corners">卡片邊角</string>
     <string name="restore">還原</string>
     <string name="choose_file">選擇檔案</string>
@@ -34,7 +33,6 @@
     <string name="seed_color">選擇種子顏色</string>
     <string name="source">來源</string>
     <string name="custom">自訂</string>
-    <string name="fit">適應</string>
     <string name="retry">重試</string>
     <string name="system">跟隨系統</string>
     <string name="light">明亮</string>
@@ -55,7 +53,6 @@
     <string name="seed_color_desc">選擇顏色以生成調色盤</string>
     <string name="muted">柔和</string>
     <string name="vibrant">鮮豔</string>
-    <string name="standard">標準</string>
     <string name="spotify">通用</string>
     <string name="rushed">快速</string>
     <string name="hypnotic">催眠</string>
@@ -64,7 +61,6 @@
     <string name="look_and_feel_info">以各種方式自訂應用程式</string>
     <string name="amoled_desc">在AMOLED顯示幕上提供最佳體驗</string>
     <string name="loading_genius">正在載入Genius歌詞</string>
-    <string name="card_font">卡片字體</string>
     <string name="material_theme_desc">基於壁紙的主題</string>
     <string name="amoled">Amoled調色板</string>
     <string name="customisations">自訂歌詞</string>
@@ -84,7 +80,6 @@
     <string name="foss_desc">全部功能已解鎖。此版本應用程式無需內購。如果此軟體幫助了你，請考慮透過以下途徑支持作者：</string>
     <string name="bmc">請作者喝杯咖啡</string>
     <string name="messy">雜亂</string>
-    <string name="unlock_more_pro">在Pro中發現更多</string>
     <string name="album_art">僅封面</string>
     <string name="album_art_shape">專輯封面樣式</string>
     <string name="blurred_art">封面模糊</string>
@@ -96,6 +91,22 @@
     <string name="curve">曲線</string>
     <string name="copy_error">複製錯誤</string>
     <string name="not_found">未找到</string>
-    <string name="chat">聊天</string>
     <string name="synced_lyrics">同步</string>
+    <string name="translate_desc">將Rush翻譯至你的語言</string>
+    <string name="solid_color">封面顏色</string>
+    <string name="plain_lyrics">僅歌詞</string>
+    <string name="line_synced_lyrics">行同步</string>
+    <string name="syllable_synced_lyrics">音節同步</string>
+    <string name="changelog">更新日誌</string>
+    <string name="whats_changed">變更內容</string>
+    <string name="looks">外觀</string>
+    <string name="text">文本</string>
+    <string name="others">其他</string>
+    <string name="full_screen_share">全屏分享</string>
+    <string name="romanization">羅馬化</string>
+    <string name="romanization_desc">顯示日語、韓語、漢語、印地語、旁遮普語和西里爾語言的羅馬化歌詞</string>
+    <string name="open_search">打開檢索</string>
+    <string name="system_default">系統預設</string>
+    <string name="language">語言</string>
+    <string name="blur_synced">模糊已同步的歌詞</string>
 </resources>

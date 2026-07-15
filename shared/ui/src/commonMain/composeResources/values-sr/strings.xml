@@ -24,7 +24,6 @@
     <string name="unknown_error">Desila se greška</string>
     <string name="card_theme">Tema kartice</string>
     <string name="card_color">Boje kartice</string>
-    <string name="card_size">Veličina kartice</string>
     <string name="card_corners">Uglovi kartice</string>
     <string name="backup">Bekap</string>
     <string name="backup_info">Uvezi ili izvezi bazu sačuvanih tekstova</string>
@@ -49,8 +48,6 @@
     <string name="muted">Utišano</string>
     <string name="vibrant">Jarko</string>
     <string name="custom">Prilagođeno</string>
-    <string name="fit">Uvrstaj</string>
-    <string name="standard">Standardno</string>
     <string name="spotify">Generično</string>
     <string name="rushed">Rushovano</string>
     <string name="hypnotic">Hipnotičko</string>
@@ -77,14 +74,11 @@
     <string name="letter_spacing">Razmak između slova</string>
     <string name="vertical">Vertikalno</string>
     <string name="quote">Citat</string>
-    <string name="card_font">Font kartice</string>
     <string name="couplet">Distih</string>
     <string name="messy">Neuredno</string>
-    <string name="chat">Čet</string>
     <string name="foss">Koristiš FOSS varijantu</string>
     <string name="foss_desc">Sve funkcije su otključane. Ova verzija aplikacije ne podržava kupovine u aplikaciji. Ako vam ova aplikacija znači u životu, podržite me donacijom</string>
     <string name="rush_pro">Rush Pro‎</string>
-    <string name="unlock_more_pro">Otključaj više uz Pro</string>
     <string name="album_art">Samo omot</string>
     <string name="album_art_shape">Oblik omota albuma</string>
     <string name="blurred_art">Zamagljen omot</string>
@@ -107,6 +101,5 @@
     <string name="looks">Izgled</string>
     <string name="text">Tekst</string>
     <string name="others">Ostalo</string>
-    <string name="show_app_branding">Prikaži brending aplikacije</string>
     <string name="no_lyrics">Nije moguće dobiti tekst od LRCLIB-a</string>
 </resources>

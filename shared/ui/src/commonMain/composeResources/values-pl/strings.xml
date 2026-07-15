@@ -25,7 +25,6 @@
     <string name="unknown_error">Wystąpił błąd</string>
     <string name="card_theme">Motyw Karty</string>
     <string name="card_color">Kolory Karty</string>
-    <string name="card_size">Rozmiar Karty</string>
     <string name="card_corners">Rogi Karty</string>
     <string name="backup">Kopia zapasowa</string>
     <string name="backup_info">Importuj lub Eksportuj bazę danych z zapisanymi tekstami piosenek</string>
@@ -50,8 +49,6 @@
     <string name="muted">Wyciszony</string>
     <string name="vibrant">Żywy</string>
     <string name="custom">Niestandardowy</string>
-    <string name="fit">Dopasuj</string>
-    <string name="standard">Standardowy</string>
     <string name="spotify">Typowy</string>
     <string name="rushed">Pospieszny</string>
     <string name="hypnotic">Hipnotyzujący</string>
@@ -76,9 +73,7 @@
     <string name="line_height">Wysokość wiersza</string>
     <string name="letter_spacing">Odstęp między literami</string>
     <string name="vertical">Pionowy</string>
-    <string name="card_font">Czcionka Karty</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Odblokuj więcej z Pro</string>
     <string name="lyrics_background">Tło tekstu piosenki</string>
     <string name="synced_lyrics">Zsynchronizowany</string>
     <string name="wave">Fala</string>
@@ -90,7 +85,6 @@
     <string name="quote">Cytat</string>
     <string name="couplet">Dwuwiersz</string>
     <string name="messy">Nieuporządkowany</string>
-    <string name="chat">Czat</string>
     <string name="foss">Używasz wariantu FOSS</string>
     <string name="foss_desc">Wszystkie funkcje są odblokowane. Ten wariant aplikacji nie obsługuje płatności. Jeżeli ta aplikacja przydała ci się, wspomóż mnie wysyłając dotację na</string>
     <string name="album_art">Tylko okładka</string>
@@ -108,7 +102,6 @@
     <string name="syllable_synced_lyrics">Zsynchronizowane sylabami</string>
     <string name="changelog">Lista zmian</string>
     <string name="looks">Wygląd</string>
-    <string name="show_app_branding">Pokazuj wizerunek marki</string>
     <string name="full_screen_share">Pełnoekranowe udostępnianie</string>
     <string name="romanization">Transkrypcja</string>
     <string name="romanization_desc">Pokazuj transkrypcję tekstów piosenek dla Japońskiego, Koreańskiego, Chińskiego, Hindi, Punjabi i Cyrylicy</string>

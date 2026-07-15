@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Shape
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.component.HypnoticVisualizer
 import com.shub39.rush.shared.ui.generateGradientColors
 
@@ -40,9 +39,7 @@ fun HypnoticShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
     Box(modifier = modifier.clip(cardCorners)) {
         HypnoticVisualizer(
@@ -61,8 +58,6 @@ fun HypnoticShareCard(
             cardColors = cardColors.copy(containerColor = Color.Transparent),
             cardCorners = cardCorners,
             albumArtShape = albumArtShape,
-            fit = fit,
-            rushBranding = rushBranding,
         )
     }
 }

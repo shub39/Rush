@@ -27,7 +27,6 @@
     <string name="io_error">ネットワークエラー</string>
     <string name="card_theme">カードテーマ</string>
     <string name="card_color">カードカラー</string>
-    <string name="card_size">カードサイズ</string>
     <string name="card_corners">カード角丸</string>
     <string name="backup">バックアップ</string>
     <string name="backup_info">保存した歌詞のデータベースをインポート・エクスポート</string>
@@ -51,8 +50,6 @@
     <string name="muted">ミュート</string>
     <string name="vibrant">鮮やか</string>
     <string name="custom">カスタム</string>
-    <string name="fit">フィット</string>
-    <string name="standard">標準</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">ヒプノティック</string>
     <string name="rounded">角丸</string>
@@ -78,14 +75,16 @@
     <string name="letter_spacing">文字間隔</string>
     <string name="vertical">縦書き</string>
     <string name="quote">引用</string>
-    <string name="card_font">カードフォント</string>
     <string name="couplet">対句</string>
     <string name="messy">雑然</string>
-    <string name="chat">チャット</string>
     <string name="foss">FOSSバージョンを使用中</string>
     <string name="foss_desc">すべての機能がアンロックされています。このアプリバージョンはアプリ内購入をサポートしていません。このアプリがあなたの生活に価値を加えた場合は、以下で寄付をしてサポートしてください</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Proでさらに機能をアンロック</string>
     <string name="copy_error">コピーエラー</string>
     <string name="not_found">見つかりません</string>
+    <string name="text">テキスト</string>
+    <string name="others">その他</string>
+    <string name="romanization">ローマ字</string>
+    <string name="language">言語</string>
+    <string name="system_default">システムの言語</string>
 </resources>

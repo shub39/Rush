@@ -21,22 +21,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
@@ -50,14 +46,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AppTheme
@@ -65,7 +59,6 @@ import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
 import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
 import com.shub39.rush.shared.ui.listItemColors
@@ -87,9 +80,7 @@ import rush.shared.ui.generated.resources.*
 fun LookAndFeelPage(
     modifier: Modifier = Modifier,
     state: SettingsPageState,
-    isProUser: Boolean,
     onAction: (SettingsPageAction) -> Unit,
-    onShowPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
 ) =
     PageFill(modifier = modifier) {
@@ -194,37 +185,16 @@ fun LookAndFeelPage(
                             onCheckedChange = {
                                 onAction(SettingsPageAction.OnMaterialThemeToggle(it))
                             },
-                            modifier =
-                                Modifier.clip(if (isProUser) middleItemShape() else endItemShape()),
+                            modifier = Modifier.clip(middleItemShape()),
                         )
-
-                        // plus redirect
-                        if (!isProUser) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillParentMaxWidth().height(60.dp),
-                            ) {
-                                LinearWavyProgressIndicator(
-                                    progress = { 0.90f },
-                                    modifier = Modifier.fillParentMaxWidth(),
-                                )
-
-                                Button(onClick = onShowPaywall) {
-                                    Text(text = stringResource(Res.string.unlock_more_pro))
-                                }
-                            }
-                        }
 
                         // font picker
                         Column(
                             modifier =
                                 Modifier.clip(
                                     when {
-                                        state.theme.materialTheme && !isProUser ->
-                                            detachedItemShape()
                                         state.theme.materialTheme -> endItemShape()
-                                        isProUser -> middleItemShape()
-                                        else -> leadingItemShape()
+                                        else -> middleItemShape()
                                     }
                                 )
                         ) {
@@ -252,7 +222,6 @@ fun LookAndFeelPage(
                                         onCheckedChange = {
                                             onAction(SettingsPageAction.OnFontChange(font))
                                         },
-                                        enabled = isProUser,
                                         colors = ToggleButtonDefaults.tonalToggleButtonColors(),
                                     ) {
                                         Text(
@@ -278,7 +247,6 @@ fun LookAndFeelPage(
                                 trailingContent = {
                                     ExpressiveSwitch(
                                         checked = state.theme.withAmoled,
-                                        enabled = isProUser,
                                         onCheckedChange = {
                                             onAction(SettingsPageAction.OnAmoledSwitch(it))
                                         },
@@ -305,7 +273,6 @@ fun LookAndFeelPage(
                                                 contentColor =
                                                     contentColorFor(Color(state.theme.seedColor)),
                                             ),
-                                        enabled = isProUser,
                                     ) {
                                         Icon(
                                             painter = painterResource(Res.drawable.edit),
@@ -319,7 +286,6 @@ fun LookAndFeelPage(
 
                             // palette style picker
                             PaletteStylePicker(
-                                enabled = isProUser,
                                 theme = state.theme,
                                 onChange = { onAction(SettingsPageAction.OnPaletteChange(it)) },
                             )

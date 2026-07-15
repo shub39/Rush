@@ -24,7 +24,6 @@
     <string name="unknown_error">오류가 발생했습니다</string>
     <string name="card_theme">카드 테마</string>
     <string name="card_color">카드 색상</string>
-    <string name="card_size">카드 크기</string>
     <string name="card_corners">카드 모서리</string>
     <string name="backup">백업</string>
     <string name="backup_info">저장된 가사 데이터베이스를 가져오거나 내보내기</string>
@@ -49,8 +48,6 @@
     <string name="muted">음소거됨</string>
     <string name="vibrant">선명함</string>
     <string name="custom">사용자 지정</string>
-    <string name="fit">맞춤</string>
-    <string name="standard">표준</string>
     <string name="spotify">일반</string>
     <string name="rushed">Rush 스타일</string>
     <string name="hypnotic">최면 효과</string>
@@ -77,5 +74,4 @@
     <string name="letter_spacing">글자 간격</string>
     <string name="vertical">수직</string>
     <string name="quote">따옴표</string>
-    <string name="card_font">카드 글꼴</string>
 </resources>

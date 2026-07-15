@@ -119,8 +119,6 @@ fun App() {
                                 },
                                 state = shareState,
                                 onAction = shareVM::onAction,
-                                isProUser = globalState.isProUser,
-                                onShowPaywall = { backStack.add(Routes.PaywallPage) },
                             )
                         }
 
@@ -135,7 +133,6 @@ fun App() {
                                 onNavigateBack = {
                                     if (backStack.size != 1) backStack.removeLastOrNull()
                                 },
-                                isProUser = globalState.isProUser,
                                 onShowPaywall = { backStack.add(Routes.PaywallPage) },
                                 onUpdateNotificationAccess = {
                                     globalVM.onAction(GlobalAction.OnCheckNotificationAccess)

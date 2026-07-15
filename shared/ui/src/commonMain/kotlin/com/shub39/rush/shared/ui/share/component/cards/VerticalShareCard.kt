@@ -16,12 +16,10 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,20 +38,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.rotateVertically
+import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
+import org.jetbrains.compose.resources.Font
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.google_sans_flex
 
 @Composable
 fun VerticalShareCard(
@@ -62,81 +62,65 @@ fun VerticalShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
-    Card(modifier = modifier, shape = cardCorners) {
-        Card(colors = cardColors) {
-            Row(
-                modifier =
-                    Modifier.padding(pxToDp(48)).let {
-                        if (fit == CardFit.STANDARD) {
-                            it.fillMaxHeight()
-                        } else it
-                    }
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    ArtFromUrl(
-                        imageUrl = song.artUrl,
-                        modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
-                    )
+    val artistFont = FontFamily(Font(Res.font.google_sans_flex))
+    val lyricsFont = flexFontEmphasis(slant = -10f, fontWeight = 600, fontWidth = 80f)
 
-                    Spacer(modifier = Modifier.padding(pxToDp(8)))
-
-                    Row {
-                        Text(
-                            text = song.artist,
-                            style =
-                                MaterialTheme.typography.bodySmall
-                                    .copy(fontFamily = flexFontRounded())
-                                    .fromPx(fontSize = 24, letterSpacing = 0, lineHeight = 24),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.rotateVertically(),
-                        )
-
-                        Text(
-                            text = song.title,
-                            style =
-                                MaterialTheme.typography.titleMedium
-                                    .copy(fontFamily = flexFontRounded())
-                                    .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.rotateVertically(),
-                        )
-                    }
-                }
+    Card(modifier = modifier, shape = cardCorners, colors = cardColors) {
+        Row(modifier = Modifier.padding(pxToDp(48))) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ArtFromUrl(
+                    imageUrl = song.artUrl,
+                    modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
+                )
 
                 Spacer(modifier = Modifier.padding(pxToDp(8)))
 
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(pxToDp(10)),
-                ) {
-                    items(sortedLines.entries.toList()) {
-                        Text(
-                            text = it.value,
-                            fontStyle = FontStyle.Italic,
-                            style =
-                                MaterialTheme.typography.bodyMedium.fromPx(
+                Row {
+                    Text(
+                        text = song.artist,
+                        style =
+                            MaterialTheme.typography.bodySmall
+                                .copy(fontFamily = artistFont)
+                                .fromPx(fontSize = 24, letterSpacing = 0, lineHeight = 24),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.rotateVertically(),
+                    )
+
+                    Text(
+                        text = song.title,
+                        style =
+                            MaterialTheme.typography.titleMedium
+                                .copy(fontFamily = flexFontRounded())
+                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.rotateVertically(),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(pxToDp(16)))
+
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(pxToDp(16)),
+            ) {
+                items(sortedLines.entries.toList()) {
+                    Text(
+                        text = it.value,
+                        style =
+                            MaterialTheme.typography.bodyMedium
+                                .copy(fontFamily = lyricsFont)
+                                .fromPx(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 42,
                                     letterSpacing = 0,
                                     lineHeight = 44,
                                 ),
-                        )
-                    }
-
-                    item {
-                        AnimatedVisibility(visible = rushBranding) {
-                            RushBranding(
-                                color = cardColors.contentColor,
-                                modifier = Modifier.padding(top = pxToDp(42)),
-                            )
-                        }
-                    }
+                    )
                 }
             }
         }
@@ -163,7 +147,5 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
-        rushBranding = true,
     )
 }

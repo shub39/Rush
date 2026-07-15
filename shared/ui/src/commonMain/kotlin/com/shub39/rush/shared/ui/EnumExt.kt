@@ -17,16 +17,17 @@
 package com.shub39.rush.shared.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.enums.Fonts
@@ -58,8 +59,6 @@ fun LyricsBackground.toStringRes(): StringResource {
 }
 
 expect val allBackgrounds: List<LyricsBackground>
-
-val premiumCards: List<CardTheme> = listOf(HYPNOTIC, MESSY, QUOTE, CHAT)
 
 val audioDependentBackgrounds: List<LyricsBackground> = listOf(WAVE, GRADIENT, CURVE)
 
@@ -117,13 +116,6 @@ fun CardColors.toStringRes(): StringResource {
     }
 }
 
-fun CardFit.toStringRes(): StringResource {
-    return when (this) {
-        FIT -> Res.string.fit
-        STANDARD -> Res.string.standard
-    }
-}
-
 fun CardTheme.toStringRes(): StringResource {
     return when (this) {
         SPOTIFY -> Res.string.spotify
@@ -134,7 +126,7 @@ fun CardTheme.toStringRes(): StringResource {
         HYPNOTIC -> Res.string.hypnotic
         QUOTE -> Res.string.quote
         MESSY -> Res.string.messy
-        CHAT -> Res.string.chat
+        BRAT -> Res.string.brat
     }
 }
 
@@ -174,7 +166,7 @@ fun Fonts.toFontRes(): FontResource? {
         OPEN_SANS -> Res.font.open_sans
         OUTFIT -> Res.font.outfit
         QUICKSAND -> Res.font.quicksand
-        JOSH -> Res.font.jost
+        JOSH -> Res.font.jost // Josh is very important to us. He was almost declared dead...
         GOOGLE_SANS -> Res.font.google_sans_flex
     }
 }
@@ -182,26 +174,26 @@ fun Fonts.toFontRes(): FontResource? {
 @Composable
 fun AlbumArtShape.toMaterialShape(): Shape {
     return when (this) {
-        CIRCLE -> MaterialShapes.Circle
-        SUNNY -> MaterialShapes.Sunny
-        VERY_SUNNY -> MaterialShapes.VerySunny
-        SQUARE -> MaterialShapes.Square
-        SLANTED -> MaterialShapes.Slanted
-        ARCH -> MaterialShapes.Arch
-        PILL -> MaterialShapes.Pill
-        PENTAGON -> MaterialShapes.Pentagon
-        GEM -> MaterialShapes.Gem
-        COOKIE_4 -> MaterialShapes.Cookie4Sided
-        COOKIE_6 -> MaterialShapes.Cookie6Sided
-        COOKIE_9 -> MaterialShapes.Cookie9Sided
-        COOKIE_12 -> MaterialShapes.Cookie12Sided
-        CLOVER_4 -> MaterialShapes.Clover4Leaf
-        CLOVER_8 -> MaterialShapes.Clover8Leaf
-        GHOSTISH -> MaterialShapes.Ghostish
-        FLOWER -> MaterialShapes.Flower
-        SOFT_BURST -> MaterialShapes.SoftBurst
-        PUFFY_DIAMOND -> MaterialShapes.PuffyDiamond
-        BUN -> MaterialShapes.Bun
-        HEART -> MaterialShapes.Heart
-    }.toShape()
+        CIRCLE -> MaterialShapes.Circle.toShape()
+        SUNNY -> MaterialShapes.Sunny.toShape()
+        VERY_SUNNY -> MaterialShapes.VerySunny.toShape()
+        SQUARE -> MaterialShapes.Square.toShape()
+        SLANTED -> MaterialShapes.Slanted.toShape()
+        ARCH -> MaterialShapes.Arch.toShape()
+        PILL -> MaterialShapes.Pill.toShape()
+        PENTAGON -> MaterialShapes.Pentagon.toShape()
+        GEM -> MaterialShapes.Gem.toShape()
+        COOKIE_4 -> MaterialShapes.Cookie4Sided.toShape()
+        COOKIE_6 -> MaterialShapes.Cookie6Sided.toShape()
+        COOKIE_9 -> MaterialShapes.Cookie9Sided.toShape()
+        COOKIE_12 -> MaterialShapes.Cookie12Sided.toShape()
+        CLOVER_4 -> MaterialShapes.Clover4Leaf.toShape()
+        CLOVER_8 -> MaterialShapes.Clover8Leaf.toShape()
+        GHOSTISH -> MaterialShapes.Ghostish.toShape()
+        FLOWER -> MaterialShapes.Flower.toShape()
+        SOFT_BURST -> MaterialShapes.SoftBurst.toShape()
+        PUFFY_DIAMOND -> MaterialShapes.PuffyDiamond.toShape()
+        BUN -> MaterialShapes.Bun.toShape()
+        RECTANGLE -> RoundedCornerShape(0.dp)
+    }
 }

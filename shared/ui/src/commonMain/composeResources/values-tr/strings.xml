@@ -25,7 +25,6 @@
     <string name="unknown_error">Bir hata oluştu</string>
     <string name="card_theme">Kart Teması</string>
     <string name="card_color">Kart Renkleri</string>
-    <string name="card_size">Kart Boyutu</string>
     <string name="card_corners">Kart Köşeleri</string>
     <string name="backup">Yedekle</string>
     <string name="backup_info">Kaydedilen şarkı sözleri veritabanını içe veya dışa aktar</string>
@@ -48,8 +47,6 @@
     <string name="muted">Soluk</string>
     <string name="vibrant">Canlı</string>
     <string name="custom">Özel</string>
-    <string name="fit">Sığdır</string>
-    <string name="standard">Standart</string>
     <string name="spotify">Spotify Teması</string>
     <string name="rushed">Hızlandırılmış</string>
     <string name="hypnotic">Hipnotik</string>
@@ -72,7 +69,6 @@
     <string name="center">Orta</string>
     <string name="text_alignment">Hizalama</string>
     <string name="customisations">Şarkı Sözü Ayarları</string>
-    <string name="card_font">Kart Fontu</string>
     <string name="quote">Alıntı</string>
     <string name="couplet">Kıta</string>
     <string name="vertical">Dikey</string>
@@ -86,7 +82,6 @@
     <string name="album_art">Sadece Kapak</string>
     <string name="album_art_shape">Albüm Kapak Şekli</string>
     <string name="synced_lyrics">Senkronize</string>
-    <string name="unlock_more_pro">Premium ile daha fazlasının kilidini açın</string>
     <string name="wave">Dalga</string>
     <string name="gradient">Yumuşak Geçiş</string>
     <string name="audio_permission_info">Bu arkaplan mevcut çalan şarkınızı görselleştirir</string>

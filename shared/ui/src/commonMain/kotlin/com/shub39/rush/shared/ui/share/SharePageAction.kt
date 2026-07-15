@@ -18,13 +18,11 @@ package com.shub39.rush.shared.ui.share
 
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
-import com.shub39.rush.shared.core.enums.Fonts
 
 sealed interface SharePageAction {
-    data class OnToggleRushBranding(val pref: Boolean) : SharePageAction
+    data object OnRandomize : SharePageAction
 
     data class OnUpdateAlbumArtShape(val shape: AlbumArtShape) : SharePageAction
 
@@ -32,15 +30,11 @@ sealed interface SharePageAction {
 
     data class OnUpdateCardColor(val color: CardColors) : SharePageAction
 
-    data class OnUpdateCardFit(val fit: CardFit) : SharePageAction
-
     data class OnUpdateCardRoundness(val roundness: CornerRadius) : SharePageAction
 
     data class OnUpdateCardContent(val color: Int) : SharePageAction
 
     data class OnUpdateCardBackground(val color: Int) : SharePageAction
-
-    data class OnUpdateCardFont(val font: Fonts) : SharePageAction
 
     data class OnToggleFullScreen(val fullScreen: Boolean) : SharePageAction
 }

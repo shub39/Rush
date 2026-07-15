@@ -27,7 +27,6 @@
     <string name="unknown_error">Si è verificato un errore</string>
     <string name="card_theme">Tema Card</string>
     <string name="card_color">Colori Card</string>
-    <string name="card_size">Dimensioni Card</string>
     <string name="rush_branding">Rush</string>
     <string name="bmc">Buy Me a Coffee (Supportami)</string>
     <string name="translate">Traduci</string>
@@ -49,7 +48,6 @@
     <string name="vibrant">Vivace</string>
     <string name="custom">Personalizzato</string>
     <string name="source">Origine</string>
-    <string name="standard">Standard</string>
     <string name="spotify">Generico</string>
     <string name="hypnotic">Ipnotico</string>
     <string name="default_">Predefinito</string>
@@ -80,18 +78,14 @@
     <string name="lyrics_background">Sfondo testi</string>
     <string name="synced_lyrics">Sincronizzato</string>
     <string name="blur_synced">Sfoca testo sincronizzato</string>
-    <string name="card_font">Font Card</string>
     <string name="seed_color">Seleziona colore base</string>
-    <string name="fit">Adatta</string>
     <string name="rushed">Affrettato</string>
     <string name="fullscreen_desc">Nascondi barre di sistema nella pagina testi</string>
     <string name="quote">Citazione</string>
-    <string name="chat">Chat</string>
     <string name="couplet">Accoppiato</string>
     <string name="messy">Disordinato</string>
     <string name="foss_desc">Tutte le funzionalità sono sbloccate. Questa variante dell\u0027app non supporta gli acquisti in-app. Se questa app ha aggiunto valore alla tua vida, sostienimi con una donazione su</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Sblocca di più con Pro</string>
     <string name="plain_lyrics">Semplice</string>
     <string name="wave">Onda</string>
     <string name="gradient">Gradiente</string>
@@ -108,7 +102,6 @@
     <string name="looks">Aspetto</string>
     <string name="text">Testo</string>
     <string name="others">Altri</string>
-    <string name="show_app_branding">Mostra Marchio dell\u0027App</string>
     <string name="full_screen_share">Condivisione a schermo intero</string>
     <string name="romanization">Romanizzazione</string>
     <string name="romanization_desc">Mostra i testi in caratteri latini per le lingue giapponese, coreana, cinese, hindi, punjabi e cirillica</string>

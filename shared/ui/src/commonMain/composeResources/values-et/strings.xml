@@ -21,7 +21,6 @@
     <string name="no_internet">Võrguühendus puudub!</string>
     <string name="card_theme">Kaardi kujundus</string>
     <string name="card_color">Kaardi värvid</string>
-    <string name="card_size">Kaardi suurus</string>
     <string name="card_corners">Kaardi nurgad</string>
     <string name="backup">Varunda</string>
     <string name="backup_info">Impordi või ekspordi salvestatud laulusõnade andmekogu</string>

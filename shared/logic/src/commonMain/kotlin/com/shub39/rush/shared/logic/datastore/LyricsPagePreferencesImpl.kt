@@ -25,11 +25,11 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
+import com.shub39.rush.shared.core.valueOfOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -67,7 +67,8 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getLyricsBackgroundFlow(): Flow<LyricsBackground> =
         dataStore.data.map {
-            LyricsBackground.valueOf(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name)
+            valueOfOrNull(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name)
+                ?: LyricsBackground.SOLID_COLOR
         }
 
     override suspend fun updateLyricsBackground(background: LyricsBackground) {
@@ -109,7 +110,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getLyricsColorFlow(): Flow<CardColors> =
         dataStore.data.map { preferences ->
-            CardColors.valueOf(preferences[lyricsColor] ?: CardColors.MUTED.name)
+            valueOfOrNull(preferences[lyricsColor] ?: CardColors.MUTED.name) ?: CardColors.MUTED
         }
 
     override suspend fun updateLyricsColor(new: CardColors) {
@@ -139,16 +140,8 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getLyricAlignmentFlow(): Flow<LyricsAlignment> =
         dataStore.data.map { prefs ->
-            try {
-                val alignment = prefs[lyricAlignment] ?: LyricsAlignment.START.toString()
-                LyricsAlignment.entries.find { it.toString() == alignment } ?: LyricsAlignment.START
-            } catch (e: Exception) {
-                RushLogger.e(
-                    "LyricsPagePreferencesImpl",
-                    "Error getting lyric alignment: ${e.message}",
-                )
-                LyricsAlignment.START
-            }
+            val alignment = prefs[lyricAlignment] ?: LyricsAlignment.START.name
+            valueOfOrNull<LyricsAlignment>(alignment) ?: LyricsAlignment.START
         }
 
     override suspend fun updateLyricAlignment(alignment: LyricsAlignment) {

@@ -25,7 +25,6 @@
     <string name="unknown_error">Ocurrió un error</string>
     <string name="card_theme">Estilo de postal</string>
     <string name="card_color">Color de postal</string>
-    <string name="card_size">Tamaño de postal</string>
     <string name="card_corners">Esquinas de postal</string>
     <string name="backup">Copia de seguridad</string>
     <string name="backup_info">Importar o exportar la base de datos de letras guardadas</string>
@@ -48,8 +47,6 @@
     <string name="muted">Silenciado</string>
     <string name="vibrant">Vibrante</string>
     <string name="custom">Personalizado</string>
-    <string name="fit">Adaptada</string>
-    <string name="standard">Estándar</string>
     <string name="spotify">Genérico</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Hipnótico</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">Espaciado de letra</string>
     <string name="vertical">Vertical</string>
     <string name="quote">Cita</string>
-    <string name="card_font">Fuente de Tarjeta</string>
     <string name="couplet">Copla</string>
     <string name="messy">Desorganizado</string>
-    <string name="chat">Mensajes</string>
     <string name="foss">Estás usando la variante FOSS</string>
     <string name="foss_desc">Todas las características están desbloqueadas. Esta variante de la aplicación no soporta compras dentro de la app. Si esta aplicación le añadió valor a tu vida, ayúdame donando en</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Desbloqueja más con Pro</string>
     <string name="album_art">Solo Carátula</string>
     <string name="album_art_shape">Forma de la carátula</string>
     <string name="blurred_art">Carátula borrosa</string>
@@ -108,7 +102,6 @@
     <string name="looks">Apariencia</string>
     <string name="text">Texto</string>
     <string name="others">Otros</string>
-    <string name="show_app_branding">Mostrar Marca de la App</string>
     <string name="full_screen_share">Compartición a pantalla completa</string>
     <string name="romanization">Romanización</string>
     <string name="romanization_desc">Mostrar romanización para letra japonesa, coreana, china, hindi, punjabi y idiomas cirílicos</string>

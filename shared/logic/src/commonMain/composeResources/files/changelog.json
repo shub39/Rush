@@ -1,5 +1,15 @@
 [
   {
+    "version": "6.5.0",
+    "changes": [
+      "Updated Translations",
+      "Added new Card Style - Brat",
+      "Improved existing card styles",
+      "Removed underused customization options",
+      "Miscellaneous UI fixes"
+    ]
+  },
+  {
     "version": "6.4.2",
     "changes": [
       "Updated Translations",
@@ -63,13 +73,6 @@
     "version": "6.2.01",
     "changes": [
       "Fixed UI bug in share cards"
-    ]
-  },
-  {
-    "version": "6.2.0",
-    "changes": [
-      "Fixed Expressive Syllables causing crashes",
-      "Fixed UI inconsistencies"
     ]
   }
 ]

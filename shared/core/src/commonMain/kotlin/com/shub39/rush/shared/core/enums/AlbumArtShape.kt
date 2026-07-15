@@ -37,5 +37,5 @@ enum class AlbumArtShape {
     SOFT_BURST,
     PUFFY_DIAMOND,
     BUN,
-    HEART,
+    RECTANGLE,
 }

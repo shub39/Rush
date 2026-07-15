@@ -25,7 +25,6 @@
     <string name="unknown_error">حدث خطأ</string>
     <string name="card_theme">سمة البطاقة</string>
     <string name="card_color">ألوان البطاقة</string>
-    <string name="card_size">حجم البطاقة</string>
     <string name="card_corners">زوايا البطاقة</string>
     <string name="backup">النسخ الاحتياطي</string>
     <string name="backup_info">استيراد أو تصدير قاعدة بيانات كلمات الأغاني المحفوظة</string>
@@ -48,8 +47,6 @@
     <string name="muted">مكتوم</string>
     <string name="vibrant">نابض بالحياة</string>
     <string name="custom">مخصص</string>
-    <string name="fit">ملائم</string>
-    <string name="standard">عادي</string>
     <string name="spotify">نوعي</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Hypnotic</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">تباعد الحروف</string>
     <string name="vertical">رَأسِيّ</string>
     <string name="quote">اقتباس</string>
-    <string name="card_font">خط البطاقة</string>
     <string name="couplet">بيت شعري</string>
     <string name="messy">فوضوي</string>
-    <string name="chat">محادثة</string>
     <string name="foss">أنت تستخدم برنامج مجاني ومفتوح المصدر (FOSS)</string>
     <string name="foss_desc">جميع الميزات متاحة. هذا الإصدار من التطبيق لا يدعم عمليات الشراء داخل التطبيق. إذا كان هذا التطبيق قد أضاف قيمة إلى حياتك، ادعمني بالتبرع على</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">افتح المزيد مع Pro</string>
     <string name="album_art">فن الألبوم فقط</string>
     <string name="album_art_shape">شكل فن الألبوم</string>
     <string name="blurred_art">فن ضبابي</string>
@@ -110,7 +104,6 @@
     <string name="looks">المظهر</string>
     <string name="text">الكتابة</string>
     <string name="others">الآخرون</string>
-    <string name="show_app_branding">اظهر علامة التطبيق</string>
     <string name="full_screen_share">مشاركة الشاشة الكاملة</string>
     <string name="romanization">تحويل الى نظام كتابة اخر</string>
 </resources>

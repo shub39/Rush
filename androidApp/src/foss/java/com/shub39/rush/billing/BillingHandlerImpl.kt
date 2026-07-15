@@ -20,7 +20,7 @@ import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 
 class BillingHandlerImpl : BillingHandler {
-    override suspend fun isProUser(): Boolean = true
+    override suspend fun isProUser(): Boolean = false
 
-    override suspend fun userResult(): SubscriptionResult = SubscriptionResult.Subscribed
+    override suspend fun userResult(): SubscriptionResult = SubscriptionResult.NotSubscribed
 }

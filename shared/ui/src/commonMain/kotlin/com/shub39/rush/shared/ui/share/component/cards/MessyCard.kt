@@ -16,13 +16,15 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -46,10 +48,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.pxToSp
@@ -57,6 +57,9 @@ import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import org.jetbrains.compose.resources.Font
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.google_sans_flex
 
 private data class Word(
     val text: String,
@@ -64,6 +67,7 @@ private data class Word(
     val fontSize: Int,
     val fontWidth: Float,
     val angle: Int,
+    val highLight: Boolean,
 )
 
 private val fontCache = mutableMapOf<Pair<Int, Int>, FontFamily>()
@@ -82,11 +86,11 @@ fun MessyCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
     seed: Long,
 ) {
+    val artistFont = FontFamily(Font(Res.font.google_sans_flex))
+
     val firstLine = sortedLines.values.firstOrNull() ?: "Woah..."
     val words =
         remember(seed, firstLine) {
@@ -97,85 +101,98 @@ fun MessyCard(
                     Word(
                         text = if (Random.nextBoolean()) it.uppercase() else it.lowercase(),
                         fontWeight = Random.nextInt(3, 10) * 100,
-                        fontSize = Random.nextInt(3, 10) * 10,
+                        fontSize = Random.nextInt(4, 8) * 10,
                         fontWidth = (Random.nextInt(5, 12) * 10).toFloat(),
                         angle = Random.nextInt(-10, 10),
+                        highLight = Random.nextBoolean(),
                     )
                 }
         }
 
     Card(modifier = modifier, colors = cardColors, shape = cardCorners) {
-        Column(
-            modifier =
-                Modifier.padding(pxToDp(48)).let {
-                    if (fit == CardFit.STANDARD) {
-                        it.weight(1f)
-                    } else it
-                },
-            verticalArrangement = Arrangement.Center,
-        ) {
-            AnimatedVisibility(visible = rushBranding) {
-                RushBranding(
-                    color = cardColors.contentColor,
-                    modifier = Modifier.padding(bottom = pxToDp(32)),
-                )
-            }
+        Box {
+            Box(
+                modifier =
+                    Modifier.offset(x = pxToDp(93), y = pxToDp(93))
+                        .align(Alignment.BottomEnd)
+                        .size(pxToDp(350))
+                        .background(color = cardColors.contentColor, shape = albumArtShape)
+            )
 
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(pxToDp(16)),
-                verticalArrangement = Arrangement.spacedBy(pxToDp(16)),
-            ) {
-                words.forEach { word ->
-                    Text(
-                        text = word.text,
-                        style =
-                            TextStyle(
-                                fontFamily =
-                                    flexFontEmphasisCached(
-                                        weight = word.fontWeight,
-                                        width =
-                                            (if (word.text.length > 10) 100f else word.fontWidth)
-                                                .roundToInt(),
-                                    ),
-                                fontSize = pxToSp(word.fontSize),
-                            ),
-                        modifier = Modifier.rotate(word.angle.toFloat()),
-                    )
-                }
-            }
+            ArtFromUrl(
+                imageUrl = song.artUrl,
+                modifier =
+                    Modifier.offset(x = pxToDp(80), y = pxToDp(80))
+                        .align(Alignment.BottomEnd)
+                        .size(pxToDp(300))
+                        .clip(albumArtShape),
+            )
 
-            Spacer(modifier = Modifier.padding(pxToDp(64)))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Column {
                 Column(
-                    modifier = Modifier.weight(1f).padding(horizontal = pxToDp(32)),
-                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.fillMaxWidth().padding(pxToDp(48)),
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    Text(
-                        text = song.title,
-                        style =
-                            MaterialTheme.typography.titleMedium
-                                .copy(fontFamily = flexFontRounded())
-                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 32),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(pxToDp(16)),
+                        verticalArrangement = Arrangement.spacedBy(pxToDp(16)),
+                    ) {
+                        words.forEach { word ->
+                            Card(
+                                modifier = Modifier.rotate(word.angle.toFloat()),
+                                shape = cardCorners,
+                                colors =
+                                    if (word.highLight)
+                                        CardDefaults.cardColors(
+                                            containerColor = cardColors.contentColor,
+                                            contentColor = cardColors.containerColor,
+                                        )
+                                    else cardColors,
+                            ) {
+                                Text(
+                                    text = word.text,
+                                    style =
+                                        TextStyle(
+                                            fontFamily =
+                                                flexFontEmphasisCached(
+                                                    weight = word.fontWeight,
+                                                    width =
+                                                        (if (word.text.length > 10) 100f
+                                                            else word.fontWidth)
+                                                            .roundToInt(),
+                                                ),
+                                            fontSize = pxToSp(word.fontSize),
+                                        ),
+                                    modifier = Modifier.padding(pxToDp(8)),
+                                )
+                            }
+                        }
+                    }
 
-                    Text(
-                        text = song.artist,
-                        style =
-                            MaterialTheme.typography.bodySmall
-                                .copy(fontFamily = flexFontRounded())
-                                .fromPx(fontSize = 26, letterSpacing = 0, lineHeight = 26),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    Spacer(modifier = Modifier.padding(pxToDp(64)))
+
+                    Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                        Text(
+                            text = song.title,
+                            style =
+                                MaterialTheme.typography.titleMedium
+                                    .copy(fontFamily = flexFontRounded())
+                                    .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 32),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+
+                        Text(
+                            text = song.artist,
+                            style =
+                                MaterialTheme.typography.bodySmall
+                                    .copy(fontFamily = artistFont)
+                                    .fromPx(fontSize = 20, letterSpacing = 0, lineHeight = 22),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
-
-                ArtFromUrl(
-                    imageUrl = song.artUrl,
-                    modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
-                )
             }
         }
     }
@@ -200,8 +217,6 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
-        rushBranding = true,
         seed = 0,
     )
 }

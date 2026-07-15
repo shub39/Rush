@@ -25,7 +25,6 @@
     <string name="unknown_error">เกิดข้อผิดพลาดขึ้น</string>
     <string name="card_theme">ธีมการ์ด</string>
     <string name="card_color">สีการ์ด</string>
-    <string name="card_size">ขนาดการ์ด</string>
     <string name="card_corners">มุมการ์ด</string>
     <string name="backup">สำรองข้อมูล</string>
     <string name="backup_info">นำเข้าหรือส่งออกข้อมูลของเนื้อเพลงที่บันทึกไว้</string>
@@ -50,8 +49,6 @@
     <string name="muted">ปิด</string>
     <string name="vibrant">ความสดใส</string>
     <string name="custom">กำหนดเอง</string>
-    <string name="fit">พอดี</string>
-    <string name="standard">มาตรฐาน</string>
     <string name="spotify">ทั่วไป</string>
     <string name="rushed">เร่งรีบ</string>
     <string name="hypnotic">สะกดจิต</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">ระยะห่างระหว่างตัวอักษร</string>
     <string name="vertical">แนวตั้ง</string>
     <string name="quote">คำ</string>
-    <string name="card_font">ฟอนต์การ์ด</string>
     <string name="couplet">บทกลอน</string>
     <string name="messy">ยุ่งเหยิง</string>
-    <string name="chat">แชท</string>
     <string name="foss">คุณกำลังใช้ตัวแปร FOSS</string>
     <string name="foss_desc">ทุกฟีเจอร์ถูกปลดล็อกแล้ว แอปพลิเคชันรุ่นนี้ไม่รองรับการซื้อในแอปพลิเคชัน หากแอปนี้ให้ความสะดวกกับชีวิตของคุณ โปรดสนับสนุนเราโดยการบริจาค</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">ปลดล็อกเพิ่มเติมด้วยโปร</string>
     <string name="album_art">เพียงแค่ศิลปะ</string>
     <string name="album_art_shape">รูปทรงของภาพปกอัลบั้ม</string>
     <string name="blurred_art">เบลอรูปภาพ</string>
@@ -108,7 +102,6 @@
     <string name="looks">หน้าตา</string>
     <string name="text">ข้อความ</string>
     <string name="others">อื่นๆ</string>
-    <string name="show_app_branding">แสดงแบรนด์ของแอป</string>
     <string name="full_screen_share">แชร์ทั้งหน้าจอ</string>
     <string name="romanization">อักษรโรมัน</string>
     <string name="romanization_desc">แสดงเนื้อเพลงแบบโรมาไนซ์สำหรับภาษาญี่ปุ่น เกาหลี จีน ฮินดี ปัญจาบ และซีริลลิก</string>
