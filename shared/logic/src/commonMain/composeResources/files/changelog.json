@@ -1,8 +1,12 @@
 [
   {
-    "version": "6.4.3",
+    "version": "6.5.0",
     "changes": [
-      "Updated Translations"
+      "Updated Translations",
+      "Added new Card Style - Brat",
+      "Improved existing card styles",
+      "Removed underused customization options",
+      "Miscellaneous UI fixes"
     ]
   },
   {

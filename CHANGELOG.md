@@ -1,7 +1,11 @@
 # Changelog
 
-## 6.4.3
+## 6.5.0
 - Updated Translations
+- Added new Card Style - Brat
+- Improved existing card styles
+- Removed underused customization options
+- Miscellaneous UI fixes
 
 ## 6.4.2
 - Updated Translations
