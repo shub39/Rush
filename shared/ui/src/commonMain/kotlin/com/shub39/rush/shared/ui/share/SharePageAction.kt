@@ -18,18 +18,17 @@ package com.shub39.rush.shared.ui.share
 
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 
 sealed interface SharePageAction {
+    data object OnRandomize : SharePageAction
+
     data class OnUpdateAlbumArtShape(val shape: AlbumArtShape) : SharePageAction
 
     data class OnUpdateCardTheme(val theme: CardTheme) : SharePageAction
 
     data class OnUpdateCardColor(val color: CardColors) : SharePageAction
-
-    data class OnUpdateCardFit(val fit: CardFit) : SharePageAction
 
     data class OnUpdateCardRoundness(val roundness: CornerRadius) : SharePageAction
 

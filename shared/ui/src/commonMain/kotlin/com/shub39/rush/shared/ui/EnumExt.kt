@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.enums.Fonts
@@ -114,13 +113,6 @@ fun CardColors.toStringRes(): StringResource {
         MUTED -> Res.string.muted
         VIBRANT -> Res.string.vibrant
         CUSTOM -> Res.string.custom
-    }
-}
-
-fun CardFit.toStringRes(): StringResource {
-    return when (this) {
-        FIT -> Res.string.fit
-        STANDARD -> Res.string.standard
     }
 }
 

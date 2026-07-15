@@ -19,7 +19,6 @@ package com.shub39.rush.shared.ui.share.component.cards
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -42,7 +41,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.fromPx
@@ -55,20 +53,12 @@ fun AlbumArt(
     song: SongDetails,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     modifier: Modifier = Modifier,
     albumArtShape: Shape = CircleShape,
     selectedImage: PlatformFile? = null,
 ) {
     Card(modifier = modifier, shape = cardCorners, colors = cardColors) {
-        Column(
-            modifier =
-                Modifier.fillMaxWidth().padding(pxToDp(30)).let {
-                    if (fit == CardFit.STANDARD) {
-                        it.fillMaxHeight()
-                    } else it
-                }
-        ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(pxToDp(30))) {
             Text(
                 text = song.artist,
                 style =
@@ -102,7 +92,6 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(32)),
-        fit = CardFit.FIT,
         albumArtShape = VerySunny.toShape(),
     )
 }

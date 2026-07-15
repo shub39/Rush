@@ -18,16 +18,11 @@ package com.shub39.rush.shared.core.interfaces
 
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import kotlinx.coroutines.flow.Flow
 
 interface SharePagePreferences {
-    fun getCardFitFlow(): Flow<CardFit>
-
-    suspend fun updateCardFit(newCardFit: CardFit)
-
     fun getCardBackgroundFlow(): Flow<Int>
 
     suspend fun updateCardBackground(newCardBackground: Int)

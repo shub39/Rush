@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,7 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.fromPx
@@ -64,21 +62,13 @@ fun VerticalShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
 ) {
     val artistFont = FontFamily(Font(Res.font.google_sans_flex))
     val lyricsFont = flexFontEmphasis(slant = -10f, fontWeight = 600, fontWidth = 80f)
 
     Card(modifier = modifier, shape = cardCorners, colors = cardColors) {
-        Row(
-            modifier =
-                Modifier.padding(pxToDp(48)).let {
-                    if (fit == CardFit.STANDARD) {
-                        it.fillMaxHeight()
-                    } else it
-                }
-        ) {
+        Row(modifier = Modifier.padding(pxToDp(48))) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 ArtFromUrl(
                     imageUrl = song.artUrl,
@@ -157,6 +147,5 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
     )
 }

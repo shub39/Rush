@@ -26,7 +26,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
@@ -42,7 +41,6 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val cardTheme = stringPreferencesKey("card_theme")
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
-        private val cardFit = stringPreferencesKey("card_fit")
         private val albumArtShapeKey = stringPreferencesKey("album_art_shape")
         private val fullscreenShareKey = booleanPreferencesKey("fullscreen_share")
     }
@@ -65,16 +63,6 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateFullscreenShare(newPref: Boolean) {
         dataStore.edit { preferences -> preferences[fullscreenShareKey] = newPref }
-    }
-
-    override fun getCardFitFlow(): Flow<CardFit> =
-        dataStore.data.map { preferences ->
-            val cardFit = preferences[cardFit] ?: CardFit.FIT.name
-            CardFit.valueOf(cardFit)
-        }
-
-    override suspend fun updateCardFit(newCardFit: CardFit) {
-        dataStore.edit { settings -> settings[cardFit] = newCardFit.name }
     }
 
     override fun getCardBackgroundFlow(): Flow<Int> =

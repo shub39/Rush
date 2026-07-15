@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -63,7 +62,6 @@ import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
@@ -86,6 +84,7 @@ import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.vectorResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
@@ -160,11 +159,7 @@ fun SharePageContent(
                 cardGraphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(cardGraphicsLayer)
             }
-            .let {
-                if (state.cardFit == CardFit.FIT) {
-                    it.heightIn(max = pxToDp(1920))
-                } else it.height(pxToDp(1280))
-            }
+            .heightIn(max = pxToDp(1920))
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -210,7 +205,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
@@ -232,7 +226,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
@@ -243,7 +236,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
@@ -254,7 +246,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
@@ -265,7 +256,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
@@ -276,7 +266,6 @@ fun SharePageContent(
                                     sortedLines = state.selectedLines,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                     seed = messyCardSeed,
                                 )
@@ -287,7 +276,6 @@ fun SharePageContent(
                                     song = state.songDetails,
                                     cardColors = cardColor,
                                     cardCorners = cardCorners,
-                                    fit = state.cardFit,
                                     selectedImage = selectedImage,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
@@ -321,6 +309,10 @@ fun SharePageContent(
                         )
                         .padding(32.dp),
             ) {
+                IconButton(onClick = { onAction(SharePageAction.OnRandomize) }) {
+                    Icon(imageVector = vectorResource(Res.drawable.dice), contentDescription = null)
+                }
+
                 IconButton(
                     onClick = {
                         val graphicsLayer =

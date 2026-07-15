@@ -49,7 +49,6 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.ui.RushPreviewWrapper
@@ -158,18 +157,6 @@ fun SharePageSheet(
                             }
                         }
                     }
-                }
-            }
-
-            item {
-                ListItemCard(shape = middleItemShape()) {
-                    ListSelect(
-                        title = stringResource(Res.string.card_size),
-                        options = CardFit.entries.toList(),
-                        selected = state.cardFit,
-                        onSelectedChange = { onAction(SharePageAction.OnUpdateCardFit(it)) },
-                        labelProvider = { Text(text = stringResource(it.toStringRes())) },
-                    )
                 }
             }
 

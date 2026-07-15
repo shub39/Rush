@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.fromPx
@@ -62,7 +61,6 @@ fun CoupletShareCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
 ) {
     val artistFont = FontFamily(Font(Res.font.google_sans_flex))
@@ -79,10 +77,7 @@ fun CoupletShareCard(
 
         Card(colors = cardColors.copy(containerColor = Color.Transparent)) {
             Row(
-                modifier =
-                    Modifier.padding(pxToDp(48)).let {
-                        if (fit == CardFit.STANDARD) it.weight(1f) else it
-                    },
+                modifier = Modifier.padding(pxToDp(48)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
@@ -159,6 +154,5 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
     )
 }

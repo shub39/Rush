@@ -48,7 +48,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.fromPx
@@ -87,7 +86,6 @@ fun MessyCard(
     sortedLines: Map<Int, String>,
     cardColors: CardColors,
     cardCorners: RoundedCornerShape,
-    fit: CardFit,
     albumArtShape: Shape = CircleShape,
     seed: Long,
 ) {
@@ -132,12 +130,7 @@ fun MessyCard(
 
             Column {
                 Column(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(pxToDp(48)).let {
-                            if (fit == CardFit.STANDARD) {
-                                it.weight(1f)
-                            } else it
-                        },
+                    modifier = Modifier.fillMaxWidth().padding(pxToDp(48)),
                     verticalArrangement = Arrangement.Center,
                 ) {
                     FlowRow(
@@ -147,6 +140,7 @@ fun MessyCard(
                         words.forEach { word ->
                             Card(
                                 modifier = Modifier.rotate(word.angle.toFloat()),
+                                shape = cardCorners,
                                 colors =
                                     if (word.highLight)
                                         CardDefaults.cardColors(
@@ -223,7 +217,6 @@ private fun Preview() {
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
-        fit = CardFit.FIT,
         seed = 0,
     )
 }

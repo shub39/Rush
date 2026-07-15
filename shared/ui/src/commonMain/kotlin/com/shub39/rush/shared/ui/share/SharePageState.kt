@@ -24,7 +24,6 @@ import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
-import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 
@@ -37,7 +36,6 @@ data class SharePageState(
     val cardColors: CardColors = CardColors.MUTED,
     val cardBackground: Int = Color.Gray.toArgb(),
     val cardContent: Int = Color.White.toArgb(),
-    val cardFit: CardFit = CardFit.FIT,
     val cardRoundness: CornerRadius = CornerRadius.ROUNDED,
     val cardTheme: CardTheme = CardTheme.SPOTIFY,
     val albumArtShape: AlbumArtShape = AlbumArtShape.COOKIE_12,
