@@ -71,6 +71,7 @@ import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.share.component.SharePageSheet
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt
+import com.shub39.rush.shared.ui.share.component.cards.BratShareCard
 import com.shub39.rush.shared.ui.share.component.cards.CoupletShareCard
 import com.shub39.rush.shared.ui.share.component.cards.HypnoticShareCard
 import com.shub39.rush.shared.ui.share.component.cards.MessyCard
@@ -278,6 +279,15 @@ fun SharePageContent(
                                     cardCorners = cardCorners,
                                     selectedImage = selectedImage,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
+                                )
+
+                            BRAT ->
+                                BratShareCard(
+                                    modifier = cardModifier,
+                                    song = state.songDetails,
+                                    sortedLines = state.selectedLines,
+                                    cardColors = cardColor,
+                                    cardCorners = cardCorners,
                                 )
                         }
                     }

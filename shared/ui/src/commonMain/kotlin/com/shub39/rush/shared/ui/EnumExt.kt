@@ -126,6 +126,7 @@ fun CardTheme.toStringRes(): StringResource {
         HYPNOTIC -> Res.string.hypnotic
         QUOTE -> Res.string.quote
         MESSY -> Res.string.messy
+        BRAT -> Res.string.brat
     }
 }
 

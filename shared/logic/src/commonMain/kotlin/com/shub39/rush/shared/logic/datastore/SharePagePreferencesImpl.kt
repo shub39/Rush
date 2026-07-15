@@ -29,6 +29,7 @@ import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
+import com.shub39.rush.shared.core.valueOfOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -47,11 +48,9 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> =
         dataStore.data.map { preferences ->
-            try {
-                AlbumArtShape.valueOf(preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name)
-            } catch (_: Exception) {
-                AlbumArtShape.COOKIE_12
-            }
+            valueOfOrNull<AlbumArtShape>(
+                preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name
+            ) ?: AlbumArtShape.COOKIE_12
         }
 
     override suspend fun updateAlbumArtShape(shape: AlbumArtShape) {
@@ -81,12 +80,8 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getCardThemeFlow(): Flow<CardTheme> =
         dataStore.data.map { preferences ->
-            try {
-                val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
-                CardTheme.valueOf(theme)
-            } catch (_: Exception) {
-                CardTheme.SPOTIFY
-            }
+            val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
+            valueOfOrNull<CardTheme>(theme) ?: CardTheme.SPOTIFY
         }
 
     override suspend fun updateCardTheme(newCardTheme: CardTheme) {
@@ -96,7 +91,7 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
     override fun getCardColorFlow(): Flow<CardColors> =
         dataStore.data.map { preferences ->
             val cardColor = preferences[cardColor] ?: CardColors.MUTED.name
-            CardColors.valueOf(cardColor)
+            valueOfOrNull<CardColors>(cardColor) ?: CardColors.MUTED
         }
 
     override suspend fun updateCardColor(newCardColor: CardColors) {
@@ -106,7 +101,7 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
     override fun getCardRoundnessFlow(): Flow<CornerRadius> =
         dataStore.data.map { preferences ->
             val cardRoundness = preferences[cardRoundness] ?: CornerRadius.ROUNDED.name
-            CornerRadius.valueOf(cardRoundness)
+            valueOfOrNull<CornerRadius>(cardRoundness) ?: CornerRadius.ROUNDED
         }
 
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {

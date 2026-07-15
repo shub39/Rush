@@ -16,6 +16,12 @@
  */
 package com.shub39.rush.shared.core
 
+import kotlin.enums.enumEntries
+
+inline fun <reified T : Enum<T>> valueOfOrNull(name: String): T? {
+    return enumEntries<T>().firstOrNull { it.name == name }
+}
+
 private val titleCleanupPatterns =
     listOf(
         Regex(

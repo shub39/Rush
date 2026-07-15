@@ -22,12 +22,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.core.enums.PaletteStyle
 import com.shub39.rush.shared.core.enums.SortOrder
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
+import com.shub39.rush.shared.core.valueOfOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -58,7 +58,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
     override fun getAppThemePrefFlow(): Flow<AppTheme> =
         datastore.data.map { preferences ->
             val theme = preferences[appTheme] ?: AppTheme.SYSTEM.name
-            AppTheme.valueOf(theme)
+            valueOfOrNull<AppTheme>(theme) ?: AppTheme.SYSTEM
         }
 
     override suspend fun updateAppThemePref(pref: AppTheme) {
@@ -69,8 +69,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
         datastore.data.map { preferences ->
             try {
                 preferences[seedColor] ?: 0xFFFFFF
-            } catch (e: Exception) {
-                RushLogger.e("OtherPreferencesImpl", "Error getting seed color: ${e.message}")
+            } catch (_: Exception) {
                 0xFFFFFF
             }
         }
@@ -88,12 +87,8 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
 
     override fun getPaletteStyle(): Flow<PaletteStyle> =
         datastore.data.map { preferences ->
-            try {
-                PaletteStyle.valueOf(preferences[paletteStyle] ?: PaletteStyle.TONALSPOT.name)
-            } catch (e: Exception) {
-                RushLogger.e("OtherPreferencesImpl", "Error getting palette style: ${e.message}")
-                PaletteStyle.TONALSPOT
-            }
+            valueOfOrNull<PaletteStyle>(preferences[paletteStyle] ?: PaletteStyle.TONALSPOT.name)
+                ?: PaletteStyle.TONALSPOT
         }
 
     override suspend fun updatePaletteStyle(style: PaletteStyle) {
@@ -103,7 +98,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
     override fun getSortOrderFlow(): Flow<SortOrder> =
         datastore.data.map { preferences ->
             val order = preferences[sortOrder] ?: SortOrder.TITLE_ASC.name
-            SortOrder.valueOf(order.uppercase())
+            valueOfOrNull<SortOrder>(order.uppercase()) ?: SortOrder.TITLE_ASC
         }
 
     override suspend fun updateSortOrder(newSortOrder: SortOrder) {
@@ -120,7 +115,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
     override fun getFontFlow(): Flow<Fonts> =
         datastore.data.map { prefs ->
             val font = prefs[selectedFont] ?: Fonts.FIGTREE.name
-            Fonts.valueOf(font)
+            valueOfOrNull<Fonts>(font) ?: Fonts.FIGTREE
         }
 
     override suspend fun updateFonts(font: Fonts) {
