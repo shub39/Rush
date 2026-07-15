@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -116,7 +115,7 @@ fun QuoteShareCard(
                                 .fromPx(fontSize = 50, letterSpacing = 0, lineHeight = 60),
                     )
 
-                    Spacer(modifier = Modifier.padding(pxToDp(64)))
+                    Spacer(modifier = Modifier.padding(pxToDp(84)))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.fillMaxWidth(0.7f)) {

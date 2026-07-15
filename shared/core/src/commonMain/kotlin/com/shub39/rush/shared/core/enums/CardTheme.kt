@@ -25,5 +25,4 @@ enum class CardTheme {
     HYPNOTIC,
     QUOTE,
     MESSY,
-    CHAT,
 }

@@ -73,7 +73,6 @@ import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.share.component.SharePageSheet
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt
-import com.shub39.rush.shared.ui.share.component.cards.ChatCard
 import com.shub39.rush.shared.ui.share.component.cards.CoupletShareCard
 import com.shub39.rush.shared.ui.share.component.cards.HypnoticShareCard
 import com.shub39.rush.shared.ui.share.component.cards.MessyCard
@@ -280,17 +279,6 @@ fun SharePageContent(
                                     fit = state.cardFit,
                                     albumArtShape = state.albumArtShape.toMaterialShape(),
                                     seed = messyCardSeed,
-                                )
-
-                            CHAT ->
-                                ChatCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    fit = state.cardFit,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
                                 )
 
                             ALBUM_ART ->

@@ -93,8 +93,12 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getCardThemeFlow(): Flow<CardTheme> =
         dataStore.data.map { preferences ->
-            val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
-            CardTheme.valueOf(theme)
+            try {
+                val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
+                CardTheme.valueOf(theme)
+            } catch (_: Exception) {
+                CardTheme.SPOTIFY
+            }
         }
 
     override suspend fun updateCardTheme(newCardTheme: CardTheme) {

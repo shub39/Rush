@@ -61,8 +61,6 @@ fun LyricsBackground.toStringRes(): StringResource {
 
 expect val allBackgrounds: List<LyricsBackground>
 
-val premiumCards: List<CardTheme> = listOf(HYPNOTIC, MESSY, QUOTE, CHAT)
-
 val audioDependentBackgrounds: List<LyricsBackground> = listOf(WAVE, GRADIENT, CURVE)
 
 fun PaletteStyle.toMPaletteStyle(): com.materialkolor.PaletteStyle {
@@ -136,7 +134,6 @@ fun CardTheme.toStringRes(): StringResource {
         HYPNOTIC -> Res.string.hypnotic
         QUOTE -> Res.string.quote
         MESSY -> Res.string.messy
-        CHAT -> Res.string.chat
     }
 }
 
