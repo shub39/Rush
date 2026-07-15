@@ -307,9 +307,7 @@ fun SavedPage(
                         val listState = rememberLazyListState()
                         LazyColumn(
                             state = listState,
-                            modifier =
-                                Modifier.fillMaxSize()
-                                    .animateContentSize(),
+                            modifier = Modifier.fillMaxSize().animateContentSize(),
                             contentPadding =
                                 PaddingValues(
                                     top = paddingValues.calculateTopPadding() + 16.dp,

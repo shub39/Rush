@@ -105,7 +105,7 @@ fun BratShareCard(
 @Preview
 @Composable
 private fun Preview() {
-    QuoteShareCard(
+    BratShareCard(
         modifier = Modifier.width(pxToDp(720)).heightIn(max = pxToDp(1280)),
         song = SongDetails(title = "Test Song", artist = "Eminem", null, ""),
         sortedLines =

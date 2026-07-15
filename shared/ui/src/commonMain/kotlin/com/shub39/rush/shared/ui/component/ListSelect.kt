@@ -69,16 +69,17 @@ fun <T> ListSelect(
                 }
             }
         } else {
-            Row {
+            Row(
+                horizontalArrangement =
+                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+            ) {
                 options.forEachIndexed { index, option ->
                     ToggleButton(
                         checked = option == selected,
                         onCheckedChange = { onSelectedChange(option) },
                         content = { labelProvider(option) },
                         colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                        modifier =
-                            Modifier.weight(1f)
-                                .padding(horizontal = ButtonGroupDefaults.ConnectedSpaceBetween),
+                        modifier = Modifier.weight(1f),
                         shapes =
                             when (index) {
                                 0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
