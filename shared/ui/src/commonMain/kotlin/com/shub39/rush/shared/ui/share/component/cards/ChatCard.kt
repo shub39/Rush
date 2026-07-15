@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,7 +46,6 @@ import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.theme.flexFontRounded
@@ -61,7 +59,6 @@ fun ChatCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
     Card(
         modifier = modifier,
@@ -161,13 +158,6 @@ fun ChatCard(
                     }
                 }
             }
-
-            AnimatedVisibility(visible = rushBranding) {
-                RushBranding(
-                    color = cardColors.contentColor,
-                    modifier = Modifier.padding(top = pxToDp(32), bottom = pxToDp(12)),
-                )
-            }
         }
     }
 }
@@ -187,6 +177,5 @@ private fun Preview() {
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
         fit = CardFit.FIT,
-        rushBranding = true,
     )
 }

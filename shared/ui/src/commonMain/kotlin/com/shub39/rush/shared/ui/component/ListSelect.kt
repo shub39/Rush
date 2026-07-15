@@ -19,8 +19,10 @@ package com.shub39.rush.shared.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -54,15 +56,38 @@ fun <T> ListSelect(
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(text = title, style = MaterialTheme.typography.titleMedium)
 
-        FlowRow {
-            options.forEach { option ->
-                ToggleButton(
-                    checked = option == selected,
-                    onCheckedChange = { onSelectedChange(option) },
-                    content = { labelProvider(option) },
-                    colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                    modifier = Modifier.padding(horizontal = 2.dp),
-                )
+        if (options.size > 3) {
+            FlowRow {
+                options.forEach { option ->
+                    ToggleButton(
+                        checked = option == selected,
+                        onCheckedChange = { onSelectedChange(option) },
+                        content = { labelProvider(option) },
+                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                        modifier = Modifier.padding(horizontal = 2.dp),
+                    )
+                }
+            }
+        } else {
+            Row {
+                options.forEachIndexed { index, option ->
+                    ToggleButton(
+                        checked = option == selected,
+                        onCheckedChange = { onSelectedChange(option) },
+                        content = { labelProvider(option) },
+                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
+                        modifier =
+                            Modifier.weight(1f)
+                                .padding(horizontal = ButtonGroupDefaults.ConnectedSpaceBetween),
+                        shapes =
+                            when (index) {
+                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                options.lastIndex ->
+                                    ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                            },
+                    )
+                }
             }
         }
     }

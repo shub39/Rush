@@ -127,7 +127,7 @@ class LyricsVM(
                     stateLayer.sharePageState.update {
                         it.copy(
                             songDetails = action.songDetails,
-                            selectedLines = _state.value.selectedLines.sortMapByKeys(),
+                            selectedLines = _state.value.selectedLines.sortMapByKeys(take = 6),
                         )
                     }
                 }

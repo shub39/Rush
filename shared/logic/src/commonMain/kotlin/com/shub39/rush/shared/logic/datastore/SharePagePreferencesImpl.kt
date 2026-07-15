@@ -29,7 +29,6 @@ import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
-import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -44,26 +43,21 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
         private val cardFit = stringPreferencesKey("card_fit")
-        private val cardFont = stringPreferencesKey("card_font")
         private val albumArtShapeKey = stringPreferencesKey("album_art_shape")
-        private val rushBrandingKey = booleanPreferencesKey("rush_branding")
         private val fullscreenShareKey = booleanPreferencesKey("fullscreen_share")
     }
 
     override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> =
         dataStore.data.map { preferences ->
-            AlbumArtShape.valueOf(preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name)
+            try {
+                AlbumArtShape.valueOf(preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name)
+            } catch (_: Exception) {
+                AlbumArtShape.COOKIE_12
+            }
         }
 
     override suspend fun updateAlbumArtShape(shape: AlbumArtShape) {
         dataStore.edit { preferences -> preferences[albumArtShapeKey] = shape.name }
-    }
-
-    override fun showRushBranding(): Flow<Boolean> =
-        dataStore.data.map { preferences -> preferences[rushBrandingKey] ?: true }
-
-    override suspend fun updateRushBranding(newPref: Boolean) {
-        dataStore.edit { preferences -> preferences[rushBrandingKey] = newPref }
     }
 
     override fun getFullscreenShare(): Flow<Boolean> =
@@ -125,15 +119,5 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {
         dataStore.edit { settings -> settings[cardRoundness] = newCardRoundness.name }
-    }
-
-    override fun getCardFontFlow(): Flow<Fonts> =
-        dataStore.data.map { prefs ->
-            val font = prefs[cardFont] ?: Fonts.FIGTREE.name
-            Fonts.valueOf(font)
-        }
-
-    override suspend fun updateCardFont(newCardFont: Fonts) {
-        dataStore.edit { prefs -> prefs[cardFont] = newCardFont.name }
     }
 }

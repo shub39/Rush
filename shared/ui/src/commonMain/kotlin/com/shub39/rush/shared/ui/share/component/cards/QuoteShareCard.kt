@@ -16,13 +16,15 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -48,12 +50,14 @@ import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
+import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.google_sans_flex
 import rush.shared.ui.generated.resources.quote
 
 @Composable
@@ -65,75 +69,78 @@ fun QuoteShareCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
+    val artistFont = FontFamily(Font(Res.font.google_sans_flex))
+    val lyricsFont = flexFontEmphasis(slant = 0f, fontWeight = 600, fontWidth = 100f)
+
     Card(modifier = modifier, colors = cardColors, shape = cardCorners) {
-        Column(
-            modifier =
-                Modifier.padding(pxToDp(48)).let {
-                    if (fit == CardFit.STANDARD) {
-                        it.weight(1f)
-                    } else it
-                },
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.quote),
-                    contentDescription = "Quote",
-                    modifier = Modifier.size(pxToDp(60)),
-                )
-
-                AnimatedVisibility(visible = rushBranding) {
-                    RushBranding(color = cardColors.contentColor)
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(pxToDp(16)))
-
-            Text(
-                text = sortedLines.values.firstOrNull() ?: "Woah...",
-                style =
-                    MaterialTheme.typography.displayMedium.fromPx(
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 50,
-                        letterSpacing = 0,
-                        lineHeight = 52,
-                    ),
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier =
+                    Modifier.offset(x = pxToDp(93), y = pxToDp(93))
+                        .align(Alignment.BottomEnd)
+                        .size(pxToDp(350))
+                        .background(color = cardColors.contentColor, shape = albumArtShape)
             )
 
-            Spacer(modifier = Modifier.padding(pxToDp(64)))
+            ArtFromUrl(
+                imageUrl = song.artUrl,
+                modifier =
+                    Modifier.offset(x = pxToDp(80), y = pxToDp(80))
+                        .size(pxToDp(300))
+                        .clip(albumArtShape)
+                        .align(Alignment.BottomEnd),
+            )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ArtFromUrl(
-                    imageUrl = song.artUrl,
-                    modifier = Modifier.size(pxToDp(100)).clip(albumArtShape),
-                )
-
-                Column(modifier = Modifier.padding(horizontal = pxToDp(32))) {
-                    Text(
-                        text = song.title,
-                        style =
-                            MaterialTheme.typography.titleMedium
-                                .copy(fontFamily = flexFontRounded())
-                                .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+            Column {
+                Column(
+                    modifier =
+                        Modifier.padding(pxToDp(48)).let {
+                            if (fit == CardFit.STANDARD) it.weight(1f) else it
+                        },
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.quote),
+                        contentDescription = "Quote",
+                        modifier = Modifier.size(pxToDp(60)),
                     )
 
+                    Spacer(modifier = Modifier.padding(pxToDp(16)))
+
                     Text(
-                        text = song.artist,
+                        text = sortedLines.values.firstOrNull() ?: "Woah...",
                         style =
-                            MaterialTheme.typography.bodySmall
-                                .copy(fontFamily = flexFontRounded())
-                                .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 26),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                            MaterialTheme.typography.displayMedium
+                                .copy(fontFamily = lyricsFont)
+                                .fromPx(fontSize = 50, letterSpacing = 0, lineHeight = 60),
                     )
+
+                    Spacer(modifier = Modifier.padding(pxToDp(64)))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                            Text(
+                                text = song.title,
+                                style =
+                                    MaterialTheme.typography.titleMedium
+                                        .copy(fontFamily = flexFontRounded())
+                                        .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 30),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+
+                            Text(
+                                text = song.artist,
+                                style =
+                                    MaterialTheme.typography.bodySmall
+                                        .copy(fontFamily = artistFont)
+                                        .fromPx(fontSize = 22, letterSpacing = 0, lineHeight = 22),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -160,6 +167,5 @@ private fun Preview() {
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
         fit = CardFit.FIT,
-        rushBranding = true,
     )
 }

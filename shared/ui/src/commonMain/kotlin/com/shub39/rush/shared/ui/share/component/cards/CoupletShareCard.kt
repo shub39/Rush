@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.share.component.cards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +39,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -47,11 +47,13 @@ import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
-import com.shub39.rush.shared.ui.component.RushBranding
 import com.shub39.rush.shared.ui.fromPx
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
+import org.jetbrains.compose.resources.Font
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.google_sans_flex
 
 @Composable
 fun CoupletShareCard(
@@ -62,8 +64,10 @@ fun CoupletShareCard(
     cardCorners: RoundedCornerShape,
     fit: CardFit,
     albumArtShape: Shape = CircleShape,
-    rushBranding: Boolean,
 ) {
+    val artistFont = FontFamily(Font(Res.font.google_sans_flex))
+    val lyricsFont = flexFontEmphasis(slant = 0f, fontWeight = 400, fontWidth = 100f)
+
     Box(modifier = modifier.clip(cardCorners)) {
         ArtFromUrl(imageUrl = song.artUrl, modifier = Modifier.matchParentSize().blur(pxToDp(12)))
 
@@ -77,36 +81,27 @@ fun CoupletShareCard(
             Row(
                 modifier =
                     Modifier.padding(pxToDp(48)).let {
-                        if (fit == CardFit.STANDARD) {
-                            it.weight(1f)
-                        } else it
+                        if (fit == CardFit.STANDARD) it.weight(1f) else it
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column {
-                    AnimatedVisibility(visible = rushBranding) {
-                        RushBranding(
-                            color = cardColors.contentColor,
-                            modifier = Modifier.padding(bottom = pxToDp(48)),
-                        )
-                    }
-
                     Text(
                         text = sortedLines.values.firstOrNull() ?: "Woah...",
                         style =
                             MaterialTheme.typography.displayMedium
                                 .copy(fontFamily = flexFontEmphasis())
-                                .fromPx(fontSize = 48, letterSpacing = 0, lineHeight = 48),
+                                .fromPx(fontSize = 48, letterSpacing = 0, lineHeight = 50),
                     )
+
+                    Spacer(modifier = Modifier.padding(pxToDp(8)))
 
                     Text(
                         text = sortedLines.values.elementAtOrNull(1) ?: "...",
                         style =
-                            MaterialTheme.typography.displaySmall.fromPx(
-                                letterSpacing = 0,
-                                lineHeight = 38,
-                                fontSize = 36,
-                            ),
+                            MaterialTheme.typography.displaySmall
+                                .copy(fontFamily = lyricsFont)
+                                .fromPx(letterSpacing = 0, lineHeight = 38, fontSize = 36),
                     )
 
                     Spacer(modifier = Modifier.padding(pxToDp(64)))
@@ -123,7 +118,7 @@ fun CoupletShareCard(
                                 style =
                                     MaterialTheme.typography.titleMedium
                                         .copy(fontFamily = flexFontRounded())
-                                        .fromPx(fontSize = 32, letterSpacing = 0, lineHeight = 28),
+                                        .fromPx(fontSize = 24, letterSpacing = 0, lineHeight = 26),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -132,8 +127,8 @@ fun CoupletShareCard(
                                 text = song.artist,
                                 style =
                                     MaterialTheme.typography.bodySmall
-                                        .copy(fontFamily = flexFontRounded())
-                                        .fromPx(fontSize = 28, letterSpacing = 0, lineHeight = 24),
+                                        .copy(fontFamily = artistFont)
+                                        .fromPx(fontSize = 18, letterSpacing = 0, lineHeight = 20),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -165,6 +160,5 @@ private fun Preview() {
             ),
         cardCorners = RoundedCornerShape(pxToDp(48)),
         fit = CardFit.FIT,
-        rushBranding = false,
     )
 }

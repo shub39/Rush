@@ -44,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -53,7 +52,6 @@ import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
-import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
 import com.shub39.rush.shared.ui.component.ListItemCard
@@ -64,11 +62,8 @@ import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.middleItemShape
 import com.shub39.rush.shared.ui.share.SharePageAction
 import com.shub39.rush.shared.ui.share.SharePageState
-import com.shub39.rush.shared.ui.toFontRes
-import com.shub39.rush.shared.ui.toFullName
 import com.shub39.rush.shared.ui.toMaterialShape
 import com.shub39.rush.shared.ui.toStringRes
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
@@ -219,28 +214,9 @@ fun SharePageSheet(
             }
 
             item {
-                ListItemCard(shape = middleItemShape()) {
-                    ListSelect(
-                        title = stringResource(Res.string.card_font),
-                        options = Fonts.entries.toList(),
-                        selected = state.cardFont,
-                        onSelectedChange = { onAction(SharePageAction.OnUpdateCardFont(it)) },
-                        labelProvider = { font ->
-                            Text(
-                                text = font.toFullName(),
-                                fontFamily =
-                                    font.toFontRes()?.let { FontFamily(Font(it)) }
-                                        ?: FontFamily.Default,
-                            )
-                        },
-                    )
-                }
-            }
-
-            item {
                 ListItem(
                     colors = listItemColors(),
-                    modifier = Modifier.clip(middleItemShape()),
+                    modifier = Modifier.clip(endItemShape()),
                     headlineContent = {
                         Text(
                             text = stringResource(Res.string.full_screen_share),
@@ -252,26 +228,6 @@ fun SharePageSheet(
                         ExpressiveSwitch(
                             checked = state.fullScreen,
                             onCheckedChange = { onAction(SharePageAction.OnToggleFullScreen(it)) },
-                        )
-                    },
-                )
-            }
-
-            item {
-                ListItem(
-                    colors = listItemColors(),
-                    modifier = Modifier.clip(endItemShape()),
-                    headlineContent = {
-                        Text(
-                            text = stringResource(Res.string.show_app_branding),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(),
-                        )
-                    },
-                    trailingContent = {
-                        ExpressiveSwitch(
-                            checked = state.rushBranding,
-                            onCheckedChange = { onAction(SharePageAction.OnToggleRushBranding(it)) },
                         )
                     },
                 )

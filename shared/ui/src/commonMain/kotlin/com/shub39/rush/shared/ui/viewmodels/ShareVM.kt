@@ -87,16 +87,6 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
                     .launchIn(this)
 
                 datastore
-                    .getCardFontFlow()
-                    .onEach { font -> _state.update { it.copy(cardFont = font) } }
-                    .launchIn(this)
-
-                datastore
-                    .showRushBranding()
-                    .onEach { pref -> _state.update { it.copy(rushBranding = pref) } }
-                    .launchIn(this)
-
-                datastore
                     .getFullscreenShare()
                     .onEach { fullScreen -> _state.update { it.copy(fullScreen = fullScreen) } }
                     .launchIn(this)
@@ -114,10 +104,8 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
                 is SharePageAction.OnUpdateCardRoundness ->
                     datastore.updateCardRoundness(action.roundness)
                 is SharePageAction.OnUpdateCardTheme -> datastore.updateCardTheme(action.theme)
-                is SharePageAction.OnUpdateCardFont -> datastore.updateCardFont(action.font)
                 is SharePageAction.OnUpdateAlbumArtShape ->
                     datastore.updateAlbumArtShape(action.shape)
-                is SharePageAction.OnToggleRushBranding -> datastore.updateRushBranding(action.pref)
                 is SharePageAction.OnToggleFullScreen ->
                     datastore.updateFullscreenShare(action.fullScreen)
             }

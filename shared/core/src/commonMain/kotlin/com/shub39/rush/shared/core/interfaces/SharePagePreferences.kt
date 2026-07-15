@@ -21,7 +21,6 @@ import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardFit
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
-import com.shub39.rush.shared.core.enums.Fonts
 import kotlinx.coroutines.flow.Flow
 
 interface SharePagePreferences {
@@ -49,17 +48,9 @@ interface SharePagePreferences {
 
     suspend fun updateCardRoundness(newCardRoundness: CornerRadius)
 
-    fun getCardFontFlow(): Flow<Fonts>
-
-    suspend fun updateCardFont(newCardFont: Fonts)
-
     fun getAlbumArtShapeFlow(): Flow<AlbumArtShape>
 
     suspend fun updateAlbumArtShape(shape: AlbumArtShape)
-
-    fun showRushBranding(): Flow<Boolean>
-
-    suspend fun updateRushBranding(newPref: Boolean)
 
     fun getFullscreenShare(): Flow<Boolean>
 
