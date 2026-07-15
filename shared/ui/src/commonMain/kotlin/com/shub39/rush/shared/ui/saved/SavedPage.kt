@@ -76,7 +76,6 @@ import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.component.simpleVerticalScrollbar
 import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.saved.component.SavedPageActions
 import com.shub39.rush.shared.ui.saved.component.SongCard
@@ -310,7 +309,6 @@ fun SavedPage(
                             state = listState,
                             modifier =
                                 Modifier.fillMaxSize()
-                                    .simpleVerticalScrollbar(listState)
                                     .animateContentSize(),
                             contentPadding =
                                 PaddingValues(
