@@ -25,7 +25,6 @@
     <string name="unknown_error">Egy hiba lépett fel</string>
     <string name="card_theme">Kártya téma</string>
     <string name="card_color">Kártya színek</string>
-    <string name="card_size">Kártya méretek</string>
     <string name="card_corners">Kártya sarkai</string>
     <string name="backup">Biztonsági mentés</string>
     <string name="backup_info">Mentett dalszövegek adatbázisának importálása vagy exportálása</string>
@@ -50,8 +49,6 @@
     <string name="muted">Némítva</string>
     <string name="vibrant">Élénk</string>
     <string name="custom">Saját</string>
-    <string name="fit">Fit</string>
-    <string name="standard">Alapértelmezett</string>
     <string name="spotify">Általános</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Hipnotikus</string>
@@ -78,12 +75,9 @@
     <string name="letter_spacing">Betűköz</string>
     <string name="vertical">Függőleges</string>
     <string name="quote">Idézet</string>
-    <string name="card_font">Kártya betűtípus</string>
     <string name="couplet">Kuplé</string>
     <string name="messy">Rendetlen</string>
-    <string name="chat">Csevegés</string>
     <string name="foss">A FOSS variánst használod</string>
     <string name="foss_desc">Minden funkció feloldva. Az alkalmazásnak ez a változata nem támogatja az alkalmazáson belüli vásárlásokat. Ha ez az alkalmazás értéket képvisel az életedben, támogass adományoddal a következő oldalon</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Nyisson meg többet a Pro segítségével</string>
 </resources>

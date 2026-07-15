@@ -25,7 +25,6 @@
     <string name="unknown_error">An Error occurred</string>
     <string name="card_theme">Card Theme</string>
     <string name="card_color">Card Colors</string>
-    <string name="card_size">Card Size</string>
     <string name="card_corners">Card Corners</string>
     <string name="backup">Backup</string>
     <string name="backup_info">Import or Export the database of saved lyrics</string>
@@ -52,8 +51,6 @@
     <string name="muted">Muted</string>
     <string name="vibrant">Vibrant</string>
     <string name="custom">Custom</string>
-    <string name="fit">Fit</string>
-    <string name="standard">Standard</string>
     <string name="spotify">Generic</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Hypnotic</string>
@@ -80,15 +77,12 @@
     <string name="letter_spacing">Letter spacing</string>
     <string name="vertical">Vertical</string>
     <string name="quote">Quote</string>
-    <string name="card_font">Card Font</string>
     <string name="couplet">Couplet</string>
     <string name="messy">Messy</string>
     <string name="brat">Brat</string>
-    <string name="chat">Chat</string>
     <string name="foss">You are using the FOSS variant</string>
     <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases. If this app added value to your life, Support me by donating on</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Unlock more with Pro</string>
     <string name="album_art">Only Art</string>
     <string name="album_art_shape">Album art shape</string>
     <string name="blurred_art">Blurred Art</string>
@@ -111,7 +105,6 @@
     <string name="looks">Looks</string>
     <string name="text">Text</string>
     <string name="others">Others</string>
-    <string name="show_app_branding">Show App Branding</string>
     <string name="full_screen_share">Full Screen Share</string>
     <string name="romanization">Romanization</string>
     <string name="romanization_desc">Show romanized lyrics for Japanese, Korean, Chinese, Hindi, Punjabi, and Cyrillic languages</string>

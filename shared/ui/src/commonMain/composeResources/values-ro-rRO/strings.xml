@@ -25,7 +25,6 @@
     <string name="unknown_error">A apărut o eroare</string>
     <string name="card_theme">Temă card</string>
     <string name="card_color">Culori card</string>
-    <string name="card_size">Dimensiune card</string>
     <string name="card_corners">Colțuri card</string>
     <string name="backup">Backup</string>
     <string name="backup_info">Importă sau exportă baza de date cu versurile salvate</string>
@@ -48,8 +47,6 @@
     <string name="muted">Pale</string>
     <string name="vibrant">Vibrant</string>
     <string name="custom">Personalizat</string>
-    <string name="fit">Potrivire</string>
-    <string name="standard">Standard</string>
     <string name="rushed">Grăbit</string>
     <string name="hypnotic">Hipnotic</string>
     <string name="rounded">Rotunjit</string>
@@ -76,13 +73,10 @@
     <string name="font_size">Mărimea fontului</string>
     <string name="line_height">Înălțimea liniei</string>
     <string name="letter_spacing">Spațierea literelor</string>
-    <string name="card_font">Fontul cardului</string>
     <string name="messy">Dezordonat</string>
-    <string name="chat">Chat</string>
     <string name="foss">Folosești varianta FOSS</string>
     <string name="foss_desc">Toate caracteristicile sunt deblocate. Această variantă a aplicației nu suportă achiziții în aplicație. Dacă această aplicație ți-a adus valoare vieții, susține-mă donându-mi</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Deblochează mai multe cu Pro</string>
     <string name="album_art">Doar coperta albumului</string>
     <string name="album_art_shape">Forma copertei albumului</string>
     <string name="blurred_art">Copertă blurată</string>
@@ -103,7 +97,6 @@
     <string name="looks">Aspect</string>
     <string name="text">Text</string>
     <string name="others">Altele</string>
-    <string name="show_app_branding">Afișează brandingul aplicației</string>
     <string name="romanization">Romanizare</string>
     <string name="romanization_desc">Arată versuri romanizate pentru limbile japoneză, coreeană, chineză, hindi, punjabi și cele chirilice</string>
     <string name="open_search">Deschide Căutarea</string>

@@ -25,7 +25,6 @@
     <string name="unknown_error">Ocorreu um erro</string>
     <string name="card_theme">Tema do Cartão</string>
     <string name="card_color">Cores do Cartão</string>
-    <string name="card_size">Tamanho do Cartão</string>
     <string name="card_corners">Cantos do Cartão</string>
     <string name="backup">Backup</string>
     <string name="backup_info">Importar ou Exportar o banco de dados de letras salvas</string>
@@ -50,8 +49,6 @@
     <string name="muted">Mudo</string>
     <string name="vibrant">Vibrante</string>
     <string name="custom">Personalizado</string>
-    <string name="fit">Ajustar</string>
-    <string name="standard">Padrão</string>
     <string name="spotify">Genérico</string>
     <string name="rushed">Rushed (apressado)</string>
     <string name="hypnotic">Hipnótico</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">Espaçamento de letras</string>
     <string name="vertical">Vertical</string>
     <string name="quote">Citação</string>
-    <string name="card_font">Fonte de card</string>
     <string name="couplet">Par de versos</string>
     <string name="messy">Bagunçado</string>
-    <string name="chat">Chat</string>
     <string name="foss">Você está usando la versão FOSS</string>
     <string name="foss_desc">Todas as funções estão desbloqueadas. Essa versão do aplicativo não suporta compras no app. Se este app agregou valor em sua vida, me apoie com uma doação</string>
     <string name="rush_pro">Funções Rush Pro</string>
-    <string name="unlock_more_pro">Desbloqueie mais com o Rush Pro</string>
     <string name="album_art">Apenas capa</string>
     <string name="album_art_shape">Formato da capa do álbum</string>
     <string name="blurred_art">Capa borrada</string>
@@ -108,5 +102,4 @@
     <string name="looks">Aparência</string>
     <string name="text">Texto</string>
     <string name="others">Outros</string>
-    <string name="show_app_branding">Mostrar logomarca do app</string>
 </resources>

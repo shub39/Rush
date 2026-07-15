@@ -25,7 +25,6 @@
     <string name="unknown_error">Сталася помилка</string>
     <string name="card_theme">Тема Картки</string>
     <string name="card_color">Кольори Картки</string>
-    <string name="card_size">Розмір Картки</string>
     <string name="card_corners">Кути Картки</string>
     <string name="backup">Резервне копіювання</string>
     <string name="backup_info">Імпортувати або Експортувати базу даних збережених текстів</string>
@@ -48,8 +47,6 @@
     <string name="muted">Приглушений</string>
     <string name="vibrant">Яскравий</string>
     <string name="custom">Користувацький</string>
-    <string name="fit">Вписати</string>
-    <string name="standard">Стандартний</string>
     <string name="spotify">Загальний</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Гіпнотичний</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">Відстань між літерами</string>
     <string name="vertical">Вертикальний</string>
     <string name="quote">Цитата</string>
-    <string name="card_font">Шрифт картки</string>
     <string name="couplet">Куплет</string>
     <string name="messy">Брудний</string>
-    <string name="chat">Чат</string>
     <string name="foss">Ви використовуєте варіант FOSS</string>
     <string name="foss_desc">Всі функції розблоковані. Ця версія програми не підтримує внутрішньопрограмні покупки. Якщо ця програма додала цінності у ваше життя, підтримайте мене, зробивши пожертву на</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Розблокуйте більше можливостей з Pro</string>
     <string name="bmc_desc">Підтримайте мене пожертвою</string>
     <string name="translate_desc">Перекладіть Rush своєю мовою</string>
     <string name="album_art">Тільки обкладинки</string>
@@ -108,5 +102,4 @@
     <string name="looks">Вигляд</string>
     <string name="text">Текст</string>
     <string name="others">Інші</string>
-    <string name="show_app_branding">Показувати брендинг додатку</string>
 </resources>

@@ -25,7 +25,6 @@
     <string name="unknown_error">发生错误</string>
     <string name="card_theme">卡片主题</string>
     <string name="card_color">卡片颜色</string>
-    <string name="card_size">卡片尺寸</string>
     <string name="card_corners">卡片边角</string>
     <string name="backup">备份</string>
     <string name="backup_info">导入或导出已保存歌词的数据库</string>
@@ -55,8 +54,6 @@
     <string name="muted">柔和</string>
     <string name="vibrant">鲜艳</string>
     <string name="custom">自定义</string>
-    <string name="fit">适应</string>
-    <string name="standard">标准</string>
     <string name="spotify">通用</string>
     <string name="rushed">快速</string>
     <string name="hypnotic">涟漪</string>
@@ -77,15 +74,12 @@
     <string name="quote">引用</string>
     <string name="couplet">对句</string>
     <string name="font">选择应用程序字体</string>
-    <string name="card_font">卡片字体</string>
     <string name="bmc">赞助</string>
     <string name="translate">翻译</string>
     <string name="foss">你正在使用FOSS版本</string>
     <string name="foss_desc">全部功能均已解锁。此版本应用无需内购。如果此软件帮助了你，请考虑通过以下途径支持作者：</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">在Pro中发现更多</string>
     <string name="messy">杂乱</string>
-    <string name="chat">对话</string>
     <string name="album_art">仅封面</string>
     <string name="album_art_shape">专辑封面样式</string>
     <string name="solid_color">封面颜色</string>
@@ -108,7 +102,6 @@
     <string name="looks">外观</string>
     <string name="text">文本</string>
     <string name="others">其他</string>
-    <string name="show_app_branding">显示应用品牌</string>
     <string name="full_screen_share">全屏分享</string>
     <string name="romanization">罗马化</string>
     <string name="romanization_desc">显示日语、韩语、汉语、印地语、旁遮普语和西里尔语言的罗马化歌词</string>

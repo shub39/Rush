@@ -25,7 +25,6 @@
     <string name="unknown_error">Ein Fehler ist aufgetreten</string>
     <string name="card_theme">Kartenthema</string>
     <string name="card_color">Kartenfarben</string>
-    <string name="card_size">Kartengröße</string>
     <string name="card_corners">Kartenecken</string>
     <string name="backup">Sicherung</string>
     <string name="backup_info">Importieren oder exportieren Sie die Datenbank der gesicherten Liedtexte</string>
@@ -37,7 +36,6 @@
     <string name="restore">Wiederherstellen</string>
     <string name="restore_info">Wiederherstellen aus der ausgewählten Exportdatei</string>
     <string name="choose_file">Datei auswählen</string>
-    <string name="standard">Standard</string>
     <string name="spotify">Generisch</string>
     <string name="select_app_theme">Wählen Sie das Farbschema</string>
     <string name="look_and_feel">Erscheinungsbild</string>
@@ -56,7 +54,6 @@
     <string name="muted">Gedämpft</string>
     <string name="custom">Benutzerdefiniert</string>
     <string name="rushed">Rushed</string>
-    <string name="fit">Angepasst</string>
     <string name="rounded">Abgerundet</string>
     <string name="material_theme_desc">Thema basierend auf Ihrem Hintergrundbild</string>
     <string name="font">Schriftart der App auswählen</string>
@@ -72,9 +69,7 @@
     <string name="letter_spacing">Buchstabenabstände</string>
     <string name="vertical">Vertikal</string>
     <string name="quote">Zitat</string>
-    <string name="card_font">Kartenschriftart</string>
     <string name="couplet">Zwei zeilig</string>
-    <string name="chat">Chat</string>
     <string name="fullscreen">Vollbildansicht</string>
     <string name="customisations">Liedtext-Anpassungen</string>
     <string name="fullscreen_desc">Systemleisten auf der Liedtextseite ausblenden</string>
@@ -84,7 +79,6 @@
     <string name="blurred_art">Verschwommmendes Cover</string>
     <string name="foss">Sie benutzen die FOSS Variante</string>
     <string name="foss_desc">Alle Funktionen sind freigeschaltet. Diese App-Variante unterstützt keine In-App-Käufe. Wenn diese App Ihr Leben bereichert hat, unterstützen Sie mich bitte mit einer Spende auf</string>
-    <string name="unlock_more_pro">Mit Pro noch mehr freischalten</string>
     <string name="album_art">Nur Cover</string>
     <string name="album_art_shape">Form des Albumcovers</string>
     <string name="solid_color">Solide</string>
@@ -108,7 +102,6 @@
     <string name="looks">Aussehen</string>
     <string name="text">Text</string>
     <string name="others">Andere</string>
-    <string name="show_app_branding">App-Branding anzeigen</string>
     <string name="full_screen_share">Vollbild teilen</string>
     <string name="romanization">Romanisierung</string>
     <string name="romanization_desc">Romanisierte Liedtexte für Japanisch, Koreanisch, Chinesisch, Hindi, Panjabi und kyrillische Sprachen anzeigen</string>

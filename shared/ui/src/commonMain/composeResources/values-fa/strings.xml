@@ -25,7 +25,6 @@
     <string name="unknown_error">خطایی رخ داد</string>
     <string name="card_theme">پوسته کارت</string>
     <string name="card_color">رنگ کارت</string>
-    <string name="card_size">اندازه کارت</string>
     <string name="card_corners">گوشه‌های کارت</string>
     <string name="backup">پشتیبان گیری</string>
     <string name="backup_info">وارد یا صادر کردن پایگاه داده متن ترانه‌های ذخیره شده</string>
@@ -50,8 +49,6 @@
     <string name="muted">بیصدا</string>
     <string name="vibrant">لرزش</string>
     <string name="custom">سفارشی</string>
-    <string name="fit">متناسب</string>
-    <string name="standard">استاندارد</string>
     <string name="spotify">عمومی</string>
     <string name="rushed">عجله‌ای شد</string>
     <string name="hypnotic">هیپنوتیزم کننده</string>
@@ -78,14 +75,11 @@
     <string name="letter_spacing">فاصله متن‌ها</string>
     <string name="vertical">عمودی</string>
     <string name="quote">نقل قول</string>
-    <string name="card_font">قلم کارت</string>
     <string name="couplet">دوبیتی</string>
     <string name="messy">نامرتب</string>
-    <string name="chat">چت</string>
     <string name="foss">شما از نسخه نرم افزار آزاد (FOSS) استفاده می کنید</string>
     <string name="foss_desc">تمام ویژگی ها باز هستند. این نسخه از اپلیکیشن از خریدهای درون برنامه ای پشتیبانی نمی کند. اگر این اپلیکیشن به زندگی شما ارزش افزوده است، با کمک مالی از من حمایت کنید</string>
     <string name="rush_pro">Rush ویژه</string>
-    <string name="unlock_more_pro">باز کردن موارد بیشتر با نسخه ویژه</string>
     <string name="album_art">فقط تصویر</string>
     <string name="album_art_shape">شکل جلد آلبوم</string>
     <string name="blurred_art">تصویر محو</string>
@@ -109,7 +103,6 @@
     <string name="looks">ظاهر</string>
     <string name="text">متن</string>
     <string name="others">باقی</string>
-    <string name="show_app_branding">نمایش برند اپلیکیشن</string>
     <string name="full_screen_share">اشتراک گذاری تمام صفحه</string>
     <string name="romanization">لاتین سازی</string>
     <string name="romanization_desc">نمایش متون لاتین شده برای زبان‌های ژاپنی، کره‌ای، چینی، هندی، پنجابی و سیریلیک</string>

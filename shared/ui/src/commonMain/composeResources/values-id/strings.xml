@@ -25,7 +25,6 @@
     <string name="unknown_error">Terjadi Kesalahan</string>
     <string name="card_theme">Tema Kartu</string>
     <string name="card_color">Warna Kartu</string>
-    <string name="card_size">Ukuran Kartu</string>
     <string name="card_corners">Sudut Kartu</string>
     <string name="backup">Cadangkan</string>
     <string name="backup_info">Impor atau Ekspor basis data lirik yang disimpan</string>
@@ -48,8 +47,6 @@
     <string name="muted">Redup</string>
     <string name="vibrant">Cerah</string>
     <string name="custom">Kustom</string>
-    <string name="fit">Paskan</string>
-    <string name="standard">Standar</string>
     <string name="spotify">Spotify</string>
     <string name="rushed">Rushed</string>
     <string name="hypnotic">Hipnotis</string>
@@ -76,19 +73,15 @@
     <string name="letter_spacing">Jarak huruf</string>
     <string name="vertical">Vertikal</string>
     <string name="quote">Kutipan</string>
-    <string name="card_font">Font Kartu</string>
     <string name="couplet">Kuplet</string>
     <string name="messy">Berantakan</string>
-    <string name="chat">Obrolan</string>
     <string name="bmc">Belikan saya kopi</string>
     <string name="translate">Terjemahkan</string>
     <string name="foss">Anda sedang menggunakan varian FOSS</string>
     <string name="foss_desc">Semua fitur terkunci. Varian ini tidak mendukung pembelian dalam aplikasi. Jika aplikasi ini memberikan manfaat bagi hidup Anda, dukung saya dengan memberikan donasi di</string>
     <string name="rush_pro">Rush Pro</string>
-    <string name="unlock_more_pro">Dapatkan fitur lebih banyak dengan Pro</string>
     <string name="not_found">Tidak ditemukan</string>
     <string name="others">Lainnya</string>
-    <string name="show_app_branding">Tampilkan Branding Aplikasi</string>
     <string name="lyrics_background">Latar Belakang Lirik</string>
     <string name="plain_lyrics">Polos</string>
     <string name="synced_lyrics">Tersinkronisasi</string>
