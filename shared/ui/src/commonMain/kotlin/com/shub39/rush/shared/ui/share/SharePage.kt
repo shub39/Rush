@@ -61,9 +61,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 import com.shub39.rush.shared.core.dataclasses.SongDetails
-import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardTheme
-import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
@@ -122,8 +120,8 @@ fun SharePageContent(
         animateDpAsState(
             targetValue =
                 when (state.cardRoundness) {
-                    CornerRadius.DEFAULT -> pxToDp(0)
-                    CornerRadius.ROUNDED -> pxToDp(32)
+                    DEFAULT -> pxToDp(0)
+                    ROUNDED -> pxToDp(32)
                 },
             label = "corners",
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
@@ -132,9 +130,9 @@ fun SharePageContent(
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardBackgroundMuted)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
-                    CardColors.CUSTOM -> Color(state.cardBackground)
+                    MUTED -> Color(state.extractedColors.cardBackgroundMuted)
+                    VIBRANT -> Color(state.extractedColors.cardBackgroundDominant)
+                    CUSTOM -> Color(state.cardBackground)
                 },
             label = "container",
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
@@ -143,9 +141,9 @@ fun SharePageContent(
         animateColorAsState(
             targetValue =
                 when (state.cardColors) {
-                    CardColors.MUTED -> Color(state.extractedColors.cardContentMuted)
-                    CardColors.VIBRANT -> Color(state.extractedColors.cardContentDominant)
-                    CardColors.CUSTOM -> Color(state.cardContent)
+                    MUTED -> Color(state.extractedColors.cardContentMuted)
+                    VIBRANT -> Color(state.extractedColors.cardContentDominant)
+                    CUSTOM -> Color(state.cardContent)
                 },
             label = "content",
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
