@@ -120,6 +120,8 @@ fun ChangelogSheet(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // TODO: Add support button
         }
     }
 }

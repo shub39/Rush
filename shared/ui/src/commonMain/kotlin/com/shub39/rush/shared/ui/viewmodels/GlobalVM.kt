@@ -99,8 +99,11 @@ class GlobalVM(
 
     private fun checkChangelog() {
         viewModelScope.launch {
-            val changeLogs = changelogManager.changelogs.first()
             val lastShownChangelog = otherPreferences.getLastChangelogShown().first()
+
+            if (lastShownChangelog.isBlank()) return@launch // don't show changelog on first install
+
+            val changeLogs = changelogManager.changelogs.first()
 
             if (lastShownChangelog != changeLogs.firstOrNull()?.version) {
                 _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
