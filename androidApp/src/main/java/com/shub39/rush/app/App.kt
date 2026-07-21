@@ -74,6 +74,8 @@ fun App() {
                 ChangelogSheet(
                     currentLog = globalState.currentChangelog!!,
                     onDismissRequest = { globalVM.onAction(GlobalAction.DismissChangelog) },
+                    showSupportButton = !globalState.isProUser,
+                    onNavigateToPaywall = { backStack.add(Routes.PaywallPage) },
                 )
             }
 

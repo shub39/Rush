@@ -22,27 +22,21 @@ inline fun <reified T : Enum<T>> valueOfOrNull(name: String): T? {
     return enumEntries<T>().firstOrNull { it.name == name }
 }
 
+private val bracketPatterns =
+    listOf(Regex("""\s*\(.*?\)"""), Regex("""\s*\[.*?]"""), Regex("""\s*【.*?】"""))
+
 private val titleCleanupPatterns =
-    listOf(
-        Regex(
-            """\s*\(.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?\)""",
-            RegexOption.IGNORE_CASE,
-        ),
-        Regex(
-            """\s*\[.*?(official|video|audio|lyrics|lyric|visualizer|hd|hq|4k|remaster|remix|live|acoustic|version|edit|extended|radio|clean|explicit).*?]""",
-            RegexOption.IGNORE_CASE,
-        ),
-        Regex("""\s*【.*?】"""),
-        Regex("""\s*\|.*$"""),
-        Regex(
-            """\s*-\s*(official|video|audio|lyrics|lyric|visualizer).*$""",
-            RegexOption.IGNORE_CASE,
-        ),
-        Regex("""\s*\(feat\..*?\)""", RegexOption.IGNORE_CASE),
-        Regex("""\s*\(ft\..*?\)""", RegexOption.IGNORE_CASE),
-        Regex("""\s*feat\..*$""", RegexOption.IGNORE_CASE),
-        Regex("""\s*ft\..*$""", RegexOption.IGNORE_CASE),
-    )
+    bracketPatterns +
+        listOf(
+            Regex("""\s*\|.*$"""),
+            Regex(
+                """\s*-\s*(official|video|audio|lyrics|lyric|visualizer).*$""",
+                RegexOption.IGNORE_CASE,
+            ),
+            Regex("""\s*feat\..*$""", RegexOption.IGNORE_CASE),
+            Regex("""\s*ft\..*$""", RegexOption.IGNORE_CASE),
+        )
+
 private val artistSeparators =
     listOf(
         " & ",
@@ -60,6 +54,9 @@ private val artistSeparators =
 
 fun getMainArtist(artists: String): String {
     var cleaned = artists.trim()
+    for (pattern in bracketPatterns) {
+        cleaned = cleaned.replace(pattern, "")
+    }
     for (separator in artistSeparators) {
         if (cleaned.contains(separator, ignoreCase = true)) {
             cleaned = cleaned.split(separator, ignoreCase = true, limit = 2)[0]

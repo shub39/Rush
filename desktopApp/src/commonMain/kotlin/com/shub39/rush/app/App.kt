@@ -68,6 +68,8 @@ fun App() {
             ChangelogSheet(
                 currentLog = globalState.currentChangelog!!,
                 onDismissRequest = { globalVM.onAction(GlobalAction.DismissChangelog) },
+                showSupportButton = false,
+                onNavigateToPaywall = {},
             )
         }
 

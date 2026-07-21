@@ -1,5 +1,12 @@
 [
   {
+    "version": "6.5.1",
+    "changes": [
+      "Fixed lyrics search issues",
+      "Miscellaneous UI fixes"
+    ]
+  },
+  {
     "version": "6.5.0",
     "changes": [
       "Updated Translations",
@@ -67,12 +74,6 @@
       "Added angles and more variations to messy card.",
       "Added Refresh button to regenerate Messy Card",
       "Miscellaneous UI fixes"
-    ]
-  },
-  {
-    "version": "6.2.01",
-    "changes": [
-      "Fixed UI bug in share cards"
     ]
   }
 ]

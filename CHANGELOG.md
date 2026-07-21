@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.5.1
+- Fixed lyrics search issues
+- Miscellaneous UI fixes
+
 ## 6.5.0
 - Updated Translations
 - Added new Card Style - Brat
