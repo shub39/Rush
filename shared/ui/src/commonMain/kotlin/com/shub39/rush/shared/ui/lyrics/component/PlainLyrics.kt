@@ -267,7 +267,10 @@ fun PlainLyrics(
                             contentColor = cardContent,
                         ),
                 ) {
-                    Text(text = stringResource(Res.string.source))
+                    Icon(
+                        painter = painterResource(Res.drawable.genius),
+                        contentDescription = "Genius Source",
+                    )
                 }
 
                 IconButton(onClick = { action(LyricsPageAction.OnToggleSearchSheet) }) {

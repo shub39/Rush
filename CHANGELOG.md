@@ -1,7 +1,7 @@
 # Changelog
 
 ## 6.5.1
-- Fixed rush mode failing to look up lyrics
+- Fixed lyrics search issues
 - Miscellaneous UI fixes
 
 ## 6.5.0
