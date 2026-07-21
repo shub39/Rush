@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.5.1
+- Fixed rush mode failing to look up lyrics
+- Miscellaneous UI fixes
+
 ## 6.5.0
 - Updated Translations
 - Added new Card Style - Brat
