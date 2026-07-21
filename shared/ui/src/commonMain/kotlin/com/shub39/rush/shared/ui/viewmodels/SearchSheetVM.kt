@@ -176,12 +176,12 @@ class SearchSheetVM(
 
                         is Result.Success -> {
                             _state.update { it.copy(searchResults = result.data, error = null) }
+                            _lastSearched.update { query }
                         }
                     }
                 } finally {
                     _state.update { it.copy(isSearching = false) }
                     stateLayer.lyricsState.update { it.copy(searchState = SearchState.Idle) }
-                    _lastSearched.update { query }
                 }
 
                 if (
@@ -218,8 +218,6 @@ class SearchSheetVM(
 
         fetchJob =
             viewModelScope.launch {
-                if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return@launch
-
                 val song =
                     _state.value.searchResults.find { it.id == songId }
                         ?: _state.value.localSearchResults.find { it.id == songId }

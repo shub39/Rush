@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -100,10 +101,14 @@ class GlobalVM(
     private fun checkChangelog() {
         viewModelScope.launch {
             val lastShownChangelog = otherPreferences.getLastChangelogShown().first()
-
-            if (lastShownChangelog.isBlank()) return@launch // don't show changelog on first install
-
             val changeLogs = changelogManager.changelogs.first()
+
+            if (lastShownChangelog.isBlank()) {
+                changeLogs.firstOrNull()?.version?.let {
+                    otherPreferences.updateLastChangelogShown(it)
+                }
+                return@launch // don't show changelog on first install
+            }
 
             if (lastShownChangelog != changeLogs.firstOrNull()?.version) {
                 _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
