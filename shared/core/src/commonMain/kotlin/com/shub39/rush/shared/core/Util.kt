@@ -23,11 +23,7 @@ inline fun <reified T : Enum<T>> valueOfOrNull(name: String): T? {
 }
 
 private val bracketPatterns =
-    listOf(
-        Regex("""\s*\(.*?\)"""),
-        Regex("""\s*\[.*?]"""),
-        Regex("""\s*【.*?】"""),
-    )
+    listOf(Regex("""\s*\(.*?\)"""), Regex("""\s*\[.*?]"""), Regex("""\s*【.*?】"""))
 
 private val titleCleanupPatterns =
     bracketPatterns +
