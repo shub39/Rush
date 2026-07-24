@@ -21,20 +21,20 @@ import com.shub39.rush.shared.core.enums.LyricsBackground
 actual val allBackgrounds: List<LyricsBackground> =
     if (hypnoticAvailable()) {
         listOf(
-            LyricsBackground.SOLID_COLOR,
-            LyricsBackground.ALBUM_ART,
-            LyricsBackground.HYPNOTIC,
-            LyricsBackground.WAVE,
-            LyricsBackground.GRADIENT,
-            LyricsBackground.CURVE,
+            SOLID_COLOR,
+            ALBUM_ART,
+            HYPNOTIC,
+            WAVE,
+            GRADIENT,
+            CURVE,
         )
     } else if (blurAvailable()) {
         listOf(
-            LyricsBackground.SOLID_COLOR,
-            LyricsBackground.ALBUM_ART,
-            LyricsBackground.WAVE,
-            LyricsBackground.GRADIENT,
+            SOLID_COLOR,
+            ALBUM_ART,
+            WAVE,
+            GRADIENT,
         )
     } else {
-        listOf(LyricsBackground.SOLID_COLOR, LyricsBackground.WAVE, LyricsBackground.GRADIENT)
+        listOf(SOLID_COLOR, WAVE, GRADIENT)
     }

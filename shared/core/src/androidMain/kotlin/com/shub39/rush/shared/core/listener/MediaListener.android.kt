@@ -33,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 actual object MediaListener {
     private var msm: MediaSessionManager? = null
@@ -119,7 +120,7 @@ actual object MediaListener {
             // Workaround for spotify, dunno if this is the most elegant solution but works :)
             if (controller.packageName.contains("spotify")) {
                 coroutineScope.launch {
-                    delay(2000)
+                    delay(2000.milliseconds)
                     setActiveMediaSession(controller)
                 }
             } else if (isActive(controller.playbackState)) {
@@ -201,7 +202,7 @@ actual object MediaListener {
                             playbackSpeedFlow.emit(speed)
                         }
                     }
-                    delay(1000)
+                    delay(1000.milliseconds)
                 }
             }
     }
