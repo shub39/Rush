@@ -106,12 +106,4 @@
     <string name="plain_lyrics">Simplu</string>
     <string name="syllable_synced_lyrics">Sincronizare după silabe</string>
     <string name="full_screen_share">Partajare în ecran complet</string>
-    <string name="hide_ui"></string>
-    <string name="expressive_syllables_desc"></string>
-    <string name="language"></string>
-    <string name="translate_desc"></string>
-    <string name="hide_ui_desc"></string>
-    <string name="expressive_syllables"></string>
-    <string name="bmc_desc"></string>
-    <string name="system_default"></string>
 </resources>

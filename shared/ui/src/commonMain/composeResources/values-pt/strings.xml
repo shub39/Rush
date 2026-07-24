@@ -102,16 +102,4 @@
     <string name="looks">Aparência</string>
     <string name="text">Texto</string>
     <string name="others">Outros</string>
-    <string name="full_screen_share"></string>
-    <string name="hide_ui"></string>
-    <string name="expressive_syllables_desc"></string>
-    <string name="romanization_desc"></string>
-    <string name="romanization"></string>
-    <string name="language"></string>
-    <string name="translate_desc"></string>
-    <string name="hide_ui_desc"></string>
-    <string name="expressive_syllables"></string>
-    <string name="bmc_desc"></string>
-    <string name="open_search"></string>
-    <string name="system_default"></string>
 </resources>

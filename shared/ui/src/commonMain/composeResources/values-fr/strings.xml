@@ -95,23 +95,4 @@
     <string name="curve">Courbe</string>
     <string name="copy_error">Erreur de copie</string>
     <string name="not_found">Introuvable</string>
-    <string name="looks"></string>
-    <string name="full_screen_share"></string>
-    <string name="line_synced_lyrics"></string>
-    <string name="changelog"></string>
-    <string name="whats_changed"></string>
-    <string name="syllable_synced_lyrics"></string>
-    <string name="hide_ui"></string>
-    <string name="expressive_syllables_desc"></string>
-    <string name="romanization_desc"></string>
-    <string name="romanization"></string>
-    <string name="others"></string>
-    <string name="language"></string>
-    <string name="translate_desc"></string>
-    <string name="text"></string>
-    <string name="hide_ui_desc"></string>
-    <string name="expressive_syllables"></string>
-    <string name="bmc_desc"></string>
-    <string name="open_search"></string>
-    <string name="system_default"></string>
 </resources>

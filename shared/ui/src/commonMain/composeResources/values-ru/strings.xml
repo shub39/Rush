@@ -111,7 +111,4 @@
     <string name="expressive_syllables">Выразительные слоги</string>
     <string name="expressive_syllables_desc">Стиль шрифта меняется в зависимости от длительности слова</string>
     <string name="romanization">Латинизация</string>
-    <string name="full_screen_share"></string>
-    <string name="hide_ui"></string>
-    <string name="hide_ui_desc"></string>
 </resources>

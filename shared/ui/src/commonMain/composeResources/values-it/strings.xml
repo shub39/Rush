@@ -112,6 +112,4 @@
     <string name="language">Lingua</string>
     <string name="expressive_syllables">Sillabe espressive</string>
     <string name="expressive_syllables_desc">Lo stile del carattere cambia in base alla durata della parola</string>
-    <string name="hide_ui"></string>
-    <string name="hide_ui_desc"></string>
 </resources>

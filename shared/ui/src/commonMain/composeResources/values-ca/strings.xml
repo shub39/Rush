@@ -112,6 +112,4 @@
     <string name="language">Idioma</string>
     <string name="expressive_syllables">Síl·labes expressives</string>
     <string name="expressive_syllables_desc">L\'estil de la font canvia segons la durada de la paraula</string>
-    <string name="hide_ui"></string>
-    <string name="hide_ui_desc"></string>
 </resources>

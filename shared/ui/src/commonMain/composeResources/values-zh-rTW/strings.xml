@@ -109,9 +109,4 @@
     <string name="system_default">系統預設</string>
     <string name="language">語言</string>
     <string name="blur_synced">模糊已同步的歌詞</string>
-    <string name="hide_ui"></string>
-    <string name="expressive_syllables_desc"></string>
-    <string name="hide_ui_desc"></string>
-    <string name="expressive_syllables"></string>
-    <string name="bmc_desc"></string>
 </resources>
