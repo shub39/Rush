@@ -109,4 +109,9 @@
     <string name="system_default">系统默认</string>
     <string name="language">语言</string>
     <string name="translate_desc">将Rush翻译至你的语言</string>
+    <string name="hide_ui"></string>
+    <string name="expressive_syllables_desc"></string>
+    <string name="hide_ui_desc"></string>
+    <string name="expressive_syllables"></string>
+    <string name="bmc_desc"></string>
 </resources>
