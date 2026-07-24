@@ -112,4 +112,6 @@
     <string name="translate_desc">Traduce Rush a tu idioma</string>
     <string name="expressive_syllables">Sílabas expresivas</string>
     <string name="expressive_syllables_desc">El estilo de la tipografía cambia según la duración de la palabra</string>
+    <string name="hide_ui"></string>
+    <string name="hide_ui_desc"></string>
 </resources>
