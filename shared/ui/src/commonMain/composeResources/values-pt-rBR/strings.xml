@@ -102,4 +102,16 @@
     <string name="looks">Aparência</string>
     <string name="text">Texto</string>
     <string name="others">Outros</string>
+    <string name="full_screen_share">Compartilhamento em tela cheia</string>
+    <string name="hide_ui">Ocultar controles</string>
+    <string name="expressive_syllables_desc">Mudanças de estilo de fonte com base em duração de palavra</string>
+    <string name="romanization_desc">Mostrar letras romanizadas para o japonês, coreano, hindi, punjabi e línguas de alfabeto cirílico</string>
+    <string name="romanization">Romanização</string>
+    <string name="language">Língua</string>
+    <string name="translate_desc">Traduza o Rush para a sua língua</string>
+    <string name="hide_ui_desc">Ocultar controles de letras após 5 segundos</string>
+    <string name="expressive_syllables">Sílabas expressivas</string>
+    <string name="bmc_desc">Me apoie com uma pequena doação</string>
+    <string name="open_search">Abrir busca</string>
+    <string name="system_default">Padrão do sistema</string>
 </resources>
