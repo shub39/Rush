@@ -1,5 +1,12 @@
 [
   {
+    "version": "6.5.2",
+    "changes": [
+      "Updated Translations",
+      "Improved Lyrics correct dialog."
+    ]
+  },
+  {
     "version": "6.5.1",
     "changes": [
       "Fixed lyrics search issues",
@@ -63,17 +70,6 @@
     "version": "6.3.0",
     "changes": [
       "Updated Translations"
-    ]
-  },
-  {
-    "version": "6.2.10",
-    "changes": [
-      "Improved Romanization accuracy. Thanks to @rbelem",
-      "Updated Translations",
-      "Fixed Search Sheet UI overlapping",
-      "Added angles and more variations to messy card.",
-      "Added Refresh button to regenerate Messy Card",
-      "Miscellaneous UI fixes"
     ]
   }
 ]

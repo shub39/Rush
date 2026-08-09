@@ -25,6 +25,7 @@ import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.os.Build
 import com.shub39.rush.shared.core.RushLogger
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -119,7 +120,7 @@ actual object MediaListener {
             // Workaround for spotify, dunno if this is the most elegant solution but works :)
             if (controller.packageName.contains("spotify")) {
                 coroutineScope.launch {
-                    delay(2000)
+                    delay(2000.milliseconds)
                     setActiveMediaSession(controller)
                 }
             } else if (isActive(controller.playbackState)) {
@@ -201,7 +202,7 @@ actual object MediaListener {
                             playbackSpeedFlow.emit(speed)
                         }
                     }
-                    delay(1000)
+                    delay(1000.milliseconds)
                 }
             }
     }
