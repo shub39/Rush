@@ -20,9 +20,11 @@ import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import com.shub39.rush.shared.logic.di.DataModule
 import com.shub39.rush.shared.ui.di.UIModule
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
+@Configuration
 @Module(includes = [DataModule::class, UIModule::class])
 class RushModules {
     @Single
