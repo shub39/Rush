@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.5.2
+- Updated Translations
+- Improved Lyrics correct dialog.
+
 ## 6.5.1
 - Fixed lyrics search issues
 - Miscellaneous UI fixes
