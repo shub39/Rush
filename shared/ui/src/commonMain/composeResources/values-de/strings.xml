@@ -115,4 +115,5 @@
     <string name="hide_ui">Steuerelemente ausblenden</string>
     <string name="hide_ui_desc">Liedtext Steuerelemente nach 5 Sekunden ausblenden</string>
     <string name="brat">Brat</string>
+    <string name="save">Speichern</string>
 </resources>
