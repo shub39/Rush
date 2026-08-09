@@ -16,10 +16,11 @@
  */
 package com.shub39.rush.shared.ui.lyrics.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
@@ -52,10 +53,12 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.RushDialog
+import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.lyrics.LrcCorrect
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
+import com.shub39.rush.shared.ui.segmentedListItemShapes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
@@ -129,6 +132,7 @@ fun LrcCorrectDialog(
                 }
             }
 
+            var expandedIndex: Int? by remember { mutableStateOf(null) }
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
@@ -137,72 +141,101 @@ fun LrcCorrectDialog(
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
             ) {
                 itemsIndexed(items = state.lrcCorrect.searchResults, key = { index, _ -> index }) {
-                    _,
+                    index,
                     result ->
-                    Card(
-                        onClick = {
-                            (state.lyricsState as? LyricsState.Loaded)?.song?.id?.let {
-                                action(LyricsPageAction.OnUpdateSongLyrics(it, result))
-                            }
-                            action(LyricsPageAction.OnLyricsCorrect(false))
+                    ListItem(
+                        selected = expandedIndex == index,
+                        shapes =
+                            segmentedListItemShapes(index, state.lrcCorrect.searchResults.size),
+                        colors = listItemColors(),
+                        onClick = { expandedIndex = if (expandedIndex == index) null else index },
+                        overlineContent = {
+                            Text(
+                                text =
+                                    stringResource(
+                                        when (result) {
+                                            is LineSyncedLyricsSearchResult ->
+                                                Res.string.line_synced_lyrics
+
+                                            is PlainLyricsSearchResult -> Res.string.plain_lyrics
+
+                                            is SyllableSyncedLyricsSearchResult ->
+                                                Res.string.syllable_synced_lyrics
+                                        }
+                                    ),
+                                style = MaterialTheme.typography.labelSmall,
+                            )
                         },
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                            ),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Icon(
-                                    painter =
-                                        painterResource(
-                                            if (
-                                                result
-                                                    is
-                                                    CorrectionSearchResult.PlainLyricsSearchResult
-                                            ) {
-                                                Res.drawable.quote
-                                            } else Res.drawable.sync
-                                        ),
-                                    modifier = Modifier.size(14.dp),
-                                    contentDescription = null,
-                                )
-
-                                Text(
-                                    text =
-                                        stringResource(
-                                            when (result) {
-                                                is CorrectionSearchResult.LineSyncedLyricsSearchResult ->
-                                                    Res.string.line_synced_lyrics
-
-                                                is CorrectionSearchResult.PlainLyricsSearchResult ->
-                                                    Res.string.plain_lyrics
-
-                                                is CorrectionSearchResult.SyllableSyncedLyricsSearchResult ->
-                                                    Res.string.syllable_synced_lyrics
-                                            }
-                                        ),
-                                    style = MaterialTheme.typography.labelSmall,
-                                )
-                            }
-
+                        content = {
                             Text(
                                 text = result.title,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
-                            Text(
-                                text = result.artist,
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                    }
+                        },
+                        supportingContent = {
+                            Column {
+                                Text(
+                                    text = result.artist,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+
+                                AnimatedVisibility(visible = expandedIndex == index) {
+                                    Column {
+                                        Card(
+                                            colors =
+                                                CardDefaults.cardColors(
+                                                    containerColor =
+                                                        MaterialTheme.colorScheme
+                                                            .surfaceContainerLow
+                                                ),
+                                            modifier = Modifier.padding(top = 4.dp),
+                                        ) {
+                                            Column(modifier = Modifier.padding(16.dp)) {
+                                                Text(
+                                                    text =
+                                                        when (result) {
+                                                            is LineSyncedLyricsSearchResult ->
+                                                                result.lineSyncedLyrics
+                                                            is PlainLyricsSearchResult ->
+                                                                result.plainLyrics
+                                                            is SyllableSyncedLyricsSearchResult ->
+                                                                result.syllableSyncedLyrics
+                                                        },
+                                                    maxLines = 20,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                )
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.padding(vertical = 2.dp))
+
+                                        Button(
+                                            onClick = {
+                                                (state.lyricsState as? LyricsState.Loaded)
+                                                    ?.song
+                                                    ?.id
+                                                    ?.let {
+                                                        action(
+                                                            LyricsPageAction.OnUpdateSongLyrics(
+                                                                it,
+                                                                result,
+                                                            )
+                                                        )
+                                                    }
+                                                action(LyricsPageAction.OnLyricsCorrect(false))
+                                            },
+                                            modifier = Modifier.fillMaxWidth(),
+                                        ) {
+                                            Text(text = stringResource(Res.string.save))
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                    )
                 }
             }
         }

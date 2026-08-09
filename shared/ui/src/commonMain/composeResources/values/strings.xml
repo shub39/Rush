@@ -115,4 +115,5 @@
     <string name="expressive_syllables_desc">Font style changes based on word duration</string>
     <string name="hide_ui">Hide Controls</string>
     <string name="hide_ui_desc">Hide lyrics controls after 5 seconds</string>
+    <string name="save">Save</string>
 </resources>
