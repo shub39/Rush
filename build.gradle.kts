@@ -32,7 +32,7 @@ plugins {
 }
 
 allprojects {
-    apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
+    apply { plugin(rootProject.libs.plugins.spotless.get().pluginId) }
     configure<SpotlessExtension> {
         if (project.path != ":androidLibs:visualizer-helper") {
             kotlin {

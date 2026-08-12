@@ -14,13 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.core.dataclasses
+package com.shub39.rush.shared.core.listener
 
-data class ParsedLine(
-    val text: String,
-    val startTime: Double,
-    val words: List<ParsedWord>,
-    val agent: String? = null,
-    val isBackground: Boolean = false,
-    val backgroundLines: List<ParsedLine> = emptyList(),
-)
+import kotlinx.coroutines.flow.MutableSharedFlow
+
+// just a stub, there is no api in ios to make this possible
+actual object MediaListener {
+    actual val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
+    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    actual val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
+
+    actual fun startListening(context: Any?) {}
+
+    actual fun onSeekEagerly() {}
+
+    actual fun seek(timeStamp: Long) {}
+
+    actual fun pauseOrResume(resume: Boolean) {}
+
+    actual fun playNext() {}
+
+    actual fun playPrevious() {}
+}

@@ -35,10 +35,17 @@ kotlin {
 
     jvm()
 
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedCore"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         commonTest.dependencies { implementation(kotlin("test")) }
         commonMain.dependencies {
-            implementation(libs.compose.ui)
+            implementation(libs.kotlinx.coroutines)
             implementation(libs.kotlinx.serialization.json)
         }
         jvmMain.dependencies { implementation(libs.kotlinx.coroutines.swing) }
