@@ -14,9 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.logic
+package com.shub39.rush.shared.logic.backup
 
-import com.shub39.rush.shared.core.interfaces.PaletteGenerator
-import org.koin.core.annotation.Single
+import com.shub39.rush.shared.core.backup.RestoreRepo
+import com.shub39.rush.shared.core.backup.RestoreResult
 
-@Single(binds = [PaletteGenerator::class]) expect class PaletteGeneratorImpl : PaletteGenerator
+actual class RestoreImpl : RestoreRepo {
+    override suspend fun restoreSongs(path: String): RestoreResult {
+        TODO("Not yet implemented")
+    }
+}

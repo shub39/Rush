@@ -23,7 +23,6 @@ import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.logic.network.dto.lrclib.LrcGetDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -38,7 +37,7 @@ import org.koin.core.annotation.Single
 @Single
 class LrcLibApi {
     private val client by lazy {
-        HttpClient(OkHttp) {
+        HttpClient {
             install(ContentNegotiation) {
                 json(
                     Json {

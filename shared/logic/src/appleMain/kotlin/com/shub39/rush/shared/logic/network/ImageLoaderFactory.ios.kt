@@ -14,9 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.logic
+package com.shub39.rush.shared.logic.network
 
-import com.shub39.rush.shared.core.interfaces.PaletteGenerator
-import org.koin.core.annotation.Single
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.request.CachePolicy
+import coil3.request.crossfade
 
-@Single(binds = [PaletteGenerator::class]) expect class PaletteGeneratorImpl : PaletteGenerator
+// probably wont be used
+actual class ImageLoaderFactory {
+    actual fun create(): ImageLoader {
+        return ImageLoader.Builder(PlatformContext.INSTANCE)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .build()
+    }
+}
