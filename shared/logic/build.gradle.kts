@@ -45,8 +45,9 @@ kotlin {
 
     listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "SharedCore"
+            baseName = "SharedLogic"
             isStatic = true
+            export(projects.shared.core)
         }
     }
 
@@ -55,7 +56,7 @@ kotlin {
     sourceSets {
         commonTest.dependencies { implementation(kotlin("test")) }
         commonMain.dependencies {
-            implementation(projects.shared.core)
+            api(projects.shared.core)
 
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
