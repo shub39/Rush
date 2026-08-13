@@ -11,6 +11,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		CF78A827302D648600594FFC /* presentation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = presentation;
+			sourceTree = "<group>";
+		};
 		CFC32B1B302C1CBD001645E0 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = iosApp;
@@ -34,6 +39,7 @@
 			children = (
 				CFC32B1B302C1CBD001645E0 /* iosApp */,
 				CFC32B1A302C1CBD001645E0 /* Products */,
+				CF78A827302D648600594FFC /* presentation */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +68,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				CF78A827302D648600594FFC /* presentation */,
 				CFC32B1B302C1CBD001645E0 /* iosApp */,
 			);
 			name = iosApp;

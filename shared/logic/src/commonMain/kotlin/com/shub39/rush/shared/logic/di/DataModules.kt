@@ -34,6 +34,7 @@ import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Single
+import org.koin.plugin.module.dsl.startKoin
 
 @Module
 @ComponentScan("com.shub39.rush.shared.logic")
@@ -73,4 +74,9 @@ class DataModule {
     fun provideLyricsPagePreferencesImpl(
         @Named("LyricsPage") dataStore: DataStore<Preferences>
     ): LyricsPagePreferences = LyricsPagePreferencesImpl(dataStore)
+}
+
+// used in iosApp
+fun initKoin() {
+    startKoin<DataModule>()
 }
