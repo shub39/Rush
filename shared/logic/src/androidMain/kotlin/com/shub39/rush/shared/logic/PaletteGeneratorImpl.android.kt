@@ -36,7 +36,7 @@ actual class PaletteGeneratorImpl(
     private val context: Context,
     private val imageLoader: ImageLoader,
 ) : PaletteGenerator {
-    override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
+    actual override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
         val request =
             ImageRequest.Builder(context)
                 .data(url)

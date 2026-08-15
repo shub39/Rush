@@ -21,5 +21,5 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [MediaAccessChecker::class])
 actual class MediaAccessCheckerImpl : MediaAccessChecker {
-    override fun canAccessMediaInfo(): Boolean = false
+    actual override fun canAccessMediaInfo(): Boolean = false
 }

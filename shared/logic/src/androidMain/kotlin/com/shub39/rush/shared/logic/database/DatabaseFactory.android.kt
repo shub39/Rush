@@ -27,6 +27,6 @@ actual class DatabaseFactory(private val context: Context) {
         val appContext = context.applicationContext
         val dbFile = appContext.getDatabasePath(SongDatabase.DB_NAME)
 
-        return Room.databaseBuilder(appContext, dbFile.absolutePath)
+        return Room.databaseBuilder<SongDatabase>(appContext, dbFile.absolutePath)
     }
 }

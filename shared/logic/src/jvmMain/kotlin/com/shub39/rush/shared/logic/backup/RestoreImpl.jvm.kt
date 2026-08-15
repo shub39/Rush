@@ -22,7 +22,7 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [RestoreRepo::class])
 actual class RestoreImpl : RestoreRepo {
-    override suspend fun restoreSongs(path: String): RestoreResult {
+    actual override suspend fun restoreSongs(path: String): RestoreResult {
         TODO("Not yet implemented")
     }
 }

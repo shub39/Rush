@@ -10,10 +10,9 @@ import SharedLogic
 
 @Observable
 class HomeViewModel {
-    init() {
-        let songs = RushRepository.getAllSongs()
-    }
-    
     var songs: [Song] = []
     
+    func getSongs() {
+        
+    }
 }

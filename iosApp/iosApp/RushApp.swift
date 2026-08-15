@@ -9,12 +9,12 @@ import SharedLogic
 @main
 struct RushApp: App {
     init() {
-        DataModulesKt.doInitKoin()
+        KoinKt.doInitKoin()
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SearchView()
         }
     }
 }

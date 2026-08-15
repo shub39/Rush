@@ -14,18 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.shared.logic.network.LyricsPlusApi
-import kotlin.test.Test
-import kotlinx.coroutines.runBlocking
+package com.shub39.rush.shared.logic
 
-@kotlin.experimental.ExperimentalNativeApi
-class LyricsPlusTest {
-    val api = LyricsPlusApi()
+import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.logic.di.DataModule
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.plugin.module.dsl.startKoin
 
-    @Test
-    fun testApi() = runBlocking {
-        val result = api.fetchTTML("DANCE...", "Slayyyter")
-        println(result)
-        assert(result != null)
-    }
+fun initKoin() {
+    startKoin<IosModule>()
 }
+
+class KoinDependencies : KoinComponent {
+    val songRepository: SongRepository by inject()
+}
+
+@Module(includes = [DataModule::class]) @Configuration class IosModule

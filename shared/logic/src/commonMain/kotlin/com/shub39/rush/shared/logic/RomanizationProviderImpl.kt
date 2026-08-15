@@ -20,4 +20,6 @@ import com.shub39.rush.shared.core.interfaces.RomanizationProvider
 import org.koin.core.annotation.Single
 
 @Single(binds = [RomanizationProvider::class])
-expect class RomanizationProviderImpl : RomanizationProvider
+expect class RomanizationProviderImpl : RomanizationProvider {
+    override suspend fun romanize(text: String): String?
+}

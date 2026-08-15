@@ -20,4 +20,6 @@ import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import org.koin.core.annotation.Single
 
 @Single(binds = [MediaAccessChecker::class])
-expect class MediaAccessCheckerImpl : MediaAccessChecker
+expect class MediaAccessCheckerImpl : MediaAccessChecker {
+    override fun canAccessMediaInfo(): Boolean
+}

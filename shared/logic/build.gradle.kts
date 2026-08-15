@@ -26,6 +26,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -76,7 +77,10 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.ksoup)
         }
-        appleMain.dependencies { implementation(libs.ktor.client.darwin) }
+        appleMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.androidx.sqlite.bundled)
+        }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(projects.androidLibs.romanization)

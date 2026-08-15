@@ -20,7 +20,7 @@ import com.shub39.rush.shared.core.backup.RestoreRepo
 import com.shub39.rush.shared.core.backup.RestoreResult
 
 actual class RestoreImpl : RestoreRepo {
-    override suspend fun restoreSongs(path: String): RestoreResult {
+    actual override suspend fun restoreSongs(path: String): RestoreResult {
         TODO("Not yet implemented")
     }
 }

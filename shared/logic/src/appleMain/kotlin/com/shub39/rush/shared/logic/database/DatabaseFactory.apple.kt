@@ -18,15 +18,18 @@ package com.shub39.rush.shared.logic.database
 
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.koin.core.annotation.Single
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
+@Single
 actual class DatabaseFactory {
     actual fun create(): RoomDatabase.Builder<SongDatabase> {
         val dbFile = documentDirectory() + "/${SongDatabase.DB_NAME}"
-        return Room.databaseBuilder<SongDatabase>(name = dbFile)
+        return Room.databaseBuilder<SongDatabase>(name = dbFile).setDriver(BundledSQLiteDriver())
     }
 
     @OptIn(ExperimentalForeignApi::class)

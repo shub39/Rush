@@ -32,7 +32,7 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [PaletteGenerator::class])
 actual class PaletteGeneratorImpl(private val imageLoader: ImageLoader) : PaletteGenerator {
-    override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
+    actual override suspend fun generatePaletteFromUrl(url: String): ExtractedColors {
         val request =
             ImageRequest.Builder(PlatformContext.INSTANCE)
                 .data(url)

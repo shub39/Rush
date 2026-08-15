@@ -22,5 +22,5 @@ import org.koin.core.annotation.Single
 // stub
 @Single(binds = [RomanizationProvider::class])
 actual class RomanizationProviderImpl : RomanizationProvider {
-    override suspend fun romanize(text: String): String? = null
+    actual override suspend fun romanize(text: String): String? = null
 }

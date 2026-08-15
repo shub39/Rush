@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 
-@Single
+@Single(binds = [SongRepository::class])
 class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,

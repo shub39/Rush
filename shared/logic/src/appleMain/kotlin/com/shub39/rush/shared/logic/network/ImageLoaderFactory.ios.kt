@@ -20,8 +20,10 @@ import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.request.CachePolicy
 import coil3.request.crossfade
+import org.koin.core.annotation.Single
 
 // probably wont be used
+@Single
 actual class ImageLoaderFactory {
     actual fun create(): ImageLoader {
         return ImageLoader.Builder(PlatformContext.INSTANCE)
