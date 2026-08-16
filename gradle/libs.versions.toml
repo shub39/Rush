@@ -5,9 +5,9 @@ targetSdk = "37"
 compileSdk = "37"
 accompanist = "0.37.3"
 colorpicker = "1.2.0"
-compose-multiplatform = "1.12.0-beta03"
+compose-multiplatform = "1.12.0-rc01"
 material3 = "1.12.0-alpha03"
-filekit = "0.14.2"
+filekit = "0.15.0"
 materialkolor = "5.0.0"
 splashscreen = "1.2.0"
 androidx-test-runner = "1.7.0"
@@ -27,7 +27,7 @@ serialization = "1.11.0"
 androidx-lifecycle = "2.11.0"
 zoomable = "2.13.0"
 coroutines = "1.11.0"
-purchases = "10.16.1"
+purchases = "10.16.2"
 junit = "4.13.2"
 junit-version = "1.3.0"
 spotless = "8.9.0"
@@ -35,6 +35,7 @@ ktfmt = "0.61"
 build-config = "6.0.10"
 sqlite = "2.7.0"
 nucleus = "1.15.7"
+skie = "0.10.14"
 
 [libraries]
 # CMP
@@ -89,6 +90,7 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -109,12 +111,12 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "build-config" }
 nucleus = { id = "io.github.kdroidfilter.nucleus", version.ref = "nucleus" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
 
 [bundles]
 ktor = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
-    "ktor-client-okhttp",
     "ktor-client-auth",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json",

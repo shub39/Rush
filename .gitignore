@@ -1,7 +1,4 @@
 *.iml
-app/beta
-app/play
-app/release
 .gradle
 /local.properties
 .idea
@@ -13,3 +10,13 @@ visualizer-helper/build
 .cxx
 local.properties
 .kotlin
+**/build/
+xcuserdata
+!src/**/build/
+captures
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings

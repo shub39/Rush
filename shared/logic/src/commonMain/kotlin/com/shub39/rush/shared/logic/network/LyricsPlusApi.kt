@@ -19,7 +19,6 @@ package com.shub39.rush.shared.logic.network
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.util.TTMLParser
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -52,7 +51,7 @@ class LyricsPlusApi {
     }
 
     val client by lazy {
-        HttpClient(OkHttp) {
+        HttpClient {
             install(ContentNegotiation) {
                 json(
                     Json {

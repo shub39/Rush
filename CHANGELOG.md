@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.3
+- Updated Translations
+- Fixed lyrics not loading #296
+- Fixed crashes on Lyrics correct dialog
+- Fixed duplicate results in Lyrics correct dialog
+
 ## 6.5.2
 - Updated Translations
 - Improved Lyrics correct dialog.

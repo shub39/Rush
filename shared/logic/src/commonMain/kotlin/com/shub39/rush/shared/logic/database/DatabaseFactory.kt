@@ -17,7 +17,9 @@
 package com.shub39.rush.shared.logic.database
 
 import androidx.room3.RoomDatabase
+import org.koin.core.annotation.Single
 
+@Single
 expect class DatabaseFactory {
     fun create(): RoomDatabase.Builder<SongDatabase>
 }

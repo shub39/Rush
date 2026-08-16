@@ -1,5 +1,14 @@
 [
   {
+    "version": "6.5.3",
+    "changes": [
+      "Updated Translations",
+      "Fixed lyrics not loading #296",
+      "Fixed crashes on Lyrics correct dialog",
+      "Fixed duplicate results in Lyrics correct dialog"
+    ]
+  },
+  {
     "version": "6.5.2",
     "changes": [
       "Updated Translations",
@@ -64,12 +73,6 @@
     "version": "6.3.1",
     "changes": [
       "Fixed crashes in Synced Lyrics page"
-    ]
-  },
-  {
-    "version": "6.3.0",
-    "changes": [
-      "Updated Translations"
     ]
   }
 ]

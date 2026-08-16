@@ -25,5 +25,5 @@ import org.koin.core.annotation.Single
 actual class RomanizationProviderImpl(private val context: Context) : RomanizationProvider {
     private val utils = RomanizationUtils(context)
 
-    override suspend fun romanize(text: String): String? = utils.romanize(text)
+    actual override suspend fun romanize(text: String): String? = utils.romanize(text)
 }

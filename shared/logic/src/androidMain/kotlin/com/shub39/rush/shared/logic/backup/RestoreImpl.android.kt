@@ -34,7 +34,7 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [RestoreRepo::class])
 actual class RestoreImpl(val songRepo: SongRepository, val context: Context) : RestoreRepo {
-    override suspend fun restoreSongs(path: String): RestoreResult =
+    actual override suspend fun restoreSongs(path: String): RestoreResult =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val file = File(context.cacheDir, "temp.json")

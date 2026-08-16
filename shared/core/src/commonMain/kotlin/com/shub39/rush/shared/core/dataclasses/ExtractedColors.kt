@@ -16,9 +16,6 @@
  */
 package com.shub39.rush.shared.core.dataclasses
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-
 /**
  * A data class to hold the extracted colors from an image
  *
@@ -30,8 +27,8 @@ import androidx.compose.ui.graphics.toArgb
  *   [cardBackgroundMuted].
  */
 data class ExtractedColors(
-    val cardBackgroundDominant: Int = Color.DarkGray.toArgb(),
+    val cardBackgroundDominant: Int = 0x393939,
     val cardContentDominant: Int = 0xFFFFFF,
-    val cardBackgroundMuted: Int = Color.DarkGray.toArgb(),
+    val cardBackgroundMuted: Int = 0x282828,
     val cardContentMuted: Int = 0xFFFFFF,
 )

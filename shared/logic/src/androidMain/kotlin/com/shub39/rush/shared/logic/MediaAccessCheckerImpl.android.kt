@@ -24,7 +24,7 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [MediaAccessChecker::class])
 actual class MediaAccessCheckerImpl(private val context: Context) : MediaAccessChecker {
-    override fun canAccessMediaInfo(): Boolean {
+    actual override fun canAccessMediaInfo(): Boolean {
         val enabled =
             NotificationManagerCompat.getEnabledListenerPackages(context)
                 .contains(context.packageName)

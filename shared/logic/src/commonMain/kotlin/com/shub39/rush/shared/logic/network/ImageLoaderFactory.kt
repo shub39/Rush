@@ -17,7 +17,9 @@
 package com.shub39.rush.shared.logic.network
 
 import coil3.ImageLoader
+import org.koin.core.annotation.Single
 
+@Single
 expect class ImageLoaderFactory {
     fun create(): ImageLoader
 }

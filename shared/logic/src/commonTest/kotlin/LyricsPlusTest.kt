@@ -18,6 +18,7 @@ import com.shub39.rush.shared.logic.network.LyricsPlusApi
 import kotlin.test.Test
 import kotlinx.coroutines.runBlocking
 
+@kotlin.experimental.ExperimentalNativeApi
 class LyricsPlusTest {
     val api = LyricsPlusApi()
 

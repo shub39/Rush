@@ -17,5 +17,8 @@
 package com.shub39.rush.shared.logic.backup
 
 import com.shub39.rush.shared.core.backup.RestoreRepo
+import com.shub39.rush.shared.core.backup.RestoreResult
 
-expect class RestoreImpl : RestoreRepo
+expect class RestoreImpl : RestoreRepo {
+    override suspend fun restoreSongs(path: String): RestoreResult
+}
