@@ -14,7 +14,7 @@ struct RushApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SearchView()
+            SongRepositoryTestView()
         }
     }
 }
