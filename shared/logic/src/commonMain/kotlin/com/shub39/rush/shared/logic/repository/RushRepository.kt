@@ -157,7 +157,12 @@ class RushRepository(
         track: String,
         artist: String,
     ): Result<List<CorrectionSearchResult>, SourceError> {
-        val ttmlResult = withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
+        val ttmlResult = try {
+            withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
+        } catch (e: Exception) {
+            RushLogger.e(TAG, "Failed fetching lyrics from Lyrics Plus", e)
+            null
+        }
         val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
         var searchResults = listOf<CorrectionSearchResult>()
@@ -200,7 +205,7 @@ class RushRepository(
                         }
                     }
 
-                return Result.Success(searchResults)
+                return Result.Success(searchResults.distinct())
             }
 
             is Result.Error -> {
