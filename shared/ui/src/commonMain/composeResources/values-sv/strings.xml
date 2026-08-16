@@ -48,4 +48,12 @@
     <string name="blurred_art">Suddigt omslag</string>
     <string name="synced_lyrics">Synkad</string>
     <string name="text">Text</string>
+    <string name="no_lyrics">Kunde inte hämta låttexter från LRCLIB</string>
+    <string name="grant_permission">Ge behörighet</string>
+    <string name="no_results">Inga resultat</string>
+    <string name="card_color">Kortfärger</string>
+    <string name="bmc_desc">Stötta mig genom att ge ett liten donation</string>
+    <string name="export_info">Exportera låtar till vald mapp</string>
+    <string name="restore_info">Återställ från vald exportfil</string>
+    <string name="look_and_feel">Utseende och känsla</string>
 </resources>
