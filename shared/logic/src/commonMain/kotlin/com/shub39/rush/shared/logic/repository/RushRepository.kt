@@ -17,6 +17,7 @@
 package com.shub39.rush.shared.logic.repository
 
 import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.Song
@@ -48,21 +49,40 @@ class RushRepository(
     private val lyricsPlusApi: LyricsPlusApi,
     private val geniusScraper: GeniusScraper,
 ) : SongRepository {
+    companion object {
+        private const val TAG = "RushRepository"
+    }
+
     @OptIn(ExperimentalTime::class)
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
             val ttmlLyrics =
-                withContext(Dispatchers.IO) {
-                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
+                try {
+                    withContext(Dispatchers.IO) {
+                        lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
+                    }
+                } catch (e: Exception) {
+                    RushLogger.e(TAG, "Failed to fetch from lyrics plus", e)
+                    null
                 }
             val lrcLibLyrics =
-                withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                try {
+                    withContext(Dispatchers.IO) {
+                        lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                    }
+                } catch (e: Exception) {
+                    RushLogger.e(TAG, "Failed to fetch from lrclib", e)
+                    null
                 }
             val geniusLyrics =
                 if (lrcLibLyrics == null && ttmlLyrics == null) {
-                    withContext(Dispatchers.IO) {
-                        (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
+                    try {
+                        withContext(Dispatchers.IO) {
+                            (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
+                        }
+                    } catch (e: Exception) {
+                        RushLogger.e(TAG, "Failed to fetch from genius", e)
+                        null
                     }
                 } else null
 
@@ -84,6 +104,7 @@ class RushRepository(
                 )
                 .also { localDao.insertSong(it.data.toSongEntity()) }
         } catch (e: Exception) {
+            RushLogger.e(TAG, "Unexpected exception", e)
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
         }
     }
