@@ -14,21 +14,29 @@ class SearchViewModel {
         isSearching = true
         
         Task {
+            defer {
+                Task { @MainActor in
+                    self.isSearching = false
+                }
+            }
+            
             do {
                 let result = try await repository.searchGenius(query: query)
                 
-                // SKIE makes Result handling easier, but let's use the basic way if not sure
                 if let data = result as? [SearchResult] {
                     await MainActor.run {
                         self.results = data
-                        self.isSearching = false
                     }
+                } else if let success = result as? ResultSuccess<NSArray, SourceError> {
+                    let data = success.data as? [SearchResult] ?? []
+                    await MainActor.run {
+                        self.results = data
+                    }
+                } else if let errorRes = result as? ResultError<NSArray, SourceError> {
+                    print("Search error: \(errorRes.message ?? "Unknown error")")
                 }
             } catch {
-                await MainActor.run {
-                    self.isSearching = false
-                }
-                print("Search error: \(error)")
+                print("Network/Mapping error: \(error)")
             }
         }
     }
