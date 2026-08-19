@@ -56,4 +56,12 @@
     <string name="export_info">Exportera låtar till vald mapp</string>
     <string name="restore_info">Återställ från vald exportfil</string>
     <string name="look_and_feel">Utseende och känsla</string>
+    <string name="done">Klar</string>
+    <string name="amoled_desc">Ger bäst upplevelse på AMOLED-skärmar</string>
+    <string name="material_theme_desc">Tema baserat på din mobils bakgrund</string>
+    <string name="font">Välj teckensnitt för appen</string>
+    <string name="album_art_shape">Skivomslagets form</string>
+    <string name="lyrics_background">Låttextens bakgrund</string>
+    <string name="looks">Utseende</string>
+    <string name="foss_desc">Alla funktioner är upplåsta. Den här varianten av appen stöder inte köp i appen. Om den här appen berikar ditt liv så stötta mig genom en donation på</string>
 </resources>
