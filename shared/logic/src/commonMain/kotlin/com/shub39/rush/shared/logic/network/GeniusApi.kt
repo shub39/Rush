@@ -18,6 +18,7 @@ package com.shub39.rush.shared.logic.network
 
 import com.shub39.rush.logic.GENIUS_API_TOKEN
 import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.logic.network.dto.genius.GeniusSearchDto
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -48,9 +49,7 @@ class GeniusApi {
         }
     }
 
-    suspend fun geniusSearch(
-        query: String
-    ): Result<GeniusSearchDto, com.shub39.rush.shared.core.SourceError> = safeCall {
+    suspend fun geniusSearch(query: String): Result<GeniusSearchDto, SourceError> = safeCall {
         client.get(urlString = "$BASE_URL/search") {
             header(HttpHeaders.Authorization, BEARER_TOKEN)
             parameter("q", query)

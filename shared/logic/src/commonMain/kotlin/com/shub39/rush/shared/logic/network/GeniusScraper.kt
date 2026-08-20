@@ -20,6 +20,7 @@ import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.TextNode
 import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.SourceError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -52,6 +53,8 @@ class GeniusScraper {
     }
 
     companion object {
+        private const val TAG = "GeniusScraper"
+
         val dumbInstances =
             listOf("dumb.ducks.party/", "dumb.lunar.icu/", "dumb.bloat.cat/", "dumb.jeikobu.net/")
 
@@ -65,7 +68,17 @@ class GeniusScraper {
             )
     }
 
-    suspend fun geniusScrape(songUrl: String): Result<String, SourceError> {
+    suspend fun geniusScrape(songUrl: String): String? {
+        return when (val result = geniusScrapeResult(songUrl)) {
+            is Result.Success -> result.data
+            is Result.Error -> {
+                RushLogger.e(TAG, "Could not scrape lyrics: ${result.error}: ${result.message}")
+                null
+            }
+        }
+    }
+
+    suspend fun geniusScrapeResult(songUrl: String): Result<String, SourceError> {
         when (val response = safeCall<HttpResponse> { client.get(urlString = songUrl) }) {
             is Result.Success -> {
                 val lyricsElements =

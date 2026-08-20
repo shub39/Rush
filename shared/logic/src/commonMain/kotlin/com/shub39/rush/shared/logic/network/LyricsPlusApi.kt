@@ -17,6 +17,8 @@
 package com.shub39.rush.shared.logic.network
 
 import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.RushLogger
+import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.core.util.TTMLParser
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -38,6 +40,8 @@ import org.koin.core.annotation.Single
 @Single
 class LyricsPlusApi {
     companion object {
+        private const val TAG = "LyricsPlusApi"
+
         @Serializable data class TTMLResponse(val ttml: String)
 
         private val servers =
@@ -71,35 +75,51 @@ class LyricsPlusApi {
         }
     }
 
-    suspend fun fetchTTML(title: String, artist: String): String? = coroutineScope {
-        val resultChannel = Channel<String?>(servers.size)
-        servers.forEach { url ->
-            launch {
-                val result =
-                    safeCall<TTMLResponse> {
-                        client.get(urlString = "$url/v1/ttml/get") {
-                            parameter("title", title)
-                            parameter("artist", artist)
-                        }
-                    }
-
-                val ttml =
-                    when (result) {
-                        is Result.Success ->
-                            if (TTMLParser.isValidTTML(result.data.ttml)) result.data.ttml else null
-                        else -> null
-                    }
-                resultChannel.send(ttml)
-            }
+    suspend fun fetchTTML(title: String, artist: String): String? {
+        return when (val result = fetchTTMLResult(title, artist)) {
+            is Result.Success -> result.data
+            is Result.Error -> null
         }
-
-        repeat(servers.size) {
-            val res = resultChannel.receive()
-            if (res != null) {
-                coroutineContext.cancelChildren()
-                return@coroutineScope res
-            }
-        }
-        null
     }
+
+    suspend fun fetchTTMLResult(title: String, artist: String): Result<String, SourceError> =
+        coroutineScope {
+            try {
+                val resultChannel = Channel<String?>(servers.size)
+                servers.forEach { url ->
+                    launch {
+                        val result =
+                            safeCall<TTMLResponse> {
+                                client.get(urlString = "$url/v1/ttml/get") {
+                                    parameter("title", title)
+                                    parameter("artist", artist)
+                                }
+                            }
+
+                        val ttml =
+                            when (result) {
+                                is Result.Success ->
+                                    if (TTMLParser.isValidTTML(result.data.ttml)) result.data.ttml
+                                    else null
+                                else -> null
+                            }
+                        resultChannel.send(ttml)
+                    }
+                }
+
+                repeat(servers.size) {
+                    val res = resultChannel.receive()
+                    if (res != null) {
+                        coroutineContext.cancelChildren()
+                        return@coroutineScope Result.Success(res)
+                    }
+                }
+
+                RushLogger.e(TAG, "No Results, title: $title,, artist: $artist")
+                Result.Error(SourceError.Network.REQUEST_FAILED)
+            } catch (e: Exception) {
+                RushLogger.e(TAG, "Error while fetching", e)
+                Result.Error(SourceError.Network.REQUEST_FAILED)
+            }
+        }
 }
