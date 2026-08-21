@@ -106,4 +106,14 @@
     <string name="plain_lyrics">Simplu</string>
     <string name="syllable_synced_lyrics">Sincronizare după silabe</string>
     <string name="full_screen_share">Partajare în ecran complet</string>
+    <string name="bmc_desc">Susține-mă făcând o mică donație</string>
+    <string name="translate_desc">Traduceți Rush în limba dumneavoastră</string>
+    <string name="system_default">Prestabilită de sistem</string>
+    <string name="language">Limbă</string>
+    <string name="expressive_syllables">Silabe expresive</string>
+    <string name="expressive_syllables_desc">Stilul fontului se modifică în funcție de durata cuvintelor</string>
+    <string name="hide_ui">Ascunde controalele</string>
+    <string name="hide_ui_desc">Ascunde controalele pentru versuri după 5 secunde</string>
+    <string name="save">Salvați</string>
+    <string name="brat">Brat</string>
 </resources>
