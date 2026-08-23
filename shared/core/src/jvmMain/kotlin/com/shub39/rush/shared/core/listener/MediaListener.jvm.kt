@@ -17,6 +17,9 @@
 package com.shub39.rush.shared.core.listener
 
 import com.shub39.rush.shared.core.RushLogger
+import com.shub39.rush.shared.core.dataclasses.SongMeta
+import com.shub39.rush.shared.core.getMainArtist
+import com.shub39.rush.shared.core.getMainTitle
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.time.Duration.Companion.milliseconds
@@ -34,7 +37,7 @@ actual object MediaListener {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     actual val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
-    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    actual val songInfoFlow: MutableSharedFlow<SongMeta> = MutableSharedFlow()
     actual val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
     init {
@@ -117,7 +120,7 @@ actual object MediaListener {
 
             val title = cleanOutput(metadataTitle)?.substringAfter("xesam:title ")?.trim() ?: ""
             val artist = cleanOutput(metadataArtist)?.substringAfter("xesam:artist ")?.trim() ?: ""
-            songInfoFlow.emit(Pair(title, artist))
+            songInfoFlow.emit(SongMeta(title = getMainTitle(title), artist = getMainArtist(artist)))
 
             val positionLong = position?.trim()?.toFloatOrNull()?.toLong() ?: 0L
             songPositionFlow.emit(positionLong * 1000)

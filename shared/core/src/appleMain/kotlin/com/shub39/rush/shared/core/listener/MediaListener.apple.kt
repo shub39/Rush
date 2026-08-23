@@ -16,12 +16,13 @@
  */
 package com.shub39.rush.shared.core.listener
 
+import com.shub39.rush.shared.core.dataclasses.SongMeta
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 // just a stub, there is no api in ios to make this possible
 actual object MediaListener {
     actual val playbackSpeedFlow: MutableSharedFlow<Float> = MutableSharedFlow()
-    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> = MutableSharedFlow()
+    actual val songInfoFlow: MutableSharedFlow<SongMeta> = MutableSharedFlow()
     actual val songPositionFlow: MutableSharedFlow<Long> = MutableSharedFlow()
 
     actual fun startListening(context: Any?) {}

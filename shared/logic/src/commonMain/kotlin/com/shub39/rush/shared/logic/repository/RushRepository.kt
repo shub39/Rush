@@ -32,7 +32,6 @@ import com.shub39.rush.shared.logic.network.GeniusScraper
 import com.shub39.rush.shared.logic.network.LrcLibApi
 import com.shub39.rush.shared.logic.network.LyricsPlusApi
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -53,37 +52,19 @@ class RushRepository(
         private const val TAG = "RushRepository"
     }
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
             val ttmlLyrics =
-                try {
-                    withContext(Dispatchers.IO) {
-                        lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
-                    }
-                } catch (e: Exception) {
-                    RushLogger.e(TAG, "Failed to fetch from lyrics plus", e)
-                    null
+                withContext(Dispatchers.IO) {
+                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
                 }
             val lrcLibLyrics =
-                try {
-                    withContext(Dispatchers.IO) {
-                        lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
-                    }
-                } catch (e: Exception) {
-                    RushLogger.e(TAG, "Failed to fetch from lrclib", e)
-                    null
+                withContext(Dispatchers.IO) {
+                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
                 }
             val geniusLyrics =
                 if (lrcLibLyrics == null && ttmlLyrics == null) {
-                    try {
-                        withContext(Dispatchers.IO) {
-                            (geniusScraper.geniusScrape(result.url) as? Result.Success)?.data
-                        }
-                    } catch (e: Exception) {
-                        RushLogger.e(TAG, "Failed to fetch from genius", e)
-                        null
-                    }
+                    withContext(Dispatchers.IO) { geniusScraper.geniusScrape(result.url) }
                 } else null
 
             return Result.Success<Song, SourceError>(
@@ -110,7 +91,7 @@ class RushRepository(
     }
 
     override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
-        val request = withContext(Dispatchers.IO) { geniusScraper.geniusScrape(url) }
+        val request = withContext(Dispatchers.IO) { geniusScraper.geniusScrapeResult(url) }
 
         return when (request) {
             is Result.Error -> {
@@ -157,12 +138,13 @@ class RushRepository(
         track: String,
         artist: String,
     ): Result<List<CorrectionSearchResult>, SourceError> {
-        val ttmlResult = try {
-            withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
-        } catch (e: Exception) {
-            RushLogger.e(TAG, "Failed fetching lyrics from Lyrics Plus", e)
-            null
-        }
+        val ttmlResult =
+            try {
+                withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
+            } catch (e: Exception) {
+                RushLogger.e(TAG, "Failed fetching lyrics from Lyrics Plus", e)
+                null
+            }
         val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
         var searchResults = listOf<CorrectionSearchResult>()
@@ -244,15 +226,15 @@ class RushRepository(
 
     override suspend fun correctLyrics(id: Long, searchResult: CorrectionSearchResult) {
         when (searchResult) {
-            is CorrectionSearchResult.LineSyncedLyricsSearchResult -> {
+            is LineSyncedLyricsSearchResult -> {
                 localDao.updateSyncedLyricsById(id, searchResult.lineSyncedLyrics)
                 localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
             }
 
-            is CorrectionSearchResult.PlainLyricsSearchResult ->
+            is PlainLyricsSearchResult ->
                 localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
 
-            is CorrectionSearchResult.SyllableSyncedLyricsSearchResult ->
+            is SyllableSyncedLyricsSearchResult ->
                 localDao.updateTTMLLyricsById(id, searchResult.syllableSyncedLyrics)
         }
     }

@@ -64,7 +64,6 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
-import com.shub39.rush.shared.ui.lyrics.PlayingSong
 import com.shub39.rush.shared.ui.lyrics.TextPrefs
 import com.shub39.rush.shared.ui.lyrics.calculateLineProgress
 import com.shub39.rush.shared.ui.lyrics.toTransformOrigin
@@ -526,7 +525,6 @@ fun SyllableSyncedLyricsPreview() {
                         )
                 ),
             expressiveSyllables = true,
-            playingSong = PlayingSong(title = "Preview Song", artist = "Rush"),
         )
 
     Box(modifier = Modifier.fillMaxSize()) {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.6.0
+- Updated Translations
+- Improved song detection and fetching
+- Miscellaneous UI improvements
+
 ## 6.5.3
 - Updated Translations
 - Fixed lyrics not loading #296

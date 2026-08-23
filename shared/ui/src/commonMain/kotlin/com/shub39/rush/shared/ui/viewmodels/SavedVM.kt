@@ -19,7 +19,6 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.enums.Sources
-import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
@@ -133,11 +132,7 @@ class SavedVM(
                 source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
-                sync =
-                    (result.syncedLyrics != null || result.ttmlLyrics != null) &&
-                        (getMainTitle(it.playingSong.title)
-                            .trim()
-                            .equals(getMainTitle(result.title).trim(), ignoreCase = true)),
+                sync = false,
                 selectedLines = emptyMap(),
             )
         }

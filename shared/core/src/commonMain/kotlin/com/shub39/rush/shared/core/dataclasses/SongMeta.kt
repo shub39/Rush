@@ -14,27 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.core.listener
+package com.shub39.rush.shared.core.dataclasses
 
-import com.shub39.rush.shared.core.dataclasses.SongMeta
-import kotlinx.coroutines.flow.MutableSharedFlow
-
-expect object MediaListener {
-    val playbackSpeedFlow: MutableSharedFlow<Float>
-
-    val songInfoFlow: MutableSharedFlow<SongMeta>
-
-    val songPositionFlow: MutableSharedFlow<Long>
-
-    fun startListening(context: Any?)
-
-    fun onSeekEagerly()
-
-    fun seek(timeStamp: Long)
-
-    fun pauseOrResume(resume: Boolean)
-
-    fun playNext()
-
-    fun playPrevious()
-}
+data class SongMeta(
+    val title: String,
+    val artist: String? = null,
+    val album: String? = null,
+    val duration: Long? = null,
+)
