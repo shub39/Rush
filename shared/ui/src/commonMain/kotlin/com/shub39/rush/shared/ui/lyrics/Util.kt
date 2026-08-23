@@ -65,7 +65,7 @@ fun parseLyrics(lyricsString: String): List<Lyric>? {
         listOf(Lyric(0, ""))
             .plus(
                 lyricsString.lines().mapNotNull { line ->
-                    val parts = line.split("] ")
+                    val parts = line.split("]")
                     if (parts.size == 2) {
                         val time =
                             parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->

@@ -25,6 +25,9 @@ import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.os.Build
 import com.shub39.rush.shared.core.RushLogger
+import com.shub39.rush.shared.core.dataclasses.SongMeta
+import com.shub39.rush.shared.core.getMainArtist
+import com.shub39.rush.shared.core.getMainTitle
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +49,7 @@ actual object MediaListener {
 
     actual val playbackSpeedFlow: MutableSharedFlow<Float> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    actual val songInfoFlow: MutableSharedFlow<Pair<String, String>> =
+    actual val songInfoFlow: MutableSharedFlow<SongMeta> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     actual val songPositionFlow: MutableSharedFlow<Long> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -219,11 +222,19 @@ actual object MediaListener {
         val artist =
             metadata?.getString(MediaMetadata.METADATA_KEY_ARTIST)
                 ?: metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM_ARTIST)
-                ?: ""
+        val album = metadata?.getString(MediaMetadata.METADATA_KEY_ALBUM)
+        val duration = metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION)
 
         coroutineScope.launch {
             if (controller.playbackState?.let { isActive(it) } == true) {
-                songInfoFlow.emit(Pair(title, artist))
+                songInfoFlow.emit(
+                    SongMeta(
+                        title = getMainTitle(title),
+                        artist = artist?.let { getMainArtist(it) },
+                        album = album,
+                        duration = duration,
+                    )
+                )
                 playbackSpeedFlow.emit(controller.playbackState?.playbackSpeed ?: 1f)
                 controller.playbackState?.position?.let { songPositionFlow.emit(it) }
             }

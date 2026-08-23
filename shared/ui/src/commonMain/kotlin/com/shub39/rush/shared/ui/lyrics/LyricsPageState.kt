@@ -21,6 +21,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
+import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
@@ -36,7 +37,7 @@ data class LyricsPageState(
     val scraping: Pair<Boolean, LyricsState.LyricsError?> = Pair(false, null),
     val lyricsState: LyricsState = LyricsState.Idle,
     val autoChange: Boolean = false,
-    val playingSong: PlayingSong = PlayingSong(),
+    val playingSong: SongMeta? = null,
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val extractedColors: ExtractedColors = ExtractedColors(),
     val syncedAvailable: Boolean = false,

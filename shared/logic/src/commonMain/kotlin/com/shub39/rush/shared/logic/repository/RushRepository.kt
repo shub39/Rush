@@ -32,7 +32,6 @@ import com.shub39.rush.shared.logic.network.GeniusScraper
 import com.shub39.rush.shared.logic.network.LrcLibApi
 import com.shub39.rush.shared.logic.network.LyricsPlusApi
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +52,6 @@ class RushRepository(
         private const val TAG = "RushRepository"
     }
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
             val ttmlLyrics =

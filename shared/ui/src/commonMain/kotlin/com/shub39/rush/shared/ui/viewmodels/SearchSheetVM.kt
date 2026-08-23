@@ -21,9 +21,8 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SearchResult
+import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.enums.Sources
-import com.shub39.rush.shared.core.getMainArtist
-import com.shub39.rush.shared.core.getMainTitle
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
@@ -90,18 +89,10 @@ class SearchSheetVM(
                 MediaListener.songInfoFlow
                     .distinctUntilChanged()
                     .onEach { songInfo ->
-                        val mainTitle = getMainTitle(songInfo.first)
-                        val mainArtist = getMainArtist(songInfo.second)
-
-                        stateLayer.lyricsState.update {
-                            it.copy(
-                                playingSong =
-                                    it.playingSong.copy(title = mainTitle, artist = mainArtist)
-                            )
-                        }
+                        stateLayer.lyricsState.update { it.copy(playingSong = songInfo) }
 
                         if (stateLayer.lyricsState.value.autoChange) {
-                            searchSong("$mainTitle $mainArtist".trim())
+                            searchSong("${songInfo.title} ${songInfo.artist}".trim())
                         }
                     }
                     .launchIn(this)
@@ -186,29 +177,40 @@ class SearchSheetVM(
 
                 if (
                     fetch &&
-                        _state.value.searchResults.isNotEmpty() &&
-                        query.contains(
-                            _state.value.searchResults.first().title.trim(),
-                            ignoreCase = true,
-                        )
+                        stateLayer.lyricsState.value.playingSong != null &&
+                        _state.value.searchResults.isNotEmpty()
                 ) {
-                    fetchLyrics(_state.value.searchResults.first().id)
-                } else {
-                    stateLayer.lyricsState.update {
-                        it.copy(searchState = SearchState.UserPrompt, sync = false)
-                    }
-
-                    lyricsSearchStateJob?.cancel()
-                    lyricsSearchStateJob =
-                        viewModelScope.launch {
-                            delay(5000.milliseconds)
-
-                            stateLayer.lyricsState.update {
-                                if (it.searchState == SearchState.UserPrompt)
-                                    it.copy(searchState = SearchState.Idle)
-                                else it
-                            }
+                    val resultScores =
+                        _state.value.searchResults.associateWith {
+                            getResultScore(
+                                songMeta = stateLayer.lyricsState.value.playingSong!!,
+                                searchResult = it,
+                            )
                         }
+
+                    if (resultScores.isNotEmpty()) {
+                        if (resultScores.maxBy { it.value }.value > 0.0) {
+                            fetchLyrics(resultScores.maxBy { it.value }.key.id)
+                        } else searchFailedPrompt()
+                    } else searchFailedPrompt()
+                } else searchFailedPrompt()
+            }
+    }
+
+    private fun searchFailedPrompt() {
+        stateLayer.lyricsState.update {
+            it.copy(searchState = SearchState.UserPrompt, sync = false)
+        }
+
+        lyricsSearchStateJob?.cancel()
+        lyricsSearchStateJob =
+            viewModelScope.launch {
+                delay(5000.milliseconds)
+
+                stateLayer.lyricsState.update {
+                    if (it.searchState == SearchState.UserPrompt)
+                        it.copy(searchState = SearchState.Idle)
+                    else it
                 }
             }
     }
@@ -276,13 +278,7 @@ class SearchSheetVM(
                                             retrievedSong.ttmlLyrics != null,
                                     sync =
                                         (retrievedSong.syncedLyrics != null ||
-                                            retrievedSong.ttmlLyrics != null) &&
-                                            (getMainTitle(it.playingSong.title)
-                                                .trim()
-                                                .equals(
-                                                    getMainTitle(retrievedSong.title).trim(),
-                                                    ignoreCase = true,
-                                                )),
+                                            retrievedSong.ttmlLyrics != null),
                                     selectedLines = emptyMap(),
                                 )
                             }
@@ -316,5 +312,31 @@ class SearchSheetVM(
         }
 
         return searchResults
+    }
+
+    private fun getResultScore(songMeta: SongMeta, searchResult: SearchResult): Double {
+        var score = 0.0
+
+        if (songMeta.title == searchResult.title) {
+            score += 0.5
+        } else if (songMeta.title.startsWith(searchResult.title)) {
+            score += 0.4
+        } else if (searchResult.title.startsWith(songMeta.title)) {
+            score += 0.3
+        }
+
+        if (songMeta.artist == null) {
+            return score
+        } else if (songMeta.artist == searchResult.artist) {
+            score += 0.5
+        } else if (songMeta.artist!!.startsWith(searchResult.artist)) {
+            score += 0.4
+        } else if (searchResult.artist.startsWith(songMeta.artist!!)) {
+            score += 0.3
+        }
+
+        if (songMeta.album == searchResult.album) score += 0.5
+
+        return score
     }
 }
