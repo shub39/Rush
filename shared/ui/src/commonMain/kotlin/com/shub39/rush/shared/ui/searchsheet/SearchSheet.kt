@@ -188,6 +188,8 @@ fun SearchSheet(
                                     MaterialTheme.colorScheme.background,
                                 ),
                         )
+
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
 

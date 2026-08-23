@@ -53,7 +53,7 @@ fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     val lines = lyrics.lines()
     val map = mutableMapOf<Int, String>()
     for (i in lines.indices) {
-        map[i] = lines[i]
+        map[i] = lines[i].trim()
     }
     return map.entries.toList()
 }
@@ -76,7 +76,7 @@ fun parseLyrics(lyricsString: String): List<Lyric>? {
                         } else {
                             seenTimes.add(time)
                             val text = parts[1]
-                            Lyric(time, text)
+                            Lyric(time, text.trim())
                         }
                     } else {
                         null
