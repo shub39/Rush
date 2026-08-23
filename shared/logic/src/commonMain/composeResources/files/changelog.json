@@ -1,5 +1,13 @@
 [
   {
+    "version": "6.6.0",
+    "changes": [
+      "Updated Translations",
+      "Improved song detection and fetching",
+      "Miscellaneous UI improvements"
+    ]
+  },
+  {
     "version": "6.5.3",
     "changes": [
       "Updated Translations",
@@ -67,12 +75,6 @@
     "changes": [
       "Updated Translations",
       "Fixed crashes while remaking Messy Card"
-    ]
-  },
-  {
-    "version": "6.3.1",
-    "changes": [
-      "Fixed crashes in Synced Lyrics page"
     ]
   }
 ]
