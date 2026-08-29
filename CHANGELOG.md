@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.6.1
+- Updated Translations
+
 ## 6.6.0
 - Updated Translations
 - Improved song detection and fetching

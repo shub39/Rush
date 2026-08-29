@@ -60,7 +60,7 @@ actual object MediaListener {
     actual fun seek(timeStamp: Long) {
         coroutineScope.launch {
             try {
-                executeCommand("playerctl position ${(timeStamp/1000).toInt()}")
+                executeCommand("playerctl position ${timeStamp / 1000.0}")
                 songPositionFlow.emit(timeStamp)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -122,8 +122,8 @@ actual object MediaListener {
             val artist = cleanOutput(metadataArtist)?.substringAfter("xesam:artist ")?.trim() ?: ""
             songInfoFlow.emit(SongMeta(title = getMainTitle(title), artist = getMainArtist(artist)))
 
-            val positionLong = position?.trim()?.toFloatOrNull()?.toLong() ?: 0L
-            songPositionFlow.emit(positionLong * 1000)
+            val positionMs = position?.trim()?.toDoubleOrNull()?.let { (it * 1000).toLong() } ?: 0L
+            songPositionFlow.emit(positionMs)
         } catch (e: Exception) {
             RushLogger.e("MediaListener", "Error updating Media Info", e)
         }
