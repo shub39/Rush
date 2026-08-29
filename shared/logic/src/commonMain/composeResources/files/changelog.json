@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.6.1",
+    "changes": [
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "6.6.0",
     "changes": [
       "Updated Translations",
@@ -68,13 +74,6 @@
     "changes": [
       "Improved usability in Landscape and Desktop screen sizes",
       "Miscellaneous UI Fixes"
-    ]
-  },
-  {
-    "version": "6.3.2",
-    "changes": [
-      "Updated Translations",
-      "Fixed crashes while remaking Messy Card"
     ]
   }
 ]
