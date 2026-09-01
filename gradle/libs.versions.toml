@@ -6,6 +6,7 @@ compileSdk = "37"
 accompanist = "0.37.3"
 colorpicker = "1.2.0"
 compose-multiplatform = "1.12.0"
+compose-windowsizeclass = "1.9.0"
 material3 = "1.12.0-alpha03"
 filekit = "0.15.0"
 materialkolor = "5.0.1"
@@ -46,7 +47,7 @@ compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.re
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
 compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
-compose-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-multiplatform" }
+compose-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-windowsizeclass" }
 
 # Android
 junit = { module = "junit:junit", version.ref = "junit" }
