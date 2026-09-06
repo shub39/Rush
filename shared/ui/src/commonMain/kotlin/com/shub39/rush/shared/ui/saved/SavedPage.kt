@@ -49,6 +49,7 @@ import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,13 +87,8 @@ fun SavedPage(
     modifier: Modifier = Modifier,
 ) =
     PageFill(modifier = modifier) {
-        val listState = rememberLazyListState()
         val windowSizeClass = LocalWindowSizeClass.current
-        val showBottomBar by remember {
-            derivedStateOf {
-                listState.firstVisibleItemIndex == 0 || listState.lastScrolledBackward
-            }
-        }
+        var showBottomBar by remember { mutableStateOf(true) }
 
         Scaffold(
             modifier = Modifier.widthIn(max = 700.dp),
@@ -226,7 +222,6 @@ fun SavedPage(
                 if (state.songsAsc.isEmpty()) {
                     Empty()
                 } else {
-
                     AnimatedContent(targetState = state.sortOrder) { sortOrder ->
                         val songs =
                             when (sortOrder) {
@@ -234,6 +229,17 @@ fun SavedPage(
                                 TITLE_ASC -> state.songsAsc
                                 TITLE_DESC -> state.songsDesc
                             }
+                        val listState = rememberLazyListState()
+                        val showBottomBarListener by remember {
+                            derivedStateOf {
+                                listState.firstVisibleItemIndex == 0
+                                        || listState.lastScrolledBackward
+                            }
+                        }
+
+                        LaunchedEffect(showBottomBarListener) {
+                            showBottomBar = showBottomBarListener
+                        }
 
                         LazyColumn(
                             state = listState,
