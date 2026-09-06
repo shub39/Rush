@@ -54,6 +54,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,6 +88,11 @@ fun SavedPage(
     PageFill(modifier = modifier) {
         val listState = rememberLazyListState()
         val windowSizeClass = LocalWindowSizeClass.current
+        val showBottomBar by remember {
+            derivedStateOf {
+                listState.firstVisibleItemIndex == 0 || listState.lastScrolledBackward
+            }
+        }
 
         Scaffold(
             modifier = Modifier.widthIn(max = 700.dp),
@@ -207,36 +213,6 @@ fun SavedPage(
                     }
                 }
             },
-            bottomBar = {
-                val showBottomBar by remember {
-                    derivedStateOf {
-                        listState.firstVisibleItemIndex == 0 || listState.lastScrolledBackward
-                    }
-                }
-
-                AnimatedVisibility(
-                    visible = showBottomBar,
-                    modifier = Modifier.fillMaxWidth(),
-                    enter =
-                        slideInVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                            initialOffsetY = { it },
-                        ),
-                    exit =
-                        slideOutVertically(
-                            animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                            targetOffsetY = { it },
-                        ),
-                ) {
-                    SavedPageToolbar(
-                        notificationAccess = notificationAccess,
-                        onAction = onAction,
-                        state = state,
-                        onNavigateToLyrics = onNavigateToLyrics,
-                        modifier = Modifier.padding(horizontal = 16.dp).navigationBarsPadding(),
-                    )
-                }
-            },
         ) { paddingValues ->
             Column(
                 modifier =
@@ -282,6 +258,29 @@ fun SavedPage(
                     }
                 }
             }
+        }
+
+        AnimatedVisibility(
+            visible = showBottomBar,
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+            enter =
+                slideInVertically(
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                    initialOffsetY = { it },
+                ),
+            exit =
+                slideOutVertically(
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                    targetOffsetY = { it },
+                ),
+        ) {
+            SavedPageToolbar(
+                notificationAccess = notificationAccess,
+                onAction = onAction,
+                state = state,
+                onNavigateToLyrics = onNavigateToLyrics,
+                modifier = Modifier.navigationBarsPadding().padding(horizontal = 16.dp),
+            )
         }
     }
 
