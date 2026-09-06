@@ -1,5 +1,11 @@
 [
   {
+    "version": "6.7.0",
+    "changes": [
+      "Revamped save page toolbar"
+    ]
+  },
+  {
     "version": "6.6.1",
     "changes": [
       "Updated Translations"
@@ -66,13 +72,6 @@
     "changes": [
       "Added option to hide controls in Lyrics page after 5 seconds",
       "Enable it from Lyrics Customizations",
-      "Miscellaneous UI Fixes"
-    ]
-  },
-  {
-    "version": "6.3.3",
-    "changes": [
-      "Improved usability in Landscape and Desktop screen sizes",
       "Miscellaneous UI Fixes"
     ]
   }

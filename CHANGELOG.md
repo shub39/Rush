@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.7.0
+- Revamped save page toolbar
+
 ## 6.6.1
 - Updated Translations
 
