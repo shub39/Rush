@@ -27,23 +27,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
@@ -55,17 +49,14 @@ import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -73,11 +64,10 @@ import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.isExpanded
-import com.shub39.rush.shared.ui.saved.component.SavedPageActions
+import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
 import com.shub39.rush.shared.ui.saved.component.SongCard
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
@@ -96,7 +86,13 @@ fun SavedPage(
     modifier: Modifier = Modifier,
 ) =
     PageFill(modifier = modifier) {
+        val listState = rememberLazyListState()
         val windowSizeClass = LocalWindowSizeClass.current
+        val showBottomBar by remember {
+            derivedStateOf {
+                listState.firstVisibleItemIndex == 0 || listState.lastScrolledBackward
+            }
+        }
 
         Scaffold(
             modifier = Modifier.widthIn(max = 700.dp),
@@ -217,71 +213,6 @@ fun SavedPage(
                     }
                 }
             },
-            bottomBar = {
-                AnimatedVisibility(
-                    visible = state.currentSong != null && !windowSizeClass.isExpanded(),
-                    enter = slideInVertically { it / 2 },
-                    exit = slideOutVertically { it / 2 },
-                ) {
-                    if (state.currentSong != null) {
-                        val insets = WindowInsets.systemBars.asPaddingValues()
-
-                        Card(
-                            onClick = { onNavigateToLyrics() },
-                            shape = CircleShape,
-                            modifier =
-                                Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = insets.calculateBottomPadding() + 8.dp,
-                                ),
-                            colors =
-                                CardDefaults.cardColors(
-                                    contentColor = Color(state.extractedColors.cardContentMuted),
-                                    containerColor =
-                                        Color(state.extractedColors.cardBackgroundMuted),
-                                ),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier.padding(8.dp).fillMaxWidth(),
-                            ) {
-                                ArtFromUrl(
-                                    imageUrl = state.currentSong.artUrl,
-                                    modifier = Modifier.size(60.dp).clip(CircleShape),
-                                )
-
-                                Column {
-                                    Text(
-                                        text = state.currentSong.title,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-
-                                    Text(
-                                        text = state.currentSong.artists,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            floatingActionButton = {
-                SavedPageActions(
-                    state = state,
-                    notificationAccess = notificationAccess,
-                    onAction = onAction,
-                    onNavigateToLyrics = onNavigateToLyrics,
-                    modifier = Modifier.padding(end = 8.dp),
-                )
-            },
         ) { paddingValues ->
             Column(
                 modifier =
@@ -304,7 +235,6 @@ fun SavedPage(
                                 TITLE_DESC -> state.songsDesc
                             }
 
-                        val listState = rememberLazyListState()
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize().animateContentSize(),
@@ -328,6 +258,29 @@ fun SavedPage(
                     }
                 }
             }
+        }
+
+        AnimatedVisibility(
+            visible = showBottomBar,
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+            enter =
+                slideInVertically(
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                    initialOffsetY = { it },
+                ),
+            exit =
+                slideOutVertically(
+                    animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
+                    targetOffsetY = { it },
+                ),
+        ) {
+            SavedPageToolbar(
+                notificationAccess = notificationAccess,
+                onAction = onAction,
+                state = state,
+                onNavigateToLyrics = onNavigateToLyrics,
+                modifier = Modifier.navigationBarsPadding().padding(horizontal = 16.dp),
+            )
         }
     }
 
