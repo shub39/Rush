@@ -32,6 +32,7 @@ import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.shared.ui.lyrics.section.LyricsPage
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
+import com.shub39.rush.shared.ui.removeLastScreen
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -103,7 +104,7 @@ fun LyricsGraphContent(
                 ) {
                     LyricsCustomisationsPage(
                         state = lyricsState,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = { backStack.removeLastScreen() },
                         onAction = lyricsAction,
                         notificationAccess = notificationAccess,
                         microphonePermission = micPermission,

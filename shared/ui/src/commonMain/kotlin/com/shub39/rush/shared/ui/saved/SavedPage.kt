@@ -232,8 +232,8 @@ fun SavedPage(
                         val listState = rememberLazyListState()
                         val showBottomBarListener by remember {
                             derivedStateOf {
-                                listState.firstVisibleItemIndex == 0
-                                        || listState.lastScrolledBackward
+                                listState.firstVisibleItemIndex == 0 ||
+                                    listState.lastScrolledBackward
                             }
                         }
 

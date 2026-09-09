@@ -37,6 +37,7 @@ import com.shub39.rush.shared.ui.lyrics.LyricsGraph
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
 import com.shub39.rush.shared.ui.navigation.verticalTransitionMetadata
 import com.shub39.rush.shared.ui.onboarding.Onboarding
+import com.shub39.rush.shared.ui.removeLastScreen
 import com.shub39.rush.shared.ui.saved.SavedPage
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
 import com.shub39.rush.shared.ui.searchsheet.SearchSheetAction
@@ -63,9 +64,7 @@ fun App() {
     LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess) }
 
     LaunchedEffect(globalState.onBoardingDone) {
-        if (!globalState.onBoardingDone) {
-            backStack.add(Routes.OnboardingPage)
-        }
+        if (!globalState.onBoardingDone) backStack.add(Routes.OnboardingPage)
     }
 
     CompositionLocalProvider(LocalCoilImageLoader provides koinInject<ImageLoader>()) {
@@ -116,9 +115,7 @@ fun App() {
                             val shareState by shareVM.state.collectAsStateWithLifecycle()
 
                             SharePage(
-                                onDismiss = {
-                                    if (backStack.size != 1) backStack.removeLastOrNull()
-                                },
+                                onDismiss = { backStack.removeLastScreen() },
                                 state = shareState,
                                 onAction = shareVM::onAction,
                             )
@@ -132,9 +129,7 @@ fun App() {
                                 notificationAccess = globalState.notificationAccess,
                                 state = settingsState,
                                 action = settingsVM::onAction,
-                                onNavigateBack = {
-                                    if (backStack.size != 1) backStack.removeLastOrNull()
-                                },
+                                onNavigateBack = { backStack.removeLastScreen() },
                                 onShowPaywall = { backStack.add(Routes.PaywallPage) },
                                 onUpdateNotificationAccess = {
                                     globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
@@ -146,7 +141,7 @@ fun App() {
                             Onboarding(
                                 onDone = {
                                     globalVM.onAction(GlobalAction.OnUpdateOnboardingDone(true))
-                                    if (backStack.size != 1) backStack.removeLastOrNull()
+                                    backStack.removeLastScreen()
                                 },
                                 notificationAccess = globalState.notificationAccess,
                                 onUpdateNotificationAccess = {
@@ -158,9 +153,7 @@ fun App() {
                         entry<Routes.PaywallPage>(metadata = verticalTransitionMetadata()) {
                             PaywallPage(
                                 isProUser = globalState.isProUser,
-                                onDismissRequest = {
-                                    if (backStack.size != 1) backStack.removeLastOrNull()
-                                },
+                                onDismissRequest = { backStack.removeLastScreen() },
                             )
                         }
                     },

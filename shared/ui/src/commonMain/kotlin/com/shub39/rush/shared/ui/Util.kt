@@ -34,6 +34,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 
 expect fun hypnoticAvailable(): Boolean
 
@@ -167,4 +169,8 @@ fun TextStyle.fromPx(
         lineHeight = pxToSp(lineHeight),
         fontWeight = fontWeight,
     )
+}
+
+fun NavBackStack<NavKey>.removeLastScreen() {
+    if (size != 1) removeLastOrNull()
 }

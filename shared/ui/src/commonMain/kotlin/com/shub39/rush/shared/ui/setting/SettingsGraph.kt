@@ -27,6 +27,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
+import com.shub39.rush.shared.ui.removeLastScreen
 import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
@@ -97,7 +98,7 @@ fun SettingsGraph(
                     BackupPage(
                         state = state,
                         onAction = action,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = { backStack.removeLastScreen() },
                     )
                 }
 
@@ -105,21 +106,21 @@ fun SettingsGraph(
                     LookAndFeelPage(
                         state = state,
                         onAction = action,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = { backStack.removeLastScreen() },
                     )
                 }
 
                 entry<Routes.Changelog>(metadata = horizontalTransitionMetadata()) {
                     Changelog(
                         changelog = state.changelog,
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = { backStack.removeLastScreen() },
                     )
                 }
 
                 entry<Routes.About>(metadata = horizontalTransitionMetadata()) {
                     About(
                         versionName = state.changelog.firstOrNull()?.version ?: "1.0.00",
-                        onNavigateBack = { if (backStack.size != 1) backStack.removeLastOrNull() },
+                        onNavigateBack = { backStack.removeLastScreen() },
                     )
                 }
             },
