@@ -32,7 +32,7 @@ import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.shared.ui.lyrics.section.LyricsPage
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
-import com.shub39.rush.shared.ui.removeLastScreen
+import com.shub39.rush.shared.ui.navigation.removeLastScreen
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic

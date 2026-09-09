@@ -64,8 +64,8 @@ import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
-import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.share.component.SharePageSheet
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt

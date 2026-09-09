@@ -83,6 +83,7 @@ import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
 import com.shub39.rush.shared.ui.audioDependentBackgrounds
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
@@ -91,7 +92,6 @@ import com.shub39.rush.shared.ui.conditional
 import com.shub39.rush.shared.ui.fadeBottomToTop
 import com.shub39.rush.shared.ui.fadeTopToBottom
 import com.shub39.rush.shared.ui.glowBackground
-import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
@@ -260,7 +260,7 @@ fun LyricsPage(
                                 )
 
                                 Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                    if (!windowSizeClass.isExpanded()) {
+                                    if (windowSizeClass.isCompact()) {
                                         // portrait ui
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),

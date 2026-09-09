@@ -41,7 +41,7 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
-import com.shub39.rush.shared.ui.isExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.done

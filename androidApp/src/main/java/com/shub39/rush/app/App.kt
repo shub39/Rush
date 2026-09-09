@@ -35,9 +35,9 @@ import com.shub39.rush.shared.ui.app.Routes
 import com.shub39.rush.shared.ui.component.ChangelogSheet
 import com.shub39.rush.shared.ui.lyrics.LyricsGraph
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
+import com.shub39.rush.shared.ui.navigation.removeLastScreen
 import com.shub39.rush.shared.ui.navigation.verticalTransitionMetadata
 import com.shub39.rush.shared.ui.onboarding.Onboarding
-import com.shub39.rush.shared.ui.removeLastScreen
 import com.shub39.rush.shared.ui.saved.SavedPage
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
 import com.shub39.rush.shared.ui.searchsheet.SearchSheetAction

@@ -27,7 +27,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.navigation.horizontalTransitionMetadata
-import com.shub39.rush.shared.ui.removeLastScreen
+import com.shub39.rush.shared.ui.navigation.removeLastScreen
 import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog

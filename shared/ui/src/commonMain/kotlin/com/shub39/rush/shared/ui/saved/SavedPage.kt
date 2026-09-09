@@ -65,9 +65,9 @@ import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
 import com.shub39.rush.shared.ui.saved.component.SongCard
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
