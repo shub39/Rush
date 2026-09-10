@@ -26,7 +26,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.skie)
+//    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -44,13 +44,13 @@ kotlin {
         androidResources { enable = true }
     }
 
-    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "SharedLogic"
-            isStatic = true
-            export(projects.shared.core)
-        }
-    }
+//    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+//        iosTarget.binaries.framework {
+//            baseName = "SharedLogic"
+//            isStatic = true
+//            export(projects.shared.core)
+//        }
+//    }
 
     jvm()
 
@@ -77,10 +77,10 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.ksoup)
         }
-        appleMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-            implementation(libs.androidx.sqlite.bundled)
-        }
+//        appleMain.dependencies {
+//            implementation(libs.ktor.client.darwin)
+//            implementation(libs.androidx.sqlite.bundled)
+//        }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(projects.androidLibs.romanization)
@@ -118,8 +118,8 @@ room3 { schemaDirectory("$projectDir/schemas") }
 dependencies {
     add("kspJvm", libs.androidx.room.compiler)
     add("kspAndroid", libs.androidx.room.compiler)
-    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-    add("kspIosArm64", libs.androidx.room.compiler)
+//    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+//    add("kspIosArm64", libs.androidx.room.compiler)
 }
 
 tasks.register("generateChangelog") {

@@ -8,22 +8,22 @@ colorpicker = "1.2.0"
 compose-multiplatform = "1.12.0"
 compose-windowsizeclass = "1.9.0"
 material3 = "1.12.0-alpha03"
-filekit = "0.15.0"
+filekit = "0.16.0"
 materialkolor = "5.0.1"
 splashscreen = "1.2.0"
 androidx-test-runner = "1.7.0"
 datastore = "1.2.1"
 koin = "4.2.2"
-koin-plugin = "1.1.0"
+koin-plugin = "1.2.0"
 ksoup = "0.2.6"
 ktor = "3.5.2"
 kotlin = "2.4.10"
 ksp = "2.3.10"
-landscapist = "2.11.0"
+landscapist = "2.13.0"
 activity-compose = "1.13.0"
 navigation = "1.1.1"
 kmpalette = "3.1.0"
-room3 = "3.0.2"
+room3 = "3.0.3"
 serialization = "1.11.0"
 androidx-lifecycle = "2.11.0"
 zoomable = "2.13.0"
@@ -34,9 +34,9 @@ junit-version = "1.3.0"
 spotless = "8.10.2"
 ktfmt = "0.61"
 build-config = "6.0.10"
-sqlite = "2.7.0"
+sqlite = "2.7.1"
 nucleus = "1.15.7"
-skie = "0.10.14"
+#skie = "0.10.14"
 
 [libraries]
 # CMP
@@ -112,7 +112,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "build-config" }
 nucleus = { id = "io.github.kdroidfilter.nucleus", version.ref = "nucleus" }
-skie = { id = "co.touchlab.skie", version.ref = "skie" }
+#skie = { id = "co.touchlab.skie", version.ref = "skie" }
 
 [bundles]
 ktor = [
