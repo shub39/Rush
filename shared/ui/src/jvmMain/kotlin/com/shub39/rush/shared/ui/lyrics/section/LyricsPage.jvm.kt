@@ -31,6 +31,7 @@ actual fun LyricsPage(
     state: LyricsPageState,
     playbackInfo: PlaybackInfo,
     notificationAccess: Boolean,
+    isCustomisationsOpened: Boolean,
 ) {
     LyricsPageContent(
         modifier = modifier,
@@ -41,5 +42,6 @@ actual fun LyricsPage(
         playbackInfo = playbackInfo,
         waveData = null,
         notificationAccess = notificationAccess,
+        isCustomisationsOpened = isCustomisationsOpened,
     )
 }

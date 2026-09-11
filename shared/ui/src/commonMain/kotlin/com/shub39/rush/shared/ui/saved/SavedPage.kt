@@ -186,14 +186,16 @@ fun SavedPage(
                                 title = null,
                                 options = SortOrder.entries.toList(),
                                 selected = state.sortOrder,
-                                onSelectedChange = { onAction(SavedPageAction.UpdateSortOrder(it)) },
+                                onSelectedChange = {
+                                    onAction(SavedPageAction.UpdateSortOrder(it))
+                                },
                                 labelProvider = {
                                     Text(
                                         text = stringResource(it.toStringRes()),
                                         modifier = Modifier.basicMarquee(),
                                         maxLines = 1,
                                     )
-                                }
+                                },
                             )
                         }
                     }

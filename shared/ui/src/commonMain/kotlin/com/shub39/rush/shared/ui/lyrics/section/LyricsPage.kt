@@ -127,6 +127,7 @@ expect fun LyricsPage(
     state: LyricsPageState,
     playbackInfo: PlaybackInfo,
     notificationAccess: Boolean,
+    isCustomisationsOpened: Boolean,
 )
 
 @Composable
@@ -139,6 +140,7 @@ fun LyricsPageContent(
     playbackInfo: PlaybackInfo,
     waveData: List<Byte>?,
     notificationAccess: Boolean,
+    isCustomisationsOpened: Boolean,
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
@@ -357,6 +359,8 @@ fun LyricsPageContent(
                                                         cardContent = cardContent,
                                                         onShare = onShare,
                                                         onEdit = onNavigateToCustomisations,
+                                                        isCustomisationsOpened =
+                                                            isCustomisationsOpened,
                                                     )
                                                 }
                                             }
@@ -411,6 +415,7 @@ fun LyricsPageContent(
                                                     cardContent = cardContent,
                                                     onShare = onShare,
                                                     onEdit = onNavigateToCustomisations,
+                                                    isCustomisationsOpened = isCustomisationsOpened,
                                                 )
                                             }
 
@@ -750,5 +755,6 @@ private fun LyricsPagePreview() {
             ),
         notificationAccess = true,
         playbackInfo = PlaybackInfo(),
+        isCustomisationsOpened = false,
     )
 }

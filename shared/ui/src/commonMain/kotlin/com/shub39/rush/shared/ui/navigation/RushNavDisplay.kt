@@ -138,6 +138,10 @@ fun RushNavDisplay(
                                 state = state,
                                 playbackInfo = playbackInfo,
                                 notificationAccess = globalState.notificationAccess,
+                                isCustomisationsOpened =
+                                    topLevelBackStack.isRouteOnTop(
+                                        Routes.Lyrics.LyricsCustomisations
+                                    ),
                             )
                         }
 

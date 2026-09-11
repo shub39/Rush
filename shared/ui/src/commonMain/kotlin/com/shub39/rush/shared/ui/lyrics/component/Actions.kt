@@ -56,11 +56,12 @@ fun Actions(
     cardContent: Color,
     onShare: () -> Unit,
     onEdit: () -> Unit,
+    isCustomisationsOpened: Boolean,
 ) {
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
-    IconButton(onClick = onEdit) {
+    IconButton(onClick = onEdit, enabled = !isCustomisationsOpened) {
         Icon(painter = painterResource(Res.drawable.palette), contentDescription = "Open Palette")
     }
 
