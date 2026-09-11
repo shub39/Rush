@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui
+package com.shub39.rush.shared.ui.saved
 
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.window.core.layout.WindowSizeClass
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.Modifier
 
-/** CompositionLocal for window size class to make adaptive screens */
-val LocalWindowSizeClass: ProvidableCompositionLocal<WindowSizeClass> = staticCompositionLocalOf {
-    error("No window size class provided")
+actual fun Modifier.platformNavigationBarsPadding(): Modifier {
+    return navigationBarsPadding()
 }

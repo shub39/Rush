@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.shared.ui.lyrics.section
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.shub39.rush.shared.ui.component.FossPaywall
-import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.navigation.RushNavDisplay
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
+import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 
 @Composable
-fun App() {
-    RushNavDisplay(
-        paywall = { _, _ ->
-            PageFill(Modifier.background(MaterialTheme.colors.surface)) {
-                FossPaywall(Modifier.widthIn(max = 600.dp))
-            }
-        }
+actual fun LyricsPage(
+    modifier: Modifier,
+    onNavigateToCustomisations: () -> Unit,
+    onShare: () -> Unit,
+    action: (LyricsPageAction) -> Unit,
+    state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
+    notificationAccess: Boolean,
+) {
+    LyricsPageContent(
+        modifier = modifier,
+        onNavigateToCustomisations = onNavigateToCustomisations,
+        onShare = onShare,
+        action = action,
+        state = state,
+        playbackInfo = playbackInfo,
+        waveData = null,
+        notificationAccess = notificationAccess,
     )
 }

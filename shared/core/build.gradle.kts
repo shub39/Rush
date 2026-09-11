@@ -35,12 +35,12 @@ kotlin {
 
     jvm()
 
-    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "SharedCore"
-            isStatic = true
-        }
-    }
+    //    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+    //        iosTarget.binaries.framework {
+    //            baseName = "SharedCore"
+    //            isStatic = true
+    //        }
+    //    }
 
     sourceSets {
         commonTest.dependencies { implementation(kotlin("test")) }

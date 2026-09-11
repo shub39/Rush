@@ -61,98 +61,90 @@ fun ChangelogSheet(
     showSupportButton: Boolean,
     onNavigateToPaywall: () -> Unit,
 ) {
-    RushBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier, padding = 0.dp) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+    Column(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier =
+                Modifier.size(48.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialShapes.Pill.toShape(),
+                    ),
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier =
-                    Modifier.size(48.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = MaterialShapes.Pill.toShape(),
-                        ),
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.settings),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            Icon(
+                painter = painterResource(Res.drawable.settings),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        }
+
+        Column {
+            Text(
+                text = stringResource(Res.string.whats_changed),
+                style = MaterialTheme.typography.headlineSmall.copy(fontFamily = flexFontEmphasis()),
+            )
+            Text(
+                text = currentLog.version,
+                style = MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontRounded()),
+            )
+        }
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            contentPadding = PaddingValues(vertical = 16.dp),
+        ) {
+            itemsIndexed(items = currentLog.changes, key = { index, _ -> index }) { index, change ->
+                val shape =
+                    when {
+                        currentLog.changes.size == 1 -> detachedItemShape()
+                        index == 0 -> leadingItemShape()
+                        index == currentLog.changes.size - 1 -> endItemShape()
+                        else -> middleItemShape()
+                    }
+
+                ListItem(
+                    colors = listItemColors(),
+                    modifier = Modifier.clip(shape),
+                    headlineContent = { Text(text = change) },
                 )
             }
+        }
 
-            Column {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            FilledTonalButton(
+                onClick = onDismissRequest,
+                shape = if (showSupportButton) leadingItemShape() else detachedItemShape(),
+                modifier = Modifier.height(ButtonDefaults.MediumContainerHeight).fillMaxWidth(),
+            ) {
                 Text(
-                    text = stringResource(Res.string.whats_changed),
-                    style =
-                        MaterialTheme.typography.headlineSmall.copy(fontFamily = flexFontEmphasis()),
-                )
-                Text(
-                    text = currentLog.version,
-                    style =
-                        MaterialTheme.typography.titleMedium.copy(fontFamily = flexFontRounded()),
+                    text = stringResource(Res.string.done),
+                    style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
                 )
             }
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                contentPadding = PaddingValues(vertical = 16.dp),
-            ) {
-                itemsIndexed(items = currentLog.changes, key = { index, _ -> index }) {
-                    index,
-                    change ->
-                    val shape =
-                        when {
-                            currentLog.changes.size == 1 -> detachedItemShape()
-                            index == 0 -> leadingItemShape()
-                            index == currentLog.changes.size - 1 -> endItemShape()
-                            else -> middleItemShape()
-                        }
-
-                    ListItem(
-                        colors = listItemColors(),
-                        modifier = Modifier.clip(shape),
-                        headlineContent = { Text(text = change) },
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
+            if (showSupportButton) {
                 FilledTonalButton(
-                    onClick = onDismissRequest,
-                    shape = if (showSupportButton) leadingItemShape() else detachedItemShape(),
+                    onClick = {
+                        onDismissRequest()
+                        onNavigateToPaywall()
+                    },
+                    shape = endItemShape(),
                     modifier = Modifier.height(ButtonDefaults.MediumContainerHeight).fillMaxWidth(),
                 ) {
                     Text(
-                        text = stringResource(Res.string.done),
+                        text = "Support Rush",
                         style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
                     )
                 }
-
-                if (showSupportButton) {
-                    FilledTonalButton(
-                        onClick = {
-                            onDismissRequest()
-                            onNavigateToPaywall()
-                        },
-                        shape = endItemShape(),
-                        modifier =
-                            Modifier.height(ButtonDefaults.MediumContainerHeight).fillMaxWidth(),
-                    ) {
-                        Text(
-                            text = "Support Rush",
-                            style =
-                                ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
-                        )
-                    }
-                }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

@@ -58,6 +58,7 @@ fun SavedPageToolbar(
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
+    onOpenSearchSheet: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -125,10 +126,7 @@ fun SavedPageToolbar(
             }
         }
 
-        FloatingActionButton(
-            shape = CircleShape,
-            onClick = { onAction(SavedPageAction.OnToggleSearchSheet) },
-        ) {
+        FloatingActionButton(shape = CircleShape, onClick = onOpenSearchSheet) {
             Icon(painter = painterResource(Res.drawable.search), contentDescription = "Search")
         }
     }
@@ -138,6 +136,7 @@ fun SavedPageToolbar(
 @Composable
 private fun Preview() {
     SavedPageToolbar(
+        onOpenSearchSheet = {},
         state =
             SavedPageState(
                 extractedColors = ExtractedColors(cardContentMuted = Color.White.toArgb()),

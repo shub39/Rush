@@ -26,6 +26,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -81,9 +82,7 @@ import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
-import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
 import com.shub39.rush.shared.ui.audioDependentBackgrounds
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
@@ -120,7 +119,18 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
-fun LyricsPage(
+expect fun LyricsPage(
+    modifier: Modifier = Modifier,
+    onNavigateToCustomisations: () -> Unit,
+    onShare: () -> Unit,
+    action: (LyricsPageAction) -> Unit,
+    state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
+    notificationAccess: Boolean,
+)
+
+@Composable
+fun LyricsPageContent(
     modifier: Modifier = Modifier,
     onNavigateToCustomisations: () -> Unit,
     onShare: () -> Unit,
@@ -132,7 +142,6 @@ fun LyricsPage(
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
-        val windowSizeClass = LocalWindowSizeClass.current
 
         val (cardBackground, cardContent) = getCardColors(state)
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -190,7 +199,7 @@ fun LyricsPage(
         }
 
         // Content Start
-        Box(
+        BoxWithConstraints(
             modifier =
                 Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
                     awaitPointerEventScope {
@@ -260,7 +269,7 @@ fun LyricsPage(
                                 )
 
                                 Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                    if (windowSizeClass.isCompact()) {
+                                    if (this@BoxWithConstraints.maxWidth < 640.dp) {
                                         // portrait ui
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -739,7 +748,6 @@ private fun LyricsPagePreview() {
                         )
                     ),
             ),
-        waveData = null,
         notificationAccess = true,
         playbackInfo = PlaybackInfo(),
     )

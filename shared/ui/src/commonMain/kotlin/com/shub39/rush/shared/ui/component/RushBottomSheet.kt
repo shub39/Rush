@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetState
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 fun RushBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    properties: ModalBottomSheetProperties = ModalBottomSheetProperties(),
     sheetState: SheetState =
         rememberBottomSheetState(
             initialValue = SheetValue.Hidden,
@@ -48,6 +50,7 @@ fun RushBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetMaxWidth = 500.dp,
         modifier = modifier,
+        properties = properties,
         sheetState = sheetState,
     ) {
         Column(

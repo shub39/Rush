@@ -14,26 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.app
+package com.shub39.rush.shared.ui.lyrics.section
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.shub39.rush.shared.ui.component.FossPaywall
-import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.navigation.RushNavDisplay
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 
 @Composable
-fun App() {
-    RushNavDisplay(
-        paywall = { _, _ ->
-            PageFill(Modifier.background(MaterialTheme.colors.surface)) {
-                FossPaywall(Modifier.widthIn(max = 600.dp))
-            }
-        }
+actual fun LyricsCustomisationsPage(
+    onNavigateBack: () -> Unit,
+    state: LyricsPageState,
+    onAction: (LyricsPageAction) -> Unit,
+    notificationAccess: Boolean,
+    modifier: Modifier,
+) {
+    LyricsCustomisationsPageContent(
+        onNavigateBack = onNavigateBack,
+        state = state,
+        onAction = onAction,
+        notificationAccess = notificationAccess,
+        microphonePermission = false,
+        requestMicrophonePermission = {},
+        waveData = null,
+        modifier = modifier,
     )
 }

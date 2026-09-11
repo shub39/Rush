@@ -16,9 +16,7 @@
  */
 package com.shub39.rush.shared.ui
 
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 
 enum class WindowSize {
     COMPACT,
@@ -27,18 +25,12 @@ enum class WindowSize {
 
     companion object {
         fun WindowSizeClass.getWindowSize(): WindowSize {
-            return if (
-                widthSizeClass == WindowWidthSizeClass.Compact ||
-                    heightSizeClass == WindowHeightSizeClass.Compact
-            ) {
-                COMPACT
-            } else if (
-                widthSizeClass == WindowWidthSizeClass.Medium ||
-                    heightSizeClass == WindowHeightSizeClass.Medium
-            ) {
+            return if (isAtLeastBreakpoint(840, 900)) {
+                EXPANDED
+            } else if (isAtLeastBreakpoint(600, 480)) {
                 MEDIUM
             } else {
-                EXPANDED
+                COMPACT
             }
         }
 

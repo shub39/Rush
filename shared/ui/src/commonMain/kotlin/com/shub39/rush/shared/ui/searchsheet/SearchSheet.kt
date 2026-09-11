@@ -29,8 +29,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,9 +41,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,7 +61,6 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.component.RushBottomSheet
 import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.errorStringRes
@@ -88,126 +82,132 @@ fun SearchSheet(
     onAction: (SearchSheetAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    RushBottomSheet(
-        modifier = modifier.imePadding(),
-        padding = 0.dp,
-        onDismissRequest = onDismissRequest,
-        sheetState =
-            rememberBottomSheetState(
-                initialValue = SheetValue.Hidden,
-                enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-            ),
+    LaunchedEffect(Unit) {
+        delay(400.milliseconds)
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
     ) {
-        SearchSheetBackHandler {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
-
-        LaunchedEffect(Unit) {
-            delay(400.milliseconds)
-            focusRequester.requestFocus()
-            keyboardController?.show()
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-        ) {
-            OutlinedTextField(
-                value = state.searchQuery,
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(Res.drawable.search),
-                        contentDescription = "Search",
-                        modifier = Modifier.padding(2.dp),
-                    )
-                },
-                trailingIcon = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(2.dp),
+        OutlinedTextField(
+            value = state.searchQuery,
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.search),
+                    contentDescription = "Search",
+                    modifier = Modifier.padding(2.dp),
+                )
+            },
+            trailingIcon = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(2.dp),
+                ) {
+                    AnimatedVisibility(
+                        visible = state.searchQuery.isNotBlank(),
+                        enter = fadeIn(animationSpec = tween(200)),
+                        exit = fadeOut(animationSpec = tween(200)),
                     ) {
-                        AnimatedVisibility(
-                            visible = state.searchQuery.isNotBlank(),
-                            enter = fadeIn(animationSpec = tween(200)),
-                            exit = fadeOut(animationSpec = tween(200)),
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    onAction(SearchSheetAction.OnQueryChange(""))
-                                    coroutineScope.launch {
-                                        focusRequester.requestFocus()
-                                        keyboardController?.show()
-                                    }
+                        IconButton(
+                            onClick = {
+                                onAction(SearchSheetAction.OnQueryChange(""))
+                                coroutineScope.launch {
+                                    focusRequester.requestFocus()
+                                    keyboardController?.show()
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.delete),
-                                    contentDescription = "Delete",
-                                )
                             }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.delete),
+                                contentDescription = "Delete",
+                            )
                         }
                     }
-                },
-                onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
-                shape = MaterialTheme.shapes.extraLarge,
-                placeholder = { Text(stringResource(Res.string.search)) },
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                        .focusRequester(focusRequester),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-            )
-
-            LazyColumn(
-                modifier =
-                    Modifier.padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .heightIn(max = 700.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
-            ) {
-                state.error?.let { error ->
-                    item {
-                        ErrorCard(
-                            error = error,
-                            debugMessage = null,
-                            colors =
-                                Pair(
-                                    MaterialTheme.colorScheme.onSurface,
-                                    MaterialTheme.colorScheme.background,
-                                ),
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-                    }
                 }
+            },
+            onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
+            shape = MaterialTheme.shapes.extraLarge,
+            placeholder = { Text(stringResource(Res.string.search)) },
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .focusRequester(focusRequester),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
+        )
 
-                itemsIndexed(
-                    items = state.localSearchResults,
-                    key = { _, it -> "Saved_${it.id}" },
-                ) { index, it ->
+        LazyColumn(
+            modifier =
+                Modifier.padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+        ) {
+            state.error?.let { error ->
+                item {
+                    ErrorCard(
+                        error = error,
+                        debugMessage = null,
+                        colors =
+                            Pair(
+                                MaterialTheme.colorScheme.onSurface,
+                                MaterialTheme.colorScheme.background,
+                            ),
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
+
+            itemsIndexed(items = state.localSearchResults, key = { _, it -> "Saved_${it.id}" }) {
+                index,
+                it ->
+                val shape =
+                    when {
+                        state.localSearchResults.size == 1 -> detachedItemShape()
+                        index == 0 -> leadingItemShape()
+                        index == state.localSearchResults.lastIndex -> endItemShape()
+                        else -> middleItemShape()
+                    }
+
+                SearchResultCard(
+                    result = it,
+                    downloaded = true,
+                    modifier =
+                        Modifier.clip(shape).clickable {
+                            onAction(SearchSheetAction.OnCardClicked(it.id))
+                            onNavigateToLyrics()
+                        },
+                )
+            }
+
+            if (state.localSearchResults.isNotEmpty()) {
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+            }
+
+            if (!state.isSearching) {
+                itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index, it ->
                     val shape =
                         when {
-                            state.localSearchResults.size == 1 -> detachedItemShape()
+                            state.searchResults.size == 1 -> detachedItemShape()
                             index == 0 -> leadingItemShape()
-                            index == state.localSearchResults.lastIndex -> endItemShape()
+                            index == state.searchResults.lastIndex -> endItemShape()
                             else -> middleItemShape()
                         }
 
                     SearchResultCard(
                         result = it,
-                        downloaded = true,
                         modifier =
                             Modifier.clip(shape).clickable {
                                 onAction(SearchSheetAction.OnCardClicked(it.id))
@@ -215,36 +215,11 @@ fun SearchSheet(
                             },
                     )
                 }
-
-                if (state.localSearchResults.isNotEmpty()) {
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
-                }
-
-                if (!state.isSearching) {
-                    itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index, it
-                        ->
-                        val shape =
-                            when {
-                                state.searchResults.size == 1 -> detachedItemShape()
-                                index == 0 -> leadingItemShape()
-                                index == state.searchResults.lastIndex -> endItemShape()
-                                else -> middleItemShape()
-                            }
-
-                        SearchResultCard(
-                            result = it,
-                            modifier =
-                                Modifier.clip(shape).clickable {
-                                    onAction(SearchSheetAction.OnCardClicked(it.id))
-                                    onNavigateToLyrics()
-                                },
-                        )
-                    }
-                } else {
-                    item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
-                }
+            } else {
+                item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
             }
         }
+        //        }
     }
 }
 
@@ -258,5 +233,5 @@ private fun Preview() {
         )
     }
 
-    SearchSheet(state = state, onAction = {}, onNavigateToLyrics = {}, onDismissRequest = {})
+    SearchSheet(state = state, onAction = {}, onNavigateToLyrics = {})
 }

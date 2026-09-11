@@ -20,14 +20,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.ComposeRuntimeFlags
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import coil3.ImageLoader
 import com.shub39.rush.app.App
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.skydoves.landscapist.coil3.LocalCoilImageLoader
+import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalComposeApi::class)
@@ -40,9 +43,15 @@ class MainActivity : ComponentActivity() {
         ComposeRuntimeFlags.isLinkBufferComposerEnabled = true
 
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(this)
+            val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+            val imageLoader = koinInject<ImageLoader>()
 
-            CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) { App() }
+            CompositionLocalProvider(
+                LocalWindowSizeClass provides windowSizeClass,
+                LocalCoilImageLoader provides imageLoader,
+            ) {
+                App()
+            }
         }
     }
 

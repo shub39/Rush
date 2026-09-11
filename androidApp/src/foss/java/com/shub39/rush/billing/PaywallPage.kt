@@ -16,11 +16,18 @@
  */
 package com.shub39.rush.billing
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.component.FossPaywall
+import com.shub39.rush.shared.ui.component.PageFill
 
 @Composable
 fun PaywallPage(isProUser: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
-    FossPaywall(modifier)
+    PageFill(modifier.background(MaterialTheme.colorScheme.surface)) {
+        FossPaywall(Modifier.widthIn(max = 600.dp))
+    }
 }

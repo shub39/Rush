@@ -30,9 +30,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -79,19 +77,19 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 fun SavedPage(
+    modifier: Modifier = Modifier,
     state: SavedPageState,
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    modifier: Modifier = Modifier,
+    onOpenSearchSheet: () -> Unit = {},
 ) =
     PageFill(modifier = modifier) {
         val windowSizeClass = LocalWindowSizeClass.current
         var showBottomBar by remember { mutableStateOf(true) }
 
         Scaffold(
-            modifier = Modifier.widthIn(max = 700.dp),
             topBar = {
                 Column {
                     if (!windowSizeClass.isExpanded()) {
@@ -208,7 +206,7 @@ fun SavedPage(
                         }
                     }
                 }
-            },
+            }
         ) { paddingValues ->
             Column(
                 modifier =
@@ -281,14 +279,17 @@ fun SavedPage(
                 ),
         ) {
             SavedPageToolbar(
+                onOpenSearchSheet = onOpenSearchSheet,
                 notificationAccess = notificationAccess,
                 onAction = onAction,
                 state = state,
                 onNavigateToLyrics = onNavigateToLyrics,
-                modifier = Modifier.navigationBarsPadding().padding(horizontal = 16.dp),
+                modifier = Modifier.platformNavigationBarsPadding().padding(horizontal = 16.dp),
             )
         }
     }
+
+expect fun Modifier.platformNavigationBarsPadding(): Modifier
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview(device = "spec:width=411dp,height=891dp")

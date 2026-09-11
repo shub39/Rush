@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.windowsizeclass)
+            implementation(libs.jetbrains.navigation3.adaptive)
 
             implementation(libs.jetbrains.navigation3.ui)
 

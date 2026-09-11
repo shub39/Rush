@@ -89,7 +89,13 @@ fun LazyListScope.lyricsCustomisationSettings(
                             onShowAudioPermissionDialog()
                         }
                     },
-                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.toStringRes()),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
                 )
             }
 
@@ -150,7 +156,13 @@ fun LazyListScope.lyricsCustomisationSettings(
                     options = CardColors.entries.toList(),
                     selected = state.cardColors,
                     onSelectedChange = { onAction(LyricsPageAction.OnUpdateColorType(it)) },
-                    labelProvider = { Text(text = stringResource(it.toStringRes())) },
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.toStringRes()),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
                 )
 
                 if (state.cardColors == CardColors.CUSTOM) {

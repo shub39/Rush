@@ -63,6 +63,8 @@ kotlin {
             implementation(libs.compose.windowsizeclass)
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.navigation3.viewmodel)
+            implementation(libs.jetbrains.navigation3.adaptive)
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.materialkolor)

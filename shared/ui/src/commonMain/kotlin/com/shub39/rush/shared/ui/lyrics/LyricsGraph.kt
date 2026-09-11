@@ -95,7 +95,6 @@ fun LyricsGraphContent(
                         state = lyricsState,
                         playbackInfo = playbackInfo,
                         notificationAccess = notificationAccess,
-                        waveData = waveData,
                     )
                 }
 
@@ -107,9 +106,6 @@ fun LyricsGraphContent(
                         onNavigateBack = { backStack.removeLastScreen() },
                         onAction = lyricsAction,
                         notificationAccess = notificationAccess,
-                        microphonePermission = micPermission,
-                        requestMicrophonePermission = onMicPermissionGranted,
-                        waveData = waveData,
                     )
                 }
             },
