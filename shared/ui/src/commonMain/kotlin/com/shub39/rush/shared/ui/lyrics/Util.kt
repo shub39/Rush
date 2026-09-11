@@ -48,6 +48,8 @@ import com.shub39.rush.shared.ui.generateGradientColors
 
 expect fun calculateGlowMultiplier(waveData: List<Byte>?): Float
 
+@Composable expect fun ManageSystemBars(fullscreen: Boolean)
+
 fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     if (lyrics.isEmpty()) return emptyList()
     val lines = lyrics.lines()

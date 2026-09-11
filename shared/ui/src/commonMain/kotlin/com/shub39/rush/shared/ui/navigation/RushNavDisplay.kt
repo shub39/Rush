@@ -37,6 +37,7 @@ import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.component.ChangelogSheet
 import com.shub39.rush.shared.ui.component.PageFill
+import com.shub39.rush.shared.ui.lyrics.ManageSystemBars
 import com.shub39.rush.shared.ui.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.shared.ui.lyrics.section.LyricsPage
 import com.shub39.rush.shared.ui.onboarding.Onboarding
@@ -125,6 +126,8 @@ fun RushNavDisplay(
                             val viewModel = koinViewModel<LyricsVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
                             val playbackInfo by viewModel.playbackInfo.collectAsStateWithLifecycle()
+
+                            ManageSystemBars(state.fullscreen)
 
                             LyricsPage(
                                 onNavigateToCustomisations = {

@@ -16,6 +16,11 @@
  */
 package com.shub39.rush.shared.ui.lyrics
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalView
+import com.shub39.rush.shared.ui.resetSystemBars
+import com.shub39.rush.shared.ui.updateSystemBars
 import io.gitlab.bpavuk.viz.midBucket
 import io.gitlab.bpavuk.viz.trebleBucket
 import kotlin.math.absoluteValue
@@ -26,4 +31,14 @@ actual fun calculateGlowMultiplier(waveData: List<Byte>?): Float {
     val mid = waveData.midBucket().max()
     val treble = waveData.trebleBucket().max()
     return (mid + treble).toFloat().absoluteValue / 128f
+}
+
+@Composable
+actual fun ManageSystemBars(fullscreen: Boolean) {
+    val view = LocalView.current
+
+    DisposableEffect(view) {
+        updateSystemBars(view, fullscreen)
+        onDispose { resetSystemBars(view) }
+    }
 }

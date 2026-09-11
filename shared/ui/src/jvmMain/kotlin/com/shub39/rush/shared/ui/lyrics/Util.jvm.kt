@@ -16,4 +16,8 @@
  */
 package com.shub39.rush.shared.ui.lyrics
 
+import androidx.compose.runtime.Composable
+
 actual fun calculateGlowMultiplier(waveData: List<Byte>?): Float = 0f
+
+@Composable actual fun ManageSystemBars(fullscreen: Boolean) {}

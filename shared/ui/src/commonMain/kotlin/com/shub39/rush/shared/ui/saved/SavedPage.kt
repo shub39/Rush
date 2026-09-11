@@ -43,8 +43,6 @@ import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +64,7 @@ import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.rush.shared.ui.component.Empty
+import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
 import com.shub39.rush.shared.ui.saved.component.SongCard
@@ -74,7 +73,10 @@ import com.shub39.rush.shared.ui.theme.flexFontRounded
 import com.shub39.rush.shared.ui.toStringRes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import rush.shared.ui.generated.resources.*
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.rush_branding
+import rush.shared.ui.generated.resources.saved
+import rush.shared.ui.generated.resources.settings
 
 @Composable
 fun SavedPage(
@@ -180,39 +182,19 @@ fun SavedPage(
                             horizontalArrangement =
                                 Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                         ) {
-                            SortOrder.entries.toList().forEach { order ->
-                                ToggleButton(
-                                    checked = order == state.sortOrder,
-                                    onCheckedChange = {
-                                        onAction(SavedPageAction.UpdateSortOrder(order))
-                                    },
-                                    colors =
-                                        ToggleButtonDefaults.toggleButtonColors(
-                                            containerColor =
-                                                MaterialTheme.colorScheme.secondaryContainer,
-                                            contentColor =
-                                                MaterialTheme.colorScheme.onSecondaryContainer,
-                                        ),
-                                    modifier = Modifier.weight(1f),
-                                    shapes =
-                                        when (order) {
-                                            SortOrder.DATE_ADDED ->
-                                                ButtonGroupDefaults.connectedLeadingButtonShapes()
-
-                                            SortOrder.TITLE_ASC ->
-                                                ButtonGroupDefaults.connectedMiddleButtonShapes()
-
-                                            SortOrder.TITLE_DESC ->
-                                                ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        },
-                                ) {
+                            ListSelect(
+                                title = null,
+                                options = SortOrder.entries.toList(),
+                                selected = state.sortOrder,
+                                onSelectedChange = { onAction(SavedPageAction.UpdateSortOrder(it)) },
+                                labelProvider = {
                                     Text(
-                                        text = stringResource(order.toStringRes()),
+                                        text = stringResource(it.toStringRes()),
                                         modifier = Modifier.basicMarquee(),
                                         maxLines = 1,
                                     )
                                 }
-                            }
+                            )
                         }
                     }
                 }
