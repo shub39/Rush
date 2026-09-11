@@ -32,7 +32,6 @@ import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
-import com.shub39.rush.shared.ui.setting.section.SettingRootPage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -80,18 +79,21 @@ fun SettingsGraph(
         entryProvider =
             entryProvider {
                 entry<Routes.Root> {
-                    SettingRootPage(
-                        notificationAccess = notificationAccess,
-                        onAction = action,
-                        onNavigateBack = onNavigateBack,
-                        onNavigateToLookAndFeel = { backStack.add(Routes.LookAndFeel) },
-                        onNavigateToBackup = { backStack.add(Routes.Backup) },
-                        onNavigateToChangelog = { backStack.add(Routes.Changelog) },
-                        onNavigateToAppInfo = { backStack.add(Routes.About) },
-                        state = state,
-                        onShowPaywall = onShowPaywall,
-                        onUpdateNotificationAccess = onUpdateNotificationAccess,
-                    )
+                    //                    SettingRootPage(
+                    //                        notificationAccess = notificationAccess,
+                    //                        onAction = action,
+                    //                        onNavigateBack = onNavigateBack,
+                    //                        onNavigateToLookAndFeel = {
+                    // backStack.add(Routes.LookAndFeel) },
+                    //                        onNavigateToBackup = { backStack.add(Routes.Backup) },
+                    //                        onNavigateToChangelog = {
+                    // backStack.add(Routes.Changelog) },
+                    //                        onNavigateToAppInfo = { backStack.add(Routes.About) },
+                    //                        state = state,
+                    //                        onShowPaywall = onShowPaywall,
+                    //                        onUpdateNotificationAccess =
+                    // onUpdateNotificationAccess,
+                    //                    )
                 }
 
                 entry<Routes.Backup>(metadata = horizontalTransitionMetadata()) {

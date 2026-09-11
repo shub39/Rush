@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.metadata
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.app.GlobalAction
@@ -170,6 +169,9 @@ fun RushNavDisplay(
                             val viewModel = koinViewModel<SavedVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
+                            val isLastRouteSettings =
+                                topLevelBackStack.backStack.last() is Routes.Settings
+
                             PageFill {
                                 SavedPage(
                                     state = state,
@@ -178,10 +180,15 @@ fun RushNavDisplay(
                                         topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
                                     },
                                     onNavigateToSettings = {
-                                        topLevelBackStack.addTopLevel(Routes.Settings.SettingsRoot)
+                                        topLevelBackStack.apply {
+                                            if (!isRouteOnTop(Routes.Settings.SettingsRoot)) {
+                                                addTopLevel(Routes.Settings.SettingsRoot)
+                                            } else removeLast()
+                                        }
                                     },
                                     onOpenSearchSheet = { topLevelBackStack.addTopLevel(Search) },
                                     notificationAccess = globalState.notificationAccess,
+                                    isSettingsOpen = isLastRouteSettings,
                                     modifier = Modifier.widthIn(max = 600.dp),
                                 )
                             }
@@ -231,6 +238,7 @@ fun RushNavDisplay(
                                 onUpdateNotificationAccess = {
                                     globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
                                 },
+                                lastRoute = topLevelBackStack.backStack.last(),
                             )
                         }
 

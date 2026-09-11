@@ -36,8 +36,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -83,7 +84,8 @@ fun SavedPage(
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onOpenSearchSheet: () -> Unit = {},
+    onOpenSearchSheet: () -> Unit,
+    isSettingsOpen: Boolean,
 ) =
     PageFill(modifier = modifier) {
         val windowSizeClass = LocalWindowSizeClass.current
@@ -109,7 +111,11 @@ fun SavedPage(
                                 )
                             },
                             actions = {
-                                IconButton(onClick = onNavigateToSettings) {
+                                FilledTonalIconToggleButton(
+                                    checked = isSettingsOpen,
+                                    onCheckedChange = { onNavigateToSettings() },
+                                    shapes = IconButtonDefaults.toggleableShapes(),
+                                ) {
                                     Icon(
                                         painter = painterResource(Res.drawable.settings),
                                         contentDescription = "Settings",
@@ -140,7 +146,11 @@ fun SavedPage(
                                 )
                             },
                             actions = {
-                                IconButton(onClick = onNavigateToSettings) {
+                                FilledTonalIconToggleButton(
+                                    checked = isSettingsOpen,
+                                    onCheckedChange = { onNavigateToSettings() },
+                                    shapes = IconButtonDefaults.toggleableShapes(),
+                                ) {
                                     Icon(
                                         painter = painterResource(Res.drawable.settings),
                                         contentDescription = "Settings",
@@ -334,5 +344,7 @@ private fun Preview() {
         },
         onNavigateToLyrics = {},
         onNavigateToSettings = {},
+        isSettingsOpen = false,
+        onOpenSearchSheet = {},
     )
 }

@@ -66,6 +66,8 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
             Routes.Paywall -> Routes.Paywall::class
         }
 
+    fun isRouteOnTop(route: Routes): Boolean = backStack.lastOrNull() == route
+
     fun add(route: Routes) {
         if (route == Routes.Saved) return
 

@@ -16,6 +16,10 @@
  */
 package com.shub39.rush.shared.ui.component
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -28,6 +32,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -46,7 +52,7 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun <T> ListSelect(
-    title: String,
+    title: String?,
     options: List<T>,
     selected: T,
     onSelectedChange: (T) -> Unit,
@@ -54,7 +60,7 @@ fun <T> ListSelect(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium)
+        title?.let { Text(text = title, style = MaterialTheme.typography.titleMedium) }
 
         if (options.size > 3) {
             FlowRow {
@@ -74,12 +80,22 @@ fun <T> ListSelect(
                     Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
             ) {
                 options.forEachIndexed { index, option ->
+                    val interactionSource = remember { MutableInteractionSource() }
+                    val isPressed by interactionSource.collectIsPressedAsState()
+                    val isHovered by interactionSource.collectIsHoveredAsState()
+                    val animatedWeight by
+                        animateFloatAsState(
+                            targetValue =
+                                if (option == selected || isHovered || isPressed) 0.25f else 0f
+                        )
+
                     ToggleButton(
                         checked = option == selected,
                         onCheckedChange = { onSelectedChange(option) },
                         content = { labelProvider(option) },
                         colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f + animatedWeight),
+                        interactionSource = interactionSource,
                         shapes =
                             when (index) {
                                 0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()

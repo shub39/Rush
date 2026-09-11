@@ -18,7 +18,6 @@ package com.shub39.rush.shared.ui.setting.section
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,6 +58,7 @@ import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
+import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
@@ -96,6 +97,10 @@ fun LookAndFeelPage(
                             fontFamily = flexFontEmphasis(),
                         )
                     },
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            scrolledContainerColor = MaterialTheme.colorScheme.surface
+                        ),
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
                             Icon(
@@ -160,22 +165,17 @@ fun LookAndFeelPage(
                                         .background(listItemColors().containerColor)
                                         .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                             ) {
-                                AppTheme.entries.forEach { appTheme ->
-                                    ToggleButton(
-                                        checked = appTheme == state.theme.appTheme,
-                                        onCheckedChange = {
-                                            onAction(SettingsPageAction.OnThemeSwitch(appTheme))
-                                        },
-                                        modifier = Modifier.weight(1f),
-                                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                                    ) {
-                                        Text(
-                                            text = stringResource(appTheme.toStringRes()),
-                                            modifier = Modifier.basicMarquee(),
-                                            maxLines = 1,
-                                        )
-                                    }
-                                }
+                                ListSelect(
+                                    title = null,
+                                    options = AppTheme.entries.toList(),
+                                    selected = state.theme.appTheme,
+                                    onSelectedChange = {
+                                        onAction(SettingsPageAction.OnThemeSwitch(it))
+                                    },
+                                    labelProvider = {
+                                        Text(text = stringResource(it.toStringRes()))
+                                    },
+                                )
                             }
                         }
 
