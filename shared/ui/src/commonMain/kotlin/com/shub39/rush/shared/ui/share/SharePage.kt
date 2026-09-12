@@ -55,7 +55,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -65,9 +64,7 @@ import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
-import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.pxToDp
-import com.shub39.rush.shared.ui.share.component.SharePageSheet
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt
 import com.shub39.rush.shared.ui.share.component.cards.BratShareCard
 import com.shub39.rush.shared.ui.share.component.cards.CoupletShareCard
@@ -91,6 +88,8 @@ expect fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     onAction: (SharePageAction) -> Unit,
+    onOpenEdit: () -> Unit,
+    isEditing: Boolean = false,
 )
 
 @Composable expect fun RowScope.ShareButton(onClick: () -> Unit, modifier: Modifier = Modifier)
@@ -106,13 +105,11 @@ fun SharePageContent(
     onSaveImage: (ImageBitmap) -> Unit,
     onLaunchImagePicker: () -> Unit,
     onShareImage: () -> Unit,
+    onOpenEdit: () -> Unit,
+    isEditing: Boolean,
 ) {
     val scope = rememberCoroutineScope()
     val zoomState = rememberZoomState(initialScale = 1f)
-
-    var editSheet by remember { mutableStateOf(false) }
-    var colorPicker by remember { mutableStateOf(false) }
-    var editTarget by remember { mutableStateOf("content") }
 
     var messyCardSeed by remember { mutableLongStateOf(0) }
 
@@ -293,20 +290,10 @@ fun SharePageContent(
             }
 
             val windowSizeClass = LocalWindowSizeClass.current
-            HorizontalFloatingToolbar(
-                expanded = true,
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = { editSheet = true },
-                        shape = MaterialTheme.shapes.extraLarge,
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.edit),
-                            contentDescription = "Edit",
-                        )
-                    }
-                },
+            AnimatedVisibility(
+                visible = !isEditing,
+                enter = fadeIn(),
+                exit = fadeOut(),
                 modifier =
                     Modifier.align(
                             if (!windowSizeClass.isExpanded()) {
@@ -317,79 +304,73 @@ fun SharePageContent(
                         )
                         .padding(32.dp),
             ) {
-                IconButton(onClick = { onAction(SharePageAction.OnRandomize) }) {
-                    Icon(imageVector = vectorResource(Res.drawable.dice), contentDescription = null)
-                }
-
-                IconButton(
-                    onClick = {
-                        val graphicsLayer =
-                            if (state.fullScreen) fullScreenGraphicsLayer else cardGraphicsLayer
-                        scope.launch { onSaveImage(graphicsLayer.toImageBitmap()) }
-                    }
+                HorizontalFloatingToolbar(
+                    expanded = true,
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = onOpenEdit,
+                            shape = MaterialTheme.shapes.extraLarge,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.edit),
+                                contentDescription = "Edit",
+                            )
+                        }
+                    },
                 ) {
-                    Icon(painter = painterResource(Res.drawable.save), contentDescription = "Save")
-                }
-
-                ShareButton(onClick = { onShareImage() })
-
-                AnimatedVisibility(
-                    visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART),
-                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-                ) {
-                    IconButton(onClick = onLaunchImagePicker) {
+                    IconButton(onClick = { onAction(SharePageAction.OnRandomize) }) {
                         Icon(
-                            painter = painterResource(Res.drawable.image),
-                            contentDescription = "Image",
-                            modifier = Modifier.size(24.dp),
+                            imageVector = vectorResource(Res.drawable.dice),
+                            contentDescription = null,
                         )
                     }
-                }
 
-                AnimatedVisibility(
-                    visible = state.cardTheme == CardTheme.MESSY,
-                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
-                ) {
-                    IconButton(onClick = { messyCardSeed += 1 }) {
+                    IconButton(
+                        onClick = {
+                            val graphicsLayer =
+                                if (state.fullScreen) fullScreenGraphicsLayer else cardGraphicsLayer
+                            scope.launch { onSaveImage(graphicsLayer.toImageBitmap()) }
+                        }
+                    ) {
                         Icon(
-                            painter = painterResource(Res.drawable.refresh),
-                            contentDescription = "Image",
-                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(Res.drawable.save),
+                            contentDescription = "Save",
                         )
+                    }
+
+                    ShareButton(onClick = { onShareImage() })
+
+                    AnimatedVisibility(
+                        visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART),
+                        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+                    ) {
+                        IconButton(onClick = onLaunchImagePicker) {
+                            Icon(
+                                painter = painterResource(Res.drawable.image),
+                                contentDescription = "Image",
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
+
+                    AnimatedVisibility(
+                        visible = state.cardTheme == CardTheme.MESSY,
+                        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
+                        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()),
+                    ) {
+                        IconButton(onClick = { messyCardSeed += 1 }) {
+                            Icon(
+                                painter = painterResource(Res.drawable.refresh),
+                                contentDescription = "Image",
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
                     }
                 }
             }
         }
-    }
-
-    if (editSheet) {
-        SharePageSheet(
-            state = state,
-            onAction = onAction,
-            onDismissRequest = { editSheet = false },
-            onLaunchColorPicker = {
-                editTarget = it
-                colorPicker = true
-            },
-        )
-    }
-
-    if (colorPicker) {
-        ColorPickerDialog(
-            initialColor =
-                if (editTarget == "content") Color(state.cardContent)
-                else Color(state.cardBackground),
-            onSelect = {
-                if (editTarget == "content") {
-                    onAction(SharePageAction.OnUpdateCardContent(it.toArgb()))
-                } else {
-                    onAction(SharePageAction.OnUpdateCardBackground(it.toArgb()))
-                }
-            },
-            onDismiss = { colorPicker = false },
-        )
     }
 }
 
@@ -422,5 +403,7 @@ private fun Preview() {
         onShareImage = {},
         cardGraphicsLayer = rememberGraphicsLayer(),
         fullScreenGraphicsLayer = rememberGraphicsLayer(),
+        onOpenEdit = {},
+        isEditing = false,
     )
 }

@@ -49,6 +49,7 @@ import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
 import com.shub39.rush.shared.ui.setting.section.SettingRootPage
 import com.shub39.rush.shared.ui.share.SharePage
+import com.shub39.rush.shared.ui.share.component.SharePageEdit
 import com.shub39.rush.shared.ui.theme.RushTheme
 import com.shub39.rush.shared.ui.viewmodels.GlobalVM
 import com.shub39.rush.shared.ui.viewmodels.LyricsVM
@@ -75,6 +76,8 @@ fun RushNavDisplay(
         remember(windowSizeClass) { TwoPaneSceneStrategy<NavKey>(windowSizeClass) }
     val listDetailStrategy =
         remember(windowSizeClass) { ListDetailSceneStrategy<NavKey>(windowSizeClass) }
+    val editSheetStrategy =
+        remember(windowSizeClass) { EditScreenSceneStrategy<NavKey>(windowSizeClass) }
 
     LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess) }
 
@@ -93,7 +96,12 @@ fun RushNavDisplay(
                 sharedTransitionScope = this,
                 onBack = { topLevelBackStack.removeLast() },
                 sceneStrategies =
-                    listOf(bottomSheetStrategy, twoPaneSceneStrategy, listDetailStrategy),
+                    listOf(
+                        bottomSheetStrategy,
+                        twoPaneSceneStrategy,
+                        listDetailStrategy,
+                        editSheetStrategy,
+                    ),
                 entryProvider =
                     entryProvider {
                         entry<Routes.Onboarding> {
@@ -133,7 +141,7 @@ fun RushNavDisplay(
                                 onNavigateToCustomisations = {
                                     topLevelBackStack.add(Routes.Lyrics.LyricsCustomisations)
                                 },
-                                onShare = { topLevelBackStack.add(Routes.Lyrics.LyricsShare) },
+                                onShare = { topLevelBackStack.add(Routes.Share.ShareRoot) },
                                 action = viewModel::onAction,
                                 state = state,
                                 playbackInfo = playbackInfo,
@@ -145,7 +153,9 @@ fun RushNavDisplay(
                             )
                         }
 
-                        entry<Routes.Lyrics.LyricsShare>(metadata = verticalTransitionMetadata()) {
+                        entry<Routes.Share.ShareRoot>(
+                            metadata = EditScreenScene.mainPane() + verticalTransitionMetadata()
+                        ) {
                             val viewModel = koinViewModel<ShareVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -153,7 +163,18 @@ fun RushNavDisplay(
                                 onDismiss = { topLevelBackStack.removeLast() },
                                 state = state,
                                 onAction = viewModel::onAction,
+                                onOpenEdit = { topLevelBackStack.add(Routes.Share.ShareEdit) },
+                                isEditing = topLevelBackStack.isRouteOnTop(Routes.Share.ShareEdit),
                             )
+                        }
+
+                        entry<Routes.Share.ShareEdit>(
+                            metadata = EditScreenScene.editPane() + horizontalTransitionMetadata()
+                        ) {
+                            val viewModel = koinViewModel<ShareVM>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            SharePageEdit(state = state, onAction = viewModel::onAction)
                         }
 
                         entry<Routes.Lyrics.LyricsCustomisations>(

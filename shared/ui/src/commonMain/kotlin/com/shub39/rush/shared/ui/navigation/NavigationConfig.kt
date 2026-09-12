@@ -24,8 +24,12 @@ sealed interface Routes : NavKey {
         data object LyricsRoot : Lyrics
 
         data object LyricsCustomisations : Lyrics
+    }
 
-        data object LyricsShare : Lyrics
+    sealed interface Share : Routes {
+        data object ShareRoot : Share
+
+        data object ShareEdit : Share
     }
 
     data object Search : Routes
@@ -64,6 +68,8 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
             Routes.Changelog -> Routes.Changelog::class
             Routes.Onboarding -> Routes.Onboarding::class
             Routes.Paywall -> Routes.Paywall::class
+            Routes.Share.ShareRoot -> Routes.Share.ShareRoot::class
+            Routes.Share.ShareEdit -> Routes.Share.ShareEdit::class
         }
 
     fun isRouteOnTop(route: Routes): Boolean = backStack.lastOrNull() == route
