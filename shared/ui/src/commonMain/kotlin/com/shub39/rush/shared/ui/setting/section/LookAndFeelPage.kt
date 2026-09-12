@@ -18,6 +18,7 @@ package com.shub39.rush.shared.ui.setting.section
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,8 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -173,7 +172,11 @@ fun LookAndFeelPage(
                                         onAction(SettingsPageAction.OnThemeSwitch(it))
                                     },
                                     labelProvider = {
-                                        Text(text = stringResource(it.toStringRes()))
+                                        Text(
+                                            text = stringResource(it.toStringRes()),
+                                            maxLines = 1,
+                                            modifier = Modifier.basicMarquee(),
+                                        )
                                     },
                                 )
                             }
@@ -216,22 +219,24 @@ fun LookAndFeelPage(
                                         .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
-                                Fonts.entries.forEach { font ->
-                                    ToggleButton(
-                                        checked = state.theme.font == font,
-                                        onCheckedChange = {
-                                            onAction(SettingsPageAction.OnFontChange(font))
-                                        },
-                                        colors = ToggleButtonDefaults.tonalToggleButtonColors(),
-                                    ) {
+                                ListSelect(
+                                    title = null,
+                                    options = Fonts.entries.toList(),
+                                    selected = state.theme.font,
+                                    onSelectedChange = {
+                                        onAction(SettingsPageAction.OnFontChange(it))
+                                    },
+                                    labelProvider = {
                                         Text(
-                                            text = font.toFullName(),
+                                            text = it.toFullName(),
+                                            maxLines = 1,
+                                            modifier = Modifier.basicMarquee(),
                                             fontFamily =
-                                                font.toFontRes()?.let { FontFamily(Font(it)) }
+                                                it.toFontRes()?.let { FontFamily(Font(it)) }
                                                     ?: FontFamily.Default,
                                         )
-                                    }
-                                }
+                                    },
+                                )
                             }
                         }
 
