@@ -26,6 +26,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -81,7 +82,6 @@ import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
-import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.audioDependentBackgrounds
 import com.shub39.rush.shared.ui.component.ArtFromUrl
@@ -91,7 +91,6 @@ import com.shub39.rush.shared.ui.conditional
 import com.shub39.rush.shared.ui.fadeBottomToTop
 import com.shub39.rush.shared.ui.fadeTopToBottom
 import com.shub39.rush.shared.ui.glowBackground
-import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
@@ -120,7 +119,19 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 @Composable
-fun LyricsPage(
+expect fun LyricsPage(
+    modifier: Modifier = Modifier,
+    onNavigateToCustomisations: () -> Unit,
+    onShare: () -> Unit,
+    action: (LyricsPageAction) -> Unit,
+    state: LyricsPageState,
+    playbackInfo: PlaybackInfo,
+    notificationAccess: Boolean,
+    isCustomisationsOpened: Boolean,
+)
+
+@Composable
+fun LyricsPageContent(
     modifier: Modifier = Modifier,
     onNavigateToCustomisations: () -> Unit,
     onShare: () -> Unit,
@@ -129,10 +140,10 @@ fun LyricsPage(
     playbackInfo: PlaybackInfo,
     waveData: List<Byte>?,
     notificationAccess: Boolean,
+    isCustomisationsOpened: Boolean,
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
-        val windowSizeClass = LocalWindowSizeClass.current
 
         val (cardBackground, cardContent) = getCardColors(state)
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -190,7 +201,7 @@ fun LyricsPage(
         }
 
         // Content Start
-        Box(
+        BoxWithConstraints(
             modifier =
                 Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
                     awaitPointerEventScope {
@@ -260,7 +271,7 @@ fun LyricsPage(
                                 )
 
                                 Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                    if (!windowSizeClass.isExpanded()) {
+                                    if (this@BoxWithConstraints.maxWidth < 640.dp) {
                                         // portrait ui
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -348,6 +359,8 @@ fun LyricsPage(
                                                         cardContent = cardContent,
                                                         onShare = onShare,
                                                         onEdit = onNavigateToCustomisations,
+                                                        isCustomisationsOpened =
+                                                            isCustomisationsOpened,
                                                     )
                                                 }
                                             }
@@ -402,6 +415,7 @@ fun LyricsPage(
                                                     cardContent = cardContent,
                                                     onShare = onShare,
                                                     onEdit = onNavigateToCustomisations,
+                                                    isCustomisationsOpened = isCustomisationsOpened,
                                                 )
                                             }
 
@@ -739,8 +753,8 @@ private fun LyricsPagePreview() {
                         )
                     ),
             ),
-        waveData = null,
         notificationAccess = true,
         playbackInfo = PlaybackInfo(),
+        isCustomisationsOpened = false,
     )
 }

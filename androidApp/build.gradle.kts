@@ -23,8 +23,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "6.7.1"
-val appVersionCode = 6710
+val appVersionName = "7.0.0"
+val appVersionCode = 7000
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -146,6 +146,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.components.resources)
     implementation(libs.compose.windowsizeclass)
+    implementation(libs.jetbrains.navigation3.adaptive)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)

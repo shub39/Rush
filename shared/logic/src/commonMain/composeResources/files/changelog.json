@@ -1,5 +1,15 @@
 [
   {
+    "version": "7.0.0",
+    "changes": [
+      "Revamped Navigation, Animations Several UI components",
+      "Added better support for expanded screens",
+      "Fixed inconsistent share cards based on device",
+      "Updated Lyrics customisation defaults",
+      "Updated Share card customisation defaults"
+    ]
+  },
+  {
     "version": "6.7.1",
     "changes": [
       "Revamped save page toolbar"
@@ -65,14 +75,6 @@
     "changes": [
       "Updated Translations",
       "Fixed slow lyrics search faster"
-    ]
-  },
-  {
-    "version": "6.4.0",
-    "changes": [
-      "Added option to hide controls in Lyrics page after 5 seconds",
-      "Enable it from Lyrics Customizations",
-      "Miscellaneous UI Fixes"
     ]
   }
 ]

@@ -89,8 +89,6 @@ data class TextPrefs(
     val lyricsAlignment: LyricsAlignment = LyricsAlignment.CENTER,
 )
 
-@Stable @Immutable data class PlayingSong(val title: String = "", val artist: String? = null)
-
 @Stable @Immutable data class PlaybackInfo(val position: Long = 0, val speed: Float = 0f)
 
 @Stable

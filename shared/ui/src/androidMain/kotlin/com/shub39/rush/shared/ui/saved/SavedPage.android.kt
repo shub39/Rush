@@ -14,28 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.lyrics
+package com.shub39.rush.shared.ui.saved
 
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.Modifier
 
-@Composable actual fun ManageSystemBars(fullscreen: Boolean) {}
-
-@Composable
-actual fun LyricsGraph(
-    notificationAccess: Boolean,
-    lyricsState: LyricsPageState,
-    playbackInfo: PlaybackInfo,
-    lyricsAction: (LyricsPageAction) -> Unit,
-    onShare: () -> Unit,
-) {
-    LyricsGraphContent(
-        notificationAccess = notificationAccess,
-        lyricsState = lyricsState,
-        playbackInfo = playbackInfo,
-        lyricsAction = lyricsAction,
-        onShare = onShare,
-        waveData = null,
-        micPermission = false,
-        onMicPermissionGranted = {},
-    )
+actual fun Modifier.platformNavigationBarsPadding(): Modifier {
+    return navigationBarsPadding()
 }

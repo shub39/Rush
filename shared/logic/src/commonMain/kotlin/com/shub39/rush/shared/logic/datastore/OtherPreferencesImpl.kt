@@ -39,7 +39,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
             preferences[amoledPref] = false
             preferences[paletteStyle] = PaletteStyle.TONALSPOT.name
             preferences[materialTheme] = false
-            preferences[selectedFont] = Fonts.FIGTREE.name
+            preferences[selectedFont] = Fonts.GOOGLE_SANS.name
         }
     }
 
@@ -114,8 +114,8 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
 
     override fun getFontFlow(): Flow<Fonts> =
         datastore.data.map { prefs ->
-            val font = prefs[selectedFont] ?: Fonts.FIGTREE.name
-            valueOfOrNull<Fonts>(font) ?: Fonts.FIGTREE
+            val font = prefs[selectedFont] ?: Fonts.GOOGLE_SANS.name
+            valueOfOrNull<Fonts>(font) ?: Fonts.GOOGLE_SANS
         }
 
     override suspend fun updateFonts(font: Fonts) {

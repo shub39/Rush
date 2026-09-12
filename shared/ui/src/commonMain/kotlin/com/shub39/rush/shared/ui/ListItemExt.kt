@@ -71,10 +71,10 @@ fun segmentedListItemShapes(
         count,
         ListItemDefaults.shapes(
             shape = if (singleElement) shapes.large else shapes.extraSmall,
-            selectedShape = shapes.extraLargeIncreased,
+            selectedShape = shapes.extraLarge,
             pressedShape = shapes.extraLargeIncreased,
             focusedShape = shapes.large,
-            hoveredShape = shapes.extraLarge,
-            draggedShape = shapes.extraLargeIncreased,
+            hoveredShape = shapes.extraLargeIncreased,
+            draggedShape = shapes.extraLarge,
         ),
     )

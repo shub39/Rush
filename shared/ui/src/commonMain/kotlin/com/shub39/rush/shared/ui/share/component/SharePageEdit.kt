@@ -1,0 +1,256 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.shub39.rush.shared.ui.share.component
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.core.enums.AlbumArtShape
+import com.shub39.rush.shared.core.enums.CardColors
+import com.shub39.rush.shared.core.enums.CardTheme
+import com.shub39.rush.shared.core.enums.CornerRadius
+import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.component.ColorPickerDialog
+import com.shub39.rush.shared.ui.component.ExpressiveSwitch
+import com.shub39.rush.shared.ui.component.ListItemCard
+import com.shub39.rush.shared.ui.component.ListSelect
+import com.shub39.rush.shared.ui.endItemShape
+import com.shub39.rush.shared.ui.leadingItemShape
+import com.shub39.rush.shared.ui.listItemColors
+import com.shub39.rush.shared.ui.middleItemShape
+import com.shub39.rush.shared.ui.share.SharePageAction
+import com.shub39.rush.shared.ui.share.SharePageState
+import com.shub39.rush.shared.ui.toMaterialShape
+import com.shub39.rush.shared.ui.toStringRes
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import rush.shared.ui.generated.resources.*
+
+@Composable
+fun SharePageEdit(
+    state: SharePageState,
+    onAction: (SharePageAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var colorPicker by remember { mutableStateOf(false) }
+    var editTarget by remember { mutableStateOf("content") }
+
+    if (colorPicker) {
+        ColorPickerDialog(
+            initialColor =
+                if (editTarget == "content") Color(state.cardContent)
+                else Color(state.cardBackground),
+            onSelect = {
+                if (editTarget == "content") {
+                    onAction(SharePageAction.OnUpdateCardContent(it.toArgb()))
+                } else {
+                    onAction(SharePageAction.OnUpdateCardBackground(it.toArgb()))
+                }
+            },
+            onDismiss = { colorPicker = false },
+        )
+    }
+
+    LazyColumn(
+        modifier =
+            modifier
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        item {
+            ListItemCard(shape = leadingItemShape()) {
+                ListSelect(
+                    title = stringResource(Res.string.card_theme),
+                    options = CardTheme.entries.toList(),
+                    selected = state.cardTheme,
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardTheme(it)) },
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.toStringRes()),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                )
+            }
+        }
+
+        item {
+            ListItemCard(shape = middleItemShape()) {
+                ListSelect(
+                    title = stringResource(Res.string.card_color),
+                    options = CardColors.entries.toList(),
+                    selected = state.cardColors,
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardColor(it)) },
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.toStringRes()),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                )
+
+                AnimatedVisibility(
+                    visible = state.cardColors == CardColors.CUSTOM,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        IconButton(
+                            onClick = {
+                                editTarget = "content"
+                                colorPicker = true
+                            },
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.cardContent),
+                                    contentColor = Color(state.cardBackground),
+                                ),
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.edit),
+                                contentDescription = "Select Color",
+                            )
+                        }
+
+                        IconButton(
+                            onClick = {
+                                editTarget = "background"
+                                colorPicker = true
+                            },
+                            colors =
+                                IconButtonDefaults.iconButtonColors(
+                                    containerColor = Color(state.cardBackground),
+                                    contentColor = Color(state.cardContent),
+                                ),
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.edit),
+                                contentDescription = "Select Color",
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            ListItemCard(shape = middleItemShape()) {
+                ListSelect(
+                    title = stringResource(Res.string.card_corners),
+                    options = CornerRadius.entries.toList(),
+                    selected = state.cardRoundness,
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateCardRoundness(it)) },
+                    labelProvider = {
+                        Text(
+                            text = stringResource(it.toStringRes()),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(),
+                        )
+                    },
+                )
+            }
+        }
+
+        item {
+            ListItemCard(shape = middleItemShape()) {
+                ListSelect(
+                    title = stringResource(Res.string.album_art_shape),
+                    options = AlbumArtShape.entries.toList(),
+                    selected = state.albumArtShape,
+                    onSelectedChange = { onAction(SharePageAction.OnUpdateAlbumArtShape(it)) },
+                    labelProvider = {
+                        Box(
+                            modifier =
+                                Modifier.size(30.dp)
+                                    .background(
+                                        color = LocalContentColor.current,
+                                        shape = it.toMaterialShape(),
+                                    )
+                        )
+                    },
+                )
+            }
+        }
+
+        item {
+            ListItem(
+                colors = listItemColors(),
+                modifier = Modifier.clip(endItemShape()),
+                headlineContent = {
+                    Text(
+                        text = stringResource(Res.string.full_screen_share),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(),
+                    )
+                },
+                trailingContent = {
+                    ExpressiveSwitch(
+                        checked = state.fullScreen,
+                        onCheckedChange = { onAction(SharePageAction.OnToggleFullScreen(it)) },
+                    )
+                },
+            )
+        }
+    }
+}
+
+@PreviewWrapper(RushPreviewWrapper::class)
+@Preview
+@Composable
+private fun Preview() {
+    SharePageEdit(state = SharePageState(cardColors = CardColors.CUSTOM), onAction = {})
+}

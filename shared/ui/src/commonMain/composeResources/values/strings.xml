@@ -116,4 +116,5 @@
     <string name="hide_ui">Hide Controls</string>
     <string name="hide_ui_desc">Hide lyrics controls after 5 seconds</string>
     <string name="save">Save</string>
+    <string name="share_card_limit">Maximum of 6 lines can be selected for Share Cards</string>
 </resources>

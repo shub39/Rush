@@ -56,7 +56,21 @@ class GeniusScraper {
         private const val TAG = "GeniusScraper"
 
         val dumbInstances =
-            listOf("dumb.ducks.party/", "dumb.lunar.icu/", "dumb.bloat.cat/", "dumb.jeikobu.net/")
+            listOf(
+                "dumb.ducks.party/",
+                "dumb.privacydev.net/",
+                "dumb.hyperreal.coffee/",
+                "dumb.privacyfucking.rocks/",
+                "sing.whatever.social/",
+                "dumb.canine.tools/",
+                "lyr.dc09.ru/",
+                "db.kuuro.net/",
+                "genius.fsky.io/",
+                "dumb.artemislena.eu/",
+                "dumb.lunar.icu/",
+                "dumb.bloat.cat/",
+                "dumb.jeikobu.net/",
+            )
 
         val nonLyricsRegex =
             listOf(

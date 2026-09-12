@@ -16,8 +16,6 @@
  */
 package com.shub39.rush.shared.ui
 
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -40,8 +38,6 @@ expect fun hypnoticAvailable(): Boolean
 expect fun blurAvailable(): Boolean
 
 expect suspend fun Clipboard.copyToClipboard(text: String)
-
-fun WindowSizeClass.isExpanded(): Boolean = this.widthSizeClass == WindowWidthSizeClass.Expanded
 
 fun Map<Int, String>.sortMapByKeys(take: Int = 16): Map<Int, String> {
     val sortedEntries = this.entries.toList().sortedBy { it.key }.take(take)

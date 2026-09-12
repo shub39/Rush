@@ -57,6 +57,8 @@ actual fun SharePage(
     onDismiss: () -> Unit,
     state: SharePageState,
     onAction: (SharePageAction) -> Unit,
+    onOpenEdit: () -> Unit,
+    isEditing: Boolean,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -95,6 +97,8 @@ actual fun SharePage(
             )
         },
         onLaunchImagePicker = { imagePicker.launch() },
+        onOpenEdit = onOpenEdit,
+        isEditing = isEditing,
         onShareImage = {
             coroutineScope.launch(Dispatchers.IO) {
                 val graphicsLayer =

@@ -30,22 +30,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -65,9 +62,10 @@ import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.rush.shared.ui.component.Empty
+import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
-import com.shub39.rush.shared.ui.isExpanded
 import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
 import com.shub39.rush.shared.ui.saved.component.SongCard
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
@@ -75,23 +73,27 @@ import com.shub39.rush.shared.ui.theme.flexFontRounded
 import com.shub39.rush.shared.ui.toStringRes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import rush.shared.ui.generated.resources.*
+import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.rush_branding
+import rush.shared.ui.generated.resources.saved
+import rush.shared.ui.generated.resources.settings
 
 @Composable
 fun SavedPage(
+    modifier: Modifier = Modifier,
     state: SavedPageState,
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    modifier: Modifier = Modifier,
+    onOpenSearchSheet: () -> Unit,
+    isSettingsOpen: Boolean,
 ) =
     PageFill(modifier = modifier) {
         val windowSizeClass = LocalWindowSizeClass.current
         var showBottomBar by remember { mutableStateOf(true) }
 
         Scaffold(
-            modifier = Modifier.widthIn(max = 700.dp),
             topBar = {
                 Column {
                     if (!windowSizeClass.isExpanded()) {
@@ -111,7 +113,11 @@ fun SavedPage(
                                 )
                             },
                             actions = {
-                                IconButton(onClick = onNavigateToSettings) {
+                                FilledTonalIconToggleButton(
+                                    checked = isSettingsOpen,
+                                    onCheckedChange = { onNavigateToSettings() },
+                                    shapes = IconButtonDefaults.toggleableShapes(),
+                                ) {
                                     Icon(
                                         painter = painterResource(Res.drawable.settings),
                                         contentDescription = "Settings",
@@ -142,7 +148,11 @@ fun SavedPage(
                                 )
                             },
                             actions = {
-                                IconButton(onClick = onNavigateToSettings) {
+                                FilledTonalIconToggleButton(
+                                    checked = isSettingsOpen,
+                                    onCheckedChange = { onNavigateToSettings() },
+                                    shapes = IconButtonDefaults.toggleableShapes(),
+                                ) {
                                     Icon(
                                         painter = painterResource(Res.drawable.settings),
                                         contentDescription = "Settings",
@@ -172,43 +182,25 @@ fun SavedPage(
                             horizontalArrangement =
                                 Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                         ) {
-                            SortOrder.entries.toList().forEach { order ->
-                                ToggleButton(
-                                    checked = order == state.sortOrder,
-                                    onCheckedChange = {
-                                        onAction(SavedPageAction.UpdateSortOrder(order))
-                                    },
-                                    colors =
-                                        ToggleButtonDefaults.toggleButtonColors(
-                                            containerColor =
-                                                MaterialTheme.colorScheme.secondaryContainer,
-                                            contentColor =
-                                                MaterialTheme.colorScheme.onSecondaryContainer,
-                                        ),
-                                    modifier = Modifier.weight(1f),
-                                    shapes =
-                                        when (order) {
-                                            SortOrder.DATE_ADDED ->
-                                                ButtonGroupDefaults.connectedLeadingButtonShapes()
-
-                                            SortOrder.TITLE_ASC ->
-                                                ButtonGroupDefaults.connectedMiddleButtonShapes()
-
-                                            SortOrder.TITLE_DESC ->
-                                                ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        },
-                                ) {
+                            ListSelect(
+                                title = null,
+                                options = SortOrder.entries.toList(),
+                                selected = state.sortOrder,
+                                onSelectedChange = {
+                                    onAction(SavedPageAction.UpdateSortOrder(it))
+                                },
+                                labelProvider = {
                                     Text(
-                                        text = stringResource(order.toStringRes()),
+                                        text = stringResource(it.toStringRes()),
                                         modifier = Modifier.basicMarquee(),
                                         maxLines = 1,
                                     )
-                                }
-                            }
+                                },
+                            )
                         }
                     }
                 }
-            },
+            }
         ) { paddingValues ->
             Column(
                 modifier =
@@ -232,8 +224,8 @@ fun SavedPage(
                         val listState = rememberLazyListState()
                         val showBottomBarListener by remember {
                             derivedStateOf {
-                                listState.firstVisibleItemIndex == 0
-                                        || listState.lastScrolledBackward
+                                listState.firstVisibleItemIndex == 0 ||
+                                    listState.lastScrolledBackward
                             }
                         }
 
@@ -281,14 +273,17 @@ fun SavedPage(
                 ),
         ) {
             SavedPageToolbar(
+                onOpenSearchSheet = onOpenSearchSheet,
                 notificationAccess = notificationAccess,
                 onAction = onAction,
                 state = state,
                 onNavigateToLyrics = onNavigateToLyrics,
-                modifier = Modifier.navigationBarsPadding().padding(horizontal = 16.dp),
+                modifier = Modifier.platformNavigationBarsPadding().padding(horizontal = 16.dp),
             )
         }
     }
+
+expect fun Modifier.platformNavigationBarsPadding(): Modifier
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview(device = "spec:width=411dp,height=891dp")
@@ -333,5 +328,7 @@ private fun Preview() {
         },
         onNavigateToLyrics = {},
         onNavigateToSettings = {},
+        isSettingsOpen = false,
+        onOpenSearchSheet = {},
     )
 }

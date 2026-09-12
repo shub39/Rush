@@ -21,27 +21,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -53,10 +53,10 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.RushDialog
-import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
-import com.shub39.rush.shared.ui.leadingItemShape
 import com.shub39.rush.shared.ui.listItemColors
+import com.shub39.rush.shared.ui.navigation.Routes
+import com.shub39.rush.shared.ui.segmentedListItemShapes
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
 import com.shub39.rush.shared.ui.setting.appLanguagePicker
@@ -81,6 +81,7 @@ fun SettingRootPage(
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
+    lastRoute: Routes,
 ) =
     PageFill(modifier = modifier) {
         var deleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -88,8 +89,7 @@ fun SettingRootPage(
 
         val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
-            modifier =
-                Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
+            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
             topBar = {
                 LargeFlexibleTopAppBar(
                     scrollBehavior = scrollBehaviour,
@@ -135,22 +135,11 @@ fun SettingRootPage(
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         // navigate to look and feel
-                        ListItem(
-                            modifier =
-                                Modifier.clip(leadingItemShape()).clickable {
-                                    onNavigateToLookAndFeel()
-                                },
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsLookAndFeel,
+                            onCheckedChange = { onNavigateToLookAndFeel() },
+                            shapes = segmentedListItemShapes(0, 2),
                             colors = listItemColors(),
-                            headlineContent = {
-                                Text(text = stringResource(Res.string.look_and_feel))
-                            },
-                            supportingContent = {
-                                Text(
-                                    text = stringResource(Res.string.look_and_feel_info),
-                                    maxLines = 1,
-                                    modifier = Modifier.basicMarquee(),
-                                )
-                            },
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(Res.drawable.palette),
@@ -164,14 +153,23 @@ fun SettingRootPage(
                                     contentDescription = null,
                                 )
                             },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.look_and_feel_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            content = { Text(text = stringResource(Res.string.look_and_feel)) },
                         )
 
                         // navigate to backup
-                        ListItem(
-                            modifier =
-                                Modifier.clip(endItemShape()).clickable { onNavigateToBackup() },
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsBackup,
+                            onCheckedChange = { onNavigateToBackup() },
+                            shapes = segmentedListItemShapes(1, 2),
                             colors = listItemColors(),
-                            headlineContent = { Text(text = stringResource(Res.string.backup)) },
+                            content = { Text(text = stringResource(Res.string.backup)) },
                             supportingContent = {
                                 Text(
                                     text = stringResource(Res.string.backup_info),
@@ -201,14 +199,18 @@ fun SettingRootPage(
 
                 // nuke everything
                 item {
-                    ListItem(
+                    SegmentedListItem(
+                        checked = deleteConfirmationDialog,
+                        enabled = state.deleteButtonEnabled,
+                        onCheckedChange = { deleteConfirmationDialog = true },
+                        shapes = segmentedListItemShapes(0, 1),
                         leadingContent = {
                             Icon(
                                 painter = painterResource(Res.drawable.warning),
                                 contentDescription = "Caution",
                             )
                         },
-                        headlineContent = { Text(text = stringResource(Res.string.delete_all)) },
+                        content = { Text(text = stringResource(Res.string.delete_all)) },
                         colors = listItemColors(),
                         trailingContent = {
                             Icon(
@@ -216,19 +218,16 @@ fun SettingRootPage(
                                 contentDescription = null,
                             )
                         },
-                        modifier =
-                            Modifier.clip(detachedItemShape()).clickable(
-                                enabled = state.deleteButtonEnabled
-                            ) {
-                                deleteConfirmationDialog = true
-                            },
                     )
                 }
 
-                // navigate to changelog
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        ListItem(
+                        // about app
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsAppInfo,
+                            onCheckedChange = { onNavigateToAppInfo() },
+                            shapes = segmentedListItemShapes(0, 2),
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -248,14 +247,14 @@ fun SettingRootPage(
                                     contentDescription = "Navigate",
                                 )
                             },
-                            headlineContent = { Text(text = stringResource(Res.string.about)) },
-                            modifier =
-                                Modifier.clip(leadingItemShape()).clickable {
-                                    onNavigateToAppInfo()
-                                },
+                            content = { Text(text = stringResource(Res.string.about)) },
                         )
 
-                        ListItem(
+                        // changelog
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsChangelog,
+                            onCheckedChange = { onNavigateToChangelog() },
+                            shapes = segmentedListItemShapes(1, 2),
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -269,7 +268,7 @@ fun SettingRootPage(
                                     contentDescription = "Navigate",
                                 )
                             },
-                            headlineContent = { Text(text = stringResource(Res.string.changelog)) },
+                            content = { Text(text = stringResource(Res.string.changelog)) },
                             modifier =
                                 Modifier.clip(endItemShape()).clickable { onNavigateToChangelog() },
                         )
@@ -289,25 +288,30 @@ fun SettingRootPage(
         // dialog to confirm nuking
         if (deleteConfirmationDialog) {
             RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
-                Icon(
-                    painter = painterResource(Res.drawable.warning),
-                    contentDescription = "Warning",
-                )
-                Text(
-                    text = stringResource(Res.string.delete_all),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = stringResource(Res.string.delete_confirmation),
-                    textAlign = TextAlign.Center,
-                )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(
+                Column(
+                    modifier = Modifier.wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.warning),
+                        contentDescription = "Warning",
+                    )
+                    Text(
+                        text = stringResource(Res.string.delete_all),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    Text(
+                        text = stringResource(Res.string.delete_confirmation),
+                        textAlign = TextAlign.Center,
+                    )
+                    Button(
                         onClick = {
                             onAction(SettingsPageAction.OnDeleteSongs)
                             deleteConfirmationDialog = false
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(text = stringResource(Res.string.delete_all))
                     }
@@ -333,5 +337,6 @@ private fun Preview() {
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
         onUpdateNotificationAccess = {},
+        lastRoute = Routes.Settings.SettingsRoot,
     )
 }

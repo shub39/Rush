@@ -14,10 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.lyrics
+package com.shub39.rush.shared.ui.lyrics.section
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 
-actual fun calculateGlowMultiplier(waveData: List<Byte>?): Float = 0f
-
-@Composable actual fun ManageSystemBars(fullscreen: Boolean) {}
+@Composable
+actual fun LyricsCustomisationsPage(
+    onNavigateBack: () -> Unit,
+    state: LyricsPageState,
+    onAction: (LyricsPageAction) -> Unit,
+    notificationAccess: Boolean,
+    modifier: Modifier,
+) {
+    LyricsCustomisationsPageContent(
+        onNavigateBack = onNavigateBack,
+        state = state,
+        onAction = onAction,
+        notificationAccess = notificationAccess,
+        microphonePermission = false,
+        requestMicrophonePermission = {},
+        waveData = null,
+        modifier = modifier,
+    )
+}

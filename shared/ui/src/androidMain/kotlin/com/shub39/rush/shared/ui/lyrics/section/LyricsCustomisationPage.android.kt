@@ -14,38 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.lyrics
+package com.shub39.rush.shared.ui.lyrics.section
 
 import android.Manifest
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.Modifier
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.shub39.rush.shared.ui.resetSystemBars
-import com.shub39.rush.shared.ui.updateSystemBars
+import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
+import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import io.gitlab.bpavuk.viz.VisualizerState
 import io.gitlab.bpavuk.viz.rememberVisualizerState
 
-@Composable
-actual fun ManageSystemBars(fullscreen: Boolean) {
-    val view = LocalView.current
-
-    DisposableEffect(view) {
-        updateSystemBars(view, fullscreen)
-        onDispose { resetSystemBars(view) }
-    }
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-actual fun LyricsGraph(
+actual fun LyricsCustomisationsPage(
+    onNavigateBack: () -> Unit,
+    state: LyricsPageState,
+    onAction: (LyricsPageAction) -> Unit,
     notificationAccess: Boolean,
-    lyricsState: LyricsPageState,
-    playbackInfo: PlaybackInfo,
-    lyricsAction: (LyricsPageAction) -> Unit,
-    onShare: () -> Unit,
+    modifier: Modifier,
 ) {
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData =
@@ -55,14 +44,14 @@ actual fun LyricsGraph(
             state.fft
         }
 
-    LyricsGraphContent(
+    LyricsCustomisationsPageContent(
+        onNavigateBack = onNavigateBack,
+        state = state,
+        onAction = onAction,
         notificationAccess = notificationAccess,
-        lyricsState = lyricsState,
-        playbackInfo = playbackInfo,
-        lyricsAction = lyricsAction,
-        onShare = onShare,
+        microphonePermission = microphonePermission.status.isGranted,
+        requestMicrophonePermission = { microphonePermission.launchPermissionRequest() },
         waveData = waveData,
-        micPermission = microphonePermission.status.isGranted,
-        onMicPermissionGranted = { microphonePermission.launchPermissionRequest() },
+        modifier = modifier,
     )
 }
