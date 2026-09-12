@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.0.0
+- Revamped Navigation, Animations Several UI components
+- Added better support for expanded screens
+- Fixed inconsistent share cards based on device
+- Updated Lyrics customisation defaults
+- Updated Share card customisation defaults
+
 ## 6.7.1
 - Revamped save page toolbar
 

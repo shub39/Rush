@@ -22,14 +22,15 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -52,6 +53,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -109,7 +112,6 @@ fun SharePageContent(
     isEditing: Boolean,
 ) {
     val scope = rememberCoroutineScope()
-    val zoomState = rememberZoomState(initialScale = 1f)
 
     var messyCardSeed by remember { mutableLongStateOf(0) }
 
@@ -150,12 +152,12 @@ fun SharePageContent(
     val cardCorners = RoundedCornerShape(cornerRadius)
 
     val cardModifier =
-        Modifier.width(pxToDp(720))
+        Modifier.requiredWidth(pxToDp(720))
             .drawWithContent {
                 cardGraphicsLayer.record { this@drawWithContent.drawContent() }
                 drawLayer(cardGraphicsLayer)
             }
-            .heightIn(max = pxToDp(1920))
+            .heightIn(max = pxToDp(1900))
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -173,122 +175,141 @@ fun SharePageContent(
             )
         },
     ) { paddingValues ->
-        Box(
+        BoxWithConstraints(
             modifier = Modifier.padding(paddingValues).fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
+            val cardHeight = pxToDp(1920)
+            val cardWidth = pxToDp(1080)
+
+            val fitScale = minOf(maxWidth / cardWidth, maxHeight / cardHeight).coerceAtMost(1f)
+            val zoomState = rememberZoomState()
+
             Box(
                 modifier = Modifier.fillMaxSize().zoomable(zoomState),
                 contentAlignment = Alignment.Center,
             ) {
-                Surface(
-                    modifier =
-                        Modifier.fillMaxWidth(0.8f).aspectRatio(9f / 16f).drawWithContent {
-                            fullScreenGraphicsLayer.record { this@drawWithContent.drawContent() }
-                            drawLayer(fullScreenGraphicsLayer)
-                        },
-                    color =
-                        if (state.fullScreen)
-                            containerColor.blend(MaterialTheme.colorScheme.surface)
-                        else Color.Transparent,
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        when (state.cardTheme) {
-                            SPOTIFY ->
-                                SpotifyShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                Box(modifier = Modifier.size(cardWidth * fitScale, cardHeight * fitScale)) {
+                    Surface(
+                        modifier =
+                            Modifier.wrapContentSize(Alignment.TopStart, unbounded = true)
+                                .requiredSize(height = cardHeight, width = cardWidth)
+                                .graphicsLayer {
+                                    scaleX = fitScale
+                                    scaleY = fitScale
+                                    transformOrigin = TransformOrigin(0f, 0f)
+                                }
+                                .drawWithContent {
+                                    fullScreenGraphicsLayer.record {
+                                        this@drawWithContent.drawContent()
+                                    }
+                                    drawLayer(fullScreenGraphicsLayer)
+                                },
+                        color =
+                            if (state.fullScreen)
+                                containerColor.blend(MaterialTheme.colorScheme.surface)
+                            else Color.Transparent,
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            when (state.cardTheme) {
+                                SPOTIFY ->
+                                    SpotifyShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            RUSHED ->
-                                RushedShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    selectedImage = selectedImage,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                RUSHED ->
+                                    RushedShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        selectedImage = selectedImage,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            HYPNOTIC ->
-                                HypnoticShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                HYPNOTIC ->
+                                    HypnoticShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            VERTICAL ->
-                                VerticalShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                VERTICAL ->
+                                    VerticalShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            QUOTE ->
-                                QuoteShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                QUOTE ->
+                                    QuoteShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            COUPLET ->
-                                CoupletShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                COUPLET ->
+                                    CoupletShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            MESSY ->
-                                MessyCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    seed = messyCardSeed,
-                                )
+                                MESSY ->
+                                    MessyCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                        seed = messyCardSeed,
+                                    )
 
-                            ALBUM_ART ->
-                                AlbumArt(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                    selectedImage = selectedImage,
-                                    albumArtShape = state.albumArtShape.toMaterialShape(),
-                                )
+                                ALBUM_ART ->
+                                    AlbumArt(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                        selectedImage = selectedImage,
+                                        albumArtShape = state.albumArtShape.toMaterialShape(),
+                                    )
 
-                            BRAT ->
-                                BratShareCard(
-                                    modifier = cardModifier,
-                                    song = state.songDetails,
-                                    sortedLines = state.selectedLines,
-                                    cardColors = cardColor,
-                                    cardCorners = cardCorners,
-                                )
+                                BRAT ->
+                                    BratShareCard(
+                                        modifier = cardModifier,
+                                        song = state.songDetails,
+                                        sortedLines = state.selectedLines,
+                                        cardColors = cardColor,
+                                        cardCorners = cardCorners,
+                                    )
+                            }
                         }
                     }
                 }
             }
-
             val windowSizeClass = LocalWindowSizeClass.current
             AnimatedVisibility(
                 visible = !isEditing,

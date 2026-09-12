@@ -30,7 +30,7 @@ import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.window.core.layout.WindowSizeClass
 import com.shub39.rush.shared.ui.WindowSize
-import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
 
 /**
  * A [Scene] that displays two screens.
@@ -105,7 +105,7 @@ class EditScreenSceneStrategy<T : Any>(val windowSizeClass: WindowSizeClass) : S
             previousEntries = entries.dropLast(1),
             mainEntry = mainEntry,
             editEntry = editEntry,
-            isExpanded = windowSizeClass.isExpanded(),
+            isExpanded = !windowSizeClass.isCompact(),
         )
     }
 }

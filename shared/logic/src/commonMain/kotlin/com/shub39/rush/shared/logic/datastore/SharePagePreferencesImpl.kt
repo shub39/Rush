@@ -49,8 +49,8 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
     override fun getAlbumArtShapeFlow(): Flow<AlbumArtShape> =
         dataStore.data.map { preferences ->
             valueOfOrNull<AlbumArtShape>(
-                preferences[albumArtShapeKey] ?: AlbumArtShape.COOKIE_12.name
-            ) ?: AlbumArtShape.COOKIE_12
+                preferences[albumArtShapeKey] ?: AlbumArtShape.RECTANGLE.name
+            ) ?: AlbumArtShape.RECTANGLE
         }
 
     override suspend fun updateAlbumArtShape(shape: AlbumArtShape) {
@@ -80,8 +80,8 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getCardThemeFlow(): Flow<CardTheme> =
         dataStore.data.map { preferences ->
-            val theme = preferences[cardTheme] ?: CardTheme.SPOTIFY.name
-            valueOfOrNull<CardTheme>(theme) ?: CardTheme.SPOTIFY
+            val theme = preferences[cardTheme] ?: CardTheme.RUSHED.name
+            valueOfOrNull<CardTheme>(theme) ?: CardTheme.RUSHED
         }
 
     override suspend fun updateCardTheme(newCardTheme: CardTheme) {
@@ -100,8 +100,8 @@ class SharePagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getCardRoundnessFlow(): Flow<CornerRadius> =
         dataStore.data.map { preferences ->
-            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.ROUNDED.name
-            valueOfOrNull<CornerRadius>(cardRoundness) ?: CornerRadius.ROUNDED
+            val cardRoundness = preferences[cardRoundness] ?: CornerRadius.DEFAULT.name
+            valueOfOrNull<CornerRadius>(cardRoundness) ?: CornerRadius.DEFAULT
         }
 
     override suspend fun updateCardRoundness(newCardRoundness: CornerRadius) {

@@ -67,8 +67,8 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getLyricsBackgroundFlow(): Flow<LyricsBackground> =
         dataStore.data.map {
-            valueOfOrNull(it[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name)
-                ?: LyricsBackground.SOLID_COLOR
+            valueOfOrNull(it[lyricsBackground] ?: LyricsBackground.ALBUM_ART.name)
+                ?: LyricsBackground.ALBUM_ART
         }
 
     override suspend fun updateLyricsBackground(background: LyricsBackground) {
@@ -110,7 +110,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override fun getLyricsColorFlow(): Flow<CardColors> =
         dataStore.data.map { preferences ->
-            valueOfOrNull(preferences[lyricsColor] ?: CardColors.MUTED.name) ?: CardColors.MUTED
+            valueOfOrNull(preferences[lyricsColor] ?: CardColors.CUSTOM.name) ?: CardColors.CUSTOM
         }
 
     override suspend fun updateLyricsColor(new: CardColors) {

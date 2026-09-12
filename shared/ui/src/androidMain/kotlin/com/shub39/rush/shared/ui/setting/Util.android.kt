@@ -145,16 +145,21 @@ actual fun ColumnScope.PaletteStylePicker(
 
                     Row(
                         modifier =
-                            Modifier.size(width = 36.dp, height = 20.dp)
+                            Modifier.size(width = 56.dp, height = 24.dp)
                                 .clip(MaterialTheme.shapes.extraSmall)
                     ) {
                         listOf(
                                 scheme.primary,
                                 scheme.primaryContainer,
+                                scheme.onPrimary,
                                 scheme.secondary,
                                 scheme.secondaryContainer,
+                                scheme.onSecondary,
                                 scheme.tertiary,
                                 scheme.tertiaryContainer,
+                                scheme.onTertiary,
+                                scheme.surface,
+                                scheme.onSurface,
                             )
                             .forEach { color ->
                                 Box(

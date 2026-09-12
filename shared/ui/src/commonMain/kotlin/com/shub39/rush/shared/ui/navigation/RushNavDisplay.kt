@@ -107,7 +107,10 @@ fun RushNavDisplay(
                         entry<Routes.Onboarding> {
                             Onboarding(
                                 notificationAccess = globalState.notificationAccess,
-                                onDone = { topLevelBackStack.removeLast() },
+                                onDone = {
+                                    globalVM.onAction(GlobalAction.OnUpdateOnboardingDone(true))
+                                    topLevelBackStack.removeLast()
+                                },
                                 onUpdateNotificationAccess = {
                                     globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
                                 },
@@ -227,14 +230,20 @@ fun RushNavDisplay(
                         }
 
                         entry<Routes.Changelog>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
-                            ChangelogSheet(
-                                currentLog = globalState.currentChangelog!!,
-                                onDismissRequest = { topLevelBackStack.removeLast() },
-                                showSupportButton = !globalState.isProUser,
-                                onNavigateToPaywall = {
-                                    topLevelBackStack.addTopLevel(Routes.Paywall)
-                                },
-                            )
+                            if (globalState.currentChangelog != null) {
+                                ChangelogSheet(
+                                    currentLog = globalState.currentChangelog!!,
+                                    onDismissRequest = {
+                                        globalVM.onAction(GlobalAction.DismissChangelog)
+                                        topLevelBackStack.removeLast()
+                                    },
+                                    showSupportButton = !globalState.isProUser,
+                                    onNavigateToPaywall = {
+                                        globalVM.onAction(GlobalAction.DismissChangelog)
+                                        topLevelBackStack.addTopLevel(Routes.Paywall)
+                                    },
+                                )
+                            }
                         }
 
                         entry<Routes.Settings.SettingsRoot>(
