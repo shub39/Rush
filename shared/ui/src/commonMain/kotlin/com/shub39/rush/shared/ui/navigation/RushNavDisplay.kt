@@ -125,6 +125,7 @@ fun RushNavDisplay(
                                 state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateToLyrics = {
+                                    topLevelBackStack.removeLast()
                                     topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
                                 },
                                 modifier = Modifier.fillMaxWidth().heightIn(max = 700.dp),
@@ -153,6 +154,7 @@ fun RushNavDisplay(
                                     topLevelBackStack.isRouteOnTop(
                                         Routes.Lyrics.LyricsCustomisations
                                     ),
+                                onOpenSearchSheet = { topLevelBackStack.addTopLevel(Routes.Search) },
                             )
                         }
 

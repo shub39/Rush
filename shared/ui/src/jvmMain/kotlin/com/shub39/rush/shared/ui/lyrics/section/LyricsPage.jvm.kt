@@ -32,6 +32,7 @@ actual fun LyricsPage(
     playbackInfo: PlaybackInfo,
     notificationAccess: Boolean,
     isCustomisationsOpened: Boolean,
+    onOpenSearchSheet: () -> Unit,
 ) {
     LyricsPageContent(
         modifier = modifier,
@@ -43,5 +44,6 @@ actual fun LyricsPage(
         waveData = null,
         notificationAccess = notificationAccess,
         isCustomisationsOpened = isCustomisationsOpened,
+        onOpenSearchSheet = onOpenSearchSheet,
     )
 }

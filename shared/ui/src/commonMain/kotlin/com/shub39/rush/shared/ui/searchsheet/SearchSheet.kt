@@ -228,9 +228,7 @@ fun SearchSheet(
 @Preview
 private fun Preview() {
     var state by remember {
-        mutableStateOf(
-            SearchSheetState(visible = true, error = errorStringRes(SourceError.Data.PARSE_ERROR))
-        )
+        mutableStateOf(SearchSheetState(error = errorStringRes(SourceError.Data.PARSE_ERROR)))
     }
 
     SearchSheet(state = state, onAction = {}, onNavigateToLyrics = {})

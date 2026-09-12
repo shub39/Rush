@@ -128,6 +128,7 @@ expect fun LyricsPage(
     playbackInfo: PlaybackInfo,
     notificationAccess: Boolean,
     isCustomisationsOpened: Boolean,
+    onOpenSearchSheet: () -> Unit,
 )
 
 @Composable
@@ -141,6 +142,7 @@ fun LyricsPageContent(
     waveData: List<Byte>?,
     notificationAccess: Boolean,
     isCustomisationsOpened: Boolean,
+    onOpenSearchSheet: () -> Unit,
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
@@ -373,6 +375,7 @@ fun LyricsPageContent(
                                                 cardContent = cardContent,
                                                 action = action,
                                                 modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                                onOpenSearchSheet = onOpenSearchSheet,
                                             )
                                         } else if (lyricsState.song.ttmlLyrics != null) {
                                             SyllableSyncedLyrics(
@@ -467,6 +470,7 @@ fun LyricsPageContent(
                                                     lazyListState = lazyListState,
                                                     cardContent = cardContent,
                                                     action = action,
+                                                    onOpenSearchSheet = onOpenSearchSheet,
                                                     modifier =
                                                         Modifier.weight(1f)
                                                             .fillMaxHeight()
@@ -573,7 +577,7 @@ fun LyricsPageContent(
                                                 contentColor = cardBackground,
                                                 containerColor = cardContent,
                                             ),
-                                        onClick = { action(LyricsPageAction.OnToggleSearchSheet) },
+                                        onClick = onOpenSearchSheet,
                                     ) {
                                         Row(
                                             modifier = Modifier.padding(16.dp),
@@ -756,5 +760,6 @@ private fun LyricsPagePreview() {
         notificationAccess = true,
         playbackInfo = PlaybackInfo(),
         isCustomisationsOpened = false,
+        onOpenSearchSheet = {},
     )
 }
