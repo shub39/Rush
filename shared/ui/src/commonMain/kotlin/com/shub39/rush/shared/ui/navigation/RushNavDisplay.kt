@@ -324,7 +324,7 @@ fun RushNavDisplay(
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             About(
-                                versionName = state.changelog.firstOrNull()?.version ?: "6.7.0",
+                                versionName = state.changelog.firstOrNull()?.version ?: "",
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                             )
                         }
