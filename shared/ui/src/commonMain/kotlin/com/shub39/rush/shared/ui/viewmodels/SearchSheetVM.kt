@@ -103,8 +103,6 @@ class SearchSheetVM(
         when (action) {
             is SearchSheetAction.OnCardClicked ->
                 viewModelScope.launch {
-                    _state.update { it.copy(visible = !it.visible) }
-
                     fetchLyrics(action.id)
 
                     _state.update { it.copy(searchQuery = "", error = null) }
@@ -112,10 +110,6 @@ class SearchSheetVM(
 
             is SearchSheetAction.OnQueryChange -> {
                 _state.update { it.copy(searchQuery = action.query) }
-            }
-
-            SearchSheetAction.OnToggleSearchSheet -> {
-                _state.update { it.copy(visible = !it.visible, searchQuery = "", error = null) }
             }
         }
     }
@@ -244,7 +238,9 @@ class SearchSheetVM(
                                 if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
                             syncedAvailable =
                                 result.syncedLyrics != null || result.ttmlLyrics != null,
-                            sync = (result.syncedLyrics != null || result.ttmlLyrics != null),
+                            sync =
+                                (result.syncedLyrics != null || result.ttmlLyrics != null) &&
+                                    stateLayer.lyricsState.value.playingSong?.title == result.title,
                             selectedLines = emptyMap(),
                         )
                     }
@@ -278,7 +274,9 @@ class SearchSheetVM(
                                             retrievedSong.ttmlLyrics != null,
                                     sync =
                                         (retrievedSong.syncedLyrics != null ||
-                                            retrievedSong.ttmlLyrics != null),
+                                            retrievedSong.ttmlLyrics != null) &&
+                                            stateLayer.lyricsState.value.playingSong?.title ==
+                                                result.data.title,
                                     selectedLines = emptyMap(),
                                 )
                             }

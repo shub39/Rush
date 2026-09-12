@@ -75,10 +75,6 @@ class SavedVM(
                     if (newPref) MediaListener.onSeekEagerly()
                 }
 
-                SavedPageAction.OnToggleSearchSheet -> {
-                    stateLayer.searchSheetState.update { it.copy(visible = !it.visible) }
-                }
-
                 is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
             }
         }

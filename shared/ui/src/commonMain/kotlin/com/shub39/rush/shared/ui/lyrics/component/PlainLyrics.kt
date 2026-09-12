@@ -76,6 +76,7 @@ fun PlainLyrics(
     lazyListState: LazyListState,
     cardContent: Color,
     action: (LyricsPageAction) -> Unit,
+    onOpenSearchSheet: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -273,7 +274,7 @@ fun PlainLyrics(
                     )
                 }
 
-                IconButton(onClick = { action(LyricsPageAction.OnToggleSearchSheet) }) {
+                IconButton(onClick = onOpenSearchSheet) {
                     Icon(
                         painter = painterResource(Res.drawable.search),
                         contentDescription = "Search",

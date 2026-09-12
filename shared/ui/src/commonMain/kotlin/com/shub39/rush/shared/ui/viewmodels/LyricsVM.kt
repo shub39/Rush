@@ -119,10 +119,6 @@ class LyricsVM(
                     if (newPref) MediaListener.onSeekEagerly()
                 }
 
-                is LyricsPageAction.OnToggleSearchSheet -> {
-                    stateLayer.searchSheetState.update { it.copy(visible = !it.visible) }
-                }
-
                 is LyricsPageAction.OnUpdateShareLines -> {
                     stateLayer.sharePageState.update {
                         it.copy(

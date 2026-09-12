@@ -24,7 +24,6 @@ import org.jetbrains.compose.resources.StringResource
 @Stable
 @Immutable
 data class SearchSheetState(
-    val visible: Boolean = false,
     val searchQuery: String = "",
     val searchResults: List<SearchResult> = emptyList(),
     val localSearchResults: List<SearchResult> = emptyList(),

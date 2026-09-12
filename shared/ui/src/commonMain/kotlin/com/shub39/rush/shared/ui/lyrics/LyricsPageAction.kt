@@ -76,8 +76,6 @@ sealed interface LyricsPageAction {
 
     data class OnUpdateShareLines(val songDetails: SongDetails) : LyricsPageAction
 
-    data object OnToggleSearchSheet : LyricsPageAction
-
     data class UpdateExtractedColors(val url: String) : LyricsPageAction
 
     data class OnCorrectionSearch(val track: String, val artist: String) : LyricsPageAction
