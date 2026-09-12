@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0.0
+## 7.0.1
 - Revamped Navigation, Animations Several UI components
 - Added better support for expanded screens
 - Fixed inconsistent share cards based on device
