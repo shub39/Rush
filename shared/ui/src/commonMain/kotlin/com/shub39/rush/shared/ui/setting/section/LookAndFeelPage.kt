@@ -21,18 +21,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
@@ -45,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -59,6 +64,7 @@ import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
+import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
 import com.shub39.rush.shared.ui.listItemColors
@@ -79,6 +85,8 @@ import rush.shared.ui.generated.resources.*
 @Composable
 fun LookAndFeelPage(
     modifier: Modifier = Modifier,
+    isProUser: Boolean,
+    onNavigateToPaywall: () -> Unit,
     state: SettingsPageState,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
@@ -191,13 +199,32 @@ fun LookAndFeelPage(
                             modifier = Modifier.clip(middleItemShape()),
                         )
 
+                        if (!isProUser) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillParentMaxWidth().height(60.dp),
+                            ) {
+                                LinearWavyProgressIndicator(
+                                    progress = { 0.90f },
+                                    modifier = Modifier.fillParentMaxWidth(),
+                                )
+
+                                Button(onClick = onNavigateToPaywall) {
+                                    Text(text = "Unlock more with Pro")
+                                }
+                            }
+                        }
+
                         // font picker
                         Column(
                             modifier =
                                 Modifier.clip(
                                     when {
-                                        state.theme.materialTheme -> endItemShape()
-                                        else -> middleItemShape()
+                                        isProUser ->
+                                            if (state.theme.materialTheme) endItemShape()
+                                            else middleItemShape()
+                                        state.theme.materialTheme -> detachedItemShape()
+                                        else -> leadingItemShape()
                                     }
                                 )
                         ) {
@@ -222,6 +249,7 @@ fun LookAndFeelPage(
                                 ListSelect(
                                     title = null,
                                     options = Fonts.entries.toList(),
+                                    enabled = isProUser,
                                     selected = state.theme.font,
                                     onSelectedChange = {
                                         onAction(SettingsPageAction.OnFontChange(it))
@@ -252,6 +280,7 @@ fun LookAndFeelPage(
                                 trailingContent = {
                                     ExpressiveSwitch(
                                         checked = state.theme.withAmoled,
+                                        enabled = isProUser,
                                         onCheckedChange = {
                                             onAction(SettingsPageAction.OnAmoledSwitch(it))
                                         },
@@ -272,6 +301,7 @@ fun LookAndFeelPage(
                                 trailingContent = {
                                     IconButton(
                                         onClick = { colorPickerDialog = true },
+                                        enabled = isProUser,
                                         colors =
                                             IconButtonDefaults.iconButtonColors(
                                                 containerColor = Color(state.theme.seedColor),
@@ -293,6 +323,7 @@ fun LookAndFeelPage(
                             PaletteStylePicker(
                                 theme = state.theme,
                                 onChange = { onAction(SettingsPageAction.OnPaletteChange(it)) },
+                                enabled = isProUser,
                             )
                         }
                     }

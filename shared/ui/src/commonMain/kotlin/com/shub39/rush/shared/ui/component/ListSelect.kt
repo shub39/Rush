@@ -70,6 +70,7 @@ fun <T> ListSelect(
     onSelectedChange: (T) -> Unit,
     labelProvider: @Composable (T) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         title?.let { Text(text = title, style = MaterialTheme.typography.titleMedium) }
@@ -103,6 +104,7 @@ fun <T> ListSelect(
             ) {
                 ToggleButton(
                     checked = false,
+                    enabled = enabled,
                     onCheckedChange = {
                         val prevIndex =
                             if (currentIndex > 0) currentIndex - 1 else options.lastIndex
@@ -122,6 +124,7 @@ fun <T> ListSelect(
                 Box(modifier = Modifier.weight(2f + centerWeight)) {
                     ToggleButton(
                         checked = true,
+                        enabled = enabled,
                         onCheckedChange = { expanded = true },
                         modifier = Modifier.fillMaxWidth(),
                         interactionSource = centerInteractionSource,
@@ -157,6 +160,7 @@ fun <T> ListSelect(
 
                 ToggleButton(
                     checked = false,
+                    enabled = enabled,
                     onCheckedChange = {
                         val nextIndex = (currentIndex + 1) % options.size
                         onSelectedChange(options[nextIndex])
@@ -189,6 +193,7 @@ fun <T> ListSelect(
 
                     ToggleButton(
                         checked = option == selected,
+                        enabled = enabled,
                         onCheckedChange = { onSelectedChange(option) },
                         content = { labelProvider(option) },
                         colors = ToggleButtonDefaults.tonalToggleButtonColors(),

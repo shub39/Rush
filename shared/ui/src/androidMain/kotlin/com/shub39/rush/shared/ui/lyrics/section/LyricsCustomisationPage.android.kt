@@ -37,11 +37,14 @@ actual fun LyricsCustomisationsPage(
     notificationAccess: Boolean,
     modifier: Modifier,
 ) {
-    val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO) {
-        if (it) {
-            onAction(LyricsPageAction.OnChangeLyricsBackground(background = LyricsBackground.WAVE))
+    val microphonePermission =
+        rememberPermissionState(Manifest.permission.RECORD_AUDIO) {
+            if (it) {
+                onAction(
+                    LyricsPageAction.OnChangeLyricsBackground(background = LyricsBackground.WAVE)
+                )
+            }
         }
-    }
     val waveData =
         rememberVisualizerState(enabled = microphonePermission.status.isGranted).let { state ->
             if (state !is VisualizerState.Ready) return@let null

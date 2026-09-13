@@ -34,6 +34,7 @@ expect fun ColumnScope.MaterialYouToggle(
 expect fun ColumnScope.PaletteStylePicker(
     modifier: Modifier = Modifier,
     theme: Theme,
+    enabled: Boolean,
     onChange: (PaletteStyle) -> Unit,
 )
 

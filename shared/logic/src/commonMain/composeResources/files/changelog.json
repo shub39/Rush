@@ -1,5 +1,11 @@
 [
   {
+    "version": "7.0.3",
+    "changes": [
+      "Fixed Audio dependent Lyrics Backgrounds not applying"
+    ]
+  },
+  {
     "version": "7.0.2",
     "changes": [
       "Revamped Navigation, Animations Several UI components",
@@ -68,13 +74,6 @@
       "Updated Translations",
       "Performance improvements",
       "Fixed UI hiding issues in Lyrics Page"
-    ]
-  },
-  {
-    "version": "6.4.1",
-    "changes": [
-      "Updated Translations",
-      "Fixed slow lyrics search faster"
     ]
   }
 ]
