@@ -116,4 +116,5 @@
     <string name="hide_ui_desc">Liedtext Steuerelemente nach 5 Sekunden ausblenden</string>
     <string name="brat">Brat</string>
     <string name="save">Speichern</string>
+    <string name="share_card_limit">Maximal 6 Zeilen können fürs Teilen ausgewählt werden</string>
 </resources>
