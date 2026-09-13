@@ -179,7 +179,14 @@ fun RushNavDisplay(
                             val viewModel = koinViewModel<ShareVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            SharePageEdit(state = state, onAction = viewModel::onAction)
+                            SharePageEdit(
+                                isProUser = globalState.isProUser,
+                                state = state,
+                                onAction = viewModel::onAction,
+                                onNavigateToPaywall = {
+                                    topLevelBackStack.addTopLevel(Routes.Paywall)
+                                },
+                            )
                         }
 
                         entry<Routes.Lyrics.LyricsCustomisations>(
@@ -291,6 +298,10 @@ fun RushNavDisplay(
                                 state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },
+                                isProUser = globalState.isProUser,
+                                onNavigateToPaywall = {
+                                    topLevelBackStack.addTopLevel(Routes.Paywall)
+                                },
                             )
                         }
 

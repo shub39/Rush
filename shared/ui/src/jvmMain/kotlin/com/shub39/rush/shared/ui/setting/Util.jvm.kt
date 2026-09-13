@@ -63,6 +63,7 @@ actual fun ColumnScope.MaterialYouToggle(
 actual fun ColumnScope.PaletteStylePicker(
     modifier: Modifier,
     theme: Theme,
+    enabled: Boolean,
     onChange: (PaletteStyle) -> Unit,
 ) {
     Column(modifier = modifier.clip(endItemShape())) {
@@ -89,6 +90,7 @@ actual fun ColumnScope.PaletteStylePicker(
                 title = null,
                 options = PaletteStyle.entries.toList(),
                 selected = theme.style,
+                enabled = enabled,
                 onSelectedChange = onChange,
                 labelProvider = { style ->
                     val scheme =

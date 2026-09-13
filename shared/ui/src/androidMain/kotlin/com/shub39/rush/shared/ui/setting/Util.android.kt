@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.setting
 
-import android.R
 import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.background
@@ -96,6 +95,7 @@ actual fun ColumnScope.MaterialYouToggle(
 actual fun ColumnScope.PaletteStylePicker(
     modifier: Modifier,
     theme: Theme,
+    enabled: Boolean,
     onChange: (PaletteStyle) -> Unit,
 ) {
     Column(modifier = modifier.clip(endItemShape())) {
@@ -122,6 +122,7 @@ actual fun ColumnScope.PaletteStylePicker(
                 title = null,
                 options = PaletteStyle.entries.toList(),
                 selected = theme.style,
+                enabled = enabled,
                 onSelectedChange = onChange,
                 labelProvider = { style: PaletteStyle ->
                     val scheme =
@@ -131,7 +132,7 @@ actual fun ColumnScope.PaletteStylePicker(
                                     theme.materialTheme &&
                                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                                 ) {
-                                    colorResource(R.color.system_accent1_900)
+                                    colorResource(android.R.color.system_accent1_900)
                                 } else Color(theme.seedColor),
                             isDark =
                                 when (theme.appTheme) {
