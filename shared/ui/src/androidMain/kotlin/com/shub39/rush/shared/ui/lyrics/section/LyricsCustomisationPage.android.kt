@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import io.gitlab.bpavuk.viz.VisualizerState
@@ -36,9 +37,13 @@ actual fun LyricsCustomisationsPage(
     notificationAccess: Boolean,
     modifier: Modifier,
 ) {
-    val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
+    val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO) {
+        if (it) {
+            onAction(LyricsPageAction.OnChangeLyricsBackground(background = LyricsBackground.WAVE))
+        }
+    }
     val waveData =
-        rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
+        rememberVisualizerState(enabled = microphonePermission.status.isGranted).let { state ->
             if (state !is VisualizerState.Ready) return@let null
 
             state.fft

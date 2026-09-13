@@ -43,7 +43,7 @@ actual fun LyricsPage(
 ) {
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData =
-        rememberVisualizerState(microphonePermission.status.isGranted).let { state ->
+        rememberVisualizerState(enabled = microphonePermission.status.isGranted && !isCustomisationsOpened).let { state ->
             if (state !is VisualizerState.Ready) return@let null
 
             state.fft
