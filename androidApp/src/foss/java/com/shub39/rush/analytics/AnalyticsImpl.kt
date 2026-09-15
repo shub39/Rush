@@ -18,9 +18,6 @@ package com.shub39.rush.analytics
 
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 
-class AnalyticsImpl(
-    private val dummy: AnalyticsWrapper = AnalyticsWrapper.Companion.DummyAnalyticsWrapper()
-) : AnalyticsWrapper {
-    override fun trackEvent(event: String, properties: Map<String, Any>) =
-        dummy.trackEvent(event = event, properties = properties)
+class AnalyticsImpl : AnalyticsWrapper {
+    override fun trackEvent(event: String, properties: Map<String, Any>) {}
 }

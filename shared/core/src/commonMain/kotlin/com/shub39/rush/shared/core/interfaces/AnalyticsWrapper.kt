@@ -16,8 +16,6 @@
  */
 package com.shub39.rush.shared.core.interfaces
 
-import com.shub39.rush.shared.core.RushLogger
-
 interface AnalyticsWrapper {
     fun trackEvent(event: String, properties: Map<String, Any>)
 
@@ -52,13 +50,7 @@ interface AnalyticsWrapper {
         }
 
         class DummyAnalyticsWrapper : AnalyticsWrapper {
-            companion object {
-                private const val TAG = "DummyAnalyticsWrapper"
-            }
-
-            override fun trackEvent(event: String, properties: Map<String, Any>) {
-                RushLogger.i(TAG, "Track Event: $event\nProperties: $properties")
-            }
+            override fun trackEvent(event: String, properties: Map<String, Any>) {}
         }
     }
 }

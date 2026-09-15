@@ -351,7 +351,10 @@ fun SharePageContent(
                         onClick = {
                             val graphicsLayer =
                                 if (state.fullScreen) fullScreenGraphicsLayer else cardGraphicsLayer
-                            scope.launch { onSaveImage(graphicsLayer.toImageBitmap()) }
+                            scope.launch {
+                                onAction(SharePageAction.OnShare)
+                                onSaveImage(graphicsLayer.toImageBitmap())
+                            }
                         }
                     ) {
                         Icon(
@@ -360,7 +363,12 @@ fun SharePageContent(
                         )
                     }
 
-                    ShareButton(onClick = { onShareImage() })
+                    ShareButton(
+                        onClick = {
+                            onAction(SharePageAction.OnShare)
+                            onShareImage()
+                        }
+                    )
 
                     AnimatedVisibility(
                         visible = state.cardTheme in listOf(CardTheme.RUSHED, CardTheme.ALBUM_ART),
