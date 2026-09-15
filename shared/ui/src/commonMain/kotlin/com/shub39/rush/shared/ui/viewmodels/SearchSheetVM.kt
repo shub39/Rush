@@ -23,6 +23,8 @@ import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
@@ -56,6 +58,7 @@ import org.koin.core.annotation.Provided
 class SearchSheetVM(
     private val stateLayer: SharedStates,
     @Provided private val repo: SongRepository,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var lyricsSearchStateJob: Job? = null
     private var searchJob: Job? = null
@@ -69,6 +72,7 @@ class SearchSheetVM(
         _state
             .asStateFlow()
             .onStart {
+                analytics.trackEvent(AnalyticsEvent.SEARCH_OPENED.name, emptyMap())
                 observeSearchSheet()
                 observeAutoChange()
             }
@@ -153,6 +157,11 @@ class SearchSheetVM(
                     it.copy(searchState = SearchState.Searching(query))
                 }
 
+                analytics.trackEvent(
+                    AnalyticsEvent.SEARCH_PERFORMED.name,
+                    mapOf("query" to query, "auto" to fetch),
+                )
+
                 try {
                     when (val result = repo.searchGenius(query)) {
                         is Result.Error -> {
@@ -231,6 +240,15 @@ class SearchSheetVM(
                 if (songId in stateLayer.savedPageState.value.songsAsc.map { it.id }) {
                     val result = repo.getSong(songId).toSongUi()
 
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_OPENED.name,
+                        mapOf(
+                            "title" to result.title,
+                            "artists" to result.artists,
+                            "source" to "local_search",
+                        ),
+                    )
+
                     stateLayer.lyricsState.update {
                         it.copy(
                             lyricsState = LyricsState.Loaded(song = result),
@@ -262,6 +280,23 @@ class SearchSheetVM(
 
                         is Result.Success -> {
                             val retrievedSong = result.data.toSongUi()
+
+                            analytics.trackEvent(
+                                AnalyticsEvent.LYRICS_OPENED.name,
+                                mapOf(
+                                    "title" to retrievedSong.title,
+                                    "artists" to retrievedSong.artists,
+                                    "source" to "online_search",
+                                ),
+                            )
+
+                            analytics.trackEvent(
+                                AnalyticsEvent.SONG_FETCHED.name,
+                                mapOf(
+                                    "title" to retrievedSong.title,
+                                    "artists" to retrievedSong.artists,
+                                ),
+                            )
 
                             stateLayer.lyricsState.update {
                                 it.copy(

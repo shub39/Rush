@@ -14,20 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.app
+package com.shub39.rush.analytics
 
-sealed interface GlobalAction {
-    data class OnPaywallOpened(val source: String) : GlobalAction
+import android.content.Context
+import com.posthog.PostHog
+import com.posthog.android.PostHogAndroid
+import com.posthog.android.PostHogAndroidConfig
+import com.revenuecat.purchases.Purchases
+import com.shub39.rush.BuildConfig
 
-    data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
+class AnalyticsInitializer {
+    private val config =
+        PostHogAndroidConfig(apiKey = BuildConfig.POSTHOG_API_KEY, host = BuildConfig.POSTHOG_HOST)
 
-    data object OnCheckNotificationAccess : GlobalAction
+    fun setup(context: Context) {
+        PostHogAndroid.setup(context, config)
 
-    data object DismissChangelog : GlobalAction
-
-    data object OnRefreshSub : GlobalAction
-
-    data object AboutOpened : GlobalAction
-
-    data object ChangelogOpened : GlobalAction
+        val rcId = Purchases.sharedInstance.appUserID
+        PostHog.identify("rush:$rcId")
+    }
 }

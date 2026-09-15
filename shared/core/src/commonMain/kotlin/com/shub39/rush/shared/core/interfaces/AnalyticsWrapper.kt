@@ -19,8 +19,6 @@ package com.shub39.rush.shared.core.interfaces
 import com.shub39.rush.shared.core.RushLogger
 
 interface AnalyticsWrapper {
-    fun setup(context: Any?)
-
     fun trackEvent(event: String, properties: Map<String, Any>)
 
     companion object {
@@ -36,6 +34,8 @@ interface AnalyticsWrapper {
                 val RUSH_MODE_TOGGLED = AnalyticsEvent("rush_mode_toggled")
                 val SEARCH_OPENED = AnalyticsEvent("search_opened")
                 val SEARCH_PERFORMED = AnalyticsEvent("search_performed")
+                val SONG_FETCHED = AnalyticsEvent("song_fetched")
+                val SONG_DELETED = AnalyticsEvent("song_deleted")
                 val LYRICS_OPENED = AnalyticsEvent("lyrics_opened")
                 val LYRICS_CORRECTED = AnalyticsEvent("lyrics_corrected")
                 val SETTINGS_OPENED = AnalyticsEvent("settings_opened")
@@ -45,7 +45,6 @@ interface AnalyticsWrapper {
                 val BACKUP_RESTORED = AnalyticsEvent("backup_restored")
                 val ALL_SONG_DELETED = AnalyticsEvent("all_songs_deleted")
                 val ABOUT_OPENED = AnalyticsEvent("about_opened")
-                val ABOUT_LINK_CLICKED = AnalyticsEvent("about_link_clicked")
                 val CHANGELOG_OPENED = AnalyticsEvent("changelog_opened")
                 val APP_THEME_CHANGED = AnalyticsEvent("app_theme_changed")
                 val LYRICS_THEME_CHANGED = AnalyticsEvent("lyrics_theme_changed")
@@ -55,10 +54,6 @@ interface AnalyticsWrapper {
         class DummyAnalyticsWrapper : AnalyticsWrapper {
             companion object {
                 private const val TAG = "DummyAnalyticsWrapper"
-            }
-
-            override fun setup(context: Any?) {
-                RushLogger.i(TAG, "Setup Analytics")
             }
 
             override fun trackEvent(event: String, properties: Map<String, Any>) {

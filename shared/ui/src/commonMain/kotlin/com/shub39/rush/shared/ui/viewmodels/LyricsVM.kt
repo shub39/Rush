@@ -19,6 +19,8 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.Result
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import com.shub39.rush.shared.core.interfaces.RomanizationProvider
@@ -61,6 +63,7 @@ class LyricsVM(
     @Provided private val lyricsPrefs: LyricsPagePreferences,
     @Provided private val paletteGenerator: PaletteGenerator,
     @Provided private val romanization: RomanizationProvider,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
 
     private var observeJob: Job? = null
@@ -112,6 +115,11 @@ class LyricsVM(
                 is LyricsPageAction.OnToggleAutoChange -> {
                     val newPref = !_state.value.autoChange
 
+                    analytics.trackEvent(
+                        AnalyticsEvent.RUSH_MODE_TOGGLED.name,
+                        mapOf("enabled" to newPref),
+                    )
+
                     _state.update { it.copy(autoChange = newPref) }
 
                     stateLayer.savedPageState.update { it.copy(autoChange = newPref) }
@@ -132,6 +140,11 @@ class LyricsVM(
                     repo.correctLyrics(action.id, action.searchResult)
 
                     val song = repo.getSong(action.id).toSongUi()
+
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_CORRECTED.name,
+                        mapOf("title" to song.title, "artists" to song.artists),
+                    )
 
                     _state.update {
                         it.copy(
@@ -170,21 +183,48 @@ class LyricsVM(
                     _state.update { it.copy(selectedLines = action.lines) }
                 }
 
-                is LyricsPageAction.OnChangeLyricsBackground ->
+                is LyricsPageAction.OnChangeLyricsBackground -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "background", "value" to action.background.name),
+                    )
                     lyricsPrefs.updateLyricsBackground(action.background)
+                }
 
-                is LyricsPageAction.OnUpdateColorType -> lyricsPrefs.updateLyricsColor(action.color)
+                is LyricsPageAction.OnUpdateColorType -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "color_type", "value" to action.color.name),
+                    )
+                    lyricsPrefs.updateLyricsColor(action.color)
+                }
 
-                is LyricsPageAction.OnToggleColorPref ->
-                    lyricsPrefs.updateUseExtractedFlow(action.pref)
-
-                is LyricsPageAction.OnUpdatemBackground ->
+                is LyricsPageAction.OnUpdatemBackground -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf(
+                            "type" to "custom_background_color",
+                            "value" to action.color.toString(),
+                        ),
+                    )
                     lyricsPrefs.updateCardBackground(action.color)
+                }
 
-                is LyricsPageAction.OnExpressiveLyricsChange ->
+                is LyricsPageAction.OnExpressiveLyricsChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "expressive_syllables", "value" to action.pref.toString()),
+                    )
                     lyricsPrefs.updateExpressiveSyllablesPref(action.pref)
+                }
 
-                is LyricsPageAction.OnUpdatemContent -> lyricsPrefs.updateCardContent(action.color)
+                is LyricsPageAction.OnUpdatemContent -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "custom_content_color", "value" to action.color.toString()),
+                    )
+                    lyricsPrefs.updateCardContent(action.color)
+                }
 
                 is LyricsPageAction.OnScrapeGeniusLyrics -> {
                     _state.update { it.copy(scraping = Pair(true, null)) }
@@ -226,8 +266,13 @@ class LyricsVM(
                     }
                 }
 
-                is LyricsPageAction.OnAlignmentChange ->
+                is LyricsPageAction.OnAlignmentChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "alignment", "value" to action.alignment.name),
+                    )
                     lyricsPrefs.updateLyricAlignment(action.alignment)
+                }
 
                 is LyricsPageAction.OnFontSizeChange -> lyricsPrefs.updateFontSize(action.size)
 
@@ -237,9 +282,21 @@ class LyricsVM(
                 is LyricsPageAction.OnLetterSpacingChange ->
                     lyricsPrefs.updateLetterSpacing(action.spacing)
 
-                LyricsPageAction.OnCustomisationReset -> lyricsPrefs.reset()
+                LyricsPageAction.OnCustomisationReset -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "reset"),
+                    )
+                    lyricsPrefs.reset()
+                }
 
-                is LyricsPageAction.OnFullscreenChange -> lyricsPrefs.setFullScreen(action.pref)
+                is LyricsPageAction.OnFullscreenChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "fullscreen", "value" to action.pref.toString()),
+                    )
+                    lyricsPrefs.setFullScreen(action.pref)
+                }
 
                 is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
 
@@ -256,10 +313,21 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnHideUIToggle -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "hide_ui", "value" to action.enabled.toString()),
+                    )
                     lyricsPrefs.updateHideUI(action.enabled)
                 }
 
-                is LyricsPageAction.OnBlurSyncedChange -> lyricsPrefs.updateBlurSynced(action.pref)
+                is LyricsPageAction.OnBlurSyncedChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
+                        mapOf("type" to "blur_synced", "value" to action.pref.toString()),
+                    )
+                    lyricsPrefs.updateBlurSynced(action.pref)
+                }
+
                 LyricsPageAction.OnPlayNext -> MediaListener.playNext()
                 LyricsPageAction.OnPlayPrevious -> MediaListener.playPrevious()
 

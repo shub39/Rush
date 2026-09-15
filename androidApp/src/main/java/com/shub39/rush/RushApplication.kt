@@ -17,6 +17,7 @@
 package com.shub39.rush
 
 import android.app.Application
+import com.shub39.rush.analytics.AnalyticsInitializer
 import com.shub39.rush.billing.BillingInitializerImpl
 import com.shub39.rush.di.RushModules
 import org.koin.android.ext.koin.androidContext
@@ -34,5 +35,7 @@ class RushApplication : Application() {
         }
 
         BillingInitializerImpl().initialize(this)
+
+        AnalyticsInitializer().setup(this)
     }
 }

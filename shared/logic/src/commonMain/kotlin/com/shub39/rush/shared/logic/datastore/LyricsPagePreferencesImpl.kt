@@ -40,7 +40,6 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val cardBackground = intPreferencesKey("card_background")
         private val cardContent = intPreferencesKey("card_content")
         private val lyricsColor = stringPreferencesKey("lyrics_color")
-        private val useExtracted = booleanPreferencesKey("use_extracted")
         private val lyricAlignment = stringPreferencesKey("lyric_alignment")
         private val fontSize = floatPreferencesKey("font_size")
         private val lineHeight = floatPreferencesKey("line_height")
@@ -129,13 +128,6 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateCardContent(newCardContent: Int) {
         dataStore.edit { settings -> settings[cardContent] = newCardContent }
-    }
-
-    override fun getUseExtractedFlow(): Flow<Boolean> =
-        dataStore.data.map { prefs -> prefs[useExtracted] != false }
-
-    override suspend fun updateUseExtractedFlow(pref: Boolean) {
-        dataStore.edit { prefs -> prefs[useExtracted] = pref }
     }
 
     override fun getLyricAlignmentFlow(): Flow<LyricsAlignment> =

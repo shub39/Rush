@@ -18,6 +18,8 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
@@ -31,7 +33,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -47,6 +48,7 @@ class GlobalVM(
     @Provided private val otherPreferences: OtherPreferences,
     @Provided private val changelogManager: ChangelogManager,
     @Provided private val mediaAccessChecker: MediaAccessChecker,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var syncJob: Job? = null
 
@@ -55,6 +57,7 @@ class GlobalVM(
         _state
             .asStateFlow()
             .onStart {
+                analytics.trackEvent(AnalyticsEvent.APP_OPENED.name, emptyMap())
                 checkSubscription()
                 checkChangelog()
                 startSync()
@@ -67,13 +70,40 @@ class GlobalVM(
 
     fun onAction(action: GlobalAction) {
         when (action) {
+            GlobalAction.ChangelogOpened -> {
+                analytics.trackEvent(AnalyticsEvent.CHANGELOG_OPENED.name, emptyMap())
+            }
+
+            GlobalAction.AboutOpened -> {
+                analytics.trackEvent(AnalyticsEvent.ABOUT_OPENED.name, emptyMap())
+            }
+
+            GlobalAction.OnRefreshSub -> viewModelScope.launch { checkSubscription() }
+
+            is GlobalAction.OnPaywallOpened -> {
+                analytics.trackEvent(
+                    AnalyticsEvent.PAYWALL_OPENED.name,
+                    mapOf("source" to action.source),
+                )
+            }
+
             is GlobalAction.OnUpdateOnboardingDone ->
-                viewModelScope.launch { otherPreferences.updateOnboardingDone(action.status) }
+                viewModelScope.launch {
+                    otherPreferences.updateOnboardingDone(action.status)
+                    if (action.status) {
+                        analytics.trackEvent(AnalyticsEvent.ONBOARDING_COMPLETED.name, emptyMap())
+                    }
+                }
 
             is GlobalAction.OnCheckNotificationAccess -> {
-                _state.update {
-                    it.copy(notificationAccess = mediaAccessChecker.canAccessMediaInfo())
+                val hasAccess = mediaAccessChecker.canAccessMediaInfo()
+                if (hasAccess && !_state.value.notificationAccess) {
+                    analytics.trackEvent(
+                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED.name,
+                        emptyMap(),
+                    )
                 }
+                _state.update { it.copy(notificationAccess = hasAccess) }
             }
 
             GlobalAction.DismissChangelog -> {
@@ -91,6 +121,10 @@ class GlobalVM(
 
         when (isSubscribed) {
             SubscriptionResult.Subscribed -> {
+                if (!_state.value.isProUser) {
+                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED.name, emptyMap())
+                }
+
                 _state.update { it.copy(isProUser = true) }
             }
 

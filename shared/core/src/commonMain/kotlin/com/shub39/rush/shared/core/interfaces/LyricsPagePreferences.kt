@@ -36,10 +36,6 @@ interface LyricsPagePreferences {
 
     suspend fun updateCardContent(newCardContent: Int)
 
-    fun getUseExtractedFlow(): Flow<Boolean>
-
-    suspend fun updateUseExtractedFlow(pref: Boolean)
-
     fun getLyricAlignmentFlow(): Flow<LyricsAlignment>
 
     suspend fun updateLyricAlignment(alignment: LyricsAlignment)
