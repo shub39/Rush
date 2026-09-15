@@ -14,20 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.app
+import android.content.Context
 
-sealed interface GlobalAction {
-    data class OnPaywallOpened(val source: String) : GlobalAction
-
-    data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
-
-    data object OnCheckNotificationAccess : GlobalAction
-
-    data object DismissChangelog : GlobalAction
-
-    data object OnRefreshSub : GlobalAction
-
-    data object AboutOpened : GlobalAction
-
-    data object ChangelogOpened : GlobalAction
+class AnalyticsInitializer {
+    fun setup(context: Context) {}
 }

@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.di
 
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import com.shub39.rush.shared.logic.di.DataModule
@@ -34,4 +35,8 @@ class RushModules {
 
             override suspend fun userResult(): SubscriptionResult = SubscriptionResult.Subscribed
         }
+
+    @Single
+    fun provideAnalyticsWrapper(): AnalyticsWrapper =
+        AnalyticsWrapper.Companion.DummyAnalyticsWrapper()
 }

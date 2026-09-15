@@ -50,8 +50,6 @@ sealed interface LyricsPageAction {
 
     data class OnLyricsCorrect(val show: Boolean) : LyricsPageAction
 
-    data class OnToggleColorPref(val pref: Boolean) : LyricsPageAction
-
     data class OnUpdatemBackground(val color: Int) : LyricsPageAction
 
     data class OnUpdatemContent(val color: Int) : LyricsPageAction

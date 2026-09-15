@@ -22,6 +22,8 @@ import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 
 sealed interface SharePageAction {
+    data object OnShare : SharePageAction
+
     data object OnRandomize : SharePageAction
 
     data class OnUpdateAlbumArtShape(val shape: AlbumArtShape) : SharePageAction

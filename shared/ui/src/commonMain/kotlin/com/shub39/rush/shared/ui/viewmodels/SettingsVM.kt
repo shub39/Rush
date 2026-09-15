@@ -23,11 +23,14 @@ import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreRepo
 import com.shub39.rush.shared.core.backup.RestoreResult
 import com.shub39.rush.shared.core.backup.RestoreState
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
+import com.shub39.rush.shared.ui.toFullName
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,6 +53,7 @@ class SettingsVM(
     @Provided private val exportRepo: ExportRepo,
     @Provided private val restoreRepo: RestoreRepo,
     @Provided private val changelogManager: ChangelogManager,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
@@ -59,6 +63,7 @@ class SettingsVM(
         _state
             .asStateFlow()
             .onStart {
+                analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED.name, emptyMap())
                 observeJob()
                 getChangeLogs()
             }
@@ -67,11 +72,19 @@ class SettingsVM(
     fun onAction(action: SettingsPageAction) {
         viewModelScope.launch {
             when (action) {
-                SettingsPageAction.OnDeleteSongs -> repo.deleteAllSongs()
+                SettingsPageAction.OnDeleteSongs -> {
+                    analytics.trackEvent(AnalyticsEvent.ALL_SONG_DELETED.name, emptyMap())
+                    repo.deleteAllSongs()
+                }
+
                 SettingsPageAction.OnExportSongs -> {
                     _state.update { it.copy(exportState = ExportState.Exporting) }
 
                     val exportString = exportRepo.exportToJson()
+
+                    if (exportString != null) {
+                        analytics.trackEvent(AnalyticsEvent.BACKUP_CREATED.name, emptyMap())
+                    }
 
                     _state.update {
                         it.copy(
@@ -96,6 +109,7 @@ class SettingsVM(
                         }
 
                         RestoreResult.Success -> {
+                            analytics.trackEvent(AnalyticsEvent.BACKUP_RESTORED.name, emptyMap())
                             _state.update { it.copy(restoreState = RestoreState.Restored) }
                         }
                     }
@@ -110,14 +124,52 @@ class SettingsVM(
                     }
                 }
 
-                is SettingsPageAction.OnThemeSwitch -> datastore.updateAppThemePref(action.appTheme)
-                is SettingsPageAction.OnAmoledSwitch -> datastore.updateAmoledPref(action.amoled)
-                is SettingsPageAction.OnSeedColorChange -> datastore.updateSeedColor(action.color)
-                is SettingsPageAction.OnPaletteChange -> datastore.updatePaletteStyle(action.style)
-                is SettingsPageAction.OnMaterialThemeToggle ->
-                    datastore.updateMaterialTheme(action.pref)
+                is SettingsPageAction.OnThemeSwitch -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("theme" to action.appTheme.name),
+                    )
+                    datastore.updateAppThemePref(action.appTheme)
+                }
 
-                is SettingsPageAction.OnFontChange -> datastore.updateFonts(action.fonts)
+                is SettingsPageAction.OnAmoledSwitch -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("amoled" to action.amoled),
+                    )
+                    datastore.updateAmoledPref(action.amoled)
+                }
+                is SettingsPageAction.OnSeedColorChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("color" to action.color.toString()),
+                    )
+                    datastore.updateSeedColor(action.color)
+                }
+                is SettingsPageAction.OnPaletteChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("style" to action.style.name),
+                    )
+
+                    datastore.updatePaletteStyle(action.style)
+                }
+                is SettingsPageAction.OnMaterialThemeToggle -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("material" to action.pref),
+                    )
+
+                    datastore.updateMaterialTheme(action.pref)
+                }
+
+                is SettingsPageAction.OnFontChange -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.APP_THEME_CHANGED.name,
+                        mapOf("font" to action.fonts.toFullName()),
+                    )
+                    datastore.updateFonts(action.fonts)
+                }
             }
         }
     }

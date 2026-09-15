@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.4
+- Updated Translations
+- Miscellaneous Updates and Fixes
+
 ## 7.0.3
 - Fixed Audio dependent Lyrics Backgrounds not applying
 

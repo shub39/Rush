@@ -19,6 +19,8 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
@@ -46,6 +48,7 @@ class SavedVM(
     private val stateLayer: SharedStates,
     @Provided private val repo: SongRepository,
     @Provided private val datastore: OtherPreferences,
+    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
 
     private var savedJob: Job? = null
@@ -63,10 +66,21 @@ class SavedVM(
             when (action) {
                 is SavedPageAction.ChangeCurrentSong -> fetchLyrics(action.id)
 
-                is SavedPageAction.OnDeleteSong -> repo.deleteSong(action.song.id)
+                is SavedPageAction.OnDeleteSong -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.SONG_DELETED.name,
+                        mapOf("title" to action.song.title, "artists" to action.song.artists),
+                    )
+                    repo.deleteSong(action.song.id)
+                }
 
                 SavedPageAction.OnToggleAutoChange -> {
                     val newPref = !_state.value.autoChange
+
+                    analytics.trackEvent(
+                        AnalyticsEvent.RUSH_MODE_TOGGLED.name,
+                        mapOf("enabled" to newPref),
+                    )
 
                     stateLayer.lyricsState.update { it.copy(autoChange = newPref) }
 
@@ -75,7 +89,13 @@ class SavedVM(
                     if (newPref) MediaListener.onSeekEagerly()
                 }
 
-                is SavedPageAction.UpdateSortOrder -> datastore.updateSortOrder(action.sortOrder)
+                is SavedPageAction.UpdateSortOrder -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.SAVED_SORT_ORDER_CHANGED.name,
+                        mapOf("order" to action.sortOrder.name),
+                    )
+                    datastore.updateSortOrder(action.sortOrder)
+                }
             }
         }
     }
@@ -121,6 +141,11 @@ class SavedVM(
         if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
 
         val result = repo.getSong(id).toSongUi()
+
+        analytics.trackEvent(
+            AnalyticsEvent.LYRICS_OPENED.name,
+            mapOf("title" to result.title, "artists" to result.artists, "source" to "saved"),
+        )
 
         stateLayer.lyricsState.update {
             it.copy(

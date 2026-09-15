@@ -25,6 +25,8 @@ import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import com.shub39.rush.shared.ui.share.SharePageAction
 import com.shub39.rush.shared.ui.share.SharePageState
@@ -42,8 +44,11 @@ import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
 @KoinViewModel
-class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePagePreferences) :
-    ViewModel() {
+class ShareVM(
+    stateLayer: SharedStates,
+    @Provided private val datastore: SharePagePreferences,
+    @Provided private val analytics: AnalyticsWrapper,
+) : ViewModel() {
 
     private var observeJob: Job? = null
 
@@ -52,7 +57,10 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
     val state =
         _state
             .asStateFlow()
-            .onStart { observeDatastore() }
+            .onStart {
+                analytics.trackEvent(AnalyticsEvent.SHARE_OPENED.name, emptyMap())
+                observeDatastore()
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SharePageState())
 
     private fun observeDatastore() =
@@ -99,8 +107,24 @@ class ShareVM(stateLayer: SharedStates, @Provided private val datastore: SharePa
     fun onAction(action: SharePageAction) {
         viewModelScope.launch {
             when (action) {
-                is SharePageAction.OnUpdateCardBackground ->
+                SharePageAction.OnShare -> {
+                    analytics.trackEvent(
+                        AnalyticsEvent.CARD_SHARED.name,
+                        mapOf(
+                            "theme" to state.value.cardTheme.name,
+                            "color" to state.value.cardColors.name,
+                            "roundness" to state.value.cardRoundness.name,
+                            "fullScreen" to state.value.fullScreen.toString(),
+                            "albumArtShape" to state.value.albumArtShape.name,
+                            "cardBackground" to state.value.cardBackground.toString(),
+                            "cardContent" to state.value.cardContent.toString(),
+                        ),
+                    )
+                }
+
+                is SharePageAction.OnUpdateCardBackground -> {
                     datastore.updateCardBackground(action.color)
+                }
 
                 is SharePageAction.OnUpdateCardColor -> datastore.updateCardColor(action.color)
                 is SharePageAction.OnUpdateCardContent -> datastore.updateCardContent(action.color)

@@ -14,20 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.app
+package com.shub39.rush.analytics
 
-sealed interface GlobalAction {
-    data class OnPaywallOpened(val source: String) : GlobalAction
+import com.posthog.PostHog
+import com.shub39.rush.BuildConfig
+import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import kotlin.time.Clock
 
-    data class OnUpdateOnboardingDone(val status: Boolean) : GlobalAction
+class AnalyticsImpl : AnalyticsWrapper {
+    private fun getDefaultProperties() =
+        mapOf(
+            "app_name" to "Rush",
+            "app_version" to BuildConfig.VERSION_NAME,
+            "time_stamp" to Clock.System.now().toEpochMilliseconds() * 1000,
+        )
 
-    data object OnCheckNotificationAccess : GlobalAction
-
-    data object DismissChangelog : GlobalAction
-
-    data object OnRefreshSub : GlobalAction
-
-    data object AboutOpened : GlobalAction
-
-    data object ChangelogOpened : GlobalAction
+    override fun trackEvent(event: String, properties: Map<String, Any>) {
+        PostHog.capture(event = event, properties = getDefaultProperties() + properties)
+    }
 }

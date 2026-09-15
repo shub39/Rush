@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -184,6 +185,7 @@ fun RushNavDisplay(
                                 state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateToPaywall = {
+                                    globalVM.onAction(GlobalAction.OnPaywallOpened("share_page"))
                                     topLevelBackStack.addTopLevel(Routes.Paywall)
                                 },
                             )
@@ -235,7 +237,11 @@ fun RushNavDisplay(
                         }
 
                         entry<Routes.Paywall>(metadata = verticalTransitionMetadata()) {
-                            paywall(globalState.isProUser, { topLevelBackStack.removeLast() })
+                            DisposableEffect(Unit) {
+                                onDispose { globalVM.onAction(GlobalAction.OnRefreshSub) }
+                            }
+
+                            paywall(globalState.isProUser) { topLevelBackStack.removeLast() }
                         }
 
                         entry<Routes.Changelog>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
@@ -249,6 +255,7 @@ fun RushNavDisplay(
                                     showSupportButton = !globalState.isProUser,
                                     onNavigateToPaywall = {
                                         globalVM.onAction(GlobalAction.DismissChangelog)
+                                        globalVM.onAction(GlobalAction.OnPaywallOpened("changelog"))
                                         topLevelBackStack.addTopLevel(Routes.Paywall)
                                     },
                                 )
@@ -264,7 +271,10 @@ fun RushNavDisplay(
                             SettingRootPage(
                                 notificationAccess = globalState.notificationAccess,
                                 state = state,
-                                onShowPaywall = { topLevelBackStack.addTopLevel(Routes.Paywall) },
+                                onShowPaywall = {
+                                    globalVM.onAction(GlobalAction.OnPaywallOpened("settings"))
+                                    topLevelBackStack.addTopLevel(Routes.Paywall)
+                                },
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                                 onNavigateToLookAndFeel = {
@@ -276,9 +286,11 @@ fun RushNavDisplay(
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsBackup)
                                 },
                                 onNavigateToChangelog = {
+                                    globalVM.onAction(GlobalAction.ChangelogOpened)
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsChangelog)
                                 },
                                 onNavigateToAppInfo = {
+                                    globalVM.onAction(GlobalAction.AboutOpened)
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsAppInfo)
                                 },
                                 onUpdateNotificationAccess = {
@@ -300,6 +312,7 @@ fun RushNavDisplay(
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                                 isProUser = globalState.isProUser,
                                 onNavigateToPaywall = {
+                                    globalVM.onAction(GlobalAction.OnPaywallOpened("look_and_feel"))
                                     topLevelBackStack.addTopLevel(Routes.Paywall)
                                 },
                             )

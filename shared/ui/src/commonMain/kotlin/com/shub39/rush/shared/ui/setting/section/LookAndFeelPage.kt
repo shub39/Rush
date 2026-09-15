@@ -196,7 +196,15 @@ fun LookAndFeelPage(
                             onCheckedChange = {
                                 onAction(SettingsPageAction.OnMaterialThemeToggle(it))
                             },
-                            modifier = Modifier.clip(middleItemShape()),
+                            modifier =
+                                Modifier.clip(
+                                    when {
+                                        isProUser ->
+                                            if (state.theme.materialTheme) endItemShape()
+                                            else middleItemShape()
+                                        else -> endItemShape()
+                                    }
+                                ),
                         )
 
                         if (!isProUser) {
