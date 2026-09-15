@@ -14,22 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.di
+package com.shub39.rush.analytics
 
-import com.shub39.rush.analytics.AnalyticsImpl
-import com.shub39.rush.billing.BillingHandlerImpl
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.BillingHandler
-import com.shub39.rush.shared.logic.di.DataModule
-import com.shub39.rush.shared.ui.di.UIModule
-import org.koin.core.annotation.Configuration
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
 
-@Configuration
-@Module(includes = [DataModule::class, UIModule::class])
-class RushModules {
-    @Single fun provideBillingHandler(): BillingHandler = BillingHandlerImpl()
+class AnalyticsImpl(
+    private val dummy: AnalyticsWrapper = AnalyticsWrapper.Companion.DummyAnalyticsWrapper()
+) : AnalyticsWrapper {
+    override fun setup(context: Any?) = dummy.setup(context = context)
 
-    @Single fun provideAnalyticsWrapper(): AnalyticsWrapper = AnalyticsImpl()
+    override fun trackEvent(event: String, properties: Map<String, Any>) =
+        dummy.trackEvent(event = event, properties = properties)
 }
