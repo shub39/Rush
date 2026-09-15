@@ -1,5 +1,12 @@
 [
   {
+    "version": "7.0.4",
+    "changes": [
+      "Updated Translations",
+      "Miscellaneous Updates and Fixes"
+    ]
+  },
+  {
     "version": "7.0.3",
     "changes": [
       "Fixed Audio dependent Lyrics Backgrounds not applying"
@@ -66,14 +73,6 @@
       "Improved existing card styles",
       "Removed underused customization options",
       "Miscellaneous UI fixes"
-    ]
-  },
-  {
-    "version": "6.4.2",
-    "changes": [
-      "Updated Translations",
-      "Performance improvements",
-      "Fixed UI hiding issues in Lyrics Page"
     ]
   }
 ]
