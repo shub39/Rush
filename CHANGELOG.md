@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0.4
+## 7.0.5
 - Updated Translations
 - Miscellaneous Updates and Fixes
 

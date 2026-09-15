@@ -78,7 +78,12 @@ class GlobalVM(
                 analytics.trackEvent(AnalyticsEvent.ABOUT_OPENED.name, emptyMap())
             }
 
-            GlobalAction.OnRefreshSub -> viewModelScope.launch { checkSubscription() }
+            GlobalAction.OnRefreshSub ->
+                viewModelScope.launch {
+                    if (checkSubscription()) {
+                        analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED.name, emptyMap())
+                    }
+                }
 
             is GlobalAction.OnPaywallOpened -> {
                 analytics.trackEvent(
@@ -116,19 +121,16 @@ class GlobalVM(
         }
     }
 
-    private suspend fun checkSubscription() {
+    private suspend fun checkSubscription(): Boolean {
         val isSubscribed = billingHandler.userResult()
 
-        when (isSubscribed) {
+        return when (isSubscribed) {
             SubscriptionResult.Subscribed -> {
-                if (!_state.value.isProUser) {
-                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED.name, emptyMap())
-                }
-
                 _state.update { it.copy(isProUser = true) }
+                true
             }
 
-            else -> {}
+            else -> false
         }
     }
 
