@@ -199,9 +199,7 @@ fun LookAndFeelPage(
                             modifier =
                                 Modifier.clip(
                                     when {
-                                        isProUser ->
-                                            if (state.theme.materialTheme) endItemShape()
-                                            else middleItemShape()
+                                        isProUser -> middleItemShape()
                                         else -> endItemShape()
                                     }
                                 ),
