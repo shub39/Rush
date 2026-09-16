@@ -287,7 +287,7 @@ fun SettingRootPage(
 
         // dialog to confirm nuking
         if (deleteConfirmationDialog) {
-            RushDialog(onDismissRequest = { deleteConfirmationDialog = false }) {
+            RushDialog(onDismissRequest = { deleteConfirmationDialog = false }, padding = 32.dp) {
                 Column(
                     modifier = Modifier.wrapContentSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,

@@ -117,4 +117,7 @@
     <string name="hide_ui_desc">Hide lyrics controls after 5 seconds</string>
     <string name="save">Save</string>
     <string name="share_card_limit">Maximum of 6 lines can be selected for Share Cards</string>
+    <string name="no_thanks">No thanks</string>
+    <string name="notification_access_needed">Notification Access Needed</string>
+    <string name="notification_access_needed_info">Notification access is required for Rush Mode to automatically change songs and for Synced Lyrics.</string>
 </resources>

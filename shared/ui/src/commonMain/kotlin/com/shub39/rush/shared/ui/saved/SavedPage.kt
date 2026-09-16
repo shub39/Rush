@@ -31,10 +31,12 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
@@ -43,6 +45,7 @@ import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -55,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -66,6 +70,7 @@ import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
+import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
 import com.shub39.rush.shared.ui.saved.component.SongCard
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
@@ -74,6 +79,11 @@ import com.shub39.rush.shared.ui.toStringRes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.Res
+import rush.shared.ui.generated.resources.grant_permission
+import rush.shared.ui.generated.resources.no_thanks
+import rush.shared.ui.generated.resources.notification_access_needed
+import rush.shared.ui.generated.resources.notification_access_needed_info
+import rush.shared.ui.generated.resources.notifications
 import rush.shared.ui.generated.resources.rush_branding
 import rush.shared.ui.generated.resources.saved
 import rush.shared.ui.generated.resources.settings
@@ -92,6 +102,7 @@ fun SavedPage(
     PageFill(modifier = modifier) {
         val windowSizeClass = LocalWindowSizeClass.current
         var showBottomBar by remember { mutableStateOf(true) }
+        var showNotificationAccessDialog by remember { mutableStateOf(false) }
 
         Scaffold(
             topBar = {
@@ -275,11 +286,66 @@ fun SavedPage(
             SavedPageToolbar(
                 onOpenSearchSheet = onOpenSearchSheet,
                 notificationAccess = notificationAccess,
-                onAction = onAction,
+                onAction = { action ->
+                    if (action is SavedPageAction.OnRequestNotificationAccess) {
+                        showNotificationAccessDialog = true
+                    } else {
+                        onAction(action)
+                    }
+                },
                 state = state,
                 onNavigateToLyrics = onNavigateToLyrics,
                 modifier = Modifier.platformNavigationBarsPadding().padding(horizontal = 16.dp),
             )
+        }
+
+        if (showNotificationAccessDialog) {
+            RushDialog(
+                padding = 32.dp,
+                onDismissRequest = { showNotificationAccessDialog = false },
+            ) {
+                Column(
+                    modifier = Modifier.wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.notifications),
+                        contentDescription = null,
+                    )
+
+                    Text(
+                        text = stringResource(Res.string.notification_access_needed),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+
+                    Text(
+                        text = stringResource(Res.string.notification_access_needed_info),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom),
+                    ) {
+                        Button(
+                            onClick = {
+                                showNotificationAccessDialog = false
+                                onAction(SavedPageAction.OnRequestNotificationAccess)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = stringResource(Res.string.grant_permission))
+                        }
+                        TextButton(onClick = { showNotificationAccessDialog = false }) {
+                            Text(text = stringResource(Res.string.no_thanks))
+                        }
+                    }
+                }
+            }
         }
     }
 

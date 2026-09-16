@@ -109,21 +109,23 @@ fun SavedPageToolbar(
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        if (notificationAccess) {
-            FilledTonalIconToggleButton(
-                checked = state.autoChange,
-                onCheckedChange = {
+        FilledTonalIconToggleButton(
+            checked = state.autoChange,
+            onCheckedChange = {
+                if (notificationAccess) {
                     onAction(SavedPageAction.OnToggleAutoChange)
                     if (!state.autoChange) onNavigateToLyrics()
-                },
-                modifier = Modifier.size(IconButtonDefaults.mediumContainerSize()),
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.meteor),
-                    contentDescription = "Rush Mode",
-                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                )
-            }
+                } else {
+                    onAction(SavedPageAction.OnRequestNotificationAccess)
+                }
+            },
+            modifier = Modifier.size(IconButtonDefaults.mediumContainerSize()),
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.meteor),
+                contentDescription = "Rush Mode",
+                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+            )
         }
 
         FloatingActionButton(shape = CircleShape, onClick = onOpenSearchSheet) {

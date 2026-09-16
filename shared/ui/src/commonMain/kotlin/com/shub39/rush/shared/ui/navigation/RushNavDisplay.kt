@@ -36,13 +36,12 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.app.GlobalAction
-import com.shub39.rush.shared.ui.component.ChangelogSheet
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.lyrics.ManageSystemBars
 import com.shub39.rush.shared.ui.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.shared.ui.lyrics.section.LyricsPage
-import com.shub39.rush.shared.ui.onboarding.Onboarding
 import com.shub39.rush.shared.ui.saved.SavedPage
+import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
 import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.BackupPage
@@ -82,14 +81,6 @@ fun RushNavDisplay(
 
     LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess) }
 
-    LaunchedEffect(globalState.onBoardingDone) {
-        if (!globalState.onBoardingDone) topLevelBackStack.addTopLevel(Routes.Onboarding)
-    }
-
-    LaunchedEffect(globalState.currentChangelog) {
-        if (globalState.currentChangelog != null) topLevelBackStack.addTopLevel(Routes.Changelog)
-    }
-
     RushTheme(theme = globalState.theme) {
         SharedTransitionLayout(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
             NavDisplay(
@@ -105,19 +96,6 @@ fun RushNavDisplay(
                     ),
                 entryProvider =
                     entryProvider {
-                        entry<Routes.Onboarding> {
-                            Onboarding(
-                                notificationAccess = globalState.notificationAccess,
-                                onDone = {
-                                    globalVM.onAction(GlobalAction.OnUpdateOnboardingDone(true))
-                                    topLevelBackStack.removeLast()
-                                },
-                                onUpdateNotificationAccess = {
-                                    globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
-                                },
-                            )
-                        }
-
                         entry<Routes.Search>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
                             val viewModel = koinViewModel<SearchSheetVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -217,7 +195,15 @@ fun RushNavDisplay(
                             PageFill {
                                 SavedPage(
                                     state = state,
-                                    onAction = viewModel::onAction,
+                                    onAction = { action ->
+                                        if (action is SavedPageAction.OnRequestNotificationAccess) {
+                                            globalVM.onAction(
+                                                GlobalAction.OnRequestNotificationAccess
+                                            )
+                                        } else {
+                                            viewModel.onAction(action)
+                                        }
+                                    },
                                     onNavigateToLyrics = {
                                         topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
                                     },
@@ -242,24 +228,6 @@ fun RushNavDisplay(
                             }
 
                             paywall(globalState.isProUser) { topLevelBackStack.removeLast() }
-                        }
-
-                        entry<Routes.Changelog>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
-                            if (globalState.currentChangelog != null) {
-                                ChangelogSheet(
-                                    currentLog = globalState.currentChangelog!!,
-                                    onDismissRequest = {
-                                        globalVM.onAction(GlobalAction.DismissChangelog)
-                                        topLevelBackStack.removeLast()
-                                    },
-                                    showSupportButton = !globalState.isProUser,
-                                    onNavigateToPaywall = {
-                                        globalVM.onAction(GlobalAction.DismissChangelog)
-                                        globalVM.onAction(GlobalAction.OnPaywallOpened("changelog"))
-                                        topLevelBackStack.addTopLevel(Routes.Paywall)
-                                    },
-                                )
-                            }
                         }
 
                         entry<Routes.Settings.SettingsRoot>(

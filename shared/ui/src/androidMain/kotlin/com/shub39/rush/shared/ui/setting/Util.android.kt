@@ -39,6 +39,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -181,15 +183,23 @@ actual fun LazyListScope.notificationToggle(
 ) {
     if (!notificationAccess) {
         item {
+            val context = LocalContext.current
+            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+            val currentNotificationAccess by rememberUpdatedState(notificationAccess)
+
             LaunchedEffect(Unit) {
-                while (!notificationAccess) {
+                while (!currentNotificationAccess) {
                     delay(500.milliseconds)
                     onUpdateNotificationAccess()
                 }
+                val launchIntent =
+                    context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                if (launchIntent != null) {
+                    context.startActivity(launchIntent)
+                }
             }
-
-            val context = LocalContext.current
-            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
 
             ListItem(
                 headlineContent = { Text(text = stringResource(Res.string.grant_permission)) },

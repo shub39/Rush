@@ -18,4 +18,8 @@ package com.shub39.rush.shared.core.interfaces
 
 interface MediaAccessChecker {
     fun canAccessMediaInfo(): Boolean
+
+    fun launchPermissionSettings()
+
+    fun redirectToApp()
 }

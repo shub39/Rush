@@ -22,6 +22,8 @@ import com.shub39.rush.shared.core.enums.SortOrder
 sealed interface SavedPageAction {
     data object OnToggleAutoChange : SavedPageAction
 
+    data object OnRequestNotificationAccess : SavedPageAction
+
     data class OnDeleteSong(val song: Song) : SavedPageAction
 
     data class ChangeCurrentSong(val id: Long) : SavedPageAction

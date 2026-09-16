@@ -30,7 +30,6 @@ import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
-import com.shub39.rush.shared.ui.toFullName
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -125,49 +124,23 @@ class SettingsVM(
                 }
 
                 is SettingsPageAction.OnThemeSwitch -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("theme" to action.appTheme.name),
-                    )
                     datastore.updateAppThemePref(action.appTheme)
                 }
 
                 is SettingsPageAction.OnAmoledSwitch -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("amoled" to action.amoled),
-                    )
                     datastore.updateAmoledPref(action.amoled)
                 }
                 is SettingsPageAction.OnSeedColorChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("color" to action.color.toString()),
-                    )
                     datastore.updateSeedColor(action.color)
                 }
                 is SettingsPageAction.OnPaletteChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("style" to action.style.name),
-                    )
-
                     datastore.updatePaletteStyle(action.style)
                 }
                 is SettingsPageAction.OnMaterialThemeToggle -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("material" to action.pref),
-                    )
-
                     datastore.updateMaterialTheme(action.pref)
                 }
 
                 is SettingsPageAction.OnFontChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.APP_THEME_CHANGED.name,
-                        mapOf("font" to action.fonts.toFullName()),
-                    )
                     datastore.updateFonts(action.fonts)
                 }
             }

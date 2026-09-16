@@ -21,18 +21,18 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.BillingHandler
-import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.app.GlobalState
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -46,11 +46,11 @@ import org.koin.core.annotation.Provided
 class GlobalVM(
     @Provided private val billingHandler: BillingHandler,
     @Provided private val otherPreferences: OtherPreferences,
-    @Provided private val changelogManager: ChangelogManager,
     @Provided private val mediaAccessChecker: MediaAccessChecker,
     @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var syncJob: Job? = null
+    private var permissionPollJob: Job? = null
 
     private val _state = MutableStateFlow(GlobalState())
     val state =
@@ -59,7 +59,6 @@ class GlobalVM(
             .onStart {
                 analytics.trackEvent(AnalyticsEvent.APP_OPENED.name, emptyMap())
                 checkSubscription()
-                checkChangelog()
                 startSync()
             }
             .stateIn(
@@ -92,14 +91,6 @@ class GlobalVM(
                 )
             }
 
-            is GlobalAction.OnUpdateOnboardingDone ->
-                viewModelScope.launch {
-                    otherPreferences.updateOnboardingDone(action.status)
-                    if (action.status) {
-                        analytics.trackEvent(AnalyticsEvent.ONBOARDING_COMPLETED.name, emptyMap())
-                    }
-                }
-
             is GlobalAction.OnCheckNotificationAccess -> {
                 val hasAccess = mediaAccessChecker.canAccessMediaInfo()
                 if (hasAccess && !_state.value.notificationAccess) {
@@ -111,12 +102,27 @@ class GlobalVM(
                 _state.update { it.copy(notificationAccess = hasAccess) }
             }
 
-            GlobalAction.DismissChangelog -> {
-                _state.value.currentChangelog?.version?.let {
-                    viewModelScope.launch { otherPreferences.updateLastChangelogShown(it) }
-                }
-
-                _state.update { it.copy(currentChangelog = null) }
+            GlobalAction.OnRequestNotificationAccess -> {
+                mediaAccessChecker.launchPermissionSettings()
+                permissionPollJob?.cancel()
+                permissionPollJob =
+                    viewModelScope.launch {
+                        while (true) {
+                            delay(500.milliseconds)
+                            val hasAccess = mediaAccessChecker.canAccessMediaInfo()
+                            if (hasAccess) {
+                                if (!_state.value.notificationAccess) {
+                                    analytics.trackEvent(
+                                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED.name,
+                                        emptyMap(),
+                                    )
+                                }
+                                _state.update { it.copy(notificationAccess = true) }
+                                mediaAccessChecker.redirectToApp()
+                                break
+                            }
+                        }
+                    }
             }
         }
     }
@@ -131,24 +137,6 @@ class GlobalVM(
             }
 
             else -> false
-        }
-    }
-
-    private fun checkChangelog() {
-        viewModelScope.launch {
-            val lastShownChangelog = otherPreferences.getLastChangelogShown().first()
-            val changeLogs = changelogManager.changelogs.first()
-
-            if (lastShownChangelog.isBlank()) {
-                changeLogs.firstOrNull()?.version?.let {
-                    otherPreferences.updateLastChangelogShown(it)
-                }
-                return@launch // don't show changelog on first install
-            }
-
-            if (lastShownChangelog != changeLogs.firstOrNull()?.version) {
-                _state.update { it.copy(currentChangelog = changeLogs.firstOrNull()) }
-            }
         }
     }
 
@@ -190,11 +178,6 @@ class GlobalVM(
                     .onEach { pref ->
                         _state.update { it.copy(theme = it.theme.copy(seedColor = pref)) }
                     }
-                    .launchIn(this)
-
-                otherPreferences
-                    .getOnboardingDoneFlow()
-                    .onEach { pref -> _state.update { it.copy(onBoardingDone = pref) } }
                     .launchIn(this)
             }
     }
