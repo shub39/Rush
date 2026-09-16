@@ -184,45 +184,22 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnChangeLyricsBackground -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "background", "value" to action.background.name),
-                    )
                     lyricsPrefs.updateLyricsBackground(action.background)
                 }
 
                 is LyricsPageAction.OnUpdateColorType -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "color_type", "value" to action.color.name),
-                    )
                     lyricsPrefs.updateLyricsColor(action.color)
                 }
 
                 is LyricsPageAction.OnUpdatemBackground -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf(
-                            "type" to "custom_background_color",
-                            "value" to action.color.toString(),
-                        ),
-                    )
                     lyricsPrefs.updateCardBackground(action.color)
                 }
 
                 is LyricsPageAction.OnExpressiveLyricsChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "expressive_syllables", "value" to action.pref.toString()),
-                    )
                     lyricsPrefs.updateExpressiveSyllablesPref(action.pref)
                 }
 
                 is LyricsPageAction.OnUpdatemContent -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "custom_content_color", "value" to action.color.toString()),
-                    )
                     lyricsPrefs.updateCardContent(action.color)
                 }
 
@@ -267,10 +244,6 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnAlignmentChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "alignment", "value" to action.alignment.name),
-                    )
                     lyricsPrefs.updateLyricAlignment(action.alignment)
                 }
 
@@ -283,18 +256,10 @@ class LyricsVM(
                     lyricsPrefs.updateLetterSpacing(action.spacing)
 
                 LyricsPageAction.OnCustomisationReset -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "reset"),
-                    )
                     lyricsPrefs.reset()
                 }
 
                 is LyricsPageAction.OnFullscreenChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "fullscreen", "value" to action.pref.toString()),
-                    )
                     lyricsPrefs.setFullScreen(action.pref)
                 }
 
@@ -313,18 +278,10 @@ class LyricsVM(
                 }
 
                 is LyricsPageAction.OnHideUIToggle -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "hide_ui", "value" to action.enabled.toString()),
-                    )
                     lyricsPrefs.updateHideUI(action.enabled)
                 }
 
                 is LyricsPageAction.OnBlurSyncedChange -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_THEME_CHANGED.name,
-                        mapOf("type" to "blur_synced", "value" to action.pref.toString()),
-                    )
                     lyricsPrefs.updateBlurSynced(action.pref)
                 }
 

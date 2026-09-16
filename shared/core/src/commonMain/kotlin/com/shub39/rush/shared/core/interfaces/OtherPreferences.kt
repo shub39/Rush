@@ -52,12 +52,4 @@ interface OtherPreferences {
     fun getFontFlow(): Flow<Fonts>
 
     suspend fun updateFonts(font: Fonts)
-
-    fun getOnboardingDoneFlow(): Flow<Boolean>
-
-    suspend fun updateOnboardingDone(done: Boolean)
-
-    fun getLastChangelogShown(): Flow<String>
-
-    suspend fun updateLastChangelogShown(version: String)
 }

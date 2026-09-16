@@ -17,6 +17,7 @@
 package com.shub39.rush.shared.logic
 
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.listener.MediaListener
@@ -32,5 +33,23 @@ actual class MediaAccessCheckerImpl(private val context: Context) : MediaAccessC
         if (enabled) MediaListener.startListening(context.applicationContext)
 
         return enabled
+    }
+
+    actual override fun launchPermissionSettings() {
+        val intent =
+            Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS").apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        context.startActivity(intent)
+    }
+
+    actual override fun redirectToApp() {
+        val launchIntent =
+            context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        if (launchIntent != null) {
+            context.startActivity(launchIntent)
+        }
     }
 }

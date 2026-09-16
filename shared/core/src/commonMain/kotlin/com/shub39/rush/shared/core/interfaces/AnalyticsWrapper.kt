@@ -24,11 +24,9 @@ interface AnalyticsWrapper {
         value class AnalyticsEvent(val name: String) {
             companion object {
                 val APP_OPENED = AnalyticsEvent("app_opened")
-                val ONBOARDING_COMPLETED = AnalyticsEvent("onboarding_completed")
                 val NOTIFICATION_ACCESS_GRANTED = AnalyticsEvent("notification_access_granted")
                 val PAYWALL_OPENED = AnalyticsEvent("paywall_opened")
                 val PAYWALL_PURCHASED = AnalyticsEvent("paywall_purchased")
-                val SAVED_SORT_ORDER_CHANGED = AnalyticsEvent("saved_sort_order_changed")
                 val RUSH_MODE_TOGGLED = AnalyticsEvent("rush_mode_toggled")
                 val SEARCH_OPENED = AnalyticsEvent("search_opened")
                 val SEARCH_PERFORMED = AnalyticsEvent("search_performed")
@@ -44,8 +42,6 @@ interface AnalyticsWrapper {
                 val ALL_SONG_DELETED = AnalyticsEvent("all_songs_deleted")
                 val ABOUT_OPENED = AnalyticsEvent("about_opened")
                 val CHANGELOG_OPENED = AnalyticsEvent("changelog_opened")
-                val APP_THEME_CHANGED = AnalyticsEvent("app_theme_changed")
-                val LYRICS_THEME_CHANGED = AnalyticsEvent("lyrics_theme_changed")
             }
         }
 

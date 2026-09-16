@@ -22,4 +22,8 @@ import org.koin.core.annotation.Single
 @Single(binds = [MediaAccessChecker::class])
 actual class MediaAccessCheckerImpl : MediaAccessChecker {
     actual override fun canAccessMediaInfo(): Boolean = false
+
+    actual override fun launchPermissionSettings() {}
+
+    actual override fun redirectToApp() {}
 }

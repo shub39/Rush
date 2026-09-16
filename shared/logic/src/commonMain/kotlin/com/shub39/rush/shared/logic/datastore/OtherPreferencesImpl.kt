@@ -50,9 +50,7 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
         private val paletteStyle = stringPreferencesKey("palette_style")
         private val materialTheme = booleanPreferencesKey("material_theme")
         private val sortOrder = stringPreferencesKey("sort_order")
-        private val onboardingDone = booleanPreferencesKey("onboarding_done")
         private val selectedFont = stringPreferencesKey("font")
-        private val lastChangelogShownKey = stringPreferencesKey("last_changelog_shown")
     }
 
     override fun getAppThemePrefFlow(): Flow<AppTheme> =
@@ -120,19 +118,5 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
 
     override suspend fun updateFonts(font: Fonts) {
         datastore.edit { settings -> settings[selectedFont] = font.name }
-    }
-
-    override fun getOnboardingDoneFlow(): Flow<Boolean> =
-        datastore.data.map { preferences -> preferences[onboardingDone] == true }
-
-    override suspend fun updateOnboardingDone(done: Boolean) {
-        datastore.edit { settings -> settings[onboardingDone] = done }
-    }
-
-    override fun getLastChangelogShown(): Flow<String> =
-        datastore.data.map { prefs -> prefs[lastChangelogShownKey] ?: "" }
-
-    override suspend fun updateLastChangelogShown(version: String) {
-        datastore.edit { settings -> settings[lastChangelogShownKey] = version }
     }
 }

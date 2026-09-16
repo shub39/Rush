@@ -90,12 +90,10 @@ class SavedVM(
                 }
 
                 is SavedPageAction.UpdateSortOrder -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.SAVED_SORT_ORDER_CHANGED.name,
-                        mapOf("order" to action.sortOrder.name),
-                    )
                     datastore.updateSortOrder(action.sortOrder)
                 }
+
+                SavedPageAction.OnRequestNotificationAccess -> {}
             }
         }
     }

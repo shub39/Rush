@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.6
+- Fixed crashes in lower android versions
+- Removed Onboarding and Changelog Sheets
+- Miscellaneous Updates and Fixes
+
 ## 7.0.5
 - Updated Translations
 - Miscellaneous Updates and Fixes

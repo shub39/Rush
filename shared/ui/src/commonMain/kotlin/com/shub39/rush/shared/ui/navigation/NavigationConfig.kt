@@ -36,10 +36,6 @@ sealed interface Routes : NavKey {
 
     data object Saved : Routes
 
-    data object Changelog : Routes
-
-    data object Onboarding : Routes
-
     data object Paywall : Routes
 
     sealed interface Settings : Routes {
@@ -65,8 +61,6 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
             is Routes.Settings -> Routes.Settings::class
             Routes.Search -> Routes.Search::class
             Routes.Saved -> Routes.Saved::class
-            Routes.Changelog -> Routes.Changelog::class
-            Routes.Onboarding -> Routes.Onboarding::class
             Routes.Paywall -> Routes.Paywall::class
             Routes.Share.ShareRoot -> Routes.Share.ShareRoot::class
             Routes.Share.ShareEdit -> Routes.Share.ShareEdit::class
@@ -106,7 +100,7 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
 
     fun removeLast() {
         if (backStack.size > 1) {
-            backStack.removeLast()
+            backStack.removeAt(backStack.lastIndex)
         }
     }
 }

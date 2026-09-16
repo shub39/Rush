@@ -191,7 +191,7 @@ fun LrcCorrectDialog(
                                                         MaterialTheme.colorScheme
                                                             .surfaceContainerLow
                                                 ),
-                                            modifier = Modifier.padding(top = 4.dp),
+                                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                                         ) {
                                             Column(modifier = Modifier.padding(16.dp)) {
                                                 Text(

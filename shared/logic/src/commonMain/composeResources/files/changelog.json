@@ -1,5 +1,13 @@
 [
   {
+    "version": "7.0.6",
+    "changes": [
+      "Fixed crashes in lower android versions",
+      "Removed Onboarding and Changelog Sheets",
+      "Miscellaneous Updates and Fixes"
+    ]
+  },
+  {
     "version": "7.0.5",
     "changes": [
       "Updated Translations",
@@ -62,16 +70,6 @@
     "version": "6.5.1",
     "changes": [
       "Fixed lyrics search issues",
-      "Miscellaneous UI fixes"
-    ]
-  },
-  {
-    "version": "6.5.0",
-    "changes": [
-      "Updated Translations",
-      "Added new Card Style - Brat",
-      "Improved existing card styles",
-      "Removed underused customization options",
       "Miscellaneous UI fixes"
     ]
   }

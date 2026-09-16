@@ -389,7 +389,7 @@ private fun AudioPermissionDialog(
     onLaunchPermission: () -> Unit = {},
 ) {
     if (show) {
-        RushDialog(onDismissRequest = onDismiss) {
+        RushDialog(onDismissRequest = onDismiss, padding = 32.dp) {
             Column(
                 modifier = Modifier.wrapContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

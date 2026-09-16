@@ -19,14 +19,11 @@ package com.shub39.rush.shared.ui.app
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.shub39.rush.shared.core.dataclasses.Theme
-import com.shub39.rush.shared.core.dataclasses.VersionEntry
 
 @Stable
 @Immutable
 data class GlobalState(
     val isProUser: Boolean = false,
     val theme: Theme = Theme(),
-    val onBoardingDone: Boolean = true,
     val notificationAccess: Boolean = false,
-    val currentChangelog: VersionEntry? = null,
 )
