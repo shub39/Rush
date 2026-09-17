@@ -18,8 +18,12 @@ package com.shub39.rush.billing
 
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class BillingHandlerImpl : BillingHandler {
+    override val isPro: StateFlow<Boolean> = MutableStateFlow(true)
+
     override suspend fun isProUser(): Boolean = true
 
     override suspend fun userResult(): SubscriptionResult = SubscriptionResult.Subscribed

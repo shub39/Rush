@@ -19,14 +19,18 @@ package com.shub39.rush.analytics
 import com.posthog.PostHog
 import com.shub39.rush.BuildConfig
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.BillingHandler
 import kotlin.time.Clock
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-class AnalyticsImpl : AnalyticsWrapper {
+class AnalyticsImpl : AnalyticsWrapper, KoinComponent {
     private fun getDefaultProperties() =
         mapOf(
             "app_name" to "Rush",
             "app_version" to BuildConfig.VERSION_NAME,
-            "time_stamp" to Clock.System.now().toEpochMilliseconds() * 1000,
+            "time_stamp" to Clock.System.now().toEpochMilliseconds().div(1000),
+            "is_pro" to get<BillingHandler>().isPro.value,
         )
 
     override fun trackEvent(event: String, properties: Map<String, Any>) {

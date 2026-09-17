@@ -16,7 +16,11 @@
  */
 package com.shub39.rush.shared.core.interfaces
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface BillingHandler {
+    val isPro: StateFlow<Boolean>
+
     suspend fun isProUser(): Boolean
 
     suspend fun userResult(): SubscriptionResult
