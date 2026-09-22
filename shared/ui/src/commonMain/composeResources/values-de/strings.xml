@@ -117,4 +117,7 @@
     <string name="brat">Brat</string>
     <string name="save">Speichern</string>
     <string name="share_card_limit">Maximal 6 Zeilen können fürs Teilen ausgewählt werden</string>
+    <string name="no_thanks">Nein danke</string>
+    <string name="notification_access_needed">Benachrichtigungszugriff erforderlich</string>
+    <string name="notification_access_needed_info">Für den „Rush-Modus“, in dem Titel automatisch gewechselt werden, sowie für die synchronisierten Songtexte ist der Benachrichtigungszugriff erforderlich.</string>
 </resources>
