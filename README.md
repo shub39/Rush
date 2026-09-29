@@ -30,10 +30,6 @@ So, I made this app to get and store lyrics for my favorite songs from Genius an
 Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete 
 albums with lyrics without dealing with genius's "UI".
 
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
-
 ## Translations 
 
 Translations are done via weblate, you can contribute there!
