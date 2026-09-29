@@ -26,9 +26,9 @@ interface SongRepository {
     // network
     suspend fun fetchSong(result: SearchResult): Result<Song, SourceError>
 
-    suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError>
-
     suspend fun searchGenius(query: String): Result<List<SearchResult>, SourceError>
+
+    suspend fun updateGenius(id: Long): Result<String, SourceError>
 
     suspend fun searchCorrections(
         track: String,

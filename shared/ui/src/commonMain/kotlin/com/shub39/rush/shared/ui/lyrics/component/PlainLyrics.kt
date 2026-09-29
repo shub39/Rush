@@ -87,15 +87,15 @@ fun PlainLyrics(
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
     val nonEmptyItems = remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
-    val shouldAutoScrape =
+    val shouldAutoFetch =
         state.source == Sources.GENIUS &&
             nonEmptyItems.isEmpty() &&
-            !state.scraping.first &&
-            state.scraping.second == null
+            !state.fetchingGenius.first &&
+            state.fetchingGenius.second == null
 
-    LaunchedEffect(song.id, state.source, shouldAutoScrape) {
-        if (shouldAutoScrape) {
-            action(LyricsPageAction.OnScrapeGeniusLyrics(song.id, song.sourceUrl))
+    LaunchedEffect(song.id, state.source, shouldAutoFetch) {
+        if (shouldAutoFetch) {
+            action(LyricsPageAction.OnFetchGeniusLyrics(song.id, song.sourceUrl))
         }
     }
 
@@ -156,7 +156,7 @@ fun PlainLyrics(
             when (state.source) {
                 Sources.GENIUS -> {
                     item(key = "genius_empty", contentType = "empty_state") {
-                        AnimatedContent(targetState = state.scraping) {
+                        AnimatedContent(targetState = state.fetchingGenius) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -180,7 +180,7 @@ fun PlainLyrics(
                                     TextButton(
                                         onClick = {
                                             action(
-                                                LyricsPageAction.OnScrapeGeniusLyrics(
+                                                LyricsPageAction.OnFetchGeniusLyrics(
                                                     song.id,
                                                     song.sourceUrl,
                                                 )

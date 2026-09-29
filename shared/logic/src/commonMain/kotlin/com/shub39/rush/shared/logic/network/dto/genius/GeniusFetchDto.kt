@@ -16,26 +16,16 @@
  */
 package com.shub39.rush.shared.logic.network.dto.genius
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
-@Serializable data class GeniusSearchDto(val response: SearchResponse)
+@Serializable data class GeniusFetchDto(val response: FetchResponse)
 
-@Serializable data class SearchResponse(val hits: List<Hit>)
+@Serializable data class FetchResponse(val song: Song)
 
-@Serializable
-data class Hit(val highlights: JsonArray, val index: String, val type: String, val result: Result)
+@Serializable data class Song(val lyrics: JsonObject? = null)
 
-@Serializable
-data class Result(
-    @SerialName("_type") val type: String? = null,
-    @SerialName("artist_names") val artistNames: String,
-    @SerialName("full_title") val fullTitle: String,
-    val id: Long,
-    val instrumental: Boolean = false,
-    @SerialName("song_art_image_url") val songArtImageURL: String,
-    val title: String,
-    val url: String,
-    val lyrics: String? = null,
-)
+@Serializable data class GeniusResponse(val dom: DomNode? = null)
+
+@Serializable data class DomNode(val tag: String? = null, val children: List<JsonElement>? = null)
