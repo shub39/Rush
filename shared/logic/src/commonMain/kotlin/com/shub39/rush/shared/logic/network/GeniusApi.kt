@@ -33,7 +33,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlin.let
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -69,12 +68,22 @@ class GeniusApi {
         return when (val result = geniusFetch(id)) {
             is Result.Success -> {
                 val lyrics = result.data.response.song.lyrics
-
-                lyrics?.toString()?.let { Result.Success(extractPlainLyrics(it)) }
-                    ?: Result.Error(
+                if (lyrics == null) {
+                    Result.Error<String, SourceError>(
                         SourceError.Data.UNKNOWN,
-                        "No lyrics found for song with id $id",
+                        "No valid response from Genius",
                     )
+                }
+
+                val extractedLyrics = extractPlainLyrics(lyrics.toString())
+                if (extractedLyrics.isBlank()) {
+                    Result.Error<String, SourceError>(
+                        SourceError.Data.UNKNOWN,
+                        "Blank response from Genius",
+                    )
+                }
+
+                Result.Success(extractPlainLyrics(lyrics.toString()))
             }
             is Result.Error -> Result.Error(error = result.error, message = result.message)
         }

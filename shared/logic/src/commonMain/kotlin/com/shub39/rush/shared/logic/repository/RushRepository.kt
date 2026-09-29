@@ -65,10 +65,7 @@ class RushRepository(
                     withContext(Dispatchers.IO) {
                         when (val result = geniusApi.getGeniusLyrics(result.id)) {
                             is Result.Success -> result.data
-                            is Result.Error -> {
-                                RushLogger.e(TAG, "Failed fetching lyrics from Genius")
-                                ""
-                            }
+                            is Result.Error -> null
                         }
                     }
                 } else null
@@ -131,7 +128,7 @@ class RushRepository(
         val geniusLyrics = withContext(Dispatchers.IO) { geniusApi.getGeniusLyrics(id) }
         return when (geniusLyrics) {
             is Result.Success -> {
-                localDao.updatePlainLyricsById(id, geniusLyrics.data)
+                localDao.updateGeniusLyrics(id, geniusLyrics.data)
                 Result.Success(geniusLyrics.data)
             }
             is Result.Error -> Result.Error(SourceError.Data.UNKNOWN)
