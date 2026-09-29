@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.1.0
+- Removed unnecessary calls to Genius API
+- Removed dead APIs
+- Miscellaneous Updates and Fixes
+- Updated Translations
+
 ## 7.0.7
 - Fixed crashes in lower android versions
 - Removed Onboarding and Changelog Sheets
@@ -16,8 +22,8 @@
 - Revamped Navigation, Animations Several UI components
 - Added better support for expanded screens
 - Fixed inconsistent share cards based on device
-- Updated Lyrics customisation defaults
-- Updated Share card customisation defaults
+- Updated Lyrics customization defaults
+- Updated Share card customization defaults
 
 ## 6.7.1
 - Revamped save page toolbar
