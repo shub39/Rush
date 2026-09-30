@@ -64,4 +64,11 @@
     <string name="lyrics_background">Låttextens bakgrund</string>
     <string name="looks">Utseende</string>
     <string name="foss_desc">Alla funktioner är upplåsta. Den här varianten av appen stöder inte köp i appen. Om den här appen berikar ditt liv så stötta mig genom en donation på</string>
+    <string name="no_thanks">Nej tack</string>
+    <string name="hide_ui_desc">Dölj låttextkontroller efter 5 sekunder</string>
+    <string name="hide_ui">Dölj kontroller</string>
+    <string name="others">Andra</string>
+    <string name="line_synced_lyrics">Radsynkade</string>
+    <string name="syllable_synced_lyrics">Stavelsesynkade</string>
+    <string name="foss">Du använder FOSS-varianten</string>
 </resources>
