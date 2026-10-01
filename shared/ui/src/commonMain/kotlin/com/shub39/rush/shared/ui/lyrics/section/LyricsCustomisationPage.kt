@@ -72,7 +72,6 @@ import com.shub39.rush.shared.ui.lyrics.component.customisation.lyricsCustomisat
 import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
-import com.shub39.rush.shared.ui.pro_sheets.LyricsBackgroundProFeatureSheet
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -108,7 +107,7 @@ fun LyricsCustomisationsPageContent(
         val waveColors = getWaveColors(state)
 
         var colorPickerDialog by remember { mutableStateOf(false) }
-        var showBackgroundFeature by remember { mutableStateOf(false) }
+
         var audioPermissionDialog by remember { mutableStateOf(false) }
         var editTarget by remember { mutableStateOf("content") }
         var isShowingSynced by rememberSaveable { mutableStateOf(state.sync) }
@@ -120,13 +119,6 @@ fun LyricsCustomisationsPageContent(
             onDismiss = { audioPermissionDialog = false },
             onLaunchPermission = requestMicrophonePermission,
         )
-
-        if (showBackgroundFeature && !isProUser) {
-            LyricsBackgroundProFeatureSheet(
-                onDismissRequest = { showBackgroundFeature = false },
-                onNavigateToPaywall = onOpenPaywall,
-            )
-        }
 
         if (colorPickerDialog) {
             ColorPickerDialog(
@@ -250,7 +242,7 @@ fun LyricsCustomisationsPageContent(
                         ) {
                             lyricsCustomisationSettings(
                                 isProUser = isProUser,
-                                onOpenPaywall = { showBackgroundFeature = true },
+                                onOpenPaywall = onOpenPaywall,
                                 state = state,
                                 onAction = onAction,
                                 isShowingSynced = isShowingSynced,
@@ -380,7 +372,7 @@ fun LyricsCustomisationsPageContent(
 
                         lyricsCustomisationSettings(
                             isProUser = isProUser,
-                            onOpenPaywall = { showBackgroundFeature = true },
+                            onOpenPaywall = onOpenPaywall,
                             state = state,
                             onAction = onAction,
                             isShowingSynced = isShowingSynced,
