@@ -19,7 +19,9 @@ package com.shub39.rush.shared.ui.pro_sheets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
@@ -48,6 +50,7 @@ fun BaseProSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
+        padding = 16.dp,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().heightIn(max = 700.dp),
@@ -58,8 +61,14 @@ fun BaseProSheet(
 
             content()
 
-            FilledTonalButton(onClick = onNavigateToPaywall, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Get Pro")
+            FilledTonalButton(
+                onClick = onNavigateToPaywall,
+                modifier = Modifier.fillMaxWidth().height(ButtonDefaults.MediumContainerHeight),
+            ) {
+                Text(
+                    text = "Get Pro",
+                    style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
+                )
             }
         }
     }

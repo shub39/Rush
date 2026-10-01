@@ -250,7 +250,7 @@ fun LyricsCustomisationsPageContent(
                         ) {
                             lyricsCustomisationSettings(
                                 isProUser = isProUser,
-                                onOpenPaywall = onOpenPaywall,
+                                onOpenPaywall = { showBackgroundFeature = true },
                                 state = state,
                                 onAction = onAction,
                                 isShowingSynced = isShowingSynced,
@@ -380,7 +380,7 @@ fun LyricsCustomisationsPageContent(
 
                         lyricsCustomisationSettings(
                             isProUser = isProUser,
-                            onOpenPaywall = onOpenPaywall,
+                            onOpenPaywall = { showBackgroundFeature = true },
                             state = state,
                             onAction = onAction,
                             isShowingSynced = isShowingSynced,

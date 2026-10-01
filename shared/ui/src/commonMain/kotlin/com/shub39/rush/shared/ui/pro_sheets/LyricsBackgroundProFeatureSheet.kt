@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -54,11 +55,13 @@ import com.shub39.rush.shared.core.dataclasses.WaveColors
 import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
-import com.shub39.rush.shared.ui.lyrics.TextPrefs
-import com.shub39.rush.shared.ui.lyrics.component.PlainLyric
+import com.shub39.rush.shared.ui.theme.flexFontEmphasis
+import com.shub39.rush.shared.ui.theme.flexFontRounded
+import com.shub39.rush.shared.ui.toStringRes
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LyricsBackgroundProFeatureSheet(
@@ -77,7 +80,14 @@ fun LyricsBackgroundProFeatureSheet(
         onNavigateToPaywall = onNavigateToPaywall,
         sheetState = sheetState,
         title = {
-            Text(text = "Customize Backgrounds", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "Customize Backgrounds",
+                style =
+                    MaterialTheme.typography.titleLarge.copy(
+                        fontFamily = flexFontEmphasis(),
+                        textAlign = TextAlign.Center,
+                    ),
+            )
         },
     ) {
         BackgroundPreview(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
@@ -131,7 +141,7 @@ private fun BackgroundPreview(modifier: Modifier = Modifier) {
     LaunchedEffect(backgrounds.size) {
         if (backgrounds.isNotEmpty()) {
             while (true) {
-                delay(3.seconds)
+                delay(1.seconds)
                 selectedIndex = (selectedIndex + 1) % backgrounds.size
             }
         }
@@ -146,25 +156,13 @@ private fun BackgroundPreview(modifier: Modifier = Modifier) {
 
     val currentBackground = backgrounds.getOrElse(selectedIndex) { LyricsBackground.SOLID_COLOR }
 
-    val cardBackground = Color(0xFF160E2A)
-    val contentColor = Color.White
-    val hypnoticColor1 = Color(0xFFFF2A85)
-    val hypnoticColor2 = Color(0xFF00E5FF)
-    val waveAccentColor = Color(0xFF00F5D4)
+    val cardBackground = Color(0xFF0068B4)
+    val cardContent = Color(0xFFB1D1F3)
 
     val waveColors = remember {
         WaveColors(
             cardBackground = cardBackground.toArgb(),
-            cardWaveBackground = waveAccentColor.toArgb(),
-        )
-    }
-
-    val sampleLyrics = remember {
-        listOf(
-            1 to "When the night has come",
-            2 to "And the land is dark",
-            3 to "And the moon is the only light we'll see",
-            4 to "No I won't be afraid",
+            cardWaveBackground = cardContent.toArgb(),
         )
     }
 
@@ -188,28 +186,19 @@ private fun BackgroundPreview(modifier: Modifier = Modifier) {
                             cardBackground = cardBackground,
                             waveData = waveData,
                             waveColors = waveColors,
-                            hypnoticColor1 = hypnoticColor1,
-                            hypnoticColor2 = hypnoticColor2,
+                            hypnoticColor1 = cardBackground,
+                            hypnoticColor2 = cardContent,
                         )
                     }
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center).padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    sampleLyrics.forEach { lyric ->
-                        PlainLyric(
-                            textPrefs = TextPrefs(fontSize = 18f, lineHeight = 22f),
-                            entry = lyric,
-                            romanizedText = null,
-                            onClick = {},
-                            containerColor = Color.Transparent,
-                            cardContent = contentColor,
-                        )
-                    }
-                }
+                Text(
+                    text = stringResource(currentBackground.toStringRes()),
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center),
+                    style =
+                        MaterialTheme.typography.headlineMedium.copy(fontFamily = flexFontRounded()),
+                )
             }
         }
     }

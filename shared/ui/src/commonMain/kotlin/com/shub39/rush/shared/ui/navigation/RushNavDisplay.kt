@@ -176,6 +176,8 @@ fun RushNavDisplay(
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LyricsCustomisationsPage(
+                                isProUser = globalState.isProUser,
+                                onOpenPaywall = { topLevelBackStack.addTopLevel(Paywall) },
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                                 state = state,
                                 onAction = viewModel::onAction,
