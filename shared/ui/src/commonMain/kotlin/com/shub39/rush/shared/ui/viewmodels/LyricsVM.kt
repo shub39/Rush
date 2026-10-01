@@ -203,14 +203,14 @@ class LyricsVM(
                     lyricsPrefs.updateCardContent(action.color)
                 }
 
-                is LyricsPageAction.OnScrapeGeniusLyrics -> {
-                    _state.update { it.copy(scraping = Pair(true, null)) }
+                is LyricsPageAction.OnFetchGeniusLyrics -> {
+                    _state.update { it.copy(fetchingGenius = Pair(true, null)) }
 
-                    when (val result = repo.scrapeGeniusLyrics(action.id, action.url)) {
+                    when (val result = repo.updateGenius(id = action.id)) {
                         is Result.Error -> {
                             _state.update {
                                 it.copy(
-                                    scraping =
+                                    fetchingGenius =
                                         Pair(
                                             false,
                                             LyricsState.LyricsError(
@@ -225,7 +225,7 @@ class LyricsVM(
                         is Result.Success -> {
                             _state.update { lyricsPageState ->
                                 lyricsPageState.copy(
-                                    scraping = Pair(false, null),
+                                    fetchingGenius = Pair(false, null),
                                     lyricsState =
                                         (lyricsPageState.lyricsState as? LyricsState.Loaded)?.let {
                                             it.copy(
@@ -488,7 +488,7 @@ class LyricsVM(
                     .collectLatest { (position, speed) ->
                         val start = TimeSource.Monotonic.markNow()
 
-                        while (isActive) {
+                        while (this@launch.isActive) {
                             val elapsed = (speed * start.elapsedNow().inWholeMilliseconds).toLong()
 
                             _playbackInfo.update {

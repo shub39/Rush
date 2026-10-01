@@ -38,7 +38,7 @@
     <string name="choose_file">اختر الملف</string>
     <string name="look_and_feel">انظر واشعر</string>
     <string name="look_and_feel_info">تخصيص التطبيق بطرق مختلفة</string>
-    <string name="amoled">AMOLED لوحة</string>
+    <string name="amoled">لوحة ألوان AMOLED</string>
     <string name="amoled_desc">أفضل تجربة على شاشات AMOLED</string>
     <string name="palette_style">نمط اللوحة</string>
     <string name="seed_color">حدد لون البذرة</string>
@@ -106,4 +106,18 @@
     <string name="others">الآخرون</string>
     <string name="full_screen_share">مشاركة الشاشة الكاملة</string>
     <string name="romanization">تحويل الى نظام كتابة اخر</string>
+    <string name="romanization_desc">اعرض كلمات الأغاني المكتوبة بالأحرف اللاتينية للغات اليابانية والكورية والصينية والهندية والبنجابية واللغات التي تستخدم الأبجدية السيريلية</string>
+    <string name="open_search">فتح البحث</string>
+    <string name="system_default">الإعداد الافتراضي للنظام</string>
+    <string name="language">اللغة</string>
+    <string name="expressive_syllables">مقاطع تعبيرية</string>
+    <string name="expressive_syllables_desc">يتغير نمط الخط بناءً على مدة الكلمة</string>
+    <string name="hide_ui">إخفاء عناصر التحكم</string>
+    <string name="hide_ui_desc">إخفاء عناصر التحكم في كلمات الأغنية بعد 5 ثوانٍ</string>
+    <string name="save">حفظ</string>
+    <string name="share_card_limit">يمكن اختيار 6 خطوط كحد أقصى ل \"مشاركة البطاقات\" (Share Cards)</string>
+    <string name="no_thanks">لا شكرا</string>
+    <string name="notification_access_needed">يلزم الوصول إلى الإشعارات</string>
+    <string name="notification_access_needed_info">يلزم منح إذن الوصول إلى الإشعارات لتمكين (Rush Mode) من تغيير الأغاني تلقائياً ولتفعيل ميزة الكلمات المتزامنة.</string>
+    <string name="brat">شقية</string>
 </resources>

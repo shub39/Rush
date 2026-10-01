@@ -110,7 +110,10 @@ buildConfig {
     packageName("com.shub39.rush.logic")
     useKotlinOutput { topLevelConstants = true }
 
+    val isPrivateTokenAvailable = privateToken.isNotBlank()
+
     buildConfigField("GENIUS_API_TOKEN", privateToken.ifBlank { publicGeniusApiToken })
+    buildConfigField("IS_PRIVATE_TOKEN_AVAILABLE", isPrivateTokenAvailable)
 }
 
 room3 { schemaDirectory("$projectDir/schemas") }

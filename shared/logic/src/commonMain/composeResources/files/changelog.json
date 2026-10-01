@@ -1,5 +1,14 @@
 [
   {
+    "version": "7.1.0",
+    "changes": [
+      "Removed unnecessary calls to Genius API",
+      "Removed dead APIs",
+      "Miscellaneous Updates and Fixes",
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "7.0.7",
     "changes": [
       "Fixed crashes in lower android versions",
@@ -26,8 +35,8 @@
       "Revamped Navigation, Animations Several UI components",
       "Added better support for expanded screens",
       "Fixed inconsistent share cards based on device",
-      "Updated Lyrics customisation defaults",
-      "Updated Share card customisation defaults"
+      "Updated Lyrics customization defaults",
+      "Updated Share card customization defaults"
     ]
   },
   {
@@ -64,13 +73,6 @@
     "changes": [
       "Updated Translations",
       "Improved Lyrics correct dialog."
-    ]
-  },
-  {
-    "version": "6.5.1",
-    "changes": [
-      "Fixed lyrics search issues",
-      "Miscellaneous UI fixes"
     ]
   }
 ]

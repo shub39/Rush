@@ -1,17 +1,7 @@
-> [!CAUTION]
-> ## [Keep Android Open](https://keepandroidopen.org/)
-> ###  Your phone is about to stop being yours.
-> Starting September 2026, a silent update, nonconsensually pushed by Google, will block every 
-> Android app whose developer hasn't registered with Google, signed their contract, paid up, and 
-> handed over government ID.
-> **Every app and every device, worldwide, with no opt-out.**
-
 ![](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
 [<img alt="Get it on Google Play" src="badges/playstore.png" width="180px">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
 [<img alt="Get it on github" src="badges/github.png" width="180px">](https://github.com/shub39/Rush/releases)
-[<img alt="Get it on izzyondroid" src="badges/izzyondroid.png" width="180px">](https://apt.izzysoft.de/fdroid/index/apk/com.shub39.rush)
-[<img alt="Get it on fdroid" src="badges/fdroid.png" width="180px">](https://f-droid.org/en/packages/com.shub39.rush/)
 
 ## Screenshots
 
@@ -27,7 +17,7 @@
 - [x] Share Lyrics
 - [x] Customisations
 - [x] Autofill current playing song in search 
-- [x] Synced Lyrics (Line-Synced, Syllable-Synced)
+- [x] Synced Lyrics
 - [x] Import and Export saved lyrics
 - [x] Romanizations for Japanese, Chinese, Korean, Hindi, Punjabi and other Cyrillic Languages
 
@@ -39,10 +29,6 @@ Spotify removed its feature to see and share lyrics from its free tier just to b
 So, I made this app to get and store lyrics for my favorite songs from Genius and share them like 
 Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete 
 albums with lyrics without dealing with genius's "UI".
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/shub39/Rush.svg?background=%23282828&axis=%23f2dfd3&line=%23ffb780)](https://starchart.cc/shub39/Rush)
 
 ## Translations 
 
@@ -74,7 +60,7 @@ submitting pull requests.
 
 # Security
 
-SHA-256 fingerprint for the signing certificate used for github releases
+SHA-256 fingerprint for the signing certificate used for GitHub releases
 ```text
 0F:E1:B9:F4:4A:4D:B9:7E:C5:09:48:F5:18:9F:6B:43:00:71:6C:C6:D4:84:3F:56:98:D6:14:A2:15:2E:21:88
 ```

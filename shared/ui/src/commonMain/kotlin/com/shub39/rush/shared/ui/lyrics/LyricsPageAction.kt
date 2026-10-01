@@ -46,7 +46,7 @@ sealed interface LyricsPageAction {
 
     data class OnChangeSelectedLines(val lines: Map<Int, String>) : LyricsPageAction
 
-    data class OnScrapeGeniusLyrics(val id: Long, val url: String) : LyricsPageAction
+    data class OnFetchGeniusLyrics(val id: Long, val url: String) : LyricsPageAction
 
     data class OnLyricsCorrect(val show: Boolean) : LyricsPageAction
 

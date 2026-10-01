@@ -79,6 +79,8 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 expect fun LyricsCustomisationsPage(
+    isProUser: Boolean,
+    onOpenPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -88,6 +90,9 @@ expect fun LyricsCustomisationsPage(
 
 @Composable
 fun LyricsCustomisationsPageContent(
+    modifier: Modifier = Modifier,
+    isProUser: Boolean,
+    onOpenPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -95,7 +100,6 @@ fun LyricsCustomisationsPageContent(
     microphonePermission: Boolean,
     requestMicrophonePermission: () -> Unit,
     waveData: List<Byte>?,
-    modifier: Modifier = Modifier,
 ) =
     BoxWithConstraints(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
         val (cardBackground, cardContent) = getCardColors(state)
@@ -103,6 +107,7 @@ fun LyricsCustomisationsPageContent(
         val waveColors = getWaveColors(state)
 
         var colorPickerDialog by remember { mutableStateOf(false) }
+
         var audioPermissionDialog by remember { mutableStateOf(false) }
         var editTarget by remember { mutableStateOf("content") }
         var isShowingSynced by rememberSaveable { mutableStateOf(state.sync) }
@@ -236,6 +241,8 @@ fun LyricsCustomisationsPageContent(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             lyricsCustomisationSettings(
+                                isProUser = isProUser,
+                                onOpenPaywall = onOpenPaywall,
                                 state = state,
                                 onAction = onAction,
                                 isShowingSynced = isShowingSynced,
@@ -364,6 +371,8 @@ fun LyricsCustomisationsPageContent(
                         }
 
                         lyricsCustomisationSettings(
+                            isProUser = isProUser,
+                            onOpenPaywall = onOpenPaywall,
                             state = state,
                             onAction = onAction,
                             isShowingSynced = isShowingSynced,

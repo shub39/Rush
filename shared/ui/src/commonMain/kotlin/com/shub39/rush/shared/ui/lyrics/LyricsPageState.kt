@@ -34,7 +34,7 @@ import org.jetbrains.compose.resources.StringResource
 @Immutable
 data class LyricsPageState(
     // non-datastore
-    val scraping: Pair<Boolean, LyricsState.LyricsError?> = Pair(false, null),
+    val fetchingGenius: Pair<Boolean, LyricsState.LyricsError?> = Pair(false, null),
     val lyricsState: LyricsState = LyricsState.Idle,
     val autoChange: Boolean = false,
     val playingSong: SongMeta? = null,

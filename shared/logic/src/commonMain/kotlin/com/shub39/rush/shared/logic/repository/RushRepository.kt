@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.shared.logic.repository
 
+import com.shub39.rush.logic.IS_PRIVATE_TOKEN_AVAILABLE
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.SourceError
@@ -23,17 +24,13 @@ import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.core.util.TTMLParser
 import com.shub39.rush.shared.logic.database.SongDao
 import com.shub39.rush.shared.logic.mappers.toSong
 import com.shub39.rush.shared.logic.mappers.toSongEntity
 import com.shub39.rush.shared.logic.network.GeniusApi
-import com.shub39.rush.shared.logic.network.GeniusScraper
 import com.shub39.rush.shared.logic.network.LrcLibApi
-import com.shub39.rush.shared.logic.network.LyricsPlusApi
 import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -45,8 +42,6 @@ class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,
     private val lrcLibApi: LrcLibApi,
-    private val lyricsPlusApi: LyricsPlusApi,
-    private val geniusScraper: GeniusScraper,
 ) : SongRepository {
     companion object {
         private const val TAG = "RushRepository"
@@ -54,17 +49,18 @@ class RushRepository(
 
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
-            val ttmlLyrics =
-                withContext(Dispatchers.IO) {
-                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
-                }
             val lrcLibLyrics =
                 withContext(Dispatchers.IO) {
                     lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
                 }
             val geniusLyrics =
-                if (lrcLibLyrics == null && ttmlLyrics == null) {
-                    withContext(Dispatchers.IO) { geniusScraper.geniusScrape(result.url) }
+                if (IS_PRIVATE_TOKEN_AVAILABLE) {
+                    withContext(Dispatchers.IO) {
+                        when (val result = geniusApi.getGeniusLyrics(result.id)) {
+                            is Result.Success -> result.data
+                            is Result.Error -> null
+                        }
+                    }
                 } else null
 
             return Result.Success<Song, SourceError>(
@@ -77,9 +73,8 @@ class RushRepository(
                         sourceUrl = result.url,
                         artUrl = result.artUrl,
                         geniusLyrics = geniusLyrics,
-                        syncedLyrics =
-                            lrcLibLyrics?.syncedLyrics ?: ttmlLyrics?.let { TTMLParser.toLRC(it) },
-                        ttmlLyrics = ttmlLyrics,
+                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        ttmlLyrics = null,
                         dateAdded = Clock.System.now().epochSeconds,
                     )
                 )
@@ -87,21 +82,6 @@ class RushRepository(
         } catch (e: Exception) {
             RushLogger.e(TAG, "Unexpected exception", e)
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
-        }
-    }
-
-    override suspend fun scrapeGeniusLyrics(id: Long, url: String): Result<String, SourceError> {
-        val request = withContext(Dispatchers.IO) { geniusScraper.geniusScrapeResult(url) }
-
-        return when (request) {
-            is Result.Error -> {
-                Result.Error(error = request.error, message = request.message)
-            }
-
-            is Result.Success -> {
-                Result.Success<String, SourceError>(request.data.ifBlank { "[INSTRUMENTAL]" })
-                    .also { localDao.updateGeniusLyrics(id = id, lyrics = it.data) }
-            }
         }
     }
 
@@ -134,31 +114,26 @@ class RushRepository(
         }
     }
 
+    override suspend fun updateGenius(id: Long): Result<String, SourceError> {
+        if (!IS_PRIVATE_TOKEN_AVAILABLE) return Result.Error(SourceError.Network.REQUEST_FAILED)
+
+        val geniusLyrics = withContext(Dispatchers.IO) { geniusApi.getGeniusLyrics(id) }
+        return when (geniusLyrics) {
+            is Result.Success -> {
+                localDao.updateGeniusLyrics(id, geniusLyrics.data)
+                Result.Success(geniusLyrics.data)
+            }
+            is Result.Error -> Result.Error(SourceError.Data.UNKNOWN)
+        }
+    }
+
     override suspend fun searchCorrections(
         track: String,
         artist: String,
     ): Result<List<CorrectionSearchResult>, SourceError> {
-        val ttmlResult =
-            try {
-                withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
-            } catch (e: Exception) {
-                RushLogger.e(TAG, "Failed fetching lyrics from Lyrics Plus", e)
-                null
-            }
         val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
         var searchResults = listOf<CorrectionSearchResult>()
-
-        if (ttmlResult != null && TTMLParser.isValidTTML(ttmlResult)) {
-            searchResults =
-                searchResults.plus(
-                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
-                        title = track,
-                        artist = artist,
-                        syllableSyncedLyrics = ttmlResult,
-                    )
-                )
-        }
 
         when (lrcResults) {
             is Result.Success -> {
@@ -191,11 +166,7 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return if (searchResults.isNotEmpty()) {
-                    Result.Success(searchResults)
-                } else {
-                    Result.Error(error = lrcResults.error, message = lrcResults.message)
-                }
+                return Result.Error(error = lrcResults.error, message = lrcResults.message)
             }
         }
     }

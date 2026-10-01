@@ -1,1 +1,1 @@
-App to search, view, save and share lyrics
+App to search, view and share lyrics
