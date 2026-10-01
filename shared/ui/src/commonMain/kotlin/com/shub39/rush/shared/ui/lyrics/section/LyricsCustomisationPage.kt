@@ -124,7 +124,7 @@ fun LyricsCustomisationsPageContent(
         if (showBackgroundFeature && !isProUser) {
             LyricsBackgroundProFeatureSheet(
                 onDismissRequest = { showBackgroundFeature = false },
-                onNavigateToPaywall = onOpenPaywall
+                onNavigateToPaywall = onOpenPaywall,
             )
         }
 

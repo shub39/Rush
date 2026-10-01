@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2026  Shubham Gorai
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.shub39.rush.shared.ui.pro_sheets
 
 import androidx.compose.animation.AnimatedContent
@@ -40,9 +56,9 @@ import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.lyrics.TextPrefs
 import com.shub39.rush.shared.ui.lyrics.component.PlainLyric
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun LyricsBackgroundProFeatureSheet(
@@ -53,7 +69,7 @@ fun LyricsBackgroundProFeatureSheet(
             enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
         ),
     onDismissRequest: () -> Unit,
-    onNavigateToPaywall: () -> Unit
+    onNavigateToPaywall: () -> Unit,
 ) {
     BaseProSheet(
         modifier = modifier,
@@ -61,28 +77,53 @@ fun LyricsBackgroundProFeatureSheet(
         onNavigateToPaywall = onNavigateToPaywall,
         sheetState = sheetState,
         title = {
-            Text(
-                text = "Customize Backgrounds",
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
+            Text(text = "Customize Backgrounds", style = MaterialTheme.typography.titleLarge)
+        },
     ) {
         BackgroundPreview(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
     }
 }
 
 @Composable
-private fun BackgroundPreview(
-    modifier: Modifier = Modifier
-) {
+private fun BackgroundPreview(modifier: Modifier = Modifier) {
     val backgrounds = remember { LyricsBackground.entries }
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     var waveData by remember {
         mutableStateOf(
             listOf<Byte>(
-                15, 30, 60, 90, 120, 80, 50, 70, 100, 110, 85, 45, 65, 95, 75, 40,
-                20, 55, 85, 105, 90, 60, 35, 70, 100, 80, 50, 30, 65, 90, 45, 25
+                15,
+                30,
+                60,
+                90,
+                120,
+                80,
+                50,
+                70,
+                100,
+                110,
+                85,
+                45,
+                65,
+                95,
+                75,
+                40,
+                20,
+                55,
+                85,
+                105,
+                90,
+                60,
+                35,
+                70,
+                100,
+                80,
+                50,
+                30,
+                65,
+                90,
+                45,
+                25,
             )
         )
     }
@@ -114,7 +155,7 @@ private fun BackgroundPreview(
     val waveColors = remember {
         WaveColors(
             cardBackground = cardBackground.toArgb(),
-            cardWaveBackground = waveAccentColor.toArgb()
+            cardWaveBackground = waveAccentColor.toArgb(),
         )
     }
 
@@ -123,25 +164,22 @@ private fun BackgroundPreview(
             1 to "When the night has come",
             2 to "And the land is dark",
             3 to "And the moon is the only light we'll see",
-            4 to "No I won't be afraid"
+            4 to "No I won't be afraid",
         )
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Card(
             modifier = Modifier.fillMaxWidth().height(280.dp),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackground)
+            colors = CardDefaults.cardColors(containerColor = cardBackground),
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 AnimatedContent(
                     targetState = currentBackground,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     modifier = Modifier.fillMaxSize(),
-                    label = "BackgroundTransition"
+                    label = "BackgroundTransition",
                 ) { bg ->
                     Box(modifier = Modifier.fillMaxSize()) {
                         ApplyLyricsBackground(
@@ -151,18 +189,15 @@ private fun BackgroundPreview(
                             waveData = waveData,
                             waveColors = waveColors,
                             hypnoticColor1 = hypnoticColor1,
-                            hypnoticColor2 = hypnoticColor2
+                            hypnoticColor2 = hypnoticColor2,
                         )
                     }
                 }
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().align(Alignment.Center).padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     sampleLyrics.forEach { lyric ->
                         PlainLyric(
@@ -171,7 +206,7 @@ private fun BackgroundPreview(
                             romanizedText = null,
                             onClick = {},
                             containerColor = Color.Transparent,
-                            cardContent = contentColor
+                            cardContent = contentColor,
                         )
                     }
                 }
