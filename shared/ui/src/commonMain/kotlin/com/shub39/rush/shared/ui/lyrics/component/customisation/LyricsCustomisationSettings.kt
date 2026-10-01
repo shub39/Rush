@@ -61,6 +61,8 @@ import rush.shared.ui.generated.resources.*
 
 fun LazyListScope.lyricsCustomisationSettings(
     state: LyricsPageState,
+    isProUser: Boolean,
+    onOpenPaywall: () -> Unit,
     onAction: (LyricsPageAction) -> Unit,
     isShowingSynced: Boolean,
     microphonePermission: Boolean,
@@ -83,6 +85,11 @@ fun LazyListScope.lyricsCustomisationSettings(
                     options = allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
+                        if (!isProUser) {
+                            onOpenPaywall()
+                            return@ListSelect
+                        }
+
                         if (it !in audioDependentBackgrounds || microphonePermission) {
                             onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
                         } else {

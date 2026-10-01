@@ -24,13 +24,11 @@ import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.core.util.TTMLParser
 import com.shub39.rush.shared.logic.database.SongDao
 import com.shub39.rush.shared.logic.mappers.toSong
 import com.shub39.rush.shared.logic.mappers.toSongEntity
 import com.shub39.rush.shared.logic.network.GeniusApi
 import com.shub39.rush.shared.logic.network.LrcLibApi
-import com.shub39.rush.shared.logic.network.LyricsPlusApi
 import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +42,6 @@ class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,
     private val lrcLibApi: LrcLibApi,
-    private val lyricsPlusApi: LyricsPlusApi,
 ) : SongRepository {
     companion object {
         private const val TAG = "RushRepository"
@@ -52,10 +49,6 @@ class RushRepository(
 
     override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
         try {
-            val ttmlLyrics =
-                withContext(Dispatchers.IO) {
-                    lyricsPlusApi.fetchTTML(title = result.title, artist = result.artist)
-                }
             val lrcLibLyrics =
                 withContext(Dispatchers.IO) {
                     lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
@@ -80,9 +73,8 @@ class RushRepository(
                         sourceUrl = result.url,
                         artUrl = result.artUrl,
                         geniusLyrics = geniusLyrics,
-                        syncedLyrics =
-                            lrcLibLyrics?.syncedLyrics ?: ttmlLyrics?.let { TTMLParser.toLRC(it) },
-                        ttmlLyrics = ttmlLyrics,
+                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
+                        ttmlLyrics = null,
                         dateAdded = Clock.System.now().epochSeconds,
                     )
                 )
@@ -139,27 +131,9 @@ class RushRepository(
         track: String,
         artist: String,
     ): Result<List<CorrectionSearchResult>, SourceError> {
-        val ttmlResult =
-            try {
-                withContext(Dispatchers.IO) { lyricsPlusApi.fetchTTML(track, artist) }
-            } catch (e: Exception) {
-                RushLogger.e(TAG, "Failed fetching lyrics from Lyrics Plus", e)
-                null
-            }
         val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
 
         var searchResults = listOf<CorrectionSearchResult>()
-
-        if (ttmlResult != null && TTMLParser.isValidTTML(ttmlResult)) {
-            searchResults =
-                searchResults.plus(
-                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
-                        title = track,
-                        artist = artist,
-                        syllableSyncedLyrics = ttmlResult,
-                    )
-                )
-        }
 
         when (lrcResults) {
             is Result.Success -> {
@@ -192,11 +166,7 @@ class RushRepository(
             }
 
             is Result.Error -> {
-                return if (searchResults.isNotEmpty()) {
-                    Result.Success(searchResults)
-                } else {
-                    Result.Error(error = lrcResults.error, message = lrcResults.message)
-                }
+                return Result.Error(error = lrcResults.error, message = lrcResults.message)
             }
         }
     }
