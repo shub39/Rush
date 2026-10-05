@@ -18,8 +18,8 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
@@ -59,7 +59,7 @@ class GlobalVM(
             .onStart {
                 checkSubscription(firstLaunch = true)
                 startSync()
-                analytics.trackEvent(AnalyticsEvent.APP_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.APP_OPENED, emptyMap())
             }
             .stateIn(
                 scope = viewModelScope,
@@ -70,21 +70,18 @@ class GlobalVM(
     fun onAction(action: GlobalAction) {
         when (action) {
             GlobalAction.ChangelogOpened -> {
-                analytics.trackEvent(AnalyticsEvent.CHANGELOG_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.CHANGELOG_OPENED, emptyMap())
             }
 
             GlobalAction.AboutOpened -> {
-                analytics.trackEvent(AnalyticsEvent.ABOUT_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.ABOUT_OPENED, emptyMap())
             }
 
-            GlobalAction.OnRefreshSub ->
-                viewModelScope.launch {
-                    checkSubscription()
-                }
+            GlobalAction.OnRefreshSub -> viewModelScope.launch { checkSubscription() }
 
             is GlobalAction.OnPaywallOpened -> {
                 analytics.trackEvent(
-                    AnalyticsEvent.PAYWALL_OPENED.name,
+                    AnalyticsEvent.PAYWALL_OPENED,
                     mapOf("source" to action.source),
                 )
             }
@@ -92,10 +89,7 @@ class GlobalVM(
             is GlobalAction.OnCheckNotificationAccess -> {
                 val hasAccess = mediaAccessChecker.canAccessMediaInfo()
                 if (hasAccess && !_state.value.notificationAccess) {
-                    analytics.trackEvent(
-                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED.name,
-                        emptyMap(),
-                    )
+                    analytics.trackEvent(AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED, emptyMap())
                 }
                 _state.update { it.copy(notificationAccess = hasAccess) }
             }
@@ -111,7 +105,7 @@ class GlobalVM(
                             if (hasAccess) {
                                 if (!_state.value.notificationAccess) {
                                     analytics.trackEvent(
-                                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED.name,
+                                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED,
                                         emptyMap(),
                                     )
                                 }
@@ -131,7 +125,7 @@ class GlobalVM(
         when (isSubscribed) {
             SubscriptionResult.Subscribed -> {
                 if (!_state.value.isProUser && !firstLaunch) {
-                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED.name, emptyMap())
+                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED, emptyMap())
                 }
 
                 _state.update { it.copy(isProUser = true) }

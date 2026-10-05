@@ -18,9 +18,9 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import com.shub39.rush.shared.core.interfaces.RomanizationProvider
@@ -116,7 +116,7 @@ class LyricsVM(
                     val newPref = !_state.value.autoChange
 
                     analytics.trackEvent(
-                        AnalyticsEvent.RUSH_MODE_TOGGLED.name,
+                        AnalyticsEvent.RUSH_MODE_TOGGLED,
                         mapOf("enabled" to newPref),
                     )
 
@@ -142,7 +142,7 @@ class LyricsVM(
                     val song = repo.getSong(action.id).toSongUi()
 
                     analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_CORRECTED.name,
+                        AnalyticsEvent.LYRICS_CORRECTED,
                         mapOf("title" to song.title, "artists" to song.artists),
                     )
 

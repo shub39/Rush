@@ -16,37 +16,14 @@
  */
 package com.shub39.rush.shared.core.interfaces
 
+import com.shub39.rush.shared.core.AnalyticsEvent
+
 interface AnalyticsWrapper {
-    fun trackEvent(event: String, properties: Map<String, Any>)
+    fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>)
 
     companion object {
-        @JvmInline
-        value class AnalyticsEvent(val name: String) {
-            companion object {
-                val APP_OPENED = AnalyticsEvent("app_opened")
-                val NOTIFICATION_ACCESS_GRANTED = AnalyticsEvent("notification_access_granted")
-                val PAYWALL_OPENED = AnalyticsEvent("paywall_opened")
-                val PAYWALL_PURCHASED = AnalyticsEvent("paywall_purchased")
-                val RUSH_MODE_TOGGLED = AnalyticsEvent("rush_mode_toggled")
-                val SEARCH_OPENED = AnalyticsEvent("search_opened")
-                val SEARCH_PERFORMED = AnalyticsEvent("search_performed")
-                val SONG_FETCHED = AnalyticsEvent("song_fetched")
-                val SONG_DELETED = AnalyticsEvent("song_deleted")
-                val LYRICS_OPENED = AnalyticsEvent("lyrics_opened")
-                val LYRICS_CORRECTED = AnalyticsEvent("lyrics_corrected")
-                val SETTINGS_OPENED = AnalyticsEvent("settings_opened")
-                val SHARE_OPENED = AnalyticsEvent("share_opened")
-                val CARD_SHARED = AnalyticsEvent("card_shared")
-                val BACKUP_CREATED = AnalyticsEvent("backup_created")
-                val BACKUP_RESTORED = AnalyticsEvent("backup_restored")
-                val ALL_SONG_DELETED = AnalyticsEvent("all_songs_deleted")
-                val ABOUT_OPENED = AnalyticsEvent("about_opened")
-                val CHANGELOG_OPENED = AnalyticsEvent("changelog_opened")
-            }
-        }
-
         class DummyAnalyticsWrapper : AnalyticsWrapper {
-            override fun trackEvent(event: String, properties: Map<String, Any>) {}
+            override fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>) {}
         }
     }
 }

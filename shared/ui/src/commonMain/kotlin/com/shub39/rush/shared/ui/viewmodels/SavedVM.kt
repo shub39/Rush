@@ -18,9 +18,9 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
@@ -68,7 +68,7 @@ class SavedVM(
 
                 is SavedPageAction.OnDeleteSong -> {
                     analytics.trackEvent(
-                        AnalyticsEvent.SONG_DELETED.name,
+                        AnalyticsEvent.SONG_DELETED,
                         mapOf("title" to action.song.title, "artists" to action.song.artists),
                     )
                     repo.deleteSong(action.song.id)
@@ -78,7 +78,7 @@ class SavedVM(
                     val newPref = !_state.value.autoChange
 
                     analytics.trackEvent(
-                        AnalyticsEvent.RUSH_MODE_TOGGLED.name,
+                        AnalyticsEvent.RUSH_MODE_TOGGLED,
                         mapOf("enabled" to newPref),
                     )
 
@@ -141,7 +141,7 @@ class SavedVM(
         val result = repo.getSong(id).toSongUi()
 
         analytics.trackEvent(
-            AnalyticsEvent.LYRICS_OPENED.name,
+            AnalyticsEvent.LYRICS_OPENED,
             mapOf("title" to result.title, "artists" to result.artists, "source" to "saved"),
         )
 

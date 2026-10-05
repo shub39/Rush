@@ -18,6 +18,7 @@ package com.shub39.rush.analytics
 
 import com.posthog.PostHog
 import com.shub39.rush.BuildConfig
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.BillingHandler
 import kotlin.time.Clock
@@ -33,7 +34,7 @@ class AnalyticsImpl : AnalyticsWrapper, KoinComponent {
             "is_pro" to get<BillingHandler>().isPro.value,
         )
 
-    override fun trackEvent(event: String, properties: Map<String, Any>) {
-        PostHog.capture(event = event, properties = getDefaultProperties() + properties)
+    override fun trackEvent(event: AnalyticsEvent, properties: Map<String, Any>) {
+        PostHog.capture(event = event.name, properties = getDefaultProperties() + properties)
     }
 }
