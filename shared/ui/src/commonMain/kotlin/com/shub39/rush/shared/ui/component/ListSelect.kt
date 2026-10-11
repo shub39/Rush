@@ -25,15 +25,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.material3.TonalToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,13 +44,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import rush.shared.ui.generated.resources.Res
-import rush.shared.ui.generated.resources.arrow_back_ios
-import rush.shared.ui.generated.resources.arrow_forward_ios
-import rush.shared.ui.generated.resources.check
+import rush.shared.ui.generated.resources.*
 
 /**
  * A composable that displays a title and a list of options as toggleable buttons, allowing the user
@@ -76,25 +77,7 @@ fun <T> ListSelect(
         title?.let { Text(text = title, style = MaterialTheme.typography.titleMedium) }
 
         if (options.size > 3) {
-            val currentIndex = options.indexOf(selected)
             var expanded by remember { mutableStateOf(false) }
-
-            val prevInteractionSource = remember { MutableInteractionSource() }
-            val centerInteractionSource = remember { MutableInteractionSource() }
-            val nextInteractionSource = remember { MutableInteractionSource() }
-
-            val prevPressed by prevInteractionSource.collectIsPressedAsState()
-            val prevHovered by prevInteractionSource.collectIsHoveredAsState()
-            val prevWeight by animateFloatAsState(if (prevPressed || prevHovered) 0.25f else 0f)
-
-            val centerPressed by centerInteractionSource.collectIsPressedAsState()
-            val centerHovered by centerInteractionSource.collectIsHoveredAsState()
-            val centerWeight by
-                animateFloatAsState(if (centerPressed || centerHovered) 0.25f else 0f)
-
-            val nextPressed by nextInteractionSource.collectIsPressedAsState()
-            val nextHovered by nextInteractionSource.collectIsHoveredAsState()
-            val nextWeight by animateFloatAsState(if (nextPressed || nextHovered) 0.25f else 0f)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -102,79 +85,72 @@ fun <T> ListSelect(
                 horizontalArrangement =
                     Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
             ) {
-                ToggleButton(
+                TonalToggleButton(
                     checked = false,
                     enabled = enabled,
-                    onCheckedChange = {
-                        val prevIndex =
-                            if (currentIndex > 0) currentIndex - 1 else options.lastIndex
-                        onSelectedChange(options[prevIndex])
-                    },
-                    modifier = Modifier.weight(1f + prevWeight),
-                    interactionSource = prevInteractionSource,
+                    onCheckedChange = { expanded = true },
+                    modifier = Modifier.height(ButtonDefaults.MinHeight).weight(0.7f),
                     shapes = ButtonGroupDefaults.connectedLeadingButtonShapes(),
-                    content = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back_ios),
-                            contentDescription = "Previous",
-                        )
-                    },
+                    content = { labelProvider(selected) },
                 )
 
-                Box(modifier = Modifier.weight(2f + centerWeight)) {
-                    ToggleButton(
-                        checked = true,
+                Box(modifier = Modifier.weight(0.3f)) {
+                    TonalToggleButton(
+                        checked = expanded,
                         enabled = enabled,
                         onCheckedChange = { expanded = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        interactionSource = centerInteractionSource,
-                        shapes = ButtonGroupDefaults.connectedMiddleButtonShapes(),
-                        content = { labelProvider(selected) },
+                        modifier = Modifier.height(ButtonDefaults.MinHeight).fillMaxWidth(),
+                        shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                        content = {
+                            Icon(
+                                painter = painterResource(Res.drawable.edit),
+                                contentDescription = "Edit",
+                            )
+                        },
                     )
 
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         offset = DpOffset(10.dp, 10.dp),
+                        containerColor = Color.Transparent,
+                        tonalElevation = 0.dp,
+                        shadowElevation = 0.dp,
+                        border = null,
                     ) {
-                        options.forEach { option ->
-                            DropdownMenuItem(
-                                text = { labelProvider(option) },
-                                onClick = {
-                                    onSelectedChange(option)
-                                    expanded = false
-                                },
-                                leadingIcon = {
-                                    if (option == selected) {
+                        options.forEachIndexed { index, option ->
+                            if (option == selected) {
+                                DropdownMenuItem(
+                                    text = { labelProvider(option) },
+                                    onCheckedChange = {
+                                        onSelectedChange(option)
+                                        expanded = false
+                                    },
+                                    shapes = MenuDefaults.itemShape(index, options.size),
+                                    checked = option == selected,
+                                    colors = MenuDefaults.selectableItemVibrantColors(),
+                                    leadingIcon = {
                                         Icon(
                                             painter = painterResource(Res.drawable.check),
                                             contentDescription = null,
-                                            modifier = Modifier.size(18.dp),
                                         )
-                                    }
-                                },
-                            )
+                                    },
+                                )
+                            } else {
+                                DropdownMenuItem(
+                                    text = { labelProvider(option) },
+                                    onCheckedChange = {
+                                        onSelectedChange(option)
+                                        expanded = false
+                                    },
+                                    colors = MenuDefaults.selectableItemVibrantColors(),
+                                    shapes = MenuDefaults.itemShape(index, options.size),
+                                    checked = option == selected,
+                                )
+                            }
                         }
                     }
                 }
-
-                ToggleButton(
-                    checked = false,
-                    enabled = enabled,
-                    onCheckedChange = {
-                        val nextIndex = (currentIndex + 1) % options.size
-                        onSelectedChange(options[nextIndex])
-                    },
-                    modifier = Modifier.weight(1f + nextWeight),
-                    interactionSource = nextInteractionSource,
-                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
-                    content = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_forward_ios),
-                            contentDescription = "Next",
-                        )
-                    },
-                )
             }
         } else {
             Row(
