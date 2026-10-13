@@ -1,5 +1,12 @@
 [
   {
+    "version": "7.1.1",
+    "changes": [
+      "Removed share card limit",
+      "Miscellaneous Updates and Fixes"
+    ]
+  },
+  {
     "version": "7.1.0",
     "changes": [
       "Removed unnecessary calls to Genius API",
@@ -66,13 +73,6 @@
       "Fixed lyrics not loading #296",
       "Fixed crashes on Lyrics correct dialog",
       "Fixed duplicate results in Lyrics correct dialog"
-    ]
-  },
-  {
-    "version": "6.5.2",
-    "changes": [
-      "Updated Translations",
-      "Improved Lyrics correct dialog."
     ]
   }
 ]

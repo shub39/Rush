@@ -33,7 +33,6 @@ import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 import com.shub39.rush.shared.ui.lyrics.breakLyrics
 import com.shub39.rush.shared.ui.lyrics.toSongUi
-import com.shub39.rush.shared.ui.sortMapByKeys
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.Dispatchers
@@ -131,7 +130,7 @@ class LyricsVM(
                     stateLayer.sharePageState.update {
                         it.copy(
                             songDetails = action.songDetails,
-                            selectedLines = _state.value.selectedLines.sortMapByKeys(take = 6),
+                            selectedLines = _state.value.selectedLines,
                         )
                     }
                 }

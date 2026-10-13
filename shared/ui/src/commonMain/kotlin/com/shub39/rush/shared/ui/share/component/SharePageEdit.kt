@@ -238,7 +238,7 @@ fun SharePageEdit(
                     labelProvider = {
                         Box(
                             modifier =
-                                Modifier.size(30.dp)
+                                Modifier.size(20.dp)
                                     .background(
                                         color = LocalContentColor.current,
                                         shape = it.toMaterialShape(),
