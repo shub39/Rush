@@ -21,12 +21,12 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.enums.AlbumArtShape
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import com.shub39.rush.shared.ui.share.SharePageAction
 import com.shub39.rush.shared.ui.share.SharePageState
@@ -58,7 +58,7 @@ class ShareVM(
         _state
             .asStateFlow()
             .onStart {
-                analytics.trackEvent(AnalyticsEvent.SHARE_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.SHARE_OPENED, emptyMap())
                 observeDatastore()
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SharePageState())
@@ -109,7 +109,7 @@ class ShareVM(
             when (action) {
                 SharePageAction.OnShare -> {
                     analytics.trackEvent(
-                        AnalyticsEvent.CARD_SHARED.name,
+                        AnalyticsEvent.CARD_SHARED,
                         mapOf(
                             "theme" to state.value.cardTheme.name,
                             "color" to state.value.cardColors.name,

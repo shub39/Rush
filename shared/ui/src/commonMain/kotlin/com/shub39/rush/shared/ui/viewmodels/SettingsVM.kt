@@ -18,13 +18,13 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.backup.ExportRepo
 import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreRepo
 import com.shub39.rush.shared.core.backup.RestoreResult
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
@@ -62,7 +62,7 @@ class SettingsVM(
         _state
             .asStateFlow()
             .onStart {
-                analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.SETTINGS_OPENED, emptyMap())
                 observeJob()
                 getChangeLogs()
             }
@@ -72,7 +72,7 @@ class SettingsVM(
         viewModelScope.launch {
             when (action) {
                 SettingsPageAction.OnDeleteSongs -> {
-                    analytics.trackEvent(AnalyticsEvent.ALL_SONG_DELETED.name, emptyMap())
+                    analytics.trackEvent(AnalyticsEvent.ALL_SONG_DELETED, emptyMap())
                     repo.deleteAllSongs()
                 }
 
@@ -82,7 +82,7 @@ class SettingsVM(
                     val exportString = exportRepo.exportToJson()
 
                     if (exportString != null) {
-                        analytics.trackEvent(AnalyticsEvent.BACKUP_CREATED.name, emptyMap())
+                        analytics.trackEvent(AnalyticsEvent.BACKUP_CREATED, emptyMap())
                     }
 
                     _state.update {
@@ -108,7 +108,7 @@ class SettingsVM(
                         }
 
                         RestoreResult.Success -> {
-                            analytics.trackEvent(AnalyticsEvent.BACKUP_RESTORED.name, emptyMap())
+                            analytics.trackEvent(AnalyticsEvent.BACKUP_RESTORED, emptyMap())
                             _state.update { it.copy(restoreState = RestoreState.Restored) }
                         }
                     }

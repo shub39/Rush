@@ -18,13 +18,13 @@ package com.shub39.rush.shared.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper.Companion.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
@@ -72,7 +72,7 @@ class SearchSheetVM(
         _state
             .asStateFlow()
             .onStart {
-                analytics.trackEvent(AnalyticsEvent.SEARCH_OPENED.name, emptyMap())
+                analytics.trackEvent(AnalyticsEvent.SEARCH_OPENED, emptyMap())
                 observeSearchSheet()
                 observeAutoChange()
             }
@@ -158,7 +158,7 @@ class SearchSheetVM(
                 }
 
                 analytics.trackEvent(
-                    AnalyticsEvent.SEARCH_PERFORMED.name,
+                    AnalyticsEvent.SEARCH_PERFORMED,
                     mapOf("query" to query, "auto" to fetch),
                 )
 
@@ -241,7 +241,7 @@ class SearchSheetVM(
                     val result = repo.getSong(songId).toSongUi()
 
                     analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_OPENED.name,
+                        AnalyticsEvent.LYRICS_OPENED,
                         mapOf(
                             "title" to result.title,
                             "artists" to result.artists,
@@ -282,7 +282,7 @@ class SearchSheetVM(
                             val retrievedSong = result.data.toSongUi()
 
                             analytics.trackEvent(
-                                AnalyticsEvent.LYRICS_OPENED.name,
+                                AnalyticsEvent.LYRICS_OPENED,
                                 mapOf(
                                     "title" to retrievedSong.title,
                                     "artists" to retrievedSong.artists,
@@ -291,7 +291,7 @@ class SearchSheetVM(
                             )
 
                             analytics.trackEvent(
-                                AnalyticsEvent.SONG_FETCHED.name,
+                                AnalyticsEvent.SONG_FETCHED,
                                 mapOf(
                                     "title" to retrievedSong.title,
                                     "artists" to retrievedSong.artists,

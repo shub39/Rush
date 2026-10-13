@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.component.RushBottomSheet
+import com.shub39.rush.shared.ui.theme.flexFontRounded
 
 @Composable
 fun BaseProSheet(
@@ -67,7 +68,9 @@ fun BaseProSheet(
             ) {
                 Text(
                     text = "Get Pro",
-                    style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
+                    style =
+                        ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight)
+                            .copy(fontFamily = flexFontRounded()),
                 )
             }
         }

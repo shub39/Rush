@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.lyrics.component.customisation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -47,7 +46,6 @@ import rush.shared.ui.generated.resources.max_lines
 import rush.shared.ui.generated.resources.others
 import rush.shared.ui.generated.resources.romanization
 import rush.shared.ui.generated.resources.romanization_desc
-import rush.shared.ui.generated.resources.share_card_limit
 
 actual fun LazyListScope.otherOptions(
     state: LyricsPageState,
@@ -86,13 +84,6 @@ actual fun LazyListScope.otherOptions(
                     steps = 13,
                     valueRange = 2f..16f,
                 )
-
-                AnimatedVisibility(visible = state.maxLines > 6) {
-                    Text(
-                        text = stringResource(Res.string.share_card_limit),
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                }
             }
 
             ListItem(

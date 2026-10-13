@@ -148,7 +148,7 @@ actual fun ColumnScope.PaletteStylePicker(
 
                     Row(
                         modifier =
-                            Modifier.size(width = 56.dp, height = 24.dp)
+                            Modifier.size(width = 64.dp, height = 20.dp)
                                 .clip(MaterialTheme.shapes.extraSmall)
                     ) {
                         listOf(
