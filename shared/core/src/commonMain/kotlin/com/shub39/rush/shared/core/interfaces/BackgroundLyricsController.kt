@@ -35,4 +35,18 @@ interface BackgroundLyricsController {
 
     /** Starts or stops the background lyrics service to match [mode]. */
     fun apply(mode: BackgroundLyricsMode)
+
+    /** Device manufacturer, to show vendor specific battery instructions (e.g. "HONOR"). */
+    val manufacturer: String
+
+    fun isIgnoringBatteryOptimizations(): Boolean
+
+    /** Asks to exempt the app from battery optimization. */
+    fun requestIgnoreBatteryOptimizations()
+
+    /** Opens the vendor screen controlling auto start, false when none was found. */
+    fun openAutoStartSettings(): Boolean
+
+    /** Opens the system information screen of the app. */
+    fun openAppDetails()
 }

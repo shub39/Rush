@@ -75,4 +75,9 @@ sealed interface SettingsPageAction {
     data class OnOverlayTextScaleChange(val textScale: Float) : SettingsPageAction
 
     data object OnResetOverlayLayout : SettingsPageAction
+
+    data object OnRequestIgnoreBatteryOptimizations : SettingsPageAction
+
+    /** Opens the manufacturer auto start settings, or the app details when there are none. */
+    data object OnOpenAutoStartSettings : SettingsPageAction
 }

@@ -37,12 +37,14 @@ import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
 import com.shub39.rush.shared.core.interfaces.BackgroundLyricsPreferences
 import com.shub39.rush.shared.core.listener.MediaListener
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -50,7 +52,7 @@ import org.koin.core.component.inject
 
 /**
  * Foreground service following the song played by any app and showing its lyrics in a floating
- * window over other apps.
+ * window over other apps, or in its notification.
  */
 class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponent {
     private val lifecycleRegistry = LifecycleRegistry(this)
@@ -65,7 +67,15 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
     private val preferences: BackgroundLyricsPreferences by inject()
     private val engine by lazy { NowPlayingLyricsEngine(get(), get(), get()) }
     private var overlay: LyricsOverlayWindow? = null
-    private var mode = BackgroundLyricsMode.OFF
+    private val mode = MutableStateFlow(BackgroundLyricsMode.OFF)
+    private val texts by lazy {
+        OverlayTexts(
+            waiting = getString(R.string.overlay_waiting),
+            loading = getString(R.string.overlay_loading),
+            noLyrics = getString(R.string.overlay_no_lyrics),
+            notSynced = getString(R.string.overlay_not_synced),
+        )
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -73,8 +83,7 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
         savedStateController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
-        BackgroundLyricsNotification.createChannel(this)
-        startInForeground(BackgroundLyricsNotification.overlay(this, engine.state.value))
+        BackgroundLyricsNotification.createChannels(this)
 
         MediaListener.startListening(applicationContext)
         engine.start(lifecycleScope)
@@ -83,7 +92,7 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
         lifecycleScope.launch {
             combine(preferences.getModeFlow(), preferences.getOverlaySettingsFlow(), ::Pair)
                 .collect { (newMode, settings) ->
-                    mode = newMode
+                    mode.value = newMode
                     when (newMode) {
                         BackgroundLyricsMode.OFF -> stopSelf()
                         BackgroundLyricsMode.OVERLAY -> {
@@ -102,20 +111,31 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
                 }
         }
 
-        // Keep the notification up to date with the song
+        // Keep the notification up to date: every line in notification mode, the song otherwise
         lifecycleScope.launch {
-            engine.state
-                .map { it.copy(currentLine = "", nextLine = "", isPlaying = false) }
+            combine(mode, engine.state) { mode, lyrics ->
+                    mode to
+                        if (mode == BackgroundLyricsMode.NOTIFICATION)
+                            lyrics.copy(isPlaying = false)
+                        else lyrics.copy(currentLine = "", nextLine = "", isPlaying = false)
+                }
                 .distinctUntilChanged()
-                .collect {
-                    notify(BackgroundLyricsNotification.overlay(this@BackgroundLyricsService, it))
+                .conflate()
+                .collect { (mode, lyrics) ->
+                    if (mode != BackgroundLyricsMode.OFF) notify(notification(mode, lyrics))
+                    // Android drops the updates of an app posting more than ~5 per second
+                    delay(MIN_UPDATE_INTERVAL)
                 }
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent
+            ?.getStringExtra(EXTRA_MODE)
+            ?.let { name -> BackgroundLyricsMode.entries.firstOrNull { it.name == name } }
+            ?.let { mode.value = it }
         // Every startForegroundService call must be followed by startForeground
-        startInForeground(BackgroundLyricsNotification.overlay(this, engine.state.value))
+        startInForeground(notification(mode.value, engine.state.value))
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
@@ -143,13 +163,7 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
                     context = this,
                     owner = this,
                     lyrics = engine.state,
-                    texts =
-                        OverlayTexts(
-                            waiting = getString(R.string.overlay_waiting),
-                            loading = getString(R.string.overlay_loading),
-                            noLyrics = getString(R.string.overlay_no_lyrics),
-                            notSynced = getString(R.string.overlay_not_synced),
-                        ),
+                    texts = texts,
                     onLayoutChanged = { settings ->
                         lifecycleScope.launch {
                             preferences.updateOverlaySettings {
@@ -179,6 +193,11 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
                 )
                 .also { overlay = it }
 
+    private fun notification(mode: BackgroundLyricsMode, lyrics: NowPlayingLyrics): Notification =
+        if (mode == BackgroundLyricsMode.NOTIFICATION) {
+            BackgroundLyricsNotification.lyrics(this, lyrics, texts)
+        } else BackgroundLyricsNotification.overlay(this, lyrics)
+
     private fun startInForeground(notification: Notification) {
         try {
             ServiceCompat.startForeground(
@@ -207,6 +226,10 @@ class BackgroundLyricsService : Service(), SavedStateRegistryOwner, KoinComponen
     companion object {
         private const val TAG = "BackgroundLyricsService"
         const val ACTION_STOP = "com.karelisio.rushio.action.STOP_BACKGROUND_LYRICS"
+
+        /** Name of the [BackgroundLyricsMode] to start in, to show the right notification. */
+        const val EXTRA_MODE = "com.karelisio.rushio.extra.BACKGROUND_LYRICS_MODE"
+        private val MIN_UPDATE_INTERVAL = 250.milliseconds
 
         private val _running = MutableStateFlow(false)
         val running: StateFlow<Boolean> = _running.asStateFlow()

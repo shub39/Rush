@@ -16,8 +16,10 @@
       "Décalage de synchronisation par appareil précis ou par type d'appareil (autoradio, casque, enceinte…)",
       "Boutons −50 / +50 ms sur l'écran des paroles, enregistrables pour l'appareil, le type ou le titre",
       "Réglages « Appareils audio et latence » : appareils connus et décalages modifiables",
-      "Paroles flottantes : fenêtre par-dessus les autres applications (ligne en cours et suivante),",
-      "Service de premier plan qui suit la chanson en cours même quand Rushio est fermé"
+      "Paroles flottantes : fenêtre par-dessus les autres applications (ligne en cours et suivante), déplaçable, redimensionnable, opacité réglable, synchronisée avec le décalage de l'appareil",
+      "Service de premier plan qui suit la chanson en cours même quand Rushio est fermé",
+      "Paroles en notification (au choix avec la fenêtre flottante) : ligne en cours et suivante, mise à jour à chaque ligne sans son ni vibration, visible sur l'écran de verrouillage",
+      "Écran « Fonctionnement en arrière-plan » : désactiver l'optimisation de la batterie, ouvrir le lancement d'applications (Honor/MagicOS, Huawei, Xiaomi…), conseils pour que Rushio reste actif"
     ]
   },
   {

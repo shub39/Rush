@@ -255,7 +255,9 @@ fun SettingRootPage(
 
                         // navigate to background lyrics (floating window)
                         SegmentedListItem(
-                            checked = lastRoute == Routes.Settings.SettingsBackgroundLyrics,
+                            checked =
+                                lastRoute == Routes.Settings.SettingsBackgroundLyrics ||
+                                    lastRoute == Routes.Settings.SettingsBattery,
                             onCheckedChange = { onNavigateToBackgroundLyrics() },
                             shapes = segmentedListItemShapes(2, 3),
                             colors = listItemColors(),

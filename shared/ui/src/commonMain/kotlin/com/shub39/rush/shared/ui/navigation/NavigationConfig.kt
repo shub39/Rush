@@ -49,6 +49,9 @@ sealed interface Routes : NavKey {
 
         data object SettingsBackgroundLyrics : Settings
 
+        /** Keeping the app alive in the background, opened from [SettingsBackgroundLyrics]. */
+        data object SettingsBattery : Settings
+
         data object SettingsChangelog : Settings
 
         data object SettingsAppInfo : Settings
@@ -82,6 +85,7 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
             if (route != Routes.Settings.SettingsRoot) {
                 // If adding a sub-page, ensure Root is always the predecessor
                 backStack.add(Routes.Settings.SettingsRoot)
+                route.parent()?.let(backStack::add)
             }
             backStack.add(route)
         } else {
@@ -100,6 +104,13 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
     }
 
     fun addTopLevel(route: Routes) = add(route)
+
+    /** Settings page a sub-page is opened from, kept below it so back goes there. */
+    private fun Routes.Settings.parent(): Routes.Settings? =
+        when (this) {
+            Routes.Settings.SettingsBattery -> Routes.Settings.SettingsBackgroundLyrics
+            else -> null
+        }
 
     fun removeLast() {
         if (backStack.size > 1) {

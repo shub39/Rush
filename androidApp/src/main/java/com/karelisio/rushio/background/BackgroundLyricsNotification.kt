@@ -29,27 +29,65 @@ import com.karelisio.rushio.R
 /** The persistent notification of the background lyrics service. */
 object BackgroundLyricsNotification {
     const val ID = 39
-    private const val CHANNEL_ID = "background_lyrics"
+    private const val OVERLAY_CHANNEL_ID = "background_lyrics"
+    private const val LYRICS_CHANNEL_ID = "lyrics_notification"
 
-    fun createChannel(context: Context) {
-        val channel =
+    fun createChannels(context: Context) {
+        val overlay =
             NotificationChannel(
-                    CHANNEL_ID,
+                    OVERLAY_CHANNEL_ID,
                     context.getString(R.string.notification_channel_background),
                     // Low importance: shown without sound, vibration or heads-up
                     NotificationManager.IMPORTANCE_LOW,
                 )
+                .silent()
                 .apply {
-                    setSound(null, null)
-                    enableVibration(false)
-                    setShowBadge(false)
+                    description = context.getString(R.string.notification_channel_background_desc)
                 }
-        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        val lyrics =
+            NotificationChannel(
+                    LYRICS_CHANNEL_ID,
+                    context.getString(R.string.notification_channel_lyrics),
+                    // Default importance keeps the lyrics among the visible notifications, every
+                    // update stays silent: no sound, no vibration, alerted only once
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                )
+                .silent()
+                .apply {
+                    description = context.getString(R.string.notification_channel_lyrics_desc)
+                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                }
+        context
+            .getSystemService(NotificationManager::class.java)
+            .createNotificationChannels(listOf(overlay, lyrics))
+    }
+
+    private fun NotificationChannel.silent(): NotificationChannel = apply {
+        setSound(null, null)
+        enableVibration(false)
+        enableLights(false)
+        setShowBadge(false)
+    }
+
+    /** Notification following the lyrics: current line as title, next line as text. */
+    fun lyrics(context: Context, lyrics: NowPlayingLyrics, texts: OverlayTexts): Notification {
+        val content = lyricsNotificationContent(lyrics, texts)
+        return base(context, LYRICS_CHANNEL_ID)
+            .setContentTitle(content.title)
+            .setContentText(content.text.ifEmpty { null })
+            .setSubText(content.subText.ifEmpty { null })
+            // Expanded, long lines are shown entirely
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .setBigContentTitle(content.title)
+                    .bigText(content.text.ifEmpty { null })
+            )
+            .build()
     }
 
     /** Notification while the floating window shows the lyrics. */
     fun overlay(context: Context, lyrics: NowPlayingLyrics): Notification =
-        base(context)
+        base(context, OVERLAY_CHANNEL_ID)
             .setContentTitle(context.getString(R.string.notification_overlay_title))
             .setContentText(
                 lyrics.title
@@ -60,8 +98,8 @@ object BackgroundLyricsNotification {
             )
             .build()
 
-    fun base(context: Context): NotificationCompat.Builder =
-        NotificationCompat.Builder(context, CHANNEL_ID)
+    private fun base(context: Context, channelId: String): NotificationCompat.Builder =
+        NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.app_icon)
             .setOngoing(true)
             .setOnlyAlertOnce(true)

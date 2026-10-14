@@ -46,6 +46,7 @@ import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.AudioDevicesPage
 import com.shub39.rush.shared.ui.setting.section.BackgroundLyricsPage
 import com.shub39.rush.shared.ui.setting.section.BackupPage
+import com.shub39.rush.shared.ui.setting.section.BatteryHelpPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
 import com.shub39.rush.shared.ui.setting.section.LyricsSourcesPage
@@ -338,6 +339,22 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                 onRequestNotificationAccess = {
                                     globalVM.onAction(GlobalAction.OnRequestNotificationAccess)
                                 },
+                                onAction = viewModel::onAction,
+                                onNavigateBack = { topLevelBackStack.removeLast() },
+                                onNavigateToBattery = {
+                                    topLevelBackStack.addTopLevel(Routes.Settings.SettingsBattery)
+                                },
+                            )
+                        }
+
+                        entry<Routes.Settings.SettingsBattery>(
+                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                        ) {
+                            val viewModel = koinViewModel<SettingsVM>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            BatteryHelpPage(
+                                state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                             )

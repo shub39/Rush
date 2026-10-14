@@ -17,12 +17,25 @@
 package com.shub39.rush.shared.ui.component
 
 import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -46,17 +59,63 @@ actual fun rememberBluetoothPermission(onResult: (Boolean) -> Unit): BluetoothPe
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 actual fun rememberNotificationPermission(onResult: (Boolean) -> Unit): BluetoothPermissionState {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        return remember { BluetoothPermissionState(granted = true, request = {}) }
+    val context = LocalContext.current
+    // Notifications can also be turned off in the system settings: check again when coming back
+    var enabled by remember { mutableStateOf(notificationsEnabled(context)) }
+    LifecycleResumeEffect(Unit) {
+        enabled = notificationsEnabled(context)
+        onPauseOrDispose {}
     }
 
-    val permission =
-        rememberPermissionState(
-            Manifest.permission.POST_NOTIFICATIONS,
-            onPermissionResult = onResult,
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        return BluetoothPermissionState(
+            granted = enabled,
+            request = { openNotificationSettings(context) },
         )
+    }
+
+    var rationaleBeforeRequest by remember { mutableStateOf(false) }
+    lateinit var permission: PermissionState
+    permission =
+        rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { granted ->
+            enabled = notificationsEnabled(context)
+            // Denied twice earlier: Android answers without showing anything, open the settings
+            if (!granted && !rationaleBeforeRequest && !permission.status.shouldShowRationale) {
+                openNotificationSettings(context)
+            }
+            onResult(granted)
+        }
     return BluetoothPermissionState(
-        granted = permission.status.isGranted,
-        request = { permission.launchPermissionRequest() },
+        granted = permission.status.isGranted && enabled,
+        request = {
+            if (permission.status.isGranted) {
+                openNotificationSettings(context)
+            } else {
+                rationaleBeforeRequest = permission.status.shouldShowRationale
+                permission.launchPermissionRequest()
+            }
+        },
     )
+}
+
+private fun notificationsEnabled(context: Context): Boolean =
+    NotificationManagerCompat.from(context).areNotificationsEnabled()
+
+private fun openNotificationSettings(context: Context) {
+    val notifications =
+        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    val appDetails =
+        Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null),
+        )
+    for (intent in listOf(notifications, appDetails)) {
+        try {
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            return
+        } catch (_: ActivityNotFoundException) {
+            // Try the next screen
+        }
+    }
 }

@@ -47,4 +47,7 @@ data class BackgroundLyricsSettings(
     val running: Boolean = false,
     val overlayPermission: Boolean = false,
     val overlay: OverlaySettings = OverlaySettings(),
+    /** Whether Android battery optimization is off for the app, so it can keep running. */
+    val ignoringBatteryOptimizations: Boolean = false,
+    val manufacturer: String = "",
 )

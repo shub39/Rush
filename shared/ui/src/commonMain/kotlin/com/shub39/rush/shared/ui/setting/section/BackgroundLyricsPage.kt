@@ -30,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.OutlinedButton
@@ -71,22 +72,28 @@ import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 /** Modes offered to the user, in display order. */
-val backgroundLyricsModes = listOf(BackgroundLyricsMode.OFF, BackgroundLyricsMode.OVERLAY)
+val backgroundLyricsModes =
+    listOf(
+        BackgroundLyricsMode.OFF,
+        BackgroundLyricsMode.OVERLAY,
+        BackgroundLyricsMode.NOTIFICATION,
+    )
 
 fun BackgroundLyricsMode.label(): StringResource =
     when (this) {
         BackgroundLyricsMode.OFF -> Res.string.background_mode_off
         BackgroundLyricsMode.OVERLAY -> Res.string.background_mode_overlay
-        BackgroundLyricsMode.NOTIFICATION -> Res.string.background_mode_overlay
+        BackgroundLyricsMode.NOTIFICATION -> Res.string.background_mode_notification
     }
 
 private fun BackgroundLyricsMode.description(): StringResource? =
     when (this) {
+        BackgroundLyricsMode.OFF -> null
         BackgroundLyricsMode.OVERLAY -> Res.string.background_mode_overlay_desc
-        else -> null
+        BackgroundLyricsMode.NOTIFICATION -> Res.string.background_mode_notification_desc
     }
 
-/** Floating lyrics window (and notification) settings, with the permissions they need. */
+/** Floating lyrics window and lyrics notification settings, with the permissions they need. */
 @Composable
 fun BackgroundLyricsPage(
     state: SettingsPageState,
@@ -94,6 +101,7 @@ fun BackgroundLyricsPage(
     onRequestNotificationAccess: () -> Unit,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
+    onNavigateToBattery: () -> Unit,
     modifier: Modifier = Modifier,
 ) =
     PageFill(modifier = modifier) {
@@ -229,7 +237,20 @@ fun BackgroundLyricsPage(
                         }
                     }
 
-                    if (!notificationPermission.granted) {
+                    // Without notifications, the notification mode shows nothing at all
+                    if (
+                        background.mode == BackgroundLyricsMode.NOTIFICATION &&
+                            !notificationPermission.granted
+                    ) {
+                        item {
+                            WarningCard(
+                                title = stringResource(Res.string.notifications_blocked),
+                                description = stringResource(Res.string.notifications_blocked_desc),
+                                action = stringResource(Res.string.allow),
+                                onClick = notificationPermission.request,
+                            )
+                        }
+                    } else if (!notificationPermission.granted) {
                         item {
                             ListItem(
                                 colors = listItemColors(),
@@ -258,6 +279,44 @@ fun BackgroundLyricsPage(
 
                 if (background.mode == BackgroundLyricsMode.OVERLAY) {
                     overlayAppearance(background, onAction)
+                }
+
+                item {
+                    val batteryWarning =
+                        background.mode != BackgroundLyricsMode.OFF &&
+                            !background.ignoringBatteryOptimizations
+
+                    ListItem(
+                        onClick = onNavigateToBattery,
+                        shapes = segmentedListItemShapes(0, 1),
+                        colors = listItemColors(),
+                        modifier = Modifier.padding(top = 24.dp),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.battery),
+                                contentDescription = null,
+                                tint =
+                                    if (batteryWarning) MaterialTheme.colorScheme.error
+                                    else LocalContentColor.current,
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text =
+                                    stringResource(
+                                        if (batteryWarning) Res.string.battery_optimization_on
+                                        else Res.string.battery_help_info
+                                    )
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.arrow_forward_ios),
+                                contentDescription = null,
+                            )
+                        },
+                        content = { Text(text = stringResource(Res.string.battery_help)) },
+                    )
                 }
             }
         }
@@ -349,5 +408,6 @@ private fun Preview() {
         onRequestNotificationAccess = {},
         onAction = {},
         onNavigateBack = {},
+        onNavigateToBattery = {},
     )
 }

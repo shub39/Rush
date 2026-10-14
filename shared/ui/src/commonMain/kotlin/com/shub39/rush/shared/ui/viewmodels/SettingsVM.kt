@@ -205,8 +205,15 @@ class SettingsVM(
 
                 SettingsPageAction.OnRefreshBackground -> {
                     val permission = backgroundController.canDrawOverlays()
+                    val ignoringBattery = backgroundController.isIgnoringBatteryOptimizations()
                     _state.update {
-                        it.copy(background = it.background.copy(overlayPermission = permission))
+                        it.copy(
+                            background =
+                                it.background.copy(
+                                    overlayPermission = permission,
+                                    ignoringBatteryOptimizations = ignoringBattery,
+                                )
+                        )
                     }
                     // Starts the service once the permission was granted in the system settings
                     val mode = backgroundPreferences.getModeFlow().first()
@@ -229,6 +236,15 @@ class SettingsVM(
                     backgroundPreferences.updateOverlaySettings {
                         OverlaySettings(opacity = it.opacity)
                     }
+
+                SettingsPageAction.OnRequestIgnoreBatteryOptimizations ->
+                    backgroundController.requestIgnoreBatteryOptimizations()
+
+                SettingsPageAction.OnOpenAutoStartSettings -> {
+                    if (!backgroundController.openAutoStartSettings()) {
+                        backgroundController.openAppDetails()
+                    }
+                }
             }
         }
     }
@@ -300,6 +316,9 @@ class SettingsVM(
                                         running = running,
                                         overlayPermission = backgroundController.canDrawOverlays(),
                                         overlay = overlay,
+                                        ignoringBatteryOptimizations =
+                                            backgroundController.isIgnoringBatteryOptimizations(),
+                                        manufacturer = backgroundController.manufacturer,
                                     )
                             )
                         }

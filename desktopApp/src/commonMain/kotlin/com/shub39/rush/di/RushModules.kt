@@ -46,5 +46,15 @@ class RushModules {
             override fun requestOverlayPermission() {}
 
             override fun apply(mode: BackgroundLyricsMode) {}
+
+            override val manufacturer = ""
+
+            override fun isIgnoringBatteryOptimizations() = true
+
+            override fun requestIgnoreBatteryOptimizations() {}
+
+            override fun openAutoStartSettings() = false
+
+            override fun openAppDetails() {}
         }
 }
