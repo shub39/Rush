@@ -5,21 +5,15 @@
 
 ## Screenshots
 
+## Phone
 | ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
 |:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
 | ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
-| ![5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png) | ![6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png) | 
 
-## Features 
-
-- [x] Search Lyrics
-- [x] Download Lyrics
-- [x] Share Lyrics
-- [x] Customisations
-- [x] Autofill current playing song in search 
-- [x] Synced Lyrics
-- [x] Import and Export saved lyrics
-- [x] Romanizations for Japanese, Chinese, Korean, Hindi, Punjabi and other Cyrillic Languages
+## Tablets and Desktop
+| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/7.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png)  |
+|:-------------------------------------------------------------------:|:--------------------------------------------------------------------:|
+| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/9.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/10.png) |
 
 Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)
 
