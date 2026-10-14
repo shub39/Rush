@@ -12,7 +12,6 @@
     <string name="artist">nghệ sĩ</string>
     <string name="done">Xong</string>
     <string name="backup">Sao lưu</string>
-    <string name="bmc">Mua một cốc cà phê giúp tôi</string>
     <string name="export">Xuất dữ liệu</string>
     <string name="restore">Khôi phục</string>
     <string name="choose_file">Chọn tệp tin</string>
@@ -24,14 +23,11 @@
     <string name="system">Hệ thống</string>
     <string name="light">Sáng</string>
     <string name="dark">Tối</string>
-    <string name="foss">Bạn đang sử dụng ứng dụng miễn phí và mã nguồn mở</string>
-    <string name="foss_desc">Tất cả tính năng đã được mở khóa. Ứng dụng này không hỗ trợ giao dịch mua trong ứng dụng. Nếu ứng dụng này hữu ích cho cuộc đời của bạn, hỗ trợ tôi bằng cách quyên góp cho tôi tại</string>
     <string name="amoled">Bảng màu Amoled</string>
     <string name="amoled_desc">Trải nghiệm tốt nhất cho các màn hình AMOLED</string>
     <string name="seed_color">Chọn màu gốc</string>
     <string name="seed_color_desc">Chọn màu để tạo bảng màu từ đó</string>
     <string name="look_and_feel_info">Tùy chỉnh ứng dụng theo các phong cách khác nhau</string>
-    <string name="translate">Dịch</string>
     <string name="changelog">Nhật kí sửa đổi</string>
     <string name="whats_changed">Điểm mới</string>
 </resources>

@@ -29,7 +29,6 @@
     <string name="backup">Copia de seguridad</string>
     <string name="backup_info">Importar o exportar la base de datos de letras guardadas</string>
     <string name="sort_date_added">Última agregada</string>
-    <string name="rush_branding">Rush</string>
     <string name="about">Acerca de</string>
     <string name="export">Exportar</string>
     <string name="export_info">Exportar canciones a la carpeta seleccionada</string>
@@ -61,8 +60,6 @@
     <string name="material_theme">Tema Material</string>
     <string name="loading_genius">Cargando letra de Genius</string>
     <string name="material_theme_desc">Tema basado en la imagen de fondo</string>
-    <string name="bmc">Invítame un café</string>
-    <string name="translate">Traducir</string>
     <string name="fullscreen">Vista de Pantalla Completa</string>
     <string name="fullscreen_desc">Esconder barras de sistema en la página de letras</string>
     <string name="customisations">Personalización de Letras</string>
@@ -77,9 +74,6 @@
     <string name="quote">Cita</string>
     <string name="couplet">Copla</string>
     <string name="messy">Desorganizado</string>
-    <string name="foss">Estás usando la variante FOSS</string>
-    <string name="foss_desc">Todas las características están desbloqueadas. Esta variante de la aplicación no soporta compras dentro de la app. Si esta aplicación le añadió valor a tu vida, ayúdame donando en</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Solo Carátula</string>
     <string name="album_art_shape">Forma de la carátula</string>
     <string name="blurred_art">Carátula borrosa</string>
@@ -108,8 +102,6 @@
     <string name="open_search">Abrir búsqueda</string>
     <string name="system_default">Por defecto del sistema</string>
     <string name="language">Idioma</string>
-    <string name="bmc_desc">Apoyame con una pequeña donación</string>
-    <string name="translate_desc">Traduce Rush a tu idioma</string>
     <string name="expressive_syllables">Sílabas expresivas</string>
     <string name="expressive_syllables_desc">El estilo de la tipografía cambia según la duración de la palabra</string>
 </resources>

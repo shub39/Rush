@@ -54,7 +54,6 @@
     <string name="notification_permission">נדרשת גישה להתראות כדי לקבל מילות שיר באופן אוטומטי.</string>
     <string name="unknown_error">אירעה שגיאה</string>
     <string name="done">הושלם</string>
-    <string name="rush_branding">Rush</string>
     <string name="no_internet">אין חיבור אינטרנט!</string>
     <string name="card_corners">קצוות כרטיס</string>
     <string name="export_info">ייצוא שירים אל הורדות/Rush</string>
@@ -75,6 +74,4 @@
     <string name="loading_genius">טעינת מילות השיר גאוניות</string>
     <string name="fullscreen_desc">הסתר סרגלי מערכת בדף מילות השיר</string>
     <string name="messy">מבולגן</string>
-    <string name="translate">תרגם</string>
-    <string name="bmc">קנה לי קפה</string>
 </resources>

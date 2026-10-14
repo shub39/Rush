@@ -29,9 +29,6 @@
     <string name="backup">สำรองข้อมูล</string>
     <string name="backup_info">นำเข้าหรือส่งออกข้อมูลของเนื้อเพลงที่บันทึกไว้</string>
     <string name="sort_date_added">เพิ่มล่าสุด</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">สนับสนุนโดยการซื้อกาแฟ</string>
-    <string name="translate">แปลภาษา</string>
     <string name="about">เกี่ยวกับ</string>
     <string name="export">นำออก</string>
     <string name="export_info">ส่งออกเพลงไปยังโฟลเดอร์ที่เลือกไว้</string>
@@ -77,9 +74,6 @@
     <string name="quote">คำ</string>
     <string name="couplet">บทกลอน</string>
     <string name="messy">ยุ่งเหยิง</string>
-    <string name="foss">คุณกำลังใช้ตัวแปร FOSS</string>
-    <string name="foss_desc">ทุกฟีเจอร์ถูกปลดล็อกแล้ว แอปพลิเคชันรุ่นนี้ไม่รองรับการซื้อในแอปพลิเคชัน หากแอปนี้ให้ความสะดวกกับชีวิตของคุณ โปรดสนับสนุนเราโดยการบริจาค</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">เพียงแค่ศิลปะ</string>
     <string name="album_art_shape">รูปทรงของภาพปกอัลบั้ม</string>
     <string name="blurred_art">เบลอรูปภาพ</string>
@@ -95,7 +89,6 @@
     <string name="curve">โค้ง</string>
     <string name="copy_error">คัดลอก Error</string>
     <string name="not_found">ไม่พบ</string>
-    <string name="translate_desc">แปลภาษาใน rush ให้เป็นภาษาประเทศของคุณ</string>
     <string name="syllable_synced_lyrics">ซิงค์ตามพยางค์แล้ว</string>
     <string name="changelog">บันทึกการเปลี่ยนแปลง</string>
     <string name="whats_changed">มีอะไรใหม่!</string>
@@ -112,6 +105,5 @@
     <string name="expressive_syllables_desc">ขนาดฟอนต์เปลี่ยนตามความยาวของคำ</string>
     <string name="hide_ui">ซ่อนหน้าต่างควบคุม</string>
     <string name="hide_ui_desc">ซ่อนหน้าต่างควบคุมเมื่อผ่านไป 5 วินาที</string>
-    <string name="bmc_desc">สนับสนุนพวกเราด้วยการบริจาคเพียงเล็กน้อย</string>
     <string name="line_synced_lyrics">ซิงค์บรรทัดแล้ว</string>
 </resources>

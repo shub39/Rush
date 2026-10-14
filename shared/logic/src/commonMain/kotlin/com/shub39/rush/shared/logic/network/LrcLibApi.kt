@@ -55,7 +55,7 @@ class LrcLibApi {
 
             defaultRequest {
                 url("https://lrclib.net")
-                header(HttpHeaders.UserAgent, "Rush (https://github.com/shub39/Rush)")
+                header(HttpHeaders.UserAgent, "Rushio (https://github.com/karelisio/rushio)")
             }
 
             expectSuccess = true

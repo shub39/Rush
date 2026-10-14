@@ -23,8 +23,6 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 
 @Composable
 actual fun LyricsCustomisationsPage(
-    isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -32,8 +30,6 @@ actual fun LyricsCustomisationsPage(
     modifier: Modifier,
 ) {
     LyricsCustomisationsPageContent(
-        isProUser = isProUser,
-        onOpenPaywall = onOpenPaywall,
         onNavigateBack = onNavigateBack,
         state = state,
         onAction = onAction,

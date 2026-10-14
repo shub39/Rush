@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -24,18 +22,19 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
-val appName = "Rush"
-val appVersionName = "7.1.1"
-val appVersionCode = 7110
+val appName = "Rushio"
+val appVersionName = "1.0.0"
+val appVersionCode = 1
 
-val gitHash = execute("git", "rev-parse", "HEAD").take(7)
+// Release signing, provided by CI (see .github/workflows/build-release.yml) or local env vars.
+val releaseKeystoreFile = providers.environmentVariable("KEYSTORE_FILE").orNull
 
 android {
-    namespace = "com.shub39.rush"
+    namespace = "com.karelisio.rushio"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.shub39.rush"
+        applicationId = "com.karelisio.rushio"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = appVersionCode
@@ -46,21 +45,21 @@ android {
         androidResources { generateLocaleConfig = true }
     }
 
+    signingConfigs {
+        if (releaseKeystoreFile != null) {
+            create("release") {
+                storeFile = file(releaseKeystoreFile)
+                storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
+                keyAlias = providers.environmentVariable("KEY_ALIAS").orNull
+                keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
+            }
+        }
+    }
+
     buildTypes {
         release {
             resValue("string", "app_name", appName)
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-        }
-
-        create("beta") {
-            resValue("string", "app_name", "$appName Beta")
-            applicationIdSuffix = ".beta"
-            versionNameSuffix = "-beta$gitHash"
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -74,32 +73,6 @@ android {
             resValue("string", "app_name", "$appName Debug")
             versionNameSuffix = "-debug"
         }
-    }
-
-    flavorDimensions += "version"
-
-    productFlavors {
-        create("play") {
-            val localProperties = Properties()
-            val localFile = rootProject.file("local.properties")
-
-            if (localFile.exists()) localProperties.load(localFile.inputStream())
-
-            val postHogApiKey = localProperties.getProperty("POSTHOG_API_KEY") ?: ""
-            val postHogHost = localProperties.getProperty("POSTHOG_HOST") ?: ""
-
-            if (postHogHost.isBlank() || postHogApiKey.isBlank()) {
-                println("WARNING: POSTHOG_API_KEY and POSTHOG_HOST must be set in local.properties")
-            }
-
-            dimension = "version"
-            applicationIdSuffix = ".play"
-            versionNameSuffix = "-play"
-
-            buildConfigField("String", "POSTHOG_API_KEY", "\"$postHogApiKey\"")
-            buildConfigField("String", "POSTHOG_HOST", "\"$postHogHost\"")
-        }
-        create("foss") { dimension = "version" }
     }
 
     buildFeatures {
@@ -157,10 +130,6 @@ dependencies {
     implementation(projects.androidLibs.visualizerHelper)
     implementation(projects.androidLibs.romanization)
 
-    "playImplementation"(libs.purchases.ui)
-    "playImplementation"(libs.purchases)
-    "playImplementation"("com.posthog:posthog-android:3.+")
-
     implementation(libs.compose.material3)
     implementation(libs.compose.components.resources)
     implementation(libs.compose.windowsizeclass)
@@ -184,6 +153,3 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
 }
-
-fun execute(vararg command: String): String =
-    providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

@@ -29,7 +29,6 @@
     <string name="backup">Backup</string>
     <string name="backup_info">Importă sau exportă baza de date cu versurile salvate</string>
     <string name="sort_date_added">Ultima adăugare</string>
-    <string name="rush_branding">Branding Rush</string>
     <string name="about">Despre</string>
     <string name="export">Exportă</string>
     <string name="export_info">Exportă melodiile în folderul selectat</string>
@@ -51,8 +50,6 @@
     <string name="hypnotic">Hipnotic</string>
     <string name="rounded">Rotunjit</string>
     <string name="default_">Implicit</string>
-    <string name="bmc">Cumpără-mi o cafea</string>
-    <string name="translate">Traduce</string>
     <string name="spotify">Generic</string>
     <string name="material_theme">Tema Material</string>
     <string name="font">Selectează fontul aplicației</string>
@@ -74,9 +71,6 @@
     <string name="line_height">Înălțimea liniei</string>
     <string name="letter_spacing">Spațierea literelor</string>
     <string name="messy">Dezordonat</string>
-    <string name="foss">Folosești varianta FOSS</string>
-    <string name="foss_desc">Toate caracteristicile sunt deblocate. Această variantă a aplicației nu suportă achiziții în aplicație. Dacă această aplicație ți-a adus valoare vieții, susține-mă donându-mi</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Doar coperta albumului</string>
     <string name="album_art_shape">Forma copertei albumului</string>
     <string name="blurred_art">Copertă blurată</string>
@@ -106,8 +100,6 @@
     <string name="plain_lyrics">Simplu</string>
     <string name="syllable_synced_lyrics">Sincronizare după silabe</string>
     <string name="full_screen_share">Partajare în ecran complet</string>
-    <string name="bmc_desc">Susține-mă făcând o mică donație</string>
-    <string name="translate_desc">Traduceți Rush în limba dumneavoastră</string>
     <string name="system_default">Prestabilită de sistem</string>
     <string name="language">Limbă</string>
     <string name="expressive_syllables">Silabe expresive</string>

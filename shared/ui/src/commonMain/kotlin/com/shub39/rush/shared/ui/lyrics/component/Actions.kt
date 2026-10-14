@@ -178,7 +178,7 @@ fun Actions(
         ) {
             Icon(
                 painter = painterResource(Res.drawable.meteor),
-                contentDescription = "Rush Mode",
+                contentDescription = "Rushio Mode",
                 modifier = Modifier.size(20.dp),
             )
         }

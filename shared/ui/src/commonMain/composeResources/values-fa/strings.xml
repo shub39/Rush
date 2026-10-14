@@ -29,15 +29,12 @@
     <string name="backup">پشتیبان گیری</string>
     <string name="backup_info">وارد یا صادر کردن پایگاه داده متن ترانه‌های ذخیره شده</string>
     <string name="sort_date_added">آخرین افزودهه</string>
-    <string name="rush_branding">Rush</string>
     <string name="about">درباره</string>
     <string name="export">صادر کردن</string>
     <string name="export_info">صادر کردن ترانه‌ها به پوشه انتخاب شده</string>
     <string name="restore">بازیابی</string>
     <string name="restore_info">بازیابی از پرونده صادرات انتخاب شده</string>
     <string name="choose_file">انتخاب فایل</string>
-    <string name="bmc">برای من یک قهوه بخر</string>
-    <string name="translate">ترجمه</string>
     <string name="look_and_feel">تنظیمات ظاهری</string>
     <string name="look_and_feel_info">سفارشی‌سازی برنامه به روش‌های مختلف</string>
     <string name="amoled">پالت آمولد</string>
@@ -77,9 +74,6 @@
     <string name="quote">نقل قول</string>
     <string name="couplet">دوبیتی</string>
     <string name="messy">نامرتب</string>
-    <string name="foss">شما از نسخه نرم افزار آزاد (FOSS) استفاده می کنید</string>
-    <string name="foss_desc">تمام ویژگی ها باز هستند. این نسخه از اپلیکیشن از خریدهای درون برنامه ای پشتیبانی نمی کند. اگر این اپلیکیشن به زندگی شما ارزش افزوده است، با کمک مالی از من حمایت کنید</string>
-    <string name="rush_pro">Rush ویژه</string>
     <string name="album_art">فقط تصویر</string>
     <string name="album_art_shape">شکل جلد آلبوم</string>
     <string name="blurred_art">تصویر محو</string>
@@ -95,7 +89,6 @@
     <string name="curve">منحنی</string>
     <string name="copy_error">خطای کپی</string>
     <string name="not_found">پیدا نشد</string>
-    <string name="translate_desc">راش را به زبان خود ترجمه کنید</string>
     <string name="line_synced_lyrics">همگام سازی خط</string>
     <string name="syllable_synced_lyrics">هجی همگام سازی شده</string>
     <string name="changelog">تغییرات</string>
@@ -113,5 +106,4 @@
     <string name="expressive_syllables_desc">تغییر سبک فونت بر اساس مدت زمان کلمه</string>
     <string name="hide_ui">پنهان کردن کنترل‌ها</string>
     <string name="hide_ui_desc">پنهان کردن کنترل‌های متن ترانه پس از ۵ ثانیه</string>
-    <string name="bmc_desc">با پرداخت مبلغی هرچند کم از من حمایت کنید</string>
 </resources>

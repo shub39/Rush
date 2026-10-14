@@ -38,9 +38,9 @@ import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.app_icon
 
 /**
- * A composable that displays the "Rush" application branding.
+ * A composable that displays the "Rushio" application branding.
  *
- * This consists of the application icon followed by the "Rush" text. The color of both the icon and
+ * This consists of the application icon followed by the "Rushio" text. The color of both the icon and
  * the text can be customized.
  *
  * @param modifier The [Modifier] to be applied to the branding container.
@@ -60,7 +60,7 @@ fun RushBranding(modifier: Modifier = Modifier, color: Color = MaterialTheme.col
         Spacer(modifier = Modifier.width(pxToDp(8)))
 
         Text(
-            text = "Rush",
+            text = "Rushio",
             style =
                 MaterialTheme.typography.headlineSmall
                     .copy(color = color, fontFamily = flexFontEmphasis())

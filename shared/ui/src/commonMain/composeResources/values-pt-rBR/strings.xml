@@ -29,15 +29,12 @@
     <string name="backup">Backup</string>
     <string name="backup_info">Importar ou Exportar o banco de dados de letras salvas</string>
     <string name="sort_date_added">Última adicionada</string>
-    <string name="rush_branding">Rush branding</string>
     <string name="about">Sobre</string>
     <string name="export">Exportar</string>
     <string name="export_info">Exportar músicas para pasta selecionada</string>
     <string name="restore">Restaurar</string>
     <string name="restore_info">Restaurar do arquivo de exportação selecionado</string>
     <string name="choose_file">Escolher arquivo</string>
-    <string name="bmc">Me compre um café</string>
-    <string name="translate">Traduzir</string>
     <string name="look_and_feel">Veja e Sinta</string>
     <string name="look_and_feel_info">Customize o app de várias maneiras</string>
     <string name="amoled">Paleta amloled</string>
@@ -77,9 +74,6 @@
     <string name="quote">Citação</string>
     <string name="couplet">Par de versos</string>
     <string name="messy">Bagunçado</string>
-    <string name="foss">Você está usando la versão FOSS</string>
-    <string name="foss_desc">Todas as funções estão desbloqueadas. Essa versão do aplicativo não suporta compras no app. Se este app agregou valor em sua vida, me apoie com uma doação</string>
-    <string name="rush_pro">Funções Rush Pro</string>
     <string name="album_art">Apenas capa</string>
     <string name="album_art_shape">Formato da capa do álbum</string>
     <string name="blurred_art">Capa borrada</string>
@@ -108,10 +102,8 @@
     <string name="romanization_desc">Mostrar letras romanizadas para o japonês, coreano, hindi, punjabi e línguas de alfabeto cirílico</string>
     <string name="romanization">Romanização</string>
     <string name="language">Língua</string>
-    <string name="translate_desc">Traduza o Rush para a sua língua</string>
     <string name="hide_ui_desc">Ocultar controles de letras após 5 segundos</string>
     <string name="expressive_syllables">Sílabas expressivas</string>
-    <string name="bmc_desc">Me apoie com uma pequena doação</string>
     <string name="open_search">Abrir busca</string>
     <string name="system_default">Padrão do sistema</string>
 </resources>

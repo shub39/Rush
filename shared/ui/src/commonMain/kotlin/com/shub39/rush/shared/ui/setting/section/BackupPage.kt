@@ -106,7 +106,7 @@ fun BackupPage(
         BackupPageContent(
             onNavigateBack = onNavigateBack,
             onSaveFile = {
-                fileSaverLauncher.launch(suggestedName = "Rush Export", defaultExtension = "json")
+                fileSaverLauncher.launch(suggestedName = "Rushio Export", defaultExtension = "json")
             },
             state = state,
             restoreFile = restoreFile,

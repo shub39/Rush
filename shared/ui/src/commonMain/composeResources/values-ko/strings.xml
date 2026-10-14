@@ -28,9 +28,6 @@
     <string name="backup">백업</string>
     <string name="backup_info">저장된 가사 데이터베이스를 가져오거나 내보내기</string>
     <string name="sort_date_added">최근 추가</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">커피 한 잔 후원하기</string>
-    <string name="translate">번역 참여하기</string>
     <string name="about">정보</string>
     <string name="export">내보내기</string>
     <string name="export_info">선택한 폴더로 노래 내보내기</string>

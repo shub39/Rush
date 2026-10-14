@@ -64,13 +64,16 @@ import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
 import com.shub39.rush.shared.ui.listItemColors
-import com.shub39.rush.shared.ui.middleItemShape
 import com.shub39.rush.shared.ui.setting.component.LicenseBottomSheet
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
+
+private const val RUSHIO_REPO = "https://github.com/karelisio/rushio"
+private const val RUSH_REPO = "https://github.com/shub39/Rush"
 
 @Composable
 fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = Modifier) =
@@ -123,7 +126,6 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
                     ),
             ) {
                 aboutApp(versionName = versionName, uriHandler = uriHandler)
-                engagementLinks(uriHandler)
                 item {
                     ListItem(
                         colors = listItemColors(),
@@ -133,8 +135,8 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
                                 contentDescription = null,
                             )
                         },
-                        headlineContent = { Text(text = "License") },
-                        supportingContent = { Text(text = "GPL-3.0 License") },
+                        headlineContent = { Text(text = stringResource(Res.string.license)) },
+                        supportingContent = { Text(text = stringResource(Res.string.license_desc)) },
                         modifier =
                             Modifier.clip(detachedItemShape()).clickable {
                                 showLicenseBottomSheet = true
@@ -144,79 +146,6 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
             }
         }
     }
-
-private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
-    item {
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.buymeacoffee),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = stringResource(Res.string.bmc)) },
-                supportingContent = { Text(text = stringResource(Res.string.bmc_desc)) },
-                modifier =
-                    Modifier.clip(leadingItemShape()).clickable {
-                        uriHandler.openUri("https://buymeacoffee.com/shub39")
-                    },
-            )
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.github),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = "GitHub Sponsors") },
-                supportingContent = { Text(text = "Support me through GitHub") },
-                modifier =
-                    Modifier.clip(middleItemShape()).clickable {
-                        uriHandler.openUri("https://github.com/sponsors/shub39")
-                    },
-            )
-            ListItem(
-                colors = listItemColors(),
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.translate),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                trailingContent = {
-                    Icon(
-                        painter = painterResource(Res.drawable.open_link),
-                        contentDescription = null,
-                    )
-                },
-                headlineContent = { Text(text = stringResource(Res.string.translate)) },
-                supportingContent = { Text(text = stringResource(Res.string.translate_desc)) },
-                modifier =
-                    Modifier.clip(endItemShape()).clickable {
-                        uriHandler.openUri("https://hosted.weblate.org/engage/rush/")
-                    },
-            )
-        }
-    }
-}
 
 private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) {
     item {
@@ -240,7 +169,7 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
                             painter = painterResource(Res.drawable.app_icon),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(36.dp),
                         )
                     }
 
@@ -248,7 +177,7 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Rush",
+                            text = stringResource(Res.string.rush_branding),
                             style =
                                 MaterialTheme.typography.headlineMedium.copy(
                                     fontFamily = flexFontRounded()
@@ -263,30 +192,17 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
                         )
                     }
 
-                    Row {
-                        FilledTonalIconButton(
-                            onClick = { uriHandler.openUri("https://discord.gg/nxA2hgtEKf") }
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.discord),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
-                        FilledTonalIconButton(
-                            onClick = { uriHandler.openUri("https://github.com/shub39/Rush") }
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.github),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        }
+                    FilledTonalIconButton(onClick = { uriHandler.openUri(RUSHIO_REPO) }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.github),
+                            contentDescription = stringResource(Res.string.source_code),
+                            modifier = Modifier.size(24.dp),
+                        )
                     }
                 }
             }
 
-            // dev card
+            // Credits to the original project
             Card(shape = endItemShape()) {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -311,14 +227,14 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
 
                         Column {
                             Text(
-                                text = "Shubham Gorai",
+                                text = stringResource(Res.string.based_on_rush),
                                 style =
                                     MaterialTheme.typography.headlineSmall.copy(
                                         fontFamily = flexFontRounded()
                                     ),
                             )
                             Text(
-                                text = "Developer",
+                                text = stringResource(Res.string.original_author),
                                 style =
                                     MaterialTheme.typography.titleSmall.copy(
                                         color = MaterialTheme.colorScheme.tertiary
@@ -327,18 +243,24 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
                         }
                     }
 
+                    Text(
+                        text = stringResource(Res.string.based_on_rush_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 80.dp, top = 8.dp),
+                    )
+
                     FlowRow(
-                        modifier = Modifier.padding(start = 80.dp, top = 4.dp),
+                        modifier = Modifier.padding(start = 80.dp, top = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        listOf(
-                                "https://github.com/shub39" to Res.drawable.github,
+                        listOf<Pair<String, DrawableResource>>(
+                                RUSH_REPO to Res.drawable.github,
                                 "https://shub39.github.io/" to Res.drawable.language,
-                                "mailto:cptnshubham39+rush_app@gmail.com" to Res.drawable.email,
+                                "https://buymeacoffee.com/shub39" to Res.drawable.buymeacoffee,
                             )
-                            .forEach { pair ->
+                            .forEach { (url, icon) ->
                                 FilledTonalIconButton(
-                                    onClick = { uriHandler.openUri(pair.first) },
+                                    onClick = { uriHandler.openUri(url) },
                                     modifier =
                                         Modifier.size(
                                             IconButtonDefaults.smallContainerSize(
@@ -348,7 +270,7 @@ private fun LazyListScope.aboutApp(versionName: String, uriHandler: UriHandler) 
                                         ),
                                 ) {
                                     Icon(
-                                        painter = painterResource(pair.second),
+                                        painter = painterResource(icon),
                                         contentDescription = null,
                                         modifier = Modifier.size(IconButtonDefaults.smallIconSize),
                                     )

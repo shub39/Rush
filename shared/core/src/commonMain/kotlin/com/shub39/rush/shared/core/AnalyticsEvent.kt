@@ -21,8 +21,6 @@ value class AnalyticsEvent(val name: String) {
     companion object {
         val APP_OPENED = AnalyticsEvent("app_opened")
         val NOTIFICATION_ACCESS_GRANTED = AnalyticsEvent("notification_access_granted")
-        val PAYWALL_OPENED = AnalyticsEvent("paywall_opened")
-        val PAYWALL_PURCHASED = AnalyticsEvent("paywall_purchased")
         val RUSH_MODE_TOGGLED = AnalyticsEvent("rush_mode_toggled")
         val SEARCH_OPENED = AnalyticsEvent("search_opened")
         val SEARCH_PERFORMED = AnalyticsEvent("search_performed")

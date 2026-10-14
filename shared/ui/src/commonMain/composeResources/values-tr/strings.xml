@@ -29,7 +29,6 @@
     <string name="backup">Yedekle</string>
     <string name="backup_info">Kaydedilen şarkı sözleri veritabanını içe veya dışa aktar</string>
     <string name="sort_date_added">Son eklenen</string>
-    <string name="rush_branding">Rush markalama</string>
     <string name="about">Hakkında</string>
     <string name="export">Dışa Aktar</string>
     <string name="export_info">Şarkıları seçilen klasöre kaydet</string>
@@ -74,8 +73,6 @@
     <string name="vertical">Dikey</string>
     <string name="letter_spacing">Harf aralığı</string>
     <string name="line_height">Satır yüksekliği</string>
-    <string name="bmc">Bana bir kahve ısmarla</string>
-    <string name="translate">Çevir</string>
     <string name="lyrics_background">Şarkı Sözleri Arkaplanı</string>
     <string name="messy">Dağınık</string>
     <string name="audio_permission">Ses Kaydetme İzni Gerekiyor</string>

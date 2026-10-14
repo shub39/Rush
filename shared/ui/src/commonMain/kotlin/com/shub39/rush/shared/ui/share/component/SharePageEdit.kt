@@ -25,15 +25,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -74,8 +71,6 @@ import rush.shared.ui.generated.resources.*
 
 @Composable
 fun SharePageEdit(
-    isProUser: Boolean,
-    onNavigateToPaywall: () -> Unit,
     state: SharePageState,
     onAction: (SharePageAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -128,7 +123,7 @@ fun SharePageEdit(
         }
 
         item {
-            ListItemCard(shape = if (isProUser) middleItemShape() else endItemShape()) {
+            ListItemCard(shape = middleItemShape()) {
                 ListSelect(
                     title = stringResource(Res.string.card_color),
                     options = CardColors.entries.toList(),
@@ -192,26 +187,9 @@ fun SharePageEdit(
             }
         }
 
-        if (!isProUser) {
-            item {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillParentMaxWidth().height(60.dp),
-                ) {
-                    LinearWavyProgressIndicator(
-                        progress = { 0.90f },
-                        modifier = Modifier.fillParentMaxWidth(),
-                    )
-
-                    Button(onClick = onNavigateToPaywall) { Text(text = "Unlock more with Pro") }
-                }
-            }
-        }
-
         item {
-            ListItemCard(shape = if (isProUser) middleItemShape() else leadingItemShape()) {
+            ListItemCard(shape = middleItemShape()) {
                 ListSelect(
-                    enabled = isProUser,
                     title = stringResource(Res.string.card_corners),
                     options = CornerRadius.entries.toList(),
                     selected = state.cardRoundness,
@@ -230,7 +208,6 @@ fun SharePageEdit(
         item {
             ListItemCard(shape = middleItemShape()) {
                 ListSelect(
-                    enabled = isProUser,
                     title = stringResource(Res.string.album_art_shape),
                     options = AlbumArtShape.entries.toList(),
                     selected = state.albumArtShape,
@@ -263,7 +240,6 @@ fun SharePageEdit(
                 trailingContent = {
                     ExpressiveSwitch(
                         checked = state.fullScreen,
-                        enabled = isProUser,
                         onCheckedChange = { onAction(SharePageAction.OnToggleFullScreen(it)) },
                     )
                 },
@@ -279,7 +255,5 @@ private fun Preview() {
     SharePageEdit(
         state = SharePageState(cardColors = CardColors.CUSTOM),
         onAction = {},
-        isProUser = false,
-        onNavigateToPaywall = {},
     )
 }

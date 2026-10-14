@@ -29,11 +29,6 @@
     <string name="backup">Back-up</string>
     <string name="backup_info">Databank opgeslagen songteksten importeren of exporteren</string>
     <string name="sort_date_added">Als laatste toegevoegd</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Koop een koffie voor mij</string>
-    <string name="bmc_desc">Ondersteun mij door een kleine donatie te geven</string>
-    <string name="translate">Vertalen</string>
-    <string name="translate_desc">Vertaal Rush naar jouw taal</string>
     <string name="about">Over</string>
     <string name="export">Exporteren</string>
     <string name="export_info">Liedjes naar de geselecteerde map exporteren</string>
@@ -78,9 +73,6 @@
     <string name="vertical">Verticaal</string>
     <string name="quote">Citaat</string>
     <string name="messy">Slordig</string>
-    <string name="foss">Je gebruikt de FOSS-variant</string>
-    <string name="foss_desc">Alle functies zijn ontgrendeld. Deze variant ondersteunt in-app aankopen niet. Als deze app je leven heeft verrijkt, ondersteun me door de doneren via</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Alleen cover</string>
     <string name="album_art_shape">Vorm van albumcover</string>
     <string name="blurred_art">Vervaagde cover</string>

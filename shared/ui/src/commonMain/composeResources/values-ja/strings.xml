@@ -31,9 +31,6 @@
     <string name="backup">バックアップ</string>
     <string name="backup_info">保存した歌詞のデータベースをインポート・エクスポート</string>
     <string name="sort_date_added">追加日順</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">コーヒーをおごる</string>
-    <string name="translate">翻訳</string>
     <string name="about">このアプリについて</string>
     <string name="export">エクスポート</string>
     <string name="export_info">楽曲を選択したフォルダーにエクスポート</string>
@@ -77,9 +74,6 @@
     <string name="quote">引用</string>
     <string name="couplet">対句</string>
     <string name="messy">雑然</string>
-    <string name="foss">FOSSバージョンを使用中</string>
-    <string name="foss_desc">すべての機能がアンロックされています。このアプリバージョンはアプリ内購入をサポートしていません。このアプリがあなたの生活に価値を加えた場合は、以下で寄付をしてサポートしてください</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="copy_error">コピーエラー</string>
     <string name="not_found">見つかりません</string>
     <string name="text">テキスト</string>

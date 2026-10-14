@@ -29,11 +29,7 @@
     <string name="backup">Backup</string>
     <string name="backup_info">Import or Export the database of saved lyrics</string>
     <string name="sort_date_added">Last added</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Buy me a Coffee</string>
-    <string name="bmc_desc">Support me by making a small donation</string>
-    <string name="translate">Translate</string>
-    <string name="translate_desc">Translate Rush in your language</string>
+    <string name="rush_branding" translatable="false">Rushio</string>
     <string name="about">About</string>
     <string name="export">Export</string>
     <string name="export_info">Export songs to Selected Folder</string>
@@ -80,9 +76,6 @@
     <string name="couplet">Couplet</string>
     <string name="messy">Messy</string>
     <string name="brat">Brat</string>
-    <string name="foss">You are using the FOSS variant</string>
-    <string name="foss_desc">All features are unlocked. This variant of the app does not support In-App Purchases. If this app added value to your life, Support me by donating on</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Only Art</string>
     <string name="album_art_shape">Album art shape</string>
     <string name="blurred_art">Blurred Art</string>
@@ -119,5 +112,11 @@
     <string name="share_card_limit">Maximum of 6 lines can be selected for Share Cards</string>
     <string name="no_thanks">No thanks</string>
     <string name="notification_access_needed">Notification Access Needed</string>
-    <string name="notification_access_needed_info">Notification access is required for Rush Mode to automatically change songs and for Synced Lyrics.</string>
+    <string name="notification_access_needed_info">Notification access is required for Rushio mode to automatically change songs and for Synced Lyrics.</string>
+    <string name="license_desc" translatable="false">GNU General Public License v3.0</string>
+    <string name="based_on_rush">Based on Rush</string>
+    <string name="original_author">By Shubham Gorai (shub39)</string>
+    <string name="based_on_rush_desc">Rushio is a fork of Rush, the lyrics app created by Shubham Gorai, distributed under the GPL-3.0 license. Huge thanks to him and to every Rush contributor!</string>
+    <string name="license">License</string>
+    <string name="source_code">Source code</string>
 </resources>

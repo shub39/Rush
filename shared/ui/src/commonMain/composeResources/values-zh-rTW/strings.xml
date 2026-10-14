@@ -47,7 +47,6 @@
     <string name="backup">備份</string>
     <string name="backup_info">匯入或匯出已儲存歌詞的資料庫</string>
     <string name="sort_date_added">最近新增</string>
-    <string name="rush_branding">Rush</string>
     <string name="about">關於</string>
     <string name="export">匯出</string>
     <string name="seed_color_desc">選擇顏色以生成調色盤</string>
@@ -74,11 +73,6 @@
     <string name="export_info">將歌曲匯出到選定的檔案夾</string>
     <string name="default_">預設</string>
     <string name="text_alignment">對齊方式</string>
-    <string name="translate">翻譯</string>
-    <string name="foss">你正在使用FOSS版本</string>
-    <string name="rush_pro">Rush Pro</string>
-    <string name="foss_desc">全部功能已解鎖。此版本應用程式無需內購。如果此軟體幫助了你，請考慮透過以下途徑支持作者：</string>
-    <string name="bmc">請作者喝杯咖啡</string>
     <string name="messy">雜亂</string>
     <string name="album_art">僅封面</string>
     <string name="album_art_shape">專輯封面樣式</string>
@@ -92,7 +86,6 @@
     <string name="copy_error">複製錯誤</string>
     <string name="not_found">未找到</string>
     <string name="synced_lyrics">同步</string>
-    <string name="translate_desc">將Rush翻譯至你的語言</string>
     <string name="solid_color">封面顏色</string>
     <string name="plain_lyrics">僅歌詞</string>
     <string name="line_synced_lyrics">行同步</string>

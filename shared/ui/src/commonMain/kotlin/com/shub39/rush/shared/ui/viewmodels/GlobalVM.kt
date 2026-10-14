@@ -20,10 +20,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
-import com.shub39.rush.shared.core.interfaces.BillingHandler
 import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
-import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.app.GlobalState
 import kotlin.time.Duration.Companion.milliseconds
@@ -44,7 +42,6 @@ import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class GlobalVM(
-    @Provided private val billingHandler: BillingHandler,
     @Provided private val otherPreferences: OtherPreferences,
     @Provided private val mediaAccessChecker: MediaAccessChecker,
     @Provided private val analytics: AnalyticsWrapper,
@@ -57,7 +54,6 @@ class GlobalVM(
         _state
             .asStateFlow()
             .onStart {
-                checkSubscription(firstLaunch = true)
                 startSync()
                 analytics.trackEvent(AnalyticsEvent.APP_OPENED, emptyMap())
             }
@@ -75,15 +71,6 @@ class GlobalVM(
 
             GlobalAction.AboutOpened -> {
                 analytics.trackEvent(AnalyticsEvent.ABOUT_OPENED, emptyMap())
-            }
-
-            GlobalAction.OnRefreshSub -> viewModelScope.launch { checkSubscription() }
-
-            is GlobalAction.OnPaywallOpened -> {
-                analytics.trackEvent(
-                    AnalyticsEvent.PAYWALL_OPENED,
-                    mapOf("source" to action.source),
-                )
             }
 
             is GlobalAction.OnCheckNotificationAccess -> {
@@ -116,22 +103,6 @@ class GlobalVM(
                         }
                     }
             }
-        }
-    }
-
-    private suspend fun checkSubscription(firstLaunch: Boolean = false) {
-        val isSubscribed = billingHandler.userResult()
-
-        when (isSubscribed) {
-            SubscriptionResult.Subscribed -> {
-                if (!_state.value.isProUser && !firstLaunch) {
-                    analytics.trackEvent(AnalyticsEvent.PAYWALL_PURCHASED, emptyMap())
-                }
-
-                _state.update { it.copy(isProUser = true) }
-            }
-
-            else -> {}
         }
     }
 

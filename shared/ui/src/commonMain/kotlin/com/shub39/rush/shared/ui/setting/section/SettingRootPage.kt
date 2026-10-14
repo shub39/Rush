@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,7 +72,6 @@ fun SettingRootPage(
     modifier: Modifier = Modifier,
     notificationAccess: Boolean,
     state: SettingsPageState,
-    onShowPaywall: () -> Unit,
     onAction: (SettingsPageAction) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
@@ -129,9 +127,6 @@ fun SettingRootPage(
                     ),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Pro
-                rushProItem(onShowPaywall = onShowPaywall)
-
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         // navigate to look and feel
@@ -238,7 +233,7 @@ fun SettingRootPage(
                             supportingContent = {
                                 Text(
                                     text =
-                                        "Rush ${state.changelog.firstOrNull()?.version ?: "x.x.x"}"
+                                        "Rushio ${state.changelog.firstOrNull()?.version ?: "x.x.x"}"
                                 )
                             },
                             trailingContent = {
@@ -320,8 +315,6 @@ fun SettingRootPage(
         }
     }
 
-expect fun LazyListScope.rushProItem(onShowPaywall: () -> Unit)
-
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview
 @Composable
@@ -333,7 +326,6 @@ private fun Preview() {
         onNavigateBack = {},
         onNavigateToLookAndFeel = {},
         onNavigateToBackup = {},
-        onShowPaywall = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
         onUpdateNotificationAccess = {},

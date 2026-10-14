@@ -27,9 +27,6 @@
     <string name="unknown_error">Si è verificato un errore</string>
     <string name="card_theme">Tema Card</string>
     <string name="card_color">Colori Card</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Buy Me a Coffee (Supportami)</string>
-    <string name="translate">Traduci</string>
     <string name="about">Chi siamo</string>
     <string name="export">Esporta</string>
     <string name="export_info">Esporta brani nella cartella selezionata</string>
@@ -71,7 +68,6 @@
     <string name="line_height">Altezza riga</string>
     <string name="letter_spacing">Spaziatura lettere</string>
     <string name="vertical">Verticale</string>
-    <string name="foss">Stai usando la variante FOSS</string>
     <string name="album_art_shape">Forma copertina</string>
     <string name="blurred_art">Sfocatura</string>
     <string name="solid_color">Solido</string>
@@ -84,8 +80,6 @@
     <string name="quote">Citazione</string>
     <string name="couplet">Accoppiato</string>
     <string name="messy">Disordinato</string>
-    <string name="foss_desc">Tutte le funzionalità sono sbloccate. Questa variante dell\'app non supporta gli acquisti in-app. Se questa app ha aggiunto valore alla tua vida, sostienimi con una donazione su</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="plain_lyrics">Semplice</string>
     <string name="wave">Onda</string>
     <string name="gradient">Gradiente</string>
@@ -106,8 +100,6 @@
     <string name="romanization">Romanizzazione</string>
     <string name="romanization_desc">Mostra i testi in caratteri latini per le lingue giapponese, coreana, cinese, hindi, punjabi e cirillica</string>
     <string name="open_search">Apri Ricerca</string>
-    <string name="bmc_desc">Sostienimi con una piccola donazione</string>
-    <string name="translate_desc">Traduci Rush nella tua lingua</string>
     <string name="system_default">Predefinito di Sistema</string>
     <string name="language">Lingua</string>
     <string name="expressive_syllables">Sillabe espressive</string>

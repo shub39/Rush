@@ -29,9 +29,6 @@
     <string name="backup">Biztonsági mentés</string>
     <string name="backup_info">Mentett dalszövegek adatbázisának importálása vagy exportálása</string>
     <string name="sort_date_added">Utoljára hozzáadott</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Vegyél nekem egy kávét</string>
-    <string name="translate">Fordítás</string>
     <string name="about">Névjegy</string>
     <string name="export">Export</string>
     <string name="export_info">Dalok exportálása a Letöltések/Rush</string>
@@ -77,7 +74,4 @@
     <string name="quote">Idézet</string>
     <string name="couplet">Kuplé</string>
     <string name="messy">Rendetlen</string>
-    <string name="foss">A FOSS variánst használod</string>
-    <string name="foss_desc">Minden funkció feloldva. Az alkalmazásnak ez a változata nem támogatja az alkalmazáson belüli vásárlásokat. Ha ez az alkalmazás értéket képvisel az életedben, támogass adományoddal a következő oldalon</string>
-    <string name="rush_pro">Rush Pro</string>
 </resources>

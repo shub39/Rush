@@ -29,9 +29,6 @@
     <string name="backup">Kopia zapasowa</string>
     <string name="backup_info">Importuj lub Eksportuj bazę danych z zapisanymi tekstami piosenek</string>
     <string name="sort_date_added">Ostatnio dodane</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Postaw mi kawę</string>
-    <string name="translate">Przetłumacz</string>
     <string name="about">O nas</string>
     <string name="export">Eksportuj</string>
     <string name="export_info">Wyeksportuj piosenki do wybranego folderu</string>
@@ -73,7 +70,6 @@
     <string name="line_height">Wysokość wiersza</string>
     <string name="letter_spacing">Odstęp między literami</string>
     <string name="vertical">Pionowy</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="lyrics_background">Tło tekstu piosenki</string>
     <string name="synced_lyrics">Zsynchronizowany</string>
     <string name="wave">Fala</string>
@@ -85,8 +81,6 @@
     <string name="quote">Cytat</string>
     <string name="couplet">Dwuwiersz</string>
     <string name="messy">Nieuporządkowany</string>
-    <string name="foss">Używasz wariantu FOSS</string>
-    <string name="foss_desc">Wszystkie funkcje są odblokowane. Ten wariant aplikacji nie obsługuje płatności. Jeżeli ta aplikacja przydała ci się, wspomóż mnie wysyłając dotację na</string>
     <string name="album_art">Tylko okładka</string>
     <string name="album_art_shape">Kształt okładki albumu</string>
     <string name="blurred_art">Rozmazana okładka</string>
@@ -106,8 +100,6 @@
     <string name="romanization">Transkrypcja</string>
     <string name="romanization_desc">Pokazuj transkrypcję tekstów piosenek dla Japońskiego, Koreańskiego, Chińskiego, Hindi, Punjabi i Cyrylicy</string>
     <string name="open_search">Otwórz wyszukiwanie</string>
-    <string name="bmc_desc">Wspomórz mnie robiąc małą wpłatę</string>
-    <string name="translate_desc">Przetłumacz Rush na twój język</string>
     <string name="system_default">Domyślny Systemowy</string>
     <string name="language">Język</string>
     <string name="expressive_syllables">Ekspresyjne sylaby</string>

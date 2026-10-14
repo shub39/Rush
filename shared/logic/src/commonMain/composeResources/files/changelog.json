@@ -1,13 +1,23 @@
 [
   {
-    "version": "7.1.1",
+    "version": "1.0.0",
+    "changes": [
+      "Rushio : nouveau nom, nouvelle icône et nouvel identifiant (com.karelisio.rushio)",
+      "Toutes les fonctionnalités sont gratuites (RevenueCat et écrans Pro supprimés)",
+      "Aucune statistique d'utilisation collectée",
+      "Traduction française complétée",
+      "APK signé généré automatiquement par GitHub Actions"
+    ]
+  },
+  {
+    "version": "Rush 7.1.1",
     "changes": [
       "Removed share card limit",
       "Miscellaneous Updates and Fixes"
     ]
   },
   {
-    "version": "7.1.0",
+    "version": "Rush 7.1.0",
     "changes": [
       "Removed unnecessary calls to Genius API",
       "Removed dead APIs",
@@ -16,7 +26,7 @@
     ]
   },
   {
-    "version": "7.0.7",
+    "version": "Rush 7.0.7",
     "changes": [
       "Fixed crashes in lower android versions",
       "Removed Onboarding and Changelog Sheets",
@@ -24,20 +34,20 @@
     ]
   },
   {
-    "version": "7.0.5",
+    "version": "Rush 7.0.5",
     "changes": [
       "Updated Translations",
       "Miscellaneous Updates and Fixes"
     ]
   },
   {
-    "version": "7.0.3",
+    "version": "Rush 7.0.3",
     "changes": [
       "Fixed Audio dependent Lyrics Backgrounds not applying"
     ]
   },
   {
-    "version": "7.0.2",
+    "version": "Rush 7.0.2",
     "changes": [
       "Revamped Navigation, Animations Several UI components",
       "Added better support for expanded screens",
@@ -47,32 +57,23 @@
     ]
   },
   {
-    "version": "6.7.1",
+    "version": "Rush 6.7.1",
     "changes": [
       "Revamped save page toolbar"
     ]
   },
   {
-    "version": "6.6.1",
+    "version": "Rush 6.6.1",
     "changes": [
       "Updated Translations"
     ]
   },
   {
-    "version": "6.6.0",
+    "version": "Rush 6.6.0",
     "changes": [
       "Updated Translations",
       "Improved song detection and fetching",
       "Miscellaneous UI improvements"
-    ]
-  },
-  {
-    "version": "6.5.3",
-    "changes": [
-      "Updated Translations",
-      "Fixed lyrics not loading #296",
-      "Fixed crashes on Lyrics correct dialog",
-      "Fixed duplicate results in Lyrics correct dialog"
     ]
   }
 ]

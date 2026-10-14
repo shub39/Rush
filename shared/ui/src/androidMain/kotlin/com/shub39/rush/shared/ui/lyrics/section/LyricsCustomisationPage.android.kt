@@ -31,8 +31,6 @@ import io.gitlab.bpavuk.viz.rememberVisualizerState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 actual fun LyricsCustomisationsPage(
-    isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -55,8 +53,6 @@ actual fun LyricsCustomisationsPage(
         }
 
     LyricsCustomisationsPageContent(
-        isProUser = isProUser,
-        onOpenPaywall = onOpenPaywall,
         onNavigateBack = onNavigateBack,
         state = state,
         onAction = onAction,

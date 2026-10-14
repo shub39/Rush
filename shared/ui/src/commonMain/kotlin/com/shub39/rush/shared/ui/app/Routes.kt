@@ -34,8 +34,6 @@ sealed interface Routes : NavKey {
 
     @Serializable data object OnboardingPage : Routes
 
-    @Serializable data object PaywallPage : Routes
-
     companion object {
         val configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
@@ -45,7 +43,6 @@ sealed interface Routes : NavKey {
                     subclass(SettingsGraph::class, SettingsGraph.serializer())
                     subclass(SharePage::class, SharePage.serializer())
                     subclass(OnboardingPage::class, OnboardingPage.serializer())
-                    subclass(PaywallPage::class, PaywallPage.serializer())
                 }
             }
         }

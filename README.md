@@ -1,60 +1,75 @@
-![](fastlane/metadata/android/en-US/images/featureGraphic.png)
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/icon.png" width="120" alt="Icône de Rushio">
+</p>
 
-[<img alt="Get it on Google Play" src="badges/playstore.png" width="180px">](https://play.google.com/store/apps/details?id=com.shub39.rush.play)
-[<img alt="Get it on github" src="badges/github.png" width="180px">](https://github.com/shub39/Rush/releases)
+<h1 align="center">Rushio</h1>
 
-## Screenshots
+<p align="center">
+  Paroles synchronisées pour Android, en Kotlin et Jetpack Compose (Material 3 / Material You).<br>
+  Version personnelle et améliorée de <a href="https://github.com/shub39/Rush">Rush</a>.
+</p>
 
-## Phone
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |
-|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
-| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png) |
+## Fonctionnalités
 
-## Tablets and Desktop
-| ![1](fastlane/metadata/android/en-US/images/phoneScreenshots/7.png) | ![2](fastlane/metadata/android/en-US/images/phoneScreenshots/8.png)  |
-|:-------------------------------------------------------------------:|:--------------------------------------------------------------------:|
-| ![3](fastlane/metadata/android/en-US/images/phoneScreenshots/9.png) | ![4](fastlane/metadata/android/en-US/images/phoneScreenshots/10.png) |
+- Recherche, sauvegarde et partage de paroles (cartes de partage façon Spotify).
+- Paroles synchronisées à la ligne ou à la syllabe, avec suivi automatique de la chanson en cours
+  (mode Rushio, nécessite l'accès aux notifications).
+- Arrière-plans animés, personnalisation du texte, romanisation (japonais, coréen, chinois…).
+- Toutes les fonctionnalités sont gratuites : pas d'achats intégrés, pas de statistiques d'utilisation.
+- Interface en français et en anglais.
 
-Checkout planned changes in [RoadMap](https://github.com/shub39/Rush/discussions/113)
+## Crédits
 
-## Motivation 
+Rushio est un fork de [Rush](https://github.com/shub39/Rush), créé par
+[Shubham Gorai (shub39)](https://github.com/shub39) et ses contributeurs, distribué sous licence
+GPL-3.0. Un grand merci à eux ! Si Rushio vous plaît, pensez à soutenir le projet d'origine.
 
-Spotify removed its feature to see and share lyrics from its free tier just to bring it back again. 
-So, I made this app to get and store lyrics for my favorite songs from Genius and share them like 
-Spotify, all in Material 3 look. As an audiophile, This has now become my way to listen to complete 
-albums with lyrics without dealing with genius's "UI".
+Bibliothèques et projets utilisés ou ayant inspiré Rush / Rushio :
 
-## Translations 
+- [Fastlyrics](https://github.com/TecCheck/FastLyrics), [SongSync](https://github.com/Lambada10/SongSync),
+  [LrcLib](https://lrclib.net/), [LyricsPlus](https://github.com/ibratabian17/lyricsplus)
+- Kotlin, Jetpack Compose et Compose Multiplatform
+- [MaterialKolor](https://github.com/jordond/MaterialKolor), [Kmpalette](https://github.com/jordond/kmpalette),
+  [ColorPicker Compose](https://github.com/skydoves/colorpicker-compose)
+- [FileKit](https://github.com/vinceglb/filekit), [KSoup](https://github.com/fleeksoft/ksoup),
+  [Landscapist](https://github.com/skydoves/landscapist), [Zoomable](https://github.com/usuiat/Zoomable)
 
-Translations are done via weblate, you can contribute there!
-[<img src="https://hosted.weblate.org/widget/rush/multi-auto.svg" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
-[<img src="https://hosted.weblate.org/widget/rush/287x66-grey.png" alt="Translation status" />](https://hosted.weblate.org/engage/rush/)
+## Licence
 
-## Inspiration and Tech used
+Rushio est un logiciel libre distribué sous licence
+[GNU GPL v3.0 ou ultérieure](LICENSE), comme Rush.
 
-- [Fastlyrics](https://github.com/TecCheck/FastLyrics)
-- [SongSync](https://github.com/Lambada10/SongSync)
-- [LrcLib](https://lrclib.net/) 
-- [LyricsPlus](https://github.com/ibratabian17/lyricsplus)
-- Spotify Lyrics UI
-- Kotlin and Jetpack Compose 🖤
-- [MaterialKolor](https://github.com/jordond/MaterialKolor)
-- [ColorPicker Compose](https://github.com/skydoves/colorpicker-compose)
-- [Revenuecat Android SDK](https://github.com/RevenueCat/purchases-android)
-- [FileKit](https://github.com/vinceglb/filekit)
-- [KSoup](https://github.com/fleeksoft/ksoup)
-- [Landscapist](https://github.com/skydoves/landscapist)
-- [Kmpalette](https://github.com/jordond/kmpalette)
-- [Zoomable](https://github.com/usuiat/Zoomable)
+## Compiler
 
-# Contributing
+Prérequis : JDK 25 (le démon Gradle y est épinglé) et le SDK Android (plateforme 37).
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for
-submitting pull requests.
-
-# Security
-
-SHA-256 fingerprint for the signing certificate used for GitHub releases
-```text
-0F:E1:B9:F4:4A:4D:B9:7E:C5:09:48:F5:18:9F:6B:43:00:71:6C:C6:D4:84:3F:56:98:D6:14:A2:15:2E:21:88
+```bash
+./gradlew :androidApp:assembleDebug     # APK de debug (com.karelisio.rushio.debug)
+./gradlew :androidApp:assembleRelease   # APK release (signé si les variables ci-dessous sont définies)
 ```
+
+Le module `desktopApp` (et `iosApp`) hérité de Rush n'est pas maintenu dans Rushio.
+
+## APK signé automatiquement (GitHub Actions)
+
+Le workflow [`build-release.yml`](.github/workflows/build-release.yml) compile un APK release signé à
+chaque push sur `main` (ou manuellement via « Run workflow ») et le joint en artefact au run.
+
+Secrets à créer dans *Settings → Secrets and variables → Actions* :
+
+| Secret              | Contenu                                    |
+|---------------------|--------------------------------------------|
+| `KEYSTORE_BASE64`   | le keystore `.jks` encodé en base64        |
+| `KEYSTORE_PASSWORD` | le mot de passe du keystore                |
+| `KEY_ALIAS`         | l'alias de la clé                          |
+| `KEY_PASSWORD`      | le mot de passe de la clé                  |
+
+Créer un keystore et obtenir sa version base64 :
+
+```bash
+keytool -genkeypair -v -keystore rushio.jks -alias rushio -keyalg RSA -keysize 4096 -validity 10000
+base64 -w 0 rushio.jks   # à coller dans le secret KEYSTORE_BASE64
+```
+
+Pour signer en local, exporter `KEYSTORE_FILE` (chemin du `.jks`), `KEYSTORE_PASSWORD`, `KEY_ALIAS`
+et `KEY_PASSWORD` avant de lancer `assembleRelease`.

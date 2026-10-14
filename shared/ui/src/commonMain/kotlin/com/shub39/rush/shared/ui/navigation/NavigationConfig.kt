@@ -36,8 +36,6 @@ sealed interface Routes : NavKey {
 
     data object Saved : Routes
 
-    data object Paywall : Routes
-
     sealed interface Settings : Routes {
         data object SettingsRoot : Settings
 
@@ -61,7 +59,6 @@ class TopLevelBackStack(startKey: Routes = Routes.Saved) {
             is Routes.Settings -> Routes.Settings::class
             Routes.Search -> Routes.Search::class
             Routes.Saved -> Routes.Saved::class
-            Routes.Paywall -> Routes.Paywall::class
             Routes.Share.ShareRoot -> Routes.Share.ShareRoot::class
             Routes.Share.ShareEdit -> Routes.Share.ShareEdit::class
         }

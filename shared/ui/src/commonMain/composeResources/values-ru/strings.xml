@@ -70,12 +70,6 @@
     <string name="couplet">Куплет</string>
     <string name="quote">Цитата</string>
     <string name="vertical">Вертикально</string>
-    <string name="translate">Перевести</string>
-    <string name="foss">Вы используете FOSS-версию</string>
-    <string name="foss_desc">Все функции разблокированы. Эта версия приложения не поддерживает встроенные покупки. Если приложение сделало вашу жизнь лучше, поддержите меня донатом на</string>
-    <string name="rush_pro">Премиум</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Купи мне кофе</string>
     <string name="restore_info">Восстановить из выбранного экспортированного файла</string>
     <string name="spotify">Общий</string>
     <string name="rushed">Стиль \"Rush\"</string>
@@ -91,8 +85,6 @@
     <string name="wave">Волна</string>
     <string name="gradient">Градиент</string>
     <string name="audio_permission">Требуется разрешение на запись аудио</string>
-    <string name="bmc_desc">Поддержите меня, сделав небольшое пожертвование</string>
-    <string name="translate_desc">Перевести Rush на ваш язык</string>
     <string name="audio_permission_info">Этот фон визуализирует вашу текущую воспроизводимую песню</string>
     <string name="curve">Кривая</string>
     <string name="copy_error">Копировать ошибку</string>

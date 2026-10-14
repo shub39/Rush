@@ -17,13 +17,9 @@
 package com.shub39.rush.shared.ui.app
 
 sealed interface GlobalAction {
-    data class OnPaywallOpened(val source: String) : GlobalAction
-
     data object OnCheckNotificationAccess : GlobalAction
 
     data object OnRequestNotificationAccess : GlobalAction
-
-    data object OnRefreshSub : GlobalAction
 
     data object AboutOpened : GlobalAction
 

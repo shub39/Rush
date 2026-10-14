@@ -29,7 +29,6 @@
     <string name="backup">备份</string>
     <string name="backup_info">导入或导出已保存歌词的数据库</string>
     <string name="sort_date_added">最近添加</string>
-    <string name="rush_branding">Rush</string>
     <string name="restore">恢复</string>
     <string name="palette_style">调色板样式</string>
     <string name="seed_color">选择种子颜色</string>
@@ -74,11 +73,6 @@
     <string name="quote">引用</string>
     <string name="couplet">对句</string>
     <string name="font">选择应用程序字体</string>
-    <string name="bmc">赞助</string>
-    <string name="translate">翻译</string>
-    <string name="foss">你正在使用FOSS版本</string>
-    <string name="foss_desc">全部功能均已解锁。此版本应用无需内购。如果此软件帮助了你，请考虑通过以下途径支持作者：</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="messy">杂乱</string>
     <string name="album_art">仅封面</string>
     <string name="album_art_shape">专辑封面样式</string>
@@ -108,5 +102,4 @@
     <string name="open_search">打开搜索</string>
     <string name="system_default">系统默认</string>
     <string name="language">语言</string>
-    <string name="translate_desc">将Rush翻译至你的语言</string>
 </resources>

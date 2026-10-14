@@ -29,11 +29,6 @@
     <string name="backup">Còpia de seguretat</string>
     <string name="backup_info">Importa o exporta la base de dades de lletres desades</string>
     <string name="sort_date_added">Afegides recentment</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Compra\'m un cafè</string>
-    <string name="bmc_desc">Dona\'m suport fent una petita donació</string>
-    <string name="translate">Tradueix</string>
-    <string name="translate_desc">Tradueix Rush al teu idioma</string>
     <string name="about">Quant a</string>
     <string name="export">Exporta</string>
     <string name="export_info">Exporta cançons a la carpeta seleccionada</string>
@@ -79,9 +74,6 @@
     <string name="quote">Cita</string>
     <string name="couplet">Estrofa</string>
     <string name="messy">Desordenat</string>
-    <string name="foss">Estàs utilitzant la variant FOSS</string>
-    <string name="foss_desc">Totes les funcions estan desbloquejades. Aquesta variant de l\'aplicació no admet compres integrades. Si aquesta aplicació t\'ha aportat valor, dona\'m suport fent una donació a</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Només portada</string>
     <string name="album_art_shape">Forma de la portada de l\'àlbum</string>
     <string name="blurred_art">Portada difuminada</string>

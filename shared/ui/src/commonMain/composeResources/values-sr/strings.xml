@@ -28,9 +28,6 @@
     <string name="backup">Bekap</string>
     <string name="backup_info">Uvezi ili izvezi bazu sačuvanih tekstova</string>
     <string name="sort_date_added">Poslednje dodato</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Kupi mi kafu</string>
-    <string name="translate">Prevedi</string>
     <string name="about">Opis</string>
     <string name="export">Izvezi</string>
     <string name="export_info">Izvezi pesme u izabrani folder</string>
@@ -76,9 +73,6 @@
     <string name="quote">Citat</string>
     <string name="couplet">Distih</string>
     <string name="messy">Neuredno</string>
-    <string name="foss">Koristiš FOSS varijantu</string>
-    <string name="foss_desc">Sve funkcije su otključane. Ova verzija aplikacije ne podržava kupovine u aplikaciji. Ako vam ova aplikacija znači u životu, podržite me donacijom</string>
-    <string name="rush_pro">Rush Pro‎</string>
     <string name="album_art">Samo omot</string>
     <string name="album_art_shape">Oblik omota albuma</string>
     <string name="blurred_art">Zamagljen omot</string>

@@ -34,9 +34,6 @@
     <string name="no_results">Tulemusi pole</string>
     <string name="parse_error">Viga päringuvastuste töötlemisel</string>
     <string name="sort_date_added">Viimati lisatud</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Osta mulle tass kohvi</string>
-    <string name="translate">Tõlgi</string>
     <string name="about">Rakenduse teave</string>
     <string name="export">Ekspordi</string>
     <string name="export_info">Ekspordi lood allalaadimiste kausta</string>
@@ -49,8 +46,6 @@
     <string name="end">Lõpus</string>
     <string name="start">Alguses</string>
     <string name="font_size">Kirjatüübi suurus</string>
-    <string name="bmc_desc">Toeta minu tegevust väikese rahalise toetusega</string>
-    <string name="translate_desc">Tõlgi Rush oma keelde</string>
     <string name="look_and_feel">Välimus ja tunnetus</string>
     <string name="look_and_feel_info">Kohenda rakendust eri moel</string>
     <string name="line_height">Rea kõrgus</string>
@@ -99,9 +94,6 @@
     <string name="fullscreen_desc">Peida laulusõnade lehel süsteemi ribad</string>
     <string name="customisations">Laulusõnade kohendamised</string>
     <string name="vertical">Püstloodis</string>
-    <string name="foss">Sa kasutad rakenduse avatud lähtekoodiga varianti</string>
-    <string name="foss_desc">Kogu funktsionaalsus on saadaval, aga see rakenduse variant ei toeta rakendusesiseseid oste. Kui rakendusest on sulle kasu, siis kaalu väikest toetust teenuses</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Vaid kaanepilt</string>
     <string name="album_art_shape">Kaanepildi kuju</string>
     <string name="blurred_art">Hägustatud kaanepilt</string>

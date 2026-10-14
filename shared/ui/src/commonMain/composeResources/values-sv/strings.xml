@@ -10,10 +10,6 @@
     <string name="io_error">Nätverksfel</string>
     <string name="unknown_error">Ett fel uppstod</string>
     <string name="sort_date_added">Senast tillagda</string>
-    <string name="rush_branding">Rush</string>
-    <string name="bmc">Köp en kaffe till mig</string>
-    <string name="translate">Översätt</string>
-    <string name="translate_desc">Översätt Rush till ditt språk</string>
     <string name="about">Om</string>
     <string name="choose_file">Välj fil</string>
     <string name="look_and_feel_info">Anpassa appen på olika sätt</string>
@@ -26,7 +22,6 @@
     <string name="system">Systemets</string>
     <string name="light">Ljust</string>
     <string name="dark">Mörkt</string>
-    <string name="rush_pro">Rush Pro</string>
     <string name="album_art">Endast omslag</string>
     <string name="search">Sök efter låttexter</string>
     <string name="save">Spara</string>
@@ -52,7 +47,6 @@
     <string name="grant_permission">Ge behörighet</string>
     <string name="no_results">Inga resultat</string>
     <string name="card_color">Kortfärger</string>
-    <string name="bmc_desc">Stötta mig genom att ge ett liten donation</string>
     <string name="export_info">Exportera låtar till vald mapp</string>
     <string name="restore_info">Återställ från vald exportfil</string>
     <string name="look_and_feel">Utseende och känsla</string>
@@ -63,12 +57,10 @@
     <string name="album_art_shape">Skivomslagets form</string>
     <string name="lyrics_background">Låttextens bakgrund</string>
     <string name="looks">Utseende</string>
-    <string name="foss_desc">Alla funktioner är upplåsta. Den här varianten av appen stöder inte köp i appen. Om den här appen berikar ditt liv så stötta mig genom en donation på</string>
     <string name="no_thanks">Nej tack</string>
     <string name="hide_ui_desc">Dölj låttextkontroller efter 5 sekunder</string>
     <string name="hide_ui">Dölj kontroller</string>
     <string name="others">Andra</string>
     <string name="line_synced_lyrics">Radsynkade</string>
     <string name="syllable_synced_lyrics">Stavelsesynkade</string>
-    <string name="foss">Du använder FOSS-varianten</string>
 </resources>

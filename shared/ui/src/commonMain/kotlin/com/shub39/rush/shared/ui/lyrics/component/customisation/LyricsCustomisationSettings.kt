@@ -32,10 +32,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,8 +52,6 @@ import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.middleItemShape
-import com.shub39.rush.shared.ui.pro_sheets.LyricsBackgroundProFeatureSheet
-import com.shub39.rush.shared.ui.pro_sheets.LyricsTextEditProFeatureSheet
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 import com.shub39.rush.shared.ui.toStringRes
 import kotlin.math.roundToInt
@@ -67,8 +61,6 @@ import rush.shared.ui.generated.resources.*
 
 fun LazyListScope.lyricsCustomisationSettings(
     state: LyricsPageState,
-    isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
     onAction: (LyricsPageAction) -> Unit,
     isShowingSynced: Boolean,
     microphonePermission: Boolean,
@@ -76,15 +68,6 @@ fun LazyListScope.lyricsCustomisationSettings(
     onShowColorPickerDialog: (target: String) -> Unit,
 ) {
     item {
-        var showBackgroundFeature by remember { mutableStateOf(false) }
-
-        if (showBackgroundFeature && !isProUser) {
-            LyricsBackgroundProFeatureSheet(
-                onDismissRequest = { showBackgroundFeature = false },
-                onNavigateToPaywall = onOpenPaywall,
-            )
-        }
-
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -100,11 +83,6 @@ fun LazyListScope.lyricsCustomisationSettings(
                     options = allBackgrounds,
                     selected = state.lyricsBackground,
                     onSelectedChange = {
-                        if (!isProUser) {
-                            showBackgroundFeature = true
-                            return@ListSelect
-                        }
-
                         if (it !in audioDependentBackgrounds || microphonePermission) {
                             onAction(LyricsPageAction.OnChangeLyricsBackground(background = it))
                         } else {
@@ -229,15 +207,6 @@ fun LazyListScope.lyricsCustomisationSettings(
     }
 
     item {
-        var showTextEditFeature by remember { mutableStateOf(false) }
-
-        if (showTextEditFeature) {
-            LyricsTextEditProFeatureSheet(
-                onDismissRequest = { showTextEditFeature = false },
-                onNavigateToPaywall = onOpenPaywall,
-            )
-        }
-
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -257,11 +226,6 @@ fun LazyListScope.lyricsCustomisationSettings(
                             LyricsAlignment.START -> 0f
                         },
                     onValueChange = {
-                        if (!isProUser) {
-                            showTextEditFeature = true
-                            return@SettingSlider
-                        }
-
                         onAction(
                             LyricsPageAction.OnAlignmentChange(
                                 when (it.roundToInt()) {
@@ -290,11 +254,6 @@ fun LazyListScope.lyricsCustomisationSettings(
                     steps = 33,
                     valueRange = 16f..50f,
                     onValueChange = {
-                        if (!isProUser) {
-                            showTextEditFeature = true
-                            return@SettingSlider
-                        }
-
                         onAction(LyricsPageAction.OnFontSizeChange(it))
                     },
                 )
@@ -305,11 +264,6 @@ fun LazyListScope.lyricsCustomisationSettings(
                     title = stringResource(Res.string.line_height),
                     value = state.textPrefs.lineHeight,
                     onValueChange = {
-                        if (!isProUser) {
-                            showTextEditFeature = true
-                            return@SettingSlider
-                        }
-
                         onAction(LyricsPageAction.OnLineHeightChange(it))
                     },
                     steps = 33,
@@ -322,11 +276,6 @@ fun LazyListScope.lyricsCustomisationSettings(
                     title = stringResource(Res.string.letter_spacing),
                     value = state.textPrefs.letterSpacing,
                     onValueChange = {
-                        if (!isProUser) {
-                            showTextEditFeature = true
-                            return@SettingSlider
-                        }
-
                         onAction(LyricsPageAction.OnLetterSpacingChange(it))
                     },
                     steps = 3,

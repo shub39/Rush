@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026  Karelisio
+  Rushio launcher icon. Licensed under the GNU GPL v3 or later.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M31,36H55A3,3 0,0 1,55 42H31A3,3 0,0 1,31 36Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M31,48H47A3,3 0,0 1,47 54H31A3,3 0,0 1,31 48Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M31,60H51A3,3 0,0 1,51 66H31A3,3 0,0 1,31 60Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M56,70A8,8 0,1 1,72 70A8,8 0,1 1,56 70Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M67,34H72V70H67Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M72,34C72,34 82,37 82,47C82,51 80,54 78,56C79,52 78,46 72,44Z" />
+</vector>
