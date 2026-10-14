@@ -1,9 +1,10 @@
 [
   {
-    "version": "7.1.1",
+    "version": "7.1.2",
     "changes": [
       "Removed share card limit",
-      "Miscellaneous Updates and Fixes"
+      "Miscellaneous Updates and Fixes",
+      "Updated App Icon"
     ]
   },
   {

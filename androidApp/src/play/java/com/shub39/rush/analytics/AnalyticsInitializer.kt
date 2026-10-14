@@ -25,7 +25,10 @@ import com.shub39.rush.BuildConfig
 
 class AnalyticsInitializer {
     private val config =
-        PostHogAndroidConfig(apiKey = BuildConfig.POSTHOG_API_KEY, host = BuildConfig.POSTHOG_HOST)
+        PostHogAndroidConfig(
+            projectToken = BuildConfig.POSTHOG_API_KEY,
+            host = BuildConfig.POSTHOG_HOST,
+        )
 
     fun setup(context: Context) {
         PostHogAndroid.setup(context, config)
