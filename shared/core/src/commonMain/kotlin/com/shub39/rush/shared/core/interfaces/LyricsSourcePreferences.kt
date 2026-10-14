@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026  Shubham Gorai
+ * Copyright (C) 2026  Karelisio
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.shared.logic.network.LyricsPlusApi
-import kotlin.test.Test
-import kotlinx.coroutines.runBlocking
+package com.shub39.rush.shared.core.interfaces
 
-@kotlin.experimental.ExperimentalNativeApi
-class LyricsPlusTest {
-    val api = LyricsPlusApi()
+import com.shub39.rush.shared.core.dataclasses.LyricsSourceSetting
+import kotlinx.coroutines.flow.Flow
 
-    @Test
-    fun testApi() = runBlocking {
-        val result = api.fetchTTML("DANCE...", "Slayyyter")
-        println(result)
-        assert(result != null)
-    }
+interface LyricsSourcePreferences {
+    /** Every lyrics source, in cascade order. */
+    fun getSourcesFlow(): Flow<List<LyricsSourceSetting>>
+
+    suspend fun updateSources(sources: List<LyricsSourceSetting>)
+
+    suspend fun resetSources()
 }

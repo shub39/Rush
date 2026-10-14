@@ -136,7 +136,9 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
                             )
                         },
                         headlineContent = { Text(text = stringResource(Res.string.license)) },
-                        supportingContent = { Text(text = stringResource(Res.string.license_desc)) },
+                        supportingContent = {
+                            Text(text = stringResource(Res.string.license_desc))
+                        },
                         modifier =
                             Modifier.clip(detachedItemShape()).clickable {
                                 showLicenseBottomSheet = true

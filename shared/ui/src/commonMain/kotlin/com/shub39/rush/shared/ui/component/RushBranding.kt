@@ -40,8 +40,8 @@ import rush.shared.ui.generated.resources.app_icon
 /**
  * A composable that displays the "Rushio" application branding.
  *
- * This consists of the application icon followed by the "Rushio" text. The color of both the icon and
- * the text can be customized.
+ * This consists of the application icon followed by the "Rushio" text. The color of both the icon
+ * and the text can be customized.
  *
  * @param modifier The [Modifier] to be applied to the branding container.
  * @param color The color to be used for tinting the icon and for the text. Defaults to the primary

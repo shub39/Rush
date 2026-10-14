@@ -37,4 +37,5 @@ data class SongSchema(
     val geniusLyrics: String?,
     val ttmlLyrics: String?,
     val dateAdded: Long = 0,
+    val lyricsSource: String? = null,
 )

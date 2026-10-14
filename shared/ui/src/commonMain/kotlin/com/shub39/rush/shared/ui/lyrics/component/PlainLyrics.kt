@@ -236,6 +236,18 @@ fun PlainLyrics(
                             Spacer(modifier = Modifier.padding(10.dp))
 
                             Text(text = stringResource(Res.string.no_lyrics))
+
+                            TextButton(
+                                onClick = { action(LyricsPageAction.OnShowSourcePicker(true)) },
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        contentColor = cardContent,
+                                        containerColor = Color.Transparent,
+                                    ),
+                                modifier = Modifier.padding(vertical = 4.dp),
+                            ) {
+                                Text(stringResource(Res.string.try_other_source))
+                            }
                         }
                     }
                 }

@@ -12,6 +12,10 @@
 ## Fonctionnalités
 
 - Recherche, sauvegarde et partage de paroles (cartes de partage façon Spotify).
+- Plusieurs sources de paroles : LRCLIB, NetEase, Musixmatch (non officiel) et QQ Music, interrogées
+  en cascade dans l'ordre choisi en privilégiant la meilleure synchronisation
+  (syllabe > ligne > texte brut). Chaque source s'active, se désactive et se réordonne dans les
+  réglages, et l'écran des paroles permet de basculer d'un tap vers une autre source.
 - Paroles synchronisées à la ligne ou à la syllabe, avec suivi automatique de la chanson en cours
   (mode Rushio, nécessite l'accès aux notifications).
 - Arrière-plans animés, personnalisation du texte, romanisation (japonais, coréen, chinois…).

@@ -38,7 +38,11 @@ import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.dataclasses.WaveColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.core.enums.LyricsProviderId
+import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.core.util.LrcUtils
 import com.shub39.rush.shared.core.util.TTMLParser
+import com.shub39.rush.shared.core.valueOfOrNull
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.CurveVisualizer
 import com.shub39.rush.shared.ui.component.GradientVisualizer
@@ -60,34 +64,13 @@ fun breakLyrics(lyrics: String): List<Map.Entry<Int, String>> {
     return map.entries.toList()
 }
 
+/** Parses LRC lyrics, null when they hold no timed line. Invalid lines are skipped. */
 fun parseLyrics(lyricsString: String): List<Lyric>? {
-    val seenTimes = mutableSetOf<Long>()
+    val lyrics = LrcUtils.parse(lyricsString)
+    if (lyrics.none { it.text.isNotBlank() }) return null
 
-    return try {
-        listOf(Lyric(0, ""))
-            .plus(
-                lyricsString.lines().mapNotNull { line ->
-                    val parts = line.split("]")
-                    if (parts.size == 2) {
-                        val time =
-                            parts[0].removePrefix("[").split(":").let { (minutes, seconds) ->
-                                minutes.toLong() * 60 * 1000 + (seconds.toDouble() * 1000).toLong()
-                            }
-                        if (time in seenTimes) {
-                            null
-                        } else {
-                            seenTimes.add(time)
-                            val text = parts[1]
-                            Lyric(time, text.trim())
-                        }
-                    } else {
-                        null
-                    }
-                }
-            )
-    } catch (_: Exception) {
-        null
-    }
+    // an empty first line lets the UI show a waiting indicator before the first lyric
+    return if (lyrics.first().time == 0L) lyrics else listOf(Lyric(0, "")) + lyrics
 }
 
 fun updateSelectedLines(
@@ -279,6 +262,10 @@ fun BoxScope.ApplyLyricsBackground(
     }
 }
 
+/** Lyrics view to open a song with: Genius only when it is the only lyrics available. */
+fun SongUi.defaultSource(): Sources =
+    if (lyrics.isEmpty() && !geniusLyrics.isNullOrEmpty()) Sources.GENIUS else Sources.LRCLIB
+
 fun Song.toSongUi(): SongUi {
     return SongUi(
         id = id,
@@ -291,5 +278,6 @@ fun Song.toSongUi(): SongUi {
         syncedLyrics = syncedLyrics?.let { parseLyrics(it) },
         geniusLyrics = geniusLyrics?.let { breakLyrics(it) },
         ttmlLyrics = ttmlLyrics?.let { TTMLParser.parseTTML(it) },
+        lyricsSource = lyricsSource?.let { valueOfOrNull<LyricsProviderId>(it) },
     )
 }

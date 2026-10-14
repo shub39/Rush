@@ -29,6 +29,8 @@ package com.shub39.rush.shared.core.dataclasses
  * @property geniusLyrics The lyrics fetched from Genius
  * @property syncedLyrics The time-coded or synchronized lyrics
  * @property dateAdded The timestamp (in milliseconds) when the song was added to the library.
+ * @property lyricsSource Name of the [com.shub39.rush.shared.core.enums.LyricsProviderId] the
+ *   lyrics come from, if known.
  */
 data class Song(
     val id: Long,
@@ -42,4 +44,5 @@ data class Song(
     val syncedLyrics: String?,
     val ttmlLyrics: String?,
     val dateAdded: Long,
+    val lyricsSource: String? = null,
 )

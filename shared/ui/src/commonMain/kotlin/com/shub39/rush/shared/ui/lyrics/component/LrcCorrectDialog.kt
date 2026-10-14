@@ -50,7 +50,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
+import com.shub39.rush.shared.core.dataclasses.LyricsCandidate
+import com.shub39.rush.shared.core.enums.LyricsProviderId
+import com.shub39.rush.shared.core.util.LrcUtils
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.listItemColors
@@ -152,17 +154,8 @@ fun LrcCorrectDialog(
                         overlineContent = {
                             Text(
                                 text =
-                                    stringResource(
-                                        when (result) {
-                                            is LineSyncedLyricsSearchResult ->
-                                                Res.string.line_synced_lyrics
-
-                                            is PlainLyricsSearchResult -> Res.string.plain_lyrics
-
-                                            is SyllableSyncedLyricsSearchResult ->
-                                                Res.string.syllable_synced_lyrics
-                                        }
-                                    ),
+                                    "${result.provider.displayName} · " +
+                                        stringResource(result.quality.label()),
                                 style = MaterialTheme.typography.labelSmall,
                             )
                         },
@@ -196,14 +189,9 @@ fun LrcCorrectDialog(
                                             Column(modifier = Modifier.padding(16.dp)) {
                                                 Text(
                                                     text =
-                                                        when (result) {
-                                                            is LineSyncedLyricsSearchResult ->
-                                                                result.lineSyncedLyrics
-                                                            is PlainLyricsSearchResult ->
-                                                                result.plainLyrics
-                                                            is SyllableSyncedLyricsSearchResult ->
-                                                                result.syllableSyncedLyrics
-                                                        },
+                                                        result.plain
+                                                            ?: result.lrc?.let(LrcUtils::toPlain)
+                                                            ?: "",
                                                     maxLines = 20,
                                                     overflow = TextOverflow.Ellipsis,
                                                 )
@@ -255,28 +243,14 @@ private fun Preview() {
                 lrcCorrect =
                     LrcCorrect(
                         searchResults =
-                            (0..3).map {
-                                CorrectionSearchResult.PlainLyricsSearchResult(
-                                    plainLyrics = "TODO()",
+                            LyricsProviderId.entries.map {
+                                LyricsCandidate(
+                                    provider = it,
                                     title = "Song One",
-                                    artist = "GABsdjhgva",
+                                    artist = "Artist",
+                                    plain = "Line one\nLine two",
                                 )
-                            } +
-                                (0..3).map {
-                                    CorrectionSearchResult.LineSyncedLyricsSearchResult(
-                                        lineSyncedLyrics = "TODO",
-                                        plainLyrics = "TODO",
-                                        title = "Synced Song",
-                                        artist = "Sync Joe",
-                                    )
-                                } +
-                                (0..3).map {
-                                    CorrectionSearchResult.SyllableSyncedLyricsSearchResult(
-                                        syllableSyncedLyrics = "TODO()",
-                                        title = "Syllable Search",
-                                        artist = "ligma",
-                                    )
-                                }
+                            }
                     )
             ),
     )

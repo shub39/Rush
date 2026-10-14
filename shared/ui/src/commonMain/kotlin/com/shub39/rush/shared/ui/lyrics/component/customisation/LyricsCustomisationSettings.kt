@@ -253,9 +253,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                     value = state.textPrefs.fontSize,
                     steps = 33,
                     valueRange = 16f..50f,
-                    onValueChange = {
-                        onAction(LyricsPageAction.OnFontSizeChange(it))
-                    },
+                    onValueChange = { onAction(LyricsPageAction.OnFontSizeChange(it)) },
                 )
             }
 
@@ -263,9 +261,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 SettingSlider(
                     title = stringResource(Res.string.line_height),
                     value = state.textPrefs.lineHeight,
-                    onValueChange = {
-                        onAction(LyricsPageAction.OnLineHeightChange(it))
-                    },
+                    onValueChange = { onAction(LyricsPageAction.OnLineHeightChange(it)) },
                     steps = 33,
                     valueRange = 16f..55f,
                 )
@@ -275,9 +271,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 SettingSlider(
                     title = stringResource(Res.string.letter_spacing),
                     value = state.textPrefs.letterSpacing,
-                    onValueChange = {
-                        onAction(LyricsPageAction.OnLetterSpacingChange(it))
-                    },
+                    onValueChange = { onAction(LyricsPageAction.OnLetterSpacingChange(it)) },
                     steps = 3,
                     valueRange = -2f..2f,
                 )

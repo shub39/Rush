@@ -16,6 +16,8 @@
  */
 package com.shub39.rush.shared.core.dataclasses
 
+import com.shub39.rush.shared.core.enums.LyricsProviderId
+
 /**
  * Represents the state of a song for display in the user interface.
  *
@@ -47,4 +49,5 @@ data class SongUi(
     val romanizedTtmlLyrics: Map<Double, String> = emptyMap(),
     val romanizedGeniusLyrics: Map<Int, String> = emptyMap(),
     val romanizedSyncedLyrics: Map<Long, String> = emptyMap(),
+    val lyricsSource: LyricsProviderId? = null,
 )

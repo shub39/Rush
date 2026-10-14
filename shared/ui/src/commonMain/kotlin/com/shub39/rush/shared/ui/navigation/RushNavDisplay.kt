@@ -46,6 +46,7 @@ import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
+import com.shub39.rush.shared.ui.setting.section.LyricsSourcesPage
 import com.shub39.rush.shared.ui.setting.section.SettingRootPage
 import com.shub39.rush.shared.ui.share.SharePage
 import com.shub39.rush.shared.ui.share.component.SharePageEdit
@@ -129,7 +130,14 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                     topLevelBackStack.isRouteOnTop(
                                         Routes.Lyrics.LyricsCustomisations
                                     ),
-                                onOpenSearchSheet = { topLevelBackStack.addTopLevel(Routes.Search) },
+                                onOpenSearchSheet = {
+                                    topLevelBackStack.addTopLevel(Routes.Search)
+                                },
+                                onManageSources = {
+                                    topLevelBackStack.addTopLevel(
+                                        Routes.Settings.SettingsLyricsSources
+                                    )
+                                },
                             )
                         }
 
@@ -229,6 +237,11 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                 onNavigateToBackup = {
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsBackup)
                                 },
+                                onNavigateToLyricsSources = {
+                                    topLevelBackStack.addTopLevel(
+                                        Routes.Settings.SettingsLyricsSources
+                                    )
+                                },
                                 onNavigateToChangelog = {
                                     globalVM.onAction(GlobalAction.ChangelogOpened)
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsChangelog)
@@ -264,6 +277,19 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             BackupPage(
+                                state = state,
+                                onAction = viewModel::onAction,
+                                onNavigateBack = { topLevelBackStack.removeLast() },
+                            )
+                        }
+
+                        entry<Routes.Settings.SettingsLyricsSources>(
+                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                        ) {
+                            val viewModel = koinViewModel<SettingsVM>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            LyricsSourcesPage(
                                 state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },

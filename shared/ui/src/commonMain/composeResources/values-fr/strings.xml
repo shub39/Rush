@@ -5,7 +5,7 @@
     <string name="settings">Paramètres</string>
     <string name="empty">C\'est vide ici</string>
     <string name="delete_confirmation">Êtes-vous sûr·e de vouloir supprimer toutes les paroles enregistrées ?</string>
-    <string name="no_lyrics">Les paroles n\'ont pas pu être obtenues depuis LRCLIB</string>
+    <string name="no_lyrics">Aucune source n\'a trouvé de paroles pour ce titre</string>
     <string name="suggestion">Vous devriez peut-être rechercher quelque chose ?</string>
     <string name="delete_all">Supprimer toutes les paroles</string>
     <string name="track">piste</string>
@@ -117,4 +117,20 @@
     <string name="based_on_rush_desc">Rushio est un fork de Rush, l\'application de paroles créée par Shubham Gorai, distribuée sous licence GPL-3.0. Un grand merci à lui et à tous les contributeurs de Rush !</string>
     <string name="license">Licence</string>
     <string name="source_code">Code source</string>
+    <string name="lyrics_sources">Sources de paroles</string>
+    <string name="lyrics_sources_info">Choisir et ordonner les sources des paroles</string>
+    <string name="lyrics_sources_desc">Les sources activées sont interrogées ensemble. Les paroles synchronisées à la syllabe l\'emportent sur celles synchronisées à la ligne, puis sur le texte brut. À qualité égale, la source la plus haute dans cette liste l\'emporte.</string>
+    <string name="source_capability_syllable">Paroles synchronisées à la syllabe et à la ligne</string>
+    <string name="source_capability_line">Paroles synchronisées à la ligne</string>
+    <string name="move_up">Monter</string>
+    <string name="move_down">Descendre</string>
+    <string name="reset_order">Réinitialiser</string>
+    <string name="change_source">Changer de source</string>
+    <string name="current_source">Actuelle</string>
+    <string name="manual_search">Recherche manuelle</string>
+    <string name="manage_sources">Gérer les sources</string>
+    <string name="try_other_source">Essayer une autre source</string>
+    <string name="lyrics_from">Paroles : %1$s</string>
+    <string name="plain_text">Texte brut</string>
+    <string name="no_enabled_source">Aucune source de paroles n\'est activée</string>
 </resources>

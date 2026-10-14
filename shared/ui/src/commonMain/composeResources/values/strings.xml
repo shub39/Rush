@@ -5,7 +5,7 @@
     <string name="settings">Settings</string>
     <string name="empty">It\u0027s empty here</string>
     <string name="delete_confirmation">Are you sure you want to delete all saved lyrics?</string>
-    <string name="no_lyrics">Could not get Lyrics from LRCLIB</string>
+    <string name="no_lyrics">No source found lyrics for this song</string>
     <string name="suggestion">See the search icon below?</string>
     <string name="delete_all">Delete all lyrics</string>
     <string name="track">track</string>
@@ -119,4 +119,20 @@
     <string name="based_on_rush_desc">Rushio is a fork of Rush, the lyrics app created by Shubham Gorai, distributed under the GPL-3.0 license. Huge thanks to him and to every Rush contributor!</string>
     <string name="license">License</string>
     <string name="source_code">Source code</string>
+    <string name="lyrics_sources">Lyrics sources</string>
+    <string name="lyrics_sources_info">Choose and order where lyrics come from</string>
+    <string name="lyrics_sources_desc">Enabled sources are searched together. Syllable synced lyrics win over line synced ones, then plain text. When two sources are equal, the higher one in this list wins.</string>
+    <string name="source_capability_syllable">Syllable and line synced lyrics</string>
+    <string name="source_capability_line">Line synced lyrics</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="reset_order">Reset</string>
+    <string name="change_source">Change source</string>
+    <string name="current_source">Current</string>
+    <string name="manual_search">Manual search</string>
+    <string name="manage_sources">Manage sources</string>
+    <string name="try_other_source">Try another source</string>
+    <string name="lyrics_from">Lyrics: %1$s</string>
+    <string name="plain_text">Plain text</string>
+    <string name="no_enabled_source">No lyrics source is enabled</string>
 </resources>

@@ -6,6 +6,11 @@
 - Aucune statistique d'utilisation collectée
 - Traduction française complétée
 - APK signé généré automatiquement par GitHub Actions
+- Nouvelles sources de paroles : NetEase, QQ Music et Musixmatch (non officiel), en plus de LRCLIB
+- Recherche en cascade : syllabe > ligne > texte brut, ordre des sources configurable
+- Réglages « Sources de paroles » : activer, désactiver et réordonner chaque source
+- Bouton « Changer de source » sur l'écran des paroles, avec comparaison des sources
+- Correction manuelle des paroles dans toutes les sources
 
 ## Rush 7.1.1
 - Removed share card limit 

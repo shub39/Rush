@@ -21,13 +21,14 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
+import com.shub39.rush.shared.core.dataclasses.LyricsCandidate
 import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.enums.Sources
-import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
 import org.jetbrains.compose.resources.StringResource
 
 @Stable
@@ -39,6 +40,7 @@ data class LyricsPageState(
     val autoChange: Boolean = false,
     val playingSong: SongMeta? = null,
     val lrcCorrect: LrcCorrect = LrcCorrect(),
+    val sourcePicker: SourcePicker = SourcePicker(),
     val extractedColors: ExtractedColors = ExtractedColors(),
     val syncedAvailable: Boolean = false,
     val sync: Boolean = false,
@@ -94,7 +96,25 @@ data class TextPrefs(
 @Stable
 @Immutable
 data class LrcCorrect(
-    val searchResults: List<CorrectionSearchResult> = emptyList(),
+    val searchResults: List<LyricsCandidate> = emptyList(),
     val searching: Boolean = false,
     val error: StringResource? = null,
 )
+
+/** State of the "change lyrics source" sheet, results are kept per song. */
+@Stable
+@Immutable
+data class SourcePicker(
+    val visible: Boolean = false,
+    val songId: Long? = null,
+    val providers: List<LyricsProviderId> = emptyList(),
+    val results: Map<LyricsProviderId, SourceResult> = emptyMap(),
+)
+
+sealed interface SourceResult {
+    data object Loading : SourceResult
+
+    data class Found(val candidate: LyricsCandidate) : SourceResult
+
+    data class Failed(val error: StringResource) : SourceResult
+}

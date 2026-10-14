@@ -36,6 +36,7 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.sortMapByKeys
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 data class ActionsState(
@@ -121,16 +122,11 @@ fun Actions(
     }
 
     if (state.source == Sources.LRCLIB && state.selectedLines.isEmpty()) {
-        IconButton(
-            onClick = {
-                action(LyricsPageAction.OnLyricsCorrect(true))
-                action(LyricsPageAction.OnSync(false))
-                if (state.autoChange) action(LyricsPageAction.OnToggleAutoChange)
-            }
-        ) {
+        // Source picker, also gives access to the manual correction
+        IconButton(onClick = { action(LyricsPageAction.OnShowSourcePicker(true)) }) {
             Icon(
-                painter = painterResource(Res.drawable.edit),
-                contentDescription = "Correct Lyrics",
+                painter = painterResource(Res.drawable.swap_source),
+                contentDescription = stringResource(Res.string.change_source),
             )
         }
     }

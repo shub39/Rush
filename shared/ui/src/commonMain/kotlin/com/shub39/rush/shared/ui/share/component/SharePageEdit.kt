@@ -252,8 +252,5 @@ fun SharePageEdit(
 @Preview
 @Composable
 private fun Preview() {
-    SharePageEdit(
-        state = SharePageState(cardColors = CardColors.CUSTOM),
-        onAction = {},
-    )
+    SharePageEdit(state = SharePageState(cardColors = CardColors.CUSTOM), onAction = {})
 }

@@ -20,17 +20,23 @@ import com.shub39.rush.logic.IS_PRIVATE_TOKEN_AVAILABLE
 import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.SourceError
+import com.shub39.rush.shared.core.dataclasses.LyricsCandidate
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.Song
-import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
+import com.shub39.rush.shared.core.dataclasses.TrackQuery
+import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.core.util.LrcUtils
+import com.shub39.rush.shared.core.util.TTMLParser
 import com.shub39.rush.shared.logic.database.SongDao
 import com.shub39.rush.shared.logic.mappers.toSong
 import com.shub39.rush.shared.logic.mappers.toSongEntity
 import com.shub39.rush.shared.logic.network.GeniusApi
-import com.shub39.rush.shared.logic.network.LrcLibApi
+import com.shub39.rush.shared.logic.network.lyrics.LyricsCascade
 import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -41,17 +47,27 @@ import org.koin.core.annotation.Single
 class RushRepository(
     private val localDao: SongDao,
     private val geniusApi: GeniusApi,
-    private val lrcLibApi: LrcLibApi,
+    private val lyricsCascade: LyricsCascade,
 ) : SongRepository {
     companion object {
         private const val TAG = "RushRepository"
     }
 
-    override suspend fun fetchSong(result: SearchResult): Result<Song, SourceError> {
+    override suspend fun fetchSong(
+        result: SearchResult,
+        durationMs: Long?,
+    ): Result<Song, SourceError> {
         try {
-            val lrcLibLyrics =
+            val candidate =
                 withContext(Dispatchers.IO) {
-                    lrcLibApi.getLrcLyrics(trackName = result.title, artistName = result.artist)
+                    lyricsCascade.findBest(
+                        TrackQuery(
+                            title = result.title,
+                            artist = result.artist,
+                            album = result.album,
+                            durationMs = durationMs,
+                        )
+                    )
                 }
             val geniusLyrics =
                 if (IS_PRIVATE_TOKEN_AVAILABLE) {
@@ -63,23 +79,26 @@ class RushRepository(
                     }
                 } else null
 
-            return Result.Success<Song, SourceError>(
-                    Song(
-                        id = result.id,
-                        title = result.title,
-                        artists = result.artist,
-                        lyrics = lrcLibLyrics?.plainLyrics ?: "",
-                        album = result.album,
-                        sourceUrl = result.url,
-                        artUrl = result.artUrl,
-                        geniusLyrics = geniusLyrics,
-                        syncedLyrics = lrcLibLyrics?.syncedLyrics,
-                        ttmlLyrics = null,
-                        dateAdded = Clock.System.now().epochSeconds,
-                    )
+            val song =
+                Song(
+                    id = result.id,
+                    title = result.title,
+                    artists = result.artist,
+                    lyrics = candidate?.plainText() ?: "",
+                    album = result.album,
+                    sourceUrl = result.url,
+                    artUrl = result.artUrl,
+                    geniusLyrics = geniusLyrics,
+                    syncedLyrics = candidate?.lineSynced(),
+                    ttmlLyrics = candidate?.ttml,
+                    dateAdded = Clock.System.now().epochSeconds,
+                    lyricsSource = candidate?.provider?.name,
                 )
-                .also { localDao.insertSong(it.data.toSongEntity()) }
+
+            localDao.insertSong(song.toSongEntity())
+            return Result.Success(song)
         } catch (e: Exception) {
+            currentCoroutineContext().ensureActive()
             RushLogger.e(TAG, "Unexpected exception", e)
             return Result.Error(SourceError.Data.UNKNOWN, "Unexpected exception: $e")
         }
@@ -127,49 +146,16 @@ class RushRepository(
         }
     }
 
-    override suspend fun searchCorrections(
-        track: String,
-        artist: String,
-    ): Result<List<CorrectionSearchResult>, SourceError> {
-        val lrcResults = withContext(Dispatchers.IO) { lrcLibApi.searchLrcLyrics(track, artist) }
+    override suspend fun searchLyrics(
+        query: TrackQuery
+    ): Result<List<LyricsCandidate>, SourceError> =
+        withContext(Dispatchers.IO) { lyricsCascade.searchAll(query) }
 
-        var searchResults = listOf<CorrectionSearchResult>()
-
-        when (lrcResults) {
-            is Result.Success -> {
-                lrcResults.data
-                    .filter { it.instrumental == false }
-                    .forEach { dto ->
-                        if (dto.syncedLyrics != null) {
-                            searchResults =
-                                searchResults.plus(
-                                    CorrectionSearchResult.LineSyncedLyricsSearchResult(
-                                        title = track,
-                                        artist = artist,
-                                        plainLyrics = dto.plainLyrics ?: "",
-                                        lineSyncedLyrics = dto.syncedLyrics,
-                                    )
-                                )
-                        } else {
-                            searchResults =
-                                searchResults.plus(
-                                    CorrectionSearchResult.PlainLyricsSearchResult(
-                                        title = track,
-                                        artist = artist,
-                                        plainLyrics = dto.plainLyrics ?: "",
-                                    )
-                                )
-                        }
-                    }
-
-                return Result.Success(searchResults.distinct())
-            }
-
-            is Result.Error -> {
-                return Result.Error(error = lrcResults.error, message = lrcResults.message)
-            }
-        }
-    }
+    override suspend fun fetchLyricsFrom(
+        provider: LyricsProviderId,
+        query: TrackQuery,
+    ): Result<LyricsCandidate, SourceError> =
+        withContext(Dispatchers.IO) { lyricsCascade.fetchFrom(provider, query) }
 
     override suspend fun insertSong(song: Song) {
         localDao.insertSong(song.toSongEntity())
@@ -195,22 +181,29 @@ class RushRepository(
         localDao.deleteSong(id)
     }
 
-    override suspend fun correctLyrics(id: Long, searchResult: CorrectionSearchResult) {
-        when (searchResult) {
-            is LineSyncedLyricsSearchResult -> {
-                localDao.updateSyncedLyricsById(id, searchResult.lineSyncedLyrics)
-                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
-            }
-
-            is PlainLyricsSearchResult ->
-                localDao.updatePlainLyricsById(id, searchResult.plainLyrics)
-
-            is SyllableSyncedLyricsSearchResult ->
-                localDao.updateTTMLLyricsById(id, searchResult.syllableSyncedLyrics)
-        }
+    override suspend fun applyLyrics(id: Long, candidate: LyricsCandidate) {
+        localDao.updateLyrics(
+            id = id,
+            plain = candidate.plainText(),
+            synced = candidate.lineSynced(),
+            ttml = candidate.ttml,
+            source = candidate.provider.name,
+        )
     }
 
     override suspend fun deleteAllSongs() {
         localDao.deleteAllSongs()
     }
 }
+
+private fun LyricsCandidate.lineSynced(): String? =
+    lrc
+        ?: ttml?.let { ttml ->
+            // background vocals are tagged "{bg}" by toLRC, keep the main lines only
+            LrcUtils.normalize(
+                TTMLParser.toLRC(ttml).lines().filterNot { "]{bg}" in it }.joinToString("\n")
+            )
+        }
+
+private fun LyricsCandidate.plainText(): String =
+    plain?.takeIf { it.isNotBlank() } ?: lineSynced()?.let(LrcUtils::toPlain) ?: ""

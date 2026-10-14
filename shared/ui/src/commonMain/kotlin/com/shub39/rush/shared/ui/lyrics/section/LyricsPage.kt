@@ -105,6 +105,8 @@ import com.shub39.rush.shared.ui.lyrics.component.ErrorCard
 import com.shub39.rush.shared.ui.lyrics.component.FetchingCard
 import com.shub39.rush.shared.ui.lyrics.component.LineSyncedLyrics
 import com.shub39.rush.shared.ui.lyrics.component.LrcCorrectDialog
+import com.shub39.rush.shared.ui.lyrics.component.LyricsSourceLabel
+import com.shub39.rush.shared.ui.lyrics.component.LyricsSourcePickerSheet
 import com.shub39.rush.shared.ui.lyrics.component.PlainLyrics
 import com.shub39.rush.shared.ui.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.shared.ui.lyrics.getCardColors
@@ -129,6 +131,7 @@ expect fun LyricsPage(
     notificationAccess: Boolean,
     isCustomisationsOpened: Boolean,
     onOpenSearchSheet: () -> Unit,
+    onManageSources: () -> Unit,
 )
 
 @Composable
@@ -143,6 +146,7 @@ fun LyricsPageContent(
     notificationAccess: Boolean,
     isCustomisationsOpened: Boolean,
     onOpenSearchSheet: () -> Unit,
+    onManageSources: () -> Unit,
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
@@ -346,6 +350,12 @@ fun LyricsPageContent(
                                                     modifier = Modifier.basicMarquee(),
                                                 )
 
+                                                LyricsSourceLabel(
+                                                    state = state,
+                                                    song = lyricsState.song,
+                                                    action = action,
+                                                )
+
                                                 // Actions Row
                                                 Row(
                                                     modifier =
@@ -461,6 +471,12 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier = Modifier.basicMarquee(),
+                                                )
+
+                                                LyricsSourceLabel(
+                                                    state = state,
+                                                    song = lyricsState.song,
+                                                    action = action,
                                                 )
                                             }
 
@@ -700,7 +716,26 @@ fun LyricsPageContent(
             }
         }
 
-        // Lyrics Correction from LRCLIB
+        // Quick switch to the lyrics of another source
+        if (state.sourcePicker.visible) {
+            LyricsSourcePickerSheet(
+                picker = state.sourcePicker,
+                currentSource = loadedSong?.lyricsSource,
+                action = action,
+                onManualSearch = {
+                    action(LyricsPageAction.OnShowSourcePicker(false))
+                    action(LyricsPageAction.OnLyricsCorrect(true))
+                    action(LyricsPageAction.OnSync(false))
+                    if (state.autoChange) action(LyricsPageAction.OnToggleAutoChange)
+                },
+                onManageSources = {
+                    action(LyricsPageAction.OnShowSourcePicker(false))
+                    onManageSources()
+                },
+            )
+        }
+
+        // Manual lyrics correction, searching every enabled source
         if (state.lyricsCorrect) {
             LrcCorrectDialog(
                 action = action,
@@ -761,5 +796,6 @@ private fun LyricsPagePreview() {
         playbackInfo = PlaybackInfo(),
         isCustomisationsOpened = false,
         onOpenSearchSheet = {},
+        onManageSources = {},
     )
 }

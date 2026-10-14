@@ -19,13 +19,13 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.AnalyticsEvent
-import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.SearchState
+import com.shub39.rush.shared.ui.lyrics.defaultSource
 import com.shub39.rush.shared.ui.lyrics.toSongUi
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.saved.SavedPageState
@@ -148,7 +148,7 @@ class SavedVM(
         stateLayer.lyricsState.update {
             it.copy(
                 lyricsState = LyricsState.Loaded(song = result),
-                source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
+                source = result.defaultSource(),
                 searchState = SearchState.Idle,
                 syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
                 sync = false,

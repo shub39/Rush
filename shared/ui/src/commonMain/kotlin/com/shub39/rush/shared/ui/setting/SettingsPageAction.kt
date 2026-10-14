@@ -18,6 +18,7 @@ package com.shub39.rush.shared.ui.setting
 
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.enums.PaletteStyle
 
 sealed interface SettingsPageAction {
@@ -40,4 +41,13 @@ sealed interface SettingsPageAction {
     data class OnRestoreSongs(val path: String) : SettingsPageAction
 
     data object OnExportSongs : SettingsPageAction
+
+    data class OnToggleLyricsSource(val provider: LyricsProviderId, val enabled: Boolean) :
+        SettingsPageAction
+
+    /** Moves a source up (-1) or down (+1) in the cascade order. */
+    data class OnMoveLyricsSource(val provider: LyricsProviderId, val offset: Int) :
+        SettingsPageAction
+
+    data object OnResetLyricsSources : SettingsPageAction
 }

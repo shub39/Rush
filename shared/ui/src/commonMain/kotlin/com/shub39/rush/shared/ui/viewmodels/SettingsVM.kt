@@ -26,6 +26,7 @@ import com.shub39.rush.shared.core.backup.RestoreResult
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
+import com.shub39.rush.shared.core.interfaces.LyricsSourcePreferences
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
@@ -53,6 +54,7 @@ class SettingsVM(
     @Provided private val restoreRepo: RestoreRepo,
     @Provided private val changelogManager: ChangelogManager,
     @Provided private val analytics: AnalyticsWrapper,
+    @Provided private val lyricsSourcePreferences: LyricsSourcePreferences,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
@@ -143,6 +145,31 @@ class SettingsVM(
                 is SettingsPageAction.OnFontChange -> {
                     datastore.updateFonts(action.fonts)
                 }
+
+                is SettingsPageAction.OnToggleLyricsSource -> {
+                    val sources = _state.value.lyricsSources
+                    // At least one source must stay enabled
+                    if (!action.enabled && sources.count { it.enabled } <= 1) return@launch
+
+                    lyricsSourcePreferences.updateSources(
+                        sources.map {
+                            if (it.provider == action.provider) it.copy(enabled = action.enabled)
+                            else it
+                        }
+                    )
+                }
+
+                is SettingsPageAction.OnMoveLyricsSource -> {
+                    val sources = _state.value.lyricsSources.toMutableList()
+                    val from = sources.indexOfFirst { it.provider == action.provider }
+                    val to = from + action.offset
+                    if (from < 0 || to !in sources.indices) return@launch
+
+                    sources.add(to, sources.removeAt(from))
+                    lyricsSourcePreferences.updateSources(sources)
+                }
+
+                SettingsPageAction.OnResetLyricsSources -> lyricsSourcePreferences.resetSources()
             }
         }
     }
@@ -189,6 +216,11 @@ class SettingsVM(
                     .onEach { pref ->
                         _state.update { it.copy(theme = it.theme.copy(materialTheme = pref)) }
                     }
+                    .launchIn(this)
+
+                lyricsSourcePreferences
+                    .getSourcesFlow()
+                    .onEach { sources -> _state.update { it.copy(lyricsSources = sources) } }
                     .launchIn(this)
             }
     }

@@ -43,6 +43,8 @@ sealed interface Routes : NavKey {
 
         data object SettingsBackup : Settings
 
+        data object SettingsLyricsSources : Settings
+
         data object SettingsChangelog : Settings
 
         data object SettingsAppInfo : Settings

@@ -76,6 +76,7 @@ fun SettingRootPage(
     onNavigateBack: () -> Unit,
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
+    onNavigateToLyricsSources: () -> Unit,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
@@ -133,7 +134,7 @@ fun SettingRootPage(
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsLookAndFeel,
                             onCheckedChange = { onNavigateToLookAndFeel() },
-                            shapes = segmentedListItemShapes(0, 2),
+                            shapes = segmentedListItemShapes(0, 3),
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -158,11 +159,40 @@ fun SettingRootPage(
                             content = { Text(text = stringResource(Res.string.look_and_feel)) },
                         )
 
+                        // navigate to lyrics sources
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsLyricsSources,
+                            onCheckedChange = { onNavigateToLyricsSources() },
+                            shapes = segmentedListItemShapes(1, 3),
+                            colors = listItemColors(),
+                            content = { Text(text = stringResource(Res.string.lyrics_sources)) },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.lyrics_sources_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.library_music),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
+
                         // navigate to backup
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsBackup,
                             onCheckedChange = { onNavigateToBackup() },
-                            shapes = segmentedListItemShapes(1, 2),
+                            shapes = segmentedListItemShapes(2, 3),
                             colors = listItemColors(),
                             content = { Text(text = stringResource(Res.string.backup)) },
                             supportingContent = {
@@ -326,6 +356,7 @@ private fun Preview() {
         onNavigateBack = {},
         onNavigateToLookAndFeel = {},
         onNavigateToBackup = {},
+        onNavigateToLyricsSources = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
         onUpdateNotificationAccess = {},

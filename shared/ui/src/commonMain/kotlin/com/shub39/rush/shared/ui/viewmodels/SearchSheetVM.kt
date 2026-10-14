@@ -23,13 +23,14 @@ import com.shub39.rush.shared.core.Result
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.SongMeta
-import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
+import com.shub39.rush.shared.core.util.TrackMatcher
 import com.shub39.rush.shared.ui.errorStringRes
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.SearchState
+import com.shub39.rush.shared.ui.lyrics.defaultSource
 import com.shub39.rush.shared.ui.lyrics.toSongUi
 import com.shub39.rush.shared.ui.searchsheet.SearchSheetAction
 import com.shub39.rush.shared.ui.searchsheet.SearchSheetState
@@ -252,8 +253,7 @@ class SearchSheetVM(
                     stateLayer.lyricsState.update {
                         it.copy(
                             lyricsState = LyricsState.Loaded(song = result),
-                            source =
-                                if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
+                            source = result.defaultSource(),
                             syncedAvailable =
                                 result.syncedLyrics != null || result.ttmlLyrics != null,
                             sync =
@@ -265,7 +265,14 @@ class SearchSheetVM(
 
                     stateLayer.savedPageState.update { it.copy(currentSong = result) }
                 } else {
-                    when (val result = repo.fetchSong(song)) {
+                    // The duration of the playing song helps sources pick the right version
+                    val playing = stateLayer.lyricsState.value.playingSong
+                    val durationMs =
+                        playing?.duration?.takeIf {
+                            TrackMatcher.similarity(playing.title, song.title) >= 0.8
+                        }
+
+                    when (val result = repo.fetchSong(song, durationMs)) {
                         is Result.Error -> {
                             stateLayer.lyricsState.update {
                                 it.copy(
@@ -301,9 +308,7 @@ class SearchSheetVM(
                             stateLayer.lyricsState.update {
                                 it.copy(
                                     lyricsState = LyricsState.Loaded(song = retrievedSong),
-                                    source =
-                                        if (retrievedSong.lyrics.isNotEmpty()) Sources.LRCLIB
-                                        else Sources.GENIUS,
+                                    source = retrievedSong.defaultSource(),
                                     syncedAvailable =
                                         retrievedSong.syncedLyrics != null ||
                                             retrievedSong.ttmlLyrics != null,

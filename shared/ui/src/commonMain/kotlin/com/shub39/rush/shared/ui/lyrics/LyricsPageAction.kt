@@ -16,12 +16,13 @@
  */
 package com.shub39.rush.shared.ui.lyrics
 
+import com.shub39.rush.shared.core.dataclasses.LyricsCandidate
 import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.enums.Sources
-import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
 
 sealed interface LyricsPageAction {
     data class OnExpressiveLyricsChange(val pref: Boolean) : LyricsPageAction
@@ -78,8 +79,11 @@ sealed interface LyricsPageAction {
 
     data class OnCorrectionSearch(val track: String, val artist: String) : LyricsPageAction
 
-    data class OnUpdateSongLyrics(val id: Long, val searchResult: CorrectionSearchResult) :
-        LyricsPageAction
+    data class OnUpdateSongLyrics(val id: Long, val candidate: LyricsCandidate) : LyricsPageAction
+
+    data class OnShowSourcePicker(val show: Boolean) : LyricsPageAction
+
+    data class OnRetrySource(val provider: LyricsProviderId) : LyricsPageAction
 
     data class OnRomanizationToggle(val enabled: Boolean) : LyricsPageAction
 
