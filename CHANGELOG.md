@@ -1,8 +1,9 @@
 # Changelog
 
-## 7.1.1
+## 7.1.2
 - Removed share card limit 
 - Miscellaneous Updates and Fixes
+- Updated App Icon
 
 ## 7.1.0
 - Removed unnecessary calls to Genius API
