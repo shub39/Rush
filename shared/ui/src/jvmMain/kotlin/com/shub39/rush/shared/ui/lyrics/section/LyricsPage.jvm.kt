@@ -34,6 +34,7 @@ actual fun LyricsPage(
     isCustomisationsOpened: Boolean,
     onOpenSearchSheet: () -> Unit,
     onManageSources: () -> Unit,
+    onManageDevices: () -> Unit,
 ) {
     LyricsPageContent(
         modifier = modifier,
@@ -47,5 +48,6 @@ actual fun LyricsPage(
         isCustomisationsOpened = isCustomisationsOpened,
         onOpenSearchSheet = onOpenSearchSheet,
         onManageSources = onManageSources,
+        onManageDevices = onManageDevices,
     )
 }

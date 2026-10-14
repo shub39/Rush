@@ -50,4 +50,5 @@ data class SongUi(
     val romanizedGeniusLyrics: Map<Int, String> = emptyMap(),
     val romanizedSyncedLyrics: Map<Long, String> = emptyMap(),
     val lyricsSource: LyricsProviderId? = null,
+    val syncOffsetMs: Long = 0,
 )

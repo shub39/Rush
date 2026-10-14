@@ -77,6 +77,7 @@ fun SettingRootPage(
     onNavigateToLookAndFeel: () -> Unit,
     onNavigateToBackup: () -> Unit,
     onNavigateToLyricsSources: () -> Unit,
+    onNavigateToAudioDevices: () -> Unit,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
@@ -134,7 +135,7 @@ fun SettingRootPage(
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsLookAndFeel,
                             onCheckedChange = { onNavigateToLookAndFeel() },
-                            shapes = segmentedListItemShapes(0, 3),
+                            shapes = segmentedListItemShapes(0, 4),
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -163,7 +164,7 @@ fun SettingRootPage(
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsLyricsSources,
                             onCheckedChange = { onNavigateToLyricsSources() },
-                            shapes = segmentedListItemShapes(1, 3),
+                            shapes = segmentedListItemShapes(1, 4),
                             colors = listItemColors(),
                             content = { Text(text = stringResource(Res.string.lyrics_sources)) },
                             supportingContent = {
@@ -188,11 +189,40 @@ fun SettingRootPage(
                             },
                         )
 
+                        // navigate to audio devices and latency
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsAudioDevices,
+                            onCheckedChange = { onNavigateToAudioDevices() },
+                            shapes = segmentedListItemShapes(2, 4),
+                            colors = listItemColors(),
+                            content = { Text(text = stringResource(Res.string.audio_devices)) },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.audio_devices_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.bluetooth),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
+
                         // navigate to backup
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsBackup,
                             onCheckedChange = { onNavigateToBackup() },
-                            shapes = segmentedListItemShapes(2, 3),
+                            shapes = segmentedListItemShapes(3, 4),
                             colors = listItemColors(),
                             content = { Text(text = stringResource(Res.string.backup)) },
                             supportingContent = {
@@ -357,6 +387,7 @@ private fun Preview() {
         onNavigateToLookAndFeel = {},
         onNavigateToBackup = {},
         onNavigateToLyricsSources = {},
+        onNavigateToAudioDevices = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
         onUpdateNotificationAccess = {},

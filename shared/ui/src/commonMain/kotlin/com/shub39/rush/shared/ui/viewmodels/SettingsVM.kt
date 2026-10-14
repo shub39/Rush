@@ -29,6 +29,7 @@ import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.LyricsSourcePreferences
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
+import com.shub39.rush.shared.core.interfaces.SyncOffsetManager
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
 import kotlinx.coroutines.Job
@@ -55,6 +56,7 @@ class SettingsVM(
     @Provided private val changelogManager: ChangelogManager,
     @Provided private val analytics: AnalyticsWrapper,
     @Provided private val lyricsSourcePreferences: LyricsSourcePreferences,
+    @Provided private val syncOffsetManager: SyncOffsetManager,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
@@ -170,6 +172,16 @@ class SettingsVM(
                 }
 
                 SettingsPageAction.OnResetLyricsSources -> lyricsSourcePreferences.resetSources()
+
+                is SettingsPageAction.OnSetDeviceOffset ->
+                    syncOffsetManager.setDeviceOffset(action.key, action.offsetMs)
+
+                is SettingsPageAction.OnRemoveDevice -> syncOffsetManager.removeDevice(action.key)
+
+                is SettingsPageAction.OnSetTypeOffset ->
+                    syncOffsetManager.setTypeOffset(action.type, action.offsetMs)
+
+                SettingsPageAction.OnBluetoothPermissionChanged -> syncOffsetManager.refresh()
             }
         }
     }
@@ -221,6 +233,10 @@ class SettingsVM(
                 lyricsSourcePreferences
                     .getSourcesFlow()
                     .onEach { sources -> _state.update { it.copy(lyricsSources = sources) } }
+                    .launchIn(this)
+
+                syncOffsetManager.state
+                    .onEach { offset -> _state.update { it.copy(syncOffset = offset) } }
                     .launchIn(this)
             }
     }

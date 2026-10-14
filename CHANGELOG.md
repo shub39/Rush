@@ -11,6 +11,10 @@
 - Réglages « Sources de paroles » : activer, désactiver et réordonner chaque source
 - Bouton « Changer de source » sur l'écran des paroles, avec comparaison des sources
 - Correction manuelle des paroles dans toutes les sources
+- Compensation de la latence Bluetooth : détection de la sortie audio active (appareil et type)
+- Décalage de synchronisation par appareil précis ou par type d'appareil (autoradio, casque, enceinte…)
+- Boutons −50 / +50 ms sur l'écran des paroles, enregistrables pour l'appareil, le type ou le titre
+- Réglages « Appareils audio et latence » : appareils connus et décalages modifiables
 
 ## Rush 7.1.1
 - Removed share card limit 

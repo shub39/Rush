@@ -50,6 +50,9 @@ interface SongDao {
         source: String?,
     )
 
+    @Query("UPDATE songs SET syncOffset = :offset WHERE id = :id")
+    suspend fun updateSyncOffset(id: Long, offset: Long)
+
     @Query("UPDATE songs SET geniusLyrics = :lyrics WHERE id = :id")
     suspend fun updateGeniusLyrics(id: Long, lyrics: String)
 

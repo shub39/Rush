@@ -17,6 +17,7 @@
 package com.shub39.rush.shared.ui.setting
 
 import com.shub39.rush.shared.core.enums.AppTheme
+import com.shub39.rush.shared.core.enums.AudioDeviceType
 import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.enums.PaletteStyle
@@ -50,4 +51,14 @@ sealed interface SettingsPageAction {
         SettingsPageAction
 
     data object OnResetLyricsSources : SettingsPageAction
+
+    /** Sets the offset of a known audio device, null to use its type offset. */
+    data class OnSetDeviceOffset(val key: String, val offsetMs: Long?) : SettingsPageAction
+
+    data class OnRemoveDevice(val key: String) : SettingsPageAction
+
+    /** Sets the default offset of a device type, null to remove it. */
+    data class OnSetTypeOffset(val type: AudioDeviceType, val offsetMs: Long?) : SettingsPageAction
+
+    data object OnBluetoothPermissionChanged : SettingsPageAction
 }

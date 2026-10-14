@@ -59,5 +59,8 @@ interface SongRepository {
     /** Replaces the lyrics of song [id] with [candidate]. */
     suspend fun applyLyrics(id: Long, candidate: LyricsCandidate)
 
+    /** Sets the sync offset fine tuning of song [id], added to the audio device offset. */
+    suspend fun setSongOffset(id: Long, offsetMs: Long)
+
     suspend fun deleteAllSongs()
 }

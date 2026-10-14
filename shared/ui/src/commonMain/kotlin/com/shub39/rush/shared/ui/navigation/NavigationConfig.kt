@@ -45,6 +45,8 @@ sealed interface Routes : NavKey {
 
         data object SettingsLyricsSources : Settings
 
+        data object SettingsAudioDevices : Settings
+
         data object SettingsChangelog : Settings
 
         data object SettingsAppInfo : Settings

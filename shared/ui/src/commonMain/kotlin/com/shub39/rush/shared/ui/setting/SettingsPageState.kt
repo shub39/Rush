@@ -22,6 +22,7 @@ import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.core.dataclasses.Changelog
 import com.shub39.rush.shared.core.dataclasses.LyricsSourceSetting
+import com.shub39.rush.shared.core.dataclasses.SyncOffsetState
 import com.shub39.rush.shared.core.dataclasses.Theme
 
 @Stable
@@ -33,4 +34,5 @@ data class SettingsPageState(
     val restoreState: RestoreState = RestoreState.Idle,
     val changelog: Changelog = emptyList(),
     val lyricsSources: List<LyricsSourceSetting> = emptyList(),
+    val syncOffset: SyncOffsetState = SyncOffsetState(),
 )

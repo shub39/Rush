@@ -24,9 +24,14 @@ import androidx.room3.RoomDatabaseConstructor
 
 @Database(
     entities = [SongEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 3, to = 4), AutoMigration(from = 4, to = 5)],
+    autoMigrations =
+        [
+            AutoMigration(from = 3, to = 4),
+            AutoMigration(from = 4, to = 5),
+            AutoMigration(from = 5, to = 6),
+        ],
 )
 @ConstructedBy(DbConstructor::class)
 abstract class SongDatabase : RoomDatabase() {

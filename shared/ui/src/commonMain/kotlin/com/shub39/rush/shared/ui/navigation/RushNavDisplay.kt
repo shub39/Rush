@@ -43,6 +43,7 @@ import com.shub39.rush.shared.ui.saved.SavedPage
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
 import com.shub39.rush.shared.ui.setting.section.About
+import com.shub39.rush.shared.ui.setting.section.AudioDevicesPage
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
@@ -136,6 +137,11 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                 onManageSources = {
                                     topLevelBackStack.addTopLevel(
                                         Routes.Settings.SettingsLyricsSources
+                                    )
+                                },
+                                onManageDevices = {
+                                    topLevelBackStack.addTopLevel(
+                                        Routes.Settings.SettingsAudioDevices
                                     )
                                 },
                             )
@@ -242,6 +248,11 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                         Routes.Settings.SettingsLyricsSources
                                     )
                                 },
+                                onNavigateToAudioDevices = {
+                                    topLevelBackStack.addTopLevel(
+                                        Routes.Settings.SettingsAudioDevices
+                                    )
+                                },
                                 onNavigateToChangelog = {
                                     globalVM.onAction(GlobalAction.ChangelogOpened)
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsChangelog)
@@ -290,6 +301,19 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LyricsSourcesPage(
+                                state = state,
+                                onAction = viewModel::onAction,
+                                onNavigateBack = { topLevelBackStack.removeLast() },
+                            )
+                        }
+
+                        entry<Routes.Settings.SettingsAudioDevices>(
+                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                        ) {
+                            val viewModel = koinViewModel<SettingsVM>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            AudioDevicesPage(
                                 state = state,
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },

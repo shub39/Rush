@@ -24,6 +24,7 @@ import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.LyricsCandidate
 import com.shub39.rush.shared.core.dataclasses.SongMeta
 import com.shub39.rush.shared.core.dataclasses.SongUi
+import com.shub39.rush.shared.core.dataclasses.SyncOffsetState
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
@@ -41,6 +42,8 @@ data class LyricsPageState(
     val playingSong: SongMeta? = null,
     val lrcCorrect: LrcCorrect = LrcCorrect(),
     val sourcePicker: SourcePicker = SourcePicker(),
+    val syncOffset: SyncOffsetState = SyncOffsetState(),
+    val offsetSheet: Boolean = false,
     val extractedColors: ExtractedColors = ExtractedColors(),
     val syncedAvailable: Boolean = false,
     val sync: Boolean = false,

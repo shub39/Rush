@@ -18,6 +18,10 @@
   réglages, et l'écran des paroles permet de basculer d'un tap vers une autre source.
 - Paroles synchronisées à la ligne ou à la syllabe, avec suivi automatique de la chanson en cours
   (mode Rushio, nécessite l'accès aux notifications).
+- Compensation de la latence Bluetooth : la sortie audio active est détectée et un décalage est
+  appliqué automatiquement, réglé par appareil (adresse + nom) ou par type d'appareil (autoradio,
+  casque, enceinte…), avec un ajustement fin possible par chanson. Réglage en direct par pas de
+  50 ms depuis l'écran des paroles.
 - Arrière-plans animés, personnalisation du texte, romanisation (japonais, coréen, chinois…).
 - Toutes les fonctionnalités sont gratuites : pas d'achats intégrés, pas de statistiques d'utilisation.
 - Interface en français et en anglais.

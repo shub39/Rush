@@ -38,4 +38,5 @@ data class SongSchema(
     val ttmlLyrics: String?,
     val dateAdded: Long = 0,
     val lyricsSource: String? = null,
+    val syncOffset: Long = 0,
 )

@@ -191,6 +191,10 @@ class RushRepository(
         )
     }
 
+    override suspend fun setSongOffset(id: Long, offsetMs: Long) {
+        localDao.updateSyncOffset(id, offsetMs)
+    }
+
     override suspend fun deleteAllSongs() {
         localDao.deleteAllSongs()
     }

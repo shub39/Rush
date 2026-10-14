@@ -41,6 +41,7 @@ actual fun LyricsPage(
     isCustomisationsOpened: Boolean,
     onOpenSearchSheet: () -> Unit,
     onManageSources: () -> Unit,
+    onManageDevices: () -> Unit,
 ) {
     val microphonePermission = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
     val waveData =
@@ -65,5 +66,6 @@ actual fun LyricsPage(
         isCustomisationsOpened = isCustomisationsOpened,
         onOpenSearchSheet = onOpenSearchSheet,
         onManageSources = onManageSources,
+        onManageDevices = onManageDevices,
     )
 }

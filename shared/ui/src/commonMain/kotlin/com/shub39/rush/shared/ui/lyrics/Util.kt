@@ -279,5 +279,6 @@ fun Song.toSongUi(): SongUi {
         geniusLyrics = geniusLyrics?.let { breakLyrics(it) },
         ttmlLyrics = ttmlLyrics?.let { TTMLParser.parseTTML(it) },
         lyricsSource = lyricsSource?.let { valueOfOrNull<LyricsProviderId>(it) },
+        syncOffsetMs = syncOffset,
     )
 }

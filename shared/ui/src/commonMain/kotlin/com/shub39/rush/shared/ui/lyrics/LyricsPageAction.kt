@@ -85,7 +85,27 @@ sealed interface LyricsPageAction {
 
     data class OnRetrySource(val provider: LyricsProviderId) : LyricsPageAction
 
+    /** Adds [deltaMs] to the unsaved sync offset adjustment. */
+    data class OnAdjustOffset(val deltaMs: Long) : LyricsPageAction
+
+    data class OnSaveOffset(val target: OffsetTarget) : LyricsPageAction
+
+    data object OnResetOffsetAdjustment : LyricsPageAction
+
+    data object OnResetSongOffset : LyricsPageAction
+
+    data class OnShowOffsetSheet(val show: Boolean) : LyricsPageAction
+
+    data object OnBluetoothPermissionChanged : LyricsPageAction
+
     data class OnRomanizationToggle(val enabled: Boolean) : LyricsPageAction
 
     data class OnHideUIToggle(val enabled: Boolean) : LyricsPageAction
+}
+
+/** Where an offset adjustment made while listening is saved. */
+enum class OffsetTarget {
+    DEVICE,
+    TYPE,
+    SONG,
 }
