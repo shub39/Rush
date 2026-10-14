@@ -24,3 +24,9 @@ actual fun rememberBluetoothPermission(onResult: (Boolean) -> Unit): BluetoothPe
     remember {
         BluetoothPermissionState(granted = true, request = {})
     }
+
+@Composable
+actual fun rememberNotificationPermission(onResult: (Boolean) -> Unit): BluetoothPermissionState =
+    remember {
+        BluetoothPermissionState(granted = true, request = {})
+    }

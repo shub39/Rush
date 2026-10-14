@@ -78,6 +78,7 @@ fun SettingRootPage(
     onNavigateToBackup: () -> Unit,
     onNavigateToLyricsSources: () -> Unit,
     onNavigateToAudioDevices: () -> Unit,
+    onNavigateToBackgroundLyrics: () -> Unit,
     onNavigateToChangelog: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
     onUpdateNotificationAccess: () -> Unit,
@@ -135,7 +136,7 @@ fun SettingRootPage(
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsLookAndFeel,
                             onCheckedChange = { onNavigateToLookAndFeel() },
-                            shapes = segmentedListItemShapes(0, 4),
+                            shapes = segmentedListItemShapes(0, 2),
                             colors = listItemColors(),
                             leadingContent = {
                                 Icon(
@@ -160,11 +161,45 @@ fun SettingRootPage(
                             content = { Text(text = stringResource(Res.string.look_and_feel)) },
                         )
 
+                        // navigate to backup
+                        SegmentedListItem(
+                            checked = lastRoute == Routes.Settings.SettingsBackup,
+                            onCheckedChange = { onNavigateToBackup() },
+                            shapes = segmentedListItemShapes(1, 2),
+                            colors = listItemColors(),
+                            content = { Text(text = stringResource(Res.string.backup)) },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(Res.string.backup_info),
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee(),
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.upload_file),
+                                    contentDescription = "Backup",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            },
+                            trailingContent = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.arrow_forward_ios),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
+                    }
+                }
+
+                // lyrics sources, audio latency and background lyrics
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         // navigate to lyrics sources
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsLyricsSources,
                             onCheckedChange = { onNavigateToLyricsSources() },
-                            shapes = segmentedListItemShapes(1, 4),
+                            shapes = segmentedListItemShapes(0, 3),
                             colors = listItemColors(),
                             content = { Text(text = stringResource(Res.string.lyrics_sources)) },
                             supportingContent = {
@@ -193,7 +228,7 @@ fun SettingRootPage(
                         SegmentedListItem(
                             checked = lastRoute == Routes.Settings.SettingsAudioDevices,
                             onCheckedChange = { onNavigateToAudioDevices() },
-                            shapes = segmentedListItemShapes(2, 4),
+                            shapes = segmentedListItemShapes(1, 3),
                             colors = listItemColors(),
                             content = { Text(text = stringResource(Res.string.audio_devices)) },
                             supportingContent = {
@@ -218,24 +253,24 @@ fun SettingRootPage(
                             },
                         )
 
-                        // navigate to backup
+                        // navigate to background lyrics (floating window)
                         SegmentedListItem(
-                            checked = lastRoute == Routes.Settings.SettingsBackup,
-                            onCheckedChange = { onNavigateToBackup() },
-                            shapes = segmentedListItemShapes(3, 4),
+                            checked = lastRoute == Routes.Settings.SettingsBackgroundLyrics,
+                            onCheckedChange = { onNavigateToBackgroundLyrics() },
+                            shapes = segmentedListItemShapes(2, 3),
                             colors = listItemColors(),
-                            content = { Text(text = stringResource(Res.string.backup)) },
+                            content = { Text(text = stringResource(Res.string.background_lyrics)) },
                             supportingContent = {
                                 Text(
-                                    text = stringResource(Res.string.backup_info),
+                                    text = stringResource(Res.string.background_lyrics_info),
                                     maxLines = 1,
                                     modifier = Modifier.basicMarquee(),
                                 )
                             },
                             leadingContent = {
                                 Icon(
-                                    painter = painterResource(Res.drawable.upload_file),
-                                    contentDescription = "Backup",
+                                    painter = painterResource(Res.drawable.quote),
+                                    contentDescription = null,
                                     modifier = Modifier.size(24.dp),
                                 )
                             },
@@ -388,6 +423,7 @@ private fun Preview() {
         onNavigateToBackup = {},
         onNavigateToLyricsSources = {},
         onNavigateToAudioDevices = {},
+        onNavigateToBackgroundLyrics = {},
         onNavigateToChangelog = {},
         onNavigateToAppInfo = {},
         onUpdateNotificationAccess = {},

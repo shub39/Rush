@@ -180,4 +180,26 @@
     <string name="cancel">Cancel</string>
     <string name="edit_offset">Edit offset</string>
     <string name="offset_value_ms">Offset in ms</string>
+    <string name="background_lyrics">Background lyrics</string>
+    <string name="background_lyrics_info">Lyrics over other apps</string>
+    <string name="background_lyrics_desc">Shows the line being sung while you use other apps (maps, messages…), synced with the offset of your audio device.</string>
+    <string name="background_mode_off">Off</string>
+    <string name="background_mode_overlay">Floating window</string>
+    <string name="background_mode_overlay_desc">Current and next line over other apps. Drag it to move it, drag the corner to resize it, tap it to open Rushio.</string>
+    <string name="overlay_permission">Display over other apps</string>
+    <string name="overlay_permission_desc">Android requires this permission to show a floating window. Rushio only uses it to display lyrics. On the next screen, enable it for Rushio, then come back.</string>
+    <string name="open_settings">Open settings</string>
+    <string name="overlay_opacity">Background opacity</string>
+    <string name="overlay_text_size">Text size</string>
+    <string name="reset_overlay_layout">Reset position and size</string>
+    <string name="background_running">Running</string>
+    <string name="media_access_required">Notification access is needed to know which song is playing.</string>
+    <string name="overlay_waiting">Waiting for music…</string>
+    <string name="overlay_loading">Looking for lyrics…</string>
+    <string name="overlay_no_lyrics">No lyrics found</string>
+    <string name="overlay_not_synced">Lyrics are not synced</string>
+    <string name="notification_channel_background">Background lyrics</string>
+    <string name="notification_overlay_title">Floating lyrics are on</string>
+    <string name="notification_stop">Stop</string>
+    <string name="notifications_permission_desc">Allow notifications to see the background lyrics notification and stop them from it.</string>
 </resources>

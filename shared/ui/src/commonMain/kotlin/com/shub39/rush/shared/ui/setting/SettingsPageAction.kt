@@ -18,6 +18,7 @@ package com.shub39.rush.shared.ui.setting
 
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.AudioDeviceType
+import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
 import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.core.enums.LyricsProviderId
 import com.shub39.rush.shared.core.enums.PaletteStyle
@@ -61,4 +62,17 @@ sealed interface SettingsPageAction {
     data class OnSetTypeOffset(val type: AudioDeviceType, val offsetMs: Long?) : SettingsPageAction
 
     data object OnBluetoothPermissionChanged : SettingsPageAction
+
+    data class OnSetBackgroundMode(val mode: BackgroundLyricsMode) : SettingsPageAction
+
+    data object OnRequestOverlayPermission : SettingsPageAction
+
+    /** Checks permissions again, typically when coming back from the system settings. */
+    data object OnRefreshBackground : SettingsPageAction
+
+    data class OnOverlayOpacityChange(val opacity: Float) : SettingsPageAction
+
+    data class OnOverlayTextScaleChange(val textScale: Float) : SettingsPageAction
+
+    data object OnResetOverlayLayout : SettingsPageAction
 }

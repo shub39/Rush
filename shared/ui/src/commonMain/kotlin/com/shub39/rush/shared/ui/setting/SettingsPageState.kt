@@ -22,8 +22,10 @@ import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.core.dataclasses.Changelog
 import com.shub39.rush.shared.core.dataclasses.LyricsSourceSetting
+import com.shub39.rush.shared.core.dataclasses.OverlaySettings
 import com.shub39.rush.shared.core.dataclasses.SyncOffsetState
 import com.shub39.rush.shared.core.dataclasses.Theme
+import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
 
 @Stable
 @Immutable
@@ -35,4 +37,14 @@ data class SettingsPageState(
     val changelog: Changelog = emptyList(),
     val lyricsSources: List<LyricsSourceSetting> = emptyList(),
     val syncOffset: SyncOffsetState = SyncOffsetState(),
+    val background: BackgroundLyricsSettings = BackgroundLyricsSettings(),
+)
+
+/** Background lyrics (floating window or notification) settings and platform status. */
+data class BackgroundLyricsSettings(
+    val supported: Boolean = false,
+    val mode: BackgroundLyricsMode = BackgroundLyricsMode.OFF,
+    val running: Boolean = false,
+    val overlayPermission: Boolean = false,
+    val overlay: OverlaySettings = OverlaySettings(),
 )

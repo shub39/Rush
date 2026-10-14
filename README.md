@@ -22,6 +22,9 @@
   appliqué automatiquement, réglé par appareil (adresse + nom) ou par type d'appareil (autoradio,
   casque, enceinte…), avec un ajustement fin possible par chanson. Réglage en direct par pas de
   50 ms depuis l'écran des paroles.
+- Paroles flottantes : une fenêtre par-dessus les autres applications affiche la ligne en cours et
+  la suivante (déplaçable, redimensionnable, opacité réglable ; un tap ouvre Rushio). Elle tourne
+  dans un service de premier plan qui suit la chanson même quand l'application est fermée.
 - Arrière-plans animés, personnalisation du texte, romanisation (japonais, coréen, chinois…).
 - Toutes les fonctionnalités sont gratuites : pas d'achats intégrés, pas de statistiques d'utilisation.
 - Interface en français et en anglais.

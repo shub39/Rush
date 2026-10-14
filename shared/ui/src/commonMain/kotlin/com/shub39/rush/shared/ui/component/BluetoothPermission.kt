@@ -18,8 +18,13 @@ package com.shub39.rush.shared.ui.component
 
 import androidx.compose.runtime.Composable
 
-/** Bluetooth access, needed to read the name and type of the Bluetooth audio output. */
+/** A runtime permission: whether it is granted and how to ask for it. */
 class BluetoothPermissionState(val granted: Boolean, val request: () -> Unit)
 
+/** Bluetooth access, needed to read the name and type of the Bluetooth audio output. */
 @Composable
 expect fun rememberBluetoothPermission(onResult: (Boolean) -> Unit): BluetoothPermissionState
+
+/** Notifications permission (Android 13+), for the background lyrics notification. */
+@Composable
+expect fun rememberNotificationPermission(onResult: (Boolean) -> Unit): BluetoothPermissionState

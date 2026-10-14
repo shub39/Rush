@@ -37,6 +37,9 @@ interface SongRepository {
     /** Lyrics found by every enabled source, for manual correction. */
     suspend fun searchLyrics(query: TrackQuery): Result<List<LyricsCandidate>, SourceError>
 
+    /** Best lyrics of the lyrics sources cascade, without saving anything. */
+    suspend fun fetchBestLyrics(query: TrackQuery): LyricsCandidate?
+
     /** Best lyrics found by a single source. */
     suspend fun fetchLyricsFrom(
         provider: LyricsProviderId,

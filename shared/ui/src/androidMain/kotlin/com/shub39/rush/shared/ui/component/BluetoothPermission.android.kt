@@ -42,3 +42,21 @@ actual fun rememberBluetoothPermission(onResult: (Boolean) -> Unit): BluetoothPe
         request = { permission.launchPermissionRequest() },
     )
 }
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+actual fun rememberNotificationPermission(onResult: (Boolean) -> Unit): BluetoothPermissionState {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        return remember { BluetoothPermissionState(granted = true, request = {}) }
+    }
+
+    val permission =
+        rememberPermissionState(
+            Manifest.permission.POST_NOTIFICATIONS,
+            onPermissionResult = onResult,
+        )
+    return BluetoothPermissionState(
+        granted = permission.status.isGranted,
+        request = { permission.launchPermissionRequest() },
+    )
+}

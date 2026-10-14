@@ -44,6 +44,7 @@ import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
 import com.shub39.rush.shared.ui.setting.section.About
 import com.shub39.rush.shared.ui.setting.section.AudioDevicesPage
+import com.shub39.rush.shared.ui.setting.section.BackgroundLyricsPage
 import com.shub39.rush.shared.ui.setting.section.BackupPage
 import com.shub39.rush.shared.ui.setting.section.Changelog
 import com.shub39.rush.shared.ui.setting.section.LookAndFeelPage
@@ -253,6 +254,11 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
                                         Routes.Settings.SettingsAudioDevices
                                     )
                                 },
+                                onNavigateToBackgroundLyrics = {
+                                    topLevelBackStack.addTopLevel(
+                                        Routes.Settings.SettingsBackgroundLyrics
+                                    )
+                                },
                                 onNavigateToChangelog = {
                                     globalVM.onAction(GlobalAction.ChangelogOpened)
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsChangelog)
@@ -315,6 +321,23 @@ fun RushNavDisplay(modifier: Modifier = Modifier) {
 
                             AudioDevicesPage(
                                 state = state,
+                                onAction = viewModel::onAction,
+                                onNavigateBack = { topLevelBackStack.removeLast() },
+                            )
+                        }
+
+                        entry<Routes.Settings.SettingsBackgroundLyrics>(
+                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                        ) {
+                            val viewModel = koinViewModel<SettingsVM>()
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+
+                            BackgroundLyricsPage(
+                                state = state,
+                                notificationAccess = globalState.notificationAccess,
+                                onRequestNotificationAccess = {
+                                    globalVM.onAction(GlobalAction.OnRequestNotificationAccess)
+                                },
                                 onAction = viewModel::onAction,
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                             )

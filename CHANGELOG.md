@@ -15,6 +15,9 @@
 - Décalage de synchronisation par appareil précis ou par type d'appareil (autoradio, casque, enceinte…)
 - Boutons −50 / +50 ms sur l'écran des paroles, enregistrables pour l'appareil, le type ou le titre
 - Réglages « Appareils audio et latence » : appareils connus et décalages modifiables
+- Paroles flottantes : fenêtre par-dessus les autres applications (ligne en cours et suivante),
+  déplaçable, redimensionnable, opacité réglable, synchronisée avec le décalage de l'appareil
+- Service de premier plan qui suit la chanson en cours même quand Rushio est fermé
 
 ## Rush 7.1.1
 - Removed share card limit 

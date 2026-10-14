@@ -151,6 +151,9 @@ class RushRepository(
     ): Result<List<LyricsCandidate>, SourceError> =
         withContext(Dispatchers.IO) { lyricsCascade.searchAll(query) }
 
+    override suspend fun fetchBestLyrics(query: TrackQuery): LyricsCandidate? =
+        withContext(Dispatchers.IO) { lyricsCascade.findBest(query) }
+
     override suspend fun fetchLyricsFrom(
         provider: LyricsProviderId,
         query: TrackQuery,

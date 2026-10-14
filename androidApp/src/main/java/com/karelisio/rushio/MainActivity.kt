@@ -25,11 +25,18 @@ import androidx.compose.runtime.ComposeRuntimeFlags
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import coil3.ImageLoader
 import com.karelisio.rushio.app.App
+import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsController
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsPreferences
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
@@ -59,6 +66,18 @@ class MainActivity : ComponentActivity() {
         super.onResume()
 
         MediaListener.startListening(this)
+        restoreBackgroundLyrics()
+    }
+
+    /** Restarts the background lyrics if the system killed them while they were enabled. */
+    private fun restoreBackgroundLyrics() {
+        val controller = get<BackgroundLyricsController>()
+        if (controller.isRunning.value) return
+
+        lifecycleScope.launch {
+            val mode = get<BackgroundLyricsPreferences>().getModeFlow().first()
+            if (mode != BackgroundLyricsMode.OFF) controller.apply(mode)
+        }
     }
 
     override fun onRestart() {

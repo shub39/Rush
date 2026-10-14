@@ -16,9 +16,13 @@
  */
 package com.shub39.rush.di
 
+import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsController
 import com.shub39.rush.shared.logic.di.DataModule
 import com.shub39.rush.shared.ui.di.UIModule
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -29,4 +33,18 @@ class RushModules {
     @Single
     fun provideAnalyticsWrapper(): AnalyticsWrapper =
         AnalyticsWrapper.Companion.DummyAnalyticsWrapper()
+
+    // No background lyrics on desktop
+    @Single
+    fun provideBackgroundLyricsController(): BackgroundLyricsController =
+        object : BackgroundLyricsController {
+            override val isSupported = false
+            override val isRunning: StateFlow<Boolean> = MutableStateFlow(false)
+
+            override fun canDrawOverlays() = false
+
+            override fun requestOverlayPermission() {}
+
+            override fun apply(mode: BackgroundLyricsMode) {}
+        }
 }

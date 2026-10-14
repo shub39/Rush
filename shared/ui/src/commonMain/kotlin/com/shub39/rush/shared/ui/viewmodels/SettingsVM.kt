@@ -24,7 +24,11 @@ import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreRepo
 import com.shub39.rush.shared.core.backup.RestoreResult
 import com.shub39.rush.shared.core.backup.RestoreState
+import com.shub39.rush.shared.core.dataclasses.OverlaySettings
+import com.shub39.rush.shared.core.enums.BackgroundLyricsMode
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsController
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsPreferences
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
 import com.shub39.rush.shared.core.interfaces.LyricsSourcePreferences
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
@@ -57,6 +61,8 @@ class SettingsVM(
     @Provided private val analytics: AnalyticsWrapper,
     @Provided private val lyricsSourcePreferences: LyricsSourcePreferences,
     @Provided private val syncOffsetManager: SyncOffsetManager,
+    @Provided private val backgroundPreferences: BackgroundLyricsPreferences,
+    @Provided private val backgroundController: BackgroundLyricsController,
 ) : ViewModel() {
 
     private var observeFlowsJob: Job? = null
@@ -182,6 +188,47 @@ class SettingsVM(
                     syncOffsetManager.setTypeOffset(action.type, action.offsetMs)
 
                 SettingsPageAction.OnBluetoothPermissionChanged -> syncOffsetManager.refresh()
+
+                is SettingsPageAction.OnSetBackgroundMode -> {
+                    backgroundPreferences.setMode(action.mode)
+                    if (
+                        action.mode == BackgroundLyricsMode.OVERLAY &&
+                            !backgroundController.canDrawOverlays()
+                    ) {
+                        backgroundController.requestOverlayPermission()
+                    }
+                    backgroundController.apply(action.mode)
+                }
+
+                SettingsPageAction.OnRequestOverlayPermission ->
+                    backgroundController.requestOverlayPermission()
+
+                SettingsPageAction.OnRefreshBackground -> {
+                    val permission = backgroundController.canDrawOverlays()
+                    _state.update {
+                        it.copy(background = it.background.copy(overlayPermission = permission))
+                    }
+                    // Starts the service once the permission was granted in the system settings
+                    val mode = backgroundPreferences.getModeFlow().first()
+                    if (mode != BackgroundLyricsMode.OFF && !backgroundController.isRunning.value) {
+                        backgroundController.apply(mode)
+                    }
+                }
+
+                is SettingsPageAction.OnOverlayOpacityChange ->
+                    backgroundPreferences.updateOverlaySettings {
+                        it.copy(opacity = action.opacity)
+                    }
+
+                is SettingsPageAction.OnOverlayTextScaleChange ->
+                    backgroundPreferences.updateOverlaySettings {
+                        it.copy(textScale = action.textScale)
+                    }
+
+                SettingsPageAction.OnResetOverlayLayout ->
+                    backgroundPreferences.updateOverlaySettings {
+                        OverlaySettings(opacity = it.opacity)
+                    }
             }
         }
     }
@@ -237,6 +284,26 @@ class SettingsVM(
 
                 syncOffsetManager.state
                     .onEach { offset -> _state.update { it.copy(syncOffset = offset) } }
+                    .launchIn(this)
+
+                combine(
+                        backgroundPreferences.getModeFlow(),
+                        backgroundPreferences.getOverlaySettingsFlow(),
+                        backgroundController.isRunning,
+                    ) { mode, overlay, running ->
+                        _state.update {
+                            it.copy(
+                                background =
+                                    it.background.copy(
+                                        supported = backgroundController.isSupported,
+                                        mode = mode,
+                                        running = running,
+                                        overlayPermission = backgroundController.canDrawOverlays(),
+                                        overlay = overlay,
+                                    )
+                            )
+                        }
+                    }
                     .launchIn(this)
             }
     }

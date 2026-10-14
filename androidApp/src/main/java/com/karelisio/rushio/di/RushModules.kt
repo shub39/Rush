@@ -16,7 +16,10 @@
  */
 package com.karelisio.rushio.di
 
+import android.content.Context
+import com.karelisio.rushio.background.BackgroundLyricsControllerImpl
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsController
 import com.shub39.rush.shared.logic.di.DataModule
 import com.shub39.rush.shared.ui.di.UIModule
 import org.koin.core.annotation.Configuration
@@ -30,4 +33,8 @@ class RushModules {
     @Single
     fun provideAnalyticsWrapper(): AnalyticsWrapper =
         AnalyticsWrapper.Companion.DummyAnalyticsWrapper()
+
+    @Single
+    fun provideBackgroundLyricsController(context: Context): BackgroundLyricsController =
+        BackgroundLyricsControllerImpl(context)
 }

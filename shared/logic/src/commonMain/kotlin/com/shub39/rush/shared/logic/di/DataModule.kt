@@ -19,6 +19,7 @@ package com.shub39.rush.shared.logic.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import coil3.ImageLoader
+import com.shub39.rush.shared.core.interfaces.BackgroundLyricsPreferences
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
 import com.shub39.rush.shared.core.interfaces.LyricsSourcePreferences
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
@@ -26,6 +27,7 @@ import com.shub39.rush.shared.core.interfaces.SharePagePreferences
 import com.shub39.rush.shared.logic.database.DatabaseFactory
 import com.shub39.rush.shared.logic.database.SongDao
 import com.shub39.rush.shared.logic.database.SongDatabase
+import com.shub39.rush.shared.logic.datastore.BackgroundLyricsPreferencesImpl
 import com.shub39.rush.shared.logic.datastore.DatastoreFactory
 import com.shub39.rush.shared.logic.datastore.LyricsPagePreferencesImpl
 import com.shub39.rush.shared.logic.datastore.LyricsSourcePreferencesImpl
@@ -65,6 +67,11 @@ class DataModule {
     fun provideOtherPreferencesImpl(
         @Named("Other") dataStore: DataStore<Preferences>
     ): OtherPreferences = OtherPreferencesImpl(dataStore)
+
+    @Single
+    fun provideBackgroundLyricsPreferences(
+        @Named("Other") dataStore: DataStore<Preferences>
+    ): BackgroundLyricsPreferences = BackgroundLyricsPreferencesImpl(dataStore)
 
     @Single
     fun provideLyricsSourcePreferences(
