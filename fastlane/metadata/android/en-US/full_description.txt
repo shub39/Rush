@@ -1,8 +1,22 @@
-Rush is a simple android app to search, view, save and share lyrics for your favourite Songs
+Rush is a Material 3 lyrics app for Android that finds, syncs, saves and shares the lyrics of the songs you love.
 
-Features 
+Features
 
-- Search, View Lyrics in a super customizable interface
-- Share lyrics as a customizable card to your friends!
-- Auto-Search current playing Song (Requires Notification Access permission)
-- Synced Lyrics
+- Instant lyrics search for any song, by title or artist
+- Line-synced and syllable-synced lyrics that highlight word by word as the song plays
+- Romanized lyrics for Japanese, Korean, Chinese, Hindi, Punjabi and other Cyrillic languages
+- Rush Mode: detects the song playing on your device and switches the lyrics automatically
+- Save lyrics for offline viewing, sort them, and back up or export your library
+- Fix wrong or missing lyrics with the built-in lyrics correction tool
+- Share lyrics as a customizable card: 9 styles, custom colors, corner shapes and album art shapes
+- Full-screen share cards in vertical, couplet, quote, messy and brat layouts
+- Highly customizable lyrics view: font, size, line height, letter spacing and alignment
+- Animated and audio-reactive backgrounds that react to the music: wave, gradient, curve and hypnotic
+- Material 3 Expressive design with wallpaper-based theming, AMOLED dark mode and app font selection
+- Built for phones, tablets, foldables and desktops with an adaptive, large-screen ready layout
+- No ads, no tracking, open source under GPL-3.0, and a FOSS build with every feature unlocked
+- Available in 30+ languages
+
+Lyrics are provided by LRCLIB and Genius, and synced timing comes from the community.
+
+Rush is free and open source. Support the development or translate the app on GitHub.
