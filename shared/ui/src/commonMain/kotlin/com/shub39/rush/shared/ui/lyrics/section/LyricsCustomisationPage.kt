@@ -80,7 +80,8 @@ import rush.shared.ui.generated.resources.*
 @Composable
 expect fun LyricsCustomisationsPage(
     isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
+    onOpenPaywall: (source: String) -> Unit,
+    onProFeatureShown: (feature: String) -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -92,7 +93,8 @@ expect fun LyricsCustomisationsPage(
 fun LyricsCustomisationsPageContent(
     modifier: Modifier = Modifier,
     isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
+    onOpenPaywall: (source: String) -> Unit,
+    onProFeatureShown: (feature: String) -> Unit,
     onNavigateBack: () -> Unit,
     state: LyricsPageState,
     onAction: (LyricsPageAction) -> Unit,
@@ -243,6 +245,7 @@ fun LyricsCustomisationsPageContent(
                             lyricsCustomisationSettings(
                                 isProUser = isProUser,
                                 onOpenPaywall = onOpenPaywall,
+                                onProFeatureShown = onProFeatureShown,
                                 state = state,
                                 onAction = onAction,
                                 isShowingSynced = isShowingSynced,
@@ -373,6 +376,7 @@ fun LyricsCustomisationsPageContent(
                         lyricsCustomisationSettings(
                             isProUser = isProUser,
                             onOpenPaywall = onOpenPaywall,
+                            onProFeatureShown = onProFeatureShown,
                             state = state,
                             onAction = onAction,
                             isShowingSynced = isShowingSynced,
