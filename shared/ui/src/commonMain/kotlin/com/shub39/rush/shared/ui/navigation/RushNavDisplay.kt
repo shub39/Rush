@@ -57,6 +57,7 @@ import com.shub39.rush.shared.ui.viewmodels.SavedVM
 import com.shub39.rush.shared.ui.viewmodels.SearchSheetVM
 import com.shub39.rush.shared.ui.viewmodels.SettingsVM
 import com.shub39.rush.shared.ui.viewmodels.ShareVM
+import kotlin.time.TimeSource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -177,7 +178,14 @@ fun RushNavDisplay(
 
                             LyricsCustomisationsPage(
                                 isProUser = globalState.isProUser,
-                                onOpenPaywall = { topLevelBackStack.addTopLevel(Paywall) },
+                                onOpenPaywall = { source ->
+                                    globalVM.onAction(GlobalAction.OnProFeatureUpsellTapped(source))
+                                    globalVM.onAction(GlobalAction.OnPaywallOpened(source))
+                                    topLevelBackStack.addTopLevel(Routes.Paywall)
+                                },
+                                onProFeatureShown = { feature ->
+                                    globalVM.onAction(GlobalAction.OnProFeatureShown(feature))
+                                },
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                                 state = state,
                                 onAction = viewModel::onAction,
@@ -225,11 +233,20 @@ fun RushNavDisplay(
                         }
 
                         entry<Routes.Paywall>(metadata = verticalTransitionMetadata()) {
+                            val openedAt = TimeSource.Monotonic.markNow()
+
                             DisposableEffect(Unit) {
                                 onDispose { globalVM.onAction(GlobalAction.OnRefreshSub) }
                             }
 
-                            paywall(globalState.isProUser) { topLevelBackStack.removeLast() }
+                            paywall(globalState.isProUser) {
+                                globalVM.onAction(
+                                    GlobalAction.OnPaywallDismissed(
+                                        dwellMs = openedAt.elapsedNow().inWholeMilliseconds
+                                    )
+                                )
+                                topLevelBackStack.removeLast()
+                            }
                         }
 
                         entry<Routes.Settings.SettingsRoot>(

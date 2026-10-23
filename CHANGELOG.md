@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.1.2
+## 7.1.3
 - Removed share card limit 
 - Miscellaneous Updates and Fixes
 - Updated App Icon

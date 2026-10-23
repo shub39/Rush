@@ -80,9 +80,37 @@ class GlobalVM(
             GlobalAction.OnRefreshSub -> viewModelScope.launch { checkSubscription() }
 
             is GlobalAction.OnPaywallOpened -> {
+                _state.update { it.copy(paywallSource = action.source) }
                 analytics.trackEvent(
                     AnalyticsEvent.PAYWALL_OPENED,
                     mapOf("source" to action.source),
+                )
+            }
+
+            is GlobalAction.OnPaywallDismissed -> {
+                // Skip when the dismissal was actually caused by a successful purchase
+                if (!billingHandler.isPro.value) {
+                    analytics.trackEvent(
+                        AnalyticsEvent.PAYWALL_DISMISSED,
+                        mapOf<String, Any>(
+                            "source" to (_state.value.paywallSource ?: "unknown"),
+                            "dwell_ms" to action.dwellMs,
+                        ),
+                    )
+                }
+            }
+
+            is GlobalAction.OnProFeatureShown -> {
+                analytics.trackEvent(
+                    AnalyticsEvent.PRO_FEATURE_SHOWN,
+                    mapOf("feature" to action.feature),
+                )
+            }
+
+            is GlobalAction.OnProFeatureUpsellTapped -> {
+                analytics.trackEvent(
+                    AnalyticsEvent.PRO_FEATURE_UPSELL_TAPPED,
+                    mapOf("feature" to action.feature),
                 )
             }
 

@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,7 +69,8 @@ import rush.shared.ui.generated.resources.*
 fun LazyListScope.lyricsCustomisationSettings(
     state: LyricsPageState,
     isProUser: Boolean,
-    onOpenPaywall: () -> Unit,
+    onOpenPaywall: (source: String) -> Unit,
+    onProFeatureShown: (feature: String) -> Unit,
     onAction: (LyricsPageAction) -> Unit,
     isShowingSynced: Boolean,
     microphonePermission: Boolean,
@@ -79,9 +81,10 @@ fun LazyListScope.lyricsCustomisationSettings(
         var showBackgroundFeature by remember { mutableStateOf(false) }
 
         if (showBackgroundFeature && !isProUser) {
+            LaunchedEffect(Unit) { onProFeatureShown("lyrics_background") }
             LyricsBackgroundProFeatureSheet(
                 onDismissRequest = { showBackgroundFeature = false },
-                onNavigateToPaywall = onOpenPaywall,
+                onNavigateToPaywall = { onOpenPaywall("lyrics_background") },
             )
         }
 
@@ -232,9 +235,10 @@ fun LazyListScope.lyricsCustomisationSettings(
         var showTextEditFeature by remember { mutableStateOf(false) }
 
         if (showTextEditFeature) {
+            LaunchedEffect(Unit) { onProFeatureShown("lyrics_text") }
             LyricsTextEditProFeatureSheet(
                 onDismissRequest = { showTextEditFeature = false },
-                onNavigateToPaywall = onOpenPaywall,
+                onNavigateToPaywall = { onOpenPaywall("lyrics_text") },
             )
         }
 
