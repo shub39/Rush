@@ -17,5 +17,18 @@
 package com.shub39.rush.shared.ui.searchsheet
 
 import androidx.compose.runtime.Composable
+import com.shub39.rush.shared.core.dataclasses.SearchResult
+import com.shub39.rush.shared.core.dataclasses.Song
 
 @Composable expect fun SearchSheetBackHandler(onBack: () -> Unit)
+
+/** Adapts a locally saved song to the shape the search list expects. */
+fun Song.toSearchResult(): SearchResult =
+    SearchResult(
+        id = id,
+        title = title,
+        artist = artists,
+        album = album,
+        artUrl = artUrl ?: "",
+        url = sourceUrl,
+    )

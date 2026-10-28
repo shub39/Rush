@@ -25,10 +25,6 @@ sealed interface GlobalAction {
 
     data class OnProFeatureUpsellTapped(val feature: String) : GlobalAction
 
-    data object OnCheckNotificationAccess : GlobalAction
-
-    data object OnRequestNotificationAccess : GlobalAction
-
     data object OnRefreshSub : GlobalAction
 
     data object AboutOpened : GlobalAction

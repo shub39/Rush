@@ -287,7 +287,7 @@ fun SavedPage(
                 onOpenSearchSheet = onOpenSearchSheet,
                 notificationAccess = notificationAccess,
                 onAction = { action ->
-                    if (action is SavedPageAction.OnRequestNotificationAccess) {
+                    if (action is SavedPageAction.OnRequestMediaAccess) {
                         showNotificationAccessDialog = true
                     } else {
                         onAction(action)
@@ -334,7 +334,7 @@ fun SavedPage(
                         Button(
                             onClick = {
                                 showNotificationAccessDialog = false
-                                onAction(SavedPageAction.OnRequestNotificationAccess)
+                                onAction(SavedPageAction.OnRequestMediaAccess)
                             },
                             modifier = Modifier.fillMaxWidth(),
                         ) {

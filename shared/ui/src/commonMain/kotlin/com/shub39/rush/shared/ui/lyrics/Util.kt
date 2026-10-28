@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -293,3 +294,27 @@ fun Song.toSongUi(): SongUi {
         ttmlLyrics = ttmlLyrics?.let { TTMLParser.parseTTML(it) },
     )
 }
+
+/** Romanized variants of every lyric source, derived from the loaded song and the preference. */
+@Immutable
+data class RomanizedLyrics(
+    val plain: Map<Int, String> = emptyMap(),
+    val genius: Map<Int, String> = emptyMap(),
+    val synced: Map<Long, String> = emptyMap(),
+    val ttml: Map<Double, String> = emptyMap(),
+) {
+    val isEmpty: Boolean
+        get() = plain.isEmpty() && genius.isEmpty() && synced.isEmpty() && ttml.isEmpty()
+}
+
+fun SongUi.withRomanization(romanized: RomanizedLyrics): SongUi =
+    if (romanized.isEmpty) {
+        this
+    } else {
+        copy(
+            romanizedLyrics = romanized.plain,
+            romanizedGeniusLyrics = romanized.genius,
+            romanizedSyncedLyrics = romanized.synced,
+            romanizedTtmlLyrics = romanized.ttml,
+        )
+    }

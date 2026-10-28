@@ -88,25 +88,9 @@ class LrcLibApi {
 
         if (results.isNotEmpty()) return Result.Success(results)
 
-        // Strategy 2: Search with cleaned title only (artist might be different)
-        results =
-            queryLyricsWithParams(trackName = cleanedTitle).filter {
-                it.syncedLyrics != null || it.plainLyrics != null
-            }
-
-        if (results.isNotEmpty()) return Result.Success(results)
-
         // Strategy 3: Use q parameter with combined search
         results =
             queryLyricsWithParams(query = "$cleanedArtist $cleanedTitle").filter {
-                it.syncedLyrics != null || it.plainLyrics != null
-            }
-
-        if (results.isNotEmpty()) return Result.Success(results)
-
-        // Strategy 4: Use q parameter with just title
-        results =
-            queryLyricsWithParams(query = cleanedTitle).filter {
                 it.syncedLyrics != null || it.plainLyrics != null
             }
 

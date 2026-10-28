@@ -60,10 +60,10 @@ fun ErrorCard(error: StringResource, debugMessage: String?, colors: Pair<Color, 
         Text(text = stringResource(error), color = colors.first)
 
         AnimatedVisibility(visible = debugMessage != null) {
+            val debug = debugMessage ?: return@AnimatedVisibility
+
             TextButton(
-                onClick = {
-                    scope.launch { clipboard.copyToClipboard(text = debugMessage ?: "i am dumb") }
-                },
+                onClick = { scope.launch { clipboard.copyToClipboard(text = debug) } },
                 modifier = Modifier.padding(top = 4.dp),
                 colors =
                     ButtonDefaults.textButtonColors(

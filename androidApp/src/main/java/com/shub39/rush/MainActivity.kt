@@ -27,20 +27,29 @@ import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import coil3.ImageLoader
 import com.shub39.rush.app.App
-import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.rushmode.RushAction
+import com.shub39.rush.shared.ui.rushmode.RushController
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import org.koin.compose.koinInject
+import org.koin.core.context.GlobalContext
 
 class MainActivity : ComponentActivity() {
+    /**
+     * Rush mode is application scoped: starting it here (instead of from a screen) is what makes it
+     * work on app startup and keep working while the user navigates.
+     */
+    private val rushController: RushController by lazy { GlobalContext.get().get() }
+
     @OptIn(ExperimentalComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         enableEdgeToEdge()
 
-        MediaListener.startListening(this)
         ComposeRuntimeFlags.isLinkBufferComposerEnabled = true
+
+        rushController.start()
 
         setContent {
             val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
@@ -58,12 +67,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        MediaListener.startListening(this)
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-
-        MediaListener.startListening(this)
+        // Re-reads media access and re-arms the platform media session listener when granted
+        rushController.onAction(RushAction.RefreshMediaAccess)
     }
 }

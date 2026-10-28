@@ -21,14 +21,11 @@ import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.BillingHandler
-import com.shub39.rush.shared.core.interfaces.MediaAccessChecker
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SubscriptionResult
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.app.GlobalState
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,11 +43,9 @@ import org.koin.core.annotation.Provided
 class GlobalVM(
     @Provided private val billingHandler: BillingHandler,
     @Provided private val otherPreferences: OtherPreferences,
-    @Provided private val mediaAccessChecker: MediaAccessChecker,
     @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
     private var syncJob: Job? = null
-    private var permissionPollJob: Job? = null
 
     private val _state = MutableStateFlow(GlobalState())
     val state =
@@ -112,37 +107,6 @@ class GlobalVM(
                     AnalyticsEvent.PRO_FEATURE_UPSELL_TAPPED,
                     mapOf("feature" to action.feature),
                 )
-            }
-
-            is GlobalAction.OnCheckNotificationAccess -> {
-                val hasAccess = mediaAccessChecker.canAccessMediaInfo()
-                if (hasAccess && !_state.value.notificationAccess) {
-                    analytics.trackEvent(AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED, emptyMap())
-                }
-                _state.update { it.copy(notificationAccess = hasAccess) }
-            }
-
-            GlobalAction.OnRequestNotificationAccess -> {
-                mediaAccessChecker.launchPermissionSettings()
-                permissionPollJob?.cancel()
-                permissionPollJob =
-                    viewModelScope.launch {
-                        while (true) {
-                            delay(500.milliseconds)
-                            val hasAccess = mediaAccessChecker.canAccessMediaInfo()
-                            if (hasAccess) {
-                                if (!_state.value.notificationAccess) {
-                                    analytics.trackEvent(
-                                        AnalyticsEvent.NOTIFICATION_ACCESS_GRANTED,
-                                        emptyMap(),
-                                    )
-                                }
-                                _state.update { it.copy(notificationAccess = true) }
-                                mediaAccessChecker.redirectToApp()
-                                break
-                            }
-                        }
-                    }
             }
         }
     }

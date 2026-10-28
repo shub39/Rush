@@ -78,6 +78,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.Lyric
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
@@ -97,7 +98,6 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
 import com.shub39.rush.shared.ui.lyrics.SearchState
-import com.shub39.rush.shared.ui.lyrics.TextPrefs
 import com.shub39.rush.shared.ui.lyrics.calculateGlowMultiplier
 import com.shub39.rush.shared.ui.lyrics.component.Actions
 import com.shub39.rush.shared.ui.lyrics.component.ActionsState
@@ -110,6 +110,9 @@ import com.shub39.rush.shared.ui.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
+import com.shub39.rush.shared.ui.rushmode.RushPhase
+import com.shub39.rush.shared.ui.rushmode.RushState
+import com.shub39.rush.shared.ui.session.SessionState
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 import com.shub39.rush.shared.ui.toAlignment
 import kotlin.time.Duration.Companion.milliseconds
@@ -176,7 +179,7 @@ fun LyricsPageContent(
                 state.source,
                 state.syncedAvailable,
                 state.sync,
-                state.autoChange,
+                state.rushEnabled,
             ) {
                 ActionsState(
                     song = loadedSong,
@@ -184,7 +187,7 @@ fun LyricsPageContent(
                     source = state.source,
                     syncedAvailable = state.syncedAvailable,
                     sync = state.sync,
-                    autoChange = state.autoChange,
+                    rushEnabled = state.rushEnabled,
                 )
             }
 
@@ -520,7 +523,7 @@ fun LyricsPageContent(
             ) {
                 val autoChangeAlpha by
                     animateFloatAsState(
-                        targetValue = if (state.autoChange) 1f else 0f,
+                        targetValue = if (state.rushEnabled) 1f else 0f,
                         animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
                         label = "autoChangeAlpha",
                     )
@@ -727,20 +730,39 @@ private fun LyricsPagePreview() {
         action = {},
         state =
             LyricsPageState(
-                syncedAvailable = true,
-                sync = true,
-                autoChange = true,
-                searchState = SearchState.UserPrompt,
-                extractedColors =
-                    ExtractedColors(
-                        cardContentMuted = Color.White.toArgb(),
-                        cardContentDominant = Color.White.toArgb(),
-                        cardBackgroundMuted = Color.Cyan.toArgb(),
-                        cardBackgroundDominant = Color.Blue.toArgb(),
+                session =
+                    SessionState(
+                        song =
+                            SongUi(
+                                id = 0L,
+                                title = "Sample Title",
+                                artists = "Sample Artist",
+                                album = "Sample Album",
+                                sourceUrl = "",
+                                artUrl = "",
+                                lyrics =
+                                    (0..100).associateWith { "Line No : $it" }.entries.toList(),
+                                syncedLyrics = (0..100).map { Lyric(it.toLong(), "Line No : $it") },
+                                geniusLyrics = null,
+                                ttmlLyrics = null,
+                            ),
+                        sync = true,
+                        syncedAvailable = true,
+                        extractedColors =
+                            ExtractedColors(
+                                cardContentMuted = Color.White.toArgb(),
+                                cardContentDominant = Color.White.toArgb(),
+                                cardBackgroundMuted = Color.Cyan.toArgb(),
+                                cardBackgroundDominant = Color.Blue.toArgb(),
+                            ),
                     ),
-                cardColors = CardColors.VIBRANT,
-                textPrefs = TextPrefs(lyricsAlignment = LyricsAlignment.START),
-                lyricsBackground = LyricsBackground.HYPNOTIC,
+                rush = RushState(enabled = true, phase = RushPhase.NotFound),
+                prefs =
+                    LyricsPrefs(
+                        cardColors = CardColors.VIBRANT,
+                        alignment = LyricsAlignment.START,
+                        lyricsBackground = LyricsBackground.HYPNOTIC,
+                    ),
                 lyricsState =
                     LyricsState.Loaded(
                         SongUi(

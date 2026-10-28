@@ -52,4 +52,8 @@ interface OtherPreferences {
     fun getFontFlow(): Flow<Fonts>
 
     suspend fun updateFonts(font: Fonts)
+
+    fun getRushModeFlow(): Flow<Boolean>
+
+    suspend fun updateRushMode(enabled: Boolean)
 }

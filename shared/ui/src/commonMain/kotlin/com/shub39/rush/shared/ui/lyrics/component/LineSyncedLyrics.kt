@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.shared.core.dataclasses.Lyric
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
@@ -288,7 +289,7 @@ private fun LineSyncedLyricsPreview() {
 
     val state =
         LyricsPageState(
-            textPrefs = TextPrefs(fontSize = 32f),
+            prefs = LyricsPrefs(fontSize = 32f),
             lyricsState =
                 LyricsState.Loaded(
                     song =

@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.2.0
+- Rush Mode now starts automatically on app launch and remembers its last state
+- Improved song detection and lyric matching
+- Fixed a false "search again" prompt after a successful search
+- Fixed the copy error button copying a placeholder instead of the actual error
+- Miscellaneous Updates and Fixes
+
 ## 7.1.3
 - Removed share card limit 
 - Miscellaneous Updates and Fixes

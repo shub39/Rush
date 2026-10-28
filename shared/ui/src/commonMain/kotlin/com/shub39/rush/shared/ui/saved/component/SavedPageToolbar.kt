@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.ui.component.ArtFromUrl
+import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.saved.SavedPageState
 import org.jetbrains.compose.resources.painterResource
@@ -66,7 +67,7 @@ fun SavedPageToolbar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        if (state.currentSong != null) {
+        if (state.nowPlaying != null) {
             Card(
                 onClick = { onNavigateToLyrics() },
                 shape = CircleShape,
@@ -83,13 +84,13 @@ fun SavedPageToolbar(
                     modifier = Modifier.padding(8.dp),
                 ) {
                     ArtFromUrl(
-                        imageUrl = state.currentSong.artUrl,
+                        imageUrl = state.nowPlaying.artUrl,
                         modifier = Modifier.size(48.dp).clip(CircleShape),
                     )
 
                     Column {
                         Text(
-                            text = state.currentSong.title,
+                            text = state.nowPlaying.title,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -97,7 +98,7 @@ fun SavedPageToolbar(
                         )
 
                         Text(
-                            text = state.currentSong.artists,
+                            text = state.nowPlaying.artists,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -110,13 +111,13 @@ fun SavedPageToolbar(
         }
 
         FilledTonalIconToggleButton(
-            checked = state.autoChange,
+            checked = state.rushEnabled,
             onCheckedChange = {
                 if (notificationAccess) {
-                    onAction(SavedPageAction.OnToggleAutoChange)
-                    if (!state.autoChange) onNavigateToLyrics()
+                    onAction(SavedPageAction.OnToggleRushMode)
+                    if (!state.rushEnabled) onNavigateToLyrics()
                 } else {
-                    onAction(SavedPageAction.OnRequestNotificationAccess)
+                    onAction(SavedPageAction.OnRequestMediaAccess)
                 }
             },
             modifier = Modifier.size(IconButtonDefaults.mediumContainerSize()),
@@ -142,8 +143,8 @@ private fun Preview() {
         state =
             SavedPageState(
                 extractedColors = ExtractedColors(cardContentMuted = Color.White.toArgb()),
-                autoChange = true,
-                currentSong =
+                rush = RushState(enabled = true, mediaAccess = true),
+                nowPlaying =
                     SongUi(
                         title = "Title",
                         artists = "Artists",

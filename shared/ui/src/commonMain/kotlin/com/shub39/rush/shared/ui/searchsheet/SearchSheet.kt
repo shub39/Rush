@@ -170,14 +170,14 @@ fun SearchSheet(
                 }
             }
 
-            itemsIndexed(items = state.localSearchResults, key = { _, it -> "Saved_${it.id}" }) {
+            itemsIndexed(items = state.savedResults, key = { _, it -> "Saved_${it.id}" }) {
                 index,
                 it ->
                 val shape =
                     when {
-                        state.localSearchResults.size == 1 -> detachedItemShape()
+                        state.savedResults.size == 1 -> detachedItemShape()
                         index == 0 -> leadingItemShape()
-                        index == state.localSearchResults.lastIndex -> endItemShape()
+                        index == state.savedResults.lastIndex -> endItemShape()
                         else -> middleItemShape()
                     }
 
@@ -186,23 +186,23 @@ fun SearchSheet(
                     downloaded = true,
                     modifier =
                         Modifier.clip(shape).clickable {
-                            onAction(SearchSheetAction.OnCardClicked(it.id))
+                            onAction(SearchSheetAction.OnSavedCardClicked(it.id))
                             onNavigateToLyrics()
                         },
                 )
             }
 
-            if (state.localSearchResults.isNotEmpty()) {
+            if (state.savedResults.isNotEmpty()) {
                 item { Spacer(modifier = Modifier.height(16.dp)) }
             }
 
             if (!state.isSearching) {
-                itemsIndexed(items = state.searchResults, key = { _, it -> it.id }) { index, it ->
+                itemsIndexed(items = state.remoteResults, key = { _, it -> it.id }) { index, it ->
                     val shape =
                         when {
-                            state.searchResults.size == 1 -> detachedItemShape()
+                            state.remoteResults.size == 1 -> detachedItemShape()
                             index == 0 -> leadingItemShape()
-                            index == state.searchResults.lastIndex -> endItemShape()
+                            index == state.remoteResults.lastIndex -> endItemShape()
                             else -> middleItemShape()
                         }
 
@@ -210,7 +210,7 @@ fun SearchSheet(
                         result = it,
                         modifier =
                             Modifier.clip(shape).clickable {
-                                onAction(SearchSheetAction.OnCardClicked(it.id))
+                                onAction(SearchSheetAction.OnResultClicked(it))
                                 onNavigateToLyrics()
                             },
                     )

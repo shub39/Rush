@@ -196,22 +196,20 @@ fun PlainLyrics(
                                         Text(stringResource(Res.string.retry))
                                     }
 
-                                    TextButton(
-                                        onClick = {
-                                            scope.launch {
-                                                clipboard.copyToClipboard(
-                                                    it.second!!.debugMessage ?: "i am dumb"
-                                                )
-                                            }
-                                        },
-                                        colors =
-                                            ButtonDefaults.buttonColors(
-                                                contentColor = cardContent,
-                                                containerColor = Color.Transparent,
-                                            ),
-                                        modifier = Modifier.padding(vertical = 4.dp),
-                                    ) {
-                                        Text(stringResource(Res.string.copy_error))
+                                    it.second?.debugMessage?.let { debug ->
+                                        TextButton(
+                                            onClick = {
+                                                scope.launch { clipboard.copyToClipboard(debug) }
+                                            },
+                                            colors =
+                                                ButtonDefaults.buttonColors(
+                                                    contentColor = cardContent,
+                                                    containerColor = Color.Transparent,
+                                                ),
+                                            modifier = Modifier.padding(vertical = 4.dp),
+                                        ) {
+                                            Text(stringResource(Res.string.copy_error))
+                                        }
                                     }
                                 }
                             }

@@ -85,6 +85,10 @@ kotlin {
             implementation(projects.androidLibs.visualizerHelper)
             implementation(libs.accompanist.permissions)
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }
 
