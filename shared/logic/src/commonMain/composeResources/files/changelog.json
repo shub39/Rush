@@ -1,5 +1,15 @@
 [
   {
+    "version": "7.2.0",
+    "changes": [
+      "Rush Mode now starts automatically on app launch and remembers its last state",
+      "Improved song detection and lyric matching",
+      "Fixed a false \"search again\" prompt after a successful search",
+      "Fixed the copy error button copying a placeholder instead of the actual error",
+      "Miscellaneous Updates and Fixes"
+    ]
+  },
+  {
     "version": "7.1.3",
     "changes": [
       "Removed share card limit",
@@ -65,15 +75,6 @@
       "Updated Translations",
       "Improved song detection and fetching",
       "Miscellaneous UI improvements"
-    ]
-  },
-  {
-    "version": "6.5.3",
-    "changes": [
-      "Updated Translations",
-      "Fixed lyrics not loading #296",
-      "Fixed crashes on Lyrics correct dialog",
-      "Fixed duplicate results in Lyrics correct dialog"
     ]
   }
 ]
