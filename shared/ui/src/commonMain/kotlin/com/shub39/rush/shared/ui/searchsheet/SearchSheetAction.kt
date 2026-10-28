@@ -16,8 +16,14 @@
  */
 package com.shub39.rush.shared.ui.searchsheet
 
+import com.shub39.rush.shared.core.dataclasses.SearchResult
+
 sealed interface SearchSheetAction {
     data class OnQueryChange(val query: String) : SearchSheetAction
 
-    data class OnCardClicked(val id: Long) : SearchSheetAction
+    /** Opens a song that is already saved locally. */
+    data class OnSavedCardClicked(val id: Long) : SearchSheetAction
+
+    /** Fetches and opens a song from the remote search results. */
+    data class OnResultClicked(val result: SearchResult) : SearchSheetAction
 }

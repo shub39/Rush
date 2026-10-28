@@ -22,15 +22,23 @@ import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.SortOrder
+import com.shub39.rush.shared.ui.rushmode.RushState
 
 @Immutable
 @Stable
 data class SavedPageState(
-    val extractedColors: ExtractedColors = ExtractedColors(),
-    val currentSong: SongUi? = null,
-    val autoChange: Boolean = false,
     val songsByTime: List<Song> = emptyList(),
     val songsAsc: List<Song> = emptyList(),
     val songsDesc: List<Song> = emptyList(),
     val sortOrder: SortOrder = SortOrder.DATE_ADDED,
-)
+    // projectons of the app scoped controllers, never written by this screen
+    val nowPlaying: SongUi? = null,
+    val rush: RushState = RushState(),
+    val extractedColors: ExtractedColors = ExtractedColors(),
+) {
+    val rushEnabled: Boolean
+        get() = rush.enabled
+
+    val mediaAccess: Boolean
+        get() = rush.mediaAccess
+}

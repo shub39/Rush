@@ -20,9 +20,9 @@ import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
 
 sealed interface SavedPageAction {
-    data object OnToggleAutoChange : SavedPageAction
+    data object OnToggleRushMode : SavedPageAction
 
-    data object OnRequestNotificationAccess : SavedPageAction
+    data object OnRequestMediaAccess : SavedPageAction
 
     data class OnDeleteSong(val song: Song) : SavedPageAction
 

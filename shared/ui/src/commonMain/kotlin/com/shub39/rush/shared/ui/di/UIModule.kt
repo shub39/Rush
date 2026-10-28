@@ -16,7 +16,20 @@
  */
 package com.shub39.rush.shared.ui.di
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-@Module @ComponentScan("com.shub39.rush.shared.ui") class UIModule
+@Module
+@ComponentScan("com.shub39.rush.shared.ui")
+class UIModule {
+    /**
+     * Application wide scope for the controllers that must keep running while the user navigates
+     * around (rush mode, the song session). View models must never use this scope.
+     */
+    @Single
+    fun provideAppScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+}

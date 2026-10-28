@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.shared.core.interfaces
 
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
@@ -23,6 +24,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface LyricsPagePreferences {
     suspend fun reset()
+
+    /**
+     * Every preference as a single immutable snapshot. Consumers that need more than a couple of
+     * values should read this instead of collecting each preference flow separately.
+     */
+    fun getPreferencesFlow(): Flow<LyricsPrefs>
 
     fun getLyricsColorFlow(): Flow<CardColors>
 

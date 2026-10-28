@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.dataclasses.ParsedLine
 import com.shub39.rush.shared.core.dataclasses.ParsedWord
 import com.shub39.rush.shared.core.dataclasses.SongUi
@@ -524,7 +525,7 @@ fun SyllableSyncedLyricsPreview() {
                             ttmlLyrics = ttmlLyrics,
                         )
                 ),
-            expressiveSyllables = true,
+            prefs = LyricsPrefs(expressiveSyllables = true),
         )
 
     Box(modifier = Modifier.fillMaxSize()) {

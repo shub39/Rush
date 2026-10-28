@@ -51,6 +51,14 @@ class OtherPreferencesImpl(private val datastore: DataStore<Preferences>) : Othe
         private val materialTheme = booleanPreferencesKey("material_theme")
         private val sortOrder = stringPreferencesKey("sort_order")
         private val selectedFont = stringPreferencesKey("font")
+        private val rushMode = booleanPreferencesKey("rush_mode_enabled")
+    }
+
+    override fun getRushModeFlow(): Flow<Boolean> =
+        datastore.data.map { preferences -> preferences[rushMode] == true }
+
+    override suspend fun updateRushMode(enabled: Boolean) {
+        datastore.edit { preferences -> preferences[rushMode] = enabled }
     }
 
     override fun getAppThemePrefFlow(): Flow<AppTheme> =

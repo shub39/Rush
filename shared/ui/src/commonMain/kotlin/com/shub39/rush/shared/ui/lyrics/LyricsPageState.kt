@@ -18,48 +18,111 @@ package com.shub39.rush.shared.ui.lyrics
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
-import com.shub39.rush.shared.core.dataclasses.SongMeta
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
+import com.shub39.rush.shared.ui.rushmode.RushPhase
+import com.shub39.rush.shared.ui.rushmode.RushState
+import com.shub39.rush.shared.ui.session.SessionState
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Read only projection of the lyrics screen, assembled by `LyricsVM` from the flows it owns:
+ * [SessionState] (the loaded song), [RushState] (rush mode) and [LyricsPrefs] (persisted
+ * preferences).
+ *
+ * Nothing writes into this object, which is why the same values are never copied around between
+ * view models any more.
+ */
 @Stable
 @Immutable
 data class LyricsPageState(
-    // non-datastore
-    val fetchingGenius: Pair<Boolean, LyricsState.LyricsError?> = Pair(false, null),
+    val session: SessionState = SessionState(),
+    val rush: RushState = RushState(),
+    val prefs: LyricsPrefs = LyricsPrefs(),
     val lyricsState: LyricsState = LyricsState.Idle,
-    val autoChange: Boolean = false,
-    val playingSong: SongMeta? = null,
     val lrcCorrect: LrcCorrect = LrcCorrect(),
-    val extractedColors: ExtractedColors = ExtractedColors(),
-    val syncedAvailable: Boolean = false,
-    val sync: Boolean = false,
     val lyricsCorrect: Boolean = false,
-    val source: Sources = Sources.LRCLIB,
-    val selectedLines: Map<Int, String> = emptyMap(),
-    val searchState: SearchState = SearchState.Idle,
-    val hideUI: Boolean = false,
+) {
+    val rushEnabled: Boolean
+        get() = rush.enabled
 
-    // datastore
-    val expressiveSyllables: Boolean = false,
-    val blurSyncedLyrics: Boolean = true,
-    val textPrefs: TextPrefs = TextPrefs(),
-    val cardColors: CardColors = CardColors.MUTED,
-    val lyricsBackground: LyricsBackground = LyricsBackground.SOLID_COLOR,
-    val maxLines: Int = 6,
-    val mCardBackground: Int = Color.DarkGray.toArgb(),
-    val mCardContent: Int = Color.White.toArgb(),
-    val fullscreen: Boolean = false,
-    val romanizationEnabled: Boolean = false,
-)
+    /** Rush mode progress, translated to the chip that the page already knows how to render. */
+    val searchState: SearchState
+        get() =
+            when (val phase = rush.phase) {
+                is RushPhase.Searching -> SearchState.Searching(phase.query)
+                RushPhase.NotFound -> SearchState.UserPrompt
+                else -> SearchState.Idle
+            }
+
+    val fetchingGenius: Pair<Boolean, LyricsState.LyricsError?>
+        get() {
+            val error = session.geniusError
+
+            return session.geniusLoading to
+                error?.let { LyricsState.LyricsError(errorCode = it.code, debugMessage = it.debug) }
+        }
+
+    val selectedLines: Map<Int, String>
+        get() = session.selectedLines
+
+    val source: Sources
+        get() = session.source
+
+    val sync: Boolean
+        get() = session.sync
+
+    val syncedAvailable: Boolean
+        get() = session.syncedAvailable
+
+    val extractedColors: ExtractedColors
+        get() = session.extractedColors
+
+    val expressiveSyllables: Boolean
+        get() = prefs.expressiveSyllables
+
+    val blurSyncedLyrics: Boolean
+        get() = prefs.blurSyncedLyrics
+
+    val textPrefs: TextPrefs
+        get() =
+            TextPrefs(
+                fontSize = prefs.fontSize,
+                lineHeight = prefs.lineHeight,
+                letterSpacing = prefs.letterSpacing,
+                lyricsAlignment = prefs.alignment,
+            )
+
+    val cardColors: CardColors
+        get() = prefs.cardColors
+
+    val lyricsBackground: LyricsBackground
+        get() = prefs.lyricsBackground
+
+    val maxLines: Int
+        get() = prefs.maxLines
+
+    val mCardBackground: Int
+        get() = prefs.cardBackground
+
+    val mCardContent: Int
+        get() = prefs.cardContent
+
+    val fullscreen: Boolean
+        get() = prefs.fullscreen
+
+    val romanizationEnabled: Boolean
+        get() = prefs.romanizationEnabled
+
+    val hideUI: Boolean
+        get() = prefs.hideUI
+}
 
 sealed interface LyricsState {
     data object Idle : LyricsState

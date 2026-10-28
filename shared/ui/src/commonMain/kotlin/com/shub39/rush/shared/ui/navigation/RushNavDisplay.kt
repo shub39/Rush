@@ -40,6 +40,9 @@ import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.lyrics.ManageSystemBars
 import com.shub39.rush.shared.ui.lyrics.section.LyricsCustomisationsPage
 import com.shub39.rush.shared.ui.lyrics.section.LyricsPage
+import com.shub39.rush.shared.ui.rushmode.RushAction
+import com.shub39.rush.shared.ui.rushmode.RushController
+import com.shub39.rush.shared.ui.rushmode.RushNavEvent
 import com.shub39.rush.shared.ui.saved.SavedPage
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.searchsheet.SearchSheet
@@ -54,10 +57,11 @@ import com.shub39.rush.shared.ui.theme.RushTheme
 import com.shub39.rush.shared.ui.viewmodels.GlobalVM
 import com.shub39.rush.shared.ui.viewmodels.LyricsVM
 import com.shub39.rush.shared.ui.viewmodels.SavedVM
-import com.shub39.rush.shared.ui.viewmodels.SearchSheetVM
+import com.shub39.rush.shared.ui.viewmodels.SearchVM
 import com.shub39.rush.shared.ui.viewmodels.SettingsVM
 import com.shub39.rush.shared.ui.viewmodels.ShareVM
 import kotlin.time.TimeSource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -67,6 +71,9 @@ fun RushNavDisplay(
 ) {
     val globalVM: GlobalVM = koinViewModel()
     val globalState by globalVM.state.collectAsStateWithLifecycle()
+
+    val rushController: RushController = koinInject()
+    val rushState by rushController.state.collectAsStateWithLifecycle()
 
     val windowSizeClass = LocalWindowSizeClass.current
 
@@ -80,7 +87,18 @@ fun RushNavDisplay(
     val editSheetStrategy =
         remember(windowSizeClass) { EditScreenSceneStrategy<NavKey>(windowSizeClass) }
 
-    LaunchedEffect(Unit) { globalVM.onAction(GlobalAction.OnCheckNotificationAccess) }
+    LaunchedEffect(Unit) {
+        rushController.onAction(RushAction.RefreshMediaAccess)
+
+        rushController.navEvents.collect { event ->
+            when (event) {
+                RushNavEvent.OpenLyrics ->
+                    if (!topLevelBackStack.isRouteOnTop(Routes.Lyrics.LyricsRoot)) {
+                        topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
+                    }
+            }
+        }
+    }
 
     RushTheme(theme = globalState.theme) {
         SharedTransitionLayout(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
@@ -98,7 +116,7 @@ fun RushNavDisplay(
                 entryProvider =
                     entryProvider {
                         entry<Routes.Search>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
-                            val viewModel = koinViewModel<SearchSheetVM>()
+                            val viewModel = koinViewModel<SearchVM>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             SearchSheet(
@@ -129,7 +147,7 @@ fun RushNavDisplay(
                                 action = viewModel::onAction,
                                 state = state,
                                 playbackInfo = playbackInfo,
-                                notificationAccess = globalState.notificationAccess,
+                                notificationAccess = rushState.mediaAccess,
                                 isCustomisationsOpened =
                                     topLevelBackStack.isRouteOnTop(
                                         Routes.Lyrics.LyricsCustomisations
@@ -189,7 +207,7 @@ fun RushNavDisplay(
                                 onNavigateBack = { topLevelBackStack.removeLast() },
                                 state = state,
                                 onAction = viewModel::onAction,
-                                notificationAccess = globalState.notificationAccess,
+                                notificationAccess = rushState.mediaAccess,
                             )
                         }
 
@@ -206,10 +224,8 @@ fun RushNavDisplay(
                                 SavedPage(
                                     state = state,
                                     onAction = { action ->
-                                        if (action is SavedPageAction.OnRequestNotificationAccess) {
-                                            globalVM.onAction(
-                                                GlobalAction.OnRequestNotificationAccess
-                                            )
+                                        if (action is SavedPageAction.OnRequestMediaAccess) {
+                                            rushController.onAction(RushAction.OnRequestMediaAccess)
                                         } else {
                                             viewModel.onAction(action)
                                         }
@@ -225,7 +241,7 @@ fun RushNavDisplay(
                                         }
                                     },
                                     onOpenSearchSheet = { topLevelBackStack.addTopLevel(Search) },
-                                    notificationAccess = globalState.notificationAccess,
+                                    notificationAccess = rushState.mediaAccess,
                                     isSettingsOpen = isLastRouteSettings,
                                     modifier = Modifier.widthIn(max = 600.dp),
                                 )
@@ -256,7 +272,7 @@ fun RushNavDisplay(
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             SettingRootPage(
-                                notificationAccess = globalState.notificationAccess,
+                                notificationAccess = rushState.mediaAccess,
                                 state = state,
                                 onShowPaywall = {
                                     globalVM.onAction(GlobalAction.OnPaywallOpened("settings"))
@@ -281,7 +297,7 @@ fun RushNavDisplay(
                                     topLevelBackStack.addTopLevel(Routes.Settings.SettingsAppInfo)
                                 },
                                 onUpdateNotificationAccess = {
-                                    globalVM.onAction(GlobalAction.OnCheckNotificationAccess)
+                                    rushController.onAction(RushAction.RefreshMediaAccess)
                                 },
                                 lastRoute = topLevelBackStack.backStack.last(),
                             )

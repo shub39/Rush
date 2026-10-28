@@ -19,24 +19,21 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.AnalyticsEvent
-import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
 import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
-import com.shub39.rush.shared.core.listener.MediaListener
-import com.shub39.rush.shared.ui.lyrics.LyricsState
-import com.shub39.rush.shared.ui.lyrics.SearchState
-import com.shub39.rush.shared.ui.lyrics.toSongUi
+import com.shub39.rush.shared.ui.rushmode.RushAction
+import com.shub39.rush.shared.ui.rushmode.RushController
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.saved.SavedPageState
+import com.shub39.rush.shared.ui.session.SessionController
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -45,117 +42,72 @@ import org.koin.core.annotation.Provided
 
 @KoinViewModel
 class SavedVM(
-    private val stateLayer: SharedStates,
+    private val sessionController: SessionController,
+    private val rushController: RushController,
     @Provided private val repo: SongRepository,
     @Provided private val datastore: OtherPreferences,
     @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
-
-    private var savedJob: Job? = null
-
-    private val _state = stateLayer.savedPageState
+    /** Only the saved library and its sort order belong to this screen. */
+    private val library = MutableStateFlow(SavedPageState())
 
     val state =
-        _state
-            .asStateFlow()
-            .onStart { observeData() }
+        combine(library, sessionController.state, rushController.state) { saved, session, rush ->
+                saved.copy(
+                    nowPlaying = session.song,
+                    rush = rush,
+                    extractedColors = session.extractedColors,
+                )
+            }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SavedPageState())
 
+    init {
+        observeData()
+    }
+
     fun onAction(action: SavedPageAction) {
-        viewModelScope.launch {
-            when (action) {
-                is SavedPageAction.ChangeCurrentSong -> fetchLyrics(action.id)
+        when (action) {
+            is SavedPageAction.ChangeCurrentSong ->
+                viewModelScope.launch { sessionController.loadSaved(action.id) }
 
-                is SavedPageAction.OnDeleteSong -> {
-                    analytics.trackEvent(
-                        AnalyticsEvent.SONG_DELETED,
-                        mapOf("title" to action.song.title, "artists" to action.song.artists),
-                    )
-                    repo.deleteSong(action.song.id)
-                }
-
-                SavedPageAction.OnToggleAutoChange -> {
-                    val newPref = !_state.value.autoChange
-
-                    analytics.trackEvent(
-                        AnalyticsEvent.RUSH_MODE_TOGGLED,
-                        mapOf("enabled" to newPref),
-                    )
-
-                    stateLayer.lyricsState.update { it.copy(autoChange = newPref) }
-
-                    _state.update { it.copy(autoChange = newPref) }
-
-                    if (newPref) MediaListener.onSeekEagerly()
-                }
-
-                is SavedPageAction.UpdateSortOrder -> {
-                    datastore.updateSortOrder(action.sortOrder)
-                }
-
-                SavedPageAction.OnRequestNotificationAccess -> {}
+            is SavedPageAction.OnDeleteSong -> {
+                analytics.trackEvent(
+                    AnalyticsEvent.SONG_DELETED,
+                    mapOf("title" to action.song.title, "artists" to action.song.artists),
+                )
+                viewModelScope.launch { repo.deleteSong(action.song.id) }
             }
+
+            SavedPageAction.OnToggleRushMode -> rushController.onAction(RushAction.Toggle)
+
+            SavedPageAction.OnRequestMediaAccess ->
+                rushController.onAction(RushAction.OnRequestMediaAccess)
+
+            is SavedPageAction.UpdateSortOrder ->
+                viewModelScope.launch { datastore.updateSortOrder(action.sortOrder) }
         }
     }
 
     private fun observeData() {
-        savedJob?.cancel()
-        savedJob =
-            viewModelScope.launch {
-                repo
-                    .getSongs()
-                    .onEach { songs ->
-                        if (songs.isEmpty()) {
-                            _state.update {
-                                it.copy(
-                                    songsByTime = emptyList(),
-                                    songsAsc = emptyList(),
-                                    songsDesc = emptyList(),
-                                )
-                            }
-
-                            return@onEach
-                        }
-
-                        _state.update { state ->
-                            state.copy(
-                                songsByTime = songs.sortedByDescending { it.dateAdded },
-                                songsAsc = songs.sortedBy { it.title },
-                                songsDesc = songs.sortedByDescending { it.title },
-                            )
-                        }
+        viewModelScope.launch {
+            repo
+                .getSongs()
+                .onEach { songs ->
+                    library.update { current ->
+                        current.copy(
+                            songsByTime = songs.sortedByDescending { it.dateAdded },
+                            songsAsc = songs.sortedBy { it.title },
+                            songsDesc = songs.sortedByDescending { it.title },
+                        )
                     }
-                    .flowOn(Dispatchers.Default)
-                    .launchIn(this)
-
-                datastore
-                    .getSortOrderFlow()
-                    .onEach { sortOrder -> _state.update { it.copy(sortOrder = sortOrder) } }
-                    .launchIn(this)
-            }
-    }
-
-    private suspend fun fetchLyrics(id: Long) {
-        if (stateLayer.lyricsState.value.lyricsState is LyricsState.Fetching) return
-
-        val result = repo.getSong(id).toSongUi()
-
-        analytics.trackEvent(
-            AnalyticsEvent.LYRICS_OPENED,
-            mapOf("title" to result.title, "artists" to result.artists, "source" to "saved"),
-        )
-
-        stateLayer.lyricsState.update {
-            it.copy(
-                lyricsState = LyricsState.Loaded(song = result),
-                source = if (result.lyrics.isNotEmpty()) Sources.LRCLIB else Sources.GENIUS,
-                searchState = SearchState.Idle,
-                syncedAvailable = result.syncedLyrics != null || result.ttmlLyrics != null,
-                sync = false,
-                selectedLines = emptyMap(),
-            )
+                }
+                .flowOn(Dispatchers.Default)
+                .launchIn(this)
         }
 
-        _state.update { it.copy(currentSong = result) }
+        datastore
+            .getSortOrderFlow()
+            .onEach { sortOrder -> library.update { it.copy(sortOrder = sortOrder) } }
+            .launchIn(viewModelScope)
     }
 }

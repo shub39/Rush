@@ -16,28 +16,32 @@
  */
 package com.shub39.rush.shared.ui.viewmodels
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shub39.rush.shared.core.AnalyticsEvent
 import com.shub39.rush.shared.core.Result
-import com.shub39.rush.shared.core.interfaces.AnalyticsWrapper
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
+import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.interfaces.LyricsPagePreferences
-import com.shub39.rush.shared.core.interfaces.PaletteGenerator
 import com.shub39.rush.shared.core.interfaces.RomanizationProvider
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.core.listener.MediaListener
 import com.shub39.rush.shared.ui.errorStringRes
+import com.shub39.rush.shared.ui.lyrics.LrcCorrect
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
-import com.shub39.rush.shared.ui.lyrics.breakLyrics
-import com.shub39.rush.shared.ui.lyrics.toSongUi
-import com.shub39.rush.shared.ui.sortMapByKeys
+import com.shub39.rush.shared.ui.lyrics.RomanizedLyrics
+import com.shub39.rush.shared.ui.lyrics.withRomanization
+import com.shub39.rush.shared.ui.rushmode.RushAction
+import com.shub39.rush.shared.ui.rushmode.RushController
+import com.shub39.rush.shared.ui.rushmode.RushState
+import com.shub39.rush.shared.ui.session.SessionController
+import com.shub39.rush.shared.ui.session.SessionState
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,10 +49,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
@@ -56,451 +57,250 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
+/**
+ * Projects the app scoped [SessionController] (loaded song), [RushController] (rush mode) and the
+ * persisted [LyricsPrefs] into the single state object the lyrics screen renders.
+ *
+ * The view model owns no cross screen state of its own: every value is either derived from those
+ * sources or is genuinely local to this screen, so there is nothing to keep in sync.
+ */
 @KoinViewModel
 class LyricsVM(
-    private val stateLayer: SharedStates,
+    private val sessionController: SessionController,
+    private val rushController: RushController,
     @Provided private val repo: SongRepository,
     @Provided private val lyricsPrefs: LyricsPagePreferences,
-    @Provided private val paletteGenerator: PaletteGenerator,
     @Provided private val romanization: RomanizationProvider,
-    @Provided private val analytics: AnalyticsWrapper,
 ) : ViewModel() {
-
-    private var observeJob: Job? = null
-    private var observePlaybackJob: Job? = null
-    private var romanizationJob: Job? = null
-
-    private val _state = stateLayer.lyricsState
+    private val localUiState = MutableStateFlow(LocalLyricsUiState())
+    private val romanized = MutableStateFlow(RomanizedLyrics())
     private val _playbackInfo = MutableStateFlow(PlaybackInfo())
 
+    val playbackInfo = _playbackInfo.asStateFlow()
+
     val state =
-        _state
-            .asStateFlow()
-            .onStart { observeDatastore() }
+        combine(
+                sessionController.state,
+                rushController.state,
+                lyricsPrefs.getPreferencesFlow(),
+                romanized,
+                localUiState,
+                ::buildState,
+            )
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LyricsPageState())
-    val playbackInfo =
-        _playbackInfo
-            .asStateFlow()
-            .onStart { observePlayback() }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlaybackInfo())
+
+    init {
+        observeRomanization()
+        observePlayback()
+    }
 
     fun onAction(action: LyricsPageAction) {
-        viewModelScope.launch {
-            when (action) {
-                is LyricsPageAction.OnCorrectionSearch -> {
-                    _state.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = true)) }
+        when (action) {
+            is LyricsPageAction.OnCorrectionSearch -> searchCorrections(action.track, action.artist)
 
-                    when (val result = repo.searchCorrections(action.track, action.artist)) {
-                        is Result.Error -> {
-                            _state.update {
-                                it.copy(
-                                    lrcCorrect =
-                                        it.lrcCorrect.copy(error = errorStringRes(result.error))
-                                )
-                            }
-                        }
+            LyricsPageAction.OnToggleRushMode -> rushController.onAction(RushAction.Toggle)
 
-                        is Result.Success -> {
-                            _state.update {
-                                it.copy(
-                                    lrcCorrect = it.lrcCorrect.copy(searchResults = result.data)
-                                )
-                            }
-                        }
-                    }
+            LyricsPageAction.OnDisableRushMode -> rushController.onAction(RushAction.Disable)
 
-                    _state.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = false)) }
+            is LyricsPageAction.OnUpdateSongLyrics ->
+                viewModelScope.launch {
+                    sessionController.correctLyrics(action.id, action.searchResult)
                 }
 
-                is LyricsPageAction.OnToggleAutoChange -> {
-                    val newPref = !_state.value.autoChange
+            is LyricsPageAction.UpdateExtractedColors ->
+                sessionController.updateExtractedColors(action.url)
 
-                    analytics.trackEvent(
-                        AnalyticsEvent.RUSH_MODE_TOGGLED,
-                        mapOf("enabled" to newPref),
-                    )
+            is LyricsPageAction.OnSourceChange -> sessionController.selectSource(action.source)
 
-                    _state.update { it.copy(autoChange = newPref) }
+            is LyricsPageAction.OnSync -> sessionController.setSync(action.sync)
 
-                    stateLayer.savedPageState.update { it.copy(autoChange = newPref) }
+            is LyricsPageAction.OnChangeSelectedLines ->
+                sessionController.setSelectedLines(action.lines)
 
-                    if (newPref) MediaListener.onSeekEagerly()
-                }
+            is LyricsPageAction.OnFetchGeniusLyrics -> sessionController.refreshGenius(action.id)
 
-                is LyricsPageAction.OnUpdateShareLines -> {
-                    stateLayer.sharePageState.update {
-                        it.copy(
-                            songDetails = action.songDetails,
-                            selectedLines = _state.value.selectedLines.sortMapByKeys(),
-                        )
-                    }
-                }
+            is LyricsPageAction.OnLyricsCorrect ->
+                localUiState.update { it.copy(lyricsCorrect = action.show) }
 
-                is LyricsPageAction.OnUpdateSongLyrics -> {
-                    repo.correctLyrics(action.id, action.searchResult)
+            is LyricsPageAction.OnRomanizationToggle ->
+                viewModelScope.launch { lyricsPrefs.updateRomanizationEnabled(action.enabled) }
 
-                    val song = repo.getSong(action.id).toSongUi()
+            is LyricsPageAction.OnChangeLyricsBackground ->
+                viewModelScope.launch { lyricsPrefs.updateLyricsBackground(action.background) }
 
-                    analytics.trackEvent(
-                        AnalyticsEvent.LYRICS_CORRECTED,
-                        mapOf("title" to song.title, "artists" to song.artists),
-                    )
+            is LyricsPageAction.OnUpdateColorType ->
+                viewModelScope.launch { lyricsPrefs.updateLyricsColor(action.color) }
 
-                    _state.update {
-                        it.copy(
-                            syncedAvailable = song.syncedLyrics != null || song.ttmlLyrics != null,
-                            lyricsState = LyricsState.Loaded(song = song),
-                        )
-                    }
+            is LyricsPageAction.OnUpdatemBackground ->
+                viewModelScope.launch { lyricsPrefs.updateCardBackground(action.color) }
 
-                    generateRomanizedLyrics()
-                }
+            is LyricsPageAction.OnExpressiveLyricsChange ->
+                viewModelScope.launch { lyricsPrefs.updateExpressiveSyllablesPref(action.pref) }
 
-                is LyricsPageAction.UpdateExtractedColors ->
-                    launch(Dispatchers.Default) {
-                        val colors = paletteGenerator.generatePaletteFromUrl(action.url)
+            is LyricsPageAction.OnUpdatemContent ->
+                viewModelScope.launch { lyricsPrefs.updateCardContent(action.color) }
 
-                        _state.update { it.copy(extractedColors = colors) }
+            is LyricsPageAction.OnAlignmentChange ->
+                viewModelScope.launch { lyricsPrefs.updateLyricAlignment(action.alignment) }
 
-                        stateLayer.sharePageState.update { it.copy(extractedColors = colors) }
+            is LyricsPageAction.OnFontSizeChange ->
+                viewModelScope.launch { lyricsPrefs.updateFontSize(action.size) }
 
-                        stateLayer.savedPageState.update { it.copy(extractedColors = colors) }
-                    }
+            is LyricsPageAction.OnLineHeightChange ->
+                viewModelScope.launch { lyricsPrefs.updateLineHeight(action.height) }
 
-                is LyricsPageAction.OnSourceChange -> {
-                    _state.update { it.copy(source = action.source, selectedLines = emptyMap()) }
-                }
+            is LyricsPageAction.OnLetterSpacingChange ->
+                viewModelScope.launch { lyricsPrefs.updateLetterSpacing(action.spacing) }
 
-                is LyricsPageAction.OnSync -> {
-                    _state.update { it.copy(sync = action.sync) }
-                }
+            LyricsPageAction.OnCustomisationReset -> viewModelScope.launch { lyricsPrefs.reset() }
 
-                is LyricsPageAction.OnLyricsCorrect -> {
-                    _state.update { it.copy(lyricsCorrect = action.show) }
-                }
+            is LyricsPageAction.OnFullscreenChange ->
+                viewModelScope.launch { lyricsPrefs.setFullScreen(action.pref) }
 
-                is LyricsPageAction.OnChangeSelectedLines -> {
-                    _state.update { it.copy(selectedLines = action.lines) }
-                }
+            is LyricsPageAction.OnMaxLinesChange ->
+                viewModelScope.launch { lyricsPrefs.updateMaxLines(action.lines) }
 
-                is LyricsPageAction.OnChangeLyricsBackground -> {
-                    lyricsPrefs.updateLyricsBackground(action.background)
-                }
+            is LyricsPageAction.OnHideUIToggle ->
+                viewModelScope.launch { lyricsPrefs.updateHideUI(action.enabled) }
 
-                is LyricsPageAction.OnUpdateColorType -> {
-                    lyricsPrefs.updateLyricsColor(action.color)
-                }
+            is LyricsPageAction.OnBlurSyncedChange ->
+                viewModelScope.launch { lyricsPrefs.updateBlurSynced(action.pref) }
 
-                is LyricsPageAction.OnUpdatemBackground -> {
-                    lyricsPrefs.updateCardBackground(action.color)
-                }
+            LyricsPageAction.OnPauseOrResume ->
+                MediaListener.pauseOrResume(_playbackInfo.value.speed == 0f)
 
-                is LyricsPageAction.OnExpressiveLyricsChange -> {
-                    lyricsPrefs.updateExpressiveSyllablesPref(action.pref)
-                }
-
-                is LyricsPageAction.OnUpdatemContent -> {
-                    lyricsPrefs.updateCardContent(action.color)
-                }
-
-                is LyricsPageAction.OnFetchGeniusLyrics -> {
-                    _state.update { it.copy(fetchingGenius = Pair(true, null)) }
-
-                    when (val result = repo.updateGenius(id = action.id)) {
-                        is Result.Error -> {
-                            _state.update {
-                                it.copy(
-                                    fetchingGenius =
-                                        Pair(
-                                            false,
-                                            LyricsState.LyricsError(
-                                                errorCode = errorStringRes(result.error),
-                                                debugMessage = result.message,
-                                            ),
-                                        )
-                                )
-                            }
-                        }
-
-                        is Result.Success -> {
-                            _state.update { lyricsPageState ->
-                                lyricsPageState.copy(
-                                    fetchingGenius = Pair(false, null),
-                                    lyricsState =
-                                        (lyricsPageState.lyricsState as? LyricsState.Loaded)?.let {
-                                            it.copy(
-                                                song =
-                                                    it.song.copy(
-                                                        geniusLyrics = breakLyrics(result.data)
-                                                    )
-                                            )
-                                        } ?: LyricsState.Idle,
-                                )
-                            }
-
-                            generateRomanizedLyrics()
-                        }
-                    }
-                }
-
-                is LyricsPageAction.OnAlignmentChange -> {
-                    lyricsPrefs.updateLyricAlignment(action.alignment)
-                }
-
-                is LyricsPageAction.OnFontSizeChange -> lyricsPrefs.updateFontSize(action.size)
-
-                is LyricsPageAction.OnLineHeightChange ->
-                    lyricsPrefs.updateLineHeight(action.height)
-
-                is LyricsPageAction.OnLetterSpacingChange ->
-                    lyricsPrefs.updateLetterSpacing(action.spacing)
-
-                LyricsPageAction.OnCustomisationReset -> {
-                    lyricsPrefs.reset()
-                }
-
-                is LyricsPageAction.OnFullscreenChange -> {
-                    lyricsPrefs.setFullScreen(action.pref)
-                }
-
-                is LyricsPageAction.OnMaxLinesChange -> lyricsPrefs.updateMaxLines(action.lines)
-
-                LyricsPageAction.OnPauseOrResume ->
-                    MediaListener.pauseOrResume(_playbackInfo.value.speed == 0f)
-
-                is LyricsPageAction.OnSeek -> {
-                    MediaListener.seek(action.position)
-                    _playbackInfo.update { it.copy(position = action.position) }
-                }
-
-                is LyricsPageAction.OnSetPosition -> {
-                    _playbackInfo.update { it.copy(position = action.position) }
-                }
-
-                is LyricsPageAction.OnHideUIToggle -> {
-                    lyricsPrefs.updateHideUI(action.enabled)
-                }
-
-                is LyricsPageAction.OnBlurSyncedChange -> {
-                    lyricsPrefs.updateBlurSynced(action.pref)
-                }
-
-                LyricsPageAction.OnPlayNext -> MediaListener.playNext()
-                LyricsPageAction.OnPlayPrevious -> MediaListener.playPrevious()
-
-                is LyricsPageAction.OnRomanizationToggle -> {
-                    lyricsPrefs.updateRomanizationEnabled(action.enabled)
-                    if (action.enabled) {
-                        generateRomanizedLyrics()
-                    } else {
-                        romanizationJob?.cancel()
-
-                        val song =
-                            (_state.value.lyricsState as? LyricsState.Loaded)?.song ?: return@launch
-
-                        _state.update {
-                            it.copy(
-                                lyricsState =
-                                    LyricsState.Loaded(
-                                        song =
-                                            song.copy(
-                                                romanizedLyrics = emptyMap(),
-                                                romanizedGeniusLyrics = emptyMap(),
-                                                romanizedSyncedLyrics = emptyMap(),
-                                                romanizedTtmlLyrics = emptyMap(),
-                                            )
-                                    )
-                            )
-                        }
-                    }
-                }
+            is LyricsPageAction.OnSeek -> {
+                MediaListener.seek(action.position)
+                _playbackInfo.update { it.copy(position = action.position) }
             }
+
+            is LyricsPageAction.OnSetPosition ->
+                _playbackInfo.update { it.copy(position = action.position) }
+
+            LyricsPageAction.OnPlayNext -> MediaListener.playNext()
+
+            LyricsPageAction.OnPlayPrevious -> MediaListener.playPrevious()
         }
     }
 
-    private fun generateRomanizedLyrics() {
-        romanizationJob?.cancel()
-        romanizationJob =
-            viewModelScope.launch(Dispatchers.Default) {
-                if (!_state.value.romanizationEnabled) return@launch
+    private fun searchCorrections(track: String, artist: String) {
+        viewModelScope.launch {
+            localUiState.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = true)) }
 
-                val song = (_state.value.lyricsState as? LyricsState.Loaded)?.song ?: return@launch
-
-                // Plain lyrics (LRCLIB)
-                val romanizedLyrics =
-                    song.lyrics.associate { entry ->
-                        romanization.romanize(entry.value)?.let { romanized ->
-                            entry.key to romanized
-                        } ?: (entry.key to "")
+            when (val result = repo.searchCorrections(track, artist)) {
+                is Result.Error ->
+                    localUiState.update {
+                        it.copy(
+                            lrcCorrect = it.lrcCorrect.copy(error = errorStringRes(result.error))
+                        )
                     }
 
-                // Genius lyrics — offset to avoid collision with LRCLIB keys
-                val romanizedGeniusLyrics =
-                    song.geniusLyrics?.associate { entry ->
-                        romanization.romanize(entry.value)?.let { romanized ->
-                            entry.key to romanized
-                        } ?: (entry.key to "")
-                    } ?: emptyMap()
+                is Result.Success ->
+                    localUiState.update {
+                        it.copy(lrcCorrect = it.lrcCorrect.copy(searchResults = result.data))
+                    }
+            }
 
-                // Synced lyrics — time-based keys
-                val romanizedSyncedLyrics =
-                    song.syncedLyrics?.associate { lyric ->
-                        romanization.romanize(lyric.text)?.let { romanized ->
-                            lyric.time to romanized
-                        } ?: (lyric.time to "")
-                    } ?: emptyMap()
+            localUiState.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = false)) }
+        }
+    }
 
-                // TTML lyrics — startTime in ms as key
-                val romanizedTTMLLyrics =
-                    song.ttmlLyrics?.associate { parsedLine ->
-                        romanization.romanize(parsedLine.text)?.let { romanized ->
-                            parsedLine.startTime to romanized
-                        } ?: (parsedLine.startTime to "")
-                    } ?: emptyMap()
+    private fun buildState(
+        session: SessionState,
+        rush: RushState,
+        prefs: LyricsPrefs,
+        romanized: RomanizedLyrics,
+        local: LocalLyricsUiState,
+    ): LyricsPageState {
+        val error = session.error
+        val song = session.song?.withRomanization(romanized)
 
-                _state.update {
-                    it.copy(
-                        lyricsState =
-                            LyricsState.Loaded(
-                                song =
-                                    song.copy(
-                                        romanizedLyrics = romanizedLyrics,
-                                        romanizedGeniusLyrics = romanizedGeniusLyrics,
-                                        romanizedSyncedLyrics = romanizedSyncedLyrics,
-                                        romanizedTtmlLyrics = romanizedTTMLLyrics,
-                                    )
-                            )
-                    )
+        return LyricsPageState(
+            session = session,
+            rush = rush,
+            prefs = prefs,
+            lyricsState =
+                when {
+                    session.isLoading -> LyricsState.Fetching(session.loadingLabel)
+                    error != null -> LyricsState.LyricsError(error.code, error.debug)
+                    song != null -> LyricsState.Loaded(song)
+                    else -> LyricsState.Idle
+                },
+            lrcCorrect = local.lrcCorrect,
+            lyricsCorrect = local.lyricsCorrect,
+        )
+    }
+
+    /**
+     * Romanization is derived from the loaded song plus the preference, instead of being written
+     * into a copy of the song by hand.
+     */
+    private fun observeRomanization() {
+        viewModelScope.launch(Dispatchers.Default) {
+            combine(
+                    sessionController.state.map { it.song },
+                    lyricsPrefs.getRomanizationEnabledFlow(),
+                    ::Pair,
+                )
+                .distinctUntilChanged()
+                .collectLatest { (song, enabled) ->
+                    if (!enabled || song == null) {
+                        romanized.value = RomanizedLyrics()
+                        return@collectLatest
+                    }
+
+                    romanized.value = song.toRomanizedLyrics()
                 }
-            }
+        }
     }
 
-    private fun observeDatastore() {
-        observeJob?.cancel()
-        observeJob =
-            viewModelScope.launch {
-                lyricsPrefs
-                    .getHideUIFlow()
-                    .onEach { pref -> _state.update { it.copy(hideUI = pref) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getBlurSynced()
-                    .onEach { pref -> _state.update { it.copy(blurSyncedLyrics = pref) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getLyricAlignmentFlow()
-                    .onEach { pref ->
-                        _state.update {
-                            it.copy(textPrefs = it.textPrefs.copy(lyricsAlignment = pref))
-                        }
-                    }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getFontSizeFlow()
-                    .onEach { pref ->
-                        _state.update { it.copy(textPrefs = it.textPrefs.copy(fontSize = pref)) }
-                    }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getLineHeightFlow()
-                    .onEach { pref ->
-                        _state.update { it.copy(textPrefs = it.textPrefs.copy(lineHeight = pref)) }
-                    }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getLetterSpacingFlow()
-                    .onEach { pref ->
-                        _state.update {
-                            it.copy(textPrefs = it.textPrefs.copy(letterSpacing = pref))
-                        }
-                    }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getCardBackgroundFlow()
-                    .onEach { color -> _state.update { it.copy(mCardBackground = color) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getCardContentFlow()
-                    .onEach { color -> _state.update { it.copy(mCardContent = color) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getLyricsColorFlow()
-                    .onEach { color -> _state.update { it.copy(cardColors = color) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getMaxLinesFlow()
-                    .onEach { lines -> _state.update { it.copy(maxLines = lines) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getFullScreenFlow()
-                    .onEach { pref -> _state.update { it.copy(fullscreen = pref) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getLyricsBackgroundFlow()
-                    .onEach { hyp -> _state.update { it.copy(lyricsBackground = hyp) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getExpressiveSyllablesPref()
-                    .onEach { pref -> _state.update { it.copy(expressiveSyllables = pref) } }
-                    .launchIn(this)
-
-                lyricsPrefs
-                    .getRomanizationEnabledFlow()
-                    .onEach { enabled ->
-                        _state.update { it.copy(romanizationEnabled = enabled) }
-                        if (enabled) {
-                            generateRomanizedLyrics()
-                        }
-                    }
-                    .launchIn(this)
-
-                // Watch for song changes and regenerate romanization if enabled
-                _state
-                    .map { (it.lyricsState as? LyricsState.Loaded)?.song?.id }
-                    .distinctUntilChanged()
-                    .onEach {
-                        if (_state.value.romanizationEnabled) {
-                            generateRomanizedLyrics()
-                        }
-                    }
-                    .launchIn(this)
-            }
-    }
+    private suspend fun SongUi.toRomanizedLyrics() =
+        RomanizedLyrics(
+            plain =
+                lyrics.associate { entry ->
+                    entry.key to (romanization.romanize(entry.value) ?: "")
+                },
+            genius =
+                geniusLyrics?.associate { entry ->
+                    entry.key to (romanization.romanize(entry.value) ?: "")
+                } ?: emptyMap(),
+            synced =
+                syncedLyrics?.associate { lyric ->
+                    lyric.time to (romanization.romanize(lyric.text) ?: "")
+                } ?: emptyMap(),
+            ttml =
+                ttmlLyrics?.associate { line ->
+                    line.startTime to (romanization.romanize(line.text) ?: "")
+                } ?: emptyMap(),
+        )
 
     // Observes playback position and speed
     private fun observePlayback() {
-        observePlaybackJob?.cancel()
-        observePlaybackJob =
-            viewModelScope.launch(Dispatchers.Default) {
-                combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair)
-                    .collectLatest { (position, speed) ->
-                        val start = TimeSource.Monotonic.markNow()
+        viewModelScope.launch(Dispatchers.Default) {
+            combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair)
+                .collectLatest { (position, speed) ->
+                    val start = TimeSource.Monotonic.markNow()
 
-                        while (this@launch.isActive) {
-                            val elapsed = (speed * start.elapsedNow().inWholeMilliseconds).toLong()
+                    while (this@launch.isActive) {
+                        val elapsed = (speed * start.elapsedNow().inWholeMilliseconds).toLong()
 
-                            _playbackInfo.update {
-                                it.copy(
-                                    position = maxOf(it.position, position + elapsed),
-                                    speed = speed,
-                                )
-                            }
-
-                            delay(100.milliseconds)
+                        _playbackInfo.update {
+                            it.copy(
+                                position = maxOf(it.position, position + elapsed),
+                                speed = speed,
+                            )
                         }
+
+                        delay(100.milliseconds)
                     }
-            }
+                }
+        }
     }
 }
+
+/** Purely local to the lyrics screen; nothing else reads or writes it. */
+@Immutable
+private data class LocalLyricsUiState(
+    val lrcCorrect: LrcCorrect = LrcCorrect(),
+    val lyricsCorrect: Boolean = false,
+)

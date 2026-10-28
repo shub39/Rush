@@ -25,6 +25,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
@@ -56,6 +57,33 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
     override suspend fun reset() {
         dataStore.edit { it.clear() }
     }
+
+    override fun getPreferencesFlow(): Flow<LyricsPrefs> =
+        dataStore.data.map { prefs ->
+            LyricsPrefs(
+                expressiveSyllables = prefs[expressiveSyllables] == true,
+                blurSyncedLyrics = prefs[blurSynced] ?: true,
+                fontSize = prefs[fontSize] ?: 28f,
+                lineHeight = prefs[lineHeight] ?: 32f,
+                letterSpacing = prefs[letterSpacing] ?: 0f,
+                alignment =
+                    valueOfOrNull<LyricsAlignment>(
+                        prefs[lyricAlignment] ?: LyricsAlignment.START.name
+                    ) ?: LyricsAlignment.START,
+                cardColors =
+                    valueOfOrNull<CardColors>(prefs[lyricsColor] ?: CardColors.VIBRANT.name)
+                        ?: CardColors.VIBRANT,
+                lyricsBackground =
+                    valueOfOrNull(prefs[lyricsBackground] ?: LyricsBackground.SOLID_COLOR.name)
+                        ?: LyricsBackground.SOLID_COLOR,
+                maxLines = prefs[maxLines] ?: 6,
+                cardBackground = prefs[cardBackground] ?: Color.Black.toArgb(),
+                cardContent = prefs[cardContent] ?: Color.White.toArgb(),
+                fullscreen = prefs[fullscreen] == true,
+                romanizationEnabled = prefs[romanizationEnabled] ?: false,
+                hideUI = prefs[hideUI] ?: false,
+            )
+        }
 
     override fun getMaxLinesFlow(): Flow<Int> =
         dataStore.data.map { preferences -> preferences[maxLines] ?: 6 }

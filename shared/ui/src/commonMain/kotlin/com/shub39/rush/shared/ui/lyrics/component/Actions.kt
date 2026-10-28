@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
-import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.ui.copyToClipboard
@@ -44,7 +43,7 @@ data class ActionsState(
     val source: Sources,
     val syncedAvailable: Boolean,
     val sync: Boolean,
-    val autoChange: Boolean,
+    val rushEnabled: Boolean,
 )
 
 @Composable
@@ -125,7 +124,7 @@ fun Actions(
             onClick = {
                 action(LyricsPageAction.OnLyricsCorrect(true))
                 action(LyricsPageAction.OnSync(false))
-                if (state.autoChange) action(LyricsPageAction.OnToggleAutoChange)
+                if (state.rushEnabled) action(LyricsPageAction.OnDisableRushMode)
             }
         ) {
             Icon(
@@ -165,9 +164,9 @@ fun Actions(
 
     if (notificationAccess) {
         IconButton(
-            onClick = { action(LyricsPageAction.OnToggleAutoChange) },
+            onClick = { action(LyricsPageAction.OnToggleRushMode) },
             colors =
-                if (state.autoChange) {
+                if (state.rushEnabled) {
                     IconButtonDefaults.iconButtonColors(
                         contentColor = cardBackground,
                         containerColor = cardContent,
@@ -185,25 +184,7 @@ fun Actions(
     }
 
     if (state.selectedLines.isNotEmpty()) {
-        IconButton(
-            onClick = {
-                if (state.song != null) {
-                    action(
-                        LyricsPageAction.OnUpdateShareLines(
-                            songDetails =
-                                SongDetails(
-                                    title = state.song.title,
-                                    artist = state.song.artists,
-                                    album = state.song.album,
-                                    artUrl = state.song.artUrl ?: "",
-                                )
-                        )
-                    )
-
-                    onShare()
-                }
-            }
-        ) {
+        IconButton(onClick = { onShare() }) {
             Icon(painter = painterResource(Res.drawable.share), contentDescription = "Share")
         }
     }

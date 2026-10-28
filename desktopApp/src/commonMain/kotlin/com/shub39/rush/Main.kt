@@ -30,10 +30,14 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.shub39.rush.app.App
 import com.shub39.rush.di.RushModules
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.rushmode.RushController
+import org.koin.core.context.GlobalContext
 import org.koin.plugin.module.dsl.startKoin
 
 fun main() {
     startKoin<RushModules>()
+
+    GlobalContext.get().get<RushController>().start()
 
     singleWindowApplication(title = "Rush", state = WindowState(width = 700.dp, height = 1000.dp)) {
         val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
