@@ -30,6 +30,7 @@ import com.shub39.rush.shared.ui.session.SessionController
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -75,12 +76,13 @@ class SearchVM(
     @OptIn(FlowPreview::class)
     private fun observeQuery() {
         viewModelScope.launch {
-            query.debounce(SEARCH_DEBOUNCE).collect { searchQuery -> search(searchQuery) }
+            query.debounce(SEARCH_DEBOUNCE).collectLatest { searchQuery -> search(searchQuery) }
         }
     }
 
     private suspend fun search(searchQuery: String) {
-        if (searchQuery.isBlank()) {
+        // Blank and too-short queries look the same to the user: nothing to show, nothing pending
+        if (searchQuery.isBlank() || searchQuery.length < MIN_QUERY_LENGTH) {
             _state.update {
                 it.copy(
                     savedResults = emptyList(),
@@ -92,8 +94,6 @@ class SearchVM(
 
             return
         }
-
-        if (searchQuery.length < MIN_QUERY_LENGTH) return
 
         _state.update { it.copy(isSearching = true, error = null) }
 

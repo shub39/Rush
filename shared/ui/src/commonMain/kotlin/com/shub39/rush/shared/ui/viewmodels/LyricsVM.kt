@@ -185,7 +185,17 @@ class LyricsVM(
 
     private fun searchCorrections(track: String, artist: String) {
         viewModelScope.launch {
-            localUiState.update { it.copy(lrcCorrect = it.lrcCorrect.copy(searching = true)) }
+            // Reset the previous run so stale results/errors never survive a new search
+            localUiState.update {
+                it.copy(
+                    lrcCorrect =
+                        it.lrcCorrect.copy(
+                            searching = true,
+                            error = null,
+                            searchResults = emptyList(),
+                        )
+                )
+            }
 
             when (val result = repo.searchCorrections(track, artist)) {
                 is Result.Error ->

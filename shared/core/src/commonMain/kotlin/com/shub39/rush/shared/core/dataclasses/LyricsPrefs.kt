@@ -33,7 +33,7 @@ data class LyricsPrefs(
     val lineHeight: Float = 32f,
     val letterSpacing: Float = 0f,
     val alignment: LyricsAlignment = LyricsAlignment.START,
-    val cardColors: CardColors = CardColors.MUTED,
+    val cardColors: CardColors = CardColors.VIBRANT,
     val lyricsBackground: LyricsBackground = LyricsBackground.SOLID_COLOR,
     val maxLines: Int = 6,
     val cardBackground: Int = 0xFF000000.toInt(),

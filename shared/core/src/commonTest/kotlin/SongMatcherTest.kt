@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.core.matching
-
 import com.shub39.rush.shared.core.dataclasses.SearchResult
 import com.shub39.rush.shared.core.dataclasses.SongMeta
+import com.shub39.rush.shared.core.matching.SongMatcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -125,5 +124,11 @@ class SongMatcherTest {
     @Test
     fun `normalize strips noise and case folds`() {
         assertEquals("song", SongMatcher.normalize("SONG (feat. Nobody) [Live] - Remastered 2011"))
+    }
+
+    @Test
+    fun `with or without you`() {
+        val test = "with or without you"
+        assertEquals(test, SongMatcher.normalize(test))
     }
 }

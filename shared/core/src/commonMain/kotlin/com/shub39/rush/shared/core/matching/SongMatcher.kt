@@ -49,7 +49,7 @@ object SongMatcher {
             RegexOption.IGNORE_CASE,
         )
     private val FEATURING =
-        Regex("""\b(feat|feat\.|ft|ft\.|featuring|with)\b.*$""", RegexOption.IGNORE_CASE)
+        Regex("""\b(feat|feat\.|ft|ft\.|featuring)\b.*$""", RegexOption.IGNORE_CASE)
     private val NON_WORD = Regex("""[^\p{L}\p{N}\s]""")
     private val WHITESPACE = Regex("""\s+""")
     private val ARTIST_SEPARATOR =
