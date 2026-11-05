@@ -24,24 +24,31 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -180,6 +187,7 @@ fun LyricsPageContent(
                 state.syncedAvailable,
                 state.sync,
                 state.rushEnabled,
+                state.fitToScreen,
             ) {
                 ActionsState(
                     song = loadedSong,
@@ -188,6 +196,7 @@ fun LyricsPageContent(
                     syncedAvailable = state.syncedAvailable,
                     sync = state.sync,
                     rushEnabled = state.rushEnabled,
+                    fitToScreen = state.fitToScreen,
                 )
             }
 
@@ -286,6 +295,7 @@ fun LyricsPageContent(
                                                 AnimatedVisibility(
                                                     visible =
                                                         !state.sync &&
+                                                            !state.fitToScreen &&
                                                             top > 2 &&
                                                             state.lyricsBackground !=
                                                                 LyricsBackground.ALBUM_ART
@@ -314,19 +324,27 @@ fun LyricsPageContent(
                                             ) {
                                                 Spacer(modifier = Modifier.height(20.dp))
 
-                                                AnimatedVisibility(
-                                                    visible = top <= 2 && !state.sync
-                                                ) {
-                                                    ArtFromUrl(
-                                                        imageUrl = lyricsState.song.artUrl!!,
-                                                        highlightColor = cardContent,
-                                                        baseColor = Color.Transparent,
-                                                        contentScale = ContentScale.Crop,
-                                                        modifier =
-                                                            Modifier.size(80.dp)
-                                                                .aspectRatio(1f)
-                                                                .clip(MaterialTheme.shapes.small),
-                                                    )
+                                                // Not animated while fitting, every frame of the
+                                                // animation would change the space for the lyrics.
+                                                // Hiding it regardless of the scroll position also
+                                                // stops scrolling from changing that space.
+                                                if (!state.fitToScreen) {
+                                                    AnimatedVisibility(
+                                                        visible = top <= 2 && !state.sync
+                                                    ) {
+                                                        ArtFromUrl(
+                                                            imageUrl = lyricsState.song.artUrl!!,
+                                                            highlightColor = cardContent,
+                                                            baseColor = Color.Transparent,
+                                                            contentScale = ContentScale.Crop,
+                                                            modifier =
+                                                                Modifier.size(80.dp)
+                                                                    .aspectRatio(1f)
+                                                                    .clip(
+                                                                        MaterialTheme.shapes.small
+                                                                    ),
+                                                        )
+                                                    }
                                                 }
 
                                                 Text(
@@ -355,6 +373,7 @@ fun LyricsPageContent(
                                                         Modifier.alpha(controlsAlpha)
                                                             .padding(vertical = 8.dp)
                                                             .animateContentSize()
+                                                            .horizontalScroll(rememberScrollState())
                                                 ) {
                                                     Actions(
                                                         state = actionsState,
@@ -377,8 +396,17 @@ fun LyricsPageContent(
                                                 lazyListState = lazyListState,
                                                 cardContent = cardContent,
                                                 action = action,
-                                                modifier = Modifier.weight(1f).fadeTopToBottom(),
+                                                modifier =
+                                                    Modifier.weight(1f).conditional(
+                                                        !state.fitToScreen
+                                                    ) {
+                                                        fadeTopToBottom()
+                                                    },
                                                 onOpenSearchSheet = onOpenSearchSheet,
+                                                fitInsets =
+                                                    WindowInsets.safeDrawing.only(
+                                                        WindowInsetsSides.Bottom
+                                                    ),
                                             )
                                         } else if (lyricsState.song.ttmlLyrics != null) {
                                             SyllableSyncedLyrics(
@@ -412,6 +440,7 @@ fun LyricsPageContent(
                                                 modifier =
                                                     Modifier.alpha(controlsAlpha)
                                                         .animateContentSize()
+                                                        .verticalScroll(rememberScrollState())
                                             ) {
                                                 Actions(
                                                     state = actionsState,
@@ -477,7 +506,14 @@ fun LyricsPageContent(
                                                     modifier =
                                                         Modifier.weight(1f)
                                                             .fillMaxHeight()
-                                                            .fadeTopToBottom(),
+                                                            .conditional(!state.fitToScreen) {
+                                                                fadeTopToBottom()
+                                                            },
+                                                    fitInsets =
+                                                        WindowInsets.safeDrawing.only(
+                                                            WindowInsetsSides.Vertical +
+                                                                WindowInsetsSides.End
+                                                        ),
                                                 )
                                             } else if (lyricsState.song.ttmlLyrics != null) {
                                                 SyllableSyncedLyrics(

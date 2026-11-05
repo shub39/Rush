@@ -19,16 +19,23 @@ package com.shub39.rush.shared.ui.lyrics.component
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,10 +43,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -51,16 +61,32 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shub39.rush.shared.core.dataclasses.LyricsPrefs
+import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.Sources
+import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.copyToClipboard
+import com.shub39.rush.shared.ui.lyrics.FIT_MIN_FONT_SIZE
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.TextPrefs
+import com.shub39.rush.shared.ui.lyrics.largestFittingFontSize
+import com.shub39.rush.shared.ui.lyrics.scaledToFontSize
+import com.shub39.rush.shared.ui.lyrics.stackedHeight
 import com.shub39.rush.shared.ui.lyrics.updateSelectedLines
 import com.shub39.rush.shared.ui.toAlignment
 import com.shub39.rush.shared.ui.toArrangement
@@ -78,12 +104,8 @@ fun PlainLyrics(
     action: (LyricsPageAction) -> Unit,
     onOpenSearchSheet: () -> Unit,
     modifier: Modifier = Modifier,
+    fitInsets: WindowInsets = WindowInsets(0),
 ) {
-    val hapticFeedback = LocalHapticFeedback.current
-    val uriHandler = LocalUriHandler.current
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
-
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
     val nonEmptyItems = remember(items) { items?.filter { it.value.isNotBlank() } ?: emptyList() }
@@ -99,18 +121,89 @@ fun PlainLyrics(
         }
     }
 
+    val romanizedLyrics =
+        when {
+            !state.romanizationEnabled -> emptyMap()
+            state.source == Sources.GENIUS -> song.romanizedGeniusLyrics
+            else -> song.romanizedLyrics
+        }
+    val fitting = state.fitToScreen && nonEmptyItems.isNotEmpty()
+
+    BoxWithConstraints(modifier = modifier) {
+        val fitPadding = fitContentPadding(fitInsets)
+        val textPrefs =
+            if (fitting) {
+                rememberFittedTextPrefs(
+                    items = nonEmptyItems,
+                    romanizedLyrics = romanizedLyrics,
+                    textPrefs = state.textPrefs,
+                    contentPadding = fitPadding,
+                    maxWidth = constraints.maxWidth,
+                    maxHeight = constraints.maxHeight,
+                )
+            } else {
+                state.textPrefs
+            }
+
+        // The 48dp touch target of every line would decide how many lines fit, not the font size
+        CompositionLocalProvider(
+            LocalMinimumInteractiveComponentSize provides
+                if (fitting) 0.dp else LocalMinimumInteractiveComponentSize.current
+        ) {
+            PlainLyricsList(
+                state = state,
+                song = song,
+                items = nonEmptyItems,
+                romanizedLyrics = romanizedLyrics,
+                textPrefs = textPrefs,
+                lineGap = with(LocalDensity.current) { lineGap(textPrefs, fitting) },
+                lyricPadding = if (fitting) FitLyricPadding else LyricPadding,
+                contentPadding =
+                    if (fitting) fitPadding
+                    else PaddingValues(horizontal = 16.dp, vertical = 64.dp),
+                // There is no room for the actions when the lyrics take up the whole page
+                showBottomActions = !fitting,
+                lazyListState = lazyListState,
+                cardContent = cardContent,
+                action = action,
+                onOpenSearchSheet = onOpenSearchSheet,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlainLyricsList(
+    state: LyricsPageState,
+    song: SongUi,
+    items: List<Map.Entry<Int, String>>,
+    romanizedLyrics: Map<Int, String>,
+    textPrefs: TextPrefs,
+    lineGap: Dp,
+    lyricPadding: PaddingValues,
+    contentPadding: PaddingValues,
+    showBottomActions: Boolean,
+    lazyListState: LazyListState,
+    cardContent: Color,
+    action: (LyricsPageAction) -> Unit,
+    onOpenSearchSheet: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val hapticFeedback = LocalHapticFeedback.current
+    val uriHandler = LocalUriHandler.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 64.dp),
-        verticalArrangement =
-            Arrangement.spacedBy(
-                with(LocalDensity.current) { state.textPrefs.lineHeight.sp.toDp() / 2 }
-            ),
+        contentPadding = contentPadding,
+        verticalArrangement = Arrangement.spacedBy(lineGap),
         state = lazyListState,
     ) {
         // plain lyrics with logic
-        if (nonEmptyItems.isNotEmpty()) {
-            items(items = nonEmptyItems, key = { it.key }, contentType = { "lyric" }) {
+        if (items.isNotEmpty()) {
+            items(items = items, key = { it.key }, contentType = { "lyric" }) {
                 val isSelected = state.selectedLines.contains(it.key)
                 val containerColor by
                     animateColorAsState(
@@ -125,14 +218,10 @@ fun PlainLyrics(
 
                 PlainLyric(
                     entry = it.toPair(),
-                    romanizedText =
-                        if (state.romanizationEnabled)
-                            if (state.source == Sources.GENIUS)
-                                state.lyricsState.song.romanizedGeniusLyrics[it.key]
-                            else state.lyricsState.song.romanizedLyrics[it.key]
-                        else null,
+                    romanizedText = romanizedLyrics[it.key],
                     containerColor = containerColor,
-                    textPrefs = state.textPrefs,
+                    textPrefs = textPrefs,
+                    contentPadding = lyricPadding,
                     cardContent = cardContent,
                     onClick = {
                         action(
@@ -241,45 +330,46 @@ fun PlainLyrics(
         }
 
         // Bottom Actions Row
-        item(key = "bottom_actions", contentType = "actions") {
-            Row(
-                modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                IconButton(
-                    onClick = { scope.launch { lazyListState.scrollToItem(0) } },
-                    enabled =
-                        if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty()
-                        else !song.geniusLyrics.isNullOrEmpty(),
+        if (showBottomActions)
+            item(key = "bottom_actions", contentType = "actions") {
+                Row(
+                    modifier = Modifier.padding(vertical = 100.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.arrow_warm_up),
-                        contentDescription = "Move To Top",
-                    )
-                }
+                    IconButton(
+                        onClick = { scope.launch { lazyListState.scrollToItem(0) } },
+                        enabled =
+                            if (state.source == Sources.LRCLIB) song.lyrics.isNotEmpty()
+                            else !song.geniusLyrics.isNullOrEmpty(),
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.arrow_warm_up),
+                            contentDescription = "Move To Top",
+                        )
+                    }
 
-                Button(
-                    onClick = { uriHandler.openUri(song.sourceUrl) },
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = cardContent.copy(alpha = 0.3f),
-                            contentColor = cardContent,
-                        ),
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.genius),
-                        contentDescription = "Genius Source",
-                    )
-                }
+                    Button(
+                        onClick = { uriHandler.openUri(song.sourceUrl) },
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = cardContent.copy(alpha = 0.3f),
+                                contentColor = cardContent,
+                            ),
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.genius),
+                            contentDescription = "Genius Source",
+                        )
+                    }
 
-                IconButton(onClick = onOpenSearchSheet) {
-                    Icon(
-                        painter = painterResource(Res.drawable.search),
-                        contentDescription = "Search",
-                    )
+                    IconButton(onClick = onOpenSearchSheet) {
+                        Icon(
+                            painter = painterResource(Res.drawable.search),
+                            contentDescription = "Search",
+                        )
+                    }
                 }
             }
-        }
     }
 }
 
@@ -292,6 +382,7 @@ fun PlainLyric(
     containerColor: Color,
     cardContent: Color,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = LyricPadding,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -305,29 +396,187 @@ fun PlainLyric(
         ) {
             Column(
                 horizontalAlignment = textPrefs.lyricsAlignment.toAlignment(),
-                modifier = Modifier.padding(6.dp),
+                modifier = Modifier.padding(contentPadding),
             ) {
                 Text(
                     text = entry.second,
-                    fontSize = textPrefs.fontSize.sp,
-                    letterSpacing = textPrefs.letterSpacing.sp,
-                    lineHeight = textPrefs.lineHeight.sp,
-                    textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                    fontWeight = FontWeight.Bold,
+                    style = LocalTextStyle.current.merge(textPrefs.lyricStyle()),
                 )
                 if (!romanizedText.isNullOrBlank()) {
                     Text(
                         text = romanizedText,
-                        fontSize = (textPrefs.fontSize * 0.75f).sp,
-                        letterSpacing = (textPrefs.letterSpacing * 0.75f).sp,
-                        lineHeight = (textPrefs.lineHeight * 0.75f).sp,
-                        textAlign = textPrefs.lyricsAlignment.toTextAlignment(),
-                        fontWeight = FontWeight.Normal,
+                        style = LocalTextStyle.current.merge(textPrefs.romanizedStyle()),
                         color = cardContent.copy(alpha = 0.7f),
-                        modifier = Modifier.padding(top = 4.dp),
+                        modifier = Modifier.padding(top = RomanizedTopPadding),
                     )
                 }
             }
         }
     }
+}
+
+private val LyricPadding = PaddingValues(6.dp)
+
+/** Spacing is what limits how many lines fit, so it gives way to the text when fitting. */
+private val FitLyricPadding = PaddingValues(horizontal = 6.dp, vertical = 1.dp)
+
+private val RomanizedTopPadding = 4.dp
+
+private fun TextPrefs.lyricStyle() =
+    TextStyle(
+        fontSize = fontSize.sp,
+        letterSpacing = letterSpacing.sp,
+        lineHeight = lineHeight.sp,
+        textAlign = lyricsAlignment.toTextAlignment(),
+        fontWeight = FontWeight.Bold,
+    )
+
+private fun TextPrefs.romanizedStyle() =
+    TextStyle(
+        fontSize = (fontSize * 0.75f).sp,
+        letterSpacing = (letterSpacing * 0.75f).sp,
+        lineHeight = (lineHeight * 0.75f).sp,
+        textAlign = lyricsAlignment.toTextAlignment(),
+        fontWeight = FontWeight.Normal,
+    )
+
+private fun Density.lineGap(textPrefs: TextPrefs, fitting: Boolean): Dp =
+    textPrefs.lineHeight.sp.toDp() / if (fitting) 8 else 2
+
+/** Keeps the fitted lyrics clear of the system bars, as they can reach the edges of the page. */
+@Composable
+private fun fitContentPadding(insets: WindowInsets): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
+    val padding = insets.asPaddingValues()
+
+    return PaddingValues(
+        start = padding.calculateStartPadding(layoutDirection) + 16.dp,
+        top = padding.calculateTopPadding() + 8.dp,
+        end = padding.calculateEndPadding(layoutDirection) + 16.dp,
+        bottom = padding.calculateBottomPadding() + 8.dp,
+    )
+}
+
+/**
+ * [textPrefs] at the largest font size that shows all of [items] in a [maxWidth] x [maxHeight] page
+ * without scrolling, or at [FIT_MIN_FONT_SIZE] if they do not fit even at that size.
+ *
+ * The result only depends on the keys of the [remember], so it is recomputed when the lyrics or the
+ * available space change and not when anything else on the page does.
+ */
+@Composable
+private fun rememberFittedTextPrefs(
+    items: List<Map.Entry<Int, String>>,
+    romanizedLyrics: Map<Int, String>,
+    textPrefs: TextPrefs,
+    contentPadding: PaddingValues,
+    maxWidth: Int,
+    maxHeight: Int,
+): TextPrefs {
+    // Nearly every measurement is at a different size, a cache would only hold on to memory
+    val textMeasurer = rememberTextMeasurer(cacheSize = 0)
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val textStyle = LocalTextStyle.current
+
+    return remember(
+        items,
+        romanizedLyrics,
+        textPrefs,
+        contentPadding,
+        maxWidth,
+        maxHeight,
+        textMeasurer,
+        density,
+        layoutDirection,
+        textStyle,
+    ) {
+        with(density) {
+            val paddingHorizontal =
+                2 * FitLyricPadding.calculateStartPadding(layoutDirection).roundToPx()
+            val paddingVertical = 2 * FitLyricPadding.calculateTopPadding().roundToPx()
+            val textWidth =
+                maxWidth -
+                    contentPadding.calculateStartPadding(layoutDirection).roundToPx() -
+                    contentPadding.calculateEndPadding(layoutDirection).roundToPx() -
+                    paddingHorizontal
+            val listHeight =
+                maxHeight -
+                    contentPadding.calculateTopPadding().roundToPx() -
+                    contentPadding.calculateBottomPadding().roundToPx()
+
+            if (textWidth <= 0 || listHeight <= 0) {
+                return@remember textPrefs.scaledToFontSize(FIT_MIN_FONT_SIZE)
+            }
+
+            val constraints = Constraints(maxWidth = textWidth)
+
+            fun measure(text: String, style: TextStyle): TextLayoutResult? =
+                textMeasurer.measure(text = text, style = style, constraints = constraints).takeIf {
+                    // Larger sizes would only fit by breaking a word in two
+                    it.multiParagraph.intrinsics.minIntrinsicWidth <= textWidth
+                }
+
+            val fontSize = largestFittingFontSize { size ->
+                val scaled = textPrefs.scaledToFontSize(size)
+                val lyricStyle = textStyle.merge(scaled.lyricStyle())
+                val romanizedStyle = textStyle.merge(scaled.romanizedStyle())
+
+                val heights =
+                    items.map { item ->
+                        val lyric =
+                            measure(item.value, lyricStyle) ?: return@largestFittingFontSize false
+                        val romanized = romanizedLyrics[item.key]?.takeIf { it.isNotBlank() }
+
+                        paddingVertical +
+                            lyric.size.height +
+                            if (romanized != null) {
+                                val result =
+                                    measure(romanized, romanizedStyle)
+                                        ?: return@largestFittingFontSize false
+
+                                RomanizedTopPadding.roundToPx() + result.size.height
+                            } else {
+                                0
+                            }
+                    }
+
+                stackedHeight(heights, lineGap(scaled, fitting = true).roundToPx()) <= listHeight
+            }
+
+            textPrefs.scaledToFontSize(fontSize)
+        }
+    }
+}
+
+@PreviewWrapper(RushPreviewWrapper::class)
+@Preview(device = "spec:width=411dp,height=600dp")
+@Composable
+private fun FitToScreenPreview() {
+    PlainLyrics(
+        state =
+            LyricsPageState(
+                prefs = LyricsPrefs(fitToScreen = true),
+                lyricsState =
+                    LyricsState.Loaded(
+                        SongUi(
+                            id = 0L,
+                            title = "Sample Title",
+                            artists = "Sample Artist",
+                            album = "Sample Album",
+                            sourceUrl = "",
+                            artUrl = "",
+                            lyrics = (0..12).associateWith { "Line No : $it" }.entries.toList(),
+                            syncedLyrics = null,
+                            geniusLyrics = null,
+                            ttmlLyrics = null,
+                        )
+                    ),
+            ),
+        lazyListState = rememberLazyListState(),
+        cardContent = Color.White,
+        action = {},
+        onOpenSearchSheet = {},
+        modifier = Modifier.fillMaxSize(),
+    )
 }
