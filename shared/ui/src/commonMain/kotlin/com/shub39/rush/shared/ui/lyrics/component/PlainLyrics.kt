@@ -63,7 +63,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -80,13 +79,17 @@ import com.shub39.rush.shared.core.enums.Sources
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.copyToClipboard
 import com.shub39.rush.shared.ui.lyrics.FIT_MIN_FONT_SIZE
+import com.shub39.rush.shared.ui.lyrics.FitEdgePadding
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.TextPrefs
+import com.shub39.rush.shared.ui.lyrics.fitBottomPadding
+import com.shub39.rush.shared.ui.lyrics.fitLineHeight
+import com.shub39.rush.shared.ui.lyrics.fitViewport
 import com.shub39.rush.shared.ui.lyrics.largestFittingFontSize
+import com.shub39.rush.shared.ui.lyrics.linesFitHeight
 import com.shub39.rush.shared.ui.lyrics.scaledToFontSize
-import com.shub39.rush.shared.ui.lyrics.stackedHeight
 import com.shub39.rush.shared.ui.lyrics.updateSelectedLines
 import com.shub39.rush.shared.ui.toAlignment
 import com.shub39.rush.shared.ui.toArrangement
@@ -105,6 +108,7 @@ fun PlainLyrics(
     onOpenSearchSheet: () -> Unit,
     modifier: Modifier = Modifier,
     fitInsets: WindowInsets = WindowInsets(0),
+    fitOverlayClearance: Dp = 0.dp,
 ) {
     val song = (state.lyricsState as? LyricsState.Loaded)?.song ?: return
     val items = if (state.source == Sources.LRCLIB) song.lyrics else song.geniusLyrics
@@ -130,7 +134,7 @@ fun PlainLyrics(
     val fitting = state.fitToScreen && nonEmptyItems.isNotEmpty()
 
     BoxWithConstraints(modifier = modifier) {
-        val fitPadding = fitContentPadding(fitInsets)
+        val fitPadding = fitContentPadding(fitInsets, fitOverlayClearance)
         val textPrefs =
             if (fitting) {
                 rememberFittedTextPrefs(
@@ -443,17 +447,21 @@ private fun TextPrefs.romanizedStyle() =
 private fun Density.lineGap(textPrefs: TextPrefs, fitting: Boolean): Dp =
     textPrefs.lineHeight.sp.toDp() / if (fitting) 8 else 2
 
-/** Keeps the fitted lyrics clear of the system bars, as they can reach the edges of the page. */
+/**
+ * Keeps the fitted lyrics clear of the system bars and of what is drawn over the bottom of the page
+ * in [overlayClearance], as they can reach the edges of the page and might have no scroll range to
+ * move out from under them.
+ */
 @Composable
-private fun fitContentPadding(insets: WindowInsets): PaddingValues {
+private fun fitContentPadding(insets: WindowInsets, overlayClearance: Dp): PaddingValues {
     val layoutDirection = LocalLayoutDirection.current
     val padding = insets.asPaddingValues()
 
     return PaddingValues(
         start = padding.calculateStartPadding(layoutDirection) + 16.dp,
-        top = padding.calculateTopPadding() + 8.dp,
+        top = padding.calculateTopPadding() + FitEdgePadding,
         end = padding.calculateEndPadding(layoutDirection) + 16.dp,
-        bottom = padding.calculateBottomPadding() + 8.dp,
+        bottom = fitBottomPadding(padding.calculateBottomPadding(), overlayClearance),
     )
 }
 
@@ -492,56 +500,51 @@ private fun rememberFittedTextPrefs(
         textStyle,
     ) {
         with(density) {
-            val paddingHorizontal =
-                2 * FitLyricPadding.calculateStartPadding(layoutDirection).roundToPx()
-            val paddingVertical = 2 * FitLyricPadding.calculateTopPadding().roundToPx()
-            val textWidth =
-                maxWidth -
-                    contentPadding.calculateStartPadding(layoutDirection).roundToPx() -
-                    contentPadding.calculateEndPadding(layoutDirection).roundToPx() -
-                    paddingHorizontal
-            val listHeight =
-                maxHeight -
-                    contentPadding.calculateTopPadding().roundToPx() -
-                    contentPadding.calculateBottomPadding().roundToPx()
+            val viewport =
+                fitViewport(
+                    pageWidth = maxWidth,
+                    pageHeight = maxHeight,
+                    startPadding =
+                        contentPadding.calculateStartPadding(layoutDirection).roundToPx(),
+                    endPadding = contentPadding.calculateEndPadding(layoutDirection).roundToPx(),
+                    topPadding = contentPadding.calculateTopPadding().roundToPx(),
+                    bottomPadding = contentPadding.calculateBottomPadding().roundToPx(),
+                    linePadding =
+                        2 * FitLyricPadding.calculateStartPadding(layoutDirection).roundToPx(),
+                ) ?: return@remember textPrefs.scaledToFontSize(FIT_MIN_FONT_SIZE)
 
-            if (textWidth <= 0 || listHeight <= 0) {
-                return@remember textPrefs.scaledToFontSize(FIT_MIN_FONT_SIZE)
-            }
+            val constraints = Constraints(maxWidth = viewport.textWidth)
+            val verticalPadding = 2 * FitLyricPadding.calculateTopPadding().roundToPx()
+            val romanizedGap = RomanizedTopPadding.roundToPx()
 
-            val constraints = Constraints(maxWidth = textWidth)
-
-            fun measure(text: String, style: TextStyle): TextLayoutResult? =
-                textMeasurer.measure(text = text, style = style, constraints = constraints).takeIf {
-                    // Larger sizes would only fit by breaking a word in two
-                    it.multiParagraph.intrinsics.minIntrinsicWidth <= textWidth
-                }
+            // Same wrapping as the Text in PlainLyric, so a word wider than a line takes up lines
+            // here as it does there. Whether that fits is only up to the height.
+            fun measuredHeight(text: String, style: TextStyle): Int =
+                textMeasurer
+                    .measure(text = text, style = style, constraints = constraints)
+                    .size
+                    .height
 
             val fontSize = largestFittingFontSize { size ->
                 val scaled = textPrefs.scaledToFontSize(size)
                 val lyricStyle = textStyle.merge(scaled.lyricStyle())
                 val romanizedStyle = textStyle.merge(scaled.romanizedStyle())
 
-                val heights =
-                    items.map { item ->
-                        val lyric =
-                            measure(item.value, lyricStyle) ?: return@largestFittingFontSize false
-                        val romanized = romanizedLyrics[item.key]?.takeIf { it.isNotBlank() }
-
-                        paddingVertical +
-                            lyric.size.height +
-                            if (romanized != null) {
-                                val result =
-                                    measure(romanized, romanizedStyle)
-                                        ?: return@largestFittingFontSize false
-
-                                RomanizedTopPadding.roundToPx() + result.size.height
-                            } else {
-                                0
-                            }
-                    }
-
-                stackedHeight(heights, lineGap(scaled, fitting = true).roundToPx()) <= listHeight
+                linesFitHeight(
+                    lines = items,
+                    gap = lineGap(scaled, fitting = true).roundToPx(),
+                    maxHeight = viewport.listHeight,
+                ) { item ->
+                    fitLineHeight(
+                        lyricHeight = measuredHeight(item.value, lyricStyle),
+                        romanizedHeight =
+                            romanizedLyrics[item.key]
+                                ?.takeIf { it.isNotBlank() }
+                                ?.let { measuredHeight(it, romanizedStyle) },
+                        verticalPadding = verticalPadding,
+                        romanizedGap = romanizedGap,
+                    )
+                }
             }
 
             textPrefs.scaledToFontSize(fontSize)

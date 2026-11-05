@@ -77,6 +77,8 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -104,6 +106,7 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.PlaybackInfo
+import com.shub39.rush.shared.ui.lyrics.RushOverlayBottomPadding
 import com.shub39.rush.shared.ui.lyrics.SearchState
 import com.shub39.rush.shared.ui.lyrics.calculateGlowMultiplier
 import com.shub39.rush.shared.ui.lyrics.component.Actions
@@ -117,6 +120,7 @@ import com.shub39.rush.shared.ui.lyrics.component.SyllableSyncedLyrics
 import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
+import com.shub39.rush.shared.ui.lyrics.rushOverlayClearance
 import com.shub39.rush.shared.ui.rushmode.RushPhase
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.session.SessionState
@@ -172,6 +176,16 @@ fun LyricsPageContent(
             )
 
         val top by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
+        // The size of the card and not of the overlay, which animates: the lyrics are fitted again
+        // when this changes, so it should change once and not on every frame.
+        var rushOverlayHeight by remember { mutableIntStateOf(0) }
+        val fitOverlayClearance =
+            rushOverlayClearance(
+                rushEnabled = state.rushEnabled,
+                searchState = state.searchState,
+                overlayHeight = with(LocalDensity.current) { rushOverlayHeight.toDp() },
+            )
 
         val songId = (state.lyricsState as? LyricsState.Loaded)?.song?.id
         val loadedSong = (state.lyricsState as? LyricsState.Loaded)?.song
@@ -407,6 +421,7 @@ fun LyricsPageContent(
                                                     WindowInsets.safeDrawing.only(
                                                         WindowInsetsSides.Bottom
                                                     ),
+                                                fitOverlayClearance = fitOverlayClearance,
                                             )
                                         } else if (lyricsState.song.ttmlLyrics != null) {
                                             SyllableSyncedLyrics(
@@ -514,6 +529,7 @@ fun LyricsPageContent(
                                                             WindowInsetsSides.Vertical +
                                                                 WindowInsetsSides.End
                                                         ),
+                                                    fitOverlayClearance = fitOverlayClearance,
                                                 )
                                             } else if (lyricsState.song.ttmlLyrics != null) {
                                                 SyllableSyncedLyrics(
@@ -553,7 +569,7 @@ fun LyricsPageContent(
                 modifier =
                     Modifier.alpha(controlsAlpha)
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp),
+                        .padding(bottom = RushOverlayBottomPadding),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -580,6 +596,10 @@ fun LyricsPageContent(
                                     LaunchedEffect(Unit) { controlsVisible = true }
 
                                     Card(
+                                        modifier =
+                                            Modifier.onSizeChanged {
+                                                rushOverlayHeight = it.height
+                                            },
                                         shape = RoundedCornerShape(100.dp),
                                         colors =
                                             CardDefaults.cardColors(
@@ -610,6 +630,10 @@ fun LyricsPageContent(
                                     LaunchedEffect(Unit) { controlsVisible = true }
 
                                     Card(
+                                        modifier =
+                                            Modifier.onSizeChanged {
+                                                rushOverlayHeight = it.height
+                                            },
                                         shape = RoundedCornerShape(100.dp),
                                         colors =
                                             CardDefaults.cardColors(
