@@ -1,6 +1,6 @@
 [
   {
-    "version": "7.2.0",
+    "version": "7.2.1",
     "changes": [
       "Rush Mode now starts automatically on app launch and remembers its last state",
       "Improved song detection and lyric matching",

@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.2.0
+## 7.2.1
 - Rush Mode now starts automatically on app launch and remembers its last state
 - Improved song detection and lyric matching
 - Fixed a false "search again" prompt after a successful search

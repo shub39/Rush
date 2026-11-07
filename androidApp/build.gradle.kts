@@ -25,8 +25,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "7.2.0"
-val appVersionCode = 7200
+val appVersionName = "7.2.1"
+val appVersionCode = 7210
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 
@@ -159,7 +159,7 @@ dependencies {
 
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)
-    "playImplementation"("com.posthog:posthog-android:3.+")
+    "playImplementation"(libs.posthog)
 
     implementation(libs.compose.material3)
     implementation(libs.compose.components.resources)

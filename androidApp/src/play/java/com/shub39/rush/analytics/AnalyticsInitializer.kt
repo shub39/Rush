@@ -28,12 +28,12 @@ class AnalyticsInitializer {
         PostHogAndroidConfig(
             projectToken = BuildConfig.POSTHOG_API_KEY,
             host = BuildConfig.POSTHOG_HOST,
-        )
+        ).apply {
+            errorTrackingConfig.autoCapture = true
+        }
 
     fun setup(context: Context) {
         PostHogAndroid.setup(context, config)
-
-        val rcId = Purchases.sharedInstance.appUserID
-        PostHog.identify("rush:$rcId")
+        PostHog.identify(Purchases.sharedInstance.appUserID)
     }
 }
