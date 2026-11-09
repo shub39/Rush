@@ -41,6 +41,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -197,6 +200,7 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
                         textAlign = TextAlign.Center,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
+                        style = LyricShadow,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     if (!upcoming.isNullOrBlank()) {
@@ -207,6 +211,7 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
                             textAlign = TextAlign.Center,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
+                            style = LyricShadow,
                             modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
                         )
                     }
@@ -227,5 +232,8 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
 
     private companion object {
         const val ATTACHMENT_KEY = "lyrics"
+
+        // Soft shadow so the lines stay readable over the host's light pools
+        val LyricShadow = TextStyle(shadow = Shadow(Color.Black.copy(alpha = 0.6f), Offset(0f, 1f), blurRadius = 8f))
     }
 }
