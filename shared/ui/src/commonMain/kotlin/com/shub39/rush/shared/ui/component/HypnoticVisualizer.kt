@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
@@ -142,7 +143,7 @@ fun HypnoticVisualizer(
             }
         }
 
-    BoxWithConstraints(modifier = modifier) {
+    BoxWithConstraints(modifier = modifier, contentAlignment = AbsoluteAlignment.TopLeft) {
         if (constraints.hasBoundedWidth && constraints.hasBoundedHeight) {
             Box(
                 modifier =
