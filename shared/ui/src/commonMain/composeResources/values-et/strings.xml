@@ -120,4 +120,5 @@
     <string name="expressive_syllables">Väljendusrikkad silbid</string>
     <string name="expressive_syllables_desc">Kirjatüübi stiil muutub sõna kestuse alusel</string>
     <string name="share_card_limit">Jagamisvaatesse saab valida kuni 6 rida</string>
+    <string name="fit_to_screen">Sobita ekraanile</string>
 </resources>
