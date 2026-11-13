@@ -86,4 +86,8 @@ interface LyricsPagePreferences {
     fun getHideUIFlow(): Flow<Boolean>
 
     suspend fun updateHideUI(enabled: Boolean)
+
+    fun getFitToScreenFlow(): Flow<Boolean>
+
+    suspend fun updateFitToScreen(enabled: Boolean)
 }

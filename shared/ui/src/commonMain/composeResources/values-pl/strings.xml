@@ -115,4 +115,9 @@
     <string name="hide_ui">Ukryj kontrolki</string>
     <string name="hide_ui_desc">Ukryj kontrolki tekstu utworu po 5 sekundach</string>
     <string name="save">Zapisz</string>
+    <string name="share_card_limit">Można wybrać maksymalnie 6 linii do kart udostępniania</string>
+    <string name="no_thanks">Nie, dziękuję</string>
+    <string name="notification_access_needed">Wymagana zgoda na dostęp do powiadomień</string>
+    <string name="notification_access_needed_info">Zgoda na dostęp do powiadomień jest wymagana, aby tryb Rush mógł automatycznie zmieniać utwory dla zsynchronizowanego tekstu.</string>
+    <string name="brat">Nicpoń</string>
 </resources>

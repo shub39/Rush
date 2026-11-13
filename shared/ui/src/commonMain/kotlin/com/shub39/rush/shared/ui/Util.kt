@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import com.materialkolor.ktx.blend
 
 expect fun hypnoticAvailable(): Boolean
 
@@ -48,12 +49,25 @@ fun Map<Int, String>.sortMapByKeys(take: Int = 16): Map<Int, String> {
     return sortedMap
 }
 
-fun generateGradientColors(color1: Color, color2: Color, steps: Int = 6): List<Color> {
+fun generateGradientColors(
+    color1: Color,
+    color2: Color,
+    steps: Int = 6,
+    variety: Boolean = true,
+): List<Color> {
     val colors = buildList {
         for (i in 0 until steps) {
             val t = i / (steps - 1).toFloat()
             val interpolatedColor = lerp(color1, color2, t)
             add(interpolatedColor)
+        }
+        if (variety) {
+            val blend = 0.2f
+
+            listOf(Color.Blue, Color.Red, Color.Green).forEach {
+                add(color1.blend(it, blend))
+                add(color2.blend(it, blend))
+            }
         }
     }
 

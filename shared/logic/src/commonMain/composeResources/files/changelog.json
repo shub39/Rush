@@ -1,5 +1,13 @@
 [
   {
+    "version": "7.3.0",
+    "changes": [
+      "Added Fit to Screen mode for Plain Lyrics @a-mandala",
+      "Improved Hypnotic Lyrics Background with more animated colors",
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "7.2.1",
     "changes": [
       "Rush Mode now starts automatically on app launch and remembers its last state",
@@ -67,14 +75,6 @@
     "version": "6.6.1",
     "changes": [
       "Updated Translations"
-    ]
-  },
-  {
-    "version": "6.6.0",
-    "changes": [
-      "Updated Translations",
-      "Improved song detection and fetching",
-      "Miscellaneous UI improvements"
     ]
   }
 ]
