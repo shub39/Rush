@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.3.0
+- Added Fit to Screen mode for Plain Lyrics @a-mandala
+- Improved Hypnotic Lyrics Background with more animated colors
+- Updated Translations
+
 ## 7.2.1
 - Rush Mode now starts automatically on app launch and remembers its last state
 - Improved song detection and lyric matching
