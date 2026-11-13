@@ -83,4 +83,6 @@ sealed interface LyricsPageAction {
     data class OnRomanizationToggle(val enabled: Boolean) : LyricsPageAction
 
     data class OnHideUIToggle(val enabled: Boolean) : LyricsPageAction
+
+    data class OnFitToScreenToggle(val enabled: Boolean) : LyricsPageAction
 }

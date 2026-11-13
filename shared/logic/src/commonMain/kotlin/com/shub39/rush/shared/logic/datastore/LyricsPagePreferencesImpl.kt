@@ -55,6 +55,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
         private val expressiveSyllables = booleanPreferencesKey("expressive_syllables")
         private val romanizationEnabled = booleanPreferencesKey("romanization_enabled")
         private val hideUI = booleanPreferencesKey("hide_ui")
+        private val fitToScreen = booleanPreferencesKey("fit_to_screen")
     }
 
     override suspend fun reset() {
@@ -87,6 +88,7 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
                     fullscreen = prefs[fullscreen] == true,
                     romanizationEnabled = prefs[romanizationEnabled] ?: false,
                     hideUI = prefs[hideUI] ?: false,
+                    fitToScreen = prefs[fitToScreen] ?: false,
                 )
             }
 
@@ -131,6 +133,13 @@ class LyricsPagePreferencesImpl(private val dataStore: DataStore<Preferences>) :
 
     override suspend fun updateHideUI(enabled: Boolean) {
         dataStore.edit { it[hideUI] = enabled }
+    }
+
+    override fun getFitToScreenFlow(): Flow<Boolean> =
+        dataStore.data.map { it[fitToScreen] ?: false }
+
+    override suspend fun updateFitToScreen(enabled: Boolean) {
+        dataStore.edit { it[fitToScreen] = enabled }
     }
 
     override fun getFullScreenFlow(): Flow<Boolean> =
