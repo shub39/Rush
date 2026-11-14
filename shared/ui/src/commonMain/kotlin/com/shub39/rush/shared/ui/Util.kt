@@ -131,39 +131,6 @@ fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f, bottom: Boolean =
         )
 }
 
-// reverse of above
-fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
-    require(fadeHeightFraction in 0f..1f) {
-        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
-    }
-
-    return this.graphicsLayer { alpha = 0.99f }
-        .drawWithCache {
-            val fadeHeight = size.height * fadeHeightFraction
-            val gradient =
-                Brush.verticalGradient(
-                    colors = listOf(Color.Black, Color.Transparent),
-                    tileMode = TileMode.Clamp,
-                    startY = size.height - fadeHeight,
-                    endY = size.height,
-                )
-            onDrawWithContent {
-                drawContent()
-                drawRect(brush = gradient, blendMode = BlendMode.DstIn)
-            }
-        }
-        .blur(
-            blurRadiusSpec =
-                BlurRadiusSpec.verticalGradient(
-                    listOf(
-                        BlurStop(1f, 0.dp),
-                        BlurStop(fadeHeightFraction, 0.dp),
-                        BlurStop(1f, 4.dp),
-                    )
-                )
-        )
-}
-
 fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     val rotate = rotate(if (clockwise) 90f else -90f)
 
