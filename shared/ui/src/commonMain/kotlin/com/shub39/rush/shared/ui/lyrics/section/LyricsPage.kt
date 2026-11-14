@@ -428,7 +428,7 @@ fun LyricsPageContent(
                                         Row(
                                             modifier =
                                                 Modifier.fillMaxSize()
-                                                    .padding(start = 32.dp, end = 16.dp),
+                                                    .padding(start = 36.dp, end = 16.dp),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
