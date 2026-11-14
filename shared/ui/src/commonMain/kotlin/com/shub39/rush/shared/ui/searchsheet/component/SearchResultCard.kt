@@ -50,7 +50,7 @@ fun SearchResultCard(
                 modifier = Modifier.size(50.dp).clip(MaterialTheme.shapes.small),
             )
         },
-        headlineContent = {
+        content = {
             Text(
                 text = result.title,
                 maxLines = 1,

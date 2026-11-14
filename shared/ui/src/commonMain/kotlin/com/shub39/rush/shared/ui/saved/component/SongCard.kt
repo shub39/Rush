@@ -45,7 +45,7 @@ fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Mo
                 modifier = Modifier.size(70.dp).clip(MaterialTheme.shapes.small),
             )
         },
-        headlineContent = {
+        content = {
             Text(
                 text = song.title,
                 style = MaterialTheme.typography.titleMedium,

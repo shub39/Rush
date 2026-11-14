@@ -133,7 +133,7 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
                                 contentDescription = null,
                             )
                         },
-                        headlineContent = { Text(text = "License") },
+                        content = { Text(text = "License") },
                         supportingContent = { Text(text = "GPL-3.0 License") },
                         modifier =
                             Modifier.clip(detachedItemShape()).clickable {
@@ -163,7 +163,7 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                         contentDescription = null,
                     )
                 },
-                headlineContent = { Text(text = stringResource(Res.string.bmc)) },
+                content = { Text(text = stringResource(Res.string.bmc)) },
                 supportingContent = { Text(text = stringResource(Res.string.bmc_desc)) },
                 modifier =
                     Modifier.clip(leadingItemShape()).clickable {
@@ -185,7 +185,7 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                         contentDescription = null,
                     )
                 },
-                headlineContent = { Text(text = "GitHub Sponsors") },
+                content = { Text(text = "GitHub Sponsors") },
                 supportingContent = { Text(text = "Support me through GitHub") },
                 modifier =
                     Modifier.clip(middleItemShape()).clickable {
@@ -207,7 +207,7 @@ private fun LazyListScope.engagementLinks(uriHandler: UriHandler) {
                         contentDescription = null,
                     )
                 },
-                headlineContent = { Text(text = stringResource(Res.string.translate)) },
+                content = { Text(text = stringResource(Res.string.translate)) },
                 supportingContent = { Text(text = stringResource(Res.string.translate_desc)) },
                 modifier =
                     Modifier.clip(endItemShape()).clickable {

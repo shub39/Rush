@@ -58,6 +58,7 @@ import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -98,7 +99,6 @@ import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.conditional
-import com.shub39.rush.shared.ui.fadeBottomToTop
 import com.shub39.rush.shared.ui.fadeTopToBottom
 import com.shub39.rush.shared.ui.glowBackground
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
@@ -167,7 +167,6 @@ fun LyricsPageContent(
 
         var controlsVisible by remember { mutableStateOf(true) }
         var interactionCount by remember { mutableIntStateOf(0) }
-        val controlsAlpha by animateFloatAsState(targetValue = if (controlsVisible) 1f else 0f)
 
         val glowMultiplier by
             animateFloatAsState(
@@ -305,34 +304,13 @@ fun LyricsPageContent(
                                             modifier = Modifier.fillMaxWidth(),
                                             contentAlignment = Alignment.Center,
                                         ) {
-                                            Column(modifier = Modifier.align(Alignment.TopCenter)) {
-                                                AnimatedVisibility(
-                                                    visible =
-                                                        !state.sync &&
-                                                            !state.fitToScreen &&
-                                                            top > 2 &&
-                                                            state.lyricsBackground !=
-                                                                LyricsBackground.ALBUM_ART
-                                                ) {
-                                                    ArtFromUrl(
-                                                        imageUrl = lyricsState.song.artUrl!!,
-                                                        highlightColor = cardContent,
-                                                        baseColor = Color.Transparent,
-                                                        modifier =
-                                                            Modifier.fillMaxWidth()
-                                                                .height(120.dp)
-                                                                .fadeBottomToTop(),
-                                                    )
-                                                }
-                                            }
-
                                             Column(
                                                 modifier =
                                                     Modifier.fillMaxWidth()
                                                         .padding(
                                                             start = 16.dp,
                                                             end = 16.dp,
-                                                            top = 48.dp,
+                                                            top = 36.dp,
                                                         ),
                                                 horizontalAlignment = lyricsAlignment,
                                             ) {
@@ -382,24 +360,27 @@ fun LyricsPageContent(
                                                 )
 
                                                 // Actions Row
-                                                Row(
-                                                    modifier =
-                                                        Modifier.alpha(controlsAlpha)
-                                                            .padding(vertical = 8.dp)
-                                                            .animateContentSize()
-                                                            .horizontalScroll(rememberScrollState())
-                                                ) {
-                                                    Actions(
-                                                        state = actionsState,
-                                                        action = action,
-                                                        notificationAccess = notificationAccess,
-                                                        cardBackground = cardBackground,
-                                                        cardContent = cardContent,
-                                                        onShare = onShare,
-                                                        onEdit = onNavigateToCustomisations,
-                                                        isCustomisationsOpened =
-                                                            isCustomisationsOpened,
-                                                    )
+                                                AnimatedVisibility(visible = controlsVisible) {
+                                                    Row(
+                                                        modifier =
+                                                            Modifier.padding(vertical = 8.dp)
+                                                                .animateContentSize()
+                                                                .horizontalScroll(
+                                                                    rememberScrollState()
+                                                                )
+                                                    ) {
+                                                        Actions(
+                                                            state = actionsState,
+                                                            action = action,
+                                                            notificationAccess = notificationAccess,
+                                                            cardBackground = cardBackground,
+                                                            cardContent = cardContent,
+                                                            onShare = onShare,
+                                                            onEdit = onNavigateToCustomisations,
+                                                            isCustomisationsOpened =
+                                                                isCustomisationsOpened,
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -447,26 +428,28 @@ fun LyricsPageContent(
                                         Row(
                                             modifier =
                                                 Modifier.fillMaxSize()
-                                                    .padding(start = 32.dp, end = 16.dp),
+                                                    .padding(start = 36.dp, end = 16.dp),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
-                                            Column(
-                                                modifier =
-                                                    Modifier.alpha(controlsAlpha)
-                                                        .animateContentSize()
-                                                        .verticalScroll(rememberScrollState())
-                                            ) {
-                                                Actions(
-                                                    state = actionsState,
-                                                    action = action,
-                                                    notificationAccess = notificationAccess,
-                                                    cardBackground = cardBackground,
-                                                    cardContent = cardContent,
-                                                    onShare = onShare,
-                                                    onEdit = onNavigateToCustomisations,
-                                                    isCustomisationsOpened = isCustomisationsOpened,
-                                                )
+                                            AnimatedVisibility(visible = controlsVisible) {
+                                                Column(
+                                                    modifier =
+                                                        Modifier.animateContentSize()
+                                                            .verticalScroll(rememberScrollState())
+                                                ) {
+                                                    Actions(
+                                                        state = actionsState,
+                                                        action = action,
+                                                        notificationAccess = notificationAccess,
+                                                        cardBackground = cardBackground,
+                                                        cardContent = cardContent,
+                                                        onShare = onShare,
+                                                        onEdit = onNavigateToCustomisations,
+                                                        isCustomisationsOpened =
+                                                            isCustomisationsOpened,
+                                                    )
+                                                }
                                             }
 
                                             Column(
@@ -567,9 +550,12 @@ fun LyricsPageContent(
 
             Column(
                 modifier =
-                    Modifier.alpha(controlsAlpha)
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = RushOverlayBottomPadding),
+                    Modifier.align(Alignment.BottomCenter)
+                        .padding(bottom = RushOverlayBottomPadding)
+                        .animateFloatingActionButton(
+                            visible = controlsVisible,
+                            alignment = Alignment.Center,
+                        ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {

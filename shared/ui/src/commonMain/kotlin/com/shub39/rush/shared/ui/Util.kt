@@ -18,12 +18,16 @@ package com.shub39.rush.shared.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.Clipboard
@@ -32,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 
 expect fun hypnoticAvailable(): Boolean
@@ -84,7 +89,7 @@ fun lerp(color1: Color, color2: Color, t: Float): Color {
 }
 
 // fades the top of the composable to the bottom
-fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
+fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f, bottom: Boolean = true): Modifier {
     require(fadeHeightFraction in 0f..1f) {
         "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
     }
@@ -104,29 +109,26 @@ fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
                 drawRect(brush = gradient, blendMode = BlendMode.DstIn)
             }
         }
-}
-
-// reverse of above
-fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
-    require(fadeHeightFraction in 0f..1f) {
-        "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
-    }
-
-    return this.graphicsLayer { alpha = 0.99f }
-        .drawWithCache {
-            val fadeHeight = size.height * fadeHeightFraction
-            val gradient =
-                Brush.verticalGradient(
-                    colors = listOf(Color.Black, Color.Transparent),
-                    tileMode = TileMode.Clamp,
-                    startY = size.height - fadeHeight,
-                    endY = size.height,
-                )
-            onDrawWithContent {
-                drawContent()
-                drawRect(brush = gradient, blendMode = BlendMode.DstIn)
-            }
-        }
+        .blur(
+            blurRadiusSpec =
+                BlurRadiusSpec.verticalGradient(
+                    if (!bottom) {
+                        listOf(
+                            BlurStop(0f, 6.dp),
+                            BlurStop(fadeHeightFraction, 0.dp),
+                            BlurStop(1f, 0.dp),
+                        )
+                    } else {
+                        listOf(
+                            BlurStop(0f, 6.dp),
+                            BlurStop(fadeHeightFraction, 0.dp),
+                            BlurStop(1 - fadeHeightFraction, 0.dp),
+                            BlurStop(1f, 6.dp),
+                        )
+                    }
+                ),
+            edgeTreatment = BlurredEdgeTreatment.Unbounded,
+        )
 }
 
 fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
