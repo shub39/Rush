@@ -305,34 +305,13 @@ fun LyricsPageContent(
                                             modifier = Modifier.fillMaxWidth(),
                                             contentAlignment = Alignment.Center,
                                         ) {
-                                            Column(modifier = Modifier.align(Alignment.TopCenter)) {
-                                                AnimatedVisibility(
-                                                    visible =
-                                                        !state.sync &&
-                                                            !state.fitToScreen &&
-                                                            top > 2 &&
-                                                            state.lyricsBackground !=
-                                                                LyricsBackground.ALBUM_ART
-                                                ) {
-                                                    ArtFromUrl(
-                                                        imageUrl = lyricsState.song.artUrl!!,
-                                                        highlightColor = cardContent,
-                                                        baseColor = Color.Transparent,
-                                                        modifier =
-                                                            Modifier.fillMaxWidth()
-                                                                .height(120.dp)
-                                                                .fadeBottomToTop(),
-                                                    )
-                                                }
-                                            }
-
                                             Column(
                                                 modifier =
                                                     Modifier.fillMaxWidth()
                                                         .padding(
                                                             start = 16.dp,
                                                             end = 16.dp,
-                                                            top = 48.dp,
+                                                            top = 36.dp,
                                                         ),
                                                 horizontalAlignment = lyricsAlignment,
                                             ) {

@@ -253,7 +253,7 @@ fun SharePageEdit(
             ListItem(
                 colors = listItemColors(),
                 modifier = Modifier.clip(endItemShape()),
-                headlineContent = {
+                content = {
                     Text(
                         text = stringResource(Res.string.full_screen_share),
                         maxLines = 1,

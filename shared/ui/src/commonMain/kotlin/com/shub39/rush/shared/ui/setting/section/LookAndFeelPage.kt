@@ -158,7 +158,7 @@ fun LookAndFeelPage(
                                         contentDescription = null,
                                     )
                                 },
-                                headlineContent = {
+                                content = {
                                     Text(text = stringResource(Res.string.select_app_theme))
                                 },
                                 colors = listItemColors(),
@@ -235,7 +235,7 @@ fun LookAndFeelPage(
                                 )
                         ) {
                             ListItem(
-                                headlineContent = { Text(text = stringResource(Res.string.font)) },
+                                content = { Text(text = stringResource(Res.string.font)) },
                                 leadingContent = {
                                     Icon(
                                         painter = painterResource(Res.drawable.font),
@@ -277,7 +277,7 @@ fun LookAndFeelPage(
                         if (!state.theme.materialTheme) {
                             // amoled switch
                             ListItem(
-                                headlineContent = {
+                                content = {
                                     Text(text = stringResource(Res.string.amoled))
                                 },
                                 supportingContent = {

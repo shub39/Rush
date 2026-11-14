@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -76,13 +77,15 @@ fun SettingSlider(
         Spacer(modifier = Modifier.height(4.dp))
 
         Slider(
-            value = value,
+            state = rememberSliderState(
+                value = value,
+                steps = steps,
+                trackRange = valueRange
+            ),
             onValueChange = onValueChange,
-            onValueChangeFinished = onValueChangeFinished,
-            steps = steps,
-            valueRange = valueRange,
-            enabled = enabled,
             modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            onValueChangeFinished = onValueChangeFinished,
         )
     }
 }

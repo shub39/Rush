@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
@@ -128,7 +129,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = {
+                    content = {
                         Text(text = stringResource(Res.string.expressive_syllables))
                     },
                     supportingContent = {
@@ -150,22 +151,22 @@ fun LazyListScope.lyricsCustomisationSettings(
 
             if (isShowingSynced && blurAvailable()) {
                 ListItem(
-                    colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = { Text(text = stringResource(Res.string.blur_synced)) },
                     trailingContent = {
-                        ExpressiveSwitch(
-                            checked = state.blurSyncedLyrics,
-                            onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
-                        )
-                    },
+                                        ExpressiveSwitch(
+                                            checked = state.blurSyncedLyrics,
+                                            onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
+                                        )
+                                    },
+                    colors = listItemColors(),
+                    content = { Text(text = stringResource(Res.string.blur_synced)) },
                 )
             }
 
             ListItem(
                 colors = listItemColors(),
                 modifier = Modifier.clip(middleItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.hide_ui)) },
+                content = { Text(text = stringResource(Res.string.hide_ui)) },
                 supportingContent = { Text(text = stringResource(Res.string.hide_ui_desc)) },
                 trailingContent = {
                     ExpressiveSwitch(

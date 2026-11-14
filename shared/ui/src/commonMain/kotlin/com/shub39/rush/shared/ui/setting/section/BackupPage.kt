@@ -165,7 +165,7 @@ private fun BackupPageContent(
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Column(modifier = Modifier.clip(leadingItemShape())) {
                         ListItem(
-                            headlineContent = { Text(text = stringResource(Res.string.export)) },
+                            content = { Text(text = stringResource(Res.string.export)) },
                             leadingContent = {
                                 Icon(
                                     painter = painterResource(Res.drawable.upload_file),
@@ -221,7 +221,7 @@ private fun BackupPageContent(
                                     contentDescription = null,
                                 )
                             },
-                            headlineContent = { Text(text = stringResource(Res.string.restore)) },
+                            content = { Text(text = stringResource(Res.string.restore)) },
                             supportingContent = {
                                 Text(text = stringResource(Res.string.restore_info))
                             },

@@ -18,12 +18,16 @@ package com.shub39.rush.shared.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.Clipboard
@@ -32,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.blend
 
 expect fun hypnoticAvailable(): Boolean
@@ -104,6 +109,16 @@ fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
                 drawRect(brush = gradient, blendMode = BlendMode.DstIn)
             }
         }
+        .blur(
+            blurRadiusSpec = BlurRadiusSpec.verticalGradient(
+                listOf(
+                    BlurStop(0f, 6.dp),
+                    BlurStop(fadeHeightFraction, 0.dp),
+                    BlurStop(1f, 0.dp)
+                )
+            ),
+            edgeTreatment = BlurredEdgeTreatment.Unbounded
+        )
 }
 
 // reverse of above
@@ -127,6 +142,15 @@ fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
                 drawRect(brush = gradient, blendMode = BlendMode.DstIn)
             }
         }
+        .blur(
+            blurRadiusSpec = BlurRadiusSpec.verticalGradient(
+                listOf(
+                    BlurStop(1f, 0.dp),
+                    BlurStop(fadeHeightFraction, 0.dp),
+                    BlurStop(1f, 4.dp)
+                )
+            )
+        )
 }
 
 fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
