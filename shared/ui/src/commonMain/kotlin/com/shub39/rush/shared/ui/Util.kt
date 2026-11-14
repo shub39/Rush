@@ -89,7 +89,7 @@ fun lerp(color1: Color, color2: Color, t: Float): Color {
 }
 
 // fades the top of the composable to the bottom
-fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
+fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f, bottom: Boolean = true): Modifier {
     require(fadeHeightFraction in 0f..1f) {
         "fadeHeightFraction must be between 0f and 1f, got $fadeHeightFraction"
     }
@@ -110,14 +110,24 @@ fun Modifier.fadeTopToBottom(fadeHeightFraction: Float = 0.1f): Modifier {
             }
         }
         .blur(
-            blurRadiusSpec = BlurRadiusSpec.verticalGradient(
-                listOf(
-                    BlurStop(0f, 6.dp),
-                    BlurStop(fadeHeightFraction, 0.dp),
-                    BlurStop(1f, 0.dp)
-                )
-            ),
-            edgeTreatment = BlurredEdgeTreatment.Unbounded
+            blurRadiusSpec =
+                BlurRadiusSpec.verticalGradient(
+                    if (!bottom) {
+                        listOf(
+                            BlurStop(0f, 6.dp),
+                            BlurStop(fadeHeightFraction, 0.dp),
+                            BlurStop(1f, 0.dp),
+                        )
+                    } else {
+                        listOf(
+                            BlurStop(0f, 6.dp),
+                            BlurStop(fadeHeightFraction, 0.dp),
+                            BlurStop(1 - fadeHeightFraction, 0.dp),
+                            BlurStop(1f, 6.dp),
+                        )
+                    }
+                ),
+            edgeTreatment = BlurredEdgeTreatment.Unbounded,
         )
 }
 
@@ -143,13 +153,14 @@ fun Modifier.fadeBottomToTop(fadeHeightFraction: Float = 0.8f): Modifier {
             }
         }
         .blur(
-            blurRadiusSpec = BlurRadiusSpec.verticalGradient(
-                listOf(
-                    BlurStop(1f, 0.dp),
-                    BlurStop(fadeHeightFraction, 0.dp),
-                    BlurStop(1f, 4.dp)
+            blurRadiusSpec =
+                BlurRadiusSpec.verticalGradient(
+                    listOf(
+                        BlurStop(1f, 0.dp),
+                        BlurStop(fadeHeightFraction, 0.dp),
+                        BlurStop(1f, 4.dp),
+                    )
                 )
-            )
         )
 }
 

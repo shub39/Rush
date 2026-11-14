@@ -99,7 +99,6 @@ import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.conditional
-import com.shub39.rush.shared.ui.fadeBottomToTop
 import com.shub39.rush.shared.ui.fadeTopToBottom
 import com.shub39.rush.shared.ui.glowBackground
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
@@ -364,10 +363,11 @@ fun LyricsPageContent(
                                                 AnimatedVisibility(visible = controlsVisible) {
                                                     Row(
                                                         modifier =
-                                                            Modifier
-                                                                .padding(vertical = 8.dp)
+                                                            Modifier.padding(vertical = 8.dp)
                                                                 .animateContentSize()
-                                                                .horizontalScroll(rememberScrollState())
+                                                                .horizontalScroll(
+                                                                    rememberScrollState()
+                                                                )
                                                     ) {
                                                         Actions(
                                                             state = actionsState,
@@ -435,8 +435,7 @@ fun LyricsPageContent(
                                             AnimatedVisibility(visible = controlsVisible) {
                                                 Column(
                                                     modifier =
-                                                        Modifier
-                                                            .animateContentSize()
+                                                        Modifier.animateContentSize()
                                                             .verticalScroll(rememberScrollState())
                                                 ) {
                                                     Actions(
@@ -447,7 +446,8 @@ fun LyricsPageContent(
                                                         cardContent = cardContent,
                                                         onShare = onShare,
                                                         onEdit = onNavigateToCustomisations,
-                                                        isCustomisationsOpened = isCustomisationsOpened,
+                                                        isCustomisationsOpened =
+                                                            isCustomisationsOpened,
                                                     )
                                                 }
                                             }
@@ -550,12 +550,11 @@ fun LyricsPageContent(
 
             Column(
                 modifier =
-                    Modifier
-                        .align(Alignment.BottomCenter)
+                    Modifier.align(Alignment.BottomCenter)
                         .padding(bottom = RushOverlayBottomPadding)
                         .animateFloatingActionButton(
                             visible = controlsVisible,
-                            alignment = Alignment.Center
+                            alignment = Alignment.Center,
                         ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,

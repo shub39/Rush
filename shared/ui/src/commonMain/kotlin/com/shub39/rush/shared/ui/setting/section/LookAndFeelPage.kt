@@ -277,9 +277,7 @@ fun LookAndFeelPage(
                         if (!state.theme.materialTheme) {
                             // amoled switch
                             ListItem(
-                                content = {
-                                    Text(text = stringResource(Res.string.amoled))
-                                },
+                                content = { Text(text = stringResource(Res.string.amoled)) },
                                 supportingContent = {
                                     Text(text = stringResource(Res.string.amoled_desc))
                                 },

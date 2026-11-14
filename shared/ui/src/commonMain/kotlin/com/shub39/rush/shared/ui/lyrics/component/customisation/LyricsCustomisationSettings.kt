@@ -30,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
@@ -129,9 +128,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    content = {
-                        Text(text = stringResource(Res.string.expressive_syllables))
-                    },
+                    content = { Text(text = stringResource(Res.string.expressive_syllables)) },
                     supportingContent = {
                         Text(
                             text = stringResource(Res.string.expressive_syllables_desc),
@@ -153,11 +150,11 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     modifier = Modifier.clip(middleItemShape()),
                     trailingContent = {
-                                        ExpressiveSwitch(
-                                            checked = state.blurSyncedLyrics,
-                                            onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
-                                        )
-                                    },
+                        ExpressiveSwitch(
+                            checked = state.blurSyncedLyrics,
+                            onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
+                        )
+                    },
                     colors = listItemColors(),
                     content = { Text(text = stringResource(Res.string.blur_synced)) },
                 )
