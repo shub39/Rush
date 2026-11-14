@@ -28,6 +28,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -59,6 +60,10 @@ fun SettingSlider(
     @IntRange steps: Int = 0,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
 ) {
+    val sliderState = rememberSliderState(value = value, steps = steps, trackRange = valueRange)
+
+    LaunchedEffect(value) { if (sliderState.value != value) sliderState.value = value }
+
     Column(modifier = modifier) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
@@ -77,11 +82,7 @@ fun SettingSlider(
         Spacer(modifier = Modifier.height(4.dp))
 
         Slider(
-            state = rememberSliderState(
-                value = value,
-                steps = steps,
-                trackRange = valueRange
-            ),
+            state = sliderState,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
