@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.4.0
+- Updated Compose Material3 APIs and dependencies
+- Replaced alpha animation with AnimatedVisibility for lyrics controls
+- Fixed SettingsSlider state sync with external value changes
+- Extended fade modifiers and UI refinements
+
 ## 7.3.0
 - Added Fit to Screen mode for Plain Lyrics @a-mandala
 - Improved Hypnotic Lyrics Background with more animated colors

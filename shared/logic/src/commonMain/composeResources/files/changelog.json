@@ -1,5 +1,14 @@
 [
   {
+    "version": "7.4.0",
+    "changes": [
+      "Updated Compose Material3 APIs and dependencies",
+      "Replaced alpha animation with AnimatedVisibility for lyrics controls",
+      "Fixed SettingsSlider state sync with external value changes",
+      "Extended fade modifiers and UI refinements"
+    ]
+  },
+  {
     "version": "7.3.0",
     "changes": [
       "Added Fit to Screen mode for Plain Lyrics @a-mandala",
@@ -69,12 +78,6 @@
     "version": "6.7.1",
     "changes": [
       "Revamped save page toolbar"
-    ]
-  },
-  {
-    "version": "6.6.1",
-    "changes": [
-      "Updated Translations"
     ]
   }
 ]
