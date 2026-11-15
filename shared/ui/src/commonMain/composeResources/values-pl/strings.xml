@@ -120,4 +120,5 @@
     <string name="notification_access_needed">Wymagana zgoda na dostęp do powiadomień</string>
     <string name="notification_access_needed_info">Zgoda na dostęp do powiadomień jest wymagana, aby tryb Rush mógł automatycznie zmieniać utwory dla zsynchronizowanego tekstu.</string>
     <string name="brat">Nicpoń</string>
+    <string name="fit_to_screen">Dopasuj do ekranu</string>
 </resources>
