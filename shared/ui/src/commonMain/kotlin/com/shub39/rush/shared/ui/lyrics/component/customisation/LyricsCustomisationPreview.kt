@@ -54,6 +54,7 @@ import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.component.PlainLyric
 import com.shub39.rush.shared.ui.lyrics.component.SyllableLine
 import com.shub39.rush.shared.ui.lyrics.component.SyncedLyric
+import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
@@ -120,7 +121,7 @@ fun LyricsCustomisationPreview(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier.rushSharedBounds("lyrics_card_container"),
         colors =
             CardDefaults.cardColors(containerColor = cardBackground, contentColor = cardContent),
         shape = RoundedCornerShape(16.dp),

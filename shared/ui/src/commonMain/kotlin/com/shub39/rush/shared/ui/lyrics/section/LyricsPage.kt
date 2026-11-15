@@ -121,6 +121,8 @@ import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
 import com.shub39.rush.shared.ui.lyrics.rushOverlayClearance
+import com.shub39.rush.shared.ui.navigation.rushSharedBounds
+import com.shub39.rush.shared.ui.navigation.rushSharedElement
 import com.shub39.rush.shared.ui.rushmode.RushPhase
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.session.SessionState
@@ -241,7 +243,7 @@ fun LyricsPageContent(
                 }
         ) {
             Card(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().rushSharedBounds("lyrics_card_container"),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = cardBackground,
@@ -330,7 +332,10 @@ fun LyricsPageContent(
                                                             baseColor = Color.Transparent,
                                                             contentScale = ContentScale.Crop,
                                                             modifier =
-                                                                Modifier.size(80.dp)
+                                                                Modifier.rushSharedElement(
+                                                                        "song_art_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                    )
+                                                                    .size(80.dp)
                                                                     .aspectRatio(1f)
                                                                     .clip(
                                                                         MaterialTheme.shapes.small
@@ -347,7 +352,11 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.padding(top = 8.dp).basicMarquee(),
+                                                        Modifier.rushSharedElement(
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                            )
+                                                            .padding(top = 8.dp)
+                                                            .basicMarquee(),
                                                 )
 
                                                 Text(
@@ -356,7 +365,11 @@ fun LyricsPageContent(
                                                     fontFamily = flexFontRounded(),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedElement(
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                            )
+                                                            .basicMarquee(),
                                                 )
 
                                                 // Actions Row
@@ -464,7 +477,10 @@ fun LyricsPageContent(
                                                     baseColor = Color.Transparent,
                                                     contentScale = ContentScale.Fit,
                                                     modifier =
-                                                        Modifier.fillMaxWidth(0.8f)
+                                                        Modifier.rushSharedElement(
+                                                                "song_art_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                            )
+                                                            .fillMaxWidth(0.8f)
                                                             .aspectRatio(1f)
                                                             .clip(MaterialTheme.shapes.large),
                                                 )
@@ -479,7 +495,11 @@ fun LyricsPageContent(
                                                         ),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedElement(
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                            )
+                                                            .basicMarquee(),
                                                 )
 
                                                 Text(
@@ -490,7 +510,11 @@ fun LyricsPageContent(
                                                         ),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedElement(
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                            )
+                                                            .basicMarquee(),
                                                 )
                                             }
 

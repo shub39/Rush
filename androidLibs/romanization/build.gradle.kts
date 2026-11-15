@@ -18,11 +18,7 @@ plugins { alias(libs.plugins.android.library) }
 
 android {
     namespace = "com.shub39.romanization"
-    compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt()) {
-            minorApiLevel = 2
-        }
-    }
+    compileSdk { version = release(libs.versions.compileSdk.get().toInt()) { minorApiLevel = 2 } }
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
