@@ -24,13 +24,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -63,7 +63,7 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
             modifier =
                 Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                MediumFlexibleTopAppBar(
+                TopAppBar(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
@@ -76,7 +76,7 @@ fun Changelog(modifier: Modifier = Modifier, changelog: Changelog, onNavigateBac
                             scrolledContainerColor = MaterialTheme.colorScheme.surface
                         ),
                     navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
+                        FilledTonalIconButton(onClick = onNavigateBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.arrow_back),
                                 contentDescription = "Navigate Back",

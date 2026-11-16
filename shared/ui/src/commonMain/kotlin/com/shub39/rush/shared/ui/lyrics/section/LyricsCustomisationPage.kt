@@ -37,6 +37,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -151,7 +152,7 @@ fun LyricsCustomisationsPageContent(
                                     containerColor = MaterialTheme.colorScheme.surface
                                 ),
                             navigationIcon = {
-                                IconButton(onClick = onNavigateBack) {
+                                FilledTonalIconButton(onClick = onNavigateBack) {
                                     Icon(
                                         painter = painterResource(Res.drawable.arrow_back),
                                         contentDescription = "Navigate Back",
@@ -278,7 +279,7 @@ fun LyricsCustomisationsPageContent(
                                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                                 ),
                             navigationIcon = {
-                                IconButton(onClick = onNavigateBack) {
+                                FilledTonalIconButton(onClick = onNavigateBack) {
                                     Icon(
                                         painter = painterResource(Res.drawable.arrow_back),
                                         contentDescription = "Navigate Back",

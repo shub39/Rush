@@ -30,14 +30,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -129,7 +129,7 @@ private fun BackupPageContent(
         modifier =
             Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehaviour.nestedScrollConnection),
         topBar = {
-            MediumFlexibleTopAppBar(
+            TopAppBar(
                 title = {
                     Text(text = stringResource(Res.string.backup), fontFamily = flexFontEmphasis())
                 },
@@ -138,7 +138,7 @@ private fun BackupPageContent(
                         scrolledContainerColor = MaterialTheme.colorScheme.surface
                     ),
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    FilledTonalIconButton(onClick = onNavigateBack) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_back),
                             contentDescription = "Navigate Back",
