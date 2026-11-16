@@ -121,6 +121,8 @@ import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
 import com.shub39.rush.shared.ui.lyrics.rushOverlayClearance
+import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
+import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
 import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import com.shub39.rush.shared.ui.navigation.rushSharedElement
 import com.shub39.rush.shared.ui.rushmode.RushPhase
@@ -333,7 +335,8 @@ fun LyricsPageContent(
                                                             contentScale = ContentScale.Crop,
                                                             modifier =
                                                                 Modifier.rushSharedElement(
-                                                                        "song_art_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                        "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                        getImageBoundsTransform(),
                                                                     )
                                                                     .size(80.dp)
                                                                     .aspectRatio(1f)
@@ -353,7 +356,9 @@ fun LyricsPageContent(
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
                                                         Modifier.rushSharedElement(
-                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                boundsTransform =
+                                                                    getTextBoundsTransform(),
                                                             )
                                                             .padding(top = 8.dp)
                                                             .basicMarquee(),
@@ -367,7 +372,9 @@ fun LyricsPageContent(
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
                                                         Modifier.rushSharedElement(
-                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                boundsTransform =
+                                                                    getTextBoundsTransform(),
                                                             )
                                                             .basicMarquee(),
                                                 )
@@ -478,7 +485,8 @@ fun LyricsPageContent(
                                                     contentScale = ContentScale.Fit,
                                                     modifier =
                                                         Modifier.rushSharedElement(
-                                                                "song_art_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getImageBoundsTransform(),
                                                             )
                                                             .fillMaxWidth(0.8f)
                                                             .aspectRatio(1f)
@@ -497,7 +505,8 @@ fun LyricsPageContent(
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
                                                         Modifier.rushSharedElement(
-                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getTextBoundsTransform(),
                                                             )
                                                             .basicMarquee(),
                                                 )
@@ -512,7 +521,8 @@ fun LyricsPageContent(
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
                                                         Modifier.rushSharedElement(
-                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}"
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getTextBoundsTransform(),
                                                             )
                                                             .basicMarquee(),
                                                 )

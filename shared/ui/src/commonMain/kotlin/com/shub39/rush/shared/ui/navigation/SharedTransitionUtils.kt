@@ -18,11 +18,14 @@ package com.shub39.rush.shared.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.BoundsTransform
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.ArcMode
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.keyframes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 
 val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
 
@@ -48,7 +51,6 @@ fun Modifier.rushSharedElement(key: Any, boundsTransform: BoundsTransform? = nul
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun Modifier.rushSharedBounds(key: Any, boundsTransform: BoundsTransform? = null): Modifier {
     val sharedTransitionScope = LocalSharedTransitionScope.current ?: return this
@@ -59,12 +61,38 @@ fun Modifier.rushSharedBounds(key: Any, boundsTransform: BoundsTransform? = null
                 rememberSharedContentState(key = key),
                 animatedVisibilityScope = animatedVisibilityScope,
                 boundsTransform = boundsTransform,
+                resizeMode =
+                    SharedTransitionScope.ResizeMode.scaleToBounds(
+                        contentScale = ContentScale.FillBounds
+                    ),
             )
         } else {
             this@rushSharedBounds.sharedBounds(
                 rememberSharedContentState(key = key),
                 animatedVisibilityScope = animatedVisibilityScope,
+                resizeMode =
+                    SharedTransitionScope.ResizeMode.scaleToBounds(
+                        contentScale = ContentScale.FillBounds
+                    ),
             )
         }
+    }
+}
+
+private const val BOUND_DURATION_MILLIS = 500
+
+fun getTextBoundsTransform(): BoundsTransform = BoundsTransform { initialBounds, targetBounds ->
+    keyframes {
+        durationMillis = BOUND_DURATION_MILLIS
+        initialBounds at 0 using ArcMode.ArcBelow using FastOutSlowInEasing
+        targetBounds at BOUND_DURATION_MILLIS
+    }
+}
+
+fun getImageBoundsTransform(): BoundsTransform = BoundsTransform { initialBounds, targetBounds ->
+    keyframes {
+        durationMillis = BOUND_DURATION_MILLIS
+        initialBounds at 0 using ArcMode.ArcLinear using FastOutSlowInEasing
+        targetBounds at BOUND_DURATION_MILLIS
     }
 }

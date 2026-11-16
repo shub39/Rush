@@ -296,9 +296,7 @@ fun LookAndFeelPage(
 
                             // seed color picker
                             ListItem(
-                                headlineContent = {
-                                    Text(text = stringResource(Res.string.seed_color))
-                                },
+                                content = { Text(text = stringResource(Res.string.seed_color)) },
                                 supportingContent = {
                                     Text(text = stringResource(Res.string.seed_color_desc))
                                 },

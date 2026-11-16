@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.ui.component.ArtFromUrl
+import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
+import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
 import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import com.shub39.rush.shared.ui.navigation.rushSharedElement
 import org.jetbrains.compose.resources.painterResource
@@ -41,14 +43,20 @@ import rush.shared.ui.generated.resources.delete
 fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Modifier = Modifier) {
     ListItem(
         modifier =
-            modifier.rushSharedBounds("song_card_${song.title}_${song.artists}").clickable {
-                onClick()
-            },
+            modifier
+                .rushSharedBounds(
+                    "song_card_${song.title}_${song.artists}",
+                    getTextBoundsTransform(),
+                )
+                .clickable { onClick() },
         leadingContent = {
             ArtFromUrl(
                 imageUrl = song.artUrl,
                 modifier =
-                    Modifier.rushSharedElement("song_art_${song.title}_${song.artists}")
+                    Modifier.rushSharedElement(
+                            "song_art_${song.title}_${song.artists}",
+                            getImageBoundsTransform(),
+                        )
                         .size(70.dp)
                         .clip(MaterialTheme.shapes.small),
             )
