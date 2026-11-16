@@ -24,10 +24,13 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -61,6 +64,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
@@ -71,7 +75,10 @@ import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.RushDialog
+import com.shub39.rush.shared.ui.saved.component.RushModeToggle
+import com.shub39.rush.shared.ui.saved.component.SavedPageSidebar
 import com.shub39.rush.shared.ui.saved.component.SavedPageToolbar
+import com.shub39.rush.shared.ui.saved.component.SearchFab
 import com.shub39.rush.shared.ui.saved.component.SongCard
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
@@ -88,6 +95,9 @@ import rush.shared.ui.generated.resources.rush_branding
 import rush.shared.ui.generated.resources.saved
 import rush.shared.ui.generated.resources.settings
 
+/** Width from which the saved page switches to the two pane layout. */
+private val WIDE_LAYOUT_BREAKPOINT = 600.dp
+
 @Composable
 fun SavedPage(
     modifier: Modifier = Modifier,
@@ -100,10 +110,171 @@ fun SavedPage(
     isSettingsOpen: Boolean,
 ) =
     PageFill(modifier = modifier) {
-        val windowSizeClass = LocalWindowSizeClass.current
-        var showBottomBar by remember { mutableStateOf(true) }
         var showNotificationAccessDialog by remember { mutableStateOf(false) }
 
+        val dispatch: (SavedPageAction) -> Unit = { action ->
+            if (action is SavedPageAction.OnRequestMediaAccess) {
+                showNotificationAccessDialog = true
+            } else {
+                onAction(action)
+            }
+        }
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            if (maxWidth >= WIDE_LAYOUT_BREAKPOINT) {
+                WideSavedPage(
+                    state = state,
+                    maxWidth = maxWidth,
+                    isSettingsOpen = isSettingsOpen,
+                    notificationAccess = notificationAccess,
+                    onAction = dispatch,
+                    onNavigateToLyrics = onNavigateToLyrics,
+                    onNavigateToSettings = onNavigateToSettings,
+                    onOpenSearchSheet = onOpenSearchSheet,
+                )
+            } else {
+                CompactSavedPage(
+                    state = state,
+                    isSettingsOpen = isSettingsOpen,
+                    notificationAccess = notificationAccess,
+                    onAction = dispatch,
+                    onNavigateToLyrics = onNavigateToLyrics,
+                    onNavigateToSettings = onNavigateToSettings,
+                    onOpenSearchSheet = onOpenSearchSheet,
+                )
+            }
+        }
+
+        if (showNotificationAccessDialog) {
+            RushDialog(
+                padding = 32.dp,
+                onDismissRequest = { showNotificationAccessDialog = false },
+            ) {
+                Column(
+                    modifier = Modifier.wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.notifications),
+                        contentDescription = null,
+                    )
+
+                    Text(
+                        text = stringResource(Res.string.notification_access_needed),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+
+                    Text(
+                        text = stringResource(Res.string.notification_access_needed_info),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom),
+                    ) {
+                        Button(
+                            onClick = {
+                                showNotificationAccessDialog = false
+                                onAction(SavedPageAction.OnRequestMediaAccess)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = stringResource(Res.string.grant_permission))
+                        }
+                        TextButton(onClick = { showNotificationAccessDialog = false }) {
+                            Text(text = stringResource(Res.string.no_thanks))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+/**
+ * Two pane layout for wide windows: the branding, categories and now playing card sit in a sidebar
+ * on the left while the song list fills the rest of the page.
+ */
+@Composable
+private fun WideSavedPage(
+    state: SavedPageState,
+    maxWidth: Dp,
+    isSettingsOpen: Boolean,
+    notificationAccess: Boolean,
+    onAction: (SavedPageAction) -> Unit,
+    onNavigateToLyrics: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onOpenSearchSheet: () -> Unit,
+) {
+    val sidebarWidth = (maxWidth * 0.4f).coerceIn(300.dp, 380.dp)
+    val layoutDirection = LocalLayoutDirection.current
+
+    Scaffold { paddingValues ->
+        Row(modifier = Modifier.fillMaxSize()) {
+            SavedPageSidebar(
+                state = state,
+                width = sidebarWidth,
+                isSettingsOpen = isSettingsOpen,
+                onAction = onAction,
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToLyrics = onNavigateToLyrics,
+                contentPadding = paddingValues,
+            )
+
+            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                SavedSongsPane(
+                    state = state,
+                    contentPadding =
+                        PaddingValues(
+                            start = paddingValues.calculateLeftPadding(layoutDirection) + 16.dp,
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                            end = paddingValues.calculateEndPadding(layoutDirection) + 16.dp,
+                            bottom = paddingValues.calculateBottomPadding() + 80.dp,
+                        ),
+                    onAction = onAction,
+                    onNavigateToLyrics = onNavigateToLyrics,
+                    modifier = Modifier.fillMaxSize(),
+                )
+
+                Row(
+                    modifier =
+                        Modifier.align(Alignment.BottomEnd).padding(paddingValues).padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    RushModeToggle(
+                        state = state,
+                        notificationAccess = notificationAccess,
+                        onAction = onAction,
+                        onNavigateToLyrics = onNavigateToLyrics,
+                    )
+
+                    SearchFab(onClick = onOpenSearchSheet)
+                }
+            }
+        }
+    }
+}
+
+/** Single column layout used on compact (portrait) windows. */
+@Composable
+private fun CompactSavedPage(
+    state: SavedPageState,
+    isSettingsOpen: Boolean,
+    notificationAccess: Boolean,
+    onAction: (SavedPageAction) -> Unit,
+    onNavigateToLyrics: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onOpenSearchSheet: () -> Unit,
+) {
+    val windowSizeClass = LocalWindowSizeClass.current
+    var showBottomBar by remember { mutableStateOf(true) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 Column {
@@ -222,50 +393,18 @@ fun SavedPage(
                         )
                         .fillMaxSize()
             ) {
-                if (state.songsAsc.isEmpty()) {
-                    Empty()
-                } else {
-                    AnimatedContent(targetState = state.sortOrder) { sortOrder ->
-                        val songs =
-                            when (sortOrder) {
-                                DATE_ADDED -> state.songsByTime
-                                TITLE_ASC -> state.songsAsc
-                                TITLE_DESC -> state.songsDesc
-                            }
-                        val listState = rememberLazyListState()
-                        val showBottomBarListener by remember {
-                            derivedStateOf {
-                                listState.firstVisibleItemIndex == 0 ||
-                                    listState.lastScrolledBackward
-                            }
-                        }
-
-                        LaunchedEffect(showBottomBarListener) {
-                            showBottomBar = showBottomBarListener
-                        }
-
-                        LazyColumn(
-                            state = listState,
-                            modifier = Modifier.fillMaxSize().animateContentSize(),
-                            contentPadding =
-                                PaddingValues(
-                                    top = paddingValues.calculateTopPadding() + 16.dp,
-                                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                                ),
-                        ) {
-                            items(items = songs, key = { it.id }) { song ->
-                                SongCard(
-                                    song = song,
-                                    onDelete = { onAction(SavedPageAction.OnDeleteSong(song)) },
-                                    onClick = {
-                                        onAction(SavedPageAction.ChangeCurrentSong(song.id))
-                                        onNavigateToLyrics()
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
+                SavedSongsPane(
+                    state = state,
+                    contentPadding =
+                        PaddingValues(
+                            top = paddingValues.calculateTopPadding() + 16.dp,
+                            bottom = paddingValues.calculateBottomPadding() + 60.dp,
+                        ),
+                    onAction = onAction,
+                    onNavigateToLyrics = onNavigateToLyrics,
+                    modifier = Modifier.fillMaxSize(),
+                    onShowBottomBarChange = { showBottomBar = it },
+                )
             }
         }
 
@@ -286,68 +425,66 @@ fun SavedPage(
             SavedPageToolbar(
                 onOpenSearchSheet = onOpenSearchSheet,
                 notificationAccess = notificationAccess,
-                onAction = { action ->
-                    if (action is SavedPageAction.OnRequestMediaAccess) {
-                        showNotificationAccessDialog = true
-                    } else {
-                        onAction(action)
-                    }
-                },
+                onAction = onAction,
                 state = state,
                 onNavigateToLyrics = onNavigateToLyrics,
                 modifier = Modifier.platformNavigationBarsPadding().padding(horizontal = 16.dp),
             )
         }
+    }
+}
 
-        if (showNotificationAccessDialog) {
-            RushDialog(
-                padding = 32.dp,
-                onDismissRequest = { showNotificationAccessDialog = false },
+/**
+ * The song list, shared by both layouts. The bottom bar of the compact layout is driven by the
+ * scroll state, so the current visibility is reported through [onShowBottomBarChange].
+ */
+@Composable
+private fun SavedSongsPane(
+    state: SavedPageState,
+    contentPadding: PaddingValues,
+    onAction: (SavedPageAction) -> Unit,
+    onNavigateToLyrics: () -> Unit,
+    modifier: Modifier = Modifier,
+    onShowBottomBarChange: (Boolean) -> Unit = {},
+) {
+    if (state.songsAsc.isEmpty()) {
+        Empty(modifier = modifier)
+    } else {
+        AnimatedContent(targetState = state.sortOrder, modifier = modifier) { sortOrder ->
+            val songs =
+                when (sortOrder) {
+                    DATE_ADDED -> state.songsByTime
+                    TITLE_ASC -> state.songsAsc
+                    TITLE_DESC -> state.songsDesc
+                }
+            val listState = rememberLazyListState()
+            val showBottomBarListener by remember {
+                derivedStateOf {
+                    listState.firstVisibleItemIndex == 0 || listState.lastScrolledBackward
+                }
+            }
+
+            LaunchedEffect(showBottomBarListener) { onShowBottomBarChange(showBottomBarListener) }
+
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize().animateContentSize(),
+                contentPadding = contentPadding,
             ) {
-                Column(
-                    modifier = Modifier.wrapContentSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.notifications),
-                        contentDescription = null,
+                items(items = songs, key = { it.id }) { song ->
+                    SongCard(
+                        song = song,
+                        onDelete = { onAction(SavedPageAction.OnDeleteSong(song)) },
+                        onClick = {
+                            onAction(SavedPageAction.ChangeCurrentSong(song.id))
+                            onNavigateToLyrics()
+                        },
                     )
-
-                    Text(
-                        text = stringResource(Res.string.notification_access_needed),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-
-                    Text(
-                        text = stringResource(Res.string.notification_access_needed_info),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom),
-                    ) {
-                        Button(
-                            onClick = {
-                                showNotificationAccessDialog = false
-                                onAction(SavedPageAction.OnRequestMediaAccess)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(text = stringResource(Res.string.grant_permission))
-                        }
-                        TextButton(onClick = { showNotificationAccessDialog = false }) {
-                            Text(text = stringResource(Res.string.no_thanks))
-                        }
-                    }
                 }
             }
         }
     }
+}
 
 expect fun Modifier.platformNavigationBarsPadding(): Modifier
 
@@ -355,6 +492,18 @@ expect fun Modifier.platformNavigationBarsPadding(): Modifier
 @Preview(device = "spec:width=411dp,height=891dp")
 @Composable
 private fun Preview() {
+    SavedPagePreviewContent()
+}
+
+@PreviewWrapper(RushPreviewWrapper::class)
+@Preview(device = "spec:width=891dp,height=411dp")
+@Composable
+private fun LandscapePreview() {
+    SavedPagePreviewContent()
+}
+
+@Composable
+private fun SavedPagePreviewContent() {
     val songs =
         (0..100).map {
             Song(

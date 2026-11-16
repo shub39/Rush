@@ -20,7 +20,6 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -258,9 +257,7 @@ fun RushNavDisplay(
                                 }
                             }
 
-                            entry<Routes.Saved>(
-                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                            ) {
+                            entry<Routes.Saved>(metadata = horizontalTransitionMetadata()) {
                                 CompositionLocalProvider(
                                     LocalAnimatedVisibilityScope provides
                                         LocalNavAnimatedContentScope.current
@@ -304,7 +301,6 @@ fun RushNavDisplay(
                                             },
                                             notificationAccess = rushState.mediaAccess,
                                             isSettingsOpen = isLastRouteSettings,
-                                            modifier = Modifier.widthIn(max = 600.dp),
                                         )
                                     }
                                 }

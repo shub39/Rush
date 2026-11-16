@@ -124,7 +124,6 @@ import com.shub39.rush.shared.ui.lyrics.rushOverlayClearance
 import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
 import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
 import com.shub39.rush.shared.ui.navigation.rushSharedBounds
-import com.shub39.rush.shared.ui.navigation.rushSharedElement
 import com.shub39.rush.shared.ui.rushmode.RushPhase
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.session.SessionState
@@ -334,7 +333,7 @@ fun LyricsPageContent(
                                                             baseColor = Color.Transparent,
                                                             contentScale = ContentScale.Crop,
                                                             modifier =
-                                                                Modifier.rushSharedElement(
+                                                                Modifier.rushSharedBounds(
                                                                         "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                         getImageBoundsTransform(),
                                                                     )
@@ -484,7 +483,7 @@ fun LyricsPageContent(
                                                     baseColor = Color.Transparent,
                                                     contentScale = ContentScale.Fit,
                                                     modifier =
-                                                        Modifier.rushSharedElement(
+                                                        Modifier.rushSharedBounds(
                                                                 "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                 getImageBoundsTransform(),
                                                             )

@@ -34,7 +34,6 @@ import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
 import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
 import com.shub39.rush.shared.ui.navigation.rushSharedBounds
-import com.shub39.rush.shared.ui.navigation.rushSharedElement
 import org.jetbrains.compose.resources.painterResource
 import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.delete
@@ -53,7 +52,7 @@ fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Mo
             ArtFromUrl(
                 imageUrl = song.artUrl,
                 modifier =
-                    Modifier.rushSharedElement(
+                    Modifier.rushSharedBounds(
                             "song_art_${song.title}_${song.artists}",
                             getImageBoundsTransform(),
                         )

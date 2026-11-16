@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.shared.ui.setting.section
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -83,13 +85,14 @@ fun SettingRootPage(
     onUpdateNotificationAccess: () -> Unit,
     lastRoute: Routes,
 ) =
-    PageFill(modifier = modifier) {
+    PageFill(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
         var deleteConfirmationDialog by remember { mutableStateOf(false) }
         var showLocalePicker by remember { mutableStateOf(false) }
 
         val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
+            modifier =
+                Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
             topBar = {
                 LargeFlexibleTopAppBar(
                     scrollBehavior = scrollBehaviour,
