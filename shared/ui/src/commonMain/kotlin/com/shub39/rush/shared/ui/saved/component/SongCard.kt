@@ -68,7 +68,7 @@ fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Mo
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.rushSharedElement("song_title_${song.title}_${song.artists}"),
+                modifier = Modifier.rushSharedBounds("song_title_${song.title}_${song.artists}"),
             )
         },
         supportingContent = {
@@ -77,7 +77,7 @@ fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Mo
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.rushSharedElement("song_artist_${song.title}_${song.artists}"),
+                modifier = Modifier.rushSharedBounds("song_artist_${song.title}_${song.artists}"),
             )
         },
         trailingContent = {

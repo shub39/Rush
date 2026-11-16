@@ -355,7 +355,7 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.rushSharedElement(
+                                                        Modifier.rushSharedBounds(
                                                                 "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                 boundsTransform =
                                                                     getTextBoundsTransform(),
@@ -371,7 +371,7 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.rushSharedElement(
+                                                        Modifier.rushSharedBounds(
                                                                 "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                 boundsTransform =
                                                                     getTextBoundsTransform(),
@@ -504,7 +504,7 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.rushSharedElement(
+                                                        Modifier.rushSharedBounds(
                                                                 "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                 getTextBoundsTransform(),
                                                             )
@@ -520,7 +520,7 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.rushSharedElement(
+                                                        Modifier.rushSharedBounds(
                                                                 "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
                                                                 getTextBoundsTransform(),
                                                             )
