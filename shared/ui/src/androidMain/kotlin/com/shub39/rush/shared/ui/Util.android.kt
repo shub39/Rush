@@ -32,8 +32,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 actual fun blurAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
-actual fun hypnoticAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+actual fun hypnoticAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
 actual suspend fun Clipboard.copyToClipboard(text: String) {
     setClipEntry(ClipEntry(ClipData.newPlainText("lyrics", text)))
