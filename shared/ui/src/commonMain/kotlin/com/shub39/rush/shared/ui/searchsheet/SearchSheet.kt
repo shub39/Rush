@@ -79,10 +79,10 @@ import rush.shared.ui.generated.resources.*
 /**
  * The content of the search sheet.
  *
- * The field sits above the results and is pinned to [TextFieldDefaults.MinHeight] so that a short
- * window (a landscape phone with the keyboard up) cannot squeeze it. The list below takes whatever
- * is left and scrolls: it is measured with `weight(fill = false)`, so it yields space instead of
- * forcing the field to shrink.
+ * The field is anchored at the bottom so it stays still when changing results resize the sheet. Its
+ * minimum height is [TextFieldDefaults.MinHeight] so that a short window (a landscape phone with
+ * the keyboard up) cannot squeeze it. The list above takes whatever space is left and scrolls: it
+ * is measured with `weight(fill = false)` so it yields space to the field.
  */
 @Composable
 fun SearchSheet(
@@ -106,63 +106,14 @@ fun SearchSheet(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        OutlinedTextField(
-            value = state.searchQuery,
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.search),
-                    contentDescription = "Search",
-                    modifier = Modifier.padding(2.dp),
-                )
-            },
-            trailingIcon = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(2.dp),
-                ) {
-                    AnimatedVisibility(
-                        visible = state.searchQuery.isNotBlank(),
-                        enter = fadeIn(animationSpec = tween(200)),
-                        exit = fadeOut(animationSpec = tween(200)),
-                    ) {
-                        IconButton(
-                            onClick = {
-                                onAction(SearchSheetAction.OnQueryChange(""))
-                                coroutineScope.launch {
-                                    focusRequester.requestFocus()
-                                    keyboardController?.show()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.delete),
-                                contentDescription = "Delete",
-                            )
-                        }
-                    }
-                }
-            },
-            onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
-            shape = MaterialTheme.shapes.extraLarge,
-            placeholder = { Text(stringResource(Res.string.search)) },
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .heightIn(min = TextFieldDefaults.MinHeight)
-                    .focusRequester(focusRequester),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-        )
-
         LazyColumn(
             modifier =
                 Modifier.weight(1f, fill = false)
                     .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    .clip(RoundedCornerShape(16.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 8.dp),
         ) {
             state.error?.let { error ->
                 item {
@@ -229,6 +180,55 @@ fun SearchSheet(
                 item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
             }
         }
+
+        OutlinedTextField(
+            value = state.searchQuery,
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.search),
+                    contentDescription = "Search",
+                    modifier = Modifier.padding(2.dp),
+                )
+            },
+            trailingIcon = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(2.dp),
+                ) {
+                    AnimatedVisibility(
+                        visible = state.searchQuery.isNotBlank(),
+                        enter = fadeIn(animationSpec = tween(200)),
+                        exit = fadeOut(animationSpec = tween(200)),
+                    ) {
+                        IconButton(
+                            onClick = {
+                                onAction(SearchSheetAction.OnQueryChange(""))
+                                coroutineScope.launch {
+                                    focusRequester.requestFocus()
+                                    keyboardController?.show()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.delete),
+                                contentDescription = "Delete",
+                            )
+                        }
+                    }
+                }
+            },
+            onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
+            shape = MaterialTheme.shapes.extraLarge,
+            placeholder = { Text(stringResource(Res.string.search)) },
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
+                    .heightIn(min = TextFieldDefaults.MinHeight)
+                    .focusRequester(focusRequester),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
+        )
     }
 }
 
