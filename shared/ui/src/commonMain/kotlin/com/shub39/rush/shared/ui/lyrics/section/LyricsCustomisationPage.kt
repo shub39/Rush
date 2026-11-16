@@ -20,7 +20,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,6 +37,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,9 +61,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.core.dataclasses.WaveColors
+import com.shub39.rush.shared.ui.LocalInSplitPane
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
+import com.shub39.rush.shared.ui.WindowSize.Companion.isHeightCompact
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthMedium
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
@@ -72,7 +78,6 @@ import com.shub39.rush.shared.ui.lyrics.component.customisation.lyricsCustomisat
 import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
-import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
@@ -103,7 +108,7 @@ fun LyricsCustomisationsPageContent(
     requestMicrophonePermission: () -> Unit,
     waveData: List<Byte>?,
 ) =
-    BoxWithConstraints(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+    Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
         val (cardBackground, cardContent) = getCardColors(state)
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
         val waveColors = getWaveColors(state)
@@ -139,9 +144,19 @@ fun LyricsCustomisationsPageContent(
             )
         }
 
+        // In a split scene the lyrics are already visible in the sibling pane, so the preview is
+        // only
+        // rendered when this page has the whole window.
+        val showPreview = !LocalInSplitPane.current
+
+        // Side by side on desktop-class windows and on mobile landscape (a short medium window).
+        val showPreviewOnSide =
+            showPreview &&
+                (windowSizeClass.isWidthExpanded() ||
+                    (windowSizeClass.isWidthMedium() && windowSizeClass.isHeightCompact()))
+
         when {
-            windowSizeClass.isCompact() && maxWidth >= 600.dp -> {
-                // landscape ui
+            showPreviewOnSide -> {
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -151,7 +166,7 @@ fun LyricsCustomisationsPageContent(
                                     containerColor = MaterialTheme.colorScheme.surface
                                 ),
                             navigationIcon = {
-                                IconButton(onClick = onNavigateBack) {
+                                FilledTonalIconButton(onClick = onNavigateBack) {
                                     Icon(
                                         painter = painterResource(Res.drawable.arrow_back),
                                         contentDescription = "Navigate Back",
@@ -268,7 +283,6 @@ fun LyricsCustomisationsPageContent(
                             title = {
                                 Text(
                                     text = stringResource(Res.string.customisations),
-                                    fontFamily = flexFontEmphasis(),
                                     maxLines = 1,
                                     modifier = Modifier.basicMarquee(),
                                 )
@@ -278,7 +292,7 @@ fun LyricsCustomisationsPageContent(
                                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                                 ),
                             navigationIcon = {
-                                IconButton(onClick = onNavigateBack) {
+                                FilledTonalIconButton(onClick = onNavigateBack) {
                                     Icon(
                                         painter = painterResource(Res.drawable.arrow_back),
                                         contentDescription = "Navigate Back",
@@ -307,53 +321,19 @@ fun LyricsCustomisationsPageContent(
                             PaddingValues(bottom = paddingValues.calculateBottomPadding() + 60.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        if (windowSizeClass.isCompact()) {
-                            stickyHeader {
-                                Column(
-                                    modifier =
-                                        Modifier.background(
-                                            color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                            shape =
-                                                RoundedCornerShape(
-                                                    bottomStart = 32.dp,
-                                                    bottomEnd = 32.dp,
-                                                ),
-                                        )
-                                ) {
-                                    if (notificationAccess) {
-                                        Row(
-                                            modifier =
-                                                Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                                            horizontalArrangement =
-                                                Arrangement.spacedBy(
-                                                    ButtonGroupDefaults.ConnectedSpaceBetween
-                                                ),
-                                        ) {
-                                            ToggleButton(
-                                                checked = !isShowingSynced,
-                                                onCheckedChange = { isShowingSynced = false },
-                                                modifier =
-                                                    Modifier.weight(1f).padding(vertical = 8.dp),
-                                            ) {
-                                                Text(text = stringResource(Res.string.plain_lyrics))
-                                            }
+                        // Compact width pins the preview to the top, medium width with a tall
+                        // window
+                        // shows it as a regular item.
+                        when {
+                            !showPreview -> item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                                            ToggleButton(
-                                                checked = isShowingSynced,
-                                                onCheckedChange = { isShowingSynced = true },
-                                                modifier =
-                                                    Modifier.weight(1f).padding(vertical = 8.dp),
-                                            ) {
-                                                Text(
-                                                    text = stringResource(Res.string.synced_lyrics)
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    LyricsCustomisationPreview(
-                                        state = state,
+                            windowSizeClass.isWidthCompact() ->
+                                stickyHeader {
+                                    PreviewHeader(
+                                        notificationAccess = notificationAccess,
                                         isShowingSynced = isShowingSynced,
+                                        onSyncedChange = { isShowingSynced = it },
+                                        state = state,
                                         cardBackground = cardBackground,
                                         cardContent = cardContent,
                                         waveData = waveData,
@@ -361,16 +341,34 @@ fun LyricsCustomisationsPageContent(
                                         hypnoticColor2 = hypnoticColor2,
                                         waveColors = waveColors,
                                         modifier =
-                                            Modifier.padding(
-                                                start = 16.dp,
-                                                end = 16.dp,
-                                                bottom = 16.dp,
+                                            Modifier.background(
+                                                color =
+                                                    MaterialTheme.colorScheme.surfaceContainerLow,
+                                                shape =
+                                                    RoundedCornerShape(
+                                                        bottomStart = 32.dp,
+                                                        bottomEnd = 32.dp,
+                                                    ),
                                             ),
                                     )
                                 }
-                            }
-                        } else {
-                            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                            else ->
+                                item {
+                                    PreviewHeader(
+                                        notificationAccess = notificationAccess,
+                                        isShowingSynced = isShowingSynced,
+                                        onSyncedChange = { isShowingSynced = it },
+                                        state = state,
+                                        cardBackground = cardBackground,
+                                        cardContent = cardContent,
+                                        waveData = waveData,
+                                        hypnoticColor1 = hypnoticColor1,
+                                        hypnoticColor2 = hypnoticColor2,
+                                        waveColors = waveColors,
+                                        modifier = Modifier.padding(top = 8.dp),
+                                    )
+                                }
                         }
 
                         lyricsCustomisationSettings(
@@ -392,6 +390,63 @@ fun LyricsCustomisationsPageContent(
             }
         }
     }
+
+/**
+ * The plain/synced toggle row and the lyrics preview, shared by the compact (sticky) and medium
+ * (regular item) single column layouts.
+ */
+@Composable
+private fun PreviewHeader(
+    notificationAccess: Boolean,
+    isShowingSynced: Boolean,
+    onSyncedChange: (Boolean) -> Unit,
+    state: LyricsPageState,
+    cardBackground: Color,
+    cardContent: Color,
+    waveData: List<Byte>?,
+    hypnoticColor1: Color,
+    hypnoticColor2: Color,
+    waveColors: WaveColors,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        if (notificationAccess) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement =
+                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+            ) {
+                ToggleButton(
+                    checked = !isShowingSynced,
+                    onCheckedChange = { onSyncedChange(false) },
+                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                ) {
+                    Text(text = stringResource(Res.string.plain_lyrics))
+                }
+
+                ToggleButton(
+                    checked = isShowingSynced,
+                    onCheckedChange = { onSyncedChange(true) },
+                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                ) {
+                    Text(text = stringResource(Res.string.synced_lyrics))
+                }
+            }
+        }
+
+        LyricsCustomisationPreview(
+            state = state,
+            isShowingSynced = isShowingSynced,
+            cardBackground = cardBackground,
+            cardContent = cardContent,
+            waveData = waveData,
+            hypnoticColor1 = hypnoticColor1,
+            hypnoticColor2 = hypnoticColor2,
+            waveColors = waveColors,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        )
+    }
+}
 
 @PreviewWrapper(RushPreviewWrapper::class)
 @Preview

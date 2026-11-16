@@ -20,21 +20,22 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.lyrics.ManageSystemBars
@@ -102,263 +103,369 @@ fun RushNavDisplay(
 
     RushTheme(theme = globalState.theme) {
         SharedTransitionLayout(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
-            NavDisplay(
-                backStack = topLevelBackStack.backStack,
-                sharedTransitionScope = this,
-                onBack = { topLevelBackStack.removeLast() },
-                sceneStrategies =
-                    listOf(
-                        bottomSheetStrategy,
-                        twoPaneSceneStrategy,
-                        listDetailStrategy,
-                        editSheetStrategy,
-                    ),
-                entryProvider =
-                    entryProvider {
-                        entry<Routes.Search>(metadata = BottomSheetSceneStrategy.bottomSheet()) {
-                            val viewModel = koinViewModel<SearchVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+            CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+                NavDisplay(
+                    backStack = topLevelBackStack.backStack,
+                    sharedTransitionScope = this,
+                    onBack = { topLevelBackStack.removeLast() },
+                    sceneStrategies =
+                        listOf(
+                            bottomSheetStrategy,
+                            twoPaneSceneStrategy,
+                            listDetailStrategy,
+                            editSheetStrategy,
+                        ),
+                    entryProvider =
+                        entryProvider {
+                            entry<Routes.Search>(
+                                metadata = BottomSheetSceneStrategy.bottomSheet()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SearchVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            SearchSheet(
-                                state = state,
-                                onAction = viewModel::onAction,
-                                onNavigateToLyrics = {
-                                    topLevelBackStack.removeLast()
-                                    topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
-                                },
-                                modifier = Modifier.fillMaxWidth().heightIn(max = 700.dp),
-                            )
-                        }
-
-                        entry<Routes.Lyrics.LyricsRoot>(
-                            metadata = ListDetailScene.detailPane() + verticalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<LyricsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-                            val playbackInfo by viewModel.playbackInfo.collectAsStateWithLifecycle()
-
-                            ManageSystemBars(state.fullscreen)
-
-                            LyricsPage(
-                                onNavigateToCustomisations = {
-                                    topLevelBackStack.add(Routes.Lyrics.LyricsCustomisations)
-                                },
-                                onShare = { topLevelBackStack.add(Routes.Share.ShareRoot) },
-                                action = viewModel::onAction,
-                                state = state,
-                                playbackInfo = playbackInfo,
-                                notificationAccess = rushState.mediaAccess,
-                                isCustomisationsOpened =
-                                    topLevelBackStack.isRouteOnTop(
-                                        Routes.Lyrics.LyricsCustomisations
-                                    ),
-                                onOpenSearchSheet = { topLevelBackStack.addTopLevel(Routes.Search) },
-                            )
-                        }
-
-                        entry<Routes.Share.ShareRoot>(
-                            metadata = EditScreenScene.mainPane() + verticalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<ShareVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            SharePage(
-                                onDismiss = { topLevelBackStack.removeLast() },
-                                state = state,
-                                onAction = viewModel::onAction,
-                                onOpenEdit = { topLevelBackStack.add(Routes.Share.ShareEdit) },
-                                isEditing = topLevelBackStack.isRouteOnTop(Routes.Share.ShareEdit),
-                            )
-                        }
-
-                        entry<Routes.Share.ShareEdit>(
-                            metadata = EditScreenScene.editPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<ShareVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            SharePageEdit(
-                                isProUser = globalState.isProUser,
-                                state = state,
-                                onAction = viewModel::onAction,
-                                onNavigateToPaywall = {
-                                    globalVM.onAction(GlobalAction.OnPaywallOpened("share_page"))
-                                    topLevelBackStack.addTopLevel(Routes.Paywall)
-                                },
-                            )
-                        }
-
-                        entry<Routes.Lyrics.LyricsCustomisations>(
-                            metadata = ListDetailScene.listPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<LyricsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            LyricsCustomisationsPage(
-                                isProUser = globalState.isProUser,
-                                onOpenPaywall = { source ->
-                                    globalVM.onAction(GlobalAction.OnProFeatureUpsellTapped(source))
-                                    globalVM.onAction(GlobalAction.OnPaywallOpened(source))
-                                    topLevelBackStack.addTopLevel(Routes.Paywall)
-                                },
-                                onProFeatureShown = { feature ->
-                                    globalVM.onAction(GlobalAction.OnProFeatureShown(feature))
-                                },
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                                state = state,
-                                onAction = viewModel::onAction,
-                                notificationAccess = rushState.mediaAccess,
-                            )
-                        }
-
-                        entry<Routes.Saved>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SavedVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            val isLastRouteSettings =
-                                topLevelBackStack.backStack.last() is Routes.Settings
-
-                            PageFill {
-                                SavedPage(
-                                    state = state,
-                                    onAction = { action ->
-                                        if (action is SavedPageAction.OnRequestMediaAccess) {
-                                            rushController.onAction(RushAction.OnRequestMediaAccess)
-                                        } else {
-                                            viewModel.onAction(action)
-                                        }
-                                    },
-                                    onNavigateToLyrics = {
-                                        topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
-                                    },
-                                    onNavigateToSettings = {
-                                        topLevelBackStack.apply {
-                                            if (!isRouteOnTop(Routes.Settings.SettingsRoot)) {
-                                                addTopLevel(Routes.Settings.SettingsRoot)
-                                            } else removeLast()
-                                        }
-                                    },
-                                    onOpenSearchSheet = { topLevelBackStack.addTopLevel(Search) },
-                                    notificationAccess = rushState.mediaAccess,
-                                    isSettingsOpen = isLastRouteSettings,
-                                    modifier = Modifier.widthIn(max = 600.dp),
-                                )
-                            }
-                        }
-
-                        entry<Routes.Paywall>(metadata = verticalTransitionMetadata()) {
-                            val openedAt = TimeSource.Monotonic.markNow()
-
-                            DisposableEffect(Unit) {
-                                onDispose { globalVM.onAction(GlobalAction.OnRefreshSub) }
-                            }
-
-                            paywall(globalState.isProUser) {
-                                globalVM.onAction(
-                                    GlobalAction.OnPaywallDismissed(
-                                        dwellMs = openedAt.elapsedNow().inWholeMilliseconds
+                                    SearchSheet(
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        onNavigateToLyrics = {
+                                            topLevelBackStack.removeLast()
+                                            topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
+                                        },
+                                        // Caps the sheet on tall windows. In compact height windows
+                                        // the
+                                        // keyboard is the real constraint, which the sheet content
+                                        // handles by pinning the search field as a sticky header.
+                                        modifier =
+                                            Modifier.fillMaxWidth()
+                                                .heightIn(
+                                                    max = windowSizeClass.getDialogMaxHeight()
+                                                ),
                                     )
-                                )
-                                topLevelBackStack.removeLast()
+                                }
                             }
-                        }
 
-                        entry<Routes.Settings.SettingsRoot>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SettingsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            entry<Routes.Lyrics.LyricsRoot>(
+                                metadata =
+                                    ListDetailScene.detailPane() + verticalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<LyricsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+                                    val playbackInfo by
+                                        viewModel.playbackInfo.collectAsStateWithLifecycle()
 
-                            SettingRootPage(
-                                notificationAccess = rushState.mediaAccess,
-                                state = state,
-                                onShowPaywall = {
-                                    globalVM.onAction(GlobalAction.OnPaywallOpened("settings"))
-                                    topLevelBackStack.addTopLevel(Routes.Paywall)
-                                },
-                                onAction = viewModel::onAction,
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                                onNavigateToLookAndFeel = {
-                                    topLevelBackStack.addTopLevel(
-                                        Routes.Settings.SettingsLookAndFeel
+                                    ManageSystemBars(state.fullscreen)
+
+                                    LyricsPage(
+                                        onNavigateToCustomisations = {
+                                            topLevelBackStack.add(
+                                                Routes.Lyrics.LyricsCustomisations
+                                            )
+                                        },
+                                        onShare = { topLevelBackStack.add(Routes.Share.ShareRoot) },
+                                        action = viewModel::onAction,
+                                        state = state,
+                                        playbackInfo = playbackInfo,
+                                        notificationAccess = rushState.mediaAccess,
+                                        isCustomisationsOpened =
+                                            topLevelBackStack.isRouteOnTop(
+                                                Routes.Lyrics.LyricsCustomisations
+                                            ),
+                                        onOpenSearchSheet = {
+                                            topLevelBackStack.addTopLevel(Routes.Search)
+                                        },
                                     )
-                                },
-                                onNavigateToBackup = {
-                                    topLevelBackStack.addTopLevel(Routes.Settings.SettingsBackup)
-                                },
-                                onNavigateToChangelog = {
-                                    globalVM.onAction(GlobalAction.ChangelogOpened)
-                                    topLevelBackStack.addTopLevel(Routes.Settings.SettingsChangelog)
-                                },
-                                onNavigateToAppInfo = {
-                                    globalVM.onAction(GlobalAction.AboutOpened)
-                                    topLevelBackStack.addTopLevel(Routes.Settings.SettingsAppInfo)
-                                },
-                                onUpdateNotificationAccess = {
-                                    rushController.onAction(RushAction.RefreshMediaAccess)
-                                },
-                                lastRoute = topLevelBackStack.backStack.last(),
-                            )
-                        }
+                                }
+                            }
 
-                        entry<Routes.Settings.SettingsLookAndFeel>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SettingsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            entry<Routes.Share.ShareRoot>(
+                                metadata = EditScreenScene.mainPane() + verticalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<ShareVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            LookAndFeelPage(
-                                state = state,
-                                onAction = viewModel::onAction,
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                                isProUser = globalState.isProUser,
-                                onNavigateToPaywall = {
-                                    globalVM.onAction(GlobalAction.OnPaywallOpened("look_and_feel"))
-                                    topLevelBackStack.addTopLevel(Routes.Paywall)
-                                },
-                            )
-                        }
+                                    SharePage(
+                                        onDismiss = { topLevelBackStack.removeLast() },
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        onOpenEdit = {
+                                            topLevelBackStack.add(Routes.Share.ShareEdit)
+                                        },
+                                        isEditing =
+                                            topLevelBackStack.isRouteOnTop(Routes.Share.ShareEdit),
+                                    )
+                                }
+                            }
 
-                        entry<Routes.Settings.SettingsBackup>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SettingsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            entry<Routes.Share.ShareEdit>(
+                                metadata =
+                                    EditScreenScene.editPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<ShareVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            BackupPage(
-                                state = state,
-                                onAction = viewModel::onAction,
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                            )
-                        }
+                                    SharePageEdit(
+                                        isProUser = globalState.isProUser,
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        onNavigateToPaywall = {
+                                            globalVM.onAction(
+                                                GlobalAction.OnPaywallOpened("share_page")
+                                            )
+                                            topLevelBackStack.addTopLevel(Routes.Paywall)
+                                        },
+                                    )
+                                }
+                            }
 
-                        entry<Routes.Settings.SettingsChangelog>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SettingsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            entry<Routes.Lyrics.LyricsCustomisations>(
+                                metadata =
+                                    ListDetailScene.listPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<LyricsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            Changelog(
-                                changelog = state.changelog,
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                            )
-                        }
+                                    LyricsCustomisationsPage(
+                                        isProUser = globalState.isProUser,
+                                        onOpenPaywall = { source ->
+                                            globalVM.onAction(
+                                                GlobalAction.OnProFeatureUpsellTapped(source)
+                                            )
+                                            globalVM.onAction(GlobalAction.OnPaywallOpened(source))
+                                            topLevelBackStack.addTopLevel(Routes.Paywall)
+                                        },
+                                        onProFeatureShown = { feature ->
+                                            globalVM.onAction(
+                                                GlobalAction.OnProFeatureShown(feature)
+                                            )
+                                        },
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        notificationAccess = rushState.mediaAccess,
+                                    )
+                                }
+                            }
 
-                        entry<Routes.Settings.SettingsAppInfo>(
-                            metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
-                        ) {
-                            val viewModel = koinViewModel<SettingsVM>()
-                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            entry<Routes.Saved>(metadata = horizontalTransitionMetadata()) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SavedVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            About(
-                                versionName = state.changelog.firstOrNull()?.version ?: "",
-                                onNavigateBack = { topLevelBackStack.removeLast() },
-                            )
-                        }
-                    },
-            )
+                                    val isLastRouteSettings =
+                                        topLevelBackStack.backStack.last() is Routes.Settings
+
+                                    PageFill {
+                                        SavedPage(
+                                            state = state,
+                                            onAction = { action ->
+                                                if (
+                                                    action is SavedPageAction.OnRequestMediaAccess
+                                                ) {
+                                                    rushController.onAction(
+                                                        RushAction.OnRequestMediaAccess
+                                                    )
+                                                } else {
+                                                    viewModel.onAction(action)
+                                                }
+                                            },
+                                            onNavigateToLyrics = {
+                                                topLevelBackStack.addTopLevel(
+                                                    Routes.Lyrics.LyricsRoot
+                                                )
+                                            },
+                                            onNavigateToSettings = {
+                                                topLevelBackStack.apply {
+                                                    if (
+                                                        !isRouteOnTop(Routes.Settings.SettingsRoot)
+                                                    ) {
+                                                        addTopLevel(Routes.Settings.SettingsRoot)
+                                                    } else removeLast()
+                                                }
+                                            },
+                                            onOpenSearchSheet = {
+                                                topLevelBackStack.addTopLevel(Search)
+                                            },
+                                            notificationAccess = rushState.mediaAccess,
+                                            isSettingsOpen = isLastRouteSettings,
+                                        )
+                                    }
+                                }
+                            }
+
+                            entry<Routes.Paywall>(metadata = verticalTransitionMetadata()) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val openedAt = TimeSource.Monotonic.markNow()
+
+                                    DisposableEffect(Unit) {
+                                        onDispose { globalVM.onAction(GlobalAction.OnRefreshSub) }
+                                    }
+
+                                    paywall(globalState.isProUser) {
+                                        globalVM.onAction(
+                                            GlobalAction.OnPaywallDismissed(
+                                                dwellMs = openedAt.elapsedNow().inWholeMilliseconds
+                                            )
+                                        )
+                                        topLevelBackStack.removeLast()
+                                    }
+                                }
+                            }
+
+                            entry<Routes.Settings.SettingsRoot>(
+                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SettingsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                    SettingRootPage(
+                                        notificationAccess = rushState.mediaAccess,
+                                        state = state,
+                                        onShowPaywall = {
+                                            globalVM.onAction(
+                                                GlobalAction.OnPaywallOpened("settings")
+                                            )
+                                            topLevelBackStack.addTopLevel(Routes.Paywall)
+                                        },
+                                        onAction = viewModel::onAction,
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                        onNavigateToLookAndFeel = {
+                                            topLevelBackStack.addTopLevel(
+                                                Routes.Settings.SettingsLookAndFeel
+                                            )
+                                        },
+                                        onNavigateToBackup = {
+                                            topLevelBackStack.addTopLevel(
+                                                Routes.Settings.SettingsBackup
+                                            )
+                                        },
+                                        onNavigateToChangelog = {
+                                            globalVM.onAction(GlobalAction.ChangelogOpened)
+                                            topLevelBackStack.addTopLevel(
+                                                Routes.Settings.SettingsChangelog
+                                            )
+                                        },
+                                        onNavigateToAppInfo = {
+                                            globalVM.onAction(GlobalAction.AboutOpened)
+                                            topLevelBackStack.addTopLevel(
+                                                Routes.Settings.SettingsAppInfo
+                                            )
+                                        },
+                                        onUpdateNotificationAccess = {
+                                            rushController.onAction(RushAction.RefreshMediaAccess)
+                                        },
+                                        lastRoute = topLevelBackStack.backStack.last(),
+                                    )
+                                }
+                            }
+
+                            entry<Routes.Settings.SettingsLookAndFeel>(
+                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SettingsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                    LookAndFeelPage(
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                        isProUser = globalState.isProUser,
+                                        onNavigateToPaywall = {
+                                            globalVM.onAction(
+                                                GlobalAction.OnPaywallOpened("look_and_feel")
+                                            )
+                                            topLevelBackStack.addTopLevel(Routes.Paywall)
+                                        },
+                                    )
+                                }
+                            }
+
+                            entry<Routes.Settings.SettingsBackup>(
+                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SettingsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                    BackupPage(
+                                        state = state,
+                                        onAction = viewModel::onAction,
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                    )
+                                }
+                            }
+
+                            entry<Routes.Settings.SettingsChangelog>(
+                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SettingsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                    Changelog(
+                                        changelog = state.changelog,
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                    )
+                                }
+                            }
+
+                            entry<Routes.Settings.SettingsAppInfo>(
+                                metadata = TwoPaneScene.twoPane() + horizontalTransitionMetadata()
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalAnimatedVisibilityScope provides
+                                        LocalNavAnimatedContentScope.current
+                                ) {
+                                    val viewModel = koinViewModel<SettingsVM>()
+                                    val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                    About(
+                                        versionName = state.changelog.firstOrNull()?.version ?: "",
+                                        onNavigateBack = { topLevelBackStack.removeLast() },
+                                    )
+                                }
+                            }
+                        },
+                )
+            }
         }
     }
 }

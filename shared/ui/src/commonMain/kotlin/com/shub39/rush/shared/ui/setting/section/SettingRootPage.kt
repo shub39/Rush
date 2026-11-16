@@ -16,6 +16,7 @@
  */
 package com.shub39.rush.shared.ui.setting.section
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,17 +25,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,12 +46,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.RushDialog
@@ -83,16 +85,14 @@ fun SettingRootPage(
     onUpdateNotificationAccess: () -> Unit,
     lastRoute: Routes,
 ) =
-    PageFill(modifier = modifier) {
+    PageFill(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
         var deleteConfirmationDialog by remember { mutableStateOf(false) }
         var showLocalePicker by remember { mutableStateOf(false) }
 
-        val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
+            modifier = Modifier.widthIn(max = ContentMaxWidth),
             topBar = {
-                LargeFlexibleTopAppBar(
-                    scrollBehavior = scrollBehaviour,
+                TopAppBar(
                     title = {
                         Text(
                             text = stringResource(Res.string.settings),
@@ -100,7 +100,7 @@ fun SettingRootPage(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
+                        FilledTonalIconButton(onClick = onNavigateBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.arrow_back),
                                 contentDescription = "Navigate Back",

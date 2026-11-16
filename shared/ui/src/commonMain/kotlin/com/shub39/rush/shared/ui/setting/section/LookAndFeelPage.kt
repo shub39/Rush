@@ -33,15 +33,16 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -54,12 +55,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
 import com.shub39.rush.shared.ui.component.ListSelect
@@ -94,10 +95,9 @@ fun LookAndFeelPage(
     PageFill(modifier = modifier) {
         var colorPickerDialog by remember { mutableStateOf(false) }
 
-        val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
             topBar = {
-                MediumFlexibleTopAppBar(
+                TopAppBar(
                     title = {
                         Text(
                             text = stringResource(Res.string.look_and_feel),
@@ -109,18 +109,16 @@ fun LookAndFeelPage(
                             scrolledContainerColor = MaterialTheme.colorScheme.surface
                         ),
                     navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
+                        FilledTonalIconButton(onClick = onNavigateBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.arrow_back),
                                 contentDescription = "Navigate Back",
                             )
                         }
                     },
-                    scrollBehavior = scrollBehaviour,
                 )
             },
-            modifier =
-                Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection).widthIn(max = 700.dp),
+            modifier = Modifier.widthIn(max = ContentMaxWidth),
         ) { padding ->
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -296,9 +294,7 @@ fun LookAndFeelPage(
 
                             // seed color picker
                             ListItem(
-                                headlineContent = {
-                                    Text(text = stringResource(Res.string.seed_color))
-                                },
+                                content = { Text(text = stringResource(Res.string.seed_color)) },
                                 supportingContent = {
                                     Text(text = stringResource(Res.string.seed_color_desc))
                                 },

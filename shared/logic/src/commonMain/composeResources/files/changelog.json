@@ -1,5 +1,15 @@
 [
   {
+    "version": "7.5.0",
+    "changes": [
+      "Fixed mismatches between landscsape and portrait versions of screens",
+      "Fixed Share Cards appearing minimized",
+      "Improved animations and navigation",
+      "Improved landscape experience",
+      "Updated Translations"
+    ]
+  },
+  {
     "version": "7.4.0",
     "changes": [
       "Updated Compose Material3 APIs and dependencies",
@@ -72,12 +82,6 @@
       "Fixed inconsistent share cards based on device",
       "Updated Lyrics customization defaults",
       "Updated Share card customization defaults"
-    ]
-  },
-  {
-    "version": "6.7.1",
-    "changes": [
-      "Revamped save page toolbar"
     ]
   }
 ]

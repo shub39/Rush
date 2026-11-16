@@ -48,12 +48,15 @@ import com.shub39.rush.shared.core.dataclasses.ParsedLine
 import com.shub39.rush.shared.core.dataclasses.ParsedWord
 import com.shub39.rush.shared.core.dataclasses.WaveColors
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getPreviewHeight
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
 import com.shub39.rush.shared.ui.lyrics.component.PlainLyric
 import com.shub39.rush.shared.ui.lyrics.component.SyllableLine
 import com.shub39.rush.shared.ui.lyrics.component.SyncedLyric
+import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
@@ -120,7 +123,7 @@ fun LyricsCustomisationPreview(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier.rushSharedBounds("lyrics_card_container"),
         colors =
             CardDefaults.cardColors(containerColor = cardBackground, contentColor = cardContent),
         shape = RoundedCornerShape(16.dp),
@@ -152,7 +155,10 @@ fun LyricsCustomisationPreview(
                         LazyColumn(
                             state = lazyListState,
                             contentPadding = PaddingValues(vertical = 16.dp),
-                            modifier = Modifier.heightIn(max = 300.dp),
+                            modifier =
+                                Modifier.heightIn(
+                                    max = LocalWindowSizeClass.current.getPreviewHeight()
+                                ),
                             verticalArrangement =
                                 Arrangement.spacedBy(
                                     with(LocalDensity.current) {

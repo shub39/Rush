@@ -32,6 +32,8 @@ import androidx.navigation3.scene.OverlayScene
 import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.isHeightCompact
 import com.shub39.rush.shared.ui.component.RushBottomSheet
 
 /** An [OverlayScene] that renders an [entry] within a [ModalBottomSheet]. */
@@ -49,10 +51,16 @@ internal data class BottomSheetScene<T : Any>(
 
     override val content: @Composable (() -> Unit) = {
         val lifeCycleOwner = rememberLifecycleOwner()
+        val windowSizeClass = LocalWindowSizeClass.current
+
         RushBottomSheet(
             padding = 0.dp,
             onDismissRequest = onBack,
             properties = modalBottomSheetProperties,
+            // A short window (a landscape phone with the keyboard up) has no vertical space to
+            // spare
+            // for the handle.
+            showDragHandle = !windowSizeClass.isHeightCompact(),
         ) {
             CompositionLocalProvider(LocalLifecycleOwner provides lifeCycleOwner) {
                 entry.Content()

@@ -20,7 +20,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -35,7 +34,8 @@ import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.window.core.layout.WindowSizeClass
-import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
+import com.shub39.rush.shared.ui.PaneWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthExpanded
 
 /** A [Scene] that displays a list and a detail [NavEntry] side-by-side in a 40/60 split. */
 data class ListDetailScene<T : Any>(
@@ -49,7 +49,7 @@ data class ListDetailScene<T : Any>(
         Row(modifier = Modifier.fillMaxSize()) {
             // Let the detail entry know not to display a back button.
             CompositionLocalProvider(LocalBackButtonVisibility provides false) {
-                Column(modifier = Modifier.weight(0.6f)) {
+                PaneWindowSizeClass(modifier = Modifier.weight(0.6f)) {
                     AnimatedContent(
                         targetState = detailEntry,
                         contentKey = { entry -> entry.contentKey },
@@ -63,7 +63,7 @@ data class ListDetailScene<T : Any>(
                 }
             }
 
-            Column(modifier = Modifier.weight(0.4f)) { listEntry.Content() }
+            PaneWindowSizeClass(modifier = Modifier.weight(0.4f)) { listEntry.Content() }
         }
     }
 
@@ -95,7 +95,7 @@ val LocalBackButtonVisibility = compositionLocalOf { true }
 
 /**
  * A [SceneStrategy] that returns a [ListDetailScene] if:
- * - the window width is over 600dp
+ * - the window width is expanded (900dp and up), i.e. a desktop-class window
  * - A `Detail` entry is the last item in the back stack
  * - A `List` entry is in the back stack
  *
@@ -106,7 +106,9 @@ class ListDetailSceneStrategy<T : Any>(val windowSizeClass: WindowSizeClass) : S
 
     override fun SceneStrategyScope<T>.calculateScene(entries: List<NavEntry<T>>): Scene<T>? {
 
-        if (windowSizeClass.isCompact()) return null
+        // Only desktop-class expanded windows get two panes. Phones and tablets stay single pane in
+        // both orientations, regardless of how tall the window is.
+        if (!windowSizeClass.isWidthExpanded()) return null
 
         val listEntry =
             entries.lastOrNull()?.takeIf { it.metadata.contains(ListDetailScene.ListKey) }

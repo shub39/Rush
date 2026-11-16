@@ -23,12 +23,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +42,7 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -75,7 +76,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
-@OptIn(ExperimentalLayoutApi::class)
+/**
+ * The content of the search sheet.
+ *
+ * The field sits above the results and is pinned to [TextFieldDefaults.MinHeight] so that a short
+ * window (a landscape phone with the keyboard up) cannot squeeze it. The list below takes whatever
+ * is left and scrolls: it is measured with `weight(fill = false)`, so it yields space instead of
+ * forcing the field to shrink.
+ */
 @Composable
 fun SearchSheet(
     state: SearchSheetState,
@@ -141,6 +149,7 @@ fun SearchSheet(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .heightIn(min = TextFieldDefaults.MinHeight)
                     .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
@@ -148,7 +157,8 @@ fun SearchSheet(
 
         LazyColumn(
             modifier =
-                Modifier.padding(horizontal = 16.dp)
+                Modifier.weight(1f, fill = false)
+                    .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -219,7 +229,6 @@ fun SearchSheet(
                 item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
             }
         }
-        //        }
     }
 }
 

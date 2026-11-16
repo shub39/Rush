@@ -30,14 +30,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,13 +48,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreState
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.endItemShape
@@ -124,12 +124,10 @@ private fun BackupPageContent(
     onPickFile: () -> Unit,
     action: (SettingsPageAction) -> Unit,
 ) {
-    val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier =
-            Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehaviour.nestedScrollConnection),
+        modifier = Modifier.widthIn(max = ContentMaxWidth),
         topBar = {
-            MediumFlexibleTopAppBar(
+            TopAppBar(
                 title = {
                     Text(text = stringResource(Res.string.backup), fontFamily = flexFontEmphasis())
                 },
@@ -138,14 +136,13 @@ private fun BackupPageContent(
                         scrolledContainerColor = MaterialTheme.colorScheme.surface
                     ),
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    FilledTonalIconButton(onClick = onNavigateBack) {
                         Icon(
                             painter = painterResource(Res.drawable.arrow_back),
                             contentDescription = "Navigate Back",
                         )
                     }
                 },
-                scrollBehavior = scrollBehaviour,
             )
         },
     ) { paddingValues ->

@@ -39,7 +39,10 @@ fun main() {
 
     GlobalContext.get().get<RushController>().start()
 
-    singleWindowApplication(title = "Rush", state = WindowState(width = 700.dp, height = 1000.dp)) {
+    singleWindowApplication(
+        title = "Rush",
+        state = WindowState(width = 1200.dp, height = 1000.dp),
+    ) {
         val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
         val viewModelStoreOwner = remember {
             object : ViewModelStoreOwner {

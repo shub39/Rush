@@ -27,7 +27,6 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -93,7 +92,10 @@ import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.LyricsMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isLyricsPortrait
 import com.shub39.rush.shared.ui.audioDependentBackgrounds
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
@@ -121,6 +123,9 @@ import com.shub39.rush.shared.ui.lyrics.getCardColors
 import com.shub39.rush.shared.ui.lyrics.getHypnoticColors
 import com.shub39.rush.shared.ui.lyrics.getWaveColors
 import com.shub39.rush.shared.ui.lyrics.rushOverlayClearance
+import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
+import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
+import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import com.shub39.rush.shared.ui.rushmode.RushPhase
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.session.SessionState
@@ -160,6 +165,7 @@ fun LyricsPageContent(
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
+        val windowSizeClass = LocalWindowSizeClass.current
 
         val (cardBackground, cardContent) = getCardColors(state)
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -228,7 +234,7 @@ fun LyricsPageContent(
         }
 
         // Content Start
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
                     awaitPointerEventScope {
@@ -241,7 +247,7 @@ fun LyricsPageContent(
                 }
         ) {
             Card(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().rushSharedBounds("lyrics_card_container"),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = cardBackground,
@@ -297,8 +303,8 @@ fun LyricsPageContent(
                                     hypnoticColor2 = hypnoticColor2,
                                 )
 
-                                Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                    if (this@BoxWithConstraints.maxWidth < 640.dp) {
+                                Column(modifier = Modifier.widthIn(max = LyricsMaxWidth)) {
+                                    if (windowSizeClass.isLyricsPortrait()) {
                                         // portrait ui
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -330,7 +336,11 @@ fun LyricsPageContent(
                                                             baseColor = Color.Transparent,
                                                             contentScale = ContentScale.Crop,
                                                             modifier =
-                                                                Modifier.size(80.dp)
+                                                                Modifier.rushSharedBounds(
+                                                                        "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                        getImageBoundsTransform(),
+                                                                    )
+                                                                    .size(80.dp)
                                                                     .aspectRatio(1f)
                                                                     .clip(
                                                                         MaterialTheme.shapes.small
@@ -347,7 +357,13 @@ fun LyricsPageContent(
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
                                                     modifier =
-                                                        Modifier.padding(top = 8.dp).basicMarquee(),
+                                                        Modifier.rushSharedBounds(
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                boundsTransform =
+                                                                    getTextBoundsTransform(),
+                                                            )
+                                                            .padding(top = 8.dp)
+                                                            .basicMarquee(),
                                                 )
 
                                                 Text(
@@ -356,7 +372,13 @@ fun LyricsPageContent(
                                                     fontFamily = flexFontRounded(),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedBounds(
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                boundsTransform =
+                                                                    getTextBoundsTransform(),
+                                                            )
+                                                            .basicMarquee(),
                                                 )
 
                                                 // Actions Row
@@ -464,7 +486,11 @@ fun LyricsPageContent(
                                                     baseColor = Color.Transparent,
                                                     contentScale = ContentScale.Fit,
                                                     modifier =
-                                                        Modifier.fillMaxWidth(0.8f)
+                                                        Modifier.rushSharedBounds(
+                                                                "song_art_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getImageBoundsTransform(),
+                                                            )
+                                                            .fillMaxWidth(0.8f)
                                                             .aspectRatio(1f)
                                                             .clip(MaterialTheme.shapes.large),
                                                 )
@@ -479,7 +505,12 @@ fun LyricsPageContent(
                                                         ),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedBounds(
+                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getTextBoundsTransform(),
+                                                            )
+                                                            .basicMarquee(),
                                                 )
 
                                                 Text(
@@ -490,7 +521,12 @@ fun LyricsPageContent(
                                                         ),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.basicMarquee(),
+                                                    modifier =
+                                                        Modifier.rushSharedBounds(
+                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                getTextBoundsTransform(),
+                                                            )
+                                                            .basicMarquee(),
                                                 )
                                             }
 

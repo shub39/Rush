@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.5.0
+- Fixed mismatches between landscsape and portrait versions of screens
+- Fixed Share Cards appearing minimized
+- Improved animations and navigation
+- Improved landscape experience
+- Updated Translations
+
 ## 7.4.0
 - Updated Compose Material3 APIs and dependencies
 - Replaced alpha animation with AnimatedVisibility for lyrics controls
