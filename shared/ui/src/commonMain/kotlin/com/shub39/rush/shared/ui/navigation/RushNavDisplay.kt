@@ -134,6 +134,10 @@ fun RushNavDisplay(
                                             topLevelBackStack.removeLast()
                                             topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
                                         },
+                                        // Caps the sheet on tall windows. In compact height windows
+                                        // the
+                                        // keyboard is the real constraint, which the sheet content
+                                        // handles by pinning the search field as a sticky header.
                                         modifier =
                                             Modifier.fillMaxWidth()
                                                 .heightIn(

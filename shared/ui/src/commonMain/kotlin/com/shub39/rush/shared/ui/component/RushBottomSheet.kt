@@ -16,12 +16,12 @@
  */
 package com.shub39.rush.shared.ui.component
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
@@ -46,17 +46,29 @@ fun RushBottomSheet(
             enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
         ),
     padding: Dp = 32.dp,
+    showDragHandle: Boolean = true,
     content: @Composable (ColumnScope.() -> Unit),
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetMaxWidth = LocalWindowSizeClass.current.getSheetMaxWidth(),
+        dragHandle =
+            if (showDragHandle) {
+                { BottomSheetDefaults.DragHandle() }
+            } else {
+                null
+            },
         modifier = modifier,
         properties = properties,
         sheetState = sheetState,
     ) {
+        // No animateContentSize here: it re-measures the content against an interpolated height,
+        // which
+        // squeezes fixed height children (like a text field) and makes the sheet pace up and down
+        // while
+        // the content changes.
         Column(
-            modifier = Modifier.padding(padding).animateContentSize().fillMaxWidth(),
+            modifier = Modifier.padding(padding).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             content = content,
