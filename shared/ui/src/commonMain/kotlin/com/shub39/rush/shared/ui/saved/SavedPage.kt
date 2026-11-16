@@ -25,7 +25,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -49,9 +48,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -64,13 +63,14 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.core.enums.SortOrder
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.getSidebarWidth
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
 import com.shub39.rush.shared.ui.component.Empty
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
@@ -95,9 +95,6 @@ import rush.shared.ui.generated.resources.rush_branding
 import rush.shared.ui.generated.resources.saved
 import rush.shared.ui.generated.resources.settings
 
-/** Width from which the saved page switches to the two pane layout. */
-private val WIDE_LAYOUT_BREAKPOINT = 600.dp
-
 @Composable
 fun SavedPage(
     modifier: Modifier = Modifier,
@@ -120,29 +117,28 @@ fun SavedPage(
             }
         }
 
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            if (maxWidth >= WIDE_LAYOUT_BREAKPOINT) {
-                WideSavedPage(
-                    state = state,
-                    maxWidth = maxWidth,
-                    isSettingsOpen = isSettingsOpen,
-                    notificationAccess = notificationAccess,
-                    onAction = dispatch,
-                    onNavigateToLyrics = onNavigateToLyrics,
-                    onNavigateToSettings = onNavigateToSettings,
-                    onOpenSearchSheet = onOpenSearchSheet,
-                )
-            } else {
-                CompactSavedPage(
-                    state = state,
-                    isSettingsOpen = isSettingsOpen,
-                    notificationAccess = notificationAccess,
-                    onAction = dispatch,
-                    onNavigateToLyrics = onNavigateToLyrics,
-                    onNavigateToSettings = onNavigateToSettings,
-                    onOpenSearchSheet = onOpenSearchSheet,
-                )
-            }
+        val windowSizeClass = LocalWindowSizeClass.current
+
+        if (windowSizeClass.isWidthCompact()) {
+            CompactSavedPage(
+                state = state,
+                isSettingsOpen = isSettingsOpen,
+                notificationAccess = notificationAccess,
+                onAction = dispatch,
+                onNavigateToLyrics = onNavigateToLyrics,
+                onNavigateToSettings = onNavigateToSettings,
+                onOpenSearchSheet = onOpenSearchSheet,
+            )
+        } else {
+            WideSavedPage(
+                state = state,
+                isSettingsOpen = isSettingsOpen,
+                notificationAccess = notificationAccess,
+                onAction = dispatch,
+                onNavigateToLyrics = onNavigateToLyrics,
+                onNavigateToSettings = onNavigateToSettings,
+                onOpenSearchSheet = onOpenSearchSheet,
+            )
         }
 
         if (showNotificationAccessDialog) {
@@ -202,7 +198,6 @@ fun SavedPage(
 @Composable
 private fun WideSavedPage(
     state: SavedPageState,
-    maxWidth: Dp,
     isSettingsOpen: Boolean,
     notificationAccess: Boolean,
     onAction: (SavedPageAction) -> Unit,
@@ -210,7 +205,7 @@ private fun WideSavedPage(
     onNavigateToSettings: () -> Unit,
     onOpenSearchSheet: () -> Unit,
 ) {
-    val sidebarWidth = (maxWidth * 0.4f).coerceIn(300.dp, 380.dp)
+    val sidebarWidth = LocalWindowSizeClass.current.getSidebarWidth()
     val layoutDirection = LocalLayoutDirection.current
 
     Scaffold { paddingValues ->
@@ -271,84 +266,43 @@ private fun CompactSavedPage(
     onNavigateToSettings: () -> Unit,
     onOpenSearchSheet: () -> Unit,
 ) {
-    val windowSizeClass = LocalWindowSizeClass.current
     var showBottomBar by remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 Column {
-                    if (!windowSizeClass.isExpanded()) {
-                        LargeFlexibleTopAppBar(
-                            title = {
-                                Text(
-                                    text = stringResource(Res.string.rush_branding),
-                                    fontFamily = flexFontEmphasis(),
+                    LargeFlexibleTopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(Res.string.rush_branding),
+                                fontFamily = flexFontEmphasis(),
+                            )
+                        },
+                        subtitle = {
+                            Text(
+                                text = "${state.songsAsc.size} " + stringResource(Res.string.saved),
+                                fontFamily = flexFontRounded(),
+                            )
+                        },
+                        actions = {
+                            FilledTonalIconToggleButton(
+                                checked = isSettingsOpen,
+                                onCheckedChange = { onNavigateToSettings() },
+                                shapes = IconButtonDefaults.toggleableShapes(),
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.settings),
+                                    contentDescription = "Settings",
                                 )
-                            },
-                            subtitle = {
-                                Text(
-                                    text =
-                                        "${state.songsAsc.size} " +
-                                            stringResource(Res.string.saved),
-                                    fontFamily = flexFontRounded(),
-                                )
-                            },
-                            actions = {
-                                FilledTonalIconToggleButton(
-                                    checked = isSettingsOpen,
-                                    onCheckedChange = { onNavigateToSettings() },
-                                    shapes = IconButtonDefaults.toggleableShapes(),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.settings),
-                                        contentDescription = "Settings",
-                                    )
-                                }
-                            },
-                            colors =
-                                TopAppBarDefaults.topAppBarColors(
-                                    scrolledContainerColor =
-                                        MaterialTheme.colorScheme.surfaceContainer,
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                ),
-                        )
-                    } else {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    text = stringResource(Res.string.rush_branding),
-                                    fontFamily = flexFontEmphasis(),
-                                )
-                            },
-                            subtitle = {
-                                Text(
-                                    text =
-                                        "${state.songsAsc.size} " +
-                                            stringResource(Res.string.saved),
-                                    fontFamily = flexFontRounded(),
-                                )
-                            },
-                            actions = {
-                                FilledTonalIconToggleButton(
-                                    checked = isSettingsOpen,
-                                    onCheckedChange = { onNavigateToSettings() },
-                                    shapes = IconButtonDefaults.toggleableShapes(),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.settings),
-                                        contentDescription = "Settings",
-                                    )
-                                }
-                            },
-                            colors =
-                                TopAppBarDefaults.topAppBarColors(
-                                    scrolledContainerColor =
-                                        MaterialTheme.colorScheme.surfaceContainer,
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                ),
-                        )
-                    }
+                            }
+                        },
+                        colors =
+                            TopAppBarDefaults.topAppBarColors(
+                                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            ),
+                    )
 
                     Row(
                         modifier =
@@ -499,7 +453,12 @@ private fun Preview() {
 @Preview(device = "spec:width=891dp,height=411dp")
 @Composable
 private fun LandscapePreview() {
-    SavedPagePreviewContent()
+    // The wide layout needs a wide window size class, not the compact one previews default to.
+    CompositionLocalProvider(
+        LocalWindowSizeClass provides WindowSizeClass(minWidthDp = 891, minHeightDp = 411)
+    ) {
+        SavedPagePreviewContent()
+    }
 }
 
 @Composable

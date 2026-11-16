@@ -53,11 +53,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
@@ -74,7 +74,6 @@ import rush.shared.ui.generated.resources.*
 @Composable
 fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = Modifier) =
     PageFill(modifier = modifier) {
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         val uriHandler = LocalUriHandler.current
 
         var showLicenseBottomSheet by remember { mutableStateOf(false) }
@@ -84,11 +83,9 @@ fun About(versionName: String, onNavigateBack: () -> Unit, modifier: Modifier = 
         }
 
         Scaffold(
-            modifier =
-                Modifier.widthIn(max = 700.dp).nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.widthIn(max = ContentMaxWidth),
             topBar = {
                 TopAppBar(
-                    scrollBehavior = scrollBehavior,
                     title = {
                         Text(
                             text = stringResource(Res.string.about),

@@ -27,7 +27,6 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -93,7 +92,10 @@ import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.CardColors
 import com.shub39.rush.shared.core.enums.LyricsAlignment
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.LyricsMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.isLyricsPortrait
 import com.shub39.rush.shared.ui.audioDependentBackgrounds
 import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.component.Empty
@@ -163,6 +165,7 @@ fun LyricsPageContent(
 ) =
     PageFill(modifier = modifier) {
         val lazyListState = rememberLazyListState()
+        val windowSizeClass = LocalWindowSizeClass.current
 
         val (cardBackground, cardContent) = getCardColors(state)
         val (hypnoticColor1, hypnoticColor2) = getHypnoticColors(state)
@@ -231,7 +234,7 @@ fun LyricsPageContent(
         }
 
         // Content Start
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier.fillMaxSize().keepScreenOn().pointerInput(Unit) {
                     awaitPointerEventScope {
@@ -300,8 +303,8 @@ fun LyricsPageContent(
                                     hypnoticColor2 = hypnoticColor2,
                                 )
 
-                                Column(modifier = Modifier.widthIn(max = 1100.dp)) {
-                                    if (this@BoxWithConstraints.maxWidth < 640.dp) {
+                                Column(modifier = Modifier.widthIn(max = LyricsMaxWidth)) {
+                                    if (windowSizeClass.isLyricsPortrait()) {
                                         // portrait ui
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),

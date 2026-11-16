@@ -51,7 +51,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.interfaces.CorrectionSearchResult
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
 import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.lyrics.LrcCorrect
@@ -75,7 +77,7 @@ fun LrcCorrectDialog(
 
     RushDialog(
         onDismissRequest = { action(LyricsPageAction.OnLyricsCorrect(false)) },
-        modifier = Modifier.heightIn(max = 700.dp),
+        modifier = Modifier.heightIn(max = LocalWindowSizeClass.current.getDialogMaxHeight()),
         padding = 0.dp,
     ) {
         Column(

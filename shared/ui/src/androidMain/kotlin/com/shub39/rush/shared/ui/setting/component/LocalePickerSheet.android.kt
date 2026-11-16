@@ -40,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
 import com.shub39.rush.shared.ui.component.RushBottomSheet
 import com.shub39.rush.shared.ui.listItemColors
 import com.shub39.rush.shared.ui.segmentedListItemShapes
@@ -101,7 +103,9 @@ actual fun LocalePickerSheet(onDismissRequest: () -> Unit, modifier: Modifier) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 contentPadding = PaddingValues(bottom = 60.dp),
-                modifier = Modifier.heightIn(max = 600.dp).clip(shapes.large),
+                modifier =
+                    Modifier.heightIn(max = LocalWindowSizeClass.current.getDialogMaxHeight())
+                        .clip(shapes.large),
             ) {
                 item {
                     SegmentedListItem(

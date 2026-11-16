@@ -48,6 +48,8 @@ import com.shub39.rush.shared.core.dataclasses.ParsedLine
 import com.shub39.rush.shared.core.dataclasses.ParsedWord
 import com.shub39.rush.shared.core.dataclasses.WaveColors
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getPreviewHeight
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.lyrics.LyricsPageState
 import com.shub39.rush.shared.ui.lyrics.LyricsState
@@ -153,7 +155,10 @@ fun LyricsCustomisationPreview(
                         LazyColumn(
                             state = lazyListState,
                             contentPadding = PaddingValues(vertical = 16.dp),
-                            modifier = Modifier.heightIn(max = 300.dp),
+                            modifier =
+                                Modifier.heightIn(
+                                    max = LocalWindowSizeClass.current.getPreviewHeight()
+                                ),
                             verticalArrangement =
                                 Arrangement.spacedBy(
                                     with(LocalDensity.current) {

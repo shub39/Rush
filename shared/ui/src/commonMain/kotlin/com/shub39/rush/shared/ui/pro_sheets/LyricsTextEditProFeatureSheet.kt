@@ -55,7 +55,9 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shub39.rush.shared.core.enums.LyricsAlignment
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.getPreviewHeight
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
@@ -201,7 +203,8 @@ private fun TextPreview(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Card(
-            modifier = Modifier.fillMaxWidth().height(280.dp),
+            modifier =
+                Modifier.fillMaxWidth().height(LocalWindowSizeClass.current.getPreviewHeight()),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),
         ) {

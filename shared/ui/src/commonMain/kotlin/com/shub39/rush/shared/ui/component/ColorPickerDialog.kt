@@ -19,11 +19,11 @@ package com.shub39.rush.shared.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -41,7 +41,8 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
-import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.getColorPickerSize
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.done
@@ -67,19 +68,28 @@ fun ColorPickerDialog(
     val windowSizeClass = LocalWindowSizeClass.current
     val controller = rememberColorPickerController()
 
+    // Fill the dialog width on compact windows (a fixed size would overflow a phone) and use a
+    // square derived from the window size class everywhere else.
+    val pickerModifier =
+        if (windowSizeClass.isWidthCompact()) {
+            Modifier.fillMaxWidth().aspectRatio(1f)
+        } else {
+            Modifier.size(windowSizeClass.getColorPickerSize())
+        }
+
     RushDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = modifier.padding(horizontal = 32.dp),
     ) {
-        if (!windowSizeClass.isExpanded()) {
+        if (windowSizeClass.isWidthCompact()) {
             Column(
                 modifier = Modifier.wrapContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 HsvColorPicker(
-                    modifier = Modifier.width(350.dp).height(300.dp).padding(top = 10.dp),
+                    modifier = pickerModifier.padding(top = 10.dp),
                     initialColor = initialColor,
                     controller = controller,
                 )
@@ -119,7 +129,7 @@ fun ColorPickerDialog(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 HsvColorPicker(
-                    modifier = Modifier.width(250.dp).height(200.dp),
+                    modifier = pickerModifier,
                     initialColor = initialColor,
                     controller = controller,
                 )

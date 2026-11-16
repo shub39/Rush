@@ -29,13 +29,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
 import com.shub39.rush.shared.ui.app.GlobalAction
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.lyrics.ManageSystemBars
@@ -134,7 +134,11 @@ fun RushNavDisplay(
                                             topLevelBackStack.removeLast()
                                             topLevelBackStack.addTopLevel(Routes.Lyrics.LyricsRoot)
                                         },
-                                        modifier = Modifier.fillMaxWidth().heightIn(max = 700.dp),
+                                        modifier =
+                                            Modifier.fillMaxWidth()
+                                                .heightIn(
+                                                    max = windowSizeClass.getDialogMaxHeight()
+                                                ),
                                     )
                                 }
                             }

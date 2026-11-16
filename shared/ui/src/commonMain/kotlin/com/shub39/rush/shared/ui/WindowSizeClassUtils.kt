@@ -16,7 +16,18 @@
  */
 package com.shub39.rush.shared.ui
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+
+/** Max width for single column content (settings, forms) so text lines stay readable. */
+val ContentMaxWidth: Dp = 700.dp
+
+/** Max width of the lyrics column on the lyrics page. */
+val LyricsMaxWidth: Dp = 1100.dp
+
+/** Width below which the lyrics page stacks the artwork above the lyrics. */
+private const val LYRICS_PORTRAIT_WIDTH_BREAKPOINT = 640
 
 enum class WindowSize {
     COMPACT,
@@ -24,20 +35,80 @@ enum class WindowSize {
     EXPANDED;
 
     companion object {
-        fun WindowSizeClass.getWindowSize(): WindowSize {
-            return if (isAtLeastBreakpoint(840, 900)) {
+        fun WindowSizeClass.getWidthSize(): WindowSize {
+            return if (isWidthAtLeastBreakpoint(900)) {
                 EXPANDED
-            } else if (isAtLeastBreakpoint(600, 480)) {
+            } else if (isWidthAtLeastBreakpoint(480)) {
                 MEDIUM
             } else {
                 COMPACT
             }
         }
 
-        fun WindowSizeClass.isExpanded(): Boolean = getWindowSize() == EXPANDED
+        fun WindowSizeClass.getHeightSize(): WindowSize {
+            return if (isHeightAtLeastBreakpoint(840)) {
+                EXPANDED
+            } else if (isHeightAtLeastBreakpoint(600)) {
+                MEDIUM
+            } else {
+                COMPACT
+            }
+        }
 
-        fun WindowSizeClass.isCompact(): Boolean = getWindowSize() == COMPACT
+        fun WindowSizeClass.isWidthExpanded(): Boolean = getWidthSize() == EXPANDED
 
-        fun WindowSizeClass.isMedium(): Boolean = getWindowSize() == MEDIUM
+        fun WindowSizeClass.isHeightExpanded(): Boolean = getHeightSize() == EXPANDED
+
+        fun WindowSizeClass.isWidthCompact(): Boolean = getWidthSize() == COMPACT
+
+        fun WindowSizeClass.isHeightCompact(): Boolean = getHeightSize() == COMPACT
+
+        fun WindowSizeClass.isWidthMedium(): Boolean = getWidthSize() == MEDIUM
+
+        fun WindowSizeClass.isHeightMedium(): Boolean = getHeightSize() == MEDIUM
+
+        /** True when the lyrics page should stack content instead of placing it side by side. */
+        fun WindowSizeClass.isLyricsPortrait(): Boolean =
+            !isWidthAtLeastBreakpoint(LYRICS_PORTRAIT_WIDTH_BREAKPOINT)
+
+        /** Max height for dialogs and sheets so they don't fill a short window edge to edge. */
+        fun WindowSizeClass.getDialogMaxHeight(): Dp =
+            when (getHeightSize()) {
+                COMPACT -> 560.dp
+                MEDIUM -> 640.dp
+                EXPANDED -> 720.dp
+            }
+
+        /** Height of card and lyrics previews shown inside sheets. */
+        fun WindowSizeClass.getPreviewHeight(): Dp =
+            when (getHeightSize()) {
+                COMPACT -> 200.dp
+                MEDIUM -> 260.dp
+                EXPANDED -> 320.dp
+            }
+
+        /** Width of the sidebar in wide two pane pages. */
+        fun WindowSizeClass.getSidebarWidth(): Dp =
+            when (getWidthSize()) {
+                COMPACT -> 300.dp
+                MEDIUM -> 320.dp
+                EXPANDED -> 380.dp
+            }
+
+        /** Max width of bottom sheets so they don't stretch across wide windows. */
+        fun WindowSizeClass.getSheetMaxWidth(): Dp =
+            when (getWidthSize()) {
+                COMPACT -> 480.dp
+                MEDIUM -> 600.dp
+                EXPANDED -> 700.dp
+            }
+
+        /** Edge length of the color picker inside the color picker dialog on wide windows. */
+        fun WindowSizeClass.getColorPickerSize(): Dp =
+            when (getWidthSize()) {
+                COMPACT -> 280.dp
+                MEDIUM -> 320.dp
+                EXPANDED -> 360.dp
+            }
     }
 }

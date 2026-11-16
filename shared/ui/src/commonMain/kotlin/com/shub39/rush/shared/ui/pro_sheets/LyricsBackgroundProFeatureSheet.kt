@@ -53,7 +53,9 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.WaveColors
 import com.shub39.rush.shared.core.enums.LyricsBackground
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.WindowSize.Companion.getPreviewHeight
 import com.shub39.rush.shared.ui.lyrics.ApplyLyricsBackground
 import com.shub39.rush.shared.ui.theme.flexFontEmphasis
 import com.shub39.rush.shared.ui.theme.flexFontRounded
@@ -168,7 +170,8 @@ private fun BackgroundPreview(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Card(
-            modifier = Modifier.fillMaxWidth().height(280.dp),
+            modifier =
+                Modifier.fillMaxWidth().height(LocalWindowSizeClass.current.getPreviewHeight()),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),
         ) {

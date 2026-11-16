@@ -67,7 +67,7 @@ import com.shub39.rush.shared.core.dataclasses.SongDetails
 import com.shub39.rush.shared.core.enums.CardTheme
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.RushPreviewWrapper
-import com.shub39.rush.shared.ui.WindowSize.Companion.isExpanded
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthExpanded
 import com.shub39.rush.shared.ui.pxToDp
 import com.shub39.rush.shared.ui.share.component.cards.AlbumArt
 import com.shub39.rush.shared.ui.share.component.cards.BratShareCard
@@ -219,7 +219,7 @@ fun SharePageContent(
                 exit = fadeOut(),
                 modifier =
                     Modifier.align(
-                            if (!windowSizeClass.isExpanded()) {
+                            if (!windowSizeClass.isWidthExpanded()) {
                                 Alignment.BottomCenter
                             } else {
                                 Alignment.BottomEnd
@@ -304,7 +304,7 @@ fun SharePageContent(
 
             FilledTonalIconButton(
                 onClick = onDismiss,
-                modifier = Modifier.align(Alignment.TopStart).padding(32.dp),
+                modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.arrow_back),

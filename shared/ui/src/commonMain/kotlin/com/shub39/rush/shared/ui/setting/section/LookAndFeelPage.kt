@@ -60,6 +60,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
 import com.shub39.rush.shared.ui.component.ListSelect
@@ -117,7 +118,7 @@ fun LookAndFeelPage(
                     },
                 )
             },
-            modifier = Modifier.widthIn(max = 700.dp),
+            modifier = Modifier.widthIn(max = ContentMaxWidth),
         ) { padding ->
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.component.RushDialog
@@ -89,7 +90,7 @@ fun SettingRootPage(
         var showLocalePicker by remember { mutableStateOf(false) }
 
         Scaffold(
-            modifier = Modifier.widthIn(max = 700.dp),
+            modifier = Modifier.widthIn(max = ContentMaxWidth),
             topBar = {
                 TopAppBar(
                     title = {
