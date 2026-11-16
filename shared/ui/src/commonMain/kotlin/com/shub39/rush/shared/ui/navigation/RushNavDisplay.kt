@@ -137,7 +137,8 @@ fun RushNavDisplay(
                                         // Caps the sheet on tall windows. In compact height windows
                                         // the
                                         // keyboard is the real constraint, which the sheet content
-                                        // handles by pinning the search field as a sticky header.
+                                        // handles by keeping the field at the bottom and shrinking
+                                        // the list.
                                         modifier =
                                             Modifier.fillMaxWidth()
                                                 .heightIn(
