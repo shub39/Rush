@@ -32,7 +32,9 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
@@ -40,7 +42,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -159,22 +160,7 @@ fun SharePageContent(
             }
             .heightIn(max = pxToDp(1900))
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = onDismiss) {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Navigate Back",
-                        )
-                    }
-                },
-            )
-        },
-    ) { paddingValues ->
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         BoxWithConstraints(
             modifier = Modifier.padding(paddingValues).fillMaxSize(),
             contentAlignment = Alignment.Center,
@@ -214,98 +200,14 @@ fun SharePageContent(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.fillMaxSize(),
                         ) {
-                            when (state.cardTheme) {
-                                SPOTIFY ->
-                                    SpotifyShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                RUSHED ->
-                                    RushedShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                HYPNOTIC ->
-                                    HypnoticShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                VERTICAL ->
-                                    VerticalShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                QUOTE ->
-                                    QuoteShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                COUPLET ->
-                                    CoupletShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                MESSY ->
-                                    MessyCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                        seed = messyCardSeed,
-                                    )
-
-                                ALBUM_ART ->
-                                    AlbumArt(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                        selectedImage = selectedImage,
-                                        albumArtShape = state.albumArtShape.toMaterialShape(),
-                                    )
-
-                                BRAT ->
-                                    BratShareCard(
-                                        modifier = cardModifier,
-                                        song = state.songDetails,
-                                        sortedLines = state.selectedLines,
-                                        cardColors = cardColor,
-                                        cardCorners = cardCorners,
-                                    )
-                            }
+                            CardSwitcher(
+                                state = state,
+                                cardModifier = cardModifier,
+                                cardColor = cardColor,
+                                cardCorners = cardCorners,
+                                selectedImage = selectedImage,
+                                messyCardSeed = messyCardSeed,
+                            )
                         }
                     }
                 }
@@ -399,6 +301,121 @@ fun SharePageContent(
                     }
                 }
             }
+
+            FilledTonalIconButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.TopStart).padding(32.dp),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.arrow_back),
+                    contentDescription = "Navigate Back",
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CardSwitcher(
+    state: SharePageState,
+    cardModifier: Modifier,
+    cardColor: CardColors,
+    cardCorners: RoundedCornerShape,
+    selectedImage: PlatformFile?,
+    messyCardSeed: Long,
+) {
+    Box(contentAlignment = Center, modifier = Modifier.fillMaxSize()) {
+        when (state.cardTheme) {
+            SPOTIFY ->
+                SpotifyShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            RUSHED ->
+                RushedShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    selectedImage = selectedImage,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            HYPNOTIC ->
+                HypnoticShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            VERTICAL ->
+                VerticalShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            QUOTE ->
+                QuoteShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            COUPLET ->
+                CoupletShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            MESSY ->
+                MessyCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                    seed = messyCardSeed,
+                )
+
+            ALBUM_ART ->
+                AlbumArt(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                    selectedImage = selectedImage,
+                    albumArtShape = state.albumArtShape.toMaterialShape(),
+                )
+
+            BRAT ->
+                BratShareCard(
+                    modifier = cardModifier,
+                    song = state.songDetails,
+                    sortedLines = state.selectedLines,
+                    cardColors = cardColor,
+                    cardCorners = cardCorners,
+                )
         }
     }
 }
