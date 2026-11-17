@@ -66,11 +66,21 @@ kotlin {
     }
 }
 
-val appVersion = execute("awk", "/^## / {sub(/^## /, \"\"); print; exit}", "CHANGELOG.md")
+val appVersion =
+    execute(
+        "awk",
+        "/^## / {sub(/^## /, \"\"); print; exit}",
+        rootProject.file("CHANGELOG.md").absolutePath,
+    )
 
 nucleus.application {
     mainClass = "com.shub39.rush.MainKt"
     jvmArgs += listOf("-Xmx512m")
+
+    val envJavaHome = System.getenv("JAVA_HOME")
+    if (envJavaHome != null && File(envJavaHome, "bin/jpackage").exists()) {
+        javaHome = envJavaHome
+    }
 
     buildTypes { release { proguard { isEnabled = false } } }
 
@@ -85,9 +95,18 @@ nucleus.application {
         copyright = "Copyright 2025 Shubham Gorai"
         licenseFile.set(project.file("LICENSE"))
 
-        modules("java.sql", "java.net.http", "jdk.unsupported")
+        modules(
+            "java.sql",
+            "java.net.http",
+            "java.desktop",
+            "java.logging",
+            "java.naming",
+            "java.management",
+            "java.xml",
+            "jdk.unsupported",
+        )
 
-        cleanupNativeLibs = true
+        cleanupNativeLibs = false
         artifactName = $$"${name}-${version}-${os}-${arch}.${ext}"
 
         linux {
