@@ -65,7 +65,7 @@ actual fun LazyListScope.otherOptions(
             ListItem(
                 colors = listItemColors(),
                 modifier = Modifier.clip(leadingItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.fullscreen)) },
+                content = { Text(text = stringResource(Res.string.fullscreen)) },
                 supportingContent = { Text(text = stringResource(Res.string.fullscreen_desc)) },
                 trailingContent = {
                     ExpressiveSwitch(
@@ -89,7 +89,7 @@ actual fun LazyListScope.otherOptions(
             ListItem(
                 colors = listItemColors(),
                 modifier = Modifier.clip(endItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.romanization)) },
+                content = { Text(text = stringResource(Res.string.romanization)) },
                 supportingContent = { Text(text = stringResource(Res.string.romanization_desc)) },
                 trailingContent = {
                     ExpressiveSwitch(
