@@ -454,24 +454,26 @@ fun LyricsPageContent(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         ) {
-                                            AnimatedVisibility(visible = controlsVisible) {
-                                                Column(
-                                                    modifier =
-                                                        Modifier.animateContentSize()
-                                                            .verticalScroll(rememberScrollState())
-                                                ) {
-                                                    Actions(
-                                                        state = actionsState,
-                                                        action = action,
-                                                        notificationAccess = notificationAccess,
-                                                        cardBackground = cardBackground,
-                                                        cardContent = cardContent,
-                                                        onShare = onShare,
-                                                        onEdit = onNavigateToCustomisations,
-                                                        isCustomisationsOpened =
-                                                            isCustomisationsOpened,
-                                                    )
-                                                }
+                                            val visible by
+                                                animateFloatAsState(
+                                                    targetValue = if (controlsVisible) 1f else 0f
+                                                )
+                                            Column(
+                                                modifier =
+                                                    Modifier.animateContentSize()
+                                                        .verticalScroll(rememberScrollState())
+                                                        .alpha(visible)
+                                            ) {
+                                                Actions(
+                                                    state = actionsState,
+                                                    action = action,
+                                                    notificationAccess = notificationAccess,
+                                                    cardBackground = cardBackground,
+                                                    cardContent = cardContent,
+                                                    onShare = onShare,
+                                                    onEdit = onNavigateToCustomisations,
+                                                    isCustomisationsOpened = isCustomisationsOpened,
+                                                )
                                             }
 
                                             Column(

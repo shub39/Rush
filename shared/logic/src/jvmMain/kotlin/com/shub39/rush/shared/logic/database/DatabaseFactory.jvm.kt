@@ -29,7 +29,10 @@ actual class DatabaseFactory {
         val useHome = System.getProperty("user.home")
         val appDataDir =
             when {
-                os.contains("win") -> File(System.getenv("APPDATA"), "Rush")
+                os.contains("win") -> {
+                    val appData = System.getenv("APPDATA") ?: "$useHome\\AppData\\Roaming"
+                    File(appData, "Rush")
+                }
                 os.contains("mac") -> File(useHome, "Library/Application Support/Rush")
                 else -> File(useHome, ".local/share/Rush")
             }

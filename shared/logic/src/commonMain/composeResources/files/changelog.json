@@ -1,5 +1,14 @@
 [
   {
+    "version": "7.5.1",
+    "changes": [
+      "Updated Translations",
+      "Miscellaneous UI fixes",
+      "Fixed Desktop Builds by @Irgendeinwer",
+      "Improved search sheet UX by @a-mandala"
+    ]
+  },
+  {
     "version": "7.5.0",
     "changes": [
       "Fixed mismatches between landscsape and portrait versions of screens",
@@ -72,16 +81,6 @@
     "version": "7.0.3",
     "changes": [
       "Fixed Audio dependent Lyrics Backgrounds not applying"
-    ]
-  },
-  {
-    "version": "7.0.2",
-    "changes": [
-      "Revamped Navigation, Animations Several UI components",
-      "Added better support for expanded screens",
-      "Fixed inconsistent share cards based on device",
-      "Updated Lyrics customization defaults",
-      "Updated Share card customization defaults"
     ]
   }
 ]

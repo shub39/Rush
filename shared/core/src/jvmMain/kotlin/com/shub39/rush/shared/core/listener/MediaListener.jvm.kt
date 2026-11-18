@@ -138,8 +138,7 @@ actual object MediaListener {
             val output = reader.use { it.readText() }
             process.waitFor()
             output.trim()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
             null
         }
     }

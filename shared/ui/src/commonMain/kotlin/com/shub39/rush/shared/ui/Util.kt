@@ -43,6 +43,8 @@ expect fun hypnoticAvailable(): Boolean
 
 expect fun blurAvailable(): Boolean
 
+expect fun agslAvailable(): Boolean
+
 expect suspend fun Clipboard.copyToClipboard(text: String)
 
 fun Map<Int, String>.sortMapByKeys(take: Int = 16): Map<Int, String> {
