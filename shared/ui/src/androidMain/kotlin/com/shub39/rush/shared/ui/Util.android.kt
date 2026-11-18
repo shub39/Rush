@@ -36,6 +36,9 @@ actual fun blurAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_COD
 actual fun hypnoticAvailable(): Boolean =
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+actual fun agslAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
 actual suspend fun Clipboard.copyToClipboard(text: String) {
     setClipEntry(ClipEntry(ClipData.newPlainText("lyrics", text)))
 }
