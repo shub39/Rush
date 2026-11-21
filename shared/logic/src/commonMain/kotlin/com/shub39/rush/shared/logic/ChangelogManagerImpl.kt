@@ -19,6 +19,7 @@ package com.shub39.rush.shared.logic
 import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.dataclasses.Changelog
 import com.shub39.rush.shared.core.interfaces.ChangelogManager
+import com.shub39.rush.shared.logic.generated.ChangelogData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
-import rush.shared.logic.generated.resources.Res
 
 @Single(binds = [ChangelogManager::class])
 class ChangelogManagerImpl : ChangelogManager {
@@ -41,13 +41,11 @@ class ChangelogManagerImpl : ChangelogManager {
 
     private suspend fun getChangelogs() {
         try {
-            val rawJson = Res.readBytes("files/changelog.json").decodeToString()
-
-            val json = Json.decodeFromString<Changelog>(rawJson)
+            val json = Json.decodeFromString<Changelog>(ChangelogData.JSON)
 
             _changelogs.update { json }
         } catch (e: Exception) {
-            RushLogger.e("ChangelogManager", "Error reading changelog", e)
+            RushLogger.e("ChangelogManager", "Unable to extract changelog", e)
         }
     }
 }
