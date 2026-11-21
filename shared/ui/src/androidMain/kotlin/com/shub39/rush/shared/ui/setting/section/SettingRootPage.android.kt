@@ -38,7 +38,7 @@ import rush.shared.ui.generated.resources.rush_pro
 actual fun LazyListScope.rushProItem(onShowPaywall: () -> Unit) {
     item {
         ListItem(
-            headlineContent = { Text(text = stringResource(Res.string.rush_pro)) },
+            content = { Text(text = stringResource(Res.string.rush_pro)) },
             colors = listItemColors(),
             modifier = Modifier.clip(detachedItemShape()).clickable { onShowPaywall() },
             trailingContent = {

@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,6 +57,8 @@ import com.shub39.rush.shared.core.enums.CornerRadius
 import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
+import com.shub39.rush.shared.ui.component.LazierBlur
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.component.ListItemCard
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.endItemShape
@@ -99,13 +100,15 @@ fun SharePageEdit(
         )
     }
 
-    LazyColumn(
+    LazierColumn(
         modifier =
             modifier
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+        extraPadding = PaddingValues(0.dp),
+        blur = LazierBlur.None,
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

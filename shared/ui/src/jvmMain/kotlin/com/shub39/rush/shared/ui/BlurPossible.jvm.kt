@@ -14,18 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.shub39.rush.shared.logic.network.LyricsPlusApi
-import kotlin.test.Test
-import kotlinx.coroutines.runBlocking
+package com.shub39.rush.shared.ui
 
-@kotlin.experimental.ExperimentalNativeApi
-class LyricsPlusTest {
-    val api = LyricsPlusApi()
+actual fun blurPossible(): Boolean = true
 
-    @Test
-    fun testApi() = runBlocking {
-        val result = api.fetchTTML("DANCE...", "Slayyyter")
-        println(result)
-        assert(result != null)
-    }
-}
+actual fun progressiveBlurPossible(): Boolean = false

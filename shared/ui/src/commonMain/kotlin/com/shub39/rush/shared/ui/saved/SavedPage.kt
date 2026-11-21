@@ -21,29 +21,24 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -59,7 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
@@ -72,8 +67,14 @@ import com.shub39.rush.shared.ui.RushPreviewWrapper
 import com.shub39.rush.shared.ui.WindowSize.Companion.getSidebarWidth
 import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
 import com.shub39.rush.shared.ui.component.Empty
+import com.shub39.rush.shared.ui.component.ExpressiveTopBar
+import com.shub39.rush.shared.ui.component.ExpressiveTopBarStyle
+import com.shub39.rush.shared.ui.component.LazierBlur
+import com.shub39.rush.shared.ui.component.LazierColumn
+import com.shub39.rush.shared.ui.component.LazierDefaults
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
+import com.shub39.rush.shared.ui.component.PageInsets
 import com.shub39.rush.shared.ui.component.RushDialog
 import com.shub39.rush.shared.ui.saved.component.RushModeToggle
 import com.shub39.rush.shared.ui.saved.component.SavedPageSidebar
@@ -206,7 +207,6 @@ private fun WideSavedPage(
     onOpenSearchSheet: () -> Unit,
 ) {
     val sidebarWidth = LocalWindowSizeClass.current.getSidebarWidth()
-    val layoutDirection = LocalLayoutDirection.current
 
     Scaffold { paddingValues ->
         Row(modifier = Modifier.fillMaxSize()) {
@@ -223,13 +223,10 @@ private fun WideSavedPage(
             Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
                 SavedSongsPane(
                     state = state,
-                    contentPadding =
-                        PaddingValues(
-                            start = paddingValues.calculateLeftPadding(layoutDirection) + 16.dp,
-                            top = paddingValues.calculateTopPadding() + 16.dp,
-                            end = paddingValues.calculateEndPadding(layoutDirection) + 16.dp,
-                            bottom = paddingValues.calculateBottomPadding() + 80.dp,
-                        ),
+                    contentPadding = paddingValues,
+                    extraPadding =
+                        LazierDefaults.pagePadding(navBarClearance = PageInsets.NavBarHeight),
+                    blur = LazierBlur.None,
                     onAction = onAction,
                     onNavigateToLyrics = onNavigateToLyrics,
                     modifier = Modifier.fillMaxSize(),
@@ -267,54 +264,45 @@ private fun CompactSavedPage(
     onOpenSearchSheet: () -> Unit,
 ) {
     var showBottomBar by remember { mutableStateOf(true) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
-                Column {
-                    LargeFlexibleTopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(Res.string.rush_branding),
-                                fontFamily = flexFontEmphasis(),
+                ExpressiveTopBar(
+                    style = ExpressiveTopBarStyle.LargeFlexible,
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.rush_branding),
+                            fontFamily = flexFontEmphasis(),
+                        )
+                    },
+                    subtitle = {
+                        Text(
+                            text = "${state.songsAsc.size} " + stringResource(Res.string.saved),
+                            fontFamily = flexFontRounded(),
+                        )
+                    },
+                    actions = {
+                        FilledTonalIconToggleButton(
+                            checked = isSettingsOpen,
+                            onCheckedChange = { onNavigateToSettings() },
+                            shapes = IconButtonDefaults.toggleableShapes(),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.settings),
+                                contentDescription = "Settings",
                             )
-                        },
-                        subtitle = {
-                            Text(
-                                text = "${state.songsAsc.size} " + stringResource(Res.string.saved),
-                                fontFamily = flexFontRounded(),
-                            )
-                        },
-                        actions = {
-                            FilledTonalIconToggleButton(
-                                checked = isSettingsOpen,
-                                onCheckedChange = { onNavigateToSettings() },
-                                shapes = IconButtonDefaults.toggleableShapes(),
-                            ) {
-                                Icon(
-                                    painter = painterResource(Res.drawable.settings),
-                                    contentDescription = "Settings",
-                                )
-                            }
-                        },
-                        colors =
-                            TopAppBarDefaults.topAppBarColors(
-                                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                    )
-
-                    Row(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceContainer,
-                                    shape =
-                                        RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-                                )
-                    ) {
+                        }
+                    },
+                    bottomContent = {
                         Row(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier =
+                                Modifier.fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
                             horizontalArrangement =
                                 Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                         ) {
@@ -334,32 +322,21 @@ private fun CompactSavedPage(
                                 },
                             )
                         }
-                    }
-                }
-            }
-        ) { paddingValues ->
-            Column(
-                modifier =
-                    Modifier.padding(
-                            start =
-                                paddingValues.calculateLeftPadding(LocalLayoutDirection.current),
-                            end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-                        )
-                        .fillMaxSize()
-            ) {
-                SavedSongsPane(
-                    state = state,
-                    contentPadding =
-                        PaddingValues(
-                            top = paddingValues.calculateTopPadding() + 16.dp,
-                            bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                        ),
-                    onAction = onAction,
-                    onNavigateToLyrics = onNavigateToLyrics,
-                    modifier = Modifier.fillMaxSize(),
-                    onShowBottomBarChange = { showBottomBar = it },
+                    },
                 )
-            }
+            },
+        ) { paddingValues ->
+            SavedSongsPane(
+                state = state,
+                contentPadding = paddingValues,
+                extraPadding =
+                    LazierDefaults.pagePadding(navBarClearance = PageInsets.NavBarHeight),
+                blur = LazierBlur.Top,
+                onAction = onAction,
+                onNavigateToLyrics = onNavigateToLyrics,
+                modifier = Modifier.fillMaxSize(),
+                onShowBottomBarChange = { showBottomBar = it },
+            )
         }
 
         AnimatedVisibility(
@@ -399,6 +376,8 @@ private fun SavedSongsPane(
     onAction: (SavedPageAction) -> Unit,
     onNavigateToLyrics: () -> Unit,
     modifier: Modifier = Modifier,
+    extraPadding: PaddingValues = LazierDefaults.pagePadding(),
+    blur: LazierBlur = LazierBlur.Top,
     onShowBottomBarChange: (Boolean) -> Unit = {},
 ) {
     if (state.songsAsc.isEmpty()) {
@@ -420,10 +399,12 @@ private fun SavedSongsPane(
 
             LaunchedEffect(showBottomBarListener) { onShowBottomBarChange(showBottomBarListener) }
 
-            LazyColumn(
+            LazierColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize().animateContentSize(),
                 contentPadding = contentPadding,
+                extraPadding = extraPadding,
+                blur = blur,
             ) {
                 items(items = songs, key = { it.id }) { song ->
                     SongCard(

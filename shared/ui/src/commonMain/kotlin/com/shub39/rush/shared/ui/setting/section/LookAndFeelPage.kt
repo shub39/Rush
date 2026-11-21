@@ -24,13 +24,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.FilledTonalIconButton
@@ -42,8 +40,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,7 +51,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.enums.AppTheme
@@ -63,6 +58,8 @@ import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.component.ColorPickerDialog
 import com.shub39.rush.shared.ui.component.ExpressiveSwitch
+import com.shub39.rush.shared.ui.component.ExpressiveTopBar
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.detachedItemShape
@@ -97,17 +94,13 @@ fun LookAndFeelPage(
 
         Scaffold(
             topBar = {
-                TopAppBar(
+                ExpressiveTopBar(
                     title = {
                         Text(
                             text = stringResource(Res.string.look_and_feel),
                             fontFamily = flexFontEmphasis(),
                         )
                     },
-                    colors =
-                        TopAppBarDefaults.topAppBarColors(
-                            scrolledContainerColor = MaterialTheme.colorScheme.surface
-                        ),
                     navigationIcon = {
                         FilledTonalIconButton(onClick = onNavigateBack) {
                             Icon(
@@ -119,17 +112,9 @@ fun LookAndFeelPage(
                 )
             },
             modifier = Modifier.widthIn(max = ContentMaxWidth),
+            containerColor = MaterialTheme.colorScheme.surface,
         ) { padding ->
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding =
-                    PaddingValues(
-                        top = padding.calculateTopPadding() + 16.dp,
-                        bottom = padding.calculateBottomPadding() + 60.dp,
-                        start = padding.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                        end = padding.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                    ),
-            ) {
+            LazierColumn(modifier = Modifier.fillMaxSize(), contentPadding = padding) {
                 item {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(2.dp),

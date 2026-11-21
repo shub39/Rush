@@ -19,7 +19,6 @@ package com.shub39.rush.shared.ui.setting.section
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalIconButton
@@ -37,8 +35,6 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,7 +44,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
@@ -56,6 +51,8 @@ import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreState
 import com.shub39.rush.shared.ui.ContentMaxWidth
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.component.ExpressiveTopBar
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.component.PageFill
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.leadingItemShape
@@ -126,15 +123,12 @@ private fun BackupPageContent(
 ) {
     Scaffold(
         modifier = Modifier.widthIn(max = ContentMaxWidth),
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
+            ExpressiveTopBar(
                 title = {
                     Text(text = stringResource(Res.string.backup), fontFamily = flexFontEmphasis())
                 },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        scrolledContainerColor = MaterialTheme.colorScheme.surface
-                    ),
                 navigationIcon = {
                     FilledTonalIconButton(onClick = onNavigateBack) {
                         Icon(
@@ -146,15 +140,8 @@ private fun BackupPageContent(
             )
         },
     ) { paddingValues ->
-        LazyColumn(
-            contentPadding =
-                PaddingValues(
-                    top = paddingValues.calculateTopPadding() + 16.dp,
-                    bottom = paddingValues.calculateBottomPadding() + 60.dp,
-                    start =
-                        paddingValues.calculateLeftPadding(LocalLayoutDirection.current) + 16.dp,
-                    end = paddingValues.calculateRightPadding(LocalLayoutDirection.current) + 16.dp,
-                ),
+        LazierColumn(
+            contentPadding = paddingValues,
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
