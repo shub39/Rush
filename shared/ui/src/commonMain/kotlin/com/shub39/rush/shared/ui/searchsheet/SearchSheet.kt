@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -62,6 +61,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.component.LazierBlur
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.errorStringRes
@@ -106,7 +107,7 @@ fun SearchSheet(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        LazyColumn(
+        LazierColumn(
             modifier =
                 Modifier.weight(1f, fill = false)
                     .padding(horizontal = 16.dp)
@@ -114,6 +115,8 @@ fun SearchSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 8.dp),
+            extraPadding = PaddingValues(0.dp),
+            blur = LazierBlur.None,
         ) {
             state.error?.let { error ->
                 item {

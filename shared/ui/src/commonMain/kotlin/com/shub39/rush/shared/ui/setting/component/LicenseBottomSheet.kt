@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -41,6 +40,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.ui.LocalWindowSizeClass
 import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
+import com.shub39.rush.shared.ui.component.LazierBlur
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.component.RushBottomSheet
 
 // yeeted from nsh07/Tomato
@@ -353,11 +354,13 @@ fun LicenseBottomSheet(modifier: Modifier = Modifier, onDismissRequest: () -> Un
     }
 
     RushBottomSheet(onDismissRequest = onDismissRequest, padding = 0.dp) {
-        LazyColumn(
+        LazierColumn(
             modifier =
                 Modifier.clip(shapes.large)
                     .heightIn(max = LocalWindowSizeClass.current.getDialogMaxHeight()),
             contentPadding = PaddingValues(16.dp),
+            extraPadding = PaddingValues(0.dp),
+            blur = LazierBlur.None,
         ) {
             item {
                 Text(

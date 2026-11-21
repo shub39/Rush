@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SongUi
 import com.shub39.rush.shared.core.enums.SortOrder
+import com.shub39.rush.shared.ui.component.LazierDefaults
 import com.shub39.rush.shared.ui.component.ListSelect
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.saved.SavedPageAction
@@ -84,8 +85,7 @@ fun SavedPageSidebar(
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     shape = RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp),
                 )
-                .padding(contentPadding)
-                .padding(16.dp)
+                .padding(LazierDefaults.contentPaddingWith(contentPadding))
     ) {
         Column(
             modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
