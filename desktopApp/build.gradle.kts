@@ -64,7 +64,10 @@ kotlin {
     }
 }
 
-val appVersion = execute("awk", "/^## / {sub(/^## /, \"\"); print; exit}", "CHANGELOG.md")
+val appVersion =
+    rootProject.file("CHANGELOG.md").useLines { lines ->
+        lines.firstOrNull { it.startsWith("## ") }?.removePrefix("## ")?.trim()
+    } ?: "1.0.0"
 
 nucleus.application {
     mainClass = "com.shub39.rush.MainKt"
@@ -105,6 +108,3 @@ nucleus.application {
         }
     }
 }
-
-fun execute(vararg command: String): String =
-    providers.exec { commandLine(*command) }.standardOutput.asText.get().trim()

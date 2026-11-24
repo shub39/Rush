@@ -91,7 +91,6 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var publishJob: Job? = null
 
-    /** Synced lines of the loaded song, empty when it has none. */
     private val lines: StateFlow<List<TimedLine>> by lazy {
         session.state
             .map { it.song?.timedLines().orEmpty() }
@@ -104,11 +103,9 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
     }
 
     override fun onAttached(host: IslandHostHandle, info: HostInfo) {
-        // Same start-up the app does from MainActivity, so lyrics resolve without opening Rush
         MediaListener.startListening(applicationContext)
         rush.start()
 
-        // Only the publishing job is per host; lines and position keep running for the surface
         publishJob?.cancel()
         publishJob = scope.launch {
             session.state
@@ -130,7 +127,6 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
     }
 
     private fun publish(host: IslandHostHandle, info: HostInfo, title: String?) {
-        // Older Essentials builds have no attachments; publishing nothing keeps them unaffected
         if (!info.supportsAttachments) return
         val attachments =
             title?.let {
@@ -188,7 +184,6 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
                 },
                 label = "islandLyric",
             ) { shown ->
-                // Read by index so the outgoing line keeps its own text while it animates out
                 val line = timed.getOrNull(shown)?.text ?: current
                 val upcoming = timed.getOrNull(shown + 1)?.text ?: next
                 Column(Modifier.fillMaxWidth()) {
@@ -222,7 +217,6 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
 
     private data class TimedLine(val timeMs: Long, val text: String)
 
-    /** TTML when present (word synced source, background vocals skipped), otherwise LRC lines. */
     private fun SongUi.timedLines(): List<TimedLine> =
         ttmlLyrics
             ?.filterNot { it.isBackground }
@@ -233,7 +227,6 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
     private companion object {
         const val ATTACHMENT_KEY = "lyrics"
 
-        // Soft shadow so the lines stay readable over the host's light pools
         val LyricShadow = TextStyle(shadow = Shadow(Color.Black.copy(alpha = 0.6f), Offset(0f, 1f), blurRadius = 8f))
     }
 }

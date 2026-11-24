@@ -26,13 +26,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 
-/**
- * Playback position in ms, estimated every [tick] between [MediaListener]'s roughly once a second updates
- * as `position + speed * elapsed`.
- *
- * Small backward corrections (the player reporting slightly behind the estimate) are held so the current
- * lyric line never flickers back, while a real backward seek of more than [SEEK_THRESHOLD_MS] goes through.
- */
 fun interpolatedPlaybackPosition(tick: Duration = 100.milliseconds): Flow<Long> = channelFlow {
     var last = -1L
     combine(MediaListener.songPositionFlow, MediaListener.playbackSpeedFlow, ::Pair).collectLatest {
