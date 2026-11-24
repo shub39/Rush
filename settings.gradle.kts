@@ -47,12 +47,8 @@ include(":shared:core", ":shared:ui", ":shared:logic")
 
 include(":androidLibs:romanization", ":androidLibs:visualizer-helper")
 
+include(":androidLibs:island-sdk", ":androidLibs:island-sdk-compose")
+
 include(":androidApp")
 
 include(":desktopApp")
-
-include(":island-sdk", ":island-sdk-compose")
-
-project(":island-sdk").projectDir = file("../essentials/island-sdk")
-
-project(":island-sdk-compose").projectDir = file("../essentials/island-sdk-compose")

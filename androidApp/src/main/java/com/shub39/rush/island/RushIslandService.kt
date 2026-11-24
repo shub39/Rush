@@ -69,6 +69,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -108,8 +109,11 @@ class RushIslandService : ComposeIslandProviderService(), KoinComponent {
 
         publishJob?.cancel()
         publishJob = scope.launch {
-            session.state
-                .map { state -> state.song?.takeIf { it.timedLines().isNotEmpty() }?.title }
+            combine(session.state, rush.state) { state, rushState ->
+                    state.song
+                        ?.takeIf { rushState.enabled && it.timedLines().isNotEmpty() }
+                        ?.title
+                }
                 .distinctUntilChanged()
                 .collect { title -> publish(host, info, title) }
         }

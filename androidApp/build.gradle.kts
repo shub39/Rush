@@ -157,8 +157,7 @@ dependencies {
 
     implementation(projects.androidLibs.visualizerHelper)
     implementation(projects.androidLibs.romanization)
-
-    implementation(project(":island-sdk-compose"))
+    implementation(projects.androidLibs.islandSdkCompose)
 
     "playImplementation"(libs.purchases.ui)
     "playImplementation"(libs.purchases)

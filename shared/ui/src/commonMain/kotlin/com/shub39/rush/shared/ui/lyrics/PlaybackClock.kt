@@ -34,7 +34,8 @@ fun interpolatedPlaybackPosition(tick: Duration = 100.milliseconds): Flow<Long> 
         do {
             val estimate = position + (speed * start.elapsedNow().inWholeMilliseconds).toLong()
             val next =
-                if (last in (estimate + 1)..(estimate + SEEK_THRESHOLD_MS)) last else estimate
+                if (speed >= 0f && last in (estimate + 1)..(estimate + SEEK_THRESHOLD_MS)) last
+                else estimate
             last = next
             send(next)
             delay(tick)
