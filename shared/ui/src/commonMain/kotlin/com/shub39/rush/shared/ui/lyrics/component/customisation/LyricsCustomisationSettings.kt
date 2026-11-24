@@ -128,9 +128,7 @@ fun LazyListScope.lyricsCustomisationSettings(
                 ListItem(
                     colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = {
-                        Text(text = stringResource(Res.string.expressive_syllables))
-                    },
+                    content = { Text(text = stringResource(Res.string.expressive_syllables)) },
                     supportingContent = {
                         Text(
                             text = stringResource(Res.string.expressive_syllables_desc),
@@ -150,22 +148,22 @@ fun LazyListScope.lyricsCustomisationSettings(
 
             if (isShowingSynced && blurAvailable()) {
                 ListItem(
-                    colors = listItemColors(),
                     modifier = Modifier.clip(middleItemShape()),
-                    headlineContent = { Text(text = stringResource(Res.string.blur_synced)) },
                     trailingContent = {
                         ExpressiveSwitch(
                             checked = state.blurSyncedLyrics,
                             onCheckedChange = { onAction(LyricsPageAction.OnBlurSyncedChange(it)) },
                         )
                     },
+                    colors = listItemColors(),
+                    content = { Text(text = stringResource(Res.string.blur_synced)) },
                 )
             }
 
             ListItem(
                 colors = listItemColors(),
                 modifier = Modifier.clip(middleItemShape()),
-                headlineContent = { Text(text = stringResource(Res.string.hide_ui)) },
+                content = { Text(text = stringResource(Res.string.hide_ui)) },
                 supportingContent = { Text(text = stringResource(Res.string.hide_ui_desc)) },
                 trailingContent = {
                     ExpressiveSwitch(

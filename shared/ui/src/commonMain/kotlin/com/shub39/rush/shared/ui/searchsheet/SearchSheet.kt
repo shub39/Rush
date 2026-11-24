@@ -23,15 +23,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -42,6 +41,7 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,6 +61,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.SourceError
 import com.shub39.rush.shared.ui.RushPreviewWrapper
+import com.shub39.rush.shared.ui.component.LazierBlur
+import com.shub39.rush.shared.ui.component.LazierColumn
 import com.shub39.rush.shared.ui.detachedItemShape
 import com.shub39.rush.shared.ui.endItemShape
 import com.shub39.rush.shared.ui.errorStringRes
@@ -75,7 +77,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
-@OptIn(ExperimentalLayoutApi::class)
+/**
+ * The content of the search sheet.
+ *
+ * The field is anchored at the bottom so it stays still when changing results resize the sheet. Its
+ * minimum height is [TextFieldDefaults.MinHeight] so that a short window (a landscape phone with
+ * the keyboard up) cannot squeeze it. The list above takes whatever space is left and scrolls: it
+ * is measured with `weight(fill = false)` so it yields space to the field.
+ */
 @Composable
 fun SearchSheet(
     state: SearchSheetState,
@@ -98,61 +107,16 @@ fun SearchSheet(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        OutlinedTextField(
-            value = state.searchQuery,
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.search),
-                    contentDescription = "Search",
-                    modifier = Modifier.padding(2.dp),
-                )
-            },
-            trailingIcon = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(2.dp),
-                ) {
-                    AnimatedVisibility(
-                        visible = state.searchQuery.isNotBlank(),
-                        enter = fadeIn(animationSpec = tween(200)),
-                        exit = fadeOut(animationSpec = tween(200)),
-                    ) {
-                        IconButton(
-                            onClick = {
-                                onAction(SearchSheetAction.OnQueryChange(""))
-                                coroutineScope.launch {
-                                    focusRequester.requestFocus()
-                                    keyboardController?.show()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.delete),
-                                contentDescription = "Delete",
-                            )
-                        }
-                    }
-                }
-            },
-            onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
-            shape = MaterialTheme.shapes.extraLarge,
-            placeholder = { Text(stringResource(Res.string.search)) },
+        LazierColumn(
             modifier =
-                Modifier.fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .focusRequester(focusRequester),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-        )
-
-        LazyColumn(
-            modifier =
-                Modifier.padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                Modifier.weight(1f, fill = false)
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(16.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 8.dp),
+            extraPadding = PaddingValues(0.dp),
+            blur = LazierBlur.None,
         ) {
             state.error?.let { error ->
                 item {
@@ -219,7 +183,55 @@ fun SearchSheet(
                 item { LoadingIndicator(modifier = Modifier.size(60.dp)) }
             }
         }
-        //        }
+
+        OutlinedTextField(
+            value = state.searchQuery,
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.search),
+                    contentDescription = "Search",
+                    modifier = Modifier.padding(2.dp),
+                )
+            },
+            trailingIcon = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(2.dp),
+                ) {
+                    AnimatedVisibility(
+                        visible = state.searchQuery.isNotBlank(),
+                        enter = fadeIn(animationSpec = tween(200)),
+                        exit = fadeOut(animationSpec = tween(200)),
+                    ) {
+                        IconButton(
+                            onClick = {
+                                onAction(SearchSheetAction.OnQueryChange(""))
+                                coroutineScope.launch {
+                                    focusRequester.requestFocus()
+                                    keyboardController?.show()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.delete),
+                                contentDescription = "Delete",
+                            )
+                        }
+                    }
+                }
+            },
+            onValueChange = { onAction(SearchSheetAction.OnQueryChange(it)) },
+            shape = MaterialTheme.shapes.extraLarge,
+            placeholder = { Text(stringResource(Res.string.search)) },
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
+                    .heightIn(min = TextFieldDefaults.MinHeight)
+                    .focusRequester(focusRequester),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
+        )
     }
 }
 

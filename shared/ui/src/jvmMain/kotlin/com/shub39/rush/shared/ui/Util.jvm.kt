@@ -29,3 +29,5 @@ actual fun blurAvailable(): Boolean = true
 actual suspend fun Clipboard.copyToClipboard(text: String) {
     setClipEntry(ClipEntry(StringSelection(text)))
 }
+
+actual fun agslAvailable(): Boolean = true

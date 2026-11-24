@@ -29,14 +29,16 @@ import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.window.core.layout.WindowSizeClass
+import com.shub39.rush.shared.ui.PaneWindowSizeClass
 import com.shub39.rush.shared.ui.WindowSize
-import com.shub39.rush.shared.ui.WindowSize.Companion.isCompact
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
 
 /**
  * A [Scene] that displays two screens.
- * - In [WindowSize.EXPANDED], it uses a list-detail arrangement (40/60 split).
- * - In [WindowSize.COMPACT] or [WindowSize.MEDIUM], it uses a splitscreen from bottom (50/50
- *   vertical split).
+ * - When [isExpanded] is true (width is [WindowSize.MEDIUM] or [WindowSize.EXPANDED]), the panes
+ *   are placed side by side (60/40 split).
+ * - When [isExpanded] is false ([WindowSize.COMPACT] width), they are stacked as a split screen
+ *   from the bottom (60/40 vertical split).
  */
 data class EditScreenScene<T : Any>(
     override val key: Any,
@@ -50,13 +52,13 @@ data class EditScreenScene<T : Any>(
     override val content: @Composable (() -> Unit) = {
         if (isExpanded) {
             Row(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.weight(0.6f)) { mainEntry.Content() }
-                Column(modifier = Modifier.weight(0.4f)) { editEntry.Content() }
+                PaneWindowSizeClass(modifier = Modifier.weight(0.6f)) { mainEntry.Content() }
+                PaneWindowSizeClass(modifier = Modifier.weight(0.4f)) { editEntry.Content() }
             }
         } else {
             Column(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.weight(0.6f)) { mainEntry.Content() }
-                Column(modifier = Modifier.weight(0.4f)) { editEntry.Content() }
+                PaneWindowSizeClass(modifier = Modifier.weight(0.6f)) { mainEntry.Content() }
+                PaneWindowSizeClass(modifier = Modifier.weight(0.4f)) { editEntry.Content() }
             }
         }
     }
@@ -105,7 +107,7 @@ class EditScreenSceneStrategy<T : Any>(val windowSizeClass: WindowSizeClass) : S
             previousEntries = entries.dropLast(1),
             mainEntry = mainEntry,
             editEntry = editEntry,
-            isExpanded = !windowSizeClass.isCompact(),
+            isExpanded = !windowSizeClass.isWidthCompact(),
         )
     }
 }

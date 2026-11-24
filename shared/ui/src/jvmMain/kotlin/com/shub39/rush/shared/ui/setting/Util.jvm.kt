@@ -68,7 +68,7 @@ actual fun ColumnScope.PaletteStylePicker(
 ) {
     Column(modifier = modifier.clip(endItemShape())) {
         ListItem(
-            headlineContent = { Text(text = stringResource(Res.string.palette_style)) },
+            content = { Text(text = stringResource(Res.string.palette_style)) },
             supportingContent = {
                 Text(text = theme.style.toString().lowercase().replaceFirstChar { it.titlecase() })
             },

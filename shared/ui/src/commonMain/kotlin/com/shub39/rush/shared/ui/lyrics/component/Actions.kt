@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ import com.shub39.rush.shared.ui.lyrics.LyricsPageAction
 import com.shub39.rush.shared.ui.sortMapByKeys
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
 
 data class ActionsState(
@@ -44,6 +46,7 @@ data class ActionsState(
     val syncedAvailable: Boolean,
     val sync: Boolean,
     val rushEnabled: Boolean,
+    val fitToScreen: Boolean,
 )
 
 @Composable
@@ -159,6 +162,23 @@ fun Actions(
                     modifier = Modifier.size(20.dp),
                 )
             }
+        }
+    }
+
+    if (!state.sync && state.selectedLines.isEmpty()) {
+        IconToggleButton(
+            checked = state.fitToScreen,
+            onCheckedChange = { action(LyricsPageAction.OnFitToScreenToggle(it)) },
+            colors =
+                IconButtonDefaults.iconToggleButtonColors(
+                    checkedContentColor = cardBackground,
+                    checkedContainerColor = cardContent,
+                ),
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.fit_screen),
+                contentDescription = stringResource(Res.string.fit_to_screen),
+            )
         }
     }
 

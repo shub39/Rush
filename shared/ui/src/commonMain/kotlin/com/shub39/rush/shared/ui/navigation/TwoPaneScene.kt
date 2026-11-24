@@ -16,7 +16,6 @@
  */
 package com.shub39.rush.shared.ui.navigation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -29,7 +28,8 @@ import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
+import com.shub39.rush.shared.ui.PaneWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.isWidthCompact
 
 // --- TwoPaneScene ---
 /** A custom [Scene] that displays two [NavEntry]s side-by-side in a 50/50 split. */
@@ -42,8 +42,8 @@ data class TwoPaneScene<T : Any>(
     override val entries: List<NavEntry<T>> = listOf(firstEntry, secondEntry)
     override val content: @Composable (() -> Unit) = {
         Row(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.weight(0.5f)) { firstEntry.Content() }
-            Column(modifier = Modifier.weight(0.5f)) { secondEntry.Content() }
+            PaneWindowSizeClass(modifier = Modifier.weight(0.5f)) { firstEntry.Content() }
+            PaneWindowSizeClass(modifier = Modifier.weight(0.5f)) { secondEntry.Content() }
         }
     }
 
@@ -67,11 +67,9 @@ class TwoPaneSceneStrategy<T : Any>(val windowSizeClass: WindowSizeClass) : Scen
 
     override fun SceneStrategyScope<T>.calculateScene(entries: List<NavEntry<T>>): Scene<T>? {
 
-        // Condition 1: Only return a Scene if the window is sufficiently wide to render two panes.
-        // We use isWidthAtLeastBreakpoint with WIDTH_DP_MEDIUM_LOWER_BOUND (600dp).
-        if (!windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)) {
-            return null
-        }
+        // Condition 1: Only return a Scene if the window is at least medium width (600dp), which is
+        // the narrowest window that can render two panes comfortably.
+        if (windowSizeClass.isWidthCompact()) return null
 
         val lastTwoEntries = entries.takeLast(2)
 

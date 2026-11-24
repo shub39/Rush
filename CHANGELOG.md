@@ -1,5 +1,32 @@
 # Changelog
 
+## 7.5.2
+- Improved Non-Lyrics UIs with Progressive Blur App Bars (Android 13+)
+
+## 7.5.1
+- Updated Translations
+- Miscellaneous UI fixes
+- Fixed Desktop Builds by @Irgendeinwer
+- Improved search sheet UX by @a-mandala
+
+## 7.5.0
+- Fixed mismatches between landscsape and portrait versions of screens
+- Fixed Share Cards appearing minimized
+- Improved animations and navigation
+- Improved landscape experience
+- Updated Translations
+
+## 7.4.0
+- Updated Compose Material3 APIs and dependencies
+- Replaced alpha animation with AnimatedVisibility for lyrics controls
+- Fixed SettingsSlider state sync with external value changes
+- Extended fade modifiers and UI refinements
+
+## 7.3.0
+- Added Fit to Screen mode for Plain Lyrics @a-mandala
+- Improved Hypnotic Lyrics Background with more animated colors
+- Updated Translations
+
 ## 7.2.1
 - Rush Mode now starts automatically on app launch and remembers its last state
 - Improved song detection and lyric matching

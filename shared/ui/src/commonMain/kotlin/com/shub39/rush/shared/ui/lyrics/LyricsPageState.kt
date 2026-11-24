@@ -122,6 +122,9 @@ data class LyricsPageState(
 
     val hideUI: Boolean
         get() = prefs.hideUI
+
+    val fitToScreen: Boolean
+        get() = prefs.fitToScreen
 }
 
 sealed interface LyricsState {

@@ -14,16 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.shub39.rush.shared.ui.component
+package com.shub39.rush.shared.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+/** is Blur possible on this platform? */
+expect fun blurPossible(): Boolean
 
-@Composable
-actual fun HypnoticVisualizer(modifier: Modifier, colors: List<Color>) {
-    Box(modifier = modifier.background(brush = Brush.verticalGradient(colors)))
-}
+/** Can this platform render a progressive (gradient) blur? */
+expect fun progressiveBlurPossible(): Boolean

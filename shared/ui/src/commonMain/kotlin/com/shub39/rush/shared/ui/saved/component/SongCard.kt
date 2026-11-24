@@ -31,6 +31,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.Song
 import com.shub39.rush.shared.ui.component.ArtFromUrl
+import com.shub39.rush.shared.ui.navigation.getImageBoundsTransform
+import com.shub39.rush.shared.ui.navigation.getTextBoundsTransform
+import com.shub39.rush.shared.ui.navigation.rushSharedBounds
 import org.jetbrains.compose.resources.painterResource
 import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.delete
@@ -38,20 +41,33 @@ import rush.shared.ui.generated.resources.delete
 @Composable
 fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Modifier = Modifier) {
     ListItem(
-        modifier = modifier.clickable { onClick() },
+        modifier =
+            modifier
+                .rushSharedBounds(
+                    "song_card_${song.title}_${song.artists}",
+                    getTextBoundsTransform(),
+                )
+                .clickable { onClick() },
         leadingContent = {
             ArtFromUrl(
                 imageUrl = song.artUrl,
-                modifier = Modifier.size(70.dp).clip(MaterialTheme.shapes.small),
+                modifier =
+                    Modifier.rushSharedBounds(
+                            "song_art_${song.title}_${song.artists}",
+                            getImageBoundsTransform(),
+                        )
+                        .size(70.dp)
+                        .clip(MaterialTheme.shapes.small),
             )
         },
-        headlineContent = {
+        content = {
             Text(
                 text = song.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.rushSharedBounds("song_title_${song.title}_${song.artists}"),
             )
         },
         supportingContent = {
@@ -60,6 +76,7 @@ fun SongCard(song: Song, onClick: () -> Unit, onDelete: () -> Unit, modifier: Mo
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.rushSharedBounds("song_artist_${song.title}_${song.artists}"),
             )
         },
         trailingContent = {

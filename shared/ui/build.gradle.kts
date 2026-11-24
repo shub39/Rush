@@ -44,7 +44,9 @@ kotlin {
 
     android {
         namespace = "com.shub39.rush.shared.ui"
-        compileSdk { version = release(libs.versions.compileSdk.get().toInt()) }
+        compileSdk {
+            version = release(libs.versions.compileSdk.get().toInt()) { minorApiLevel = 2 }
+        }
         minSdk { version = release(libs.versions.minSdk.get().toInt()) }
         androidResources { enable = true }
     }

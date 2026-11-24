@@ -31,6 +31,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.shub39.rush.shared.ui.LocalWindowSizeClass
+import com.shub39.rush.shared.ui.WindowSize.Companion.getDialogMaxHeight
 import com.shub39.rush.shared.ui.component.RushBottomSheet
 import com.shub39.rush.shared.ui.theme.flexFontRounded
 
@@ -54,7 +56,9 @@ fun BaseProSheet(
         padding = 16.dp,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().heightIn(max = 700.dp),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .heightIn(max = LocalWindowSizeClass.current.getDialogMaxHeight()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {

@@ -17,34 +17,24 @@
 package com.shub39.rush.shared.ui.saved.component
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shub39.rush.shared.core.dataclasses.ExtractedColors
 import com.shub39.rush.shared.core.dataclasses.SongUi
-import com.shub39.rush.shared.ui.component.ArtFromUrl
 import com.shub39.rush.shared.ui.rushmode.RushState
 import com.shub39.rush.shared.ui.saved.SavedPageAction
 import com.shub39.rush.shared.ui.saved.SavedPageState
@@ -53,6 +43,7 @@ import rush.shared.ui.generated.resources.Res
 import rush.shared.ui.generated.resources.meteor
 import rush.shared.ui.generated.resources.search
 
+/** Floating bottom bar of the saved page, used on compact (portrait) windows. */
 @Composable
 fun SavedPageToolbar(
     state: SavedPageState,
@@ -68,70 +59,61 @@ fun SavedPageToolbar(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         if (state.nowPlaying != null) {
-            Card(
-                onClick = { onNavigateToLyrics() },
-                shape = CircleShape,
+            NowPlayingCard(
+                nowPlaying = state.nowPlaying,
+                colors = state.extractedColors,
+                onClick = onNavigateToLyrics,
                 modifier = Modifier.weight(1f),
-                colors =
-                    CardDefaults.cardColors(
-                        contentColor = Color(state.extractedColors.cardContentMuted),
-                        containerColor = Color(state.extractedColors.cardBackgroundMuted),
-                    ),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(8.dp),
-                ) {
-                    ArtFromUrl(
-                        imageUrl = state.nowPlaying.artUrl,
-                        modifier = Modifier.size(48.dp).clip(CircleShape),
-                    )
-
-                    Column {
-                        Text(
-                            text = state.nowPlaying.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-
-                        Text(
-                            text = state.nowPlaying.artists,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-            }
+            )
         } else {
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        FilledTonalIconToggleButton(
-            checked = state.rushEnabled,
-            onCheckedChange = {
-                if (notificationAccess) {
-                    onAction(SavedPageAction.OnToggleRushMode)
-                    if (!state.rushEnabled) onNavigateToLyrics()
-                } else {
-                    onAction(SavedPageAction.OnRequestMediaAccess)
-                }
-            },
-            modifier = Modifier.size(IconButtonDefaults.mediumContainerSize()),
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.meteor),
-                contentDescription = "Rush Mode",
-                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-            )
-        }
+        RushModeToggle(
+            state = state,
+            notificationAccess = notificationAccess,
+            onAction = onAction,
+            onNavigateToLyrics = onNavigateToLyrics,
+        )
 
-        FloatingActionButton(shape = CircleShape, onClick = onOpenSearchSheet) {
-            Icon(painter = painterResource(Res.drawable.search), contentDescription = "Search")
-        }
+        SearchFab(onClick = onOpenSearchSheet)
+    }
+}
+
+/** Toggles the rush mode, asking for notification access when it is not granted yet. */
+@Composable
+fun RushModeToggle(
+    state: SavedPageState,
+    notificationAccess: Boolean,
+    onAction: (SavedPageAction) -> Unit,
+    onNavigateToLyrics: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FilledTonalIconToggleButton(
+        checked = state.rushEnabled,
+        onCheckedChange = {
+            if (notificationAccess) {
+                onAction(SavedPageAction.OnToggleRushMode)
+                if (!state.rushEnabled) onNavigateToLyrics()
+            } else {
+                onAction(SavedPageAction.OnRequestMediaAccess)
+            }
+        },
+        modifier = modifier.size(IconButtonDefaults.mediumContainerSize()),
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.meteor),
+            contentDescription = "Rush Mode",
+            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+        )
+    }
+}
+
+/** Opens the search sheet. */
+@Composable
+fun SearchFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    FloatingActionButton(shape = CircleShape, onClick = onClick, modifier = modifier) {
+        Icon(painter = painterResource(Res.drawable.search), contentDescription = "Search")
     }
 }
 

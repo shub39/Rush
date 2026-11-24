@@ -44,6 +44,8 @@ fun HypnoticShareCard(
     Box(modifier = modifier.clip(cardCorners)) {
         HypnoticVisualizer(
             modifier = Modifier.matchParentSize(),
+            // this card is recorded into a GraphicsLayer and exported, so keep it deterministic
+            animated = false,
             colors =
                 generateGradientColors(
                     cardColors.containerColor.lighten(2f),

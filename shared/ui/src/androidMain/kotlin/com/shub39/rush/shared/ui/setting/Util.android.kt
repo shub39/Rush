@@ -82,7 +82,7 @@ actual fun ColumnScope.MaterialYouToggle(
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         ListItem(
-            headlineContent = { Text(text = stringResource(Res.string.material_theme)) },
+            content = { Text(text = stringResource(Res.string.material_theme)) },
             supportingContent = { Text(text = stringResource(Res.string.material_theme_desc)) },
             trailingContent = {
                 ExpressiveSwitch(checked = checked, onCheckedChange = onCheckedChange)
@@ -102,7 +102,7 @@ actual fun ColumnScope.PaletteStylePicker(
 ) {
     Column(modifier = modifier.clip(endItemShape())) {
         ListItem(
-            headlineContent = { Text(text = stringResource(Res.string.palette_style)) },
+            content = { Text(text = stringResource(Res.string.palette_style)) },
             supportingContent = {
                 Text(text = theme.style.toString().lowercase().replaceFirstChar { it.titlecase() })
             },
@@ -202,7 +202,7 @@ actual fun LazyListScope.notificationToggle(
             }
 
             ListItem(
-                headlineContent = { Text(text = stringResource(Res.string.grant_permission)) },
+                content = { Text(text = stringResource(Res.string.grant_permission)) },
                 supportingContent = {
                     Text(
                         text = stringResource(Res.string.notification_permission),
@@ -241,7 +241,7 @@ actual fun LazyListScope.appLanguagePicker(onClick: () -> Unit) {
                         contentDescription = null,
                     )
                 },
-                headlineContent = { Text(text = stringResource(Res.string.language)) },
+                content = { Text(text = stringResource(Res.string.language)) },
                 supportingContent = {
                     Text(text = LocalLocale.current.platformLocale.displayLanguage)
                 },

@@ -5,7 +5,11 @@ plugins {
 
 android {
     namespace = "io.gitlab.bpavuk.viz"
-    compileSdk = 37
+    compileSdk {
+        version = release(libs.versions.compileSdk.get().toInt()) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         minSdk = 24
