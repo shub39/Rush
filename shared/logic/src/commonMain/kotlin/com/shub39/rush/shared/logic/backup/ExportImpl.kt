@@ -17,28 +17,63 @@
 package com.shub39.rush.shared.logic.backup
 
 import com.shub39.rush.shared.core.RushLogger
+import com.shub39.rush.shared.core.backup.EXPORT_SCHEMA_VERSION
 import com.shub39.rush.shared.core.backup.ExportRepo
-import com.shub39.rush.shared.core.backup.ExportSchema
+import com.shub39.rush.shared.core.backup.SongSchema
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.logic.mappers.toSongSchema
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
 @Single(binds = [ExportRepo::class])
 class ExportImpl(private val songRepo: SongRepository) : ExportRepo {
-    override suspend fun exportToJson(): String? =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                val songsData = songRepo.getAllSongs().map { it.toSongSchema() }
+    /**
+     * The envelope is written by hand so the songs can be appended one at a time; serialising an
+     * [com.shub39.rush.shared.core.backup.ExportSchema] would materialise the whole document, which
+     * is exactly what this class exists to avoid. Keep it in sync with that class.
+     */
+    private val documentStart = """{"schemaVersion":$EXPORT_SCHEMA_VERSION,"songs":["""
 
-                Json.encodeToString(ExportSchema(schemaVersion = 4, songs = songsData))
+    private val documentEnd = "]}"
+
+    override suspend fun exportToJson(write: (chunk: String) -> Unit): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                write(documentStart)
+
+                var offset = 0
+                var isFirstSong = true
+
+                while (true) {
+                    // Paged, so the songs are not all pulled from the database at once either.
+                    val page = songRepo.getSongsPage(limit = PAGE_SIZE, offset = offset)
+                    if (page.isEmpty()) break
+
+                    for (song in page) {
+                        if (!isFirstSong) write(",")
+
+                        write(Json.encodeToString(SongSchema.serializer(), song.toSongSchema()))
+
+                        isFirstSong = false
+                    }
+
+                    offset += page.size
+                }
+
+                write(documentEnd)
+
+                true
             } catch (e: Exception) {
                 RushLogger.e("ExportImpl", "Error exporting", e)
 
-                null
+                false
             }
         }
+
+    private companion object {
+        /** Small enough to stay negligible on the heap, large enough to keep the cursor cheap. */
+        const val PAGE_SIZE = 32
+    }
 }

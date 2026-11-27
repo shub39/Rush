@@ -19,6 +19,7 @@ package com.shub39.rush.shared.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shub39.rush.shared.core.AnalyticsEvent
+import com.shub39.rush.shared.core.RushLogger
 import com.shub39.rush.shared.core.backup.ExportRepo
 import com.shub39.rush.shared.core.backup.ExportState
 import com.shub39.rush.shared.core.backup.RestoreRepo
@@ -30,6 +31,9 @@ import com.shub39.rush.shared.core.interfaces.OtherPreferences
 import com.shub39.rush.shared.core.interfaces.SongRepository
 import com.shub39.rush.shared.ui.setting.SettingsPageAction
 import com.shub39.rush.shared.ui.setting.SettingsPageState
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.sink
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,6 +46,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.io.buffered
+import kotlinx.io.writeString
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Provided
 
@@ -76,20 +83,19 @@ class SettingsVM(
                     repo.deleteAllSongs()
                 }
 
-                SettingsPageAction.OnExportSongs -> {
+                is SettingsPageAction.OnSaveExport -> {
                     _state.update { it.copy(exportState = ExportState.Exporting) }
 
-                    val exportString = exportRepo.exportToJson()
+                    val exported = writeExport(action.file)
 
-                    if (exportString != null) {
+                    if (exported) {
                         analytics.trackEvent(AnalyticsEvent.BACKUP_CREATED, emptyMap())
                     }
 
                     _state.update {
                         it.copy(
                             exportState =
-                                if (exportString != null) ExportState.ExportReady(exportString)
-                                else ExportState.Error
+                                if (exported) ExportState.Exported else ExportState.Error
                         )
                     }
                 }
@@ -118,7 +124,7 @@ class SettingsVM(
                     _state.update {
                         it.copy(
                             restoreState = RestoreState.Idle,
-                            exportState = ExportState.Exporting,
+                            exportState = ExportState.Idle,
                         )
                     }
                 }
@@ -146,6 +152,23 @@ class SettingsVM(
             }
         }
     }
+
+    /**
+     * Streams the export straight into [file] instead of building the document in memory first, so
+     * a library much larger than the heap can still be backed up.
+     */
+    private suspend fun writeExport(file: PlatformFile): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                file.sink().buffered().use { sink ->
+                    exportRepo.exportToJson { chunk -> sink.writeString(chunk) }
+                }
+            } catch (e: Exception) {
+                RushLogger.e("SettingsVM", "Error writing the export to $file", e)
+
+                false
+            }
+        }
 
     private fun getChangeLogs() {
         viewModelScope.launch {

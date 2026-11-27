@@ -40,7 +40,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,8 +64,6 @@ import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
-import io.github.vinceglb.filekit.writeString
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import rush.shared.ui.generated.resources.*
@@ -80,13 +77,13 @@ fun BackupPage(
     modifier: Modifier = Modifier,
 ) =
     PageFill(modifier = modifier) {
-        val scope = rememberCoroutineScope()
-
         var restoreFile by remember { mutableStateOf<PlatformFile?>(null) }
         val fileSaverLauncher =
             rememberFileSaverLauncher(dialogSettings = FileKitDialogSettings()) { file ->
-                if (file != null && state.exportState is ExportState.ExportReady) {
-                    scope.launch { file.writeString(state.exportState.data) }
+                // The export is streamed into the file as the user picks it, so a library that
+                // does not fit on the heap can still be backed up.
+                if (file != null) {
+                    onAction(SettingsPageAction.OnSaveExport(file))
                 }
             }
         val filePickerLauncher =
@@ -95,10 +92,7 @@ fun BackupPage(
                 restoreFile = file
             }
 
-        LaunchedEffect(Unit) {
-            onAction(SettingsPageAction.ResetBackup)
-            onAction(SettingsPageAction.OnExportSongs)
-        }
+        LaunchedEffect(Unit) { onAction(SettingsPageAction.ResetBackup) }
 
         BackupPageContent(
             onNavigateBack = onNavigateBack,
@@ -170,11 +164,12 @@ private fun BackupPageContent(
                         ) {
                             Button(
                                 onClick = onSaveFile,
-                                enabled = state.exportState is ExportState.ExportReady,
+                                enabled = state.exportState != ExportState.Exporting,
                                 modifier = Modifier.weight(1f),
                             ) {
                                 when (state.exportState) {
-                                    is ExportState.ExportReady -> {
+                                    ExportState.Idle,
+                                    ExportState.Exported -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.play),
                                             contentDescription = "Start Export",

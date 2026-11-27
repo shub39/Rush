@@ -19,9 +19,15 @@ package com.shub39.rush.shared.core.backup
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Version of the document [ExportRepo] writes. Bump it whenever [SongSchema] changes. */
+const val EXPORT_SCHEMA_VERSION: Int = 4
+
 @Serializable
 @SerialName("Export")
-data class ExportSchema(val schemaVersion: Int = 3, val songs: List<SongSchema>)
+data class ExportSchema(
+    val schemaVersion: Int = EXPORT_SCHEMA_VERSION,
+    val songs: List<SongSchema>,
+)
 
 @Serializable
 @SerialName("Song")

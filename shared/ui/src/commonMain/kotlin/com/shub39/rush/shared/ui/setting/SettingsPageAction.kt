@@ -19,6 +19,7 @@ package com.shub39.rush.shared.ui.setting
 import com.shub39.rush.shared.core.enums.AppTheme
 import com.shub39.rush.shared.core.enums.Fonts
 import com.shub39.rush.shared.core.enums.PaletteStyle
+import io.github.vinceglb.filekit.PlatformFile
 
 sealed interface SettingsPageAction {
     data class OnSeedColorChange(val color: Int) : SettingsPageAction
@@ -39,5 +40,5 @@ sealed interface SettingsPageAction {
 
     data class OnRestoreSongs(val path: String) : SettingsPageAction
 
-    data object OnExportSongs : SettingsPageAction
+    data class OnSaveExport(val file: PlatformFile) : SettingsPageAction
 }

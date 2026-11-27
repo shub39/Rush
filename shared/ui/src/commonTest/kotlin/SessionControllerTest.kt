@@ -173,6 +173,9 @@ class SessionControllerTest {
 
         override suspend fun getAllSongs(): List<Song> = songs
 
+        override suspend fun getSongsPage(limit: Int, offset: Int): List<Song> =
+            songs.drop(offset).take(limit)
+
         override suspend fun getSong(id: Long): Song =
             songs.firstOrNull { it.id == id } ?: error("Song $id not found")
 
