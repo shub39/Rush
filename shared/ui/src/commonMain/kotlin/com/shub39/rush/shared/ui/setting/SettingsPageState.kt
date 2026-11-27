@@ -28,7 +28,7 @@ import com.shub39.rush.shared.core.dataclasses.Theme
 data class SettingsPageState(
     val theme: Theme = Theme(),
     val deleteButtonEnabled: Boolean = true,
-    val exportState: ExportState = ExportState.Exporting,
+    val exportState: ExportState = ExportState.Idle,
     val restoreState: RestoreState = RestoreState.Idle,
     val changelog: Changelog = emptyList(),
 )

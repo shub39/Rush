@@ -17,13 +17,31 @@
 package com.shub39.rush.shared.core.backup
 
 interface ExportRepo {
-    suspend fun exportToJson(): String?
+    /**
+     * Encodes the saved songs as one JSON document, handing it to [write] in small chunks instead
+     * of returning a single string.
+     *
+     * A library of saved lyrics easily runs into tens of megabytes, and building that document in
+     * memory needs several times its size on the heap, which is what used to make exports of large
+     * libraries fail with an OutOfMemoryError. Chunking keeps the peak cost down to a single song,
+     * so the caller can stream the chunks straight into a file.
+     *
+     * [write] runs on the IO dispatcher and must consume the chunk it is given; holding on to them
+     * would defeat the point.
+     *
+     * @return `true` when the whole document was written, `false` if anything failed.
+     */
+    suspend fun exportToJson(write: (chunk: String) -> Unit): Boolean
 }
 
 sealed interface ExportState {
+    /** Nothing has been written yet, or the last export was discarded. */
+    data object Idle : ExportState
+
     data object Exporting : ExportState
 
-    data class ExportReady(val data: String) : ExportState
+    /** The last export finished and the file was written completely. */
+    data object Exported : ExportState
 
     data object Error : ExportState
 }

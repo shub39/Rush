@@ -145,7 +145,10 @@ kotlin {
     sourceSets {
         getByName("commonMain").kotlin.srcDir(generateChangelog)
 
-        commonTest.dependencies { implementation(kotlin("test")) }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
         commonMain.dependencies {
             api(projects.shared.core)
 

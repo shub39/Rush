@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.Flow
 interface SongDao {
     @Query("SELECT * FROM songs") fun getAllSongs(): Flow<List<SongEntity>>
 
+    @Query("SELECT * FROM songs ORDER BY id LIMIT :limit OFFSET :offset")
+    suspend fun getSongsPage(limit: Int, offset: Int): List<SongEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertSong(songEntity: SongEntity)
 
     @Query("DELETE FROM songs WHERE id = :id") suspend fun deleteSong(id: Long)

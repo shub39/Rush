@@ -42,6 +42,14 @@ interface SongRepository {
 
     suspend fun getAllSongs(): List<Song>
 
+    /**
+     * Reads [limit] songs starting at [offset], ordered by id.
+     *
+     * Lets the backup export walk the library a page at a time; [getAllSongs] holds every saved
+     * lyric in memory, which is too much once a library grows large.
+     */
+    suspend fun getSongsPage(limit: Int, offset: Int): List<Song>
+
     suspend fun getSong(id: Long): Song
 
     suspend fun getSong(query: String): List<Song>
