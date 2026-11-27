@@ -25,8 +25,8 @@ plugins {
 }
 
 val appName = "Rush"
-val appVersionName = "7.5.2"
-val appVersionCode = 7520
+val appVersionName = "7.5.3"
+val appVersionCode = 7530
 
 val gitHash = execute("git", "rev-parse", "HEAD").take(7)
 

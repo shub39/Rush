@@ -1,5 +1,8 @@
 # Changelog
 
+## 7.5.3
+- Fixed crashes on exporting lyrics
+
 ## 7.5.2
 - Improved Non-Lyrics UIs with Progressive Blur App Bars (Android 13+)
 
