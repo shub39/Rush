@@ -121,4 +121,11 @@
     <string name="no_thanks">No thanks</string>
     <string name="notification_access_needed">Notification Access Needed</string>
     <string name="notification_access_needed_info">Notification access is required for Rush Mode to automatically change songs and for Synced Lyrics.</string>
+    <string name="more_options">More options</string>
+    <string name="copy">Copy</string>
+    <string name="lrclib">LRCLIB</string>
+    <string name="genius">Genius</string>
+    <string name="rush_mode">Rush Mode</string>
+    <string name="show_synced_lyrics">Show synced lyrics</string>
+    <string name="clear_selection">Clear selection</string>
 </resources>
