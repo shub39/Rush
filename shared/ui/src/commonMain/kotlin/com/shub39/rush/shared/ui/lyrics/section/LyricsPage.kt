@@ -349,59 +349,87 @@ fun LyricsPageContent(
                                                     }
                                                 }
 
-                                                Text(
-                                                    text = lyricsState.song.title,
-                                                    style =
-                                                        MaterialTheme.typography.headlineMedium
-                                                            .copy(fontFamily = flexFontRounded()),
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier =
-                                                        Modifier.rushSharedBounds(
-                                                                "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
-                                                                boundsTransform =
-                                                                    getTextBoundsTransform(),
-                                                            )
-                                                            .padding(top = 8.dp)
-                                                            .basicMarquee(),
-                                                )
-
-                                                Text(
-                                                    text = lyricsState.song.artists,
-                                                    style = MaterialTheme.typography.titleMedium,
-                                                    fontFamily = flexFontRounded(),
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier =
-                                                        Modifier.rushSharedBounds(
-                                                                "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
-                                                                boundsTransform =
-                                                                    getTextBoundsTransform(),
-                                                            )
-                                                            .basicMarquee(),
-                                                )
-
-                                                // Actions Row
-                                                AnimatedVisibility(visible = controlsVisible) {
-                                                    Row(
+                                                val titleAndArtist: @Composable () -> Unit = {
+                                                    Text(
+                                                        text = lyricsState.song.title,
+                                                        style =
+                                                            MaterialTheme.typography.headlineMedium
+                                                                .copy(
+                                                                    fontFamily = flexFontRounded()
+                                                                ),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
                                                         modifier =
-                                                            Modifier.padding(vertical = 8.dp)
-                                                                .animateContentSize()
-                                                                .horizontalScroll(
-                                                                    rememberScrollState()
+                                                            Modifier.rushSharedBounds(
+                                                                    "song_title_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                    boundsTransform =
+                                                                        getTextBoundsTransform(),
                                                                 )
+                                                                .padding(top = 8.dp)
+                                                                .basicMarquee(),
+                                                    )
+
+                                                    Text(
+                                                        text = lyricsState.song.artists,
+                                                        style =
+                                                            MaterialTheme.typography.titleMedium,
+                                                        fontFamily = flexFontRounded(),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier =
+                                                            Modifier.rushSharedBounds(
+                                                                    "song_artist_${lyricsState.song.title}_${lyricsState.song.artists}",
+                                                                    boundsTransform =
+                                                                        getTextBoundsTransform(),
+                                                                )
+                                                                .basicMarquee(),
+                                                    )
+                                                }
+                                                val portraitActions: @Composable () -> Unit = {
+                                                    Actions(
+                                                        state = actionsState,
+                                                        action = action,
+                                                        notificationAccess = notificationAccess,
+                                                        cardBackground = cardBackground,
+                                                        cardContent = cardContent,
+                                                        onShare = onShare,
+                                                        onEdit = onNavigateToCustomisations,
+                                                        isCustomisationsOpened =
+                                                            isCustomisationsOpened,
+                                                        allowCompact = true,
+                                                    )
+                                                }
+
+                                                if (actionsState.canCompact) {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        verticalAlignment =
+                                                            Alignment.CenterVertically,
                                                     ) {
-                                                        Actions(
-                                                            state = actionsState,
-                                                            action = action,
-                                                            notificationAccess = notificationAccess,
-                                                            cardBackground = cardBackground,
-                                                            cardContent = cardContent,
-                                                            onShare = onShare,
-                                                            onEdit = onNavigateToCustomisations,
-                                                            isCustomisationsOpened =
-                                                                isCustomisationsOpened,
-                                                        )
+                                                        Column(
+                                                            modifier = Modifier.weight(1f),
+                                                            horizontalAlignment = lyricsAlignment,
+                                                        ) {
+                                                            titleAndArtist()
+                                                        }
+
+                                                        Row { portraitActions() }
+                                                    }
+                                                } else {
+                                                    titleAndArtist()
+
+                                                    // Actions Row
+                                                    AnimatedVisibility(visible = controlsVisible) {
+                                                        Row(
+                                                            modifier =
+                                                                Modifier.padding(vertical = 8.dp)
+                                                                    .animateContentSize()
+                                                                    .horizontalScroll(
+                                                                        rememberScrollState()
+                                                                    )
+                                                        ) {
+                                                            portraitActions()
+                                                        }
                                                     }
                                                 }
                                             }
